@@ -1,0 +1,24 @@
+<span
+  [class]="hostClasses"
+  [attr.role]="dismissible() ? 'listitem' : 'button'"
+  [attr.tabindex]="disabled() ? '-1' : '0'"
+  [attr.aria-pressed]="!dismissible() ? selected() : null"
+  [attr.aria-disabled]="disabled() ? 'true' : null"
+  (click)="toggle()"
+  (keydown.enter)="toggle()"
+  (keydown.space)="toggle()"
+>
+  <ng-content />
+
+  @if (dismissible()) {
+    <button
+      class="luma-chip__dismiss"
+      type="button"
+      aria-label="Remove"
+      [disabled]="disabled()"
+      (click)="dismiss($event)"
+    >
+      <span aria-hidden="true">×</span>
+    </button>
+  }
+</span>

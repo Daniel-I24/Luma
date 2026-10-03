@@ -1,0 +1,10 @@
+<button
+  [class]="hostClasses"
+  [type]="type()"
+  [disabled]="disabled()"
+  [attr.aria-label]="ariaLabel() ?? null"
+  [attr.aria-disabled]="disabled() ? 'true' : null"
+  (click)="handleClick()"
+>
+  <ng-content />
+</button>

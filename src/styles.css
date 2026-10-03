@@ -1,1 +1,241 @@
 @import "tailwindcss";
+
+/* ─────────────────────────────────────────────
+   LUMA DESIGN TOKENS
+   Single source of truth for all visual values.
+   Components must use only these variables — no
+   hardcoded colors, sizes, or shadows allowed.
+───────────────────────────────────────────── */
+
+@theme {
+  /* === Typography === */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* === Spacing scale (base 4 px) === */
+  --spacing-0: 0px;
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-8: 32px;
+  --spacing-10: 40px;
+  --spacing-12: 48px;
+  --spacing-16: 64px;
+
+  /* === Border radius === */
+  --radius-none: 0px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  /* === Shadows === */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.10), 0 2px 4px -2px rgb(0 0 0 / 0.10);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.10), 0 4px 6px -4px rgb(0 0 0 / 0.10);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.10), 0 8px 10px -6px rgb(0 0 0 / 0.10);
+
+  /* === Animation durations === */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 350ms;
+
+  /* === Semantic color tokens (Indigo theme — default) === */
+  --color-bg: #f4f5fb;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #ffffff;
+  --color-text: #111827;
+  --color-text-muted: #6b7280;
+  --color-primary: #2A1F8C;
+  --color-primary-hover: #231a78;
+  --color-primary-fg: #ffffff;
+  --color-accent: #7C5CFC;
+  --color-accent-hover: #6b4df0;
+  --color-accent-fg: #ffffff;
+  --color-border: #e5e7eb;
+  --color-border-focus: #7C5CFC;
+  --color-success: #16a34a;
+  --color-success-bg: #dcfce7;
+  --color-success-fg: #14532d;
+  --color-warning: #d97706;
+  --color-warning-bg: #fef3c7;
+  --color-warning-fg: #78350f;
+  --color-danger: #dc2626;
+  --color-danger-bg: #fee2e2;
+  --color-danger-fg: #7f1d1d;
+  --color-danger-hover: #b91c1c;
+
+  /* === Business status tokens === */
+  --status-open: #16a34a;
+  --status-open-bg: #dcfce7;
+  --status-open-fg: #14532d;
+  --status-closed: #6b7280;
+  --status-closed-bg: #f3f4f6;
+  --status-closed-fg: #374151;
+  --status-opening-soon: #d97706;
+  --status-opening-soon-bg: #fef3c7;
+  --status-opening-soon-fg: #78350f;
+  --status-closing-soon: #ea580c;
+  --status-closing-soon-bg: #ffedd5;
+  --status-closing-soon-fg: #7c2d12;
+
+  /* === Overlay === */
+  --color-overlay: rgb(0 0 0 / 0.5);
+}
+
+/* ─────────────────────────────────────────────
+   THEME: Midnight (dark)
+   Applied when <html data-theme="midnight">
+───────────────────────────────────────────── */
+[data-theme="midnight"] {
+  --color-bg: #0d0f14;
+  --color-surface: #161b26;
+  --color-surface-elevated: #1e2535;
+  --color-text: #f1f5f9;
+  --color-text-muted: #94a3b8;
+  --color-primary: #7C5CFC;
+  --color-primary-hover: #6b4df0;
+  --color-primary-fg: #ffffff;
+  --color-accent: #a78bfa;
+  --color-accent-hover: #8b5cf6;
+  --color-accent-fg: #1e1b4b;
+  --color-border: #2d3748;
+  --color-border-focus: #a78bfa;
+  --color-success: #22c55e;
+  --color-success-bg: #052e16;
+  --color-success-fg: #86efac;
+  --color-warning: #f59e0b;
+  --color-warning-bg: #1c1107;
+  --color-warning-fg: #fcd34d;
+  --color-danger: #f87171;
+  --color-danger-bg: #1f0707;
+  --color-danger-fg: #fca5a5;
+  --color-danger-hover: #ef4444;
+  --status-open: #22c55e;
+  --status-open-bg: #052e16;
+  --status-open-fg: #86efac;
+  --status-closed: #94a3b8;
+  --status-closed-bg: #1e2535;
+  --status-closed-fg: #cbd5e1;
+  --status-opening-soon: #f59e0b;
+  --status-opening-soon-bg: #1c1107;
+  --status-opening-soon-fg: #fcd34d;
+  --status-closing-soon: #fb923c;
+  --status-closing-soon-bg: #1c0f07;
+  --status-closing-soon-fg: #fed7aa;
+  --color-overlay: rgb(0 0 0 / 0.7);
+}
+
+/* ─────────────────────────────────────────────
+   THEME: Pearl (light, warm neutral)
+   Applied when <html data-theme="pearl">
+───────────────────────────────────────────── */
+[data-theme="pearl"] {
+  --color-bg: #fafaf9;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #f5f5f4;
+  --color-text: #1c1917;
+  --color-text-muted: #78716c;
+  --color-primary: #2A1F8C;
+  --color-primary-hover: #231a78;
+  --color-primary-fg: #ffffff;
+  --color-accent: #7C5CFC;
+  --color-accent-hover: #6b4df0;
+  --color-accent-fg: #ffffff;
+  --color-border: #e7e5e4;
+  --color-border-focus: #7C5CFC;
+  --color-success: #15803d;
+  --color-success-bg: #f0fdf4;
+  --color-success-fg: #14532d;
+  --color-warning: #b45309;
+  --color-warning-bg: #fffbeb;
+  --color-warning-fg: #78350f;
+  --color-danger: #b91c1c;
+  --color-danger-bg: #fff1f2;
+  --color-danger-fg: #7f1d1d;
+  --color-danger-hover: #991b1b;
+  --status-open: #15803d;
+  --status-open-bg: #f0fdf4;
+  --status-open-fg: #14532d;
+  --status-closed: #78716c;
+  --status-closed-bg: #f5f5f4;
+  --status-closed-fg: #44403c;
+  --status-opening-soon: #b45309;
+  --status-opening-soon-bg: #fffbeb;
+  --status-opening-soon-fg: #78350f;
+  --status-closing-soon: #c2410c;
+  --status-closing-soon-bg: #fff7ed;
+  --status-closing-soon-fg: #7c2d12;
+  --color-overlay: rgb(0 0 0 / 0.45);
+}
+
+/* ─────────────────────────────────────────────
+   THEME: Sunset (warm vibrant)
+   Applied when <html data-theme="sunset">
+───────────────────────────────────────────── */
+[data-theme="sunset"] {
+  --color-bg: #fff8f5;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #fef3ee;
+  --color-text: #1c0a00;
+  --color-text-muted: #92400e;
+  --color-primary: #c2410c;
+  --color-primary-hover: #9a3412;
+  --color-primary-fg: #ffffff;
+  --color-accent: #7C5CFC;
+  --color-accent-hover: #6b4df0;
+  --color-accent-fg: #ffffff;
+  --color-border: #fed7aa;
+  --color-border-focus: #7C5CFC;
+  --color-success: #15803d;
+  --color-success-bg: #f0fdf4;
+  --color-success-fg: #14532d;
+  --color-warning: #b45309;
+  --color-warning-bg: #fffbeb;
+  --color-warning-fg: #78350f;
+  --color-danger: #b91c1c;
+  --color-danger-bg: #fff1f2;
+  --color-danger-fg: #7f1d1d;
+  --color-danger-hover: #991b1b;
+  --status-open: #15803d;
+  --status-open-bg: #f0fdf4;
+  --status-open-fg: #14532d;
+  --status-closed: #92400e;
+  --status-closed-bg: #fef3ee;
+  --status-closed-fg: #78350f;
+  --status-opening-soon: #b45309;
+  --status-opening-soon-bg: #fffbeb;
+  --status-opening-soon-fg: #78350f;
+  --status-closing-soon: #c2410c;
+  --status-closing-soon-bg: #fff7ed;
+  --status-closing-soon-fg: #7c2d12;
+  --color-overlay: rgb(0 0 0 / 0.45);
+}
+
+/* ─────────────────────────────────────────────
+   BASE STYLES
+───────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

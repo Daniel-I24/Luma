@@ -1,0 +1,36 @@
+<div class="luma-input">
+  @if (label()) {
+    <label class="luma-input__label" [for]="inputId()">
+      {{ label() }}
+      @if (required()) {
+        <span class="luma-input__required" aria-hidden="true">*</span>
+      }
+    </label>
+  }
+
+  <div [class]="wrapperClasses">
+    <ng-content select="[slot=leading]" />
+    <input
+      [id]="inputId()"
+      class="luma-input__field"
+      [type]="type()"
+      [placeholder]="placeholder()"
+      [disabled]="disabled()"
+      [required]="required()"
+      [attr.aria-invalid]="hasError ? 'true' : null"
+      [attr.aria-describedby]="hasError ? inputId() + '-error' : hint() ? inputId() + '-hint' : null"
+      [(ngModel)]="value"
+    />
+    <ng-content select="[slot=trailing]" />
+  </div>
+
+  @if (hasError) {
+    <span [id]="inputId() + '-error'" class="luma-input__error" role="alert">
+      {{ errorMessage() }}
+    </span>
+  } @else if (hint()) {
+    <span [id]="inputId() + '-hint'" class="luma-input__hint">
+      {{ hint() }}
+    </span>
+  }
+</div>

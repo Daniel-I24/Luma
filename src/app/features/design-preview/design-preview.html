@@ -1,0 +1,151 @@
+<ng-container *transloco="let t">
+  <div class="preview-page">
+
+    <!-- Header -->
+    <header class="preview-header">
+      <div>
+        <h1 class="preview-title">{{ t('designPreview.title') }}</h1>
+        <p class="preview-subtitle">{{ t('designPreview.subtitle') }}</p>
+      </div>
+
+      <!-- Theme selector -->
+      <div class="theme-selector">
+        <span class="theme-selector__label">{{ t('designPreview.themeSelector.label') }}:</span>
+        @for (opt of themes; track opt.value) {
+          <app-luma-button
+            [variant]="themeService.theme() === opt.value ? 'primary' : 'secondary'"
+            size="sm"
+            (clicked)="selectTheme(opt.value)"
+          >{{ t(opt.labelKey) }}</app-luma-button>
+        }
+      </div>
+    </header>
+
+    <main class="preview-sections">
+
+      <!-- ── Buttons ── -->
+      <section class="preview-section" aria-labelledby="section-buttons">
+        <h2 id="section-buttons" class="preview-section__title">{{ t('designPreview.sections.buttons') }}</h2>
+
+        <div class="preview-row">
+          <app-luma-button variant="primary">{{ t('designPreview.buttons.primary') }}</app-luma-button>
+          <app-luma-button variant="secondary">{{ t('designPreview.buttons.secondary') }}</app-luma-button>
+          <app-luma-button variant="ghost">{{ t('designPreview.buttons.ghost') }}</app-luma-button>
+          <app-luma-button variant="danger">{{ t('designPreview.buttons.danger') }}</app-luma-button>
+          <app-luma-button variant="primary" [disabled]="true">{{ t('designPreview.buttons.disabled') }}</app-luma-button>
+        </div>
+
+        <div class="preview-row">
+          <app-luma-button variant="primary" size="sm">{{ t('designPreview.buttons.small') }}</app-luma-button>
+          <app-luma-button variant="primary" size="md">{{ t('designPreview.buttons.medium') }}</app-luma-button>
+          <app-luma-button variant="primary" size="lg">{{ t('designPreview.buttons.large') }}</app-luma-button>
+        </div>
+      </section>
+
+      <!-- ── Status Badges ── -->
+      <section class="preview-section" aria-labelledby="section-status">
+        <h2 id="section-status" class="preview-section__title">{{ t('designPreview.sections.statusBadges') }}</h2>
+        <div class="preview-row">
+          <app-status-badge status="open">{{ t('designPreview.status.open') }}</app-status-badge>
+          <app-status-badge status="closed">{{ t('designPreview.status.closed') }}</app-status-badge>
+          <app-status-badge status="opening-soon">{{ t('designPreview.status.openingSoon') }}</app-status-badge>
+          <app-status-badge status="closing-soon">{{ t('designPreview.status.closingSoon') }}</app-status-badge>
+        </div>
+      </section>
+
+      <!-- ── Chips ── -->
+      <section class="preview-section" aria-labelledby="section-chips">
+        <h2 id="section-chips" class="preview-section__title">{{ t('designPreview.sections.chips') }}</h2>
+        <div class="preview-row">
+          <app-luma-chip variant="default">{{ t('designPreview.chips.default') }}</app-luma-chip>
+          <app-luma-chip variant="primary">{{ t('designPreview.chips.primary') }}</app-luma-chip>
+          <app-luma-chip variant="accent">{{ t('designPreview.chips.accent') }}</app-luma-chip>
+          <app-luma-chip variant="success">{{ t('designPreview.chips.success') }}</app-luma-chip>
+          <app-luma-chip variant="warning">{{ t('designPreview.chips.warning') }}</app-luma-chip>
+          <app-luma-chip variant="danger">{{ t('designPreview.chips.danger') }}</app-luma-chip>
+          <app-luma-chip
+            variant="accent"
+            [dismissible]="true"
+          >{{ t('designPreview.chips.dismissible') }}</app-luma-chip>
+          <app-luma-chip
+            variant="primary"
+            [(selected)]="chipSelected"
+          >{{ t('designPreview.chips.selected') }}</app-luma-chip>
+        </div>
+      </section>
+
+      <!-- ── Inputs ── -->
+      <section class="preview-section" aria-labelledby="section-inputs">
+        <h2 id="section-inputs" class="preview-section__title">{{ t('designPreview.sections.inputs') }}</h2>
+        <div class="preview-inputs-grid">
+          <app-luma-input
+            [label]="t('designPreview.inputs.defaultLabel')"
+            [placeholder]="t('designPreview.inputs.defaultPlaceholder')"
+            [hint]="t('designPreview.inputs.hint')"
+            [value]="inputValue()"
+            (valueChange)="inputValue.set($event)"
+          />
+          <app-luma-input
+            [label]="t('designPreview.inputs.withError')"
+            [placeholder]="t('designPreview.inputs.defaultPlaceholder')"
+            [errorMessage]="t('designPreview.inputs.errorMessage')"
+          />
+          <app-luma-input
+            [label]="t('designPreview.inputs.disabled')"
+            [placeholder]="t('designPreview.inputs.defaultPlaceholder')"
+            [disabled]="true"
+          />
+        </div>
+      </section>
+
+      <!-- ── Cards ── -->
+      <section class="preview-section" aria-labelledby="section-cards">
+        <h2 id="section-cards" class="preview-section__title">{{ t('designPreview.sections.cards') }}</h2>
+        <div class="preview-cards-grid">
+          <app-luma-card elevation="flat">
+            <p class="card-label">{{ t('designPreview.cards.flat') }}</p>
+            <p class="card-body">{{ t('designPreview.cards.body') }}</p>
+          </app-luma-card>
+
+          <app-luma-card elevation="raised">
+            <p class="card-label">{{ t('designPreview.cards.raised') }}</p>
+            <p class="card-body">{{ t('designPreview.cards.body') }}</p>
+          </app-luma-card>
+
+          <app-luma-card elevation="elevated">
+            <p class="card-label">{{ t('designPreview.cards.elevated') }}</p>
+            <p class="card-body">{{ t('designPreview.cards.body') }}</p>
+          </app-luma-card>
+
+          <app-luma-card elevation="raised" [interactive]="true">
+            <p class="card-label">{{ t('designPreview.cards.interactive') }}</p>
+            <p class="card-body">{{ t('designPreview.cards.body') }}</p>
+          </app-luma-card>
+        </div>
+      </section>
+
+      <!-- ── Bottom Sheet ── -->
+      <section class="preview-section" aria-labelledby="section-sheet">
+        <h2 id="section-sheet" class="preview-section__title">{{ t('designPreview.sections.bottomSheet') }}</h2>
+        <div class="preview-row">
+          <app-luma-button variant="primary" (clicked)="openSheet()">
+            {{ t('designPreview.cards.openSheet') }}
+          </app-luma-button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Bottom Sheet (rendered outside main flow) -->
+  <app-luma-bottom-sheet
+    [open]="sheetOpen()"
+    [title]="t('designPreview.bottomSheet.title')"
+    (closed)="closeSheet()"
+  >
+    <p>{{ t('designPreview.bottomSheet.body') }}</p>
+    <app-luma-button variant="secondary" (clicked)="closeSheet()">
+      {{ t('designPreview.bottomSheet.close') }}
+    </app-luma-button>
+  </app-luma-bottom-sheet>
+</ng-container>

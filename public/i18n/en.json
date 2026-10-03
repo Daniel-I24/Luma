@@ -1,1 +1,135 @@
-{}
+{
+  "designPreview": {
+    "title": "Design System — Luma",
+    "subtitle": "Base components and design tokens",
+    "themeSelector": {
+      "label": "Active theme",
+      "indigo": "Indigo (default)",
+      "midnight": "Midnight",
+      "pearl": "Pearl",
+      "sunset": "Sunset"
+    },
+    "sections": {
+      "buttons": "Buttons",
+      "cards": "Cards",
+      "bottomSheet": "Bottom Sheet",
+      "statusBadges": "Status badges",
+      "inputs": "Text fields",
+      "chips": "Chips"
+    },
+    "buttons": {
+      "primary": "Primary",
+      "secondary": "Secondary",
+      "ghost": "Ghost",
+      "danger": "Danger",
+      "disabled": "Disabled",
+      "small": "Small",
+      "medium": "Medium",
+      "large": "Large"
+    },
+    "cards": {
+      "flat": "Flat",
+      "raised": "Raised",
+      "elevated": "Elevated",
+      "interactive": "Interactive",
+      "body": "Sample content for the card.",
+      "openSheet": "Open Bottom Sheet"
+    },
+    "bottomSheet": {
+      "title": "Business detail",
+      "body": "Business details would appear here.",
+      "close": "Close"
+    },
+    "status": {
+      "open": "Open",
+      "closed": "Closed",
+      "openingSoon": "Opening soon",
+      "closingSoon": "Closing soon"
+    },
+    "inputs": {
+      "defaultLabel": "Email address",
+      "defaultPlaceholder": "name@example.com",
+      "hint": "We will use this email for notifications.",
+      "withError": "Field with error",
+      "errorMessage": "This field is required.",
+      "disabled": "Disabled field"
+    },
+    "chips": {
+      "default": "Default",
+      "primary": "Primary",
+      "accent": "Accent",
+      "success": "Success",
+      "warning": "Warning",
+      "danger": "Danger",
+      "dismissible": "Dismissible",
+      "selected": "Selected"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Welcome back to Luma",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "name@example.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Your password",
+      "submit": "Sign in",
+      "forgotPassword": "Forgot your password?",
+      "noAccount": "Don't have an account?",
+      "register": "Sign up"
+    },
+    "register": {
+      "title": "Create account",
+      "subtitle": "Join Luma and discover your city",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "name@example.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "At least 6 characters",
+      "submit": "Create account",
+      "hasAccount": "Already have an account?",
+      "login": "Sign in",
+      "successTitle": "Almost there!",
+      "successMessage": "Check your email to confirm your account."
+    },
+    "forgotPassword": {
+      "title": "Reset password",
+      "subtitle": "We'll send you a link to reset your password",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "name@example.com",
+      "submit": "Send link",
+      "backToLogin": "Back to sign in",
+      "successTitle": "Link sent",
+      "successMessage": "Check your email to reset your password."
+    },
+    "validation": {
+      "emailRequired": "Email address is required.",
+      "emailInvalid": "Enter a valid email address.",
+      "passwordTooShort": "Password must be at least 6 characters."
+    },
+    "errors": {
+      "invalidCredentials": "Incorrect email or password.",
+      "emailAlreadyRegistered": "This email is already registered.",
+      "emailNotConfirmed": "Please confirm your email before signing in.",
+      "passwordTooShort": "Password must be at least 6 characters.",
+      "tooManyRequests": "Too many attempts. Please wait a few minutes.",
+      "networkError": "Connection error. Check your network and try again.",
+      "unknown": "An unexpected error occurred. Please try again."
+    }
+  },
+  "profile": {
+    "title": "My profile",
+    "email": "Email address",
+    "signOut": "Sign out",
+    "deleteAccount": "Delete account",
+    "deleteSheet": {
+      "title": "Delete account",
+      "warning": "This action is permanent and irreversible. All your data will be deleted.",
+      "confirm": "Yes, delete my account",
+      "cancel": "Cancel"
+    },
+    "errors": {
+      "signOut": "Could not sign out. Please try again.",
+      "deleteAccount": "Could not delete account. Please try again."
+    }
+  }
+}

@@ -1,0 +1,92 @@
+/* LumaBottomSheet styles — tokens only, with entrance/exit animation */
+
+.luma-bottom-sheet__overlay {
+  position: fixed;
+  inset: 0;
+  background-color: var(--color-overlay);
+  z-index: 40;
+  animation: overlay-in var(--duration-normal) ease forwards;
+}
+
+.luma-bottom-sheet__panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background-color: var(--color-surface);
+  border-top-left-radius: var(--radius-2xl);
+  border-top-right-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-xl);
+  max-height: 90dvh;
+  overflow-y: auto;
+  /* Start hidden below screen */
+  transform: translateY(100%);
+  transition: transform var(--duration-slow) cubic-bezier(0.32, 0.72, 0, 1);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.luma-bottom-sheet__panel--open {
+  transform: translateY(0);
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.luma-bottom-sheet__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-4) var(--spacing-5);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.luma-bottom-sheet__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.luma-bottom-sheet__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  font-size: 1.25rem;
+  transition: background-color var(--duration-fast) ease;
+}
+
+.luma-bottom-sheet__close:hover {
+  background-color: var(--color-border);
+}
+
+.luma-bottom-sheet__close:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+.luma-bottom-sheet__body {
+  padding: var(--spacing-5);
+}
+
+/* Overlay entrance animation */
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .luma-bottom-sheet__panel {
+    transition: none;
+  }
+  .luma-bottom-sheet__overlay {
+    animation: none;
+  }
+}

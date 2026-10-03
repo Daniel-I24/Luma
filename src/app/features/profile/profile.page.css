@@ -1,0 +1,79 @@
+/* ProfilePage styles — tokens only */
+
+.profile-page {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-5);
+  background-color: var(--color-bg);
+}
+
+.profile-page app-luma-card {
+  width: 100%;
+  max-width: 480px;
+}
+
+.profile-header {
+  margin-bottom: var(--spacing-5);
+}
+
+.profile-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.profile-info {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--spacing-1) var(--spacing-4);
+  margin: 0 0 var(--spacing-6);
+  padding: var(--spacing-4);
+  background-color: var(--color-bg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+}
+
+.profile-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+}
+
+.profile-value {
+  font-size: 0.875rem;
+  color: var(--color-text);
+  word-break: break-word;
+}
+
+.profile-error {
+  font-size: 0.875rem;
+  color: var(--color-danger);
+  background-color: var(--color-danger-bg);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-3) var(--spacing-4);
+  margin: 0 0 var(--spacing-4);
+}
+
+.profile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.delete-warning {
+  font-size: 0.875rem;
+  color: var(--color-danger);
+  margin: 0 0 var(--spacing-5);
+  line-height: 1.5;
+}
+
+.delete-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}

@@ -1,0 +1,36 @@
+@if (isOpen()) {
+  <div
+    class="luma-bottom-sheet__overlay"
+    aria-hidden="true"
+    (click)="onOverlayClick()"
+  ></div>
+}
+
+<div
+  [class]="panelClasses"
+  role="dialog"
+  [attr.aria-modal]="isOpen() ? 'true' : null"
+  [attr.aria-labelledby]="title() ? titleId() : null"
+  [attr.aria-hidden]="!isOpen() ? 'true' : null"
+  [attr.tabindex]="isOpen() ? '-1' : null"
+  (keydown)="onKeydown($event)"
+  (click)="onPanelClick($event)"
+>
+  @if (title()) {
+    <div class="luma-bottom-sheet__header">
+      <h2 [id]="titleId()" class="luma-bottom-sheet__title">{{ title() }}</h2>
+      <button
+        class="luma-bottom-sheet__close"
+        type="button"
+        aria-label="Close"
+        (click)="onCloseClick()"
+      >
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+  }
+
+  <div class="luma-bottom-sheet__body">
+    <ng-content />
+  </div>
+</div>

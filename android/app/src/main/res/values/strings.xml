@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Luma</string>
+    <string name="title_activity_main">Luma</string>
+    <string name="package_name">com.luma.app</string>
+    <string name="custom_url_scheme">com.luma.app</string>
+</resources>

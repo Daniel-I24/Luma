@@ -1,0 +1,57 @@
+<ng-container *transloco="let t">
+  <div class="profile-page">
+    <app-luma-card elevation="raised">
+      <header class="profile-header">
+        <h1 class="profile-title">{{ t('profile.title') }}</h1>
+      </header>
+
+      <dl class="profile-info">
+        <dt class="profile-label">{{ t('profile.email') }}</dt>
+        <dd class="profile-value">{{ user()?.email }}</dd>
+      </dl>
+
+      @if (errorKey()) {
+        <p class="profile-error" role="alert">{{ t(errorKey()!) }}</p>
+      }
+
+      <div class="profile-actions">
+        <app-luma-button
+          variant="secondary"
+          size="md"
+          [disabled]="loading()"
+          (clicked)="onSignOut()"
+        >{{ t('profile.signOut') }}</app-luma-button>
+
+        <app-luma-button
+          variant="danger"
+          size="md"
+          [disabled]="loading()"
+          (clicked)="openDeleteSheet()"
+        >{{ t('profile.deleteAccount') }}</app-luma-button>
+      </div>
+    </app-luma-card>
+  </div>
+
+  <!-- Delete account confirmation sheet -->
+  <app-luma-bottom-sheet
+    [open]="deleteSheetOpen()"
+    [title]="t('profile.deleteSheet.title')"
+    (closed)="closeDeleteSheet()"
+  >
+    <p class="delete-warning">{{ t('profile.deleteSheet.warning') }}</p>
+    <div class="delete-actions">
+      <app-luma-button
+        variant="danger"
+        size="md"
+        [disabled]="loading()"
+        (clicked)="onDeleteAccount()"
+      >{{ t('profile.deleteSheet.confirm') }}</app-luma-button>
+
+      <app-luma-button
+        variant="ghost"
+        size="md"
+        (clicked)="closeDeleteSheet()"
+      >{{ t('profile.deleteSheet.cancel') }}</app-luma-button>
+    </div>
+  </app-luma-bottom-sheet>
+</ng-container>

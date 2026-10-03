@@ -1,0 +1,59 @@
+/* StatusBadge styles — maps to --status-* tokens */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.status-badge__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+/* Open */
+.status-badge--open {
+  background-color: var(--status-open-bg);
+  color: var(--status-open-fg);
+}
+
+.status-badge--open .status-badge__dot {
+  background-color: var(--status-open);
+}
+
+/* Closed */
+.status-badge--closed {
+  background-color: var(--status-closed-bg);
+  color: var(--status-closed-fg);
+}
+
+.status-badge--closed .status-badge__dot {
+  background-color: var(--status-closed);
+}
+
+/* Opening soon */
+.status-badge--opening-soon {
+  background-color: var(--status-opening-soon-bg);
+  color: var(--status-opening-soon-fg);
+}
+
+.status-badge--opening-soon .status-badge__dot {
+  background-color: var(--status-opening-soon);
+}
+
+/* Closing soon */
+.status-badge--closing-soon {
+  background-color: var(--status-closing-soon-bg);
+  color: var(--status-closing-soon-fg);
+}
+
+.status-badge--closing-soon .status-badge__dot {
+  background-color: var(--status-closing-soon);
+}

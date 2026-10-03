@@ -1,1 +1,135 @@
-{}
+{
+  "designPreview": {
+    "title": "Sistema de diseño — Luma",
+    "subtitle": "Componentes base y tokens de diseño",
+    "themeSelector": {
+      "label": "Tema activo",
+      "indigo": "Índigo (defecto)",
+      "midnight": "Medianoche",
+      "pearl": "Perla",
+      "sunset": "Atardecer"
+    },
+    "sections": {
+      "buttons": "Botones",
+      "cards": "Tarjetas",
+      "bottomSheet": "Bottom Sheet",
+      "statusBadges": "Insignias de estado",
+      "inputs": "Campos de texto",
+      "chips": "Chips"
+    },
+    "buttons": {
+      "primary": "Principal",
+      "secondary": "Secundario",
+      "ghost": "Fantasma",
+      "danger": "Peligro",
+      "disabled": "Deshabilitado",
+      "small": "Pequeño",
+      "medium": "Mediano",
+      "large": "Grande"
+    },
+    "cards": {
+      "flat": "Plano",
+      "raised": "Elevado",
+      "elevated": "Alto relieve",
+      "interactive": "Interactivo",
+      "body": "Contenido de ejemplo para la tarjeta.",
+      "openSheet": "Abrir Bottom Sheet"
+    },
+    "bottomSheet": {
+      "title": "Detalle del negocio",
+      "body": "Aquí iría la información del negocio seleccionado.",
+      "close": "Cerrar"
+    },
+    "status": {
+      "open": "Abierto",
+      "closed": "Cerrado",
+      "openingSoon": "Abre pronto",
+      "closingSoon": "Cierra pronto"
+    },
+    "inputs": {
+      "defaultLabel": "Correo electrónico",
+      "defaultPlaceholder": "nombre@ejemplo.com",
+      "hint": "Usaremos este correo para notificaciones.",
+      "withError": "Campo con error",
+      "errorMessage": "Este campo es obligatorio.",
+      "disabled": "Campo deshabilitado"
+    },
+    "chips": {
+      "default": "Predeterminado",
+      "primary": "Principal",
+      "accent": "Acento",
+      "success": "Éxito",
+      "warning": "Advertencia",
+      "danger": "Peligro",
+      "dismissible": "Descartable",
+      "selected": "Seleccionado"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Iniciar sesión",
+      "subtitle": "Bienvenido de nuevo a Luma",
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "nombre@ejemplo.com",
+      "passwordLabel": "Contraseña",
+      "passwordPlaceholder": "Tu contraseña",
+      "submit": "Ingresar",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "noAccount": "¿No tienes cuenta?",
+      "register": "Regístrate"
+    },
+    "register": {
+      "title": "Crear cuenta",
+      "subtitle": "Únete a Luma y descubre tu ciudad",
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "nombre@ejemplo.com",
+      "passwordLabel": "Contraseña",
+      "passwordPlaceholder": "Mínimo 6 caracteres",
+      "submit": "Crear cuenta",
+      "hasAccount": "¿Ya tienes cuenta?",
+      "login": "Inicia sesión",
+      "successTitle": "¡Casi listo!",
+      "successMessage": "Revisa tu correo para confirmar tu cuenta."
+    },
+    "forgotPassword": {
+      "title": "Recuperar contraseña",
+      "subtitle": "Te enviaremos un enlace para restablecer tu contraseña",
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "nombre@ejemplo.com",
+      "submit": "Enviar enlace",
+      "backToLogin": "Volver a iniciar sesión",
+      "successTitle": "Enlace enviado",
+      "successMessage": "Revisa tu correo electrónico para restablecer tu contraseña."
+    },
+    "validation": {
+      "emailRequired": "El correo electrónico es obligatorio.",
+      "emailInvalid": "Ingresa un correo electrónico válido.",
+      "passwordTooShort": "La contraseña debe tener al menos 6 caracteres."
+    },
+    "errors": {
+      "invalidCredentials": "Correo o contraseña incorrectos.",
+      "emailAlreadyRegistered": "Este correo ya está registrado.",
+      "emailNotConfirmed": "Debes confirmar tu correo antes de ingresar.",
+      "passwordTooShort": "La contraseña debe tener al menos 6 caracteres.",
+      "tooManyRequests": "Demasiados intentos. Espera unos minutos e intenta de nuevo.",
+      "networkError": "Error de conexión. Verifica tu red e intenta de nuevo.",
+      "unknown": "Ocurrió un error inesperado. Intenta de nuevo."
+    }
+  },
+  "profile": {
+    "title": "Mi perfil",
+    "email": "Correo electrónico",
+    "signOut": "Cerrar sesión",
+    "deleteAccount": "Eliminar cuenta",
+    "deleteSheet": {
+      "title": "Eliminar cuenta",
+      "warning": "Esta acción es permanente e irreversible. Se eliminarán todos tus datos.",
+      "confirm": "Sí, eliminar mi cuenta",
+      "cancel": "Cancelar"
+    },
+    "errors": {
+      "signOut": "No se pudo cerrar la sesión. Intenta de nuevo.",
+      "deleteAccount": "No se pudo eliminar la cuenta. Intenta de nuevo."
+    }
+  }
+}

@@ -1,0 +1,65 @@
+<ng-container *transloco="let t">
+  <div class="auth-page">
+    <app-luma-card elevation="raised">
+      @if (success()) {
+        <div class="auth-success" role="status">
+          <h2 class="auth-success__title">{{ t('auth.register.successTitle') }}</h2>
+          <p class="auth-success__message">{{ t('auth.register.successMessage') }}</p>
+          <app-luma-button variant="secondary" size="md">
+            <a [routerLink]="['/auth/login']">{{ t('auth.register.login') }}</a>
+          </app-luma-button>
+        </div>
+      } @else {
+        <header class="auth-header">
+          <h1 class="auth-title">{{ t('auth.register.title') }}</h1>
+          <p class="auth-subtitle">{{ t('auth.register.subtitle') }}</p>
+        </header>
+
+        <form class="auth-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+          <app-luma-input
+            [label]="t('auth.register.emailLabel')"
+            [placeholder]="t('auth.register.emailPlaceholder')"
+            type="email"
+            [required]="true"
+            [value]="form.controls.email.value"
+            (valueChange)="form.controls.email.setValue($event)"
+            [errorMessage]="form.controls.email.dirty && form.controls.email.invalid
+              ? t('auth.validation.emailInvalid') : undefined"
+          />
+
+          <app-luma-input
+            [label]="t('auth.register.passwordLabel')"
+            [placeholder]="t('auth.register.passwordPlaceholder')"
+            type="password"
+            [required]="true"
+            [value]="form.controls.password.value"
+            (valueChange)="form.controls.password.setValue($event)"
+            [errorMessage]="form.controls.password.dirty && form.controls.password.invalid
+              ? t('auth.validation.passwordTooShort') : undefined"
+          />
+
+          @if (errorKey()) {
+            <p class="auth-error" role="alert">{{ t(errorKey()!) }}</p>
+          }
+
+          <app-luma-button
+            variant="primary"
+            size="lg"
+            type="submit"
+            [disabled]="loading()"
+            class="auth-submit"
+          >{{ t('auth.register.submit') }}</app-luma-button>
+        </form>
+
+        <footer class="auth-footer">
+          <p class="auth-switch">
+            {{ t('auth.register.hasAccount') }}
+            <a [routerLink]="['/auth/login']" class="auth-link">
+              {{ t('auth.register.login') }}
+            </a>
+          </p>
+        </footer>
+      }
+    </app-luma-card>
+  </div>
+</ng-container>
