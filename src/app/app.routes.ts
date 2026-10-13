@@ -8,6 +8,12 @@ export const routes: Routes = [
       import('./features/auth/auth.routes').then((m) => m.authRoutes),
   },
   {
+    path: 'map',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/map/map.page').then((m) => m.MapPage),
+  },
+  {
     path: 'profile',
     canActivate: [authGuard],
     loadComponent: () =>

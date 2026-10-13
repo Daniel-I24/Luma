@@ -131,5 +131,37 @@
       "signOut": "No se pudo cerrar la sesión. Intenta de nuevo.",
       "deleteAccount": "No se pudo eliminar la cuenta. Intenta de nuevo."
     }
+  },
+  "map": {
+    "loadingBusinesses": "Cargando negocios…",
+    "errorLoading": "No se pudieron cargar los negocios. Intenta de nuevo.",
+    "retry": "Reintentar",
+    "noBusinesses": "No hay negocios cercanos en este momento.",
+    "locating": "Obteniendo tu ubicación…",
+    "locationDenied": "Permiso de ubicación denegado. Mostrando centro de la ciudad.",
+    "centerOnMe": "Centrar en mi ubicación",
+    "locationPermission": {
+      "title": "¿Puedes compartir tu ubicación?",
+      "reason": "Luma la usa solo para mostrarte los negocios más cercanos a ti. No la guardamos ni compartimos.",
+      "allow": "Permitir",
+      "skip": "Ahora no"
+    },
+    "sheet": {
+      "address": "Dirección",
+      "phone": "Teléfono",
+      "todayHours": "Hoy",
+      "closedToday": "Cerrado hoy",
+      "distance": "a {{distance}} km",
+      "activePromotion": "Promoción activa",
+      "viewMenu": "Ver menú",
+      "viewProfile": "Ver perfil"
+    },
+    "businesses": {
+      "errors": {
+        "loadFailed": "No se pudieron cargar los negocios.",
+        "promotionsFailed": "No se pudieron cargar las promociones.",
+        "hoursFailed": "No se pudieron cargar los horarios."
+      }
+    }
   }
 }

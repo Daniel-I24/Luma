@@ -1,0 +1,68 @@
+<ng-container *transloco="let t">
+  <div class="map-wrapper">
+
+    <!-- Map canvas -->
+    <div #mapContainer class="map-canvas" aria-label="Mapa de negocios Luma"></div>
+
+    <!-- Loading overlay -->
+    @if (loading()) {
+      <div class="map-overlay map-overlay--loading" role="status" aria-live="polite">
+        <span class="map-overlay__text">{{ t('map.loadingBusinesses') }}</span>
+      </div>
+    }
+
+    <!-- Error state -->
+    @if (errorKey() && !loading()) {
+      <div class="map-overlay map-overlay--error" role="alert">
+        <p class="map-overlay__text">{{ t(errorKey()!) }}</p>
+        <app-luma-button variant="primary" size="sm" (clicked)="retryLoad()">
+          {{ t('map.retry') }}
+        </app-luma-button>
+      </div>
+    }
+
+    <!-- Location permission prompt -->
+    @if (showLocationPrompt()) {
+      <div class="map-location-prompt" role="dialog" aria-modal="true"
+           aria-labelledby="location-prompt-title">
+        <h2 id="location-prompt-title" class="map-location-prompt__title">
+          {{ t('map.locationPermission.title') }}
+        </h2>
+        <p class="map-location-prompt__reason">
+          {{ t('map.locationPermission.reason') }}
+        </p>
+        <div class="map-location-prompt__actions">
+          <app-luma-button variant="primary" size="md" (clicked)="onAllowLocation()">
+            {{ t('map.locationPermission.allow') }}
+          </app-luma-button>
+          <app-luma-button variant="ghost" size="md" (clicked)="onSkipLocation()">
+            {{ t('map.locationPermission.skip') }}
+          </app-luma-button>
+        </div>
+      </div>
+    }
+
+    <!-- Centre-on-me FAB -->
+    <div class="map-fab">
+      <app-luma-button
+        variant="primary"
+        size="md"
+        [ariaLabel]="t('map.centerOnMe')"
+        (clicked)="onCentreOnMe()"
+      >⊙</app-luma-button>
+    </div>
+
+  </div>
+
+  <!-- Business detail bottom sheet -->
+  <app-business-sheet
+    [business]="selectedBusiness()"
+    [hours]="selectedHours()"
+    [promotion]="selectedPromotion()"
+    [distanceKm]="distanceKm()"
+    [open]="sheetOpen()"
+    (closed)="onSheetClosed()"
+    (viewMenu)="onViewMenu($event)"
+    (viewProfile)="onViewProfile($event)"
+  />
+</ng-container>

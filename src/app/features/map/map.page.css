@@ -1,0 +1,117 @@
+/* MapPage styles — tokens only */
+
+.map-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background-color: var(--color-bg);
+}
+
+.map-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Overlays ──────────────────────────────────────────────────────────────── */
+
+.map-overlay {
+  position: absolute;
+  bottom: var(--spacing-16);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-5);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  z-index: 10;
+  max-width: 320px;
+  width: calc(100% - var(--spacing-8));
+  text-align: center;
+}
+
+.map-overlay--loading {
+  background-color: var(--color-surface);
+}
+
+.map-overlay--error {
+  background-color: var(--color-danger-bg);
+}
+
+.map-overlay__text {
+  font-size: 0.875rem;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.map-overlay--error .map-overlay__text {
+  color: var(--color-danger-fg);
+}
+
+/* ── Location permission prompt ───────────────────────────────────────────── */
+
+.map-location-prompt {
+  position: absolute;
+  bottom: var(--spacing-16);
+  left: var(--spacing-4);
+  right: var(--spacing-4);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-xl);
+  padding: var(--spacing-5);
+  z-index: 20;
+}
+
+.map-location-prompt__title {
+  margin: 0 0 var(--spacing-2);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.map-location-prompt__reason {
+  margin: 0 0 var(--spacing-4);
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.map-location-prompt__actions {
+  display: flex;
+  gap: var(--spacing-3);
+}
+
+/* ── FAB ──────────────────────────────────────────────────────────────────── */
+
+.map-fab {
+  position: absolute;
+  bottom: var(--spacing-8);
+  right: var(--spacing-5);
+  z-index: 10;
+}
+
+/* ── MapLibre marker ──────────────────────────────────────────────────────── */
+
+:global(.luma-marker) {
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-surface);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transition: transform var(--duration-fast) ease;
+}
+
+:global(.luma-marker:hover) {
+  transform: scale(1.4);
+}
+
+:global(.luma-marker--open)         { background-color: var(--status-open); }
+:global(.luma-marker--closed)       { background-color: var(--status-closed); }
+:global(.luma-marker--opening-soon) { background-color: var(--status-opening-soon); }
+:global(.luma-marker--closing-soon) { background-color: var(--status-closing-soon); }

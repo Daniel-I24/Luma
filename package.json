@@ -24,6 +24,7 @@
     "@jsverse/transloco": "^8.4.0",
     "@supabase/supabase-js": "^2.117.2",
     "@tailwindcss/postcss": "^4.3.3",
+    "maplibre-gl": "^5.24.0",
     "postcss": "^8.5.28",
     "rxjs": "~7.8.0",
     "tailwindcss": "^4.3.3",

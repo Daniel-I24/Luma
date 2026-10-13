@@ -1,0 +1,74 @@
+<ng-container *transloco="let t">
+  <app-luma-bottom-sheet
+    [open]="open()"
+    [title]="business()?.name ?? ''"
+    (closed)="closed.emit()"
+  >
+    @if (business(); as biz) {
+      <div class="biz-sheet">
+
+        <!-- Status + distance -->
+        <div class="biz-sheet__meta">
+          <app-status-badge [status]="status()">
+            @switch (status()) {
+              @case ('open')         { {{ t('status.open') }} }
+              @case ('closed')       { {{ t('status.closed') }} }
+              @case ('opening-soon') { {{ t('status.openingSoon') }} }
+              @case ('closing-soon') { {{ t('status.closingSoon') }} }
+            }
+          </app-status-badge>
+          @if (formattedDistance()) {
+            <span class="biz-sheet__distance">
+              {{ t('map.sheet.distance', { distance: formattedDistance() }) }}
+            </span>
+          }
+        </div>
+
+        <!-- Today's hours -->
+        <div class="biz-sheet__row">
+          <span class="biz-sheet__label">{{ t('map.sheet.todayHours') }}</span>
+          @if (todayHours() && !todayHours()!.is_closed) {
+            <span class="biz-sheet__value">
+              {{ todayHours()!.opens_at.slice(0, 5) }} – {{ todayHours()!.closes_at.slice(0, 5) }}
+            </span>
+          } @else {
+            <span class="biz-sheet__value biz-sheet__value--muted">{{ t('map.sheet.closedToday') }}</span>
+          }
+        </div>
+
+        <!-- Address -->
+        <div class="biz-sheet__row">
+          <span class="biz-sheet__label">{{ t('map.sheet.address') }}</span>
+          <span class="biz-sheet__value">{{ biz.address }}</span>
+        </div>
+
+        <!-- Phone -->
+        @if (biz.phone) {
+          <div class="biz-sheet__row">
+            <span class="biz-sheet__label">{{ t('map.sheet.phone') }}</span>
+            <a class="biz-sheet__link" [href]="'tel:' + biz.phone">{{ biz.phone }}</a>
+          </div>
+        }
+
+        <!-- Active promotion -->
+        @if (promotion(); as promo) {
+          <div class="biz-sheet__promo">
+            <span class="biz-sheet__promo-badge">{{ t('map.sheet.activePromotion') }}</span>
+            <p class="biz-sheet__promo-title">{{ promo.title }}</p>
+          </div>
+        }
+
+        <!-- Actions -->
+        <div class="biz-sheet__actions">
+          <app-luma-button variant="primary" size="md" (clicked)="onViewMenu()">
+            {{ t('map.sheet.viewMenu') }}
+          </app-luma-button>
+          <app-luma-button variant="secondary" size="md" (clicked)="onViewProfile()">
+            {{ t('map.sheet.viewProfile') }}
+          </app-luma-button>
+        </div>
+
+      </div>
+    }
+  </app-luma-bottom-sheet>
+</ng-container>

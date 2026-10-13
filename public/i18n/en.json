@@ -131,5 +131,37 @@
       "signOut": "Could not sign out. Please try again.",
       "deleteAccount": "Could not delete account. Please try again."
     }
+  },
+  "map": {
+    "loadingBusinesses": "Loading businesses…",
+    "errorLoading": "Could not load businesses. Please try again.",
+    "retry": "Retry",
+    "noBusinesses": "No businesses nearby at this time.",
+    "locating": "Getting your location…",
+    "locationDenied": "Location permission denied. Showing city centre.",
+    "centerOnMe": "Center on my location",
+    "locationPermission": {
+      "title": "Share your location?",
+      "reason": "Luma uses it only to show you the nearest businesses. We never store or share it.",
+      "allow": "Allow",
+      "skip": "Not now"
+    },
+    "sheet": {
+      "address": "Address",
+      "phone": "Phone",
+      "todayHours": "Today",
+      "closedToday": "Closed today",
+      "distance": "{{distance}} km away",
+      "activePromotion": "Active promotion",
+      "viewMenu": "View menu",
+      "viewProfile": "View profile"
+    },
+    "businesses": {
+      "errors": {
+        "loadFailed": "Could not load businesses.",
+        "promotionsFailed": "Could not load promotions.",
+        "hoursFailed": "Could not load hours."
+      }
+    }
   }
 }
