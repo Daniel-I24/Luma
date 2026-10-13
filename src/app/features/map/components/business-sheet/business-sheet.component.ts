@@ -7,8 +7,8 @@ import {
 } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaBottomSheet, LumaButton, StatusBadge } from '@design-system';
-import type { Business, BusinessHours, Promotion } from '@features/businesses/models/business.model';
-import { getBusinessStatus } from '@features/businesses/utils/business-status.util';
+import type { Business, BusinessHours, Promotion } from '@shared/business/models/business.model';
+import { getBusinessStatus } from '@shared/business/utils/business-status.util';
 
 /**
  * BusinessSheetComponent — bottom sheet shown when a map marker is tapped.

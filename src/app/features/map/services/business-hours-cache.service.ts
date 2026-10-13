@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { BusinessRepository } from '@features/businesses/data/business.repository';
-import type { BusinessHours } from '@features/businesses/models/business.model';
+import { BusinessRepository } from '@shared/business/data/business.repository';
+import type { BusinessHours } from '@shared/business/models/business.model';
 
 /**
  * Caches weekly hours per business so map markers and the sheet

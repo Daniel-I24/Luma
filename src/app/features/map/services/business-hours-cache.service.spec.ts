@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { BusinessHoursCacheService } from './business-hours-cache.service';
-import { BusinessRepository } from '@features/businesses/data/business.repository';
-import type { BusinessHours } from '@features/businesses/models/business.model';
+import { BusinessRepository } from '@shared/business/data/business.repository';
+import type { BusinessHours } from '@shared/business/models/business.model';
 
 function makeHours(businessId: string): BusinessHours[] {
   return [{

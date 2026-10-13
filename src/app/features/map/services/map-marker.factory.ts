@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import type { BusinessStatus } from '@features/businesses/models/business.model';
+import type { BusinessStatus } from '@shared/business/models/business.model';
 
 /**
  * CSS variable names that map each BusinessStatus to its design token.

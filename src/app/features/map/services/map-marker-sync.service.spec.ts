@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { MapMarkerSyncService } from './map-marker-sync.service';
 import { MapMarkerFactory } from './map-marker.factory';
-import type { Business, BusinessHours } from '@features/businesses/models/business.model';
+import type { Business, BusinessHours } from '@shared/business/models/business.model';
 import type { MarkerConfig } from './map-marker.factory';
 import type maplibregl from 'maplibre-gl';
 

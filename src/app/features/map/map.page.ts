@@ -12,7 +12,7 @@ import {
 import { Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton } from '@design-system';
-import { BusinessRepository } from '@features/businesses/data/business.repository';
+import { BusinessRepository } from '@shared/business/data/business.repository';
 import { BusinessSheetComponent } from './components/business-sheet/business-sheet.component';
 import { BusinessHoursCacheService } from './services/business-hours-cache.service';
 import { MapCameraService } from './services/map-camera.service';
@@ -20,7 +20,7 @@ import { MapMarkerSyncService } from './services/map-marker-sync.service';
 import { GeolocationService, PASTO_CENTRE } from './services/geolocation.service';
 import { haversineKm } from './utils/haversine.util';
 import { NEARBY_RADIUS_KM } from './map.constants';
-import type { Business, BusinessHours, Promotion } from '@features/businesses/models/business.model';
+import type { Business, BusinessHours, Promotion } from '@shared/business/models/business.model';
 
 @Component({
   selector: 'app-map-page',
