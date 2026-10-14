@@ -31,8 +31,6 @@ export class BusinessSheetComponent {
   readonly open = input<boolean>(false);
 
   readonly closed = output<void>();
-  readonly viewMenu = output<string>();
-  readonly viewProfile = output<string>();
 
   protected readonly status = computed(() => {
     const b = this.business();
@@ -49,14 +47,4 @@ export class BusinessSheetComponent {
     const d = this.distanceKm();
     return d !== null ? d.toFixed(1) : null;
   });
-
-  protected onViewMenu(): void {
-    const id = this.business()?.id;
-    if (id) this.viewMenu.emit(id);
-  }
-
-  protected onViewProfile(): void {
-    const id = this.business()?.id;
-    if (id) this.viewProfile.emit(id);
-  }
 }

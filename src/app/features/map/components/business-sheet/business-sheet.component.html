@@ -53,13 +53,14 @@
 
         <!-- Actions -->
         <div class="biz-sheet__actions">
-          <app-luma-button variant="primary" size="md" (clicked)="onViewMenu()">
+          <app-luma-button variant="primary" size="md" [disabled]="true">
             {{ t('map.sheet.viewMenu') }}
           </app-luma-button>
-          <app-luma-button variant="secondary" size="md" (clicked)="onViewProfile()">
+          <app-luma-button variant="secondary" size="md" [disabled]="true">
             {{ t('map.sheet.viewProfile') }}
           </app-luma-button>
         </div>
+        <p class="biz-sheet__hint">{{ t('map.sheet.comingSoon') }}</p>
 
       </div>
     }

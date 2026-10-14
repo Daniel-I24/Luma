@@ -82,3 +82,9 @@
 .biz-sheet__actions app-luma-button {
   flex: 1;
 }
+
+.biz-sheet__hint {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-align: center;
+}

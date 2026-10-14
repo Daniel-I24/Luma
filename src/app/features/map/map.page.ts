@@ -9,7 +9,6 @@ import {
   signal,
   computed,
 } from '@angular/core';
-import { Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton } from '@design-system';
 import { BusinessRepository } from '@shared/business/data/business.repository';
@@ -38,7 +37,6 @@ export class MapPage implements OnInit, OnDestroy {
   private readonly camera = inject(MapCameraService);
   private readonly markerSync = inject(MapMarkerSyncService);
   private readonly geoService = inject(GeolocationService);
-  private readonly router = inject(Router);
 
   protected readonly geoState = this.geoService.state;
   protected readonly loading = signal(false);
@@ -84,14 +82,6 @@ export class MapPage implements OnInit, OnDestroy {
   }
 
   protected onSheetClosed(): void { this.sheetOpen.set(false); }
-
-  protected onViewMenu(id: string): void {
-    void this.router.navigate(['/businesses', id, 'menu']);
-  }
-
-  protected onViewProfile(id: string): void {
-    void this.router.navigate(['/businesses', id]);
-  }
 
   protected retryLoad(): void {
     this.errorKey.set(null);

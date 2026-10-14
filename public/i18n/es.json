@@ -148,7 +148,8 @@
       "distance": "a {{distance}} km",
       "activePromotion": "Promoción activa",
       "viewMenu": "Ver menú",
-      "viewProfile": "Ver perfil"
+      "viewProfile": "Ver perfil",
+      "comingSoon": "Próximamente"
     }
   },
   "status": {

@@ -148,7 +148,8 @@
       "distance": "{{distance}} km away",
       "activePromotion": "Active promotion",
       "viewMenu": "View menu",
-      "viewProfile": "View profile"
+      "viewProfile": "View profile",
+      "comingSoon": "Coming soon"
     }
   },
   "status": {
