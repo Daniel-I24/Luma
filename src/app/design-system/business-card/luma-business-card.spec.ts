@@ -61,6 +61,13 @@ describe('LumaBusinessCard', () => {
     expect(button.textContent).not.toContain('PE');
   });
 
+  it('shows the rating fallback text instead of stars when there is no rating', () => {
+    const { button } = render({ rating: null, ratingFallback: 'Sin reseñas' });
+
+    expect(button.textContent).toContain('Sin reseñas');
+    expect(button.querySelector('app-luma-rating-stars')).toBeNull();
+  });
+
   it('shows the promotion badge when there is one', () => {
     const { button } = render({ promoLabel: '2×1' });
 

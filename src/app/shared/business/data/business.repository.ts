@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { SupabaseService } from '@core/supabase/supabase.service';
-import type { Business, BusinessHours, Promotion } from '../models/business.model';
+import type { Business, BusinessHours } from '../models/business.model';
 
 /** Generic result wrapper — keeps Supabase errors out of the rest of the app. */
 export interface RepoResult<T> {
@@ -9,7 +9,8 @@ export interface RepoResult<T> {
 }
 
 /**
- * BusinessRepository — data-access layer for businesses, hours and promotions.
+ * BusinessRepository — data-access layer for businesses and their hours
+ * (promotions and ratings for many businesses: BusinessHighlightsRepository).
  *
  * - All methods return RepoResult; never throw.
  * - Raw Supabase errors are mapped to generic i18n keys.
@@ -55,21 +56,6 @@ export class BusinessRepository {
 
     if (error) return { data: null, errorKey: 'businesses.errors.loadFailed' };
     return { data: data as Business | null, errorKey: null };
-  }
-
-  /** Returns all currently active and time-valid promotions for a business. */
-  async getActivePromotions(businessId: string): Promise<RepoResult<Promotion[]>> {
-    const now = new Date().toISOString();
-    const { data, error } = await this.db
-      .from('promotions')
-      .select('*')
-      .eq('business_id', businessId)
-      .eq('is_active', true)
-      .lte('starts_at', now)
-      .gte('ends_at', now);
-
-    if (error) return { data: null, errorKey: 'businesses.errors.promotionsFailed' };
-    return { data: data as Promotion[], errorKey: null };
   }
 
   /** Returns the full weekly schedule for a business. */

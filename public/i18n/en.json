@@ -251,7 +251,8 @@
   "rating": {
     "label": "Rated {{rating}} out of 5",
     "labelWithReviews": "Rated {{rating}} out of 5, {{count}} reviews",
-    "reviews": "({{count}} reviews)"
+    "reviews": "({{count}} reviews)",
+    "none": "No reviews yet"
   },
   "feed": {
     "title": "Discover",

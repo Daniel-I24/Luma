@@ -12,7 +12,7 @@ const ES = {
     openingSoon: 'Abre pronto',
     closingSoon: 'Cierra pronto',
   },
-  rating: { label: 'Calificación {{rating}} de 5' },
+  rating: { label: 'Calificación {{rating}} de 5', none: 'Sin reseñas' },
   map: {
     nearby: { title: 'Cercanos a ti' },
     loadingBusinesses: 'Cargando negocios…',
@@ -26,11 +26,13 @@ const ES = {
   businesses: { errors: { loadFailed: 'No se pudieron cargar los negocios.' } },
 };
 
-const item = (id: string, distanceKm: number | null): NearbyBusiness => ({
+const item = (id: string, distanceKm: number | null, rated = true): NearbyBusiness => ({
   business: { id, name: `Negocio ${id}`, category: 'Café', logo_url: null } as Business,
   status: 'open',
   distanceKm,
-  rating: { rating: 4.8, reviewCount: 20 },
+  rating: rated ? { businessId: id, rating: 4.8, reviewCount: 20 } : null,
+  ratingsLoaded: true,
+  promotion: null,
   logoIcon: 'coffee',
 });
 
@@ -69,6 +71,14 @@ describe('NearbyPanel', () => {
     const cards = el.querySelectorAll('app-luma-business-card');
     expect(cards).toHaveLength(2);
     expect(cards[0].textContent).toContain('450 m');
+  });
+
+  it('says "Sin reseñas" instead of stars for businesses without reviews', () => {
+    const { el } = render({ items: [item('a', 1, false)] });
+
+    const card = el.querySelector('app-luma-business-card');
+    expect(card?.textContent).toContain('Sin reseñas');
+    expect(card?.querySelector('app-luma-rating-stars')).toBeNull();
   });
 
   it('emits the business when a card is selected', () => {

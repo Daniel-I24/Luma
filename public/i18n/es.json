@@ -251,7 +251,8 @@
   "rating": {
     "label": "Calificación {{rating}} de 5",
     "labelWithReviews": "Calificación {{rating}} de 5, {{count}} reseñas",
-    "reviews": "({{count}} reseñas)"
+    "reviews": "({{count}} reseñas)",
+    "none": "Sin reseñas"
   },
   "feed": {
     "title": "Descubrir",

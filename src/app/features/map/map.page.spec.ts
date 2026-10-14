@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { BusinessRatingProvider } from '@shared/business/data/business-rating.provider';
+import { BusinessHighlightsRepository } from '@shared/business/data/business-highlights.repository';
 import { BusinessRepository } from '@shared/business/data/business.repository';
 import type { Business } from '@shared/business/models/business.model';
 import { MapPage } from './map.page';
@@ -44,7 +44,6 @@ function setup() {
   };
   const repo = {
     getNearby: vi.fn().mockResolvedValue({ data: [business], errorKey: null }),
-    getActivePromotions: vi.fn().mockResolvedValue({ data: [], errorKey: null }),
   };
   const markers = { syncMarkers: vi.fn(), select: vi.fn(), clear: vi.fn() };
   TestBed.configureTestingModule({
@@ -60,7 +59,13 @@ function setup() {
       { provide: MapCameraService, useValue: camera },
       { provide: BusinessRepository, useValue: repo },
       { provide: BusinessHoursCacheService, useValue: { prefetch: vi.fn(), get: vi.fn(() => []) } },
-      { provide: BusinessRatingProvider, useValue: { getRating: () => null } },
+      {
+        provide: BusinessHighlightsRepository,
+        useValue: {
+          getRatings: vi.fn().mockResolvedValue({ data: new Map(), errorKey: null }),
+          getActivePromotions: vi.fn().mockResolvedValue({ data: [], errorKey: null }),
+        },
+      },
       { provide: MapMarkerSyncService, useValue: markers },
       { provide: MapStylesLoader, useValue: { ensureLoaded: vi.fn() } },
     ],

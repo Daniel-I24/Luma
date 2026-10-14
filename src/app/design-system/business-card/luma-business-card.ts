@@ -29,6 +29,8 @@ export class LumaBusinessCard {
   /** Shown on a token background when there is no logo (e.g. the category icon). */
   readonly logoIcon = input<IconName>('store');
   readonly rating = input<number | null>(null);
+  /** Text shown instead of the stars when there is no rating (e.g. "Sin reseñas"). */
+  readonly ratingFallback = input<string | null>(null);
   readonly distanceLabel = input<string | null>(null);
   readonly promoLabel = input<string | null>(null);
   /** Marks the card whose business is currently open in the map sheet. */

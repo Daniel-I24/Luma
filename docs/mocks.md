@@ -3,21 +3,8 @@
 Inventario de todo lo que la app muestra sin venir del backend. Cada entrada
 indica dónde vive, cómo se calcula y qué hace falta para reemplazarla.
 
-## Calificación y número de reseñas (mapa)
-
-- **Dónde:** `src/app/shared/mock/business-rating.mock.ts` (`MockBusinessRatingProvider`).
-- **Interfaz:** `BusinessRatingProvider` en `src/app/shared/business/data/business-rating.provider.ts`
-  (`getRating(businessId): BusinessRating | null`).
-- **Registro:** `src/app/app.config.ts` →
-  `{ provide: BusinessRatingProvider, useClass: MockBusinessRatingProvider }`.
-- **Cálculo:** valores deterministas derivados del `id` del negocio (hash FNV-1a):
-  calificación entre 3,5 y 5,0 y entre 12 y 300 reseñas. El mismo negocio
-  siempre muestra lo mismo.
-- **Se usa en:** tarjetas "Cercanos a ti" y bottom sheet del negocio.
-- **Para reemplazarlo:** crear la tabla de reseñas (con RLS) y un repositorio
-  que implemente `BusinessRatingProvider`; cambiar solo el provider en
-  `app.config.ts`. La interfaz es síncrona; si la fuente real es asíncrona,
-  habrá que precargar las calificaciones junto con los negocios.
+Hoy no queda ningún dato inventado en `src/app/shared/mock/`: lo que sigue
+son estimaciones calculadas en el cliente.
 
 ## Tiempo a pie (bottom sheet)
 
@@ -35,8 +22,20 @@ indica dónde vive, cómo se calcula y qué hace falta para reemplazarla.
   lugar del nombre del barrio que muestra el prototipo.
 - **Para reemplazarlo:** geocodificación inversa del centro del mapa.
 
-## Lo que sí es real
+## Lo que es real
 
-Negocios, categorías, horarios, estado (abierto, cierra pronto, cerrado, abre
-pronto) y promociones vienen de Supabase. La búsqueda y el filtro por
-categoría se hacen en el cliente sobre los negocios ya cargados.
+- Negocios, categorías, horarios, estado (abierto, cierra pronto, cerrado,
+  abre pronto) y promociones vienen de Supabase. La búsqueda y el filtro por
+  categoría se hacen en el cliente sobre los negocios ya cargados.
+- **Calificaciones (desde 2026-10-14):** vista `public.business_ratings`
+  (promedio con un decimal y número de reseñas), leída con
+  `BusinessHighlightsRepository.getRatings` en una sola consulta para todos
+  los negocios cercanos. Un negocio sin reseñas muestra "Sin reseñas"; si la
+  consulta falla no se muestra nada (no se confunde con "sin reseñas").
+  Antes era un mock (`MockBusinessRatingProvider`), ya eliminado.
+- **Promociones de las tarjetas:** `BusinessHighlightsRepository.getActivePromotions`,
+  también una sola consulta para todos los negocios cercanos.
+- **Menú, favoritos y reseñas:** tablas `menu_items`, `favorites` y `reviews`
+  con sus repositorios en `src/app/shared/business/data/`. El seed incluye
+  menús de prueba pero **ninguna reseña**, así que todos los negocios
+  muestran "Sin reseñas" hasta que alguien escriba una.

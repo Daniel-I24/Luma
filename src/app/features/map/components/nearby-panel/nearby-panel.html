@@ -56,6 +56,8 @@
         [logoUrl]="item.business.logo_url"
         [logoIcon]="item.logoIcon"
         [rating]="item.rating?.rating ?? null"
+        [ratingFallback]="item.ratingsLoaded ? t('rating.none') : null"
+        [promoLabel]="item.promotion?.title ?? null"
         [distanceLabel]="item.distanceKm | distance: lang()"
         [current]="item.business.id === selectedId()"
         (selected)="selectBusiness.emit(item)"

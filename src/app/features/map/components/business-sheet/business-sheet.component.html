@@ -28,6 +28,8 @@
           <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
             @if (it.rating; as rating) {
               <app-luma-rating-stars [rating]="rating.rating" [reviewCount]="rating.reviewCount" />
+            } @else if (it.ratingsLoaded) {
+              <span class="text-caption text-fg-subtle">{{ t('rating.none') }}</span>
             }
             @if (distance(); as d) {
               <span class="text-caption text-fg-subtle">{{ t('map.sheet.distanceWalk', d) }}</span>

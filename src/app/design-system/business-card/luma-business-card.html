@@ -28,6 +28,8 @@
     <span class="flex w-full flex-wrap items-center gap-x-2">
       @if (rating() !== null) {
       <app-luma-rating-stars [rating]="rating()!" />
+      } @else if (ratingFallback(); as text) {
+      <span class="text-caption text-fg-subtle">{{ text }}</span>
       } @if (distanceLabel(); as distance) {
       <span class="text-caption text-fg-subtle">{{ distance }}</span>
       }
@@ -58,6 +60,8 @@
     <span class="flex flex-wrap items-center gap-x-2">
       @if (rating() !== null) {
       <app-luma-rating-stars [rating]="rating()!" />
+      } @else if (ratingFallback(); as text) {
+      <span class="text-caption text-fg-subtle">{{ text }}</span>
       } @if (distanceLabel(); as distance) {
       <span class="text-caption text-fg-subtle">{{ distance }}</span>
       }
