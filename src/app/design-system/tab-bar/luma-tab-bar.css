@@ -45,13 +45,3 @@
   color: var(--color-primary);
   font-weight: 600;
 }
-
-.luma-tab-bar__icon {
-  width: var(--spacing-6);
-  height: var(--spacing-6);
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}

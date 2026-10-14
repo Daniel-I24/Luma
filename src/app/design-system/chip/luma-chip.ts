@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, model, output } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { LumaIcon } from '../icon/luma-icon';
 
 export type ChipVariant = 'default' | 'primary' | 'accent' | 'success' | 'warning' | 'danger';
 
@@ -13,7 +14,7 @@ export type ChipVariant = 'default' | 'primary' | 'accent' | 'success' | 'warnin
   selector: 'app-luma-chip',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoPipe],
+  imports: [TranslocoPipe, LumaIcon],
   templateUrl: './luma-chip.html',
   styleUrl: './luma-chip.css',
 })

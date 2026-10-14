@@ -8,20 +8,7 @@
         routerLinkActive="luma-tab-bar__link--active"
         ariaCurrentWhenActive="page"
       >
-        <svg class="luma-tab-bar__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          @switch (item.icon) { @case ('map') {
-          <path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Z" />
-          <path d="M9 4v14M15 6v14" />
-          } @case ('user') {
-          <circle cx="12" cy="8" r="4" />
-          <path d="M4 20c0-4 3.6-6 8-6s8 2 8 6" />
-          } @case ('settings') {
-          <circle cx="12" cy="12" r="3" />
-          <path
-            d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1 7 17M17 7l2.1-2.1"
-          />
-          } }
-        </svg>
+        <app-luma-icon [name]="item.icon" size="lg" />
         <span class="luma-tab-bar__label">{{ item.labelKey | transloco }}</span>
       </a>
     </li>

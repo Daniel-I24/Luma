@@ -21,4 +21,8 @@ export { LumaChip } from './chip/luma-chip';
 export type { ChipVariant } from './chip/luma-chip';
 
 export { LumaTabBar } from './tab-bar/luma-tab-bar';
-export type { TabBarItem, TabIcon } from './tab-bar/luma-tab-bar';
+export type { TabBarItem } from './tab-bar/luma-tab-bar';
+
+export { LumaIcon } from './icon/luma-icon';
+export type { IconSize } from './icon/luma-icon';
+export type { IconName } from './icon/luma-icons';

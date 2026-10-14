@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output, computed } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { LumaIcon } from '../icon/luma-icon';
 
 /**
  * LumaBottomSheet — modal panel that slides up from the bottom of the screen.
@@ -12,7 +13,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
   selector: 'app-luma-bottom-sheet',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoPipe],
+  imports: [TranslocoPipe, LumaIcon],
   templateUrl: './luma-bottom-sheet.html',
   styleUrl: './luma-bottom-sheet.css',
 })

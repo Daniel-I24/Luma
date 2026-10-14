@@ -10,7 +10,7 @@ import {
   computed,
 } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaButton } from '@design-system';
+import { LumaButton, LumaIcon } from '@design-system';
 import { BusinessRepository } from '@shared/business/data/business.repository';
 import type { Business, BusinessHours, Promotion } from '@shared/business/models/business.model';
 import { BusinessSheetComponent } from './components/business-sheet/business-sheet.component';
@@ -26,7 +26,7 @@ import { NEARBY_RADIUS_KM } from './map.constants';
   selector: 'app-map-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, BusinessSheetComponent],
+  imports: [TranslocoModule, LumaButton, LumaIcon, BusinessSheetComponent],
   templateUrl: './map.page.html',
   styleUrl: './map.page.css',
 })
