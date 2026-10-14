@@ -20,6 +20,10 @@ jobs:
 
       - run: npm ci
 
+      # Runtime dependencies only; dev-only findings are tracked in docs/security-notes.md.
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+
       # environment.ts is gitignored (real keys); CI builds with placeholders.
       - name: Create environment file
         run: cp src/environments/environment.example.ts src/environments/environment.ts
