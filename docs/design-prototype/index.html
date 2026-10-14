@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luma — Design System v2.0</title>
+
+  <!-- Fuente Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Iconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+
+
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       DISPOSITIVO MÓVIL
+       ══════════════════════════════════════════════════════════ -->
+  <div class="mobile-device" id="luma-device" data-theme="indigo">
+
+    <!-- STATUS BAR -->
+    <div class="status-bar">
+      <span id="status-time">9:41</span>
+      <div class="notch"></div>
+      <div class="status-bar-icons">
+        <i class="fa-solid fa-signal"></i>
+        <i class="fa-solid fa-wifi"></i>
+        <i class="fa-solid fa-battery-full"></i>
+      </div>
+    </div>
+
+    <!-- TOAST GLOBAL -->
+    <div class="toast" id="luma-toast">
+      <span class="toast-icon">✅</span>
+      <span class="toast-text">Mensaje</span>
+    </div>
+
+    <!-- ── APP SCREEN CONTAINER ────────────────────────────── -->
+    <div class="app-screen">
+
+
+      <!-- ════════════════════════════════════════════════════
+           PANTALLA 1 — MAPA / HOME
+           ════════════════════════════════════════════════════ -->
+      <div id="screen-map" class="screen-view" style="height:100%;display:flex;flex-direction:column;overflow:hidden;">
+
+        <!-- MAPA BASE — altura fija para que el resto quede visible -->
+        <div class="map-container" style="height:54%;min-height:300px;flex-shrink:0;position:relative;">
+
+          <!-- Calles decorativas -->
+          <div class="map-road-h" style="top:30%;left:0;right:0;"></div>
+          <div class="map-road-h" style="top:55%;left:0;right:0;"></div>
+          <div class="map-road-h" style="top:75%;left:0;right:0;"></div>
+          <div class="map-road-v" style="left:25%;top:0;bottom:0;"></div>
+          <div class="map-road-v" style="left:55%;top:0;bottom:0;"></div>
+          <div class="map-road-v" style="left:80%;top:0;bottom:0;"></div>
+
+          <!-- Bloques / manzanas -->
+          <div class="map-block" style="top:8%;left:5%;width:17%;height:20%;"></div>
+          <div class="map-block" style="top:8%;left:30%;width:22%;height:20%;"></div>
+          <div class="map-block" style="top:8%;left:60%;width:18%;height:20%;"></div>
+          <div class="map-block" style="top:34%;left:5%;width:17%;height:18%;"></div>
+          <div class="map-block" style="top:34%;left:30%;width:22%;height:18%;"></div>
+          <div class="map-block" style="top:34%;left:60%;width:18%;height:18%;"></div>
+          <div class="map-block" style="top:58%;left:5%;width:17%;height:15%;"></div>
+          <div class="map-block" style="top:58%;left:30%;width:22%;height:15%;"></div>
+          <div class="map-block" style="top:58%;left:60%;width:18%;height:15%;"></div>
+
+          <!-- MARCADORES DE NEGOCIOS -->
+          <div class="map-marker marker-promo"
+               style="top:38%;left:32%;"
+               data-biz-id="1"
+               onclick="openBusinessSheet(1)"
+               title="La Casona Gourmet">
+            <div class="map-marker-pin">
+              <span class="map-marker-icon" style="font-size:14px;">🍔</span>
+            </div>
+            <div class="map-marker-label">La Casona</div>
+          </div>
+
+          <div class="map-marker marker-closing"
+               style="top:56%;left:64%;"
+               data-biz-id="2"
+               onclick="openBusinessSheet(2)"
+               title="Sabor Criollo">
+            <div class="map-marker-pin">
+              <span class="map-marker-icon" style="font-size:14px;">🍛</span>
+            </div>
+            <div class="map-marker-label">Sabor Criollo</div>
+          </div>
+
+          <div class="map-marker marker-open"
+               style="top:42%;left:58%;"
+               data-biz-id="3"
+               onclick="openBusinessSheet(3)"
+               title="Pizzería Roma">
+            <div class="map-marker-pin">
+              <span class="map-marker-icon" style="font-size:14px;">🍕</span>
+            </div>
+            <div class="map-marker-label">Pizzería Roma</div>
+          </div>
+
+          <div class="map-marker marker-open"
+               style="top:22%;left:50%;"
+               data-biz-id="4"
+               onclick="openBusinessSheet(4)"
+               title="Café Central">
+            <div class="map-marker-pin">
+              <span class="map-marker-icon" style="font-size:14px;">☕</span>
+            </div>
+            <div class="map-marker-label">Café Central</div>
+          </div>
+
+          <div class="map-marker marker-closed"
+               style="top:66%;left:22%;"
+               data-biz-id="5"
+               onclick="openBusinessSheet(5)"
+               title="Sushi Nori">
+            <div class="map-marker-pin">
+              <span class="map-marker-icon" style="font-size:14px;">🍣</span>
+            </div>
+            <div class="map-marker-label">Sushi Nori</div>
+          </div>
+
+          <!-- User location -->
+          <div class="map-user-marker" style="top:50%;left:45%;">
+            <div class="map-user-pulse"></div>
+            <div class="map-user-dot"></div>
+          </div>
+
+          <!-- SEARCH BAR FLOTANTE -->
+          <div style="position:absolute;top:12px;left:16px;right:16px;z-index:30;">
+            <div class="search-input" id="map-search-bar">
+              <i class="fa-solid fa-magnifying-glass" style="color:var(--color-text-tertiary);font-size:15px;"></i>
+              <input id="map-search-input" type="text" placeholder="Restaurantes, platos, cocinas…">
+              <div style="display:flex;align-items:center;gap:6px;">
+                <button class="btn btn-icon btn-sm" style="background:var(--color-action-primary);color:#fff;width:30px;height:30px;border-radius:10px;" title="Filtrar">
+                  <i class="fa-solid fa-sliders" style="font-size:13px;"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- LOCATION INDICATOR -->
+          <div style="position:absolute;top:70px;left:16px;z-index:20;
+                      background:var(--color-surface-elevated);
+                      padding:5px 10px;border-radius:var(--radius-full);
+                      box-shadow:var(--shadow-sm);
+                      border:1px solid var(--color-border-subtle);
+                      display:flex;align-items:center;gap:5px;">
+            <span style="color:var(--color-action-primary);font-size:12px;">📍</span>
+            <span style="font-size:11px;font-weight:600;color:var(--color-text-secondary);">Centro Histórico</span>
+          </div>
+
+          <!-- FILTER CHIPS FLOTANTES -->
+          <div style="position:absolute;top:104px;left:0;right:0;z-index:20;
+                      display:flex;gap:6px;overflow-x:auto;padding:0 16px;scrollbar-width:none;">
+            <div class="chip map-filter-chip chip-selected">🍔 Hamburguesería</div>
+            <div class="chip map-filter-chip">🍕 Pizza</div>
+            <div class="chip map-filter-chip">☕ Café</div>
+            <div class="chip map-filter-chip">🍣 Sushi</div>
+            <div class="chip map-filter-chip">🥗 Saludable</div>
+          </div>
+
+          <!-- MAP CONTROLS -->
+          <div class="map-controls" style="bottom:12px;">
+            <button class="map-ctrl-btn" title="Mi ubicación">
+              <i class="fa-solid fa-location-crosshairs" style="color:var(--color-action-primary);"></i>
+            </button>
+            <button class="map-ctrl-btn" title="Acercar">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+            <button class="map-ctrl-btn" title="Alejar">
+              <i class="fa-solid fa-minus"></i>
+            </button>
+          </div>
+
+        </div><!-- /map-container -->
+
+        <!-- PANEL INFERIOR — Negocios cercanos -->
+        <div style="flex:1;overflow-y:auto;background:var(--color-bg-primary);padding:10px 0 0;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:0 16px 6px;">
+            <span style="font-size:13px;font-weight:700;color:var(--color-text-primary);">Cercanos a ti</span>
+            <span style="font-size:11px;font-weight:600;color:var(--color-text-accent);">Ver todos</span>
+          </div>
+          <div style="display:flex;gap:10px;overflow-x:auto;padding:2px 16px 10px;scrollbar-width:none;">
+
+            <!-- Card compacta negocio 1 -->
+            <div onclick="openBusinessSheet(1)" style="flex-shrink:0;width:140px;background:var(--color-surface-default);
+                 border-radius:var(--radius-lg);overflow:hidden;
+                 border:1px solid var(--color-border-subtle);box-shadow:var(--shadow-card);cursor:pointer;">
+              <div style="height:68px;background:linear-gradient(135deg,#1a0a00,#3d1a00);
+                          display:flex;align-items:center;justify-content:center;font-size:28px;position:relative;">
+                🍔
+                <span style="position:absolute;top:5px;right:5px;background:#ef4444;color:#fff;
+                             font-size:9px;font-weight:800;padding:2px 5px;border-radius:4px;">2×1</span>
+              </div>
+              <div style="padding:7px 8px 8px;">
+                <div style="font-size:12px;font-weight:700;color:var(--color-text-primary);
+                            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">La Casona</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:3px;">
+                  <span style="font-size:10px;color:var(--color-warning);">★ 4.8</span>
+                  <span class="status-badge status-open" style="font-size:9px;padding:1px 6px;">
+                    <span class="status-dot"></span>Abierto
+                  </span>
+                </div>
+                <div style="font-size:10px;color:var(--color-text-tertiary);margin-top:2px;">📍 450 m</div>
+              </div>
+            </div>
+
+            <!-- Card compacta negocio 4 -->
+            <div onclick="openBusinessSheet(4)" style="flex-shrink:0;width:140px;background:var(--color-surface-default);
+                 border-radius:var(--radius-lg);overflow:hidden;
+                 border:1px solid var(--color-border-subtle);box-shadow:var(--shadow-card);cursor:pointer;">
+              <div style="height:68px;background:linear-gradient(135deg,#0a0500,#241200);
+                          display:flex;align-items:center;justify-content:center;font-size:28px;">☕</div>
+              <div style="padding:7px 8px 8px;">
+                <div style="font-size:12px;font-weight:700;color:var(--color-text-primary);
+                            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Café Central</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:3px;">
+                  <span style="font-size:10px;color:var(--color-warning);">★ 4.9</span>
+                  <span class="status-badge status-open" style="font-size:9px;padding:1px 6px;">
+                    <span class="status-dot"></span>Abierto
+                  </span>
+                </div>
+                <div style="font-size:10px;color:var(--color-text-tertiary);margin-top:2px;">📍 230 m</div>
+              </div>
+            </div>
+
+            <!-- Card compacta negocio 3 -->
+            <div onclick="openBusinessSheet(3)" style="flex-shrink:0;width:140px;background:var(--color-surface-default);
+                 border-radius:var(--radius-lg);overflow:hidden;
+                 border:1px solid var(--color-border-subtle);box-shadow:var(--shadow-card);cursor:pointer;">
+              <div style="height:68px;background:linear-gradient(135deg,#1a0005,#3d000f);
+                          display:flex;align-items:center;justify-content:center;font-size:28px;">🍕</div>
+              <div style="padding:7px 8px 8px;">
+                <div style="font-size:12px;font-weight:700;color:var(--color-text-primary);
+                            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Pizzería Roma</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:3px;">
+                  <span style="font-size:10px;color:var(--color-warning);">★ 4.7</span>
+                  <span class="status-badge status-open" style="font-size:9px;padding:1px 6px;">
+                    <span class="status-dot"></span>Abierto
+                  </span>
+                </div>
+                <div style="font-size:10px;color:var(--color-text-tertiary);margin-top:2px;">📍 780 m</div>
+              </div>
+            </div>
+
+            <!-- Card compacta negocio 2 -->
+            <div onclick="openBusinessSheet(2)" style="flex-shrink:0;width:140px;background:var(--color-surface-default);
+                 border-radius:var(--radius-lg);overflow:hidden;
+                 border:1px solid var(--color-border-subtle);box-shadow:var(--shadow-card);cursor:pointer;">
+              <div style="height:68px;background:linear-gradient(135deg,#0a0500,#1f1000);
+                          display:flex;align-items:center;justify-content:center;font-size:28px;">🍛</div>
+              <div style="padding:7px 8px 8px;">
+                <div style="font-size:12px;font-weight:700;color:var(--color-text-primary);
+                            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Sabor Criollo</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:3px;">
+                  <span style="font-size:10px;color:var(--color-warning);">★ 4.5</span>
+                  <span class="status-badge status-closing" style="font-size:9px;padding:1px 6px;">
+                    <span class="status-dot"></span>Cierra
+                  </span>
+                </div>
+                <div style="font-size:10px;color:var(--color-text-tertiary);margin-top:2px;">📍 1.2 km</div>
+              </div>
+            </div>
+
+          </div><!-- /scroll row -->
+
+          <!-- Acceso rápido a IA — dentro del panel, no flotando sobre el mapa -->
+          <div style="padding:4px 16px 12px;">
+            <button class="btn btn-full btn-sm" onclick="navigateToScreen('ai')"
+                    style="background:linear-gradient(135deg,var(--brand-primary-800),var(--brand-accent));
+                           color:#fff;border-radius:var(--radius-full);
+                           box-shadow:var(--shadow-accent);gap:8px;padding:10px 16px;font-size:13px;">
+              ✨ Ver recomendaciones de Luma IA
+            </button>
+          </div>
+
+        </div><!-- /panel inferior -->
+
+        <!-- BOTTOM SHEET OVERLAY -->
+        <div class="sheet-overlay" id="sheet-overlay" onclick="closeBusinessSheet()"></div>
+
+        <!-- BOTTOM SHEET — NEGOCIO SELECCIONADO -->
+        <div class="bottom-sheet" id="business-sheet">
+          <div class="sheet-handle-area" onclick="closeBusinessSheet()">
+            <div class="sheet-handle"></div>
+          </div>
+
+          <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;">
+            <!-- Logo del negocio -->
+            <div class="avatar avatar-xl avatar-square" id="sheet-biz-emoji"
+                 style="background:var(--color-bg-secondary);font-size:28px;">🍔</div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+                <div style="min-width:0;">
+                  <div id="sheet-biz-name" class="text-h4 truncate">Nombre del Negocio</div>
+                  <div id="sheet-biz-category" class="text-caption mt-2">Categoría</div>
+                </div>
+                <div id="sheet-biz-status" class="status-badge status-open" style="flex-shrink:0;">
+                  <span class="status-dot"></span>Abierto
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;margin-top:6px;">
+                <div class="rating">
+                  <span class="rating-star">★</span>
+                  <span class="rating-score" id="sheet-biz-rating">4.8</span>
+                  <span class="rating-count" id="sheet-biz-reviews">(120 reseñas)</span>
+                </div>
+                <span style="color:var(--color-border-default);">·</span>
+                <span class="distance-indicator" id="sheet-biz-distance">450 m · 6 min</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Promoción activa -->
+          <div id="sheet-biz-promo"
+               style="display:flex;align-items:center;gap:8px;
+                      padding:8px 12px;background:linear-gradient(135deg,rgba(42,31,140,0.08),rgba(124,92,252,0.10));
+                      border-radius:var(--radius-md);margin-bottom:10px;
+                      border:1px solid rgba(124,92,252,0.20);">
+            <span style="font-size:16px;">🏷️</span>
+            <span id="sheet-biz-promo-text" class="text-label-lg text-accent">Promoción activa</span>
+          </div>
+
+          <!-- Horario -->
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:14px;">
+            <i class="fa-regular fa-clock" style="color:var(--color-text-tertiary);font-size:13px;"></i>
+            <span class="text-body-sm text-secondary" id="sheet-biz-schedule">Hoy: 11:00 AM – 10:00 PM</span>
+          </div>
+
+          <!-- Acciones -->
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-primary btn-md" style="flex:1;"
+                    id="sheet-view-btn"
+                    data-biz-id="1"
+                    onclick="navigateToRestaurantFromSheet(this)">
+              Ver Restaurante
+            </button>
+            <button class="btn btn-ghost btn-icon"
+                    id="sheet-fav-btn"
+                    data-biz-id="1"
+                    onclick="toggleSheetFavorite(this)"
+                    title="Guardar en favoritos">
+              <i class="fa-regular fa-heart"></i>
+            </button>
+            <button class="btn btn-ghost btn-icon" title="Llamar" style="font-size:16px;">
+              <i class="fa-solid fa-phone"></i>
+            </button>
+          </div>
+        </div>
+
+      </div><!-- /screen-map -->
+
+
+      <!-- ════════════════════════════════════════════════════
+           PANTALLA 2 — FEED VERTICAL
+           ════════════════════════════════════════════════════ -->
+      <div id="screen-feed" class="screen-view" style="height:100%;background:#000;overflow:hidden;">
+
+        <!-- Feed slides container -->
+        <div id="feed-container" style="height:100%;position:relative;overflow:hidden;">
+          <!-- Renderizado por components.js → initFeed() -->
+        </div>
+
+        <!-- Indicadores de posición -->
+        <div style="position:absolute;top:14px;right:14px;z-index:30;
+                    display:flex;flex-direction:column;gap:5px;">
+          <div class="feed-dot active" style="width:4px;height:16px;border-radius:2px;background:rgba(255,255,255,0.8);transition:height 0.3s;"></div>
+          <div class="feed-dot" style="width:4px;height:8px;border-radius:2px;background:rgba(255,255,255,0.35);transition:height 0.3s;"></div>
+          <div class="feed-dot" style="width:4px;height:8px;border-radius:2px;background:rgba(255,255,255,0.35);transition:height 0.3s;"></div>
+        </div>
+
+      </div><!-- /screen-feed -->
+
+
+      <!-- ════════════════════════════════════════════════════
+           PANTALLA 3 — IA / COMBOS
+           ════════════════════════════════════════════════════ -->
+      <div id="screen-ai" class="screen-view" style="overflow-y:auto;">
+
+        <!-- Header IA -->
+        <div class="ai-header">
+          <div class="ai-logo">✨</div>
+          <div class="ai-header-title">Luma IA</div>
+          <div class="ai-header-sub">Tu asistente gastronómico inteligente.<br>Te recomiendo según el momento del día.</div>
+        </div>
+
+        <!-- Selector de momento -->
+        <div class="section-label" style="padding-top:var(--space-4);">¿Qué momento es?</div>
+        <div class="moment-chips">
+          <button class="moment-chip" data-moment="desayuno" onclick="selectMoment('desayuno')">
+            <span class="chip-emoji">🌅</span>Desayuno
+          </button>
+          <button class="moment-chip" data-moment="media_manana" onclick="selectMoment('media_manana')">
+            <span class="chip-emoji">🥐</span>Media mañana
+          </button>
+          <button class="moment-chip" data-moment="almuerzo" onclick="selectMoment('almuerzo')">
+            <span class="chip-emoji">🍽️</span>Almuerzo
+          </button>
+          <button class="moment-chip" data-moment="media_tarde" onclick="selectMoment('media_tarde')">
+            <span class="chip-emoji">🧁</span>Media tarde
+          </button>
+          <button class="moment-chip" data-moment="cena" onclick="selectMoment('cena')">
+            <span class="chip-emoji">🌙</span>Cena
+          </button>
+          <button class="moment-chip" data-moment="nocturna" onclick="selectMoment('nocturna')">
+            <span class="chip-emoji">🌃</span>Nocturna
+          </button>
+        </div>
+
+        <!-- Combo resultado -->
+        <div id="ai-combo-container" style="padding-top:var(--space-2);">
+          <div class="ai-combo-card" style="margin:0 var(--space-4);padding:32px 16px;text-align:center;border:1.5px dashed var(--color-border-default);">
+            <div style="font-size:36px;margin-bottom:12px;">🤖</div>
+            <div class="text-body-sm text-secondary">Selecciona un momento para recibir<br>tu combo personalizado</div>
+          </div>
+        </div>
+
+        <!-- Restaurantes cercanos recomendados -->
+        <div class="section-label">Recomendados para ti</div>
+        <div class="list-stack" style="padding-bottom:var(--space-6);">
+
+          <div class="business-card ai-recommended" onclick="openRestaurantProfile(4)">
+            <div class="business-card-img">
+              <div class="img-placeholder">☕</div>
+              <div class="business-card-badge-overlay">
+                <span class="badge badge-promo">✨ IA</span>
+              </div>
+              <div class="business-card-fav" onclick="event.stopPropagation();this.classList.toggle('favorited')">🤍</div>
+            </div>
+            <div class="business-card-body">
+              <div class="business-card-name">Café Central</div>
+              <div class="business-card-category">Café · Desayunos</div>
+              <div class="business-card-meta">
+                <div class="rating">
+                  <span class="rating-star">★</span>
+                  <span class="rating-score">4.9</span>
+                  <span class="rating-count">(402)</span>
+                </div>
+                <span class="status-badge status-open" style="font-size:10px;padding:2px 8px;">
+                  <span class="status-dot"></span>Abierto
+                </span>
+              </div>
+              <div class="business-card-promo">🏷️ Café + Croissant $8.500</div>
+            </div>
+          </div>
+
+          <div class="business-card ai-recommended" onclick="openRestaurantProfile(1)">
+            <div class="business-card-img">
+              <div class="img-placeholder">🍔</div>
+              <div class="business-card-badge-overlay">
+                <span class="badge badge-promo">✨ IA</span>
+              </div>
+              <div class="business-card-fav" onclick="event.stopPropagation();this.classList.toggle('favorited')">🤍</div>
+            </div>
+            <div class="business-card-body">
+              <div class="business-card-name">La Casona Gourmet</div>
+              <div class="business-card-category">Hamburguesería · Americana</div>
+              <div class="business-card-meta">
+                <div class="rating">
+                  <span class="rating-star">★</span>
+                  <span class="rating-score">4.8</span>
+                  <span class="rating-count">(243)</span>
+                </div>
+                <span class="status-badge status-open" style="font-size:10px;padding:2px 8px;">
+                  <span class="status-dot"></span>Abierto
+                </span>
+              </div>
+              <div class="business-card-promo">🏷️ 2×1 en Hamburguesas</div>
+            </div>
+          </div>
+
+        </div>
+
+      </div><!-- /screen-ai -->
+
+
+      <!-- ════════════════════════════════════════════════════
+           PANTALLA 4 — PERFIL DE RESTAURANTE
+           ════════════════════════════════════════════════════ -->
+      <div id="screen-restaurant" class="screen-view">
+
+        <!-- Hero imagen -->
+        <div class="restaurant-hero">
+          <span id="rest-emoji" style="font-size:64px;z-index:1;">🍔</span>
+          <div class="restaurant-hero-back" onclick="goBack()">
+            <i class="fa-solid fa-arrow-left"></i>
+          </div>
+          <div class="restaurant-hero-fav" id="rest-hero-fav"
+               onclick="this.classList.toggle('favorited');showToast(this.classList.contains('favorited')?'❤️ Guardado':'🗑️ Eliminado',this.classList.contains('favorited')?'success':'error')">
+            <i class="fa-regular fa-heart"></i>
+          </div>
+        </div>
+
+        <!-- Info principal -->
+        <div class="restaurant-info-header">
+          <div class="avatar avatar-2xl avatar-square" style="font-size:26px;" id="rest-logo">🍔</div>
+          <div style="flex:1;min-width:0;">
+            <div class="restaurant-name" id="rest-name">La Casona Gourmet</div>
+            <div class="restaurant-category" id="rest-category">Hamburguesería · Americana</div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
+              <span id="rest-status" class="status-badge status-open" style="font-size:10px;">
+                <span class="status-dot"></span>Abierto
+              </span>
+              <span class="text-caption text-tertiary" id="rest-distance-val">450 m</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats del restaurante -->
+        <div class="restaurant-stats">
+          <div class="restaurant-stat">
+            <div class="restaurant-stat-value" style="color:var(--color-warning);">★ <span id="rest-rating-val">4.8</span></div>
+            <div class="restaurant-stat-label">Rating</div>
+          </div>
+          <div class="restaurant-stat">
+            <div class="restaurant-stat-value" id="rest-reviews-val">243</div>
+            <div class="restaurant-stat-label">Reseñas</div>
+          </div>
+          <div class="restaurant-stat">
+            <div class="restaurant-stat-value">~20</div>
+            <div class="restaurant-stat-label">Min prep.</div>
+          </div>
+          <div class="restaurant-stat">
+            <div class="restaurant-stat-value">$-$$</div>
+            <div class="restaurant-stat-label">Precio</div>
+          </div>
+        </div>
+
+        <!-- Promoción destacada -->
+        <div class="promo-banner" style="margin-top:var(--space-3);">
+          <span style="font-size:18px;">🏷️</span>
+          <div class="promo-banner-text">2×1 en Hamburguesas Artesanales • Hoy hasta las 10pm</div>
+          <button class="btn btn-sm" style="background:rgba(255,255,255,0.20);color:#fff;border-radius:8px;white-space:nowrap;font-size:11px;padding:6px 10px;">Ver</button>
+        </div>
+
+        <!-- Tabs de navegación local -->
+        <div class="profile-tabs" style="margin-top:var(--space-3);">
+          <button class="profile-tab active" data-tab="menu" onclick="selectProfileTab('menu')">Menú</button>
+          <button class="profile-tab" data-tab="promos" onclick="selectProfileTab('promos')">Promos</button>
+          <button class="profile-tab" data-tab="reviews" onclick="selectProfileTab('reviews')">Reseñas</button>
+          <button class="profile-tab" data-tab="info" onclick="selectProfileTab('info')">Info</button>
+        </div>
+
+        <!-- TAB: MENÚ -->
+        <div id="rest-tab-menu">
+          <div class="section-label">Más Pedidos</div>
+          <div class="menu-item" onclick="navigateToScreen('checkout')">
+            <div class="menu-item-img">🍔</div>
+            <div class="menu-item-info">
+              <div class="menu-item-name">Hamburguesa Doble Clásica</div>
+              <div class="menu-item-desc">Carne angus, queso cheddar, lechuga, tomate</div>
+              <div class="menu-item-footer">
+                <span class="text-price" style="font-size:16px;">$18.900</span>
+                <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();showToast('🛒 Agregado al carrito','success')">+ Agregar</button>
+              </div>
+            </div>
+          </div>
+          <div class="menu-item" onclick="navigateToScreen('checkout')">
+            <div class="menu-item-img">🍟</div>
+            <div class="menu-item-info">
+              <div class="menu-item-name">Papas Rústicas con Dip</div>
+              <div class="menu-item-desc">Papas artesanales, dip de queso o BBQ</div>
+              <div class="menu-item-footer">
+                <span class="text-price" style="font-size:16px;">$9.500</span>
+                <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();showToast('🛒 Agregado al carrito','success')">+ Agregar</button>
+              </div>
+            </div>
+          </div>
+          <div class="menu-item" onclick="navigateToScreen('checkout')">
+            <div class="menu-item-img">🥤</div>
+            <div class="menu-item-info">
+              <div class="menu-item-name">Malteada de Oreo</div>
+              <div class="menu-item-desc">Leche entera, helado vainilla, galletas Oreo</div>
+              <div class="menu-item-footer">
+                <span class="text-price" style="font-size:16px;">$12.000</span>
+                <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();showToast('🛒 Agregado al carrito','success')">+ Agregar</button>
+              </div>
+            </div>
+          </div>
+          <div style="padding:var(--space-4);padding-top:var(--space-3);padding-bottom:var(--space-6);">
+            <button class="btn btn-primary btn-full btn-lg" onclick="navigateToScreen('checkout')">
+              🛒 Ver Carrito · $18.900
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB: PROMOS -->
+        <div id="rest-tab-promos" style="display:none;padding:var(--space-3) var(--space-4) var(--space-6);">
+          <div class="promo-card">
+            <div class="promo-card-img">
+              🍔
+              <div class="promo-card-discount">-21%</div>
+            </div>
+            <div class="promo-card-body">
+              <div class="promo-card-title">Combo Hamburguesa Doble + Papas Rústicas</div>
+              <div class="promo-card-biz">La Casona Gourmet · 450 m</div>
+              <div class="promo-card-footer">
+                <div>
+                  <span class="promo-card-price">$18.900</span>
+                  <span class="promo-card-price-orig">$24.000</span>
+                </div>
+                <button class="btn btn-primary btn-sm" onclick="navigateToScreen('checkout')">Pedir</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: RESEÑAS -->
+        <div id="rest-tab-reviews" style="display:none;padding:var(--space-3) var(--space-4) var(--space-6);">
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div style="background:var(--color-surface-default);padding:14px;border-radius:var(--radius-lg);border:1px solid var(--color-border-subtle);">
+              <div style="display:flex;gap:10px;align-items:center;margin-bottom:8px;">
+                <div class="avatar avatar-sm" style="background:linear-gradient(135deg,var(--brand-primary-800),var(--brand-accent));color:#fff;font-size:12px;">AM</div>
+                <div style="flex:1;">
+                  <div class="text-label-lg text-primary">Andrés M.</div>
+                  <div style="color:var(--color-warning);font-size:12px;">★★★★★</div>
+                </div>
+                <div class="text-caption text-tertiary">Hoy</div>
+              </div>
+              <div class="text-body-sm text-secondary">"Las hamburguesas son increíbles, especialmente la doble clásica. El ambiente es muy bueno y el servicio rápido."</div>
+            </div>
+            <div style="background:var(--color-surface-default);padding:14px;border-radius:var(--radius-lg);border:1px solid var(--color-border-subtle);">
+              <div style="display:flex;gap:10px;align-items:center;margin-bottom:8px;">
+                <div class="avatar avatar-sm" style="background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-size:12px;">LP</div>
+                <div style="flex:1;">
+                  <div class="text-label-lg text-primary">Laura P.</div>
+                  <div style="color:var(--color-warning);font-size:12px;">★★★★☆</div>
+                </div>
+                <div class="text-caption text-tertiary">Ayer</div>
+              </div>
+              <div class="text-body-sm text-secondary">"Muy buen lugar para almorzar. Las papas rústicas con dip de queso son adictivas. Recomendado."</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: INFO -->
+        <div id="rest-tab-info" style="display:none;padding:var(--space-3) var(--space-4) var(--space-6);">
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="background:var(--color-surface-default);border-radius:var(--radius-lg);padding:14px;border:1px solid var(--color-border-subtle);">
+              <div class="text-label text-tertiary mb-2">HORARIOS</div>
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <div style="display:flex;justify-content:space-between;" class="text-body-sm">
+                  <span class="text-secondary">Lun – Vie</span><span class="text-primary font-medium">11:00 AM – 10:00 PM</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;" class="text-body-sm">
+                  <span class="text-secondary">Sábado</span><span class="text-primary">12:00 PM – 11:00 PM</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;" class="text-body-sm">
+                  <span class="text-secondary">Domingo</span><span class="text-error">Cerrado</span>
+                </div>
+              </div>
+            </div>
+            <div style="background:var(--color-surface-default);border-radius:var(--radius-lg);padding:14px;border:1px solid var(--color-border-subtle);">
+              <div class="text-label text-tertiary mb-2">CONTACTO</div>
+              <div class="flex-gap-2 mb-2">
+                <i class="fa-solid fa-phone" style="color:var(--color-action-primary);width:16px;"></i>
+                <span class="text-body-sm text-primary">+57 300 123 4567</span>
+              </div>
+              <div class="flex-gap-2">
+                <i class="fa-solid fa-map-pin" style="color:var(--color-action-primary);width:16px;"></i>
+                <span class="text-body-sm text-primary">Calle 15 #8-42, Centro</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /screen-restaurant -->
+
+
+      <!-- ════════════════════════════════════════════════════
+           PANTALLA 5 — CHECKOUT
+           ════════════════════════════════════════════════════ -->
+      <div id="screen-checkout" class="screen-view">
+
+        <!-- Header -->
+        <div class="screen-header">
+          <button class="btn btn-ghost btn-icon btn-sm" onclick="goBack()">
+            <i class="fa-solid fa-arrow-left"></i>
+          </button>
+          <span class="screen-header-title">Tu Pedido</span>
+          <span style="width:34px;"></span>
+        </div>
+
+        <!-- Sección: Artículos -->
+        <div class="checkout-section">
+          <div class="checkout-section-header">
+            <span class="checkout-section-title">🍔 La Casona Gourmet</span>
+          </div>
+          <div class="checkout-item">
+            <span class="checkout-item-emoji">🍔</span>
+            <div class="checkout-item-name">Hamburguesa Doble Clásica</div>
+            <span class="checkout-item-price">$18.900</span>
+          </div>
+          <div class="checkout-item">
+            <span class="checkout-item-emoji">🍟</span>
+            <div class="checkout-item-name">Papas Rústicas con Dip</div>
+            <span class="checkout-item-price">$9.500</span>
+          </div>
+          <div class="checkout-item">
+            <span class="checkout-item-emoji">🥤</span>
+            <div class="checkout-item-name">Bebida de tu elección</div>
+            <span class="checkout-item-price">$5.000</span>
+          </div>
+        </div>
+
+        <!-- Sección: Resumen de precios -->
+        <div class="checkout-section" style="margin-top:0;">
+          <div class="price-row"><span>Subtotal</span><span>$33.400</span></div>
+          <div class="price-row"><span>Ahorro 2×1</span><span style="color:var(--color-success);">−$5.100</span></div>
+          <div class="price-row"><span>Servicio</span><span>$1.500</span></div>
+          <div class="price-row total"><span>Total</span><span>$29.800</span></div>
+        </div>
+
+        <!-- Sección: Método de pago -->
+        <div class="checkout-section">
+          <div class="checkout-section-header">
+            <span class="checkout-section-title">Método de pago</span>
+          </div>
+          <div class="payment-option selected" data-method="card" onclick="selectPayment('card')">
+            <div class="payment-icon">💳</div>
+            <div class="payment-name">Tarjeta · •••• 4242</div>
+            <div class="payment-radio"></div>
+          </div>
+          <div class="payment-option" data-method="cash" onclick="selectPayment('cash')">
+            <div class="payment-icon">💵</div>
+            <div class="payment-name">Efectivo</div>
+            <div class="payment-radio"></div>
+          </div>
+          <div class="payment-option" data-method="nequi" onclick="selectPayment('nequi')">
+            <div class="payment-icon">📱</div>
+            <div class="payment-name">Nequi / Daviplata</div>
+            <div class="payment-radio"></div>
+          </div>
+        </div>
+
+        <!-- Sección: Momento de recogida -->
+        <div class="checkout-section">
+          <div class="checkout-section-header">
+            <span class="checkout-section-title">¿Cuándo recoges?</span>
+          </div>
+          <div style="display:flex;gap:8px;padding:12px 16px 14px;overflow-x:auto;scrollbar-width:none;">
+            <div class="chip chip-selected">⚡ Ahora</div>
+            <div class="chip" onclick="this.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.remove('chip-selected'));this.classList.add('chip-selected')">📅 Más tarde</div>
+            <div class="chip" onclick="this.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.remove('chip-selected'));this.classList.add('chip-selected')">🗓 Mañana</div>
+          </div>
+        </div>
+
+        <!-- Botón confirmar -->
+        <div style="padding:var(--space-3) var(--space-4) var(--space-6);">
+          <button class="btn btn-primary btn-full btn-lg" id="confirm-order-btn" onclick="confirmOrder()">
+            Confirmar Pedido · $29.800
+          </button>
+          <div class="text-caption text-tertiary" style="text-align:center;margin-top:8px;">
+            Al confirmar, aceptas los Términos de uso de Luma
+          </div>
+        </div>
+
+      </div><!-- /screen-checkout -->
+
+
+      <!-- ════════════════════════════════════════════════════
+           PANTALLA 6 — ORDER TRACKING
+           ════════════════════════════════════════════════════ -->
+      <div id="screen-tracking" class="screen-view">
+
+        <!-- Header con ETA -->
+        <div class="tracking-header">
+          <div class="tracking-eta" id="tracking-eta">20 min</div>
+          <div class="tracking-eta-label">Tiempo estimado de preparación</div>
+          <div class="tracking-status-text" id="tracking-status-text">Confirmado</div>
+        </div>
+
+        <!-- Info del negocio -->
+        <div style="padding:var(--space-4);display:flex;gap:12px;align-items:center;border-bottom:1px solid var(--color-border-subtle);">
+          <div class="avatar avatar-lg avatar-square" style="font-size:24px;">🍔</div>
+          <div style="flex:1;">
+            <div class="text-title text-primary">La Casona Gourmet</div>
+            <div class="text-body-sm text-secondary">Calle 15 #8-42, Centro</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="text-label text-tertiary">Pedido</div>
+            <div class="text-label-lg text-brand">#LM-2847</div>
+          </div>
+        </div>
+
+        <!-- Pasos de seguimiento -->
+        <div class="tracking-steps">
+          <div class="tracking-step-row done" data-step="0">
+            <div class="tracking-icon-wrap"><i class="fa-solid fa-check"></i></div>
+            <div class="tracking-step-text">Pedido confirmado</div>
+          </div>
+          <div class="tracking-step-row current" data-step="1">
+            <div class="tracking-icon-wrap">👨‍🍳</div>
+            <div class="tracking-step-text">Preparando tu pedido</div>
+          </div>
+          <div class="tracking-step-row" data-step="2">
+            <div class="tracking-icon-wrap">📦</div>
+            <div class="tracking-step-text">Listo para recoger</div>
+          </div>
+          <div class="tracking-step-row" data-step="3">
+            <div class="tracking-icon-wrap">🏃</div>
+            <div class="tracking-step-text">En camino a recoger</div>
+          </div>
+          <div class="tracking-step-row" data-step="4">
+            <div class="tracking-icon-wrap">🎉</div>
+            <div class="tracking-step-text">¡Pedido completado!</div>
+          </div>
+        </div>
+
+        <!-- Mapa mini de ruta -->
+        <div style="margin:0 var(--space-4) var(--space-3);">
+          <div style="background:var(--map-bg);border-radius:var(--radius-xl);height:110px;
+                      overflow:hidden;position:relative;border:1px solid var(--color-border-subtle);">
+            <!-- Calles mini -->
+            <div class="map-road-h" style="top:40%;left:0;right:0;height:4px;"></div>
+            <div class="map-road-v" style="left:40%;top:0;bottom:0;width:4px;"></div>
+            <!-- Ruta -->
+            <div style="position:absolute;top:36%;left:40%;width:35%;height:4px;
+                        background:linear-gradient(90deg,var(--color-action-primary),var(--brand-accent));
+                        border-radius:2px;z-index:5;"></div>
+            <!-- Destino -->
+            <div style="position:absolute;top:28%;left:68%;transform:translate(-50%,-50%);z-index:10;
+                        background:var(--color-action-primary);color:#fff;font-size:10px;
+                        padding:4px 8px;border-radius:var(--radius-full);font-weight:700;white-space:nowrap;">
+              🍔 450 m
+            </div>
+            <!-- Tú -->
+            <div style="position:absolute;top:40%;left:40%;transform:translate(-50%,-50%);z-index:10;">
+              <div class="map-user-pulse"></div>
+              <div class="map-user-dot"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botón compartir / ver recibo -->
+        <div style="display:flex;gap:10px;padding:0 var(--space-4) var(--space-6);">
+          <button class="btn btn-ghost btn-md" style="flex:1;" onclick="showToast('📄 Comprobante descargado','success')">
+            Ver recibo
+          </button>
+          <button class="btn btn-primary btn-md" style="flex:1;" onclick="navigateToScreen('map')">
+            Volver al mapa
+          </button>
+        </div>
+
+      </div><!-- /screen-tracking -->
+
+
+      <!-- ════════════════════════════════════════════════════
+           PANTALLA 7 — PERFIL DE USUARIO
+           ════════════════════════════════════════════════════ -->
+      <div id="screen-profile" class="screen-view">
+
+        <!-- Hero del perfil -->
+        <div class="profile-hero">
+          <div class="avatar avatar-2xl" style="background:rgba(255,255,255,0.15);color:#fff;font-size:28px;border:3px solid rgba(255,255,255,0.30);">
+            AM
+          </div>
+          <div class="profile-hero-name">Andrés Martínez</div>
+          <div class="profile-hero-email">andres@email.com</div>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="profile-stats-row">
+          <div class="profile-stat-item">
+            <div class="profile-stat-val">24</div>
+            <div class="profile-stat-lbl">Pedidos</div>
+          </div>
+          <div class="profile-stat-item">
+            <div class="profile-stat-val">8</div>
+            <div class="profile-stat-lbl">Favoritos</div>
+          </div>
+          <div class="profile-stat-item">
+            <div class="profile-stat-val">12</div>
+            <div class="profile-stat-lbl">Reseñas</div>
+          </div>
+        </div>
+
+        <!-- Cuenta -->
+        <div class="section-label">Cuenta</div>
+        <div class="settings-group">
+          <div class="settings-item">
+            <div class="settings-icon" style="background:rgba(59,130,246,0.12);color:var(--color-info);">
+              <i class="fa-solid fa-bell"></i>
+            </div>
+            <div class="settings-text">
+              <div class="settings-title">Notificaciones</div>
+              <div class="settings-desc">Pedidos, promos y novedades</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" checked>
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+          <div class="settings-item" onclick="navigateToScreen('tracking')">
+            <div class="settings-icon" style="background:rgba(34,197,94,0.12);color:var(--color-success);">
+              <i class="fa-solid fa-bag-shopping"></i>
+            </div>
+            <div class="settings-text">
+              <div class="settings-title">Historial de pedidos</div>
+              <div class="settings-desc">24 pedidos realizados</div>
+            </div>
+            <i class="fa-solid fa-chevron-right settings-arrow"></i>
+          </div>
+          <div class="settings-item">
+            <div class="settings-icon" style="background:rgba(245,158,11,0.12);color:var(--color-warning);">
+              <i class="fa-solid fa-heart"></i>
+            </div>
+            <div class="settings-text">
+              <div class="settings-title">Mis Favoritos</div>
+              <div class="settings-desc">8 negocios guardados</div>
+            </div>
+            <i class="fa-solid fa-chevron-right settings-arrow"></i>
+          </div>
+        </div>
+
+        <!-- Ajustes de apariencia -->
+        <div class="section-label">Apariencia</div>
+        <div class="settings-group">
+
+          <!-- Fila que abre/colapsa el selector de tema -->
+          <div class="settings-item" id="theme-toggle-row" onclick="toggleThemePanel()" style="cursor:pointer;">
+            <div class="settings-icon" style="background:rgba(20,23,74,0.10);color:var(--color-text-brand);">
+              <i class="fa-solid fa-palette"></i>
+            </div>
+            <div class="settings-text">
+              <div class="settings-title">Tema visual</div>
+              <div class="settings-desc" id="theme-current-label">Indigo — Principal</div>
+            </div>
+            <i class="fa-solid fa-chevron-down settings-arrow" id="theme-chevron"
+               style="transition:transform var(--motion-fast);"></i>
+          </div>
+
+          <!-- Panel del selector de tema (colapsable) -->
+          <div id="theme-panel" style="overflow:hidden;max-height:0;transition:max-height 0.35s cubic-bezier(0.4,0,0.2,1);">
+            <div style="padding:4px 12px 12px;">
+              <div class="theme-selector-grid">
+                <div class="theme-option active" data-theme="indigo"
+                     onclick="applyThemeFromProfile('indigo','Indigo — Principal')">
+                  <div class="theme-preview-dot" style="background:#14174A;"></div>
+                  <div>
+                    <div class="theme-option-name">Indigo</div>
+                    <div class="text-caption">Principal</div>
+                  </div>
+                </div>
+                <div class="theme-option" data-theme="midnight"
+                     onclick="applyThemeFromProfile('midnight','Midnight — Oscuro')">
+                  <div class="theme-preview-dot" style="background:#1a1c34;border:1px solid var(--color-border-default);"></div>
+                  <div>
+                    <div class="theme-option-name">Midnight</div>
+                    <div class="text-caption">Oscuro</div>
+                  </div>
+                </div>
+                <div class="theme-option" data-theme="pearl"
+                     onclick="applyThemeFromProfile('pearl','Pearl — Minimalista')">
+                  <div class="theme-preview-dot" style="background:#e4e4e7;border:1px solid var(--color-border-default);"></div>
+                  <div>
+                    <div class="theme-option-name">Pearl</div>
+                    <div class="text-caption">Minimalista</div>
+                  </div>
+                </div>
+                <div class="theme-option" data-theme="sunset"
+                     onclick="applyThemeFromProfile('sunset','Sunset — Energético')">
+                  <div class="theme-preview-dot" style="background:#c2410c;"></div>
+                  <div>
+                    <div class="theme-option-name">Sunset</div>
+                    <div class="text-caption">Energético</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Separador interno -->
+          <div style="height:1px;background:var(--color-border-subtle);margin:0 16px;"></div>
+
+          <!-- Fila de idioma -->
+          <div class="settings-item" id="lang-toggle-row" onclick="toggleLangPanel()" style="cursor:pointer;">
+            <div class="settings-icon" style="background:rgba(59,130,246,0.10);color:var(--color-info);">
+              <i class="fa-solid fa-globe"></i>
+            </div>
+            <div class="settings-text">
+              <div class="settings-title">Idioma</div>
+              <div class="settings-desc" id="lang-current-label">Español</div>
+            </div>
+            <i class="fa-solid fa-chevron-down settings-arrow" id="lang-chevron"
+               style="transition:transform var(--motion-fast);"></i>
+          </div>
+
+          <!-- Panel de idioma (colapsable) -->
+          <div id="lang-panel" style="overflow:hidden;max-height:0;transition:max-height 0.35s cubic-bezier(0.4,0,0.2,1);">
+            <div style="padding:4px 12px 12px;display:flex;flex-direction:column;gap:6px;">
+
+              <div class="lang-option active" data-lang="es" onclick="selectLanguage(this,'es','Español')">
+                <span style="font-size:18px;">🇪🇸</span>
+                <div style="flex:1;">
+                  <div class="settings-title" style="font-size:13px;">Español</div>
+                </div>
+                <i class="fa-solid fa-check lang-check" style="color:var(--color-action-primary);font-size:13px;"></i>
+              </div>
+
+              <div class="lang-option" data-lang="en" onclick="selectLanguage(this,'en','English')">
+                <span style="font-size:18px;">🇺🇸</span>
+                <div style="flex:1;">
+                  <div class="settings-title" style="font-size:13px;">English</div>
+                </div>
+                <i class="fa-solid fa-check lang-check" style="color:transparent;font-size:13px;"></i>
+              </div>
+
+              <div class="lang-option" data-lang="pt" onclick="selectLanguage(this,'pt','Português')">
+                <span style="font-size:18px;">🇧🇷</span>
+                <div style="flex:1;">
+                  <div class="settings-title" style="font-size:13px;">Português</div>
+                </div>
+                <i class="fa-solid fa-check lang-check" style="color:transparent;font-size:13px;"></i>
+              </div>
+
+              <div class="lang-option" data-lang="fr" onclick="selectLanguage(this,'fr','Français')">
+                <span style="font-size:18px;">🇫🇷</span>
+                <div style="flex:1;">
+                  <div class="settings-title" style="font-size:13px;">Français</div>
+                </div>
+                <i class="fa-solid fa-check lang-check" style="color:transparent;font-size:13px;"></i>
+              </div>
+
+            </div>
+          </div>
+
+        </div><!-- /settings-group apariencia -->
+
+        <!-- Privacidad -->
+        <div class="section-label">Privacidad</div>
+        <div class="settings-group">
+          <div class="settings-item">
+            <div class="settings-icon" style="background:rgba(92,110,252,0.12);color:var(--brand-accent);">
+              <i class="fa-solid fa-lock"></i>
+            </div>
+            <div class="settings-text">
+              <div class="settings-title">Privacidad de datos</div>
+            </div>
+            <i class="fa-solid fa-chevron-right settings-arrow"></i>
+          </div>
+          <div class="settings-item">
+            <div class="settings-icon" style="background:rgba(239,68,68,0.10);color:var(--color-error);">
+              <i class="fa-solid fa-right-from-bracket"></i>
+            </div>
+            <div class="settings-text">
+              <div class="settings-title" style="color:var(--color-error);">Cerrar sesión</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding-bottom:var(--space-8);text-align:center;">
+          <div class="text-caption text-tertiary">Luma Design System v2.0</div>
+          <div class="text-caption text-tertiary" style="margin-top:3px;">Hecho con ✨ para descubrir lo local</div>
+        </div>
+
+      </div><!-- /screen-profile -->
+
+
+    </div><!-- /app-screen -->
+
+
+    <!-- ══════════════════════════════════════════════════════
+         BOTTOM NAVIGATION — 5 elementos
+         ══════════════════════════════════════════════════════ -->
+    <nav class="bottom-nav">
+
+      <a class="nav-item active" data-screen="map">
+        <div class="nav-icon-wrap">
+          <i class="fa-solid fa-map-location-dot"></i>
+        </div>
+        <span>Mapa</span>
+      </a>
+
+      <a class="nav-item" data-screen="feed">
+        <div class="nav-icon-wrap">
+          <i class="fa-solid fa-play"></i>
+        </div>
+        <span>Descubrir</span>
+      </a>
+
+      <a class="nav-item" data-screen="ai">
+        <div class="nav-icon-wrap">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+        </div>
+        <span>Luma IA</span>
+      </a>
+
+      <a class="nav-item" data-screen="tracking">
+        <div class="nav-icon-wrap">
+          <i class="fa-solid fa-bag-shopping"></i>
+        </div>
+        <span>Pedidos</span>
+      </a>
+
+      <a class="nav-item" data-screen="profile">
+        <div class="nav-icon-wrap">
+          <i class="fa-regular fa-user"></i>
+        </div>
+        <span>Perfil</span>
+      </a>
+
+    </nav>
+
+  </div><!-- /mobile-device -->
+
+
+  <!-- ── SCRIPTS ──────────────────────────────────────────── -->
+  <script src="js/theme.js"></script>
+  <script src="js/components.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
