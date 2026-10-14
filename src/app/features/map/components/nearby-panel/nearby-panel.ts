@@ -8,7 +8,7 @@ import {
   LumaSectionHeader,
   LumaSkeleton,
 } from '@design-system';
-import { DistancePipe } from '../../pipes/distance.pipe';
+import { DistancePipe } from '@shared/geo/distance.pipe';
 import type { NearbyBusiness } from '../../state/nearby-businesses.store';
 
 /**

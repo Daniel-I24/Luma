@@ -19,7 +19,7 @@ import { LocationPrompt } from './components/location-prompt/location-prompt';
 import { MapControls } from './components/map-controls/map-controls';
 import { MapTopBar } from './components/map-top-bar/map-top-bar';
 import { NearbyPanel } from './components/nearby-panel/nearby-panel';
-import { GeolocationService, PASTO_CENTRE } from './services/geolocation.service';
+import { GeolocationService, PASTO_CENTRE } from '@shared/geo/geolocation.service';
 import { MapCameraService } from './services/map-camera.service';
 import { MapMarkerSyncService } from './services/map-marker-sync.service';
 import { MapStylesLoader } from './services/map-styles.loader';

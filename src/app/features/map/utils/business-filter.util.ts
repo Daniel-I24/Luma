@@ -1,13 +1,5 @@
 import type { Business } from '@shared/business/models/business.model';
-
-/** Lower-cases and strips accents so "cafe" matches "Café". */
-export function normalizeText(value: string): string {
-  return value
-    .normalize('NFD')
-    .replace(/\p{Diacritic}/gu, '')
-    .toLowerCase()
-    .trim();
-}
+import { normalizeText } from '@shared/utils/normalize-text.util';
 
 /** Distinct categories of the loaded businesses, alphabetically. */
 export function extractCategories(businesses: readonly Business[]): string[] {

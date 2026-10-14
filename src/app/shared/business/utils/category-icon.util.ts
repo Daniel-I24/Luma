@@ -1,5 +1,5 @@
 import type { IconName } from '@design-system';
-import { normalizeText } from './business-filter.util';
+import { normalizeText } from '@shared/utils/normalize-text.util';
 
 /** Keyword (accent-insensitive prefix) → icon, checked in order. */
 const CATEGORY_ICONS: readonly [string, IconName][] = [

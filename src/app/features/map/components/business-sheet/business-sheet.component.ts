@@ -13,7 +13,7 @@ import {
 import type { BusinessHours, Promotion } from '@shared/business/models/business.model';
 import { FavoriteButton } from '@shared/favorites/favorite-button/favorite-button';
 import type { NearbyBusiness } from '../../state/nearby-businesses.store';
-import { formatDistance, walkingMinutes } from '../../utils/distance.util';
+import { formatDistance, walkingMinutes } from '@shared/geo/distance.util';
 
 /**
  * BusinessSheetComponent — bottom sheet shown when a business is chosen on

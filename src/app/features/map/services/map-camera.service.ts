@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as maplibregl from 'maplibre-gl';
-import { PASTO_CENTRE } from './geolocation.service';
+import { PASTO_CENTRE } from '@shared/geo/geolocation.service';
 import {
   DEFAULT_ZOOM,
   MAP_STYLE,

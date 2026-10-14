@@ -5,7 +5,7 @@ import { BusinessHighlightsRepository } from '@shared/business/data/business-hig
 import { BusinessRepository } from '@shared/business/data/business.repository';
 import type { Business } from '@shared/business/models/business.model';
 import { BusinessHoursCacheService } from '../services/business-hours-cache.service';
-import { GeolocationService } from '../services/geolocation.service';
+import { GeolocationService } from '@shared/geo/geolocation.service';
 import { NearbyBusinessesStore } from './nearby-businesses.store';
 
 const biz = (id: string, category: string, latitude: number): Business => ({

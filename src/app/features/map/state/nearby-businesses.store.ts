@@ -7,10 +7,10 @@ import type { BusinessRating } from '@shared/business/models/review.model';
 import { getBusinessStatus } from '@shared/business/utils/business-status.util';
 import { NEARBY_RADIUS_KM } from '../map.constants';
 import { BusinessHoursCacheService } from '../services/business-hours-cache.service';
-import { GeolocationService } from '../services/geolocation.service';
+import { GeolocationService } from '@shared/geo/geolocation.service';
 import { extractCategories, filterBusinesses } from '../utils/business-filter.util';
-import { categoryIcon } from '../utils/category-icon.util';
-import { haversineKm } from '../utils/haversine.util';
+import { categoryIcon } from '@shared/business/utils/category-icon.util';
+import { haversineKm } from '@shared/geo/haversine.util';
 
 /** A nearby business ready to render: status, distance and highlights resolved. */
 export interface NearbyBusiness {

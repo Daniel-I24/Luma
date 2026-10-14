@@ -1,4 +1,4 @@
-import type { GeoState } from '../services/geolocation.service';
+import type { GeoState } from '@shared/geo/geolocation.service';
 
 /**
  * i18n key of the zone indicator over the map: where the shown businesses

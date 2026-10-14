@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Business } from '@shared/business/models/business.model';
-import { extractCategories, filterBusinesses, normalizeText } from './business-filter.util';
+import { normalizeText } from '@shared/utils/normalize-text.util';
+import { extractCategories, filterBusinesses } from './business-filter.util';
 
 function biz(name: string, category: string, address = 'Calle 18, Pasto'): Business {
   return {
