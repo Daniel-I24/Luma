@@ -1,8 +1,8 @@
-<ng-container *transloco="let t">
-  <div class="map-wrapper">
-    <!-- Map canvas -->
-    <div #mapContainer class="map-canvas" [attr.aria-label]="t('map.canvasLabel')"></div>
+<div class="map-wrapper">
+  <!-- Map canvas: outside *transloco so the static ViewChild resolves in ngOnInit -->
+  <div #mapContainer class="map-canvas" [attr.aria-label]="'map.canvasLabel' | transloco"></div>
 
+  <ng-container *transloco="let t">
     <!-- Status notices: location, loading and empty state -->
     @if (notices().length) {
     <div class="map-overlay map-overlay--info" role="status" aria-live="polite">
@@ -55,15 +55,15 @@
         >⊙</app-luma-button
       >
     </div>
-  </div>
+  </ng-container>
+</div>
 
-  <!-- Business detail bottom sheet -->
-  <app-business-sheet
-    [business]="selectedBusiness()"
-    [hours]="selectedHours()"
-    [promotion]="selectedPromotion()"
-    [distanceKm]="distanceKm()"
-    [open]="sheetOpen()"
-    (closed)="onSheetClosed()"
-  />
-</ng-container>
+<!-- Business detail bottom sheet -->
+<app-business-sheet
+  [business]="selectedBusiness()"
+  [hours]="selectedHours()"
+  [promotion]="selectedPromotion()"
+  [distanceKm]="distanceKm()"
+  [open]="sheetOpen()"
+  (closed)="onSheetClosed()"
+/>

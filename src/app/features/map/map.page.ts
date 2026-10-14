@@ -42,6 +42,7 @@ export class MapPage implements OnInit, OnDestroy {
   protected readonly loading = signal(false);
   protected readonly errorKey = signal<string | null>(null);
   private readonly empty = signal(false);
+  private mapReady = false;
   protected readonly notices = computed(() =>
     this.errorKey()
       ? []
@@ -64,13 +65,12 @@ export class MapPage implements OnInit, OnDestroy {
   });
 
   ngOnInit(): void {
-    this.camera.init(this.mapContainer.nativeElement, (lat, lng) => this.loadNearby(lat, lng));
-    this.loadNearby(PASTO_CENTRE.lat, PASTO_CENTRE.lng);
+    if (this.initMap()) this.loadNearby(PASTO_CENTRE.lat, PASTO_CENTRE.lng);
   }
 
   ngOnDestroy(): void {
     this.markerSync.clear();
-    this.camera.destroy();
+    if (this.mapReady) this.camera.destroy();
   }
 
   protected onCentreOnMe(): void {
@@ -97,8 +97,23 @@ export class MapPage implements OnInit, OnDestroy {
 
   protected retryLoad(): void {
     this.errorKey.set(null);
+    if (!this.mapReady) {
+      if (this.initMap()) this.loadNearby(PASTO_CENTRE.lat, PASTO_CENTRE.lng);
+      return;
+    }
     const c = this.camera.currentCenter();
     this.loadNearby(c.lat, c.lng);
+  }
+
+  /** Starts MapLibre; on failure shows the error state instead of a blank screen. */
+  private initMap(): boolean {
+    try {
+      this.camera.init(this.mapContainer.nativeElement, (lat, lng) => this.loadNearby(lat, lng));
+      this.mapReady = true;
+    } catch {
+      this.errorKey.set('map.mapUnavailable');
+    }
+    return this.mapReady;
   }
 
   private async loadNearby(lat: number, lng: number): Promise<void> {

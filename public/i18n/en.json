@@ -155,7 +155,8 @@
       "viewMenu": "View menu",
       "viewProfile": "View profile",
       "comingSoon": "Coming soon"
-    }
+    },
+    "mapUnavailable": "The map could not be loaded. Check your connection and try again."
   },
   "status": {
     "open": "Open",
