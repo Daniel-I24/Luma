@@ -1,2 +1,5 @@
 # Local secrets file (gitignored); never reformat it.
 src/environments/environment.ts
+
+# Documentation and the design prototype are kept as written.
+docs/
