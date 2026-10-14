@@ -6,6 +6,8 @@
   align-items: center;
   justify-content: center;
   padding: var(--spacing-5);
+  padding-top: calc(env(safe-area-inset-top) + var(--spacing-5));
+  padding-bottom: calc(env(safe-area-inset-bottom) + var(--spacing-5));
   background-color: var(--color-canvas);
 }
 

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { StatusBarThemeService } from '@core/native/status-bar-theme.service';
 import { ThemeService } from '@core/theme/theme.service';
 // Direct path, not the '@design-system' barrel: the barrel would pull every
 // component into the initial bundle.
@@ -19,4 +20,5 @@ import { LumaToastHost } from '@design-system/toast/luma-toast-host';
 export class App {
   // Eager injection — constructor + effect run at app startup.
   readonly themeService = inject(ThemeService);
+  private readonly statusBarTheme = inject(StatusBarThemeService);
 }
