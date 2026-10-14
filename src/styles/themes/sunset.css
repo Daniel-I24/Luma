@@ -1,0 +1,42 @@
+/* ─────────────────────────────────────────────
+   THEME: Sunset (warm vibrant)
+   Applied when <html data-theme="sunset">
+───────────────────────────────────────────── */
+[data-theme="sunset"] {
+  --color-bg: #fff8f5;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #fef3ee;
+  --color-text: #1c0a00;
+  --color-text-muted: #92400e;
+  --color-primary: #c2410c;
+  --color-primary-hover: #9a3412;
+  --color-primary-fg: #ffffff;
+  --color-accent: #7C5CFC;
+  --color-accent-hover: #6b4df0;
+  --color-accent-fg: #ffffff;
+  --color-border: #fed7aa;
+  --color-border-focus: #7C5CFC;
+  --color-success: #15803d;
+  --color-success-bg: #f0fdf4;
+  --color-success-fg: #14532d;
+  --color-warning: #b45309;
+  --color-warning-bg: #fffbeb;
+  --color-warning-fg: #78350f;
+  --color-danger: #b91c1c;
+  --color-danger-bg: #fff1f2;
+  --color-danger-fg: #7f1d1d;
+  --color-danger-hover: #991b1b;
+  --status-open: #15803d;
+  --status-open-bg: #f0fdf4;
+  --status-open-fg: #14532d;
+  --status-closed: #92400e;
+  --status-closed-bg: #fef3ee;
+  --status-closed-fg: #78350f;
+  --status-opening-soon: #b45309;
+  --status-opening-soon-bg: #fffbeb;
+  --status-opening-soon-fg: #78350f;
+  --status-closing-soon: #c2410c;
+  --status-closing-soon-bg: #fff7ed;
+  --status-closing-soon-fg: #7c2d12;
+  --color-overlay: rgb(0 0 0 / 0.45);
+}

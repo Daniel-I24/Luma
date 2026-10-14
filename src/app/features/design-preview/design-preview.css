@@ -79,29 +79,8 @@
   gap: var(--spacing-3);
 }
 
-.preview-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: var(--spacing-4);
-}
-
 .preview-inputs-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: var(--spacing-4);
-}
-
-.card-label {
-  margin: 0 0 var(--spacing-2);
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-text-muted);
-}
-
-.card-body {
-  margin: 0;
-  font-size: 0.875rem;
-  color: var(--color-text);
 }

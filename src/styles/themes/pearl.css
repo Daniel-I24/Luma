@@ -1,0 +1,42 @@
+/* ─────────────────────────────────────────────
+   THEME: Pearl (light, warm neutral)
+   Applied when <html data-theme="pearl">
+───────────────────────────────────────────── */
+[data-theme="pearl"] {
+  --color-bg: #fafaf9;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #f5f5f4;
+  --color-text: #1c1917;
+  --color-text-muted: #78716c;
+  --color-primary: #2A1F8C;
+  --color-primary-hover: #231a78;
+  --color-primary-fg: #ffffff;
+  --color-accent: #7C5CFC;
+  --color-accent-hover: #6b4df0;
+  --color-accent-fg: #ffffff;
+  --color-border: #e7e5e4;
+  --color-border-focus: #7C5CFC;
+  --color-success: #15803d;
+  --color-success-bg: #f0fdf4;
+  --color-success-fg: #14532d;
+  --color-warning: #b45309;
+  --color-warning-bg: #fffbeb;
+  --color-warning-fg: #78350f;
+  --color-danger: #b91c1c;
+  --color-danger-bg: #fff1f2;
+  --color-danger-fg: #7f1d1d;
+  --color-danger-hover: #991b1b;
+  --status-open: #15803d;
+  --status-open-bg: #f0fdf4;
+  --status-open-fg: #14532d;
+  --status-closed: #78716c;
+  --status-closed-bg: #f5f5f4;
+  --status-closed-fg: #44403c;
+  --status-opening-soon: #b45309;
+  --status-opening-soon-bg: #fffbeb;
+  --status-opening-soon-fg: #78350f;
+  --status-closing-soon: #c2410c;
+  --status-closing-soon-bg: #fff7ed;
+  --status-closing-soon-fg: #7c2d12;
+  --color-overlay: rgb(0 0 0 / 0.45);
+}

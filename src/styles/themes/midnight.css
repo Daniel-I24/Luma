@@ -1,0 +1,42 @@
+/* ─────────────────────────────────────────────
+   THEME: Midnight (dark)
+   Applied when <html data-theme="midnight">
+───────────────────────────────────────────── */
+[data-theme="midnight"] {
+  --color-bg: #0d0f14;
+  --color-surface: #161b26;
+  --color-surface-elevated: #1e2535;
+  --color-text: #f1f5f9;
+  --color-text-muted: #94a3b8;
+  --color-primary: #7C5CFC;
+  --color-primary-hover: #6b4df0;
+  --color-primary-fg: #ffffff;
+  --color-accent: #a78bfa;
+  --color-accent-hover: #8b5cf6;
+  --color-accent-fg: #1e1b4b;
+  --color-border: #2d3748;
+  --color-border-focus: #a78bfa;
+  --color-success: #22c55e;
+  --color-success-bg: #052e16;
+  --color-success-fg: #86efac;
+  --color-warning: #f59e0b;
+  --color-warning-bg: #1c1107;
+  --color-warning-fg: #fcd34d;
+  --color-danger: #f87171;
+  --color-danger-bg: #1f0707;
+  --color-danger-fg: #fca5a5;
+  --color-danger-hover: #ef4444;
+  --status-open: #22c55e;
+  --status-open-bg: #052e16;
+  --status-open-fg: #86efac;
+  --status-closed: #94a3b8;
+  --status-closed-bg: #1e2535;
+  --status-closed-fg: #cbd5e1;
+  --status-opening-soon: #f59e0b;
+  --status-opening-soon-bg: #1c1107;
+  --status-opening-soon-fg: #fcd34d;
+  --status-closing-soon: #fb923c;
+  --status-closing-soon-bg: #1c0f07;
+  --status-closing-soon-fg: #fed7aa;
+  --color-overlay: rgb(0 0 0 / 0.7);
+}

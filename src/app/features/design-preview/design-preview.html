@@ -101,27 +101,7 @@
       <!-- ── Cards ── -->
       <section class="preview-section" aria-labelledby="section-cards">
         <h2 id="section-cards" class="preview-section__title">{{ t('designPreview.sections.cards') }}</h2>
-        <div class="preview-cards-grid">
-          <app-luma-card elevation="flat">
-            <p class="card-label">{{ t('designPreview.cards.flat') }}</p>
-            <p class="card-body">{{ t('designPreview.cards.body') }}</p>
-          </app-luma-card>
-
-          <app-luma-card elevation="raised">
-            <p class="card-label">{{ t('designPreview.cards.raised') }}</p>
-            <p class="card-body">{{ t('designPreview.cards.body') }}</p>
-          </app-luma-card>
-
-          <app-luma-card elevation="elevated">
-            <p class="card-label">{{ t('designPreview.cards.elevated') }}</p>
-            <p class="card-body">{{ t('designPreview.cards.body') }}</p>
-          </app-luma-card>
-
-          <app-luma-card elevation="raised" [interactive]="true">
-            <p class="card-label">{{ t('designPreview.cards.interactive') }}</p>
-            <p class="card-body">{{ t('designPreview.cards.body') }}</p>
-          </app-luma-card>
-        </div>
+        <app-preview-cards-grid />
       </section>
 
       <!-- ── Bottom Sheet ── -->

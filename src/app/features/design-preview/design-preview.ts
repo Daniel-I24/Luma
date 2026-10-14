@@ -4,12 +4,12 @@ import { ThemeService } from '@core/theme/theme.service';
 import type { Theme } from '@core/theme/theme.service';
 import {
   LumaButton,
-  LumaCard,
   LumaBottomSheet,
   StatusBadge,
   LumaInput,
   LumaChip,
 } from '@design-system';
+import { PreviewCardsGrid } from './components/preview-cards-grid/preview-cards-grid';
 
 /** All available themes for the selector. */
 interface ThemeOption {
@@ -29,11 +29,11 @@ interface ThemeOption {
   imports: [
     TranslocoModule,
     LumaButton,
-    LumaCard,
     LumaBottomSheet,
     StatusBadge,
     LumaInput,
     LumaChip,
+    PreviewCardsGrid,
   ],
   templateUrl: './design-preview.html',
   styleUrl: './design-preview.css',
