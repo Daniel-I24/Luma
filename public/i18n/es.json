@@ -269,6 +269,23 @@
     "validation": {
       "ratingRange": "Elige entre 1 y 5 estrellas.",
       "commentTooLong": "El comentario puede tener hasta 500 caracteres."
+    },
+    "saved": "Tu reseña quedó publicada",
+    "deleted": "Borraste tu reseña",
+    "form": {
+      "title": "Escribe una reseña",
+      "editTitle": "Tu reseña",
+      "ratingLabel": "Tu calificación",
+      "stars": "{{count}} de 5 estrellas",
+      "commentLabel": "Comentario (opcional)",
+      "commentPlaceholder": "¿Qué tal estuvo?",
+      "counter": "{{count}}/{{max}}",
+      "submit": "Publicar",
+      "update": "Guardar cambios",
+      "delete": "Borrar",
+      "confirmDelete": "¿Borrar tu reseña?",
+      "cancel": "Cancelar",
+      "ownerNote": "Es tu negocio: no puedes reseñarlo, pero aquí verás lo que opinan tus clientes."
     }
   },
   "favorites": {

@@ -9,6 +9,18 @@
       </span>
     </div>
   </div>
+  } @if (isOwner()) {
+  <p class="m-0 rounded-md bg-surface-selected p-3 text-body-sm text-fg-muted" role="note">
+    {{ t('reviews.form.ownerNote') }}
+  </p>
+  } @else if (!store.loading() && !store.errorKey()) {
+  <app-review-form
+    [existing]="store.ownReview()"
+    [saving]="store.saving()"
+    [errorKey]="store.formErrorKey()"
+    (submitted)="save($event)"
+    (deleted)="remove()"
+  />
   } @if (store.loading()) {
   <app-luma-skeleton class="h-24 w-full" shape="rect" />
   <app-luma-skeleton class="h-24 w-full" shape="rect" />

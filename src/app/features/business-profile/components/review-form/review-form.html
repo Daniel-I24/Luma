@@ -1,0 +1,77 @@
+<form
+  *transloco="let t"
+  class="flex flex-col gap-3 rounded-lg border border-border-subtle bg-surface p-4"
+  (submit)="submit($event)"
+>
+  <h3 class="m-0 text-title text-fg">
+    {{ t(existing() ? 'reviews.form.editTitle' : 'reviews.form.title') }}
+  </h3>
+
+  <fieldset class="m-0 flex gap-1 border-0 p-0">
+    <legend class="mb-1 p-0 text-label text-fg-muted">{{ t('reviews.form.ratingLabel') }}</legend>
+    @for (star of stars; track star) {
+    <label
+      class="inline-flex size-11 cursor-pointer items-center justify-center rounded-md has-focus-visible:outline-2 has-focus-visible:outline-border-focus"
+      [class.text-rating]="star <= rating()"
+      [class.text-fg-disabled]="star > rating()"
+    >
+      <input
+        class="sr-only"
+        type="radio"
+        name="review-rating"
+        [value]="star"
+        [checked]="rating() === star"
+        (change)="rating.set(star)"
+      />
+      <app-luma-icon name="star" size="lg" [filled]="star <= rating()" />
+      <span class="sr-only">{{ t('reviews.form.stars', { count: star }) }}</span>
+    </label>
+    }
+  </fieldset>
+
+  <label class="flex flex-col gap-1 text-label text-fg-muted" for="review-comment">
+    {{ t('reviews.form.commentLabel') }}
+  </label>
+  <textarea
+    id="review-comment"
+    rows="4"
+    class="w-full resize-y rounded-md border border-border bg-surface p-3 text-body text-fg placeholder:text-fg-subtle focus-visible:border-primary focus-visible:outline-2 focus-visible:outline-border-focus"
+    aria-describedby="review-comment-count"
+    [attr.maxlength]="maxLength"
+    [placeholder]="t('reviews.form.commentPlaceholder')"
+    [value]="comment()"
+    (input)="onComment($event)"
+  ></textarea>
+  <p
+    id="review-comment-count"
+    class="m-0 text-right text-caption text-fg-subtle"
+    aria-live="polite"
+  >
+    {{ t('reviews.form.counter', { count: comment().length, max: maxLength }) }}
+  </p>
+
+  @if (errorKey(); as key) {
+  <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+    {{ t(key) }}
+  </p>
+  }
+
+  <div class="flex flex-wrap items-center gap-2">
+    <app-luma-button type="submit" [disabled]="!canSubmit()"
+      >{{ t(existing() ? 'reviews.form.update' : 'reviews.form.submit') }}</app-luma-button
+    >
+    @if (existing()) { @if (confirmingDelete()) {
+    <span class="text-body-sm text-fg">{{ t('reviews.form.confirmDelete') }}</span>
+    <app-luma-button variant="danger" size="sm" [disabled]="saving()" (clicked)="confirmDelete()"
+      >{{ t('reviews.form.delete') }}</app-luma-button
+    >
+    <app-luma-button variant="ghost" size="sm" (clicked)="confirmingDelete.set(false)"
+      >{{ t('reviews.form.cancel') }}</app-luma-button
+    >
+    } @else {
+    <app-luma-button variant="ghost" [disabled]="saving()" (clicked)="confirmingDelete.set(true)"
+      >{{ t('reviews.form.delete') }}</app-luma-button
+    >
+    } }
+  </div>
+</form>

@@ -68,6 +68,14 @@ export class BusinessProfileStore {
     }
   }
 
+  /** Re-reads the rating after the user wrote, edited or deleted a review. */
+  async refreshRating(): Promise<void> {
+    const business = this._business();
+    if (!business) return;
+    const ratings = await this.highlights.getRatings([business.id]);
+    if (ratings.data) this._rating.set(ratings.data.get(business.id) ?? null);
+  }
+
   private async loadDetails(business: Business): Promise<void> {
     const [hours, ratings, promotions, menu] = await Promise.all([
       this.businesses.getHours(business.id),

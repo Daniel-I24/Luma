@@ -269,6 +269,23 @@
     "validation": {
       "ratingRange": "Choose between 1 and 5 stars.",
       "commentTooLong": "The comment can be up to 500 characters long."
+    },
+    "saved": "Your review is published",
+    "deleted": "You deleted your review",
+    "form": {
+      "title": "Write a review",
+      "editTitle": "Your review",
+      "ratingLabel": "Your rating",
+      "stars": "{{count}} out of 5 stars",
+      "commentLabel": "Comment (optional)",
+      "commentPlaceholder": "How was it?",
+      "counter": "{{count}}/{{max}}",
+      "submit": "Publish",
+      "update": "Save changes",
+      "delete": "Delete",
+      "confirmDelete": "Delete your review?",
+      "cancel": "Cancel",
+      "ownerNote": "This is your business: you cannot review it, but you will see what your customers say here."
     }
   },
   "favorites": {

@@ -76,7 +76,14 @@
         (retry)="reload()"
       />
       } @case ('promos') { <app-promos-tab [promotions]="store.promotions()" /> } @case ('reviews')
-      { <app-reviews-tab [businessId]="business.id" [rating]="store.rating()" /> } @case ('info') {
+      {
+      <app-reviews-tab
+        [businessId]="business.id"
+        [rating]="store.rating()"
+        [isOwner]="isOwner()"
+        (changed)="store.refreshRating()"
+      />
+      } @case ('info') {
       <app-info-tab [business]="business" [hours]="store.hours()" /> } } }
     </div>
     }

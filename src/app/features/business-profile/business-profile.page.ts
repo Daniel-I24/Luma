@@ -21,6 +21,7 @@ import {
   tabPanelId,
 } from '@design-system';
 import type { TabItem } from '@design-system';
+import { AuthService } from '@core/auth/auth.service';
 import { categoryIcon } from '@shared/business/utils/category-icon.util';
 import { InfoTab } from './components/info-tab/info-tab';
 import { MenuTab } from './components/menu-tab/menu-tab';
@@ -60,6 +61,11 @@ export const PROFILE_TABS: readonly ProfileTab[] = ['menu', 'promos', 'reviews',
 export class BusinessProfilePage {
   protected readonly store = inject(BusinessProfileStore);
   private readonly reviews = inject(ReviewsStore);
+  private readonly auth = inject(AuthService);
+  /** Owners cannot review their own business (also enforced by RLS). */
+  protected readonly isOwner = computed(
+    () => this.auth.user()?.id === this.store.business()?.owner_id,
+  );
   private readonly router = inject(Router);
   private readonly location = inject(Location);
   private readonly transloco = inject(TranslocoService);
