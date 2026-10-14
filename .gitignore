@@ -44,3 +44,6 @@ __screenshots__/
 Thumbs.db
 
 src/environments/environment.ts
+
+.claude/worktrees/
+.claude/settings.local.json
