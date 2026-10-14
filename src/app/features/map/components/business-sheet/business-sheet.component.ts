@@ -11,6 +11,7 @@ import {
   StatusBadge,
 } from '@design-system';
 import type { BusinessHours, Promotion } from '@shared/business/models/business.model';
+import { FavoriteButton } from '@shared/favorites/favorite-button/favorite-button';
 import type { NearbyBusiness } from '../../state/nearby-businesses.store';
 import { formatDistance, walkingMinutes } from '../../utils/distance.util';
 
@@ -32,6 +33,7 @@ import { formatDistance, walkingMinutes } from '../../utils/distance.util';
     LumaIconButton,
     LumaRatingStars,
     StatusBadge,
+    FavoriteButton,
   ],
   templateUrl: './business-sheet.component.html',
 })

@@ -180,9 +180,8 @@
       "activePromotion": "Active promotion",
       "distanceWalk": "{{distance}} · {{minutes}} min walk",
       "viewRestaurant": "View restaurant",
-      "favorite": "Save to favourites (coming soon)",
       "call": "Call {{name}}",
-      "comingSoonHint": "Restaurant page and favourites: coming soon."
+      "restaurantComingSoon": "Restaurant page: coming soon."
     },
     "mapUnavailable": "The map could not be loaded. Check your connection and try again.",
     "mapUnavailableTitle": "Map unavailable",
@@ -271,5 +270,11 @@
       "ratingRange": "Choose between 1 and 5 stars.",
       "commentTooLong": "The comment can be up to 500 characters long."
     }
+  },
+  "favorites": {
+    "add": "Save to favourites",
+    "remove": "Remove from favourites",
+    "added": "Saved to favourites",
+    "removed": "Removed from favourites"
   }
 }

@@ -180,9 +180,8 @@
       "activePromotion": "Promoción activa",
       "distanceWalk": "{{distance}} · {{minutes}} min a pie",
       "viewRestaurant": "Ver restaurante",
-      "favorite": "Guardar en favoritos (próximamente)",
       "call": "Llamar a {{name}}",
-      "comingSoonHint": "Ver restaurante y favoritos: próximamente."
+      "restaurantComingSoon": "Página del restaurante: próximamente."
     },
     "mapUnavailable": "No se pudo cargar el mapa. Revisa tu conexión e intenta de nuevo.",
     "mapUnavailableTitle": "Mapa no disponible",
@@ -271,5 +270,11 @@
       "ratingRange": "Elige entre 1 y 5 estrellas.",
       "commentTooLong": "El comentario puede tener hasta 500 caracteres."
     }
+  },
+  "favorites": {
+    "add": "Guardar en favoritos",
+    "remove": "Quitar de favoritos",
+    "added": "Guardado en favoritos",
+    "removed": "Quitado de favoritos"
   }
 }

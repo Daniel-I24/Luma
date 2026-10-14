@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { LumaTabBar } from '@design-system';
 import type { TabBarItem } from '@design-system';
+import { FavoritesStore } from '@shared/favorites/favorites.store';
 
 const MAIN_TABS: readonly TabBarItem[] = [
   { path: '/map', labelKey: 'tabBar.map', icon: 'map' },
@@ -25,4 +26,6 @@ const MAIN_TABS: readonly TabBarItem[] = [
 })
 export class TabLayout {
   protected readonly tabs = MAIN_TABS;
+  // Eager injection: favourites load as soon as the user enters the app.
+  private readonly favorites = inject(FavoritesStore);
 }

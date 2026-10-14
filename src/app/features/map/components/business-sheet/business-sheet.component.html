@@ -61,12 +61,7 @@
         <app-luma-button [fullWidth]="true" [disabled]="true">{{
           t('map.sheet.viewRestaurant')
         }}</app-luma-button>
-        <app-luma-icon-button
-          icon="heart"
-          variant="ghost"
-          [disabled]="true"
-          [label]="t('map.sheet.favorite')"
-        />
+        <app-favorite-button [businessId]="it.business.id" />
         @if (it.business.phone; as phone) {
           <app-luma-icon-button
             icon="phone"
@@ -76,7 +71,9 @@
           />
         }
       </div>
-      <p class="m-0 text-center text-caption text-fg-subtle">{{ t('map.sheet.comingSoonHint') }}</p>
+      <p class="m-0 text-center text-caption text-fg-subtle">
+        {{ t('map.sheet.restaurantComingSoon') }}
+      </p>
     </div>
   }
 </app-luma-bottom-sheet>
