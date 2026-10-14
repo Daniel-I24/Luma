@@ -169,5 +169,30 @@
       "promotionsFailed": "No se pudieron cargar las promociones.",
       "hoursFailed": "No se pudieron cargar los horarios."
     }
+  },
+  "tabBar": {
+    "label": "Navegación principal",
+    "map": "Mapa",
+    "profile": "Perfil",
+    "settings": "Ajustes"
+  },
+  "settings": {
+    "title": "Ajustes",
+    "language": {
+      "title": "Idioma",
+      "es": "Español",
+      "en": "English"
+    },
+    "theme": {
+      "title": "Tema",
+      "indigo": "Índigo",
+      "midnight": "Medianoche",
+      "pearl": "Perla",
+      "sunset": "Atardecer"
+    },
+    "account": {
+      "title": "Cuenta",
+      "profile": "Ver mi perfil"
+    }
   }
 }

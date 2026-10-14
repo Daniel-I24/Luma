@@ -1,0 +1,15 @@
+/* TabLayout styles — tokens only */
+
+.tab-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  background-color: var(--color-bg);
+}
+
+.tab-layout__content {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}

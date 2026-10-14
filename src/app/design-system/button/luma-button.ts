@@ -22,6 +22,8 @@ export class LumaButton {
   readonly disabled = input<boolean>(false);
   readonly type = input<'button' | 'submit' | 'reset'>('button');
   readonly ariaLabel = input<string | undefined>(undefined);
+  /** Toggle state for selector buttons (aria-pressed); undefined for plain buttons. */
+  readonly pressed = input<boolean | undefined>(undefined);
 
   readonly clicked = output<void>();
 

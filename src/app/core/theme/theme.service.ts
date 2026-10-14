@@ -6,10 +6,10 @@ export type Theme = 'indigo' | 'midnight' | 'pearl' | 'sunset';
 
 const STORAGE_KEY = 'luma-theme';
 const DEFAULT_THEME: Theme = 'indigo';
-const VALID_THEMES: readonly Theme[] = ['indigo', 'midnight', 'pearl', 'sunset'];
+export const THEMES: readonly Theme[] = ['indigo', 'midnight', 'pearl', 'sunset'];
 
 function isValidTheme(value: unknown): value is Theme {
-  return VALID_THEMES.includes(value as Theme);
+  return THEMES.includes(value as Theme);
 }
 
 /**

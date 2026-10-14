@@ -169,5 +169,30 @@
       "promotionsFailed": "Could not load promotions.",
       "hoursFailed": "Could not load hours."
     }
+  },
+  "tabBar": {
+    "label": "Main navigation",
+    "map": "Map",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": {
+      "title": "Language",
+      "es": "Español",
+      "en": "English"
+    },
+    "theme": {
+      "title": "Theme",
+      "indigo": "Indigo",
+      "midnight": "Midnight",
+      "pearl": "Pearl",
+      "sunset": "Sunset"
+    },
+    "account": {
+      "title": "Account",
+      "profile": "View my profile"
+    }
   }
 }

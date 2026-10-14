@@ -4,6 +4,7 @@
   [disabled]="disabled()"
   [attr.aria-label]="ariaLabel() ?? null"
   [attr.aria-disabled]="disabled() ? 'true' : null"
+  [attr.aria-pressed]="pressed() ?? null"
   (click)="handleClick()"
 >
   <ng-content />

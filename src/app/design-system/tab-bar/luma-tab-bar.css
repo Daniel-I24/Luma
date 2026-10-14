@@ -1,0 +1,57 @@
+/* LumaTabBar styles — tokens only */
+
+.luma-tab-bar {
+  background-color: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.luma-tab-bar__list {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.luma-tab-bar__item {
+  flex: 1;
+}
+
+.luma-tab-bar__link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-1);
+  min-height: var(--spacing-16);
+  padding: var(--spacing-2) var(--spacing-1);
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color var(--duration-fast) ease;
+}
+
+.luma-tab-bar__link:hover {
+  color: var(--color-text);
+}
+
+.luma-tab-bar__link:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: -2px;
+}
+
+.luma-tab-bar__link--active {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.luma-tab-bar__icon {
+  width: var(--spacing-6);
+  height: var(--spacing-6);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

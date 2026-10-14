@@ -19,3 +19,6 @@ export type { InputType } from './input/luma-input';
 
 export { LumaChip } from './chip/luma-chip';
 export type { ChipVariant } from './chip/luma-chip';
+
+export { LumaTabBar } from './tab-bar/luma-tab-bar';
+export type { TabBarItem, TabIcon } from './tab-bar/luma-tab-bar';
