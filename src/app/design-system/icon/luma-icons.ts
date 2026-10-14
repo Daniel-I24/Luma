@@ -15,6 +15,7 @@ export const LUMA_ICONS = {
     'M3 14.5h18',
     'M5 18h14a1 1 0 0 1-1 2H6a1 1 0 0 1-1-2Z',
   ],
+  'arrow-left': ['M19 12H5', 'm12 19-7-7 7-7'],
   check: ['m5 12 5 5 9-10'],
   'chevron-down': ['m6 9 6 6 6-6'],
   clock: ['M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18Z', 'M12 7v5l3 2'],

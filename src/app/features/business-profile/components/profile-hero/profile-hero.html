@@ -1,0 +1,48 @@
+<ng-container *transloco="let t">
+  <div class="relative h-45 w-full overflow-hidden bg-canvas-subtle">
+    @if (business().cover_url; as cover) {
+    <img class="size-full object-cover" alt="" loading="lazy" [src]="cover" />
+    } @else {
+    <div class="flex size-full items-center justify-center text-fg-subtle">
+      <span
+        class="inline-flex size-16 items-center justify-center rounded-full bg-surface-selected"
+      >
+        <app-luma-icon size="lg" [name]="icon()" />
+      </span>
+    </div>
+    }
+    <div
+      class="absolute inset-x-3 top-[calc(env(safe-area-inset-top)+var(--spacing-3))] flex items-center justify-between"
+    >
+      <app-luma-icon-button
+        icon="arrow-left"
+        variant="surface"
+        [label]="t('businessProfile.back')"
+        (clicked)="back.emit()"
+      />
+      <app-favorite-button variant="surface" [businessId]="business().id" />
+    </div>
+  </div>
+
+  <div class="flex items-start gap-3 px-4 pb-3">
+    <app-luma-avatar
+      class="relative z-10 -mt-8 rounded-md border-2 border-surface shadow-sm"
+      size="xl"
+      shape="square"
+      [name]="business().name"
+      [src]="business().logo_url"
+      [fallbackIcon]="icon()"
+      [decorative]="true"
+    />
+    <div class="flex min-w-0 flex-1 flex-col gap-1 pt-3">
+      <h1 class="m-0 line-clamp-2 text-h4 text-fg">{{ business().name }}</h1>
+      <p class="m-0 text-body-sm text-fg-subtle">{{ business().category }}</p>
+      <div class="flex flex-wrap items-center gap-2">
+        <app-status-badge size="sm" [status]="status()" />
+        @if (distanceKm() | distance: lang(); as distance) {
+        <span class="text-caption text-fg-subtle">{{ distance }}</span>
+        }
+      </div>
+    </div>
+  </div>
+</ng-container>

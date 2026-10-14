@@ -58,7 +58,7 @@
       </p>
 
       <div class="flex items-center gap-2">
-        <app-luma-button [fullWidth]="true" [disabled]="true">{{
+        <app-luma-button [fullWidth]="true" (clicked)="viewRestaurant(it.business.id)">{{
           t('map.sheet.viewRestaurant')
         }}</app-luma-button>
         <app-favorite-button [businessId]="it.business.id" />
@@ -71,9 +71,6 @@
           />
         }
       </div>
-      <p class="m-0 text-center text-caption text-fg-subtle">
-        {{ t('map.sheet.restaurantComingSoon') }}
-      </p>
     </div>
   }
 </app-luma-bottom-sheet>

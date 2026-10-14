@@ -23,6 +23,11 @@ export class LumaRatingStars {
 
   readonly rating = input.required<number>();
   readonly reviewCount = input<number | null>(null);
+  /** `compact`: one star and the score; `stars`: five stars (e.g. one review). */
+  readonly variant = input<'compact' | 'stars'>('compact');
+
+  protected readonly starSlots = [1, 2, 3, 4, 5];
+  protected readonly roundedRating = computed(() => Math.round(this.rating()));
 
   /** Score with one decimal, formatted for the active language. */
   protected readonly score = computed(() =>

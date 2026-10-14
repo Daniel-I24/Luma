@@ -1,0 +1,30 @@
+<ng-container *transloco="let t">
+  @if (promotions().length === 0) {
+  <app-luma-empty-state
+    icon="tag"
+    [heading]="t('businessProfile.promos.emptyTitle')"
+    [description]="t('businessProfile.promos.emptyDescription')"
+  />
+  } @else {
+  <ul class="m-0 flex list-none flex-col gap-3 p-4">
+    @for (promo of promotions(); track promo.id) {
+    <li class="flex gap-3 rounded-lg border border-border-subtle bg-surface p-4 shadow-card">
+      <span
+        class="inline-flex size-10 shrink-0 items-center justify-center rounded-md bg-surface-selected text-fg-accent"
+      >
+        <app-luma-icon name="tag" />
+      </span>
+      <div class="flex min-w-0 flex-col gap-1">
+        <h3 class="m-0 text-title text-fg">{{ promo.title }}</h3>
+        @if (promo.description; as description) {
+        <p class="m-0 text-body-sm text-fg-muted">{{ description }}</p>
+        }
+        <p class="m-0 text-caption text-fg-subtle">
+          {{ t('businessProfile.promos.until', { date: endDate(promo) }) }}
+        </p>
+      </div>
+    </li>
+    }
+  </ul>
+  }
+</ng-container>

@@ -47,6 +47,18 @@ describe('LumaRatingStars', () => {
     );
   });
 
+  it('draws five stars filled up to the rating in the stars variant', () => {
+    const fixture = TestBed.createComponent(LumaRatingStars);
+    fixture.componentRef.setInput('rating', 4);
+    fixture.componentRef.setInput('variant', 'stars');
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+
+    const fills = Array.from(el.querySelectorAll('svg')).map((s) => s.getAttribute('fill'));
+    expect(fills).toEqual(['currentColor', 'currentColor', 'currentColor', 'currentColor', 'none']);
+    expect(el.querySelector('.sr-only')?.textContent?.trim()).toBe('Calificación 4,0 de 5');
+  });
+
   it('gives screen readers a single sentence without reviews', () => {
     const el = render(3.5);
 

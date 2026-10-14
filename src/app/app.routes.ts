@@ -33,6 +33,13 @@ export const routes: Routes = [
         loadComponent: () => import('./features/profile/profile.page').then((m) => m.ProfilePage),
       },
       {
+        path: 'businesses/:id',
+        loadComponent: () =>
+          import('./features/business-profile/business-profile.page').then(
+            (m) => m.BusinessProfilePage,
+          ),
+      },
+      {
         path: 'feed',
         loadComponent: () => import('./features/feed/feed.page').then((m) => m.FeedPage),
       },

@@ -1,0 +1,33 @@
+<div *transloco="let t" class="flex flex-col gap-4 p-4" [attr.aria-busy]="store.loading()">
+  @if (rating(); as r) {
+  <div class="flex items-center gap-3">
+    <span class="text-display text-fg">{{ score(r) }}</span>
+    <div class="flex flex-col gap-1">
+      <app-luma-rating-stars variant="stars" [rating]="r.rating" [reviewCount]="r.reviewCount" />
+      <span class="text-caption text-fg-subtle">
+        {{ t('rating.reviews', { count: r.reviewCount }) }}
+      </span>
+    </div>
+  </div>
+  } @if (store.loading()) {
+  <app-luma-skeleton class="h-24 w-full" shape="rect" />
+  <app-luma-skeleton class="h-24 w-full" shape="rect" />
+  } @else if (store.errorKey(); as key) {
+  <app-luma-empty-state
+    icon="alert"
+    tone="error"
+    [heading]="t('businessProfile.reviews.errorTitle')"
+    [description]="t(key)"
+  >
+    <app-luma-button (clicked)="retry()">{{ t('common.retry') }}</app-luma-button>
+  </app-luma-empty-state>
+  } @else if (store.reviews().length === 0) {
+  <app-luma-empty-state
+    icon="star"
+    [heading]="t('rating.none')"
+    [description]="t('businessProfile.reviews.emptyDescription')"
+  />
+  } @else {
+  <app-review-list [reviews]="store.reviews()" />
+  }
+</div>

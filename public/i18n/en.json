@@ -2,7 +2,8 @@
   "common": {
     "close": "Close",
     "remove": "Remove",
-    "comingSoon": "Coming soon"
+    "comingSoon": "Coming soon",
+    "retry": "Try again"
   },
   "designPreview": {
     "title": "Design System — Luma",
@@ -180,8 +181,7 @@
       "activePromotion": "Active promotion",
       "distanceWalk": "{{distance}} · {{minutes}} min walk",
       "viewRestaurant": "View restaurant",
-      "call": "Call {{name}}",
-      "restaurantComingSoon": "Restaurant page: coming soon."
+      "call": "Call {{name}}"
     },
     "mapUnavailable": "The map could not be loaded. Check your connection and try again.",
     "mapUnavailableTitle": "Map unavailable",
@@ -276,5 +276,56 @@
     "remove": "Remove from favourites",
     "added": "Saved to favourites",
     "removed": "Removed from favourites"
+  },
+  "businessProfile": {
+    "loading": "Loading the business…",
+    "back": "Back",
+    "tabsLabel": "Business sections",
+    "tabs": {
+      "menu": "Menu",
+      "promos": "Deals",
+      "reviews": "Reviews",
+      "info": "Info"
+    },
+    "stats": {
+      "rating": "Rating",
+      "reviews": "Reviews"
+    },
+    "menu": {
+      "other": "Other",
+      "add": "Add",
+      "ordersSoon": "Ordering in the app: coming soon.",
+      "emptyTitle": "Menu not available",
+      "emptyDescription": "This business has not published its menu yet.",
+      "errorTitle": "We could not load the menu"
+    },
+    "promos": {
+      "until": "Until {{date}}",
+      "emptyTitle": "No deals",
+      "emptyDescription": "This business has no active deals right now."
+    },
+    "reviews": {
+      "anonymous": "Luma user",
+      "yours": "Your review",
+      "emptyDescription": "Be the first to share how it went.",
+      "errorTitle": "We could not load the reviews"
+    },
+    "info": {
+      "hours": "Opening hours",
+      "noHours": "Opening hours not available",
+      "today": "Today",
+      "closed": "Closed",
+      "contact": "Contact",
+      "call": "Call {{phone}}",
+      "address": "Address"
+    },
+    "notFound": {
+      "title": "Business not found",
+      "description": "It may no longer be available on Luma.",
+      "action": "Go back"
+    },
+    "error": {
+      "title": "We could not load the business"
+    }
   }
 }

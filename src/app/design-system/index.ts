@@ -53,3 +53,6 @@ export { ToastService } from './toast/toast.service';
 export type { Toast, ToastOptions, ToastTone } from './toast/toast.service';
 
 export { LumaDisclosure } from './disclosure/luma-disclosure';
+
+export { LumaTabs, tabElementId, tabPanelId } from './tabs/luma-tabs';
+export type { TabItem } from './tabs/luma-tabs';

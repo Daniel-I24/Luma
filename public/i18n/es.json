@@ -2,7 +2,8 @@
   "common": {
     "close": "Cerrar",
     "remove": "Quitar",
-    "comingSoon": "Próximamente"
+    "comingSoon": "Próximamente",
+    "retry": "Reintentar"
   },
   "designPreview": {
     "title": "Sistema de diseño — Luma",
@@ -180,8 +181,7 @@
       "activePromotion": "Promoción activa",
       "distanceWalk": "{{distance}} · {{minutes}} min a pie",
       "viewRestaurant": "Ver restaurante",
-      "call": "Llamar a {{name}}",
-      "restaurantComingSoon": "Página del restaurante: próximamente."
+      "call": "Llamar a {{name}}"
     },
     "mapUnavailable": "No se pudo cargar el mapa. Revisa tu conexión e intenta de nuevo.",
     "mapUnavailableTitle": "Mapa no disponible",
@@ -276,5 +276,56 @@
     "remove": "Quitar de favoritos",
     "added": "Guardado en favoritos",
     "removed": "Quitado de favoritos"
+  },
+  "businessProfile": {
+    "loading": "Cargando el negocio…",
+    "back": "Volver",
+    "tabsLabel": "Secciones del negocio",
+    "tabs": {
+      "menu": "Menú",
+      "promos": "Promos",
+      "reviews": "Reseñas",
+      "info": "Info"
+    },
+    "stats": {
+      "rating": "Calificación",
+      "reviews": "Reseñas"
+    },
+    "menu": {
+      "other": "Otros",
+      "add": "Agregar",
+      "ordersSoon": "Pedir desde la app: próximamente.",
+      "emptyTitle": "Menú no disponible",
+      "emptyDescription": "Este negocio aún no ha publicado su menú.",
+      "errorTitle": "No pudimos cargar el menú"
+    },
+    "promos": {
+      "until": "Hasta el {{date}}",
+      "emptyTitle": "Sin promociones",
+      "emptyDescription": "Este negocio no tiene promociones activas ahora."
+    },
+    "reviews": {
+      "anonymous": "Usuario Luma",
+      "yours": "Tu reseña",
+      "emptyDescription": "Sé la primera persona en contar cómo te fue.",
+      "errorTitle": "No pudimos cargar las reseñas"
+    },
+    "info": {
+      "hours": "Horario",
+      "noHours": "Horario no disponible",
+      "today": "Hoy",
+      "closed": "Cerrado",
+      "contact": "Contacto",
+      "call": "Llamar al {{phone}}",
+      "address": "Dirección"
+    },
+    "notFound": {
+      "title": "Negocio no encontrado",
+      "description": "Puede que ya no esté disponible en Luma.",
+      "action": "Volver"
+    },
+    "error": {
+      "title": "No pudimos cargar el negocio"
+    }
   }
 }

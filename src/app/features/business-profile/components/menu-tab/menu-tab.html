@@ -1,0 +1,55 @@
+<ng-container *transloco="let t">
+  @if (items() === null) {
+  <app-luma-empty-state
+    icon="alert"
+    tone="error"
+    [heading]="t('businessProfile.menu.errorTitle')"
+    [description]="t('businesses.errors.menuFailed')"
+  >
+    <app-luma-button (clicked)="retry.emit()">{{ t('common.retry') }}</app-luma-button>
+  </app-luma-empty-state>
+  } @else if (sections().length === 0) {
+  <app-luma-empty-state
+    icon="utensils"
+    [heading]="t('businessProfile.menu.emptyTitle')"
+    [description]="t('businessProfile.menu.emptyDescription')"
+  />
+  } @else {
+  <p class="m-0 px-4 pt-3 text-caption text-fg-subtle">
+    {{ t('businessProfile.menu.ordersSoon') }}
+  </p>
+  @for (section of sections(); track section.name) {
+  <section [attr.aria-label]="section.name ?? t('businessProfile.menu.other')">
+    <h3 class="m-0 px-4 pt-4 pb-2 text-label tracking-wide text-fg-subtle uppercase">
+      {{ section.name ?? t('businessProfile.menu.other') }}
+    </h3>
+    <ul class="m-0 list-none p-0">
+      @for (item of section.items; track item.id) {
+      <li class="flex items-center gap-3 border-b border-border-subtle px-4 py-3">
+        <span
+          class="flex size-17 shrink-0 items-center justify-center overflow-hidden rounded-md bg-canvas-subtle text-fg-subtle"
+        >
+          @if (item.image_url; as image) {
+          <img class="size-full object-cover" alt="" loading="lazy" [src]="image" />
+          } @else {
+          <app-luma-icon size="lg" [name]="placeholderIcon()" />
+          }
+        </span>
+        <div class="flex min-w-0 flex-1 flex-col gap-1">
+          <span class="text-body font-semibold text-fg">{{ item.name }}</span>
+          @if (item.description; as description) {
+          <span class="line-clamp-2 text-caption text-fg-subtle">{{ description }}</span>
+          }
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-title text-fg">{{ item.price_cop | cop }}</span>
+            <app-luma-button size="sm" [disabled]="true"
+              >{{ t('businessProfile.menu.add') }}</app-luma-button
+            >
+          </div>
+        </div>
+      </li>
+      }
+    </ul>
+  </section>
+  } }
+</ng-container>

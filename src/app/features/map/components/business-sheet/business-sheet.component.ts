@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import {
   LumaAvatar,
@@ -38,6 +39,7 @@ import { formatDistance, walkingMinutes } from '@shared/geo/distance.util';
   templateUrl: './business-sheet.component.html',
 })
 export class BusinessSheetComponent {
+  private readonly router = inject(Router);
   private readonly transloco = inject(TranslocoService);
   private readonly lang = toSignal(this.transloco.langChanges$, {
     initialValue: this.transloco.getActiveLang(),
@@ -49,6 +51,11 @@ export class BusinessSheetComponent {
   readonly open = input<boolean>(false);
 
   readonly closed = output<void>();
+
+  /** Opens the full profile by URL (the profile is another feature). */
+  protected viewRestaurant(businessId: string): void {
+    void this.router.navigate(['/businesses', businessId]);
+  }
 
   protected readonly todayHours = computed(() => {
     const day = new Date().getDay() as BusinessHours['day_of_week'];

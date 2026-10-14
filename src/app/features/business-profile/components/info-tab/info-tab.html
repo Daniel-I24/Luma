@@ -1,0 +1,54 @@
+<div *transloco="let t" class="flex flex-col gap-5 p-4">
+  <section aria-labelledby="info-hours">
+    <h3 id="info-hours" class="m-0 mb-2 flex items-center gap-2 text-title text-fg">
+      <app-luma-icon class="text-fg-subtle" name="clock" /> {{ t('businessProfile.info.hours') }}
+    </h3>
+    @if (hours().length === 0) {
+    <p class="m-0 text-body-sm text-fg-subtle">{{ t('businessProfile.info.noHours') }}</p>
+    } @else {
+    <ul class="m-0 list-none overflow-hidden rounded-lg border border-border-subtle p-0">
+      @for (row of rows(); track row.day) {
+      <li
+        class="flex items-center justify-between gap-3 border-b border-border-subtle px-3 py-2 text-body-sm last:border-b-0"
+        [class.bg-surface-selected]="row.isToday"
+        [class.font-semibold]="row.isToday"
+        [attr.aria-current]="row.isToday ? 'date' : null"
+      >
+        <span class="flex items-center gap-2 text-fg">
+          {{ row.name }} @if (row.isToday) {
+          <span class="rounded-full bg-primary px-2 text-caption text-primary-fg"
+            >{{ t('businessProfile.info.today') }}</span
+          >
+          }
+        </span>
+        <span [class.text-fg]="row.hours" [class.text-fg-subtle]="!row.hours">
+          {{ row.hours ?? t('businessProfile.info.closed') }}
+        </span>
+      </li>
+      }
+    </ul>
+    }
+  </section>
+
+  <section class="flex flex-col gap-2" aria-labelledby="info-contact">
+    <h3 id="info-contact" class="m-0 text-title text-fg">
+      {{ t('businessProfile.info.contact') }}
+    </h3>
+    @if (business().phone; as phone) {
+    <a
+      class="flex min-h-11 items-center gap-2 rounded-md text-body text-fg-accent no-underline focus-visible:outline-2 focus-visible:outline-border-focus"
+      [href]="'tel:' + phone"
+      [attr.aria-label]="t('businessProfile.info.call', { phone: phone })"
+    >
+      <app-luma-icon name="phone" /> {{ phone }}
+    </a>
+    }
+    <p class="m-0 flex items-start gap-2 text-body text-fg">
+      <app-luma-icon class="text-fg-subtle" name="pin" />
+      <span
+        ><span class="sr-only">{{ t('businessProfile.info.address') }}: </span>{{ business().address
+        }}</span
+      >
+    </p>
+  </section>
+</div>

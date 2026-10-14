@@ -1,0 +1,23 @@
+<div
+  role="tablist"
+  class="flex overflow-x-auto border-b border-border-subtle px-4 [scrollbar-width:none]"
+  [attr.aria-label]="label()"
+>
+  @for (tab of tabs(); track tab.id) {
+  <button
+    #tabButton
+    type="button"
+    role="tab"
+    class="min-h-11 shrink-0 cursor-pointer border-0 border-b-2 bg-transparent px-4 text-label font-semibold whitespace-nowrap transition-colors duration-150 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-border-focus"
+    [class]="selected() === tab.id ? 'border-primary text-fg-brand' : 'border-transparent text-fg-muted'"
+    [id]="tabElementId(idPrefix(), tab.id)"
+    [attr.aria-selected]="selected() === tab.id"
+    [attr.aria-controls]="tabPanelId(idPrefix(), tab.id)"
+    [attr.tabindex]="selected() === tab.id ? 0 : -1"
+    (click)="selected.set(tab.id)"
+    (keydown)="onKeydown($event)"
+  >
+    {{ tab.label }}
+  </button>
+  }
+</div>
