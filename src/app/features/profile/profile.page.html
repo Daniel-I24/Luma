@@ -10,6 +10,18 @@
       </p>
     </header>
 
+    <section aria-labelledby="public-profile-heading">
+      <h2
+        id="public-profile-heading"
+        class="m-0 px-1 pt-4 pb-2 text-label tracking-wide text-fg-subtle uppercase"
+      >
+        {{ t('profile.displayName.section') }}
+      </h2>
+      <div class="rounded-xl border border-border-subtle bg-surface p-4">
+        <app-display-name-field />
+      </div>
+    </section>
+
     <app-appearance-settings />
 
     <section aria-labelledby="account-heading">

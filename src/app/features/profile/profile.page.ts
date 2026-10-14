@@ -4,6 +4,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
 import { LumaAvatar, LumaBottomSheet, LumaButton } from '@design-system';
 import { AppearanceSettings } from './components/appearance-settings/appearance-settings';
+import { DisplayNameField } from './components/display-name-field/display-name-field';
 
 /**
  * ProfilePage — /profile (protected by authGuard)
@@ -14,7 +15,14 @@ import { AppearanceSettings } from './components/appearance-settings/appearance-
   selector: 'app-profile-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaAvatar, LumaBottomSheet, LumaButton, AppearanceSettings],
+  imports: [
+    TranslocoModule,
+    LumaAvatar,
+    LumaBottomSheet,
+    LumaButton,
+    AppearanceSettings,
+    DisplayNameField,
+  ],
   templateUrl: './profile.page.html',
 })
 export class ProfilePage {

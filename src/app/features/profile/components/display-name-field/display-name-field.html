@@ -1,0 +1,14 @@
+<form *transloco="let t" class="flex flex-col gap-2" (submit)="save($event)">
+  <app-luma-input
+    inputId="display-name"
+    [label]="t('profile.displayName.label')"
+    [placeholder]="t('profile.displayName.placeholder')"
+    [maxLength]="maxLength"
+    [hint]="t('profile.displayName.hint', { count: value().length, max: maxLength })"
+    [errorMessage]="errorKey() ? t(errorKey()!) : undefined"
+    [(value)]="value"
+  />
+  <app-luma-button type="submit" variant="secondary" [disabled]="saving() || unchanged()"
+    >{{ t('profile.displayName.save') }}</app-luma-button
+  >
+</form>

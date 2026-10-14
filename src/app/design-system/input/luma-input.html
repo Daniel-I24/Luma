@@ -16,6 +16,7 @@
       [placeholder]="placeholder()"
       [disabled]="disabled()"
       [required]="required()"
+      [attr.maxlength]="maxLength()"
       [attr.aria-invalid]="hasError ? 'true' : null"
       [attr.aria-describedby]="hasError ? inputId() + '-error' : hint() ? inputId() + '-hint' : null"
       [(ngModel)]="value"

@@ -129,7 +129,9 @@
     },
     "errors": {
       "signOut": "No se pudo cerrar la sesión. Intenta de nuevo.",
-      "deleteAccount": "No se pudo eliminar la cuenta. Intenta de nuevo."
+      "deleteAccount": "No se pudo eliminar la cuenta. Intenta de nuevo.",
+      "displayNameLoad": "No se pudo cargar tu nombre visible.",
+      "displayNameSave": "No se pudo guardar tu nombre visible. Intenta de nuevo."
     },
     "account": "Cuenta",
     "appearance": {
@@ -158,6 +160,17 @@
         "es": "Español",
         "en": "English"
       }
+    },
+    "displayName": {
+      "section": "Perfil público",
+      "label": "Nombre visible",
+      "placeholder": "Cómo te verán en tus reseñas",
+      "hint": "Se muestra junto a tus reseñas. {{count}}/{{max}}",
+      "save": "Guardar nombre",
+      "saved": "Nombre visible guardado"
+    },
+    "validation": {
+      "displayNameTooLong": "El nombre puede tener hasta 40 caracteres."
     }
   },
   "map": {

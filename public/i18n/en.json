@@ -129,7 +129,9 @@
     },
     "errors": {
       "signOut": "Could not sign out. Please try again.",
-      "deleteAccount": "Could not delete account. Please try again."
+      "deleteAccount": "Could not delete account. Please try again.",
+      "displayNameLoad": "Could not load your display name.",
+      "displayNameSave": "Could not save your display name. Please try again."
     },
     "account": "Account",
     "appearance": {
@@ -158,6 +160,17 @@
         "es": "Español",
         "en": "English"
       }
+    },
+    "displayName": {
+      "section": "Public profile",
+      "label": "Display name",
+      "placeholder": "How people will see you in your reviews",
+      "hint": "Shown next to your reviews. {{count}}/{{max}}",
+      "save": "Save name",
+      "saved": "Display name saved"
+    },
+    "validation": {
+      "displayNameTooLong": "The name can be up to 40 characters long."
     }
   },
   "map": {

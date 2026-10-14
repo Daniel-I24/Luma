@@ -26,6 +26,8 @@ export class LumaInput {
   readonly errorMessage = input<string | undefined>(undefined);
   readonly disabled = input<boolean>(false);
   readonly required = input<boolean>(false);
+  /** Native maxlength; pair it with a counter in the hint. */
+  readonly maxLength = input<number | null>(null);
 
   /** Two-way bindable value. */
   readonly value = model<string>('');
