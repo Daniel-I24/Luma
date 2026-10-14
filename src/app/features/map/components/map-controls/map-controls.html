@@ -1,0 +1,9 @@
+<ng-container *transloco="let t">
+  <app-luma-icon-button icon="locate" [label]="t('map.centerOnMe')" (clicked)="locate.emit()" />
+  <app-luma-icon-button icon="plus" [label]="t('map.controls.zoomIn')" (clicked)="zoomIn.emit()" />
+  <app-luma-icon-button
+    icon="minus"
+    [label]="t('map.controls.zoomOut')"
+    (clicked)="zoomOut.emit()"
+  />
+</ng-container>

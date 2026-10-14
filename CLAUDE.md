@@ -26,7 +26,8 @@ The full project rules live in `.kiro/steering/` (`product`, `tech`, `structure`
 - State: Signals + per-feature services; global state only for session and theme.
 
 ## Design
-- Components only use design tokens (`bg-primary`, `text-muted`, CSS variables); never literal colors or sizes.
+- Components only use design tokens through Tailwind utilities (`bg-surface`, `text-fg-muted`, `bg-status-open`) or `var()`; never literal colors or sizes. The default Tailwind palette is disabled.
+- Simulated data lives only in `src/app/shared/mock/` behind a typed interface and is listed in `docs/mocks.md`.
 - Base visual elements live once in `design-system/`; features never re-style them.
 - Themes: Indigo (default), Midnight, Pearl, Sunset — same token structure.
 - Touch targets ≥ 44px, AA contrast, respect `prefers-reduced-motion`, skeletons instead of spinners.

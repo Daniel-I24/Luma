@@ -25,7 +25,19 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.css"],
+            "styles": [
+              "src/styles.css",
+              {
+                "input": "node_modules/maplibre-gl/dist/maplibre-gl.css",
+                "bundleName": "map",
+                "inject": false
+              },
+              {
+                "input": "src/styles/map-markers.css",
+                "bundleName": "map",
+                "inject": false
+              }
+            ],
             "allowedCommonJsDependencies": ["maplibre-gl"]
           },
           "configurations": {

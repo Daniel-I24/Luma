@@ -1,64 +1,79 @@
-<ng-container *transloco="let t">
-  <app-luma-bottom-sheet [open]="open()" [title]="business()?.name ?? ''" (closed)="closed.emit()">
-    @if (business(); as biz) {
-      <div class="biz-sheet">
-        <!-- Status + distance -->
-        <div class="biz-sheet__meta">
-          <app-status-badge [status]="status()" />
-          @if (formattedDistance()) {
-            <span class="biz-sheet__distance">
-              {{ t('map.sheet.distance', { distance: formattedDistance() }) }}
-            </span>
-          }
-        </div>
-
-        <!-- Today's hours -->
-        <div class="biz-sheet__row">
-          <span class="biz-sheet__label">{{ t('map.sheet.todayHours') }}</span>
-          @if (todayHours() && !todayHours()!.is_closed) {
-            <span class="biz-sheet__value">
-              {{ todayHours()!.opens_at.slice(0, 5) }} – {{ todayHours()!.closes_at.slice(0, 5) }}
-            </span>
-          } @else {
-            <span class="biz-sheet__value biz-sheet__value--muted">{{
-              t('map.sheet.closedToday')
-            }}</span>
-          }
-        </div>
-
-        <!-- Address -->
-        <div class="biz-sheet__row">
-          <span class="biz-sheet__label">{{ t('map.sheet.address') }}</span>
-          <span class="biz-sheet__value">{{ biz.address }}</span>
-        </div>
-
-        <!-- Phone -->
-        @if (biz.phone) {
-          <div class="biz-sheet__row">
-            <span class="biz-sheet__label">{{ t('map.sheet.phone') }}</span>
-            <a class="biz-sheet__link" [href]="'tel:' + biz.phone">{{ biz.phone }}</a>
+<app-luma-bottom-sheet
+  *transloco="let t"
+  ariaLabelledBy="business-sheet-name"
+  [open]="open()"
+  (closed)="closed.emit()"
+>
+  @if (item(); as it) {
+    <div class="flex flex-col gap-3">
+      <div class="flex items-start gap-3">
+        <app-luma-avatar
+          size="xl"
+          shape="square"
+          [name]="it.business.name"
+          [src]="it.business.logo_url"
+          [decorative]="true"
+        />
+        <div class="flex min-w-0 flex-1 flex-col gap-1">
+          <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0">
+              <h2 id="business-sheet-name" class="m-0 truncate text-h4 text-fg">
+                {{ it.business.name }}
+              </h2>
+              <p class="m-0 text-caption text-fg-subtle">{{ it.business.category }}</p>
+            </div>
+            <app-status-badge class="shrink-0" [status]="it.status" />
           </div>
-        }
-
-        <!-- Active promotion -->
-        @if (promotion(); as promo) {
-          <div class="biz-sheet__promo">
-            <span class="biz-sheet__promo-badge">{{ t('map.sheet.activePromotion') }}</span>
-            <p class="biz-sheet__promo-title">{{ promo.title }}</p>
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+            @if (it.rating; as rating) {
+              <app-luma-rating-stars [rating]="rating.rating" [reviewCount]="rating.reviewCount" />
+            }
+            @if (distance(); as d) {
+              <span class="text-caption text-fg-subtle">{{ t('map.sheet.distanceWalk', d) }}</span>
+            }
           </div>
-        }
-
-        <!-- Actions -->
-        <div class="biz-sheet__actions">
-          <app-luma-button variant="primary" size="md" [disabled]="true">
-            {{ t('map.sheet.viewMenu') }}
-          </app-luma-button>
-          <app-luma-button variant="secondary" size="md" [disabled]="true">
-            {{ t('map.sheet.viewProfile') }}
-          </app-luma-button>
         </div>
-        <p class="biz-sheet__hint">{{ t('map.sheet.comingSoon') }}</p>
       </div>
-    }
-  </app-luma-bottom-sheet>
-</ng-container>
+
+      @if (promotion(); as promo) {
+        <p
+          class="m-0 flex items-center gap-2 rounded-md border border-border-subtle bg-surface-selected px-3 py-2 text-label-lg text-fg-accent"
+        >
+          <app-luma-icon name="tag" size="sm" />
+          <span class="sr-only">{{ t('map.sheet.activePromotion') }}:</span>
+          {{ promo.title }}
+        </p>
+      }
+
+      <p class="m-0 flex items-center gap-2 text-body-sm text-fg-muted">
+        <app-luma-icon class="text-fg-subtle" name="clock" size="sm" />
+        @if (todayHours(); as h) {
+          {{ t('map.sheet.todayHours', h) }}
+        } @else {
+          {{ t('map.sheet.closedToday') }}
+        }
+      </p>
+
+      <div class="flex items-center gap-2">
+        <app-luma-button [fullWidth]="true" [disabled]="true">{{
+          t('map.sheet.viewRestaurant')
+        }}</app-luma-button>
+        <app-luma-icon-button
+          icon="heart"
+          variant="ghost"
+          [disabled]="true"
+          [label]="t('map.sheet.favorite')"
+        />
+        @if (it.business.phone; as phone) {
+          <app-luma-icon-button
+            icon="phone"
+            variant="ghost"
+            [href]="'tel:' + phone"
+            [label]="t('map.sheet.call', { name: it.business.name })"
+          />
+        }
+      </div>
+      <p class="m-0 text-center text-caption text-fg-subtle">{{ t('map.sheet.comingSoonHint') }}</p>
+    </div>
+  }
+</app-luma-bottom-sheet>

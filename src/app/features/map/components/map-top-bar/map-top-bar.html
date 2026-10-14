@@ -1,0 +1,35 @@
+<ng-container *transloco="let t">
+  <app-luma-search-input
+    class="pointer-events-auto mx-4"
+    inputId="map-search"
+    [label]="t('map.search.label')"
+    [placeholder]="t('map.search.placeholder')"
+    [clearLabel]="t('map.search.clear')"
+    [(value)]="query"
+  />
+
+  <p
+    class="pointer-events-auto mx-4 my-0 inline-flex max-w-[calc(100%-var(--spacing-8))] items-center gap-1 self-start rounded-full border border-border-subtle bg-surface-elevated px-3 py-1 text-caption font-semibold text-fg-muted shadow-sm"
+    role="status"
+  >
+    <app-luma-icon class="text-fg-brand" name="pin" size="sm" />
+    {{ t(zoneKey()) }}
+  </p>
+
+  @if (categories().length) {
+  <div
+    class="pointer-events-auto flex gap-2 overflow-x-auto px-4 py-2 [scrollbar-width:none]"
+    role="group"
+    [attr.aria-label]="t('map.categories.label')"
+  >
+    @for (option of categories(); track option) {
+    <app-luma-chip
+      class="shrink-0 shadow-sm"
+      [selected]="category() === option"
+      (selectedChange)="toggleCategory(option, $event)"
+      >{{ option }}</app-luma-chip
+    >
+    }
+  </div>
+  }
+</ng-container>

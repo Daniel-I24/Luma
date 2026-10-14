@@ -166,7 +166,7 @@
     "retry": "Retry",
     "noBusinesses": "No businesses nearby at this time.",
     "locating": "Getting your location…",
-    "locationDenied": "Location permission denied. Showing city centre.",
+    "locationDenied": "No location · showing the centre",
     "centerOnMe": "Center on my location",
     "locationPermission": {
       "title": "Share your location?",
@@ -175,17 +175,50 @@
       "skip": "Not now"
     },
     "sheet": {
-      "address": "Address",
-      "phone": "Phone",
-      "todayHours": "Today",
+      "todayHours": "Today: {{from}} – {{to}}",
       "closedToday": "Closed today",
-      "distance": "{{distance}} km away",
       "activePromotion": "Active promotion",
-      "viewMenu": "View menu",
-      "viewProfile": "View profile",
-      "comingSoon": "Coming soon"
+      "distanceWalk": "{{distance}} · {{minutes}} min walk",
+      "viewRestaurant": "View restaurant",
+      "favorite": "Save to favourites (coming soon)",
+      "call": "Call {{name}}",
+      "comingSoonHint": "Restaurant page and favourites: coming soon."
     },
-    "mapUnavailable": "The map could not be loaded. Check your connection and try again."
+    "mapUnavailable": "The map could not be loaded. Check your connection and try again.",
+    "mapUnavailableTitle": "Map unavailable",
+    "search": {
+      "label": "Search places",
+      "placeholder": "Restaurants, dishes, cuisines…",
+      "clear": "Clear search"
+    },
+    "zone": {
+      "nearYou": "Near you",
+      "cityCentre": "Pasto city centre"
+    },
+    "categories": {
+      "label": "Filter by category"
+    },
+    "controls": {
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out"
+    },
+    "nearby": {
+      "title": "Near you"
+    },
+    "errors": {
+      "title": "Something went wrong"
+    },
+    "empty": {
+      "description": "Try moving the map to another area."
+    },
+    "noResults": {
+      "title": "No results",
+      "description": "No nearby place matches your search.",
+      "clear": "Clear filters"
+    },
+    "ai": {
+      "cta": "See Luma AI recommendations"
+    }
   },
   "status": {
     "open": "Open",

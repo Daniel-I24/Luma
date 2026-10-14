@@ -9,6 +9,8 @@ import {
 import { provideRouter } from '@angular/router';
 import { provideTransloco } from '@jsverse/transloco';
 import { LanguageService } from '@core/i18n/language.service';
+import { BusinessRatingProvider } from '@shared/business/data/business-rating.provider';
+import { MockBusinessRatingProvider } from '@shared/mock/business-rating.mock';
 import { routes } from './app.routes';
 import { TranslocoHttpLoader } from './transloco-loader';
 
@@ -29,5 +31,7 @@ export const appConfig: ApplicationConfig = {
     }),
     // Activate the stored language before the first render (no flash of Spanish).
     provideAppInitializer(() => inject(LanguageService).init()),
+    // MOCK: ratings are not in the backend yet (docs/mocks.md).
+    { provide: BusinessRatingProvider, useClass: MockBusinessRatingProvider },
   ],
 };

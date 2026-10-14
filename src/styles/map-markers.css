@@ -1,0 +1,83 @@
+/* ─────────────────────────────────────────────
+   MAP MARKERS — MapLibre inserts marker elements outside Angular's view
+   encapsulation, so their styles live in the lazy "map" stylesheet
+   (angular.json, inject: false) together with MapLibre's own CSS.
+   Status colors follow the --color-status-* tokens and the active theme.
+───────────────────────────────────────────── */
+
+.luma-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--spacing-11);
+  height: var(--spacing-11);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.luma-marker__pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--spacing-8);
+  height: var(--spacing-8);
+  border: 2px solid var(--color-surface);
+  border-radius: 50% 50% 50% 0;
+  box-shadow: var(--shadow-md);
+  color: var(--color-fg-inverse);
+  transform: rotate(-45deg);
+  transition:
+    transform var(--duration-normal) var(--ease-spring),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+.luma-marker__pin svg {
+  width: var(--spacing-4);
+  height: var(--spacing-4);
+  transform: rotate(45deg);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.luma-marker--open .luma-marker__pin {
+  background-color: var(--color-status-open);
+}
+
+.luma-marker--closed .luma-marker__pin {
+  background-color: var(--color-status-closed);
+}
+
+.luma-marker--opening-soon .luma-marker__pin {
+  background-color: var(--color-status-opening-soon);
+}
+
+.luma-marker--closing-soon .luma-marker__pin {
+  background-color: var(--color-status-closing-soon);
+}
+
+.luma-marker:hover .luma-marker__pin,
+.luma-marker--selected .luma-marker__pin {
+  transform: rotate(-45deg) scale(1.15);
+  box-shadow: var(--shadow-float);
+}
+
+.luma-marker:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-full);
+}
+
+/* The user's own position */
+.luma-user-dot {
+  width: var(--spacing-4);
+  height: var(--spacing-4);
+  border: 3px solid var(--color-surface);
+  border-radius: var(--radius-full);
+  background-color: var(--color-info);
+  box-shadow: var(--shadow-md);
+}

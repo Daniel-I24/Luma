@@ -5,144 +5,139 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
+  computed,
+  effect,
   inject,
   signal,
-  computed,
 } from '@angular/core';
-import { TranslocoModule } from '@jsverse/transloco';
-import { LumaButton, LumaIcon } from '@design-system';
-import { BusinessRepository } from '@shared/business/data/business.repository';
-import type { Business, BusinessHours, Promotion } from '@shared/business/models/business.model';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
+import { LumaButton, LumaEmptyState, STATUS_LABEL_KEY } from '@design-system';
 import { BusinessSheetComponent } from './components/business-sheet/business-sheet.component';
-import { BusinessHoursCacheService } from './services/business-hours-cache.service';
+import { LocationPrompt } from './components/location-prompt/location-prompt';
+import { MapControls } from './components/map-controls/map-controls';
+import { MapTopBar } from './components/map-top-bar/map-top-bar';
+import { NearbyPanel } from './components/nearby-panel/nearby-panel';
+import { GeolocationService, PASTO_CENTRE } from './services/geolocation.service';
 import { MapCameraService } from './services/map-camera.service';
 import { MapMarkerSyncService } from './services/map-marker-sync.service';
-import { GeolocationService, PASTO_CENTRE } from './services/geolocation.service';
-import { haversineKm } from './utils/haversine.util';
-import { getMapNotices } from './utils/map-notices.util';
-import { NEARBY_RADIUS_KM } from './map.constants';
+import { MapStylesLoader } from './services/map-styles.loader';
+import { BusinessSelectionStore } from './state/business-selection.store';
+import { NearbyBusinessesStore } from './state/nearby-businesses.store';
+import { getZoneLabelKey } from './utils/zone-label.util';
 
+/** MapPage — /map: live map, filters, nearby businesses and the business sheet. */
 @Component({
   selector: 'app-map-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaIcon, BusinessSheetComponent],
+  imports: [
+    TranslocoModule,
+    LumaButton,
+    LumaEmptyState,
+    BusinessSheetComponent,
+    LocationPrompt,
+    MapControls,
+    MapTopBar,
+    NearbyPanel,
+  ],
+  providers: [NearbyBusinessesStore, BusinessSelectionStore],
   templateUrl: './map.page.html',
-  styleUrl: './map.page.css',
+  host: { class: 'block h-full' },
 })
 export class MapPage implements OnInit, OnDestroy {
   @ViewChild('mapContainer', { static: true }) mapContainer!: ElementRef<HTMLDivElement>;
 
-  private readonly repo = inject(BusinessRepository);
-  private readonly hoursCache = inject(BusinessHoursCacheService);
-  private readonly camera = inject(MapCameraService);
+  protected readonly store = inject(NearbyBusinessesStore);
+  protected readonly selection = inject(BusinessSelectionStore);
+  protected readonly camera = inject(MapCameraService);
   private readonly markerSync = inject(MapMarkerSyncService);
-  private readonly geoService = inject(GeolocationService);
+  private readonly geo = inject(GeolocationService);
+  private readonly styles = inject(MapStylesLoader);
+  private readonly transloco = inject(TranslocoService);
+  private readonly router = inject(Router);
+  private readonly lang = toSignal(this.transloco.langChanges$);
 
-  protected readonly loading = signal(false);
-  protected readonly errorKey = signal<string | null>(null);
-  private readonly empty = signal(false);
-  private mapReady = false;
-  protected readonly notices = computed(() =>
-    this.errorKey()
-      ? []
-      : getMapNotices({
-          geoState: this.geoService.state(),
-          loading: this.loading(),
-          empty: this.empty(),
-        }),
-  );
+  private readonly mapReady = signal(false);
+  protected readonly mapFailed = signal(false);
   protected readonly showLocationPrompt = signal(false);
-  protected readonly selectedBusiness = signal<Business | null>(null);
-  protected readonly selectedHours = signal<BusinessHours[]>([]);
-  protected readonly selectedPromotion = signal<Promotion | null>(null);
-  protected readonly sheetOpen = signal(false);
-  protected readonly distanceKm = computed(() => {
-    const b = this.selectedBusiness();
-    const c = this.geoService.coords();
-    if (!b || !this.geoService.hasRealLocation()) return null;
-    return haversineKm(c.lat, c.lng, b.latitude, b.longitude);
-  });
+  protected readonly zoneKey = computed(() => getZoneLabelKey(this.geo.state()));
+
+  constructor() {
+    // Markers follow the filtered list and the active language.
+    effect(() => {
+      const items = this.store.items();
+      this.lang();
+      if (!this.mapReady()) return;
+      const markers = items.map(({ business, status }) => ({
+        business,
+        status,
+        label: `${business.name}, ${this.transloco.translate(STATUS_LABEL_KEY[status])}`,
+      }));
+      this.markerSync.syncMarkers(this.camera.instance, markers, (biz) => this.openById(biz.id));
+    });
+    // Once the user shares their location, show it and centre the map there.
+    effect(() => {
+      if (!this.mapReady() || !this.geo.hasRealLocation()) return;
+      const { lat, lng } = this.geo.coords();
+      this.camera.showUser(lat, lng);
+      this.camera.flyTo(lat, lng);
+    });
+  }
 
   ngOnInit(): void {
-    if (this.initMap()) this.loadNearby(PASTO_CENTRE.lat, PASTO_CENTRE.lng);
+    this.styles.ensureLoaded();
+    this.startMap();
   }
 
   ngOnDestroy(): void {
     this.markerSync.clear();
-    if (this.mapReady) this.camera.destroy();
+    if (this.mapReady()) this.camera.destroy();
+  }
+
+  /** Starts MapLibre; on failure shows the error state instead of a blank map. */
+  protected startMap(): void {
+    try {
+      this.camera.init(this.mapContainer.nativeElement, (lat, lng) => this.load(lat, lng));
+      this.mapFailed.set(false);
+      this.mapReady.set(true);
+      this.load(PASTO_CENTRE.lat, PASTO_CENTRE.lng);
+    } catch {
+      this.mapFailed.set(true);
+    }
+  }
+
+  protected reload(): void {
+    const { lat, lng } = this.camera.currentCenter();
+    this.load(lat, lng);
   }
 
   protected onCentreOnMe(): void {
-    if (this.geoService.hasRealLocation()) {
-      const c = this.geoService.coords();
-      this.camera.flyTo(c.lat, c.lng);
-    } else {
+    if (!this.geo.hasRealLocation()) {
       this.showLocationPrompt.set(true);
+      return;
     }
+    const { lat, lng } = this.geo.coords();
+    this.camera.flyTo(lat, lng);
   }
 
   protected onAllowLocation(): void {
     this.showLocationPrompt.set(false);
-    this.geoService.requestLocation();
+    this.geo.requestLocation();
   }
 
-  protected retryLoad(): void {
-    this.errorKey.set(null);
-    if (!this.mapReady) {
-      if (this.initMap()) this.loadNearby(PASTO_CENTRE.lat, PASTO_CENTRE.lng);
-      return;
-    }
-    const c = this.camera.currentCenter();
-    this.loadNearby(c.lat, c.lng);
+  protected openAi(): void {
+    void this.router.navigate(['/ai']);
   }
 
-  /** Starts MapLibre; on failure shows the error state instead of a blank screen. */
-  private initMap(): boolean {
-    try {
-      this.camera.init(this.mapContainer.nativeElement, (lat, lng) => this.loadNearby(lat, lng));
-      this.mapReady = true;
-    } catch {
-      this.errorKey.set('map.mapUnavailable');
-    }
-    return this.mapReady;
+  private openById(id: string): void {
+    const item = this.store.items().find((i) => i.business.id === id);
+    if (item) void this.selection.select(item);
   }
 
-  private async loadNearby(lat: number, lng: number): Promise<void> {
-    this.loading.set(true);
-    this.errorKey.set(null);
+  private load(lat: number, lng: number): void {
     this.camera.markFetched(lat, lng);
-
-    const result = await this.repo.getNearby(lat, lng, NEARBY_RADIUS_KM);
-    this.loading.set(false);
-    if (result.errorKey || !result.data) {
-      this.errorKey.set(result.errorKey ?? 'map.errorLoading');
-      return;
-    }
-
-    this.empty.set(result.data.length === 0);
-    await this.hoursCache.prefetch(result.data.map((b) => b.id));
-    this.syncMarkers(result.data);
-  }
-
-  private syncMarkers(businesses: Business[]): void {
-    this.markerSync.syncMarkers(
-      this.camera.instance,
-      businesses,
-      this.hoursCache.snapshot(),
-      (biz) => {
-        void this.onMarkerClick(biz);
-      },
-    );
-  }
-
-  private async onMarkerClick(biz: Business): Promise<void> {
-    this.selectedBusiness.set(biz);
-    this.selectedHours.set(this.hoursCache.get(biz.id));
-    this.selectedPromotion.set(null);
-    this.sheetOpen.set(true);
-
-    const promoResult = await this.repo.getActivePromotions(biz.id);
-    this.selectedPromotion.set(promoResult.data?.[0] ?? null);
+    void this.store.load(lat, lng);
   }
 }

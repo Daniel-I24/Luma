@@ -1,90 +1,57 @@
-import { Injectable } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Injectable, inject } from '@angular/core';
+import { LUMA_ICONS } from '@design-system/icon/luma-icons';
 import type { BusinessStatus } from '@shared/business/models/business.model';
 
-/**
- * CSS variable names that map each BusinessStatus to its design token.
- * Changing a token in styles.css automatically updates every marker.
- */
-const STATUS_TOKEN: Record<BusinessStatus, string> = {
-  open: '--color-status-open',
-  closed: '--color-status-closed',
-  'opening-soon': '--color-status-opening-soon',
-  'closing-soon': '--color-status-closing-soon',
-};
-
-/** CSS class applied to the marker element for each status. */
-const STATUS_CLASS: Record<BusinessStatus, string> = {
-  open: 'marker--open',
-  closed: 'marker--closed',
-  'opening-soon': 'marker--opening-soon',
-  'closing-soon': 'marker--closing-soon',
-};
-
-export interface MarkerConfig {
-  /** DOM element ready to pass to new maplibregl.Marker({ element }). */
-  element: HTMLElement;
-  /** Resolved CSS color value read from the active theme at creation time. */
-  color: string;
-  /** CSS class on the element for status-based styling. */
-  statusClass: string;
-}
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const STATUS_CLASSES = ['open', 'closed', 'opening-soon', 'closing-soon'].map(
+  (status) => `luma-marker--${status}`,
+);
+const SELECTED_CLASS = 'luma-marker--selected';
 
 /**
- * MapMarkerFactory — builds custom marker DOM elements.
- *
- * Colors come exclusively from CSS custom properties so they update
- * automatically when the theme changes — zero hardcoded hex values here.
+ * MapMarkerFactory — builds the DOM of a business marker for MapLibre: a
+ * focusable button with an accessible label and a pin coloured by status.
+ * Colours come from src/styles/map-markers.css (status tokens), so markers
+ * follow theme changes without being rebuilt.
  */
 @Injectable({ providedIn: 'root' })
 export class MapMarkerFactory {
-  /**
-   * Creates a styled marker element for the given status.
-   * The element is a small circle whose background is driven by the
-   * corresponding --color-status-* CSS variable.
-   */
-  create(status: BusinessStatus): MarkerConfig {
-    const statusClass = STATUS_CLASS[status];
-    const token = STATUS_TOKEN[status];
+  private readonly document = inject(DOCUMENT);
 
-    const el = document.createElement('div');
-    el.className = `luma-marker ${statusClass}`;
-    el.setAttribute('aria-hidden', 'true');
-
-    // Read the resolved token value from the computed style of <html>.
-    const color = this.resolveToken(token);
-
-    // Apply inline so MapLibre renders it before styles are loaded.
-    el.style.setProperty('background-color', color);
-
-    return { element: el, color, statusClass };
+  create(status: BusinessStatus, label: string): HTMLButtonElement {
+    const button = this.document.createElement('button');
+    button.type = 'button';
+    button.className = 'luma-marker';
+    button.appendChild(this.createPin());
+    this.update(button, status, label);
+    return button;
   }
 
-  /**
-   * Updates an existing marker element to reflect a new status.
-   * Call this when a business's status changes without recreating the marker.
-   */
-  update(element: HTMLElement, status: BusinessStatus): void {
-    // Remove all known status classes then apply the new one.
-    Object.values(STATUS_CLASS).forEach((cls) => element.classList.remove(cls));
-    element.classList.add(STATUS_CLASS[status]);
-    element.style.setProperty('background-color', this.resolveToken(STATUS_TOKEN[status]));
+  /** Applies a new status and label to an existing marker. */
+  update(element: HTMLElement, status: BusinessStatus, label: string): void {
+    element.classList.remove(...STATUS_CLASSES);
+    element.classList.add(`luma-marker--${status}`);
+    element.setAttribute('aria-label', label);
   }
 
-  /** Returns the CSS class name for a given status (used in tests). */
-  getStatusClass(status: BusinessStatus): string {
-    return STATUS_CLASS[status];
+  setSelected(element: HTMLElement, selected: boolean): void {
+    element.classList.toggle(SELECTED_CLASS, selected);
+    element.setAttribute('aria-pressed', String(selected));
   }
 
-  /** Returns the CSS token name for a given status (used in tests). */
-  getStatusToken(status: BusinessStatus): string {
-    return STATUS_TOKEN[status];
-  }
-
-  // ── Private ────────────────────────────────────────────────────────────────
-
-  private resolveToken(token: string): string {
-    return (
-      getComputedStyle(document.documentElement).getPropertyValue(token).trim() || 'currentColor'
-    );
+  private createPin(): HTMLElement {
+    const pin = this.document.createElement('span');
+    pin.className = 'luma-marker__pin';
+    const svg = this.document.createElementNS(SVG_NS, 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('aria-hidden', 'true');
+    for (const d of LUMA_ICONS.store) {
+      const path = this.document.createElementNS(SVG_NS, 'path');
+      path.setAttribute('d', d);
+      svg.appendChild(path);
+    }
+    pin.appendChild(svg);
+    return pin;
   }
 }

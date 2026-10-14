@@ -26,7 +26,7 @@ Tailwind v4 genera utilidades a partir de ellos (`bg-surface`, `text-fg-muted`, 
 - Contraste AA verificado en los 4 temas; donde el prototipo no lo cumplía se oscureció o aclaró el tono lo mínimo.
 
 ## Componentes base (design-system/)
-Button, IconButton, Icon, Card, BottomSheet, Chip, StatusBadge, Input, SearchInput, Avatar, RatingStars, SectionHeader, BusinessCard, EmptyState, Toast, Skeleton, TabBar.
+Button, IconButton, Icon, Card, BottomSheet, Chip, StatusBadge, Input, SearchInput, Avatar, RatingStars, SectionHeader, BusinessCard, EmptyState, Toast, Skeleton, TabBar, Disclosure.
 
 ## Principios de UX
 - Jerarquía visual clara, una acción principal por pantalla; el mapa abre primero un bottom sheet, no el perfil.

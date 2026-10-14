@@ -3,7 +3,8 @@ import { TranslocoModule } from '@jsverse/transloco';
 
 export type BusinessStatus = 'open' | 'closed' | 'opening-soon' | 'closing-soon';
 
-const STATUS_LABEL_KEY: Record<BusinessStatus, string> = {
+/** i18n key of each status label (status.*), shared with map markers. */
+export const STATUS_LABEL_KEY: Record<BusinessStatus, string> = {
   open: 'status.open',
   closed: 'status.closed',
   'opening-soon': 'status.openingSoon',

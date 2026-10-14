@@ -31,6 +31,8 @@ export class LumaIconButton {
   /** Toggle state (aria-pressed); undefined for plain buttons. */
   readonly pressed = input<boolean | undefined>(undefined);
   readonly filledIcon = input(false);
+  /** Renders a link instead of a button (e.g. "tel:" or an external URL). */
+  readonly href = input<string | null>(null);
 
   readonly clicked = output<void>();
 

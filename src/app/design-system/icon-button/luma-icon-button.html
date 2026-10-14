@@ -1,3 +1,8 @@
+@if (href(); as url) {
+<a [class]="classes()" [href]="url" [attr.aria-label]="label()">
+  <app-luma-icon [name]="icon()" [filled]="filledIcon()" />
+</a>
+} @else {
 <button
   type="button"
   [class]="classes()"
@@ -9,3 +14,4 @@
 >
   <app-luma-icon [name]="icon()" [filled]="filledIcon()" />
 </button>
+}

@@ -1,0 +1,72 @@
+<section *transloco="let t" aria-labelledby="nearby-heading" [attr.aria-busy]="loading()">
+  <app-luma-section-header
+    class="px-4"
+    headingId="nearby-heading"
+    [heading]="t('map.nearby.title')"
+  />
+
+  @if (loading()) {
+  <div class="flex gap-3 overflow-hidden px-4 pt-1 pb-3">
+    @for (i of skeletons; track i) {
+    <div
+      class="flex w-36 shrink-0 flex-col overflow-hidden rounded-lg border border-border-subtle bg-surface"
+    >
+      <app-luma-skeleton class="h-17 w-full" shape="rect" />
+      <div class="flex flex-col gap-2 p-2">
+        <app-luma-skeleton class="h-3 w-24" />
+        <app-luma-skeleton class="h-3 w-16" />
+      </div>
+    </div>
+    }
+    <span class="sr-only">{{ t('map.loadingBusinesses') }}</span>
+  </div>
+  } @else if (errorKey(); as key) {
+  <app-luma-empty-state
+    icon="alert"
+    tone="error"
+    [heading]="t('map.errors.title')"
+    [description]="t(key)"
+  >
+    <app-luma-button (clicked)="retry.emit()">{{ t('map.retry') }}</app-luma-button>
+  </app-luma-empty-state>
+  } @else if (items().length === 0) { @if (filtersActive()) {
+  <app-luma-empty-state
+    icon="search"
+    [heading]="t('map.noResults.title')"
+    [description]="t('map.noResults.description')"
+  >
+    <app-luma-button variant="ghost" (clicked)="clearFilters.emit()"
+      >{{ t('map.noResults.clear') }}</app-luma-button
+    >
+  </app-luma-empty-state>
+  } @else {
+  <app-luma-empty-state
+    icon="store"
+    [heading]="t('map.noBusinesses')"
+    [description]="t('map.empty.description')"
+  />
+  } } @else {
+  <ul class="m-0 flex list-none gap-3 overflow-x-auto px-4 pt-1 pb-3 [scrollbar-width:none]">
+    @for (item of items(); track item.business.id) {
+    <li class="shrink-0">
+      <app-luma-business-card
+        [name]="item.business.name"
+        [status]="item.status"
+        [category]="item.business.category"
+        [logoUrl]="item.business.logo_url"
+        [rating]="item.rating?.rating ?? null"
+        [distanceLabel]="item.distanceKm | distance: lang()"
+        [current]="item.business.id === selectedId()"
+        (selected)="selectBusiness.emit(item)"
+      />
+    </li>
+    }
+  </ul>
+  }
+
+  <div class="px-4 pt-1 pb-4">
+    <app-luma-button variant="accent" [fullWidth]="true" (clicked)="openAi.emit()"
+      >{{ t('map.ai.cta') }}</app-luma-button
+    >
+  </div>
+</section>

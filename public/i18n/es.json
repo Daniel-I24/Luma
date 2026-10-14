@@ -166,7 +166,7 @@
     "retry": "Reintentar",
     "noBusinesses": "No hay negocios cercanos en este momento.",
     "locating": "Obteniendo tu ubicación…",
-    "locationDenied": "Permiso de ubicación denegado. Mostrando centro de la ciudad.",
+    "locationDenied": "Sin ubicación · mostrando el centro",
     "centerOnMe": "Centrar en mi ubicación",
     "locationPermission": {
       "title": "¿Puedes compartir tu ubicación?",
@@ -175,17 +175,50 @@
       "skip": "Ahora no"
     },
     "sheet": {
-      "address": "Dirección",
-      "phone": "Teléfono",
-      "todayHours": "Hoy",
+      "todayHours": "Hoy: {{from}} – {{to}}",
       "closedToday": "Cerrado hoy",
-      "distance": "a {{distance}} km",
       "activePromotion": "Promoción activa",
-      "viewMenu": "Ver menú",
-      "viewProfile": "Ver perfil",
-      "comingSoon": "Próximamente"
+      "distanceWalk": "{{distance}} · {{minutes}} min a pie",
+      "viewRestaurant": "Ver restaurante",
+      "favorite": "Guardar en favoritos (próximamente)",
+      "call": "Llamar a {{name}}",
+      "comingSoonHint": "Ver restaurante y favoritos: próximamente."
     },
-    "mapUnavailable": "No se pudo cargar el mapa. Revisa tu conexión e intenta de nuevo."
+    "mapUnavailable": "No se pudo cargar el mapa. Revisa tu conexión e intenta de nuevo.",
+    "mapUnavailableTitle": "Mapa no disponible",
+    "search": {
+      "label": "Buscar negocios",
+      "placeholder": "Restaurantes, platos, cocinas…",
+      "clear": "Borrar búsqueda"
+    },
+    "zone": {
+      "nearYou": "Cerca de ti",
+      "cityCentre": "Centro de Pasto"
+    },
+    "categories": {
+      "label": "Filtrar por categoría"
+    },
+    "controls": {
+      "zoomIn": "Acercar el mapa",
+      "zoomOut": "Alejar el mapa"
+    },
+    "nearby": {
+      "title": "Cercanos a ti"
+    },
+    "errors": {
+      "title": "Algo salió mal"
+    },
+    "empty": {
+      "description": "Prueba moviendo el mapa a otra zona."
+    },
+    "noResults": {
+      "title": "Sin resultados",
+      "description": "Ningún negocio cercano coincide con tu búsqueda.",
+      "clear": "Quitar filtros"
+    },
+    "ai": {
+      "cta": "Ver recomendaciones de Luma IA"
+    }
   },
   "status": {
     "open": "Abierto",

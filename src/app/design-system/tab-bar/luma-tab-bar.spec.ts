@@ -11,7 +11,7 @@ class EmptyPage {}
 
 const ITEMS: TabBarItem[] = [
   { path: '/map', labelKey: 'tabs.map', icon: 'map' },
-  { path: '/settings', labelKey: 'tabs.settings', icon: 'user' },
+  { path: '/profile', labelKey: 'tabs.profile', icon: 'user' },
 ];
 
 describe('LumaTabBar', () => {
@@ -20,14 +20,14 @@ describe('LumaTabBar', () => {
       imports: [
         LumaTabBar,
         TranslocoTestingModule.forRoot({
-          langs: { es: { tabs: { label: 'Navegación', map: 'Mapa', settings: 'Ajustes' } } },
+          langs: { es: { tabs: { label: 'Navegación', map: 'Mapa', profile: 'Perfil' } } },
           translocoConfig: { availableLangs: ['es'], defaultLang: 'es' },
         }),
       ],
       providers: [
         provideRouter([
           { path: 'map', component: EmptyPage },
-          { path: 'settings', component: EmptyPage },
+          { path: 'profile', component: EmptyPage },
         ]),
       ],
     }).compileComponents();
@@ -53,12 +53,12 @@ describe('LumaTabBar', () => {
   it('renders one link per item with its route and translated label', async () => {
     const links = Array.from((await render('/map')).querySelectorAll('a'));
 
-    expect(links.map((a) => a.getAttribute('href'))).toEqual(['/map', '/settings']);
-    expect(links.map((a) => a.textContent?.trim())).toEqual(['Mapa', 'Ajustes']);
+    expect(links.map((a) => a.getAttribute('href'))).toEqual(['/map', '/profile']);
+    expect(links.map((a) => a.textContent?.trim())).toEqual(['Mapa', 'Perfil']);
   });
 
   it('marks only the active tab with aria-current="page"', async () => {
-    const links = Array.from((await render('/settings')).querySelectorAll('a'));
+    const links = Array.from((await render('/profile')).querySelectorAll('a'));
 
     expect(links[0].getAttribute('aria-current')).toBeNull();
     expect(links[1].getAttribute('aria-current')).toBe('page');

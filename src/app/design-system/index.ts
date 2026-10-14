@@ -11,7 +11,7 @@ export type { CardElevation } from './card/luma-card';
 
 export { LumaBottomSheet } from './bottom-sheet/luma-bottom-sheet';
 
-export { StatusBadge } from './status-badge/status-badge';
+export { STATUS_LABEL_KEY, StatusBadge } from './status-badge/status-badge';
 export type { BusinessStatus } from './status-badge/status-badge';
 
 export { LumaInput } from './input/luma-input';

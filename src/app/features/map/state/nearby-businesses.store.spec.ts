@@ -1,0 +1,112 @@
+import { signal } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { BusinessRatingProvider } from '@shared/business/data/business-rating.provider';
+import { BusinessRepository } from '@shared/business/data/business.repository';
+import type { Business } from '@shared/business/models/business.model';
+import { BusinessHoursCacheService } from '../services/business-hours-cache.service';
+import { GeolocationService } from '../services/geolocation.service';
+import { NearbyBusinessesStore } from './nearby-businesses.store';
+
+const biz = (id: string, category: string, latitude: number): Business => ({
+  id,
+  owner_id: 'o',
+  name: `Negocio ${id}`,
+  description: null,
+  category,
+  logo_url: null,
+  cover_url: null,
+  latitude,
+  longitude: -77.28,
+  address: 'Pasto',
+  phone: null,
+  is_active: true,
+  created_at: '',
+  updated_at: '',
+});
+
+describe('NearbyBusinessesStore', () => {
+  const repo = { getNearby: vi.fn() };
+  const located = signal(false);
+  let store: NearbyBusinessesStore;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    located.set(false);
+    repo.getNearby.mockResolvedValue({
+      data: [biz('far', 'Pizza', 1.25), biz('near', 'Café', 1.214)],
+      errorKey: null,
+    });
+    TestBed.configureTestingModule({
+      providers: [
+        NearbyBusinessesStore,
+        { provide: BusinessRepository, useValue: repo },
+        { provide: BusinessHoursCacheService, useValue: { prefetch: vi.fn(), get: () => [] } },
+        {
+          provide: BusinessRatingProvider,
+          useValue: { getRating: () => ({ rating: 4.5, reviewCount: 10 }) },
+        },
+        {
+          provide: GeolocationService,
+          useValue: { coords: signal({ lat: 1.2136, lng: -77.2811 }), hasRealLocation: located },
+        },
+      ],
+    });
+    store = TestBed.inject(NearbyBusinessesStore);
+  });
+
+  it('loads businesses with status, rating and categories', async () => {
+    await store.load(1.21, -77.28);
+
+    expect(store.items()).toHaveLength(2);
+    expect(store.items()[0].status).toBe('closed');
+    expect(store.items()[0].rating?.rating).toBe(4.5);
+    expect(store.categories()).toEqual(['Café', 'Pizza']);
+    expect(store.loading()).toBe(false);
+  });
+
+  it('sorts by distance once the user is located', async () => {
+    located.set(true);
+    await store.load(1.21, -77.28);
+
+    expect(store.items().map((i) => i.business.id)).toEqual(['near', 'far']);
+    expect(store.items()[0].distanceKm).toBeLessThan(1);
+  });
+
+  it('keeps distance unknown without the user location', async () => {
+    await store.load(1.21, -77.28);
+
+    expect(store.items()[0].distanceKm).toBeNull();
+  });
+
+  it('filters by query and category on the client and can clear them', async () => {
+    await store.load(1.21, -77.28);
+
+    store.category.set('Pizza');
+    expect(store.items().map((i) => i.business.id)).toEqual(['far']);
+
+    store.clearFilters();
+    store.query.set('near');
+    expect(store.items().map((i) => i.business.id)).toEqual(['near']);
+    expect(store.filtersActive()).toBe(true);
+    expect(repo.getNearby).toHaveBeenCalledOnce();
+  });
+
+  it('reports an empty result only after a successful load', async () => {
+    expect(store.empty()).toBe(false);
+    repo.getNearby.mockResolvedValue({ data: [], errorKey: null });
+
+    await store.load(1.21, -77.28);
+
+    expect(store.empty()).toBe(true);
+  });
+
+  it('exposes the repository error key', async () => {
+    repo.getNearby.mockResolvedValue({ data: null, errorKey: 'businesses.errors.loadFailed' });
+
+    await store.load(1.21, -77.28);
+
+    expect(store.errorKey()).toBe('businesses.errors.loadFailed');
+    expect(store.empty()).toBe(false);
+  });
+});

@@ -1,10 +1,12 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { MapMarkerSyncService } from './map-marker-sync.service';
-import { MapMarkerFactory } from './map-marker.factory';
-import type { Business, BusinessHours } from '@shared/business/models/business.model';
-import type { MarkerConfig } from './map-marker.factory';
 import type maplibregl from 'maplibre-gl';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { Business } from '@shared/business/models/business.model';
+import { MapMarkerFactory } from './map-marker.factory';
+import { MapMarkerSyncService } from './map-marker-sync.service';
+import type { MarkerItem } from './map-marker-sync.service';
+
+const removed: string[] = [];
 
 vi.mock('maplibre-gl', () => {
   class Marker {
@@ -16,7 +18,7 @@ vi.mock('maplibre-gl', () => {
       return this;
     }
     remove() {
-      /* no-op in tests */
+      removed.push(this.opts.element.getAttribute('aria-label') ?? '');
     }
     getElement() {
       return this.opts.element;
@@ -25,88 +27,71 @@ vi.mock('maplibre-gl', () => {
   return { default: { Marker } };
 });
 
-function makeHours(
-  businessId: string,
-  day: BusinessHours['day_of_week'],
-  opens: string,
-  closes: string,
-  is_closed = false,
-): BusinessHours {
-  return {
-    id: `${businessId}-${day}`,
-    business_id: businessId,
-    day_of_week: day,
-    opens_at: opens,
-    closes_at: closes,
-    is_closed,
-  };
-}
-
-function makeBusiness(id: string): Business {
-  return {
-    id,
-    owner_id: 'owner',
-    name: id,
-    description: null,
-    category: 'cafe',
-    logo_url: null,
-    cover_url: null,
-    latitude: 1.21,
-    longitude: -77.28,
-    address: 'Pasto',
-    phone: null,
-    is_active: true,
-    created_at: '',
-    updated_at: '',
-  };
+function item(id: string, status: MarkerItem['status'] = 'open'): MarkerItem {
+  const business = { id, name: id, latitude: 1.21, longitude: -77.28 } as Business;
+  return { business, status, label: `${id}, ${status}` };
 }
 
 describe('MapMarkerSyncService', () => {
   let service: MapMarkerSyncService;
-  let factory: { create: ReturnType<typeof vi.fn>; update: ReturnType<typeof vi.fn> };
+  let factory: MapMarkerFactory;
   const map = {} as maplibregl.Map;
-  const mondayNoon = new Date(2024, 0, 8, 12, 0, 0);
 
   beforeEach(() => {
-    factory = {
-      create: vi.fn((status: string): MarkerConfig => {
-        const element = document.createElement('div');
-        element.dataset['status'] = status;
-        return { element, color: '', statusClass: `marker--${status}` };
-      }),
-      update: vi.fn(),
-    };
-    TestBed.configureTestingModule({
-      providers: [MapMarkerSyncService, { provide: MapMarkerFactory, useValue: factory }],
-    });
+    removed.length = 0;
     service = TestBed.inject(MapMarkerSyncService);
+    factory = TestBed.inject(MapMarkerFactory);
   });
 
-  afterEach(() => {
-    service.clear();
-    TestBed.resetTestingModule();
-  });
+  afterEach(() => service.clear());
 
-  it('syncMarkers uses each business hours, not an empty array', () => {
-    const openBiz = makeBusiness('open-biz');
-    const closedBiz = makeBusiness('closed-biz');
-    const hoursById = new Map<string, BusinessHours[]>([
-      [openBiz.id, [makeHours(openBiz.id, 1, '09:00', '20:00')]],
-      [closedBiz.id, [makeHours(closedBiz.id, 1, '09:00', '20:00', true)]],
+  it('creates one marker per business with its status and label', () => {
+    const create = vi.spyOn(factory, 'create');
+
+    service.syncMarkers(map, [item('a'), item('b', 'closed')], () => undefined);
+
+    expect(create.mock.calls).toEqual([
+      ['open', 'a, open'],
+      ['closed', 'b, closed'],
     ]);
-
-    service.syncMarkers(map, [openBiz, closedBiz], hoursById, () => undefined, mondayNoon);
-
-    const statuses = factory.create.mock.calls.map((call) => call[0]);
-    expect(statuses).toEqual(['open', 'closed']);
   });
 
-  it('syncMarkers would mark every business closed if hours were empty', () => {
-    const biz = makeBusiness('open-biz');
-    const hoursById = new Map<string, BusinessHours[]>();
+  it('updates existing markers instead of recreating them', () => {
+    service.syncMarkers(map, [item('a')], () => undefined);
+    const create = vi.spyOn(factory, 'create');
+    const update = vi.spyOn(factory, 'update');
 
-    service.syncMarkers(map, [biz], hoursById, () => undefined, mondayNoon);
+    service.syncMarkers(map, [item('a', 'closing-soon')], () => undefined);
 
-    expect(factory.create).toHaveBeenCalledWith('closed');
+    expect(create).not.toHaveBeenCalled();
+    expect(update).toHaveBeenCalledWith(expect.any(HTMLElement), 'closing-soon', 'a, closing-soon');
+  });
+
+  it('removes markers of businesses that are no longer listed', () => {
+    service.syncMarkers(map, [item('a'), item('b')], () => undefined);
+
+    service.syncMarkers(map, [item('b')], () => undefined);
+
+    expect(removed).toEqual(['a, open']);
+  });
+
+  it('calls back with the business when a marker is clicked', () => {
+    const onClick = vi.fn();
+    const create = vi.spyOn(factory, 'create');
+    service.syncMarkers(map, [item('a')], onClick);
+
+    create.mock.results[0].value.click();
+
+    expect(onClick).toHaveBeenCalledWith(expect.objectContaining({ id: 'a' }));
+  });
+
+  it('keeps the selection highlighted across syncs', () => {
+    const setSelected = vi.spyOn(factory, 'setSelected');
+    service.syncMarkers(map, [item('a'), item('b')], () => undefined);
+
+    service.select('b');
+    service.syncMarkers(map, [item('a'), item('b')], () => undefined);
+
+    expect(setSelected).toHaveBeenLastCalledWith(expect.any(HTMLElement), true);
   });
 });

@@ -1,44 +1,65 @@
-import { ChangeDetectionStrategy, Component, input, output, computed } from '@angular/core';
-import { TranslocoModule } from '@jsverse/transloco';
-import { LumaBottomSheet, LumaButton, StatusBadge } from '@design-system';
-import type { Business, BusinessHours, Promotion } from '@shared/business/models/business.model';
-import { getBusinessStatus } from '@shared/business/utils/business-status.util';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
+import {
+  LumaAvatar,
+  LumaBottomSheet,
+  LumaButton,
+  LumaIcon,
+  LumaIconButton,
+  LumaRatingStars,
+  StatusBadge,
+} from '@design-system';
+import type { BusinessHours, Promotion } from '@shared/business/models/business.model';
+import type { NearbyBusiness } from '../../state/nearby-businesses.store';
+import { formatDistance, walkingMinutes } from '../../utils/distance.util';
 
 /**
- * BusinessSheetComponent — bottom sheet shown when a map marker is tapped.
- * Displays essential business info: name, status, hours, address, phone,
- * active promotion, and action buttons.
+ * BusinessSheetComponent — bottom sheet shown when a business is chosen on
+ * the map: logo, name, category, status, rating, distance and walking time,
+ * active promotion, today's hours and actions.
  */
 @Component({
   selector: 'app-business-sheet',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaBottomSheet, LumaButton, StatusBadge],
+  imports: [
+    TranslocoModule,
+    LumaAvatar,
+    LumaBottomSheet,
+    LumaButton,
+    LumaIcon,
+    LumaIconButton,
+    LumaRatingStars,
+    StatusBadge,
+  ],
   templateUrl: './business-sheet.component.html',
-  styleUrl: './business-sheet.component.css',
 })
 export class BusinessSheetComponent {
-  readonly business = input<Business | null>(null);
+  private readonly transloco = inject(TranslocoService);
+  private readonly lang = toSignal(this.transloco.langChanges$, {
+    initialValue: this.transloco.getActiveLang(),
+  });
+
+  readonly item = input<NearbyBusiness | null>(null);
   readonly hours = input<BusinessHours[]>([]);
   readonly promotion = input<Promotion | null>(null);
-  readonly distanceKm = input<number | null>(null);
   readonly open = input<boolean>(false);
 
   readonly closed = output<void>();
 
-  protected readonly status = computed(() => {
-    const b = this.business();
-    if (!b) return 'closed' as const;
-    return getBusinessStatus(this.hours());
-  });
-
   protected readonly todayHours = computed(() => {
     const day = new Date().getDay() as BusinessHours['day_of_week'];
-    return this.hours().find((h) => h.day_of_week === day) ?? null;
+    const today = this.hours().find((h) => h.day_of_week === day);
+    return today && !today.is_closed
+      ? { from: today.opens_at.slice(0, 5), to: today.closes_at.slice(0, 5) }
+      : null;
   });
 
-  protected readonly formattedDistance = computed(() => {
-    const d = this.distanceKm();
-    return d !== null ? d.toFixed(1) : null;
+  protected readonly distance = computed(() => {
+    const km = this.item()?.distanceKm ?? null;
+    return km === null
+      ? null
+      : { distance: formatDistance(km, this.lang()), minutes: walkingMinutes(km) };
   });
 }

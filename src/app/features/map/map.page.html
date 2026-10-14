@@ -1,69 +1,62 @@
-<div class="map-wrapper">
-  <!-- Map canvas: outside *transloco so the static ViewChild resolves in ngOnInit -->
-  <div #mapContainer class="map-canvas" [attr.aria-label]="'map.canvasLabel' | transloco"></div>
-
-  <ng-container *transloco="let t">
-    <!-- Status notices: location, loading and empty state -->
-    @if (notices().length) {
-    <div class="map-overlay map-overlay--info" role="status" aria-live="polite">
-      @for (key of notices(); track key) {
-      <p class="map-overlay__text">{{ t(key) }}</p>
-      }
-    </div>
-    }
-
-    <!-- Error state -->
-    @if (errorKey() && !loading()) {
-    <div class="map-overlay map-overlay--error" role="alert">
-      <p class="map-overlay__text">{{ t(errorKey()!) }}</p>
-      <app-luma-button variant="primary" size="sm" (clicked)="retryLoad()">
-        {{ t('map.retry') }}
-      </app-luma-button>
-    </div>
-    }
-
-    <!-- Location permission prompt -->
-    @if (showLocationPrompt()) {
+<div class="flex h-full flex-col">
+  <div class="relative min-h-75 flex-[0_0_54%] overflow-hidden bg-map-canvas">
+    <!-- Map canvas: outside *transloco so the static ViewChild resolves in ngOnInit -->
     <div
-      class="map-location-prompt"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="location-prompt-title"
-    >
-      <h2 id="location-prompt-title" class="map-location-prompt__title">
-        {{ t('map.locationPermission.title') }}
-      </h2>
-      <p class="map-location-prompt__reason">{{ t('map.locationPermission.reason') }}</p>
-      <div class="map-location-prompt__actions">
-        <app-luma-button variant="primary" size="md" (clicked)="onAllowLocation()">
-          {{ t('map.locationPermission.allow') }}
-        </app-luma-button>
-        <app-luma-button variant="ghost" size="md" (clicked)="showLocationPrompt.set(false)">
-          {{ t('map.locationPermission.skip') }}
-        </app-luma-button>
-      </div>
-    </div>
-    }
+      #mapContainer
+      class="map-canvas absolute inset-0"
+      role="region"
+      [attr.aria-label]="'map.canvasLabel' | transloco"
+    ></div>
 
-    <!-- Centre-on-me FAB -->
-    <div class="map-fab">
-      <app-luma-button
-        variant="primary"
-        size="md"
-        [ariaLabel]="t('map.centerOnMe')"
-        (clicked)="onCentreOnMe()"
-        ><app-luma-icon name="locate"
-      /></app-luma-button>
-    </div>
-  </ng-container>
+    <ng-container *transloco="let t">
+      @if (mapFailed()) {
+      <div class="absolute inset-0 z-10 flex items-center justify-center bg-canvas" role="alert">
+        <app-luma-empty-state
+          icon="map"
+          tone="error"
+          [heading]="t('map.mapUnavailableTitle')"
+          [description]="t('map.mapUnavailable')"
+        >
+          <app-luma-button (clicked)="startMap()">{{ t('map.retry') }}</app-luma-button>
+        </app-luma-empty-state>
+      </div>
+      } @else {
+      <app-map-top-bar
+        [categories]="store.categories()"
+        [zoneKey]="zoneKey()"
+        [(query)]="store.query"
+        [(category)]="store.category"
+      />
+      <app-map-controls
+        (locate)="onCentreOnMe()"
+        (zoomIn)="camera.zoomIn()"
+        (zoomOut)="camera.zoomOut()"
+      />
+      } @if (showLocationPrompt()) {
+      <app-location-prompt (allow)="onAllowLocation()" (skip)="showLocationPrompt.set(false)" />
+      }
+    </ng-container>
+  </div>
+
+  <div class="flex-1 overflow-y-auto bg-canvas pt-3">
+    <app-nearby-panel
+      [items]="store.items()"
+      [loading]="store.loading()"
+      [errorKey]="store.errorKey()"
+      [filtersActive]="store.filtersActive()"
+      [selectedId]="selection.selectedId()"
+      (selectBusiness)="selection.select($event)"
+      (retry)="reload()"
+      (clearFilters)="store.clearFilters()"
+      (openAi)="openAi()"
+    />
+  </div>
 </div>
 
-<!-- Business detail bottom sheet -->
 <app-business-sheet
-  [business]="selectedBusiness()"
-  [hours]="selectedHours()"
-  [promotion]="selectedPromotion()"
-  [distanceKm]="distanceKm()"
-  [open]="sheetOpen()"
-  (closed)="sheetOpen.set(false)"
+  [item]="selection.selected()"
+  [hours]="selection.hours()"
+  [promotion]="selection.promotion()"
+  [open]="selection.open()"
+  (closed)="selection.close()"
 />

@@ -39,6 +39,18 @@ describe('LumaIconButton', () => {
     expect(button.getAttribute('aria-disabled')).toBe('true');
   });
 
+  it('renders a labelled link when given an href', () => {
+    const fixture = TestBed.createComponent(LumaIconButton);
+    fixture.componentRef.setInput('icon', 'phone');
+    fixture.componentRef.setInput('label', 'Llamar');
+    fixture.componentRef.setInput('href', 'tel:+573001234567');
+    fixture.detectChanges();
+
+    const link = (fixture.nativeElement as HTMLElement).querySelector('a');
+    expect(link?.getAttribute('href')).toBe('tel:+573001234567');
+    expect(link?.getAttribute('aria-label')).toBe('Llamar');
+  });
+
   it('exposes the pressed state when used as a toggle', () => {
     const { button } = render({ pressed: true });
 

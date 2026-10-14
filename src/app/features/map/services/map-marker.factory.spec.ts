@@ -1,73 +1,57 @@
-import { describe, it, expect, beforeEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { MapMarkerFactory } from './map-marker.factory';
+import { beforeEach, describe, expect, it } from 'vitest';
 import type { BusinessStatus } from '@shared/business/models/business.model';
+import { MapMarkerFactory } from './map-marker.factory';
 
 describe('MapMarkerFactory', () => {
   let factory: MapMarkerFactory;
+  const statuses: BusinessStatus[] = ['open', 'closed', 'opening-soon', 'closing-soon'];
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ providers: [MapMarkerFactory] });
     factory = TestBed.inject(MapMarkerFactory);
   });
 
-  const statuses: BusinessStatus[] = ['open', 'closed', 'opening-soon', 'closing-soon'];
+  it('creates a focusable button labelled for screen readers', () => {
+    const marker = factory.create('open', 'La Casona, Abierto');
 
-  it('creates a marker element for each status', () => {
+    expect(marker.tagName).toBe('BUTTON');
+    expect(marker.type).toBe('button');
+    expect(marker.getAttribute('aria-label')).toBe('La Casona, Abierto');
+  });
+
+  it('applies one status class per status', () => {
     for (const status of statuses) {
-      const { element } = factory.create(status);
-      expect(element).toBeInstanceOf(HTMLElement);
-      expect(element.tagName).toBe('DIV');
+      const marker = factory.create(status, 'x');
+      expect(marker.classList).toContain('luma-marker');
+      expect(marker.classList).toContain(`luma-marker--${status}`);
     }
   });
 
-  it('applies the base luma-marker class to every marker', () => {
-    for (const status of statuses) {
-      const { element } = factory.create(status);
-      expect(element.classList.contains('luma-marker')).toBe(true);
-    }
+  it('draws the pin with a decorative icon and no inline colours', () => {
+    const marker = factory.create('open', 'x');
+
+    expect(marker.querySelector('.luma-marker__pin svg')?.getAttribute('aria-hidden')).toBe('true');
+    expect(marker.getAttribute('style')).toBeNull();
   });
 
-  it('assigns the correct status class for each status', () => {
-    expect(factory.create('open').statusClass).toBe('marker--open');
-    expect(factory.create('closed').statusClass).toBe('marker--closed');
-    expect(factory.create('opening-soon').statusClass).toBe('marker--opening-soon');
-    expect(factory.create('closing-soon').statusClass).toBe('marker--closing-soon');
+  it('update() swaps the status class and label', () => {
+    const marker = factory.create('open', 'La Casona, Abierto');
+
+    factory.update(marker, 'closed', 'La Casona, Cerrado');
+
+    expect(marker.classList).toContain('luma-marker--closed');
+    expect(marker.classList).not.toContain('luma-marker--open');
+    expect(marker.getAttribute('aria-label')).toBe('La Casona, Cerrado');
   });
 
-  it('sets the status class on the element', () => {
-    for (const status of statuses) {
-      const { element, statusClass } = factory.create(status);
-      expect(element.classList.contains(statusClass)).toBe(true);
-    }
-  });
+  it('marks the selected marker', () => {
+    const marker = factory.create('open', 'x');
 
-  it('maps each status to a distinct CSS token', () => {
-    const tokens = statuses.map((s) => factory.getStatusToken(s));
-    const unique = new Set(tokens);
-    expect(unique.size).toBe(statuses.length);
-  });
+    factory.setSelected(marker, true);
+    expect(marker.classList).toContain('luma-marker--selected');
+    expect(marker.getAttribute('aria-pressed')).toBe('true');
 
-  it('update() replaces the status class without touching base class', () => {
-    const { element } = factory.create('open');
-    factory.update(element, 'closed');
-    expect(element.classList.contains('luma-marker')).toBe(true);
-    expect(element.classList.contains('marker--closed')).toBe(true);
-    expect(element.classList.contains('marker--open')).toBe(false);
-  });
-
-  it('update() can cycle through all four statuses', () => {
-    const { element } = factory.create('open');
-    for (const status of statuses) {
-      factory.update(element, status);
-      expect(element.classList.contains(factory.getStatusClass(status))).toBe(true);
-    }
-  });
-
-  it('sets aria-hidden on every created marker', () => {
-    for (const status of statuses) {
-      const { element } = factory.create(status);
-      expect(element.getAttribute('aria-hidden')).toBe('true');
-    }
+    factory.setSelected(marker, false);
+    expect(marker.classList).not.toContain('luma-marker--selected');
   });
 });

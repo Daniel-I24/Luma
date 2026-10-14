@@ -9,6 +9,7 @@ export class MapCameraService {
   private map!: maplibregl.Map;
   private lastFetchCentre = PASTO_CENTRE;
   private moveDebounce: ReturnType<typeof setTimeout> | null = null;
+  private userMarker: maplibregl.Marker | null = null;
 
   get instance(): maplibregl.Map {
     return this.map;
@@ -26,11 +27,32 @@ export class MapCameraService {
 
   destroy(): void {
     if (this.moveDebounce) clearTimeout(this.moveDebounce);
+    this.userMarker = null;
     this.map?.remove();
   }
 
   flyTo(lat: number, lng: number): void {
     this.map.flyTo({ center: [lng, lat], zoom: DEFAULT_ZOOM });
+  }
+
+  /** Places (or moves) the user's position dot. */
+  showUser(lat: number, lng: number): void {
+    if (!this.userMarker) {
+      const element = document.createElement('div');
+      element.className = 'luma-user-dot';
+      element.setAttribute('aria-hidden', 'true');
+      this.userMarker = new maplibregl.Marker({ element }).setLngLat([lng, lat]).addTo(this.map);
+      return;
+    }
+    this.userMarker.setLngLat([lng, lat]);
+  }
+
+  zoomIn(): void {
+    this.map.zoomIn();
+  }
+
+  zoomOut(): void {
+    this.map.zoomOut();
   }
 
   markFetched(lat: number, lng: number): void {
