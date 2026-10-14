@@ -16,11 +16,11 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--color-text-muted);
+  color: var(--color-fg-muted);
 }
 
 .card-body {
   margin: 0;
   font-size: 0.875rem;
-  color: var(--color-text);
+  color: var(--color-fg);
 }

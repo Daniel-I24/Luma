@@ -5,7 +5,7 @@
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background-color: var(--color-bg);
+  background-color: var(--color-canvas);
 }
 
 .map-canvas {
@@ -45,7 +45,7 @@
 
 .map-overlay__text {
   font-size: 0.875rem;
-  color: var(--color-text);
+  color: var(--color-fg);
   margin: 0;
 }
 
@@ -71,13 +71,13 @@
   margin: 0 0 var(--spacing-2);
   font-size: 1rem;
   font-weight: 700;
-  color: var(--color-text);
+  color: var(--color-fg);
 }
 
 .map-location-prompt__reason {
   margin: 0 0 var(--spacing-4);
   font-size: 0.875rem;
-  color: var(--color-text-muted);
+  color: var(--color-fg-muted);
   line-height: 1.5;
 }
 
@@ -112,14 +112,14 @@
 }
 
 :global(.luma-marker--open) {
-  background-color: var(--status-open);
+  background-color: var(--color-status-open);
 }
 :global(.luma-marker--closed) {
-  background-color: var(--status-closed);
+  background-color: var(--color-status-closed);
 }
 :global(.luma-marker--opening-soon) {
-  background-color: var(--status-opening-soon);
+  background-color: var(--color-status-opening-soon);
 }
 :global(.luma-marker--closing-soon) {
-  background-color: var(--status-closing-soon);
+  background-color: var(--color-status-closing-soon);
 }

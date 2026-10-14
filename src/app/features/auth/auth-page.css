@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: center;
   padding: var(--spacing-5);
-  background-color: var(--color-bg);
+  background-color: var(--color-canvas);
 }
 
 .auth-page app-luma-card {
@@ -23,13 +23,13 @@
   margin: 0 0 var(--spacing-2);
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--color-text);
+  color: var(--color-fg);
 }
 
 .auth-subtitle {
   margin: 0;
   font-size: 0.875rem;
-  color: var(--color-text-muted);
+  color: var(--color-fg-muted);
 }
 
 .auth-form {
@@ -63,7 +63,7 @@
 .auth-switch {
   margin: 0;
   font-size: 0.875rem;
-  color: var(--color-text-muted);
+  color: var(--color-fg-muted);
   text-align: center;
 }
 
@@ -91,11 +91,11 @@
   margin: 0;
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--color-text);
+  color: var(--color-fg);
 }
 
 .auth-success__message {
   margin: 0;
   font-size: 0.875rem;
-  color: var(--color-text-muted);
+  color: var(--color-fg-muted);
 }

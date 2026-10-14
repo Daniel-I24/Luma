@@ -13,7 +13,7 @@
   margin: 0;
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--color-text);
+  color: var(--color-fg);
 }
 
 .settings-section {
@@ -28,7 +28,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--color-text-muted);
+  color: var(--color-fg-muted);
 }
 
 .settings-options {

@@ -70,7 +70,7 @@
 
 .luma-btn--ghost {
   background-color: transparent;
-  color: var(--color-text);
+  color: var(--color-fg);
   border-color: transparent;
 }
 

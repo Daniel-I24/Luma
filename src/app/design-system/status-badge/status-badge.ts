@@ -14,7 +14,7 @@ const STATUS_LABEL_KEY: Record<BusinessStatus, string> = {
  * StatusBadge — displays the operational status of a business with its
  * translated label (status.*).
  *
- * Maps to the --status-* design tokens.
+ * Maps to the --color-status-* design tokens.
  */
 @Component({
   selector: 'app-status-badge',

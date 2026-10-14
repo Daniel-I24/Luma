@@ -1,42 +1,52 @@
 /* ─────────────────────────────────────────────
-   THEME: Midnight (dark)
+   THEME: Midnight (dark premium)
    Applied when <html data-theme="midnight">
 ───────────────────────────────────────────── */
 [data-theme='midnight'] {
-  --color-bg: #0d0f14;
-  --color-surface: #161b26;
-  --color-surface-elevated: #1e2535;
-  --color-text: #f1f5f9;
-  --color-text-muted: #94a3b8;
-  --color-primary: #7c5cfc;
-  --color-primary-hover: #6b4df0;
+  --color-canvas: #0c0d18;
+  --color-canvas-subtle: #101120;
+  --color-canvas-muted: #141628;
+  --color-surface: #181a2e;
+  --color-surface-elevated: #1e2038;
+  --color-surface-selected: #252748;
+  --color-overlay: rgb(0 0 0 / 0.6);
+  --color-map-canvas: #181a2e;
+
+  --color-fg: #eeeef8;
+  --color-fg-muted: #9092b8;
+  --color-fg-subtle: #8e8fa5;
+  --color-fg-disabled: #363858;
+  --color-fg-brand: #8b99fd;
+  --color-fg-accent: #7887fd;
+  --color-fg-inverse: #0a0b1a;
+
+  --color-border: #28294a;
+  --color-border-strong: #3c3e60;
+  --color-border-subtle: #1a1c34;
+  --color-border-focus: #8b99fd;
+
+  --color-primary: #5465ec;
+  --color-primary-hover: #3a4de8;
+  --color-primary-pressed: #2f3fd0;
   --color-primary-fg: #ffffff;
-  --color-accent: #a78bfa;
-  --color-accent-hover: #8b5cf6;
-  --color-accent-fg: #1e1b4b;
-  --color-border: #2d3748;
-  --color-border-focus: #a78bfa;
-  --color-success: #22c55e;
-  --color-success-bg: #052e16;
+  --color-secondary: #252748;
+  --color-secondary-fg: #8b99fd;
+
+  --color-nav: #12132a;
+  --color-nav-active: #7887fd;
+  --color-nav-active-bg: #252748;
+  --color-nav-inactive: #7b7d98;
+
   --color-success-fg: #86efac;
-  --color-warning: #f59e0b;
-  --color-warning-bg: #1c1107;
   --color-warning-fg: #fcd34d;
-  --color-danger: #f87171;
-  --color-danger-bg: #1f0707;
   --color-danger-fg: #fca5a5;
-  --color-danger-hover: #ef4444;
-  --status-open: #22c55e;
-  --status-open-bg: #052e16;
-  --status-open-fg: #86efac;
-  --status-closed: #94a3b8;
-  --status-closed-bg: #1e2535;
-  --status-closed-fg: #cbd5e1;
-  --status-opening-soon: #f59e0b;
-  --status-opening-soon-bg: #1c1107;
-  --status-opening-soon-fg: #fcd34d;
-  --status-closing-soon: #fb923c;
-  --status-closing-soon-bg: #1c0f07;
-  --status-closing-soon-fg: #fed7aa;
-  --color-overlay: rgb(0 0 0 / 0.7);
+  --color-info-fg: #93c5fd;
+  --color-status-open-fg: #86efac;
+  --color-status-closing-soon-fg: #fcd34d;
+  --color-status-closed-fg: #fca5a5;
+  --color-status-opening-soon-fg: #93c5fd;
+
+  --shadow-card: 0 2px 12px rgb(0 0 0 / 0.45), 0 1px 3px rgb(0 0 0 / 0.3);
+  --shadow-sheet: 0 -4px 32px rgb(0 0 0 / 0.55);
+  --shadow-float: 0 4px 20px rgb(92 110 252 / 0.32);
 }

@@ -49,6 +49,6 @@ export interface Promotion {
 
 /**
  * BusinessStatus — the four states shown on the Luma map marker.
- * Maps directly to the --status-* design tokens.
+ * Maps directly to the --color-status-* design tokens.
  */
 export type BusinessStatus = 'open' | 'closed' | 'opening-soon' | 'closing-soon';

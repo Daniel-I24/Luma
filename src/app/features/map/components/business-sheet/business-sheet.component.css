@@ -15,7 +15,7 @@
 
 .biz-sheet__distance {
   font-size: 0.75rem;
-  color: var(--color-text-muted);
+  color: var(--color-fg-muted);
 }
 
 .biz-sheet__row {
@@ -32,18 +32,18 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--color-text-muted);
+  color: var(--color-fg-muted);
   flex-shrink: 0;
 }
 
 .biz-sheet__value {
   font-size: 0.875rem;
-  color: var(--color-text);
+  color: var(--color-fg);
   text-align: right;
 }
 
 .biz-sheet__value--muted {
-  color: var(--color-text-muted);
+  color: var(--color-fg-muted);
 }
 
 .biz-sheet__link {
@@ -85,6 +85,6 @@
 
 .biz-sheet__hint {
   font-size: 0.75rem;
-  color: var(--color-text-muted);
+  color: var(--color-fg-muted);
   text-align: center;
 }

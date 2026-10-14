@@ -10,7 +10,7 @@
 .luma-input__label {
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--color-text);
+  color: var(--color-fg);
   line-height: 1.25;
 }
 
@@ -51,7 +51,7 @@
   border: none;
   outline: none;
   background: transparent;
-  color: var(--color-text);
+  color: var(--color-fg);
   font-family: var(--font-sans);
   font-size: 0.875rem;
   line-height: 1.5;
@@ -59,7 +59,7 @@
 }
 
 .luma-input__field::placeholder {
-  color: var(--color-text-muted);
+  color: var(--color-fg-muted);
 }
 
 .luma-input__field:disabled {
@@ -68,7 +68,7 @@
 
 .luma-input__hint {
   font-size: 0.75rem;
-  color: var(--color-text-muted);
+  color: var(--color-fg-muted);
 }
 
 .luma-input__error {

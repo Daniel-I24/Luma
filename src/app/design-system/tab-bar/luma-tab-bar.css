@@ -25,7 +25,7 @@
   gap: var(--spacing-1);
   min-height: var(--spacing-16);
   padding: var(--spacing-2) var(--spacing-1);
-  color: var(--color-text-muted);
+  color: var(--color-fg-muted);
   font-size: 0.75rem;
   font-weight: 500;
   text-decoration: none;
@@ -33,7 +33,7 @@
 }
 
 .luma-tab-bar__link:hover {
-  color: var(--color-text);
+  color: var(--color-fg);
 }
 
 .luma-tab-bar__link:focus-visible {

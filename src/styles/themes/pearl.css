@@ -1,42 +1,33 @@
 /* ─────────────────────────────────────────────
-   THEME: Pearl (light, warm neutral)
+   THEME: Pearl (clean, minimal)
    Applied when <html data-theme="pearl">
 ───────────────────────────────────────────── */
 [data-theme='pearl'] {
-  --color-bg: #fafaf9;
+  --color-canvas: #fafafa;
+  --color-canvas-subtle: #f4f4f4;
+  --color-canvas-muted: #efefef;
   --color-surface: #ffffff;
-  --color-surface-elevated: #f5f5f4;
-  --color-text: #1c1917;
-  --color-text-muted: #78716c;
-  --color-primary: #2a1f8c;
-  --color-primary-hover: #231a78;
-  --color-primary-fg: #ffffff;
-  --color-accent: #7c5cfc;
-  --color-accent-hover: #6b4df0;
-  --color-accent-fg: #ffffff;
-  --color-border: #e7e5e4;
-  --color-border-focus: #7c5cfc;
-  --color-success: #15803d;
-  --color-success-bg: #f0fdf4;
-  --color-success-fg: #14532d;
-  --color-warning: #b45309;
-  --color-warning-bg: #fffbeb;
-  --color-warning-fg: #78350f;
-  --color-danger: #b91c1c;
-  --color-danger-bg: #fff1f2;
-  --color-danger-fg: #7f1d1d;
-  --color-danger-hover: #991b1b;
-  --status-open: #15803d;
-  --status-open-bg: #f0fdf4;
-  --status-open-fg: #14532d;
-  --status-closed: #78716c;
-  --status-closed-bg: #f5f5f4;
-  --status-closed-fg: #44403c;
-  --status-opening-soon: #b45309;
-  --status-opening-soon-bg: #fffbeb;
-  --status-opening-soon-fg: #78350f;
-  --status-closing-soon: #c2410c;
-  --status-closing-soon-bg: #fff7ed;
-  --status-closing-soon-fg: #7c2d12;
-  --color-overlay: rgb(0 0 0 / 0.45);
+  --color-surface-elevated: #ffffff;
+  --color-surface-selected: #f0f0f8;
+  --color-map-canvas: #ededea;
+
+  --color-fg: #14161e;
+  --color-fg-muted: #484c6a;
+  --color-fg-subtle: #6b6c7f;
+  --color-fg-accent: #5161de;
+  --color-fg-disabled: #d0d2e4;
+
+  --color-border: #e2e4f0;
+  --color-border-strong: #9ea2c0;
+  --color-border-subtle: #f0f0f8;
+
+  --color-secondary: #f0f0f8;
+  --color-secondary-fg: #14174a;
+
+  --color-nav-active-bg: #f0f0f8;
+  --color-nav-inactive: #737589;
+
+  --shadow-card: 0 1px 4px rgb(0 0 0 / 0.06), 0 1px 2px rgb(0 0 0 / 0.04);
+  --shadow-sheet: 0 -2px 16px rgb(0 0 0 / 0.08);
+  --shadow-float: 0 4px 12px rgb(20 23 74 / 0.15);
 }

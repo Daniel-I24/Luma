@@ -1,42 +1,38 @@
 /* ─────────────────────────────────────────────
-   THEME: Sunset (warm vibrant)
+   THEME: Sunset (warm, energetic)
    Applied when <html data-theme="sunset">
 ───────────────────────────────────────────── */
 [data-theme='sunset'] {
-  --color-bg: #fff8f5;
+  --color-canvas: #fff8f2;
+  --color-canvas-subtle: #fff0e6;
+  --color-canvas-muted: #ffe8d8;
   --color-surface: #ffffff;
-  --color-surface-elevated: #fef3ee;
-  --color-text: #1c0a00;
-  --color-text-muted: #92400e;
+  --color-surface-elevated: #fffcfa;
+  --color-surface-selected: #fff0e6;
+  --color-map-canvas: #ede8e0;
+
+  --color-fg: #1a0e05;
+  --color-fg-muted: #7c5840;
+  --color-fg-subtle: #846859;
+  --color-fg-accent: #5161de;
+  --color-fg-disabled: #ddc5b4;
+  --color-fg-brand: #c2410c;
+
+  --color-border: #f0d5c2;
+  --color-border-strong: #d4a88c;
+  --color-border-subtle: #faeee5;
+
   --color-primary: #c2410c;
-  --color-primary-hover: #9a3412;
-  --color-primary-fg: #ffffff;
-  --color-accent: #7c5cfc;
-  --color-accent-hover: #6b4df0;
-  --color-accent-fg: #ffffff;
-  --color-border: #fed7aa;
-  --color-border-focus: #7c5cfc;
-  --color-success: #15803d;
-  --color-success-bg: #f0fdf4;
-  --color-success-fg: #14532d;
-  --color-warning: #b45309;
-  --color-warning-bg: #fffbeb;
-  --color-warning-fg: #78350f;
-  --color-danger: #b91c1c;
-  --color-danger-bg: #fff1f2;
-  --color-danger-fg: #7f1d1d;
-  --color-danger-hover: #991b1b;
-  --status-open: #15803d;
-  --status-open-bg: #f0fdf4;
-  --status-open-fg: #14532d;
-  --status-closed: #92400e;
-  --status-closed-bg: #fef3ee;
-  --status-closed-fg: #78350f;
-  --status-opening-soon: #b45309;
-  --status-opening-soon-bg: #fffbeb;
-  --status-opening-soon-fg: #78350f;
-  --status-closing-soon: #c2410c;
-  --status-closing-soon-bg: #fff7ed;
-  --status-closing-soon-fg: #7c2d12;
-  --color-overlay: rgb(0 0 0 / 0.45);
+  --color-primary-hover: #b53a0a;
+  --color-primary-pressed: #9a3008;
+  --color-secondary: #fff0e6;
+  --color-secondary-fg: #c2410c;
+
+  --color-nav-active: #c2410c;
+  --color-nav-active-bg: #fff0e6;
+  --color-nav-inactive: #8e705f;
+
+  --shadow-card: 0 2px 8px rgb(194 65 12 / 0.08), 0 1px 3px rgb(0 0 0 / 0.05);
+  --shadow-sheet: 0 -4px 24px rgb(194 65 12 / 0.1);
+  --shadow-float: 0 4px 16px rgb(194 65 12 / 0.22);
 }

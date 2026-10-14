@@ -1,13 +1,60 @@
 /* ─────────────────────────────────────────────
-   LUMA DESIGN TOKENS
-   Single source of truth for all visual values.
-   Components must use only these variables — no
-   hardcoded colors, sizes, or shadows allowed.
+   LUMA DESIGN TOKENS — source: docs/design-prototype/css/tokens.css
+   Single source of truth for all visual values. Components use only
+   these tokens (Tailwind utilities or var()); never literal values.
+   Values below are the Indigo theme (default).
 ───────────────────────────────────────────── */
 
-@theme {
+@theme static {
+  /* Only Luma's semantic colors exist: no default Tailwind palette. */
+  --color-*: initial;
+
   /* === Typography === */
-  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif;
+
+  --text-display: 32px;
+  --text-display--line-height: 1.2;
+  --text-display--letter-spacing: -0.02em;
+  --text-display--font-weight: 800;
+  --text-h1: 28px;
+  --text-h1--line-height: 1.25;
+  --text-h1--letter-spacing: -0.015em;
+  --text-h1--font-weight: 700;
+  --text-h2: 24px;
+  --text-h2--line-height: 1.3;
+  --text-h2--letter-spacing: -0.01em;
+  --text-h2--font-weight: 700;
+  --text-h3: 20px;
+  --text-h3--line-height: 1.35;
+  --text-h3--letter-spacing: -0.005em;
+  --text-h3--font-weight: 600;
+  --text-h4: 18px;
+  --text-h4--line-height: 1.4;
+  --text-h4--font-weight: 600;
+  --text-title: 16px;
+  --text-title--line-height: 1.5;
+  --text-title--font-weight: 600;
+  --text-body-lg: 16px;
+  --text-body-lg--line-height: 1.6;
+  --text-body: 14px;
+  --text-body--line-height: 1.6;
+  --text-body-sm: 13px;
+  --text-body-sm--line-height: 1.55;
+  --text-label-lg: 13px;
+  --text-label-lg--line-height: 1.4;
+  --text-label-lg--letter-spacing: 0.01em;
+  --text-label-lg--font-weight: 600;
+  --text-label: 12px;
+  --text-label--line-height: 1.4;
+  --text-label--letter-spacing: 0.02em;
+  --text-label--font-weight: 600;
+  --text-caption: 11px;
+  --text-caption--line-height: 1.4;
+  --text-caption--letter-spacing: 0.01em;
+  --text-price: 20px;
+  --text-price--line-height: 1.2;
+  --text-price--letter-spacing: -0.01em;
+  --text-price--font-weight: 700;
 
   /* === Spacing scale (base 4 px) === */
   --spacing-0: 0px;
@@ -19,68 +66,133 @@
   --spacing-6: 24px;
   --spacing-8: 32px;
   --spacing-10: 40px;
+  --spacing-11: 44px; /* minimum touch target */
   --spacing-12: 48px;
   --spacing-16: 64px;
+  --spacing-20: 80px;
 
   /* === Border radius === */
   --radius-none: 0px;
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
   --radius-2xl: 24px;
   --radius-full: 9999px;
 
   /* === Shadows === */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.06);
+  --shadow-sm: 0 1px 4px rgb(0 0 0 / 0.08), 0 1px 2px rgb(0 0 0 / 0.06);
+  --shadow-md: 0 4px 12px rgb(0 0 0 / 0.1), 0 2px 4px rgb(0 0 0 / 0.06);
+  --shadow-lg: 0 8px 24px rgb(0 0 0 / 0.12), 0 4px 8px rgb(0 0 0 / 0.08);
+  --shadow-xl: 0 16px 40px rgb(0 0 0 / 0.16), 0 8px 16px rgb(0 0 0 / 0.1);
+  --shadow-card: 0 2px 8px rgb(20 23 74 / 0.08), 0 1px 3px rgb(0 0 0 / 0.05);
+  --shadow-sheet: 0 -4px 24px rgb(20 23 74 / 0.12);
+  --shadow-float: 0 4px 16px rgb(20 23 74 / 0.22);
+  --shadow-brand: 0 4px 16px rgb(20 23 74 / 0.35);
 
-  /* === Animation durations === */
+  /* === Motion === */
   --duration-fast: 150ms;
   --duration-normal: 250ms;
-  --duration-slow: 350ms;
+  --duration-slow: 400ms;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+  --animate-fade-in-up: fade-in-up var(--duration-normal) var(--ease-standard) both;
 
-  /* === Semantic color tokens (Indigo theme — default) === */
-  --color-bg: #f4f5fb;
+  /* === Backgrounds and surfaces === */
+  --color-canvas: #f2f2f7;
+  --color-canvas-subtle: #eaeaf2;
+  --color-canvas-muted: #e0e0ec;
   --color-surface: #ffffff;
   --color-surface-elevated: #ffffff;
-  --color-text: #111827;
-  --color-text-muted: #6b7280;
-  --color-primary: #2a1f8c;
-  --color-primary-hover: #231a78;
+  --color-surface-selected: #ecedf5;
+  --color-overlay: rgb(0 0 0 / 0.4);
+  --color-map-canvas: #e6e7e0;
+
+  /* === Text === */
+  --color-fg: #0a0b1a;
+  --color-fg-muted: #3d4268;
+  --color-fg-subtle: #636882; /* prototype #8a90b4, darkened for AA */
+  --color-fg-disabled: #c4c7dc;
+  --color-fg-brand: #14174a;
+  --color-fg-accent: #4e5ed6; /* prototype #5c6efc, darkened for AA */
+  --color-fg-inverse: #ffffff;
+
+  /* === Borders === */
+  --color-border: #d8daea;
+  --color-border-strong: #a8adc8;
+  --color-border-subtle: #ebebf4;
+  --color-border-focus: #5c6efc;
+
+  /* === Actions === */
+  --color-primary: #14174a;
+  --color-primary-hover: #2d3285;
+  --color-primary-pressed: #0e1036;
   --color-primary-fg: #ffffff;
-  --color-accent: #7c5cfc;
-  --color-accent-hover: #6b4df0;
+  --color-secondary: #5465ec;
+  --color-secondary-fg: #ffffff;
+  --color-accent: #5465ec; /* prototype #5c6efc; white text needs AA */
+  --color-accent-hover: #3a4de8;
   --color-accent-fg: #ffffff;
-  --color-border: #e5e7eb;
-  --color-border-focus: #7c5cfc;
-  --color-success: #16a34a;
-  --color-success-bg: #dcfce7;
-  --color-success-fg: #14532d;
-  --color-warning: #d97706;
-  --color-warning-bg: #fef3c7;
-  --color-warning-fg: #78350f;
-  --color-danger: #dc2626;
-  --color-danger-bg: #fee2e2;
-  --color-danger-fg: #7f1d1d;
-  --color-danger-hover: #b91c1c;
+  --color-rating: #f59e0b;
 
-  /* === Business status tokens === */
-  --status-open: #16a34a;
-  --status-open-bg: #dcfce7;
-  --status-open-fg: #14532d;
-  --status-closed: #6b7280;
-  --status-closed-bg: #f3f4f6;
-  --status-closed-fg: #374151;
-  --status-opening-soon: #d97706;
-  --status-opening-soon-bg: #fef3c7;
-  --status-opening-soon-fg: #78350f;
-  --status-closing-soon: #ea580c;
-  --status-closing-soon-bg: #ffedd5;
-  --status-closing-soon-fg: #7c2d12;
+  /* === Navigation === */
+  --color-nav: #ffffff;
+  --color-nav-active: #14174a;
+  --color-nav-active-bg: #ecedf5;
+  --color-nav-inactive: #707592;
 
-  /* === Overlay === */
-  --color-overlay: rgb(0 0 0 / 0.5);
+  /* === Feedback === */
+  --color-success: #22c55e;
+  --color-success-bg: rgb(34 197 94 / 0.12);
+  --color-success-fg: #157839;
+  --color-warning: #f59e0b;
+  --color-warning-bg: rgb(245 158 11 / 0.12);
+  --color-warning-fg: #915d06;
+  --color-danger: #d73d3d; /* prototype #ef4444; white text needs AA */
+  --color-danger-hover: #b83434;
+  --color-danger-bg: rgb(239 68 68 / 0.12);
+  --color-danger-fg: #b83434;
+  --color-danger-fg-on: #ffffff;
+  --color-info: #3b82f6;
+  --color-info-bg: rgb(59 130 246 / 0.12);
+  --color-info-fg: #2d63bb;
+
+  /* === Business status === */
+  --color-status-open: #22c55e;
+  --color-status-open-bg: rgb(34 197 94 / 0.12);
+  --color-status-open-fg: #157839;
+  --color-status-closing-soon: #f59e0b;
+  --color-status-closing-soon-bg: rgb(245 158 11 / 0.12);
+  --color-status-closing-soon-fg: #915d06;
+  --color-status-closed: #ef4444;
+  --color-status-closed-bg: rgb(239 68 68 / 0.12);
+  --color-status-closed-fg: #b83434;
+  --color-status-opening-soon: #3b82f6;
+  --color-status-opening-soon-bg: rgb(59 130 246 / 0.12);
+  --color-status-opening-soon-fg: #2d63bb;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

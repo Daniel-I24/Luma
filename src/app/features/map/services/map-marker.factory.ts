@@ -6,10 +6,10 @@ import type { BusinessStatus } from '@shared/business/models/business.model';
  * Changing a token in styles.css automatically updates every marker.
  */
 const STATUS_TOKEN: Record<BusinessStatus, string> = {
-  open: '--status-open',
-  closed: '--status-closed',
-  'opening-soon': '--status-opening-soon',
-  'closing-soon': '--status-closing-soon',
+  open: '--color-status-open',
+  closed: '--color-status-closed',
+  'opening-soon': '--color-status-opening-soon',
+  'closing-soon': '--color-status-closing-soon',
 };
 
 /** CSS class applied to the marker element for each status. */
@@ -40,7 +40,7 @@ export class MapMarkerFactory {
   /**
    * Creates a styled marker element for the given status.
    * The element is a small circle whose background is driven by the
-   * corresponding --status-* CSS variable.
+   * corresponding --color-status-* CSS variable.
    */
   create(status: BusinessStatus): MarkerConfig {
     const statusClass = STATUS_CLASS[status];
