@@ -39,9 +39,8 @@ export class AuthService {
   /** Readonly signal: true while an auth operation is in progress. */
   readonly loading = computed(() => this._loading());
 
-  constructor() {
-    this.initSession();
-  }
+  /** Resolves once the persisted session has been restored (never rejects). */
+  readonly ready: Promise<void> = this.initSession();
 
   // ── Public API ────────────────────────────────────────────────────
 
@@ -128,15 +127,17 @@ export class AuthService {
 
   // ── Private helpers ───────────────────────────────────────────────
 
-  private initSession(): void {
-    // Restore session from storage without blocking the constructor.
-    this.supabase.auth.getSession().then(({ data }) => {
-      this._session.set(data.session);
-    });
-
-    // Keep session in sync with Supabase auth state changes.
+  private async initSession(): Promise<void> {
     this.supabase.auth.onAuthStateChange((_event, session) => {
       this._session.set(session);
     });
+
+    // A failed restore is treated as "no session" so guards never hang.
+    try {
+      const { data, error } = await this.supabase.auth.getSession();
+      this._session.set(error ? null : data.session);
+    } catch {
+      this._session.set(null);
+    }
   }
 }

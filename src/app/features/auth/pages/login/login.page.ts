@@ -43,7 +43,7 @@ export class LoginPage {
     const result = await this.auth.signIn(email, password);
 
     if (result.success) {
-      await this.router.navigate(['/profile']);
+      await this.router.navigate(['/map']);
     } else {
       this.errorKey.set(result.errorKey ?? 'auth.errors.unknown');
     }

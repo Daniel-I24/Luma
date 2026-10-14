@@ -5,16 +5,13 @@ import { AuthService } from './auth.service';
 /**
  * authGuard — functional route guard.
  *
- * Redirects unauthenticated users to /auth/login.
- * Uses the AuthService signal so no async call is needed after init.
+ * Waits for the initial session restore, then redirects unauthenticated
+ * users to /auth/login.
  */
-export const authGuard: CanActivateFn = () => {
+export const authGuard: CanActivateFn = async () => {
   const auth = inject(AuthService);
   const router = inject(Router);
 
-  if (auth.user() !== null) {
-    return true;
-  }
-
-  return router.createUrlTree(['/auth/login']);
+  await auth.ready;
+  return auth.user() !== null ? true : router.createUrlTree(['/auth/login']);
 };

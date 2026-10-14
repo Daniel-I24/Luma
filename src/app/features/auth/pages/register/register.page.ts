@@ -5,7 +5,7 @@ import {
   signal,
 } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
 import { LumaButton, LumaCard, LumaInput } from '@design-system';
@@ -25,6 +25,7 @@ import { LumaButton, LumaCard, LumaInput } from '@design-system';
 export class RegisterPage {
   private readonly auth = inject(AuthService);
   private readonly fb = inject(FormBuilder);
+  private readonly router = inject(Router);
 
   protected readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
@@ -42,10 +43,13 @@ export class RegisterPage {
     const { email, password } = this.form.getRawValue();
     const result = await this.auth.signUp(email, password);
 
-    if (result.success) {
-      this.success.set(true);
-    } else {
+    if (!result.success) {
       this.errorKey.set(result.errorKey ?? 'auth.errors.unknown');
+    } else if (this.auth.user() !== null) {
+      await this.router.navigate(['/map']);
+    } else {
+      // Email confirmation pending: no session yet.
+      this.success.set(true);
     }
   }
 }
