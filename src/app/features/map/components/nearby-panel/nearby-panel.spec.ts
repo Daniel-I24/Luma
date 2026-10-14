@@ -31,6 +31,7 @@ const item = (id: string, distanceKm: number | null): NearbyBusiness => ({
   status: 'open',
   distanceKm,
   rating: { rating: 4.8, reviewCount: 20 },
+  logoIcon: 'coffee',
 });
 
 describe('NearbyPanel', () => {

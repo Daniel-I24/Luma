@@ -9,7 +9,7 @@
   <div class="flex gap-3 overflow-hidden px-4 pt-1 pb-3">
     @for (i of skeletons; track i) {
     <div
-      class="flex w-36 shrink-0 flex-col overflow-hidden rounded-lg border border-border-subtle bg-surface"
+      class="flex w-40 shrink-0 flex-col overflow-hidden rounded-lg border border-border-subtle bg-surface"
     >
       <app-luma-skeleton class="h-17 w-full" shape="rect" />
       <div class="flex flex-col gap-2 p-2">
@@ -48,12 +48,13 @@
   } } @else {
   <ul class="m-0 flex list-none gap-3 overflow-x-auto px-4 pt-1 pb-3 [scrollbar-width:none]">
     @for (item of items(); track item.business.id) {
-    <li class="shrink-0">
+    <li class="flex shrink-0">
       <app-luma-business-card
         [name]="item.business.name"
         [status]="item.status"
         [category]="item.business.category"
         [logoUrl]="item.business.logo_url"
+        [logoIcon]="item.logoIcon"
         [rating]="item.rating?.rating ?? null"
         [distanceLabel]="item.distanceKm | distance: lang()"
         [current]="item.business.id === selectedId()"

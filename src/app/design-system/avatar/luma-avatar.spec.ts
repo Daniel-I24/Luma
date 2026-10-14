@@ -35,6 +35,14 @@ describe('LumaAvatar', () => {
     expect(el.textContent).toContain('A');
   });
 
+  it('shows the fallback icon instead of the initials when there is no image', () => {
+    const { el } = render({ name: 'Panadería El Volcán', fallbackIcon: 'bread', size: 'lg' });
+
+    expect(el.querySelector('app-luma-icon svg')?.getAttribute('class')).toBe('size-5');
+    expect(el.textContent).not.toContain('PE');
+    expect(el.querySelector('.sr-only')?.textContent).toBe('Panadería El Volcán');
+  });
+
   it('hides the name when decorative', () => {
     const { el } = render({ name: 'Ana', decorative: true });
 

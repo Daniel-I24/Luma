@@ -1,7 +1,18 @@
 import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { LumaIcon } from '../icon/luma-icon';
+import type { IconSize } from '../icon/luma-icon';
+import type { IconName } from '../icon/luma-icons';
 
 export type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 export type AvatarShape = 'circle' | 'square';
+
+const ICON_SIZE: Record<AvatarSize, IconSize> = {
+  xs: 'sm',
+  sm: 'sm',
+  md: 'md',
+  lg: 'md',
+  xl: 'lg',
+};
 
 const SIZE_CLASS: Record<AvatarSize, string> = {
   xs: 'size-6 text-caption',
@@ -12,13 +23,14 @@ const SIZE_CLASS: Record<AvatarSize, string> = {
 };
 
 /**
- * LumaAvatar — image of a person or business with an initials fallback
+ * LumaAvatar — image of a person or business with an icon or initials fallback
  * (also used when the image fails to load).
  */
 @Component({
   selector: 'app-luma-avatar',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [LumaIcon],
   templateUrl: './luma-avatar.html',
   host: { class: 'inline-flex shrink-0' },
 })
@@ -29,8 +41,11 @@ export class LumaAvatar {
   readonly shape = input<AvatarShape>('circle');
   /** True when the name is already visible next to the avatar. */
   readonly decorative = input(false);
+  /** Icon shown instead of the initials when there is no image (e.g. a category). */
+  readonly fallbackIcon = input<IconName | null>(null);
 
   protected readonly failed = signal(false);
+  protected readonly iconSize = computed(() => ICON_SIZE[this.size()]);
 
   protected readonly initials = computed(() =>
     this.name()

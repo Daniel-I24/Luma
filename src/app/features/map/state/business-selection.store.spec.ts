@@ -12,6 +12,7 @@ const item = (id: string): NearbyBusiness => ({
   status: 'open',
   distanceKm: null,
   rating: null,
+  logoIcon: 'store',
 });
 
 describe('BusinessSelectionStore', () => {

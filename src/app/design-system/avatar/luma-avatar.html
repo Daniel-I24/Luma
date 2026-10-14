@@ -7,9 +7,11 @@
     [alt]="decorative() ? '' : name()"
     (error)="failed.set(true)"
   />
+  } @else { @if (fallbackIcon(); as icon) {
+  <app-luma-icon [name]="icon" [size]="iconSize()" />
   } @else {
   <span aria-hidden="true">{{ initials() }}</span>
-  @if (!decorative()) {
+  } @if (!decorative()) {
   <span class="sr-only">{{ name() }}</span>
   } }
 </span>

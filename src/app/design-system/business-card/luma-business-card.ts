@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { LumaAvatar } from '../avatar/luma-avatar';
+import type { IconName } from '../icon/luma-icons';
 import { LumaRatingStars } from '../rating-stars/luma-rating-stars';
 import { StatusBadge } from '../status-badge/status-badge';
 import type { BusinessStatus } from '../status-badge/status-badge';
@@ -25,6 +26,8 @@ export class LumaBusinessCard {
   readonly status = input.required<BusinessStatus>();
   readonly category = input<string | null>(null);
   readonly logoUrl = input<string | null>(null);
+  /** Shown on a token background when there is no logo (e.g. the category icon). */
+  readonly logoIcon = input<IconName>('store');
   readonly rating = input<number | null>(null);
   readonly distanceLabel = input<string | null>(null);
   readonly promoLabel = input<string | null>(null);

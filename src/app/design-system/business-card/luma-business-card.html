@@ -1,17 +1,18 @@
 @if (variant() === 'compact') {
 <button
   type="button"
-  class="flex w-36 cursor-pointer flex-col overflow-hidden rounded-lg border border-border-subtle bg-surface p-0 text-left shadow-card transition-transform duration-150 active:scale-97 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+  class="flex h-full w-40 cursor-pointer flex-col overflow-hidden rounded-lg border border-border-subtle bg-surface p-0 text-left shadow-card transition-transform duration-150 active:scale-97 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
   [class.border-primary]="current()"
   [attr.aria-current]="current() ? 'true' : null"
   (click)="selected.emit()"
 >
-  <span class="relative flex h-17 w-full items-center justify-center bg-canvas-subtle">
+  <span class="relative flex h-17 w-full items-center justify-center bg-surface-selected">
     <app-luma-avatar
-      [name]="name()"
-      [src]="logoUrl()"
       size="lg"
       shape="square"
+      [name]="name()"
+      [src]="logoUrl()"
+      [fallbackIcon]="logoIcon()"
       [decorative]="true"
     />
     @if (promoLabel(); as promo) {
@@ -21,17 +22,16 @@
     >
     }
   </span>
-  <span class="flex w-full flex-col gap-1 p-2">
-    <span class="truncate text-label-lg font-bold text-fg">{{ name() }}</span>
-    <span class="flex items-center justify-between gap-1">
+  <span class="flex w-full flex-1 flex-col items-start gap-1 p-2">
+    <span class="line-clamp-2 min-h-[2lh] text-label-lg font-bold text-fg">{{ name() }}</span>
+    <app-status-badge size="sm" [status]="status()" />
+    <span class="flex w-full flex-wrap items-center gap-x-2">
       @if (rating() !== null) {
       <app-luma-rating-stars [rating]="rating()!" />
+      } @if (distanceLabel(); as distance) {
+      <span class="text-caption text-fg-subtle">{{ distance }}</span>
       }
-      <app-status-badge size="sm" [status]="status()" />
     </span>
-    @if (distanceLabel(); as distance) {
-    <span class="text-caption text-fg-subtle">{{ distance }}</span>
-    }
   </span>
 </button>
 } @else {
@@ -42,13 +42,20 @@
   [attr.aria-current]="current() ? 'true' : null"
   (click)="selected.emit()"
 >
-  <app-luma-avatar [name]="name()" [src]="logoUrl()" size="xl" shape="square" [decorative]="true" />
+  <app-luma-avatar
+    size="xl"
+    shape="square"
+    [name]="name()"
+    [src]="logoUrl()"
+    [fallbackIcon]="logoIcon()"
+    [decorative]="true"
+  />
   <span class="flex min-w-0 flex-1 flex-col gap-1">
-    <span class="truncate text-title text-fg">{{ name() }}</span>
+    <span class="line-clamp-2 text-title text-fg">{{ name() }}</span>
     @if (category(); as cat) {
     <span class="text-caption text-fg-subtle">{{ cat }}</span>
     }
-    <span class="flex items-center gap-2">
+    <span class="flex flex-wrap items-center gap-x-2">
       @if (rating() !== null) {
       <app-luma-rating-stars [rating]="rating()!" />
       } @if (distanceLabel(); as distance) {
@@ -56,6 +63,6 @@
       }
     </span>
   </span>
-  <app-status-badge size="sm" [status]="status()" />
+  <app-status-badge class="shrink-0" size="sm" [status]="status()" />
 </button>
 }

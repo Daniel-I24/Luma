@@ -1,4 +1,5 @@
 import { Injectable, PendingTasks, computed, inject, signal } from '@angular/core';
+import type { IconName } from '@design-system';
 import { BusinessRatingProvider } from '@shared/business/data/business-rating.provider';
 import type { BusinessRating } from '@shared/business/data/business-rating.provider';
 import { BusinessRepository } from '@shared/business/data/business.repository';
@@ -8,6 +9,7 @@ import { NEARBY_RADIUS_KM } from '../map.constants';
 import { BusinessHoursCacheService } from '../services/business-hours-cache.service';
 import { GeolocationService } from '../services/geolocation.service';
 import { extractCategories, filterBusinesses } from '../utils/business-filter.util';
+import { categoryIcon } from '../utils/category-icon.util';
 import { haversineKm } from '../utils/haversine.util';
 
 /** A nearby business ready to render: status, distance and rating resolved. */
@@ -17,6 +19,8 @@ export interface NearbyBusiness {
   /** Straight-line km from the user; null until their location is known. */
   distanceKm: number | null;
   rating: BusinessRating | null;
+  /** Stands in for a missing logo, from the business category. */
+  logoIcon: IconName;
 }
 
 /**
@@ -87,6 +91,7 @@ export class NearbyBusinessesStore {
         ? haversineKm(coords.lat, coords.lng, business.latitude, business.longitude)
         : null,
       rating: this.ratings.getRating(business.id),
+      logoIcon: categoryIcon(business.category),
     };
   }
 }

@@ -51,6 +51,16 @@ describe('LumaBusinessCard', () => {
     expect(button.textContent).toContain('Pizzería');
   });
 
+  it('allows two-line names and replaces a missing logo with the given icon', () => {
+    const { button } = render({ name: 'Panadería El Volcán del Galeras', logoIcon: 'bread' });
+
+    expect(button.querySelector('.line-clamp-2')?.textContent).toBe(
+      'Panadería El Volcán del Galeras',
+    );
+    expect(button.querySelector('app-luma-avatar svg')).not.toBeNull();
+    expect(button.textContent).not.toContain('PE');
+  });
+
   it('shows the promotion badge when there is one', () => {
     const { button } = render({ promoLabel: '2×1' });
 
