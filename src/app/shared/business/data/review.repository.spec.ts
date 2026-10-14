@@ -14,8 +14,32 @@ function setup(responses: Record<string, FakeResponse>) {
 const review = { id: 'r1', business_id: 'b1', user_id: 'u1', rating: 5, comment: 'Rico' };
 
 describe('ReviewRepository', () => {
+  it("reads the caller's own review through is_mine, not a user id", async () => {
+    const row = { id: 'r1', business_id: 'b1', rating: 5, display_name: null, is_mine: true };
+    const { repo, queries } = setup({ reviews_with_author: ok(row) });
+
+    expect(await repo.getOwnReview('b1')).toEqual({ data: row, errorKey: null });
+    expect(queries[0].calls.filter(([m]) => m === 'eq').map(([, a]) => a)).toEqual([
+      ['business_id', 'b1'],
+      ['is_mine', true],
+    ]);
+  });
+
+  it('returns null when the user has not reviewed the business', async () => {
+    const { repo } = setup({ reviews_with_author: ok(null) });
+
+    expect(await repo.getOwnReview('b1')).toEqual({ data: null, errorKey: null });
+  });
+
   it('reads the latest reviews with author names from the safe view', async () => {
-    const row = { ...review, display_name: 'Ana M.' };
+    const row = {
+      id: 'r1',
+      business_id: 'b1',
+      rating: 5,
+      comment: 'Rico',
+      display_name: 'Ana M.',
+      is_mine: false,
+    };
     const { repo, queries } = setup({ reviews_with_author: ok([row]) });
 
     expect(await repo.getReviews('b1', 10)).toEqual({ data: [row], errorKey: null });

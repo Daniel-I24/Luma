@@ -12,10 +12,12 @@ export interface Review {
 
 /**
  * ReviewWithAuthor — row of the public.reviews_with_author view: the review
- * plus the author's optional display name (never their email).
+ * plus the author's optional display name. Never the author's id or email;
+ * `is_mine` tells whether the signed-in user wrote it.
  */
-export interface ReviewWithAuthor extends Review {
+export interface ReviewWithAuthor extends Omit<Review, 'user_id'> {
   display_name: string | null;
+  is_mine: boolean;
 }
 
 /** Average rating (one decimal) and number of reviews of a business. */

@@ -169,20 +169,23 @@ comment on view public.business_ratings is 'Average rating (one decimal) and rev
 -- users read their own row, so the author name would always be null):
 --   - it repeats the public filter of the reviews table (active businesses);
 --   - it selects explicit columns only: the review plus profiles.display_name.
---     It never exposes email or any other profiles column;
+--     It never exposes email, any other profiles column or the author's
+--     user_id; is_mine (computed from the caller's JWT) is all the UI needs
+--     to recognise the caller's own review;
 --   - security_barrier stops callers' predicates from running before that filter.
-create or replace view public.reviews_with_author
+drop view if exists public.reviews_with_author;
+create view public.reviews_with_author
   with (security_invoker = false, security_barrier = true)
 as
 select
   r.id,
   r.business_id,
-  r.user_id,
   r.rating,
   r.comment,
   r.created_at,
   r.updated_at,
-  p.display_name
+  p.display_name,
+  coalesce(r.user_id = auth.uid(), false) as is_mine
 from public.reviews r
 join public.businesses b on b.id = r.business_id and b.is_active = true
 left join public.profiles p on p.id = r.user_id;
@@ -199,11 +202,15 @@ grant insert, update, delete on public.menu_items to authenticated;
 grant select, insert, delete on public.favorites to authenticated;
 
 grant select on public.reviews to anon, authenticated;
--- Column lists keep user_id, ids and timestamps under the database's control.
+-- Column lists keep user_id, ids and timestamps under the database's control:
+-- updated_at is only ever written by the reviews_set_updated_at trigger.
 grant insert (business_id, rating, comment) on public.reviews to authenticated;
 grant update (rating, comment) on public.reviews to authenticated;
 grant delete on public.reviews to authenticated;
 
+-- A column grant does not narrow an existing table-wide UPDATE, so drop that
+-- first: the "owner can update" policy would otherwise let users change email.
+revoke update on public.profiles from authenticated;
 grant update (display_name) on public.profiles to authenticated;
 
 grant select on public.business_ratings, public.reviews_with_author to anon, authenticated;

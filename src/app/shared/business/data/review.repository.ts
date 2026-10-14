@@ -31,6 +31,19 @@ export class ReviewRepository {
     return { data: data as ReviewWithAuthor[], errorKey: null };
   }
 
+  /** The signed-in user's review of a business, or null if they wrote none. */
+  async getOwnReview(businessId: string): Promise<RepoResult<ReviewWithAuthor | null>> {
+    const { data, error } = await this.db
+      .from('reviews_with_author')
+      .select('*')
+      .eq('business_id', businessId)
+      .eq('is_mine', true)
+      .maybeSingle();
+
+    if (error) return { data: null, errorKey: 'businesses.errors.reviewsFailed' };
+    return { data: (data as ReviewWithAuthor | null) ?? null, errorKey: null };
+  }
+
   async create(businessId: string, input: ReviewInput): Promise<RepoResult<Review>> {
     const parsed = reviewInputSchema.safeParse(input);
     if (!parsed.success) return { data: null, errorKey: parsed.error.issues[0].message };
