@@ -33,9 +33,16 @@ export const routes: Routes = [
         loadComponent: () => import('./features/profile/profile.page').then((m) => m.ProfilePage),
       },
       {
-        path: 'settings',
-        loadComponent: () =>
-          import('./features/settings/settings.page').then((m) => m.SettingsPage),
+        path: 'feed',
+        loadComponent: () => import('./features/feed/feed.page').then((m) => m.FeedPage),
+      },
+      {
+        path: 'ai',
+        loadComponent: () => import('./features/ai/ai.page').then((m) => m.AiPage),
+      },
+      {
+        path: 'orders',
+        loadComponent: () => import('./features/orders/orders.page').then((m) => m.OrdersPage),
       },
     ],
   },

@@ -8,7 +8,9 @@
         routerLinkActive="luma-tab-bar__link--active"
         ariaCurrentWhenActive="page"
       >
-        <app-luma-icon [name]="item.icon" size="lg" />
+        <span class="luma-tab-bar__pill">
+          <app-luma-icon [name]="item.icon" />
+        </span>
         <span class="luma-tab-bar__label">{{ item.labelKey | transloco }}</span>
       </a>
     </li>

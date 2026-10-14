@@ -17,6 +17,11 @@
   --color-surface-elevated: #ffffff;
   --color-surface-selected: #ecedf5;
   --color-overlay: rgb(0 0 0 / 0.4);
+  /* Theme swatches for the theme picker (same in every theme) */
+  --color-swatch-indigo: #14174a;
+  --color-swatch-midnight: #1a1c34;
+  --color-swatch-pearl: #e4e4e7;
+  --color-swatch-sunset: #c2410c;
   --color-map-canvas: #e6e7e0;
 
   /* === Text === */

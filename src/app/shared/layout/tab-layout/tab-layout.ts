@@ -5,13 +5,15 @@ import type { TabBarItem } from '@design-system';
 
 const MAIN_TABS: readonly TabBarItem[] = [
   { path: '/map', labelKey: 'tabBar.map', icon: 'map' },
+  { path: '/feed', labelKey: 'tabBar.feed', icon: 'compass' },
+  { path: '/ai', labelKey: 'tabBar.ai', icon: 'sparkles' },
+  { path: '/orders', labelKey: 'tabBar.orders', icon: 'receipt' },
   { path: '/profile', labelKey: 'tabBar.profile', icon: 'user' },
-  { path: '/settings', labelKey: 'tabBar.settings', icon: 'settings' },
 ];
 
 /**
  * TabLayout — shell for the signed-in sections: page content on top and the
- * main tab bar at the bottom. Mounted around /map, /profile and /settings.
+ * main tab bar at the bottom. Mounted around the five main tabs.
  */
 @Component({
   selector: 'app-tab-layout',

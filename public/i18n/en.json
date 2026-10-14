@@ -1,7 +1,8 @@
 {
   "common": {
     "close": "Close",
-    "remove": "Remove"
+    "remove": "Remove",
+    "comingSoon": "Coming soon"
   },
   "designPreview": {
     "title": "Design System — Luma",
@@ -128,6 +129,34 @@
     "errors": {
       "signOut": "Could not sign out. Please try again.",
       "deleteAccount": "Could not delete account. Please try again."
+    },
+    "account": "Account",
+    "appearance": {
+      "title": "Appearance",
+      "theme": "Visual theme",
+      "language": "Language",
+      "themes": {
+        "indigo": {
+          "name": "Indigo",
+          "description": "Main"
+        },
+        "midnight": {
+          "name": "Midnight",
+          "description": "Dark"
+        },
+        "pearl": {
+          "name": "Pearl",
+          "description": "Minimal"
+        },
+        "sunset": {
+          "name": "Sunset",
+          "description": "Energetic"
+        }
+      },
+      "languages": {
+        "es": "Español",
+        "en": "English"
+      }
     }
   },
   "map": {
@@ -175,30 +204,25 @@
     "label": "Main navigation",
     "map": "Map",
     "profile": "Profile",
-    "settings": "Settings"
-  },
-  "settings": {
-    "title": "Settings",
-    "language": {
-      "title": "Language",
-      "es": "Español",
-      "en": "English"
-    },
-    "theme": {
-      "title": "Theme",
-      "indigo": "Indigo",
-      "midnight": "Midnight",
-      "pearl": "Pearl",
-      "sunset": "Sunset"
-    },
-    "account": {
-      "title": "Account",
-      "profile": "View my profile"
-    }
+    "feed": "Discover",
+    "ai": "Luma AI",
+    "orders": "Orders"
   },
   "rating": {
     "label": "Rated {{rating}} out of 5",
     "labelWithReviews": "Rated {{rating}} out of 5, {{count}} reviews",
     "reviews": "({{count}} reviews)"
+  },
+  "feed": {
+    "title": "Discover",
+    "comingSoon": "Soon you will find promotions, dishes and news from nearby places here."
+  },
+  "ai": {
+    "title": "Luma AI",
+    "comingSoon": "Soon Luma will recommend places and combos for every moment of your day."
+  },
+  "orders": {
+    "title": "Orders",
+    "comingSoon": "Soon you will be able to order, pay and track your orders from here."
   }
 }

@@ -11,7 +11,7 @@ class EmptyPage {}
 
 const ITEMS: TabBarItem[] = [
   { path: '/map', labelKey: 'tabs.map', icon: 'map' },
-  { path: '/settings', labelKey: 'tabs.settings', icon: 'settings' },
+  { path: '/settings', labelKey: 'tabs.settings', icon: 'user' },
 ];
 
 describe('LumaTabBar', () => {

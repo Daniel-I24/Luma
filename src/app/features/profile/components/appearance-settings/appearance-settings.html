@@ -1,0 +1,74 @@
+<section *transloco="let t" aria-labelledby="appearance-heading">
+  <h2
+    id="appearance-heading"
+    class="m-0 px-1 pt-4 pb-2 text-label tracking-wide text-fg-subtle uppercase"
+  >
+    {{ t('profile.appearance.title') }}
+  </h2>
+  <div class="overflow-hidden rounded-xl border border-border-subtle bg-surface">
+    <app-luma-disclosure
+      panelId="theme-panel"
+      icon="palette"
+      [heading]="t('profile.appearance.theme')"
+      [description]="t('profile.appearance.themes.' + theme() + '.name')"
+    >
+      <fieldset class="m-0 grid grid-cols-2 gap-2 border-0 p-0">
+        <legend class="sr-only">{{ t('profile.appearance.theme') }}</legend>
+        @for (option of themes; track option) {
+        <label
+          class="flex min-h-14 cursor-pointer items-center gap-2 rounded-md border-2 border-border-subtle p-3 has-checked:border-primary has-checked:bg-surface-selected has-focus-visible:outline-2 has-focus-visible:outline-border-focus"
+        >
+          <input
+            class="sr-only"
+            type="radio"
+            name="theme"
+            [value]="option"
+            [checked]="theme() === option"
+            (change)="selectTheme(option)"
+          />
+          <span
+            [class]="'size-6 shrink-0 rounded-full border border-border ' + swatchClass[option]"
+          ></span>
+          <span class="flex min-w-0 flex-col">
+            <span class="text-label text-fg"
+              >{{ t('profile.appearance.themes.' + option + '.name') }}</span
+            >
+            <span class="text-caption text-fg-subtle"
+              >{{ t('profile.appearance.themes.' + option + '.description') }}</span
+            >
+          </span>
+        </label>
+        }
+      </fieldset>
+    </app-luma-disclosure>
+
+    <div class="mx-4 h-px bg-border-subtle"></div>
+
+    <app-luma-disclosure
+      panelId="language-panel"
+      icon="globe"
+      [heading]="t('profile.appearance.language')"
+      [description]="t('profile.appearance.languages.' + language())"
+    >
+      <fieldset class="m-0 flex flex-col gap-1 border-0 p-0">
+        <legend class="sr-only">{{ t('profile.appearance.language') }}</legend>
+        @for (option of languages; track option) {
+        <label
+          class="flex min-h-11 cursor-pointer items-center gap-3 rounded-md border-2 border-transparent px-3 text-body text-fg hover:bg-canvas-subtle has-checked:border-primary has-checked:bg-surface-selected has-focus-visible:outline-2 has-focus-visible:outline-border-focus"
+          [attr.lang]="option"
+        >
+          <input
+            class="sr-only"
+            type="radio"
+            name="language"
+            [value]="option"
+            [checked]="language() === option"
+            (change)="selectLanguage(option)"
+          />
+          {{ t('profile.appearance.languages.' + option) }}
+        </label>
+        }
+      </fieldset>
+    </app-luma-disclosure>
+  </div>
+</section>

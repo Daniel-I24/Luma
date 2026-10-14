@@ -1,7 +1,8 @@
 {
   "common": {
     "close": "Cerrar",
-    "remove": "Quitar"
+    "remove": "Quitar",
+    "comingSoon": "Próximamente"
   },
   "designPreview": {
     "title": "Sistema de diseño — Luma",
@@ -128,6 +129,34 @@
     "errors": {
       "signOut": "No se pudo cerrar la sesión. Intenta de nuevo.",
       "deleteAccount": "No se pudo eliminar la cuenta. Intenta de nuevo."
+    },
+    "account": "Cuenta",
+    "appearance": {
+      "title": "Apariencia",
+      "theme": "Tema visual",
+      "language": "Idioma",
+      "themes": {
+        "indigo": {
+          "name": "Indigo",
+          "description": "Principal"
+        },
+        "midnight": {
+          "name": "Midnight",
+          "description": "Oscuro"
+        },
+        "pearl": {
+          "name": "Pearl",
+          "description": "Minimalista"
+        },
+        "sunset": {
+          "name": "Sunset",
+          "description": "Energético"
+        }
+      },
+      "languages": {
+        "es": "Español",
+        "en": "English"
+      }
     }
   },
   "map": {
@@ -175,30 +204,25 @@
     "label": "Navegación principal",
     "map": "Mapa",
     "profile": "Perfil",
-    "settings": "Ajustes"
-  },
-  "settings": {
-    "title": "Ajustes",
-    "language": {
-      "title": "Idioma",
-      "es": "Español",
-      "en": "English"
-    },
-    "theme": {
-      "title": "Tema",
-      "indigo": "Índigo",
-      "midnight": "Medianoche",
-      "pearl": "Perla",
-      "sunset": "Atardecer"
-    },
-    "account": {
-      "title": "Cuenta",
-      "profile": "Ver mi perfil"
-    }
+    "feed": "Descubrir",
+    "ai": "Luma IA",
+    "orders": "Pedidos"
   },
   "rating": {
     "label": "Calificación {{rating}} de 5",
     "labelWithReviews": "Calificación {{rating}} de 5, {{count}} reseñas",
     "reviews": "({{count}} reseñas)"
+  },
+  "feed": {
+    "title": "Descubrir",
+    "comingSoon": "Muy pronto verás aquí promociones, platos y novedades de los negocios cercanos."
+  },
+  "ai": {
+    "title": "Luma IA",
+    "comingSoon": "Muy pronto Luma te recomendará lugares y combos según tu momento del día."
+  },
+  "orders": {
+    "title": "Pedidos",
+    "comingSoon": "Muy pronto podrás pedir, pagar y seguir tus pedidos desde aquí."
   }
 }

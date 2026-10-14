@@ -2,19 +2,20 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
-import { LumaButton, LumaCard, LumaBottomSheet } from '@design-system';
+import { LumaAvatar, LumaBottomSheet, LumaButton } from '@design-system';
+import { AppearanceSettings } from './components/appearance-settings/appearance-settings';
 
 /**
  * ProfilePage — /profile (protected by authGuard)
- * Shows user email, sign-out button, and account deletion with confirmation.
+ * Shows the user, the appearance settings (theme and language), sign-out and
+ * account deletion with confirmation.
  */
 @Component({
   selector: 'app-profile-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaCard, LumaBottomSheet],
+  imports: [TranslocoModule, LumaAvatar, LumaBottomSheet, LumaButton, AppearanceSettings],
   templateUrl: './profile.page.html',
-  styleUrl: './profile.page.css',
 })
 export class ProfilePage {
   private readonly auth = inject(AuthService);
@@ -24,14 +25,6 @@ export class ProfilePage {
   protected readonly loading = this.auth.loading;
   protected readonly deleteSheetOpen = signal(false);
   protected readonly errorKey = signal<string | null>(null);
-
-  protected openDeleteSheet(): void {
-    this.deleteSheetOpen.set(true);
-  }
-
-  protected closeDeleteSheet(): void {
-    this.deleteSheetOpen.set(false);
-  }
 
   protected async onSignOut(): Promise<void> {
     this.errorKey.set(null);
@@ -44,7 +37,7 @@ export class ProfilePage {
   }
 
   protected async onDeleteAccount(): Promise<void> {
-    this.closeDeleteSheet();
+    this.deleteSheetOpen.set(false);
     this.errorKey.set(null);
     const result = await this.auth.deleteAccount();
     if (result.success) {

@@ -1,39 +1,44 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LANGUAGES, LanguageService } from '@core/i18n/language.service';
 import type { Language } from '@core/i18n/language.service';
 import { THEMES, ThemeService } from '@core/theme/theme.service';
 import type { Theme } from '@core/theme/theme.service';
-import { LumaButton, LumaCard } from '@design-system';
+import { LumaDisclosure } from '@design-system';
+
+const SWATCH_CLASS: Record<Theme, string> = {
+  indigo: 'bg-swatch-indigo',
+  midnight: 'bg-swatch-midnight',
+  pearl: 'bg-swatch-pearl',
+  sunset: 'bg-swatch-sunset',
+};
 
 /**
- * SettingsPage — /settings (protected by authGuard).
- * Lets the user pick the interface language and visual theme, and links to
- * the profile.
+ * AppearanceSettings — "Apariencia" group of the profile: collapsible
+ * theme and language pickers (native radio groups).
  */
 @Component({
-  selector: 'app-settings-page',
+  selector: 'app-appearance-settings',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, TranslocoModule, LumaButton, LumaCard],
-  templateUrl: './settings.page.html',
-  styleUrl: './settings.page.css',
+  imports: [TranslocoModule, LumaDisclosure],
+  templateUrl: './appearance-settings.html',
 })
-export class SettingsPage {
+export class AppearanceSettings {
   private readonly languageService = inject(LanguageService);
   private readonly themeService = inject(ThemeService);
 
-  protected readonly languages = LANGUAGES;
   protected readonly themes = THEMES;
-  protected readonly language = this.languageService.language;
+  protected readonly languages = LANGUAGES;
+  protected readonly swatchClass = SWATCH_CLASS;
   protected readonly theme = this.themeService.theme;
-
-  protected selectLanguage(language: Language): void {
-    this.languageService.setLanguage(language);
-  }
+  protected readonly language = this.languageService.language;
 
   protected selectTheme(theme: Theme): void {
     this.themeService.setTheme(theme);
+  }
+
+  protected selectLanguage(language: Language): void {
+    this.languageService.setLanguage(language);
   }
 }

@@ -1,9 +1,10 @@
 /* LumaTabBar styles — tokens only */
 
 .luma-tab-bar {
-  background-color: var(--color-surface);
-  border-top: 1px solid var(--color-border);
-  padding-bottom: env(safe-area-inset-bottom);
+  background-color: var(--color-nav);
+  border-top: 1px solid var(--color-border-subtle);
+  padding: 0 var(--spacing-1) env(safe-area-inset-bottom);
+  transition: background-color var(--duration-normal) var(--ease-standard);
 }
 
 .luma-tab-bar__list {
@@ -15,6 +16,7 @@
 
 .luma-tab-bar__item {
   flex: 1;
+  min-width: 0;
 }
 
 .luma-tab-bar__link {
@@ -25,15 +27,16 @@
   gap: var(--spacing-1);
   min-height: var(--spacing-16);
   padding: var(--spacing-2) var(--spacing-1);
-  color: var(--color-fg-muted);
-  font-size: 0.75rem;
+  border-radius: var(--radius-md);
+  color: var(--color-nav-inactive);
+  font-size: var(--text-caption);
   font-weight: 500;
   text-decoration: none;
-  transition: color var(--duration-fast) ease;
+  transition: color var(--duration-fast) var(--ease-standard);
 }
 
-.luma-tab-bar__link:hover {
-  color: var(--color-fg);
+.luma-tab-bar__link:active {
+  transform: scale(0.92);
 }
 
 .luma-tab-bar__link:focus-visible {
@@ -42,6 +45,27 @@
 }
 
 .luma-tab-bar__link--active {
-  color: var(--color-primary);
+  color: var(--color-nav-active);
   font-weight: 600;
+}
+
+.luma-tab-bar__pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--spacing-10);
+  height: var(--spacing-8);
+  border-radius: var(--radius-full);
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+
+.luma-tab-bar__link--active .luma-tab-bar__pill {
+  background-color: var(--color-nav-active-bg);
+}
+
+.luma-tab-bar__label {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
