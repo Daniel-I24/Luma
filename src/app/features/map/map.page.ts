@@ -38,7 +38,6 @@ export class MapPage implements OnInit, OnDestroy {
   private readonly markerSync = inject(MapMarkerSyncService);
   private readonly geoService = inject(GeolocationService);
 
-  protected readonly geoState = this.geoService.state;
   protected readonly loading = signal(false);
   protected readonly errorKey = signal<string | null>(null);
   protected readonly showLocationPrompt = signal(false);
