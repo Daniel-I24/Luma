@@ -230,7 +230,14 @@
     "errors": {
       "loadFailed": "No se pudieron cargar los negocios.",
       "promotionsFailed": "No se pudieron cargar las promociones.",
-      "hoursFailed": "No se pudieron cargar los horarios."
+      "hoursFailed": "No se pudieron cargar los horarios.",
+      "menuFailed": "No se pudo cargar el menú.",
+      "ratingsFailed": "No se pudieron cargar las calificaciones.",
+      "favoritesFailed": "No se pudieron cargar tus favoritos.",
+      "favoriteSaveFailed": "No se pudo actualizar tus favoritos. Intenta de nuevo.",
+      "reviewsFailed": "No se pudieron cargar las reseñas.",
+      "reviewSaveFailed": "No se pudo guardar tu reseña. Intenta de nuevo.",
+      "reviewDeleteFailed": "No se pudo borrar tu reseña. Intenta de nuevo."
     }
   },
   "tabBar": {
@@ -257,5 +264,11 @@
   "orders": {
     "title": "Pedidos",
     "comingSoon": "Muy pronto podrás pedir, pagar y seguir tus pedidos desde aquí."
+  },
+  "reviews": {
+    "validation": {
+      "ratingRange": "Elige entre 1 y 5 estrellas.",
+      "commentTooLong": "El comentario puede tener hasta 500 caracteres."
+    }
   }
 }
