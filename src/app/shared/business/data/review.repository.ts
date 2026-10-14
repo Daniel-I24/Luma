@@ -7,6 +7,14 @@ import { reviewInputSchema } from './review.schema';
 const DEFAULT_PAGE_SIZE = 20;
 
 /**
+ * Columns clients may read from public.reviews (column-level grant). Never
+ * user_id: selecting it, or `*`, is rejected by the database.
+ */
+export const REVIEW_COLUMNS = 'id, business_id, rating, comment, created_at, updated_at';
+/** Columns of the public.reviews_with_author view. */
+export const REVIEW_WITH_AUTHOR_COLUMNS = `${REVIEW_COLUMNS}, display_name, is_mine`;
+
+/**
  * ReviewRepository — public reviews of a business and the user's own
  * review. Inputs are validated before reaching the database; RLS ensures
  * users only write their own reviews and never review their own business.
@@ -22,7 +30,7 @@ export class ReviewRepository {
   ): Promise<RepoResult<ReviewWithAuthor[]>> {
     const { data, error } = await this.db
       .from('reviews_with_author')
-      .select('*')
+      .select(REVIEW_WITH_AUTHOR_COLUMNS)
       .eq('business_id', businessId)
       .order('created_at', { ascending: false })
       .limit(limit);
@@ -35,7 +43,7 @@ export class ReviewRepository {
   async getOwnReview(businessId: string): Promise<RepoResult<ReviewWithAuthor | null>> {
     const { data, error } = await this.db
       .from('reviews_with_author')
-      .select('*')
+      .select(REVIEW_WITH_AUTHOR_COLUMNS)
       .eq('business_id', businessId)
       .eq('is_mine', true)
       .maybeSingle();
@@ -51,7 +59,7 @@ export class ReviewRepository {
     const { data, error } = await this.db
       .from('reviews')
       .insert({ business_id: businessId, ...parsed.data })
-      .select('*')
+      .select(REVIEW_COLUMNS)
       .maybeSingle();
 
     if (error || !data) return { data: null, errorKey: 'businesses.errors.reviewSaveFailed' };
@@ -66,7 +74,7 @@ export class ReviewRepository {
       .from('reviews')
       .update(parsed.data)
       .eq('id', reviewId)
-      .select('*')
+      .select(REVIEW_COLUMNS)
       .maybeSingle();
 
     if (error || !data) return { data: null, errorKey: 'businesses.errors.reviewSaveFailed' };

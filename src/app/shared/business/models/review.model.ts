@@ -1,8 +1,10 @@
-/** Review — mirrors the public.reviews table row (one per user and business). */
+/**
+ * Review — the columns of public.reviews clients can read (one review per
+ * user and business). The author's user_id is never readable by clients.
+ */
 export interface Review {
   id: string;
   business_id: string;
-  user_id: string;
   /** Whole stars, 1 to 5. */
   rating: number;
   comment: string | null;
@@ -15,7 +17,7 @@ export interface Review {
  * plus the author's optional display name. Never the author's id or email;
  * `is_mine` tells whether the signed-in user wrote it.
  */
-export interface ReviewWithAuthor extends Omit<Review, 'user_id'> {
+export interface ReviewWithAuthor extends Review {
   display_name: string | null;
   is_mine: boolean;
 }

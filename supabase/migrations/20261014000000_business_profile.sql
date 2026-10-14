@@ -17,7 +17,7 @@ create table if not exists public.menu_items (
   name         text        not null check (char_length(name) between 1 and 80),
   description  text        check (description is null or char_length(description) <= 300),
   price_cop    integer     not null check (price_cop >= 0),
-  image_url    text,
+  image_url    text        check (image_url is null or image_url ~* '^https://'),
   section      text        check (section is null or char_length(section) <= 40),
   sort_order   integer     not null default 0,
   is_available boolean     not null default true,
@@ -101,7 +101,10 @@ create table if not exists public.reviews (
   constraint reviews_one_per_user unique (user_id, business_id)
 );
 
-comment on table public.reviews is 'One rating (1–5) and optional comment per user and business.';
+comment on table public.reviews is
+  'One rating (1–5) and optional comment per user and business. Clients can '
+  'read every column except user_id (column-level SELECT grant), so authors '
+  'cannot be linked to their reviews; reviews_with_author exposes is_mine instead.';
 
 create index if not exists reviews_business_idx on public.reviews (business_id, created_at desc);
 
@@ -201,7 +204,12 @@ grant insert, update, delete on public.menu_items to authenticated;
 
 grant select, insert, delete on public.favorites to authenticated;
 
-grant select on public.reviews to anon, authenticated;
+-- Never user_id: with it, /rest/v1/reviews joined by id with
+-- reviews_with_author would tie every display name to its account id.
+-- RLS policies still use user_id (policy expressions are not subject to
+-- column privileges); client filters and RETURNING lists must not.
+grant select (id, business_id, rating, comment, created_at, updated_at)
+  on public.reviews to anon, authenticated;
 -- Column lists keep user_id, ids and timestamps under the database's control:
 -- updated_at is only ever written by the reviews_set_updated_at trigger.
 grant insert (business_id, rating, comment) on public.reviews to authenticated;

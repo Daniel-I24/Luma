@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import { createFakeSupabase, failure, ok } from '../../../../testing/fake-supabase';
 import type { FakeResponse } from '../../../../testing/fake-supabase';
-import { ReviewRepository } from './review.repository';
+import { REVIEW_COLUMNS, REVIEW_WITH_AUTHOR_COLUMNS, ReviewRepository } from './review.repository';
 
 function setup(responses: Record<string, FakeResponse>) {
   const fake = createFakeSupabase(responses);
@@ -11,7 +11,7 @@ function setup(responses: Record<string, FakeResponse>) {
   return { repo: TestBed.inject(ReviewRepository), queries: fake.queries };
 }
 
-const review = { id: 'r1', business_id: 'b1', user_id: 'u1', rating: 5, comment: 'Rico' };
+const review = { id: 'r1', business_id: 'b1', rating: 5, comment: 'Rico' };
 
 describe('ReviewRepository', () => {
   it("reads the caller's own review through is_mine, not a user id", async () => {
@@ -23,6 +23,32 @@ describe('ReviewRepository', () => {
       ['business_id', 'b1'],
       ['is_mine', true],
     ]);
+  });
+
+  it('never selects * or user_id: only the columns clients may read', async () => {
+    const { repo, queries } = setup({ reviews: ok(review), reviews_with_author: ok([]) });
+
+    await repo.getReviews('b1');
+    await repo.getOwnReview('b1');
+    await repo.create('b1', { rating: 5, comment: null });
+    await repo.update('r1', { rating: 4, comment: null });
+
+    const selects = queries.map((q) => [q.table, q.call('select')?.[0]]);
+    expect(selects).toEqual([
+      ['reviews_with_author', REVIEW_WITH_AUTHOR_COLUMNS],
+      ['reviews_with_author', REVIEW_WITH_AUTHOR_COLUMNS],
+      ['reviews', REVIEW_COLUMNS],
+      ['reviews', REVIEW_COLUMNS],
+    ]);
+    expect(REVIEW_COLUMNS.split(', ')).toEqual([
+      'id',
+      'business_id',
+      'rating',
+      'comment',
+      'created_at',
+      'updated_at',
+    ]);
+    expect(REVIEW_WITH_AUTHOR_COLUMNS).not.toMatch(/\*|user_id|email/);
   });
 
   it('returns null when the user has not reviewed the business', async () => {
