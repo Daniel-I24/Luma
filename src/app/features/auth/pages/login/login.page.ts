@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
 import { LumaButton, LumaCard, LumaInput } from '@design-system';
+import { AuthFormSubmission } from '../../forms/auth-form-submission';
 
 /**
  * LoginPage — /auth/login
@@ -27,20 +28,14 @@ export class LoginPage {
     password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
-  protected readonly loading = this.auth.loading;
-  protected readonly errorKey = signal<string | null>(null);
+  protected readonly submission = new AuthFormSubmission();
 
-  protected async onSubmit(): Promise<void> {
-    if (this.form.invalid) return;
-    this.errorKey.set(null);
-
+  protected onSubmit(): Promise<void> {
     const { email, password } = this.form.getRawValue();
-    const result = await this.auth.signIn(email, password);
-
-    if (result.success) {
-      await this.router.navigate(['/map']);
-    } else {
-      this.errorKey.set(result.errorKey ?? 'auth.errors.unknown');
-    }
+    return this.submission.run(
+      this.form,
+      () => this.auth.signIn(email, password),
+      () => this.router.navigate(['/map']),
+    );
   }
 }

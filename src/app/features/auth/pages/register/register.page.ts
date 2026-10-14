@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
 import { LumaButton, LumaCard, LumaInput } from '@design-system';
+import { AuthFormSubmission } from '../../forms/auth-form-submission';
 
 /**
  * RegisterPage — /auth/register
@@ -27,20 +28,20 @@ export class RegisterPage {
     password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
-  protected readonly loading = this.auth.loading;
-  protected readonly errorKey = signal<string | null>(null);
+  protected readonly submission = new AuthFormSubmission();
   protected readonly success = signal(false);
 
-  protected async onSubmit(): Promise<void> {
-    if (this.form.invalid) return;
-    this.errorKey.set(null);
-
+  protected onSubmit(): Promise<void> {
     const { email, password } = this.form.getRawValue();
-    const result = await this.auth.signUp(email, password);
+    return this.submission.run(
+      this.form,
+      () => this.auth.signUp(email, password),
+      () => this.onRegistered(),
+    );
+  }
 
-    if (!result.success) {
-      this.errorKey.set(result.errorKey ?? 'auth.errors.unknown');
-    } else if (this.auth.user() !== null) {
+  private async onRegistered(): Promise<void> {
+    if (this.auth.user() !== null) {
       await this.router.navigate(['/map']);
     } else {
       // Email confirmation pending: no session yet.

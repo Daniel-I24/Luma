@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
 import { LumaButton, LumaCard, LumaInput } from '@design-system';
+import { AuthFormSubmission } from '../../forms/auth-form-submission';
 
 /**
  * ForgotPasswordPage — /auth/forgot-password
@@ -25,21 +26,15 @@ export class ForgotPasswordPage {
     email: ['', [Validators.required, Validators.email]],
   });
 
-  protected readonly loading = this.auth.loading;
-  protected readonly errorKey = signal<string | null>(null);
+  protected readonly submission = new AuthFormSubmission();
   protected readonly success = signal(false);
 
-  protected async onSubmit(): Promise<void> {
-    if (this.form.invalid) return;
-    this.errorKey.set(null);
-
+  protected onSubmit(): Promise<void> {
     const { email } = this.form.getRawValue();
-    const result = await this.auth.resetPassword(email);
-
-    if (result.success) {
-      this.success.set(true);
-    } else {
-      this.errorKey.set(result.errorKey ?? 'auth.errors.unknown');
-    }
+    return this.submission.run(
+      this.form,
+      () => this.auth.resetPassword(email),
+      () => this.success.set(true),
+    );
   }
 }
