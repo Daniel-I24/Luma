@@ -1,12 +1,16 @@
 <div class="flex h-full flex-col">
   <div class="relative min-h-75 flex-[0_0_54%] overflow-hidden bg-map-canvas">
     <!-- Map canvas: outside *transloco so the static ViewChild resolves in ngOnInit -->
-    <div
-      #mapContainer
-      class="map-canvas absolute inset-0"
-      role="region"
-      [attr.aria-label]="'map.canvasLabel' | transloco"
-    ></div>
+    <!-- MapLibre's CSS makes its container position: relative, so the
+         positioning lives on a wrapper and the container only fills it. -->
+    <div class="absolute inset-0">
+      <div
+        #mapContainer
+        class="map-canvas size-full"
+        role="region"
+        [attr.aria-label]="'map.canvasLabel' | transloco"
+      ></div>
+    </div>
 
     <ng-container *transloco="let t">
       @if (mapFailed()) {

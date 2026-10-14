@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import maplibregl from 'maplibre-gl';
+import * as maplibregl from 'maplibre-gl';
 import type { Business, BusinessStatus } from '@shared/business/models/business.model';
 import { MapMarkerFactory } from './map-marker.factory';
 

@@ -23,6 +23,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "maplibre-gl-worker.mjs",
+                "input": "node_modules/maplibre-gl/dist",
+                "output": "/"
               }
             ],
             "styles": [
@@ -37,8 +42,7 @@
                 "bundleName": "map",
                 "inject": false
               }
-            ],
-            "allowedCommonJsDependencies": ["maplibre-gl"]
+            ]
           },
           "configurations": {
             "production": {

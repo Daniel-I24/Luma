@@ -1,7 +1,13 @@
 import { Injectable } from '@angular/core';
-import maplibregl from 'maplibre-gl';
+import * as maplibregl from 'maplibre-gl';
 import { PASTO_CENTRE } from './geolocation.service';
-import { DEFAULT_ZOOM, MAP_STYLE, MOVE_DEBOUNCE_MS, MOVE_THRESHOLD_DEG } from '../map.constants';
+import {
+  DEFAULT_ZOOM,
+  MAP_STYLE,
+  MAP_WORKER_PATH,
+  MOVE_DEBOUNCE_MS,
+  MOVE_THRESHOLD_DEG,
+} from '../map.constants';
 
 /** Owns the MapLibre instance, fly-to, and nearby-refetch on pan. */
 @Injectable({ providedIn: 'root' })
@@ -15,12 +21,20 @@ export class MapCameraService {
     return this.map;
   }
 
+  /**
+   * Creates the map. Throws (e.g. GPUInitializationError without WebGL2);
+   * callers show the error state.
+   */
   init(container: HTMLElement, onMovedFar: (lat: number, lng: number) => void): void {
+    // Bundled builds cannot locate the worker by themselves (MapLibre v6).
+    maplibregl.setWorkerUrl(new URL(MAP_WORKER_PATH, document.baseURI).href);
     this.map = new maplibregl.Map({
       container,
       style: MAP_STYLE,
       center: [PASTO_CENTRE.lng, PASTO_CENTRE.lat],
       zoom: DEFAULT_ZOOM,
+      // Map data licences require attribution; compact keeps it out of the way.
+      attributionControl: { compact: true },
     });
     this.map.on('moveend', () => this.onMoveEnd(onMovedFar));
   }

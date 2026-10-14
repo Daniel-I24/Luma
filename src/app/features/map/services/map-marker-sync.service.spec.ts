@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import type maplibregl from 'maplibre-gl';
+import type * as maplibregl from 'maplibre-gl';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Business } from '@shared/business/models/business.model';
 import { MapMarkerFactory } from './map-marker.factory';
@@ -24,7 +24,7 @@ vi.mock('maplibre-gl', () => {
       return this.opts.element;
     }
   }
-  return { default: { Marker } };
+  return { Marker };
 });
 
 function item(id: string, status: MarkerItem['status'] = 'open'): MarkerItem {

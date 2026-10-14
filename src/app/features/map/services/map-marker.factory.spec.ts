@@ -44,6 +44,15 @@ describe('MapMarkerFactory', () => {
     expect(marker.getAttribute('aria-label')).toBe('La Casona, Cerrado');
   });
 
+  it('treats business data as text, never as HTML', () => {
+    const hostile = '<img src=x onerror="alert(1)">, Abierto';
+
+    const marker = factory.create('open', hostile);
+
+    expect(marker.getAttribute('aria-label')).toBe(hostile);
+    expect(marker.querySelector('img')).toBeNull();
+  });
+
   it('marks the selected marker', () => {
     const marker = factory.create('open', 'x');
 
