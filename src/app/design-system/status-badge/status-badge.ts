@@ -26,7 +26,10 @@ const STATUS_LABEL_KEY: Record<BusinessStatus, string> = {
 })
 export class StatusBadge {
   readonly status = input.required<BusinessStatus>();
+  readonly size = input<'sm' | 'md'>('md');
 
-  protected readonly modifier = computed(() => `status-badge--${this.status()}`);
+  protected readonly modifier = computed(
+    () => `status-badge--${this.status()} status-badge--${this.size()}`,
+  );
   protected readonly labelKey = computed(() => STATUS_LABEL_KEY[this.status()]);
 }

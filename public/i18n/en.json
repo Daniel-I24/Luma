@@ -195,5 +195,10 @@
       "title": "Account",
       "profile": "View my profile"
     }
+  },
+  "rating": {
+    "label": "Rated {{rating}} out of 5",
+    "labelWithReviews": "Rated {{rating}} out of 5, {{count}} reviews",
+    "reviews": "({{count}} reviews)"
   }
 }

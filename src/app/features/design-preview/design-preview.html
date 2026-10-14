@@ -75,20 +75,7 @@
         <h2 id="section-chips" class="preview-section__title">
           {{ t('designPreview.sections.chips') }}
         </h2>
-        <div class="preview-row">
-          <app-luma-chip variant="default">{{ t('designPreview.chips.default') }}</app-luma-chip>
-          <app-luma-chip variant="primary">{{ t('designPreview.chips.primary') }}</app-luma-chip>
-          <app-luma-chip variant="accent">{{ t('designPreview.chips.accent') }}</app-luma-chip>
-          <app-luma-chip variant="success">{{ t('designPreview.chips.success') }}</app-luma-chip>
-          <app-luma-chip variant="warning">{{ t('designPreview.chips.warning') }}</app-luma-chip>
-          <app-luma-chip variant="danger">{{ t('designPreview.chips.danger') }}</app-luma-chip>
-          <app-luma-chip variant="accent" [dismissible]="true"
-            >{{ t('designPreview.chips.dismissible') }}</app-luma-chip
-          >
-          <app-luma-chip variant="primary" [(selected)]="chipSelected"
-            >{{ t('designPreview.chips.selected') }}</app-luma-chip
-          >
-        </div>
+        <app-preview-chips-row />
       </section>
 
       <!-- ── Inputs ── -->

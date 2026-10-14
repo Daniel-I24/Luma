@@ -1,23 +1,39 @@
 /* LumaChip styles — tokens only */
 
 .luma-chip {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-1);
-  padding: var(--spacing-1) var(--spacing-3);
+  min-height: var(--spacing-8);
+  padding: 0 var(--spacing-3);
   border-radius: var(--radius-full);
   border: 1.5px solid var(--color-border);
   background-color: var(--color-surface);
-  color: var(--color-fg);
-  font-size: 0.75rem;
-  font-weight: 500;
+  color: var(--color-fg-muted);
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: var(--text-label--letter-spacing);
   line-height: 1;
+  white-space: nowrap;
   cursor: pointer;
   user-select: none;
   transition:
-    background-color var(--duration-fast) ease,
-    border-color var(--duration-fast) ease,
-    color var(--duration-fast) ease;
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+}
+
+/* Extends the touch target to 44px without changing the visual size. */
+.luma-chip::after {
+  content: '';
+  position: absolute;
+  inset: calc((var(--spacing-11) - var(--spacing-8)) / -2) 0;
+}
+
+.luma-chip:active {
+  transform: scale(0.95);
 }
 
 .luma-chip:focus-visible {
@@ -58,9 +74,9 @@
 
 /* Selected state */
 .luma-chip--selected {
-  background-color: var(--color-accent);
-  border-color: var(--color-accent);
-  color: var(--color-accent-fg);
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-primary-fg);
 }
 
 /* Disabled */
@@ -72,22 +88,20 @@
 
 /* Dismiss button */
 .luma-chip__dismiss {
+  position: relative;
+  z-index: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: none;
-  border: none;
-  padding: 0;
   margin-left: var(--spacing-1);
-  width: 16px;
-  height: 16px;
+  padding: 0;
+  border: none;
   border-radius: var(--radius-full);
-  cursor: pointer;
+  background: none;
   color: inherit;
   opacity: 0.7;
-  font-size: 1rem;
-  line-height: 1;
-  transition: opacity var(--duration-fast) ease;
+  cursor: pointer;
+  transition: opacity var(--duration-fast) var(--ease-standard);
 }
 
 .luma-chip__dismiss:hover {

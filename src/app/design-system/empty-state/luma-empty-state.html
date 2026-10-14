@@ -1,0 +1,8 @@
+<span [class]="iconClass()">
+  <app-luma-icon [name]="icon()" size="lg" />
+</span>
+<h2 class="m-0 mb-2 text-h3 text-fg">{{ heading() }}</h2>
+@if (description(); as text) {
+<p class="m-0 mb-5 max-w-72 text-body text-fg-muted">{{ text }}</p>
+}
+<ng-content />

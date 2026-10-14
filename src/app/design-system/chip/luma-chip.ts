@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, model, output } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { LumaIcon } from '../icon/luma-icon';
+import type { IconName } from '../icon/luma-icons';
 
 export type ChipVariant = 'default' | 'primary' | 'accent' | 'success' | 'warning' | 'danger';
 
@@ -23,6 +24,7 @@ export class LumaChip {
   /** Two-way bindable selected state. Supports [(selected)] syntax. */
   readonly selected = model<boolean>(false);
   readonly dismissible = input<boolean>(false);
+  readonly icon = input<IconName | null>(null);
   readonly disabled = input<boolean>(false);
 
   readonly dismissed = output<void>();

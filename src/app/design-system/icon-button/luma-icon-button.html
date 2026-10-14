@@ -1,0 +1,11 @@
+<button
+  type="button"
+  [class]="classes()"
+  [disabled]="disabled()"
+  [attr.aria-label]="label()"
+  [attr.aria-disabled]="disabled() ? 'true' : null"
+  [attr.aria-pressed]="pressed() ?? null"
+  (click)="clicked.emit()"
+>
+  <app-luma-icon [name]="icon()" [filled]="filledIcon()" />
+</button>

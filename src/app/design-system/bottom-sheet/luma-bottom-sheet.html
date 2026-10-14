@@ -3,10 +3,11 @@
 }
 
 <div
+  #panel
   [class]="panelClasses"
   role="dialog"
   [attr.aria-modal]="isOpen() ? 'true' : null"
-  [attr.aria-labelledby]="title() ? titleId() : null"
+  [attr.aria-labelledby]="labelledBy()"
   [attr.aria-hidden]="!isOpen() ? 'true' : null"
   [attr.tabindex]="isOpen() ? '-1' : null"
   (keydown)="onKeydown($event)"
@@ -24,6 +25,15 @@
       <app-luma-icon name="close" />
     </button>
   </div>
+  } @else {
+  <button
+    class="luma-bottom-sheet__handle"
+    type="button"
+    [attr.aria-label]="'common.close' | transloco"
+    (click)="onCloseClick()"
+  >
+    <span class="luma-bottom-sheet__grip"></span>
+  </button>
   }
 
   <div class="luma-bottom-sheet__body">

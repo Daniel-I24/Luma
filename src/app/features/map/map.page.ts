@@ -87,14 +87,6 @@ export class MapPage implements OnInit, OnDestroy {
     this.geoService.requestLocation();
   }
 
-  protected onSkipLocation(): void {
-    this.showLocationPrompt.set(false);
-  }
-
-  protected onSheetClosed(): void {
-    this.sheetOpen.set(false);
-  }
-
   protected retryLoad(): void {
     this.errorKey.set(null);
     if (!this.mapReady) {

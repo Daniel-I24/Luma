@@ -1,0 +1,13 @@
+/* LumaSkeleton — shimmer between two canvas tokens; motion is disabled
+   globally under prefers-reduced-motion (styles/base.css). */
+:host {
+  display: block;
+  background: linear-gradient(
+    90deg,
+    var(--color-canvas-subtle) 0%,
+    var(--color-canvas-muted) 50%,
+    var(--color-canvas-subtle) 100%
+  );
+  background-size: 200% 100%;
+  animation: var(--animate-shimmer);
+}

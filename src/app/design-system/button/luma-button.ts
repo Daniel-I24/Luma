@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'accent' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 /**
  * LumaButton — base interactive button for the Luma design system.
  *
- * Variants: primary | secondary | ghost | danger
- * Sizes:    sm | md | lg
+ * Variants: primary | secondary | ghost | accent | danger
+ * Sizes:    sm | md | lg (all keep the 44px touch target)
  */
 @Component({
   selector: 'app-luma-button',
@@ -15,10 +15,12 @@ export type ButtonSize = 'sm' | 'md' | 'lg';
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './luma-button.html',
   styleUrl: './luma-button.css',
+  host: { '[class.block]': 'fullWidth()', '[class.flex-1]': 'fullWidth()' },
 })
 export class LumaButton {
   readonly variant = input<ButtonVariant>('primary');
   readonly size = input<ButtonSize>('md');
+  readonly fullWidth = input<boolean>(false);
   readonly disabled = input<boolean>(false);
   readonly type = input<'button' | 'submit' | 'reset'>('button');
   readonly ariaLabel = input<string | undefined>(undefined);
@@ -32,6 +34,7 @@ export class LumaButton {
       'luma-btn',
       `luma-btn--${this.variant()}`,
       `luma-btn--${this.size()}`,
+      this.fullWidth() ? 'luma-btn--full' : '',
       this.disabled() ? 'luma-btn--disabled' : '',
     ]
       .filter(Boolean)

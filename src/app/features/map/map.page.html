@@ -38,7 +38,7 @@
         <app-luma-button variant="primary" size="md" (clicked)="onAllowLocation()">
           {{ t('map.locationPermission.allow') }}
         </app-luma-button>
-        <app-luma-button variant="ghost" size="md" (clicked)="onSkipLocation()">
+        <app-luma-button variant="ghost" size="md" (clicked)="showLocationPrompt.set(false)">
           {{ t('map.locationPermission.skip') }}
         </app-luma-button>
       </div>
@@ -65,5 +65,5 @@
   [promotion]="selectedPromotion()"
   [distanceKm]="distanceKm()"
   [open]="sheetOpen()"
-  (closed)="onSheetClosed()"
+  (closed)="sheetOpen.set(false)"
 />

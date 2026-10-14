@@ -3,7 +3,9 @@
 /* Inter variable font, self-hosted (no CDN) */
 @import '@fontsource-variable/inter';
 
-/* Design tokens (Indigo is the default theme) */
+/* Design tokens: scale (type, spacing, radii, shadows, motion) and colors
+   (Indigo is the default theme) */
+@import './styles/scale.css';
 @import './styles/tokens.css';
 
 /* Alternative themes, applied via <html data-theme="..."> */

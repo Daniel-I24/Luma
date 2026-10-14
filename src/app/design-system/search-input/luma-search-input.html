@@ -1,0 +1,29 @@
+<div
+  class="flex min-h-12 items-center gap-2 rounded-full border border-border-subtle bg-surface pl-4 shadow-md transition-shadow duration-150 focus-within:border-primary focus-within:shadow-lg"
+>
+  <label class="sr-only" [for]="inputId()">{{ label() }}</label>
+  <app-luma-icon class="text-fg-subtle" name="search" />
+  <input
+    #field
+    type="search"
+    autocomplete="off"
+    enterkeyhint="search"
+    class="min-w-0 flex-1 border-0 bg-transparent py-3 text-body text-fg outline-none placeholder:text-fg-subtle"
+    [id]="inputId()"
+    [placeholder]="placeholder()"
+    [value]="value()"
+    (input)="onInput($event)"
+  />
+  @if (value()) {
+  <button
+    type="button"
+    class="inline-flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent text-fg-subtle focus-visible:outline-2 focus-visible:outline-border-focus"
+    [attr.aria-label]="clearLabel()"
+    (click)="clear(field)"
+  >
+    <app-luma-icon name="close" size="sm" />
+  </button>
+  } @else {
+  <span class="w-4" aria-hidden="true"></span>
+  }
+</div>

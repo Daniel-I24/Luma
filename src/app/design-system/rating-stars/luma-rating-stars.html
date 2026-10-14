@@ -1,0 +1,13 @@
+<span class="inline-flex items-center gap-1" aria-hidden="true">
+  <app-luma-icon class="text-rating" name="star" size="sm" [filled]="true" />
+  <span class="text-label-lg font-bold text-fg">{{ score() }}</span>
+  @if (reviewCount() !== null) {
+  <span class="text-caption text-fg-subtle"
+    >{{ 'rating.reviews' | transloco: { count: reviewCount() } }}</span
+  >
+  }
+</span>
+<span class="sr-only">
+  @if (reviewCount() !== null) { {{ 'rating.labelWithReviews' | transloco: { rating: score(), count:
+  reviewCount() } }} } @else { {{ 'rating.label' | transloco: { rating: score() } }} }
+</span>

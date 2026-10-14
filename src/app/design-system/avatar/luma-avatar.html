@@ -1,0 +1,15 @@
+<span [class]="classes()">
+  @if (src() && !failed()) {
+  <img
+    class="size-full object-cover"
+    loading="lazy"
+    [src]="src()"
+    [alt]="decorative() ? '' : name()"
+    (error)="failed.set(true)"
+  />
+  } @else {
+  <span aria-hidden="true">{{ initials() }}</span>
+  @if (!decorative()) {
+  <span class="sr-only">{{ name() }}</span>
+  } }
+</span>

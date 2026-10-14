@@ -2,8 +2,9 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { TranslocoModule } from '@jsverse/transloco';
 import { ThemeService } from '@core/theme/theme.service';
 import type { Theme } from '@core/theme/theme.service';
-import { LumaButton, LumaBottomSheet, StatusBadge, LumaInput, LumaChip } from '@design-system';
+import { LumaButton, LumaBottomSheet, StatusBadge, LumaInput } from '@design-system';
 import { PreviewCardsGrid } from './components/preview-cards-grid/preview-cards-grid';
+import { PreviewChipsRow } from './components/preview-chips-row/preview-chips-row';
 
 /** All available themes for the selector. */
 interface ThemeOption {
@@ -26,7 +27,7 @@ interface ThemeOption {
     LumaBottomSheet,
     StatusBadge,
     LumaInput,
-    LumaChip,
+    PreviewChipsRow,
     PreviewCardsGrid,
   ],
   templateUrl: './design-preview.html',
@@ -44,7 +45,6 @@ export class DesignPreviewPage {
 
   protected readonly sheetOpen = signal(false);
   protected readonly inputValue = signal('');
-  protected readonly chipSelected = signal(false);
 
   protected selectTheme(theme: Theme): void {
     this.themeService.setTheme(theme);

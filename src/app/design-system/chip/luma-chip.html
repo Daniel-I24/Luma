@@ -6,8 +6,11 @@
   [attr.aria-disabled]="disabled() ? 'true' : null"
   (click)="toggle()"
   (keydown.enter)="toggle()"
-  (keydown.space)="toggle()"
+  (keydown.space)="$event.preventDefault(); toggle()"
 >
+  @if (icon(); as name) {
+  <app-luma-icon [name]="name" size="sm" />
+  }
   <ng-content />
 
   @if (dismissible()) {
