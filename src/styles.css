@@ -1,5 +1,8 @@
 @import 'tailwindcss';
 
+/* Inter variable font, self-hosted (no CDN) */
+@import '@fontsource-variable/inter';
+
 /* Design tokens (Indigo is the default theme) */
 @import './styles/tokens.css';
 
