@@ -127,4 +127,34 @@ begin
     (b4, 'Dos por uno viernes', 'Compra un helado doble el viernes y lleva otro gratis.',
      now(), now() + interval '5 days', true);
 
+  -- ── menu_items ──────────────────────────────────────────────────────────────
+  -- Prices in whole Colombian pesos (COP). No reviews are seeded on purpose.
+  insert into public.menu_items
+    (business_id, section, name, description, price_cop, sort_order)
+  values
+    (b1, 'Entradas', 'Empanadas de añejo (3 und.)', 'Con ají de maní.', 6000, 1),
+    (b1, 'Platos fuertes', 'Fritanga mixta', 'Chicharrón, carne, papa amarilla, mote y ají.', 28000, 2),
+    (b1, 'Platos fuertes', 'Cuy asado (medio)', 'Con papa, ají de maní y ensalada.', 45000, 3),
+    (b1, 'Bebidas', 'Jugo de lulo en agua', 'Vaso de 16 oz.', 5000, 4),
+
+    (b2, 'Bebidas calientes', 'Café americano', 'Café de origen nariñense, 8 oz.', 4000, 1),
+    (b2, 'Bebidas calientes', 'Capuchino', 'Doble espresso con leche espumada, 12 oz.', 6500, 2),
+    (b2, 'Repostería', 'Croissant de almendras', 'Horneado cada mañana.', 7000, 3),
+    (b2, 'Desayunos', 'Desayuno nariñense', 'Huevos al gusto, arepa, queso, chocolate y fruta.', 16000, 4),
+
+    (b3, 'Panes', 'Pan de cuajada', 'La especialidad de la casa.', 1500, 1),
+    (b3, 'Panes', 'Mojicón', 'Pan dulce con azúcar.', 1200, 2),
+    (b3, 'Panes', 'Pan integral (500 g)', 'Con semillas de girasol y linaza.', 6000, 3),
+    (b3, 'Tortas', 'Torta de naranja (porción)', null, 4500, 4),
+
+    (b4, 'Helados', 'Helado de lulo (sencillo)', 'Una bola en cono.', 5000, 1),
+    (b4, 'Helados', 'Helado de paila', 'Preparado artesanalmente en paila de cobre.', 7000, 2),
+    (b4, 'Copas', 'Copa Galeras', 'Tres sabores, frutas, crema y salsa de mora.', 14000, 3),
+    (b4, 'Bebidas', 'Malteada de mora', '16 oz.', 11000, 4),
+
+    (b5, 'Bebidas', 'Agua sin gas (600 ml)', null, 2500, 1),
+    (b5, 'Bebidas', 'Gaseosa (1,5 L)', null, 5500, 2),
+    (b5, 'Despensa', 'Pan tajado (600 g)', null, 6800, 3),
+    (b5, 'Despensa', 'Leche entera (1 L)', null, 4600, 4);
+
 end $$;
