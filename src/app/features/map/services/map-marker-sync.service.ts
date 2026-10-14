@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import maplibregl from 'maplibre-gl';
-import { MapMarkerFactory } from './map-marker.factory';
-import { getBusinessStatus } from '@shared/business/utils/business-status.util';
 import type { Business, BusinessHours } from '@shared/business/models/business.model';
+import { getBusinessStatus } from '@shared/business/utils/business-status.util';
+import { MapMarkerFactory } from './map-marker.factory';
 
 /** Creates, updates and removes MapLibre markers from a nearby-business list. */
 @Injectable({ providedIn: 'root' })
