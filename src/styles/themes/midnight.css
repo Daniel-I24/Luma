@@ -2,13 +2,13 @@
    THEME: Midnight (dark)
    Applied when <html data-theme="midnight">
 ───────────────────────────────────────────── */
-[data-theme="midnight"] {
+[data-theme='midnight'] {
   --color-bg: #0d0f14;
   --color-surface: #161b26;
   --color-surface-elevated: #1e2535;
   --color-text: #f1f5f9;
   --color-text-muted: #94a3b8;
-  --color-primary: #7C5CFC;
+  --color-primary: #7c5cfc;
   --color-primary-hover: #6b4df0;
   --color-primary-fg: #ffffff;
   --color-accent: #a78bfa;

@@ -2,7 +2,7 @@
    THEME: Sunset (warm vibrant)
    Applied when <html data-theme="sunset">
 ───────────────────────────────────────────── */
-[data-theme="sunset"] {
+[data-theme='sunset'] {
   --color-bg: #fff8f5;
   --color-surface: #ffffff;
   --color-surface-elevated: #fef3ee;
@@ -11,11 +11,11 @@
   --color-primary: #c2410c;
   --color-primary-hover: #9a3412;
   --color-primary-fg: #ffffff;
-  --color-accent: #7C5CFC;
+  --color-accent: #7c5cfc;
   --color-accent-hover: #6b4df0;
   --color-accent-fg: #ffffff;
   --color-border: #fed7aa;
-  --color-border-focus: #7C5CFC;
+  --color-border-focus: #7c5cfc;
   --color-success: #15803d;
   --color-success-bg: #f0fdf4;
   --color-success-fg: #14532d;

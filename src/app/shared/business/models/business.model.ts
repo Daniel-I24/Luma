@@ -27,8 +27,8 @@ export interface BusinessHours {
   id: string;
   business_id: string;
   day_of_week: 0 | 1 | 2 | 3 | 4 | 5 | 6;
-  opens_at: string;   // 'HH:MM:SS'
-  closes_at: string;  // 'HH:MM:SS'
+  opens_at: string; // 'HH:MM:SS'
+  closes_at: string; // 'HH:MM:SS'
   is_closed: boolean;
 }
 
@@ -41,8 +41,8 @@ export interface Promotion {
   title: string;
   description: string | null;
   image_url: string | null;
-  starts_at: string;  // ISO-8601
-  ends_at: string;    // ISO-8601
+  starts_at: string; // ISO-8601
+  ends_at: string; // ISO-8601
   is_active: boolean;
   created_at: string;
 }
@@ -51,8 +51,4 @@ export interface Promotion {
  * BusinessStatus — the four states shown on the Luma map marker.
  * Maps directly to the --status-* design tokens.
  */
-export type BusinessStatus =
-  | 'open'
-  | 'closed'
-  | 'opening-soon'
-  | 'closing-soon';
+export type BusinessStatus = 'open' | 'closed' | 'opening-soon' | 'closing-soon';

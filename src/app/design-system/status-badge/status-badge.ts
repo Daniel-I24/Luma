@@ -1,11 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 
-export type BusinessStatus =
-  | 'open'
-  | 'closed'
-  | 'opening-soon'
-  | 'closing-soon';
+export type BusinessStatus = 'open' | 'closed' | 'opening-soon' | 'closing-soon';
 
 const STATUS_LABEL_KEY: Record<BusinessStatus, string> = {
   open: 'status.open',

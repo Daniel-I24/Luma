@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  input,
-  model,
-  output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, model, output } from '@angular/core';
 
 export type ChipVariant = 'default' | 'primary' | 'accent' | 'success' | 'warning' | 'danger';
 

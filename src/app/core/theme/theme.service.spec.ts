@@ -9,10 +9,7 @@ describe('ThemeService', () => {
 
   const setupTestBed = (platformId = 'browser') => {
     TestBed.configureTestingModule({
-      providers: [
-        ThemeService,
-        { provide: PLATFORM_ID, useValue: platformId },
-      ],
+      providers: [ThemeService, { provide: PLATFORM_ID, useValue: platformId }],
     });
     service = TestBed.inject(ThemeService);
   };

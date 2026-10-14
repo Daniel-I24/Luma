@@ -30,7 +30,7 @@
         />
 
         @if (errorKey()) {
-          <p class="auth-error" role="alert">{{ t(errorKey()!) }}</p>
+        <p class="auth-error" role="alert">{{ t(errorKey()!) }}</p>
         }
 
         <app-luma-button
@@ -39,7 +39,8 @@
           type="submit"
           [disabled]="loading()"
           class="auth-submit"
-        >{{ t('auth.login.submit') }}</app-luma-button>
+          >{{ t('auth.login.submit') }}</app-luma-button
+        >
       </form>
 
       <footer class="auth-footer">

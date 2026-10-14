@@ -9,10 +9,18 @@ import type maplibregl from 'maplibre-gl';
 vi.mock('maplibre-gl', () => {
   class Marker {
     constructor(private readonly opts: { element: HTMLElement }) {}
-    setLngLat() { return this; }
-    addTo() { return this; }
-    remove() { /* no-op in tests */ }
-    getElement() { return this.opts.element; }
+    setLngLat() {
+      return this;
+    }
+    addTo() {
+      return this;
+    }
+    remove() {
+      /* no-op in tests */
+    }
+    getElement() {
+      return this.opts.element;
+    }
   }
   return { default: { Marker } };
 });
@@ -69,10 +77,7 @@ describe('MapMarkerSyncService', () => {
       update: vi.fn(),
     };
     TestBed.configureTestingModule({
-      providers: [
-        MapMarkerSyncService,
-        { provide: MapMarkerFactory, useValue: factory },
-      ],
+      providers: [MapMarkerSyncService, { provide: MapMarkerFactory, useValue: factory }],
     });
     service = TestBed.inject(MapMarkerSyncService);
   });

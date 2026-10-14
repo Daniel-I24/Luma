@@ -2,11 +2,7 @@ import { Injectable, signal, computed, inject } from '@angular/core';
 import type { Session, User } from '@supabase/supabase-js';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import { mapAuthError } from './auth-error';
-import {
-  signInSchema,
-  signUpSchema,
-  resetPasswordSchema,
-} from './auth.schemas';
+import { signInSchema, signUpSchema, resetPasswordSchema } from './auth.schemas';
 
 /** Shape of an operation result returned by every auth method. */
 export interface AuthResult {
@@ -101,9 +97,7 @@ export class AuthService {
 
     this._loading.set(true);
     try {
-      const { error } = await this.supabase.auth.resetPasswordForEmail(
-        parsed.data.email,
-      );
+      const { error } = await this.supabase.auth.resetPasswordForEmail(parsed.data.email);
       if (error) return { success: false, errorKey: mapAuthError(error.message) };
       return { success: true };
     } finally {

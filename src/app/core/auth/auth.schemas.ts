@@ -8,9 +8,7 @@ const emailSchema = z
   .min(1, 'auth.validation.emailRequired')
   .email('auth.validation.emailInvalid');
 
-const passwordSchema = z
-  .string()
-  .min(MIN_PASSWORD_LENGTH, 'auth.validation.passwordTooShort');
+const passwordSchema = z.string().min(MIN_PASSWORD_LENGTH, 'auth.validation.passwordTooShort');
 
 export const signInSchema = z.object({
   email: emailSchema,

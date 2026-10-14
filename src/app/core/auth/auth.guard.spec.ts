@@ -29,9 +29,7 @@ function run(guard: CanActivateFn, auth: AuthStub): Promise<unknown> {
     providers: [provideRouter([]), { provide: AuthService, useValue: auth }],
   });
   return TestBed.runInInjectionContext(() =>
-    Promise.resolve(
-      guard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot),
-    ),
+    Promise.resolve(guard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot)),
   );
 }
 

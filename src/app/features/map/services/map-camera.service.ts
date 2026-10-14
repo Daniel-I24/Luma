@@ -1,12 +1,7 @@
 import { Injectable } from '@angular/core';
 import maplibregl from 'maplibre-gl';
 import { PASTO_CENTRE } from './geolocation.service';
-import {
-  DEFAULT_ZOOM,
-  MAP_STYLE,
-  MOVE_DEBOUNCE_MS,
-  MOVE_THRESHOLD_DEG,
-} from '../map.constants';
+import { DEFAULT_ZOOM, MAP_STYLE, MOVE_DEBOUNCE_MS, MOVE_THRESHOLD_DEG } from '../map.constants';
 
 /** Owns the MapLibre instance, fly-to, and nearby-refetch on pan. */
 @Injectable({ providedIn: 'root' })

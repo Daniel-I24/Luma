@@ -21,9 +21,7 @@ function setup(getSession: () => Promise<unknown>): AuthService {
 describe('AuthService.ready', () => {
   it('resolves with the restored session user', async () => {
     const user = { id: 'user-1' };
-    const service = setup(() =>
-      Promise.resolve({ data: { session: { user } }, error: null }),
-    );
+    const service = setup(() => Promise.resolve({ data: { session: { user } }, error: null }));
 
     expect(service.user()).toBeNull();
     await service.ready;
@@ -32,9 +30,7 @@ describe('AuthService.ready', () => {
   });
 
   it('resolves without a user when there is no stored session', async () => {
-    const service = setup(() =>
-      Promise.resolve({ data: { session: null }, error: null }),
-    );
+    const service = setup(() => Promise.resolve({ data: { session: null }, error: null }));
 
     await service.ready;
 

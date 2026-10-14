@@ -2,13 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { TranslocoModule } from '@jsverse/transloco';
 import { ThemeService } from '@core/theme/theme.service';
 import type { Theme } from '@core/theme/theme.service';
-import {
-  LumaButton,
-  LumaBottomSheet,
-  StatusBadge,
-  LumaInput,
-  LumaChip,
-} from '@design-system';
+import { LumaButton, LumaBottomSheet, StatusBadge, LumaInput, LumaChip } from '@design-system';
 import { PreviewCardsGrid } from './components/preview-cards-grid/preview-cards-grid';
 
 /** All available themes for the selector. */

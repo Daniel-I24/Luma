@@ -11,7 +11,7 @@
       </dl>
 
       @if (errorKey()) {
-        <p class="profile-error" role="alert">{{ t(errorKey()!) }}</p>
+      <p class="profile-error" role="alert">{{ t(errorKey()!) }}</p>
       }
 
       <div class="profile-actions">
@@ -20,14 +20,16 @@
           size="md"
           [disabled]="loading()"
           (clicked)="onSignOut()"
-        >{{ t('profile.signOut') }}</app-luma-button>
+          >{{ t('profile.signOut') }}</app-luma-button
+        >
 
         <app-luma-button
           variant="danger"
           size="md"
           [disabled]="loading()"
           (clicked)="openDeleteSheet()"
-        >{{ t('profile.deleteAccount') }}</app-luma-button>
+          >{{ t('profile.deleteAccount') }}</app-luma-button
+        >
       </div>
     </app-luma-card>
   </div>
@@ -45,13 +47,12 @@
         size="md"
         [disabled]="loading()"
         (clicked)="onDeleteAccount()"
-      >{{ t('profile.deleteSheet.confirm') }}</app-luma-button>
+        >{{ t('profile.deleteSheet.confirm') }}</app-luma-button
+      >
 
-      <app-luma-button
-        variant="ghost"
-        size="md"
-        (clicked)="closeDeleteSheet()"
-      >{{ t('profile.deleteSheet.cancel') }}</app-luma-button>
+      <app-luma-button variant="ghost" size="md" (clicked)="closeDeleteSheet()"
+        >{{ t('profile.deleteSheet.cancel') }}</app-luma-button
+      >
     </div>
   </app-luma-bottom-sheet>
 </ng-container>

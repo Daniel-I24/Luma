@@ -24,11 +24,7 @@ export class BusinessRepository {
    * Returns active businesses within radiusKm of the given coordinates.
    * Uses a lat/lng bounding box in SQL, then filters by true distance.
    */
-  async getNearby(
-    lat: number,
-    lng: number,
-    radiusKm: number,
-  ): Promise<RepoResult<Business[]>> {
+  async getNearby(lat: number, lng: number, radiusKm: number): Promise<RepoResult<Business[]>> {
     const delta = radiusKm / 111; // ~1° ≈ 111 km
     const { data, error } = await this.db
       .from('businesses')
@@ -92,12 +88,7 @@ export class BusinessRepository {
 // ── Private helpers ───────────────────────────────────────────────────────────
 
 /** Haversine formula — returns distance in km between two WGS-84 points. */
-function haversineKm(
-  lat1: number,
-  lng1: number,
-  lat2: number,
-  lng2: number,
-): number {
+function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const R = 6371;
   const dLat = toRad(lat2 - lat1);
   const dLng = toRad(lng2 - lng1);

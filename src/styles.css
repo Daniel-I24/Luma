@@ -1,11 +1,11 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* Design tokens (Indigo is the default theme) */
-@import "./styles/tokens.css";
+@import './styles/tokens.css';
 
 /* Alternative themes, applied via <html data-theme="..."> */
-@import "./styles/themes/midnight.css";
-@import "./styles/themes/pearl.css";
-@import "./styles/themes/sunset.css";
+@import './styles/themes/midnight.css';
+@import './styles/themes/pearl.css';
+@import './styles/themes/sunset.css';
 
-@import "./styles/base.css";
+@import './styles/base.css';

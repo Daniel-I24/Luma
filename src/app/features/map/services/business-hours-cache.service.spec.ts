@@ -5,14 +5,16 @@ import { BusinessRepository } from '@shared/business/data/business.repository';
 import type { BusinessHours } from '@shared/business/models/business.model';
 
 function makeHours(businessId: string): BusinessHours[] {
-  return [{
-    id: `${businessId}-1`,
-    business_id: businessId,
-    day_of_week: 1,
-    opens_at: '09:00',
-    closes_at: '20:00',
-    is_closed: false,
-  }];
+  return [
+    {
+      id: `${businessId}-1`,
+      business_id: businessId,
+      day_of_week: 1,
+      opens_at: '09:00',
+      closes_at: '20:00',
+      is_closed: false,
+    },
+  ];
 }
 
 describe('BusinessHoursCacheService', () => {

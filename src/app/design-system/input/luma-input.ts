@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  input,
-  model,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 export type InputType = 'text' | 'email' | 'password' | 'search' | 'tel' | 'url' | 'number';

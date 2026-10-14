@@ -80,7 +80,9 @@ export class MapPage implements OnInit, OnDestroy {
     this.showLocationPrompt.set(false);
   }
 
-  protected onSheetClosed(): void { this.sheetOpen.set(false); }
+  protected onSheetClosed(): void {
+    this.sheetOpen.set(false);
+  }
 
   protected retryLoad(): void {
     this.errorKey.set(null);
@@ -109,7 +111,9 @@ export class MapPage implements OnInit, OnDestroy {
       this.camera.instance,
       businesses,
       this.hoursCache.snapshot(),
-      (biz) => { void this.onMarkerClick(biz); },
+      (biz) => {
+        void this.onMarkerClick(biz);
+      },
     );
   }
 

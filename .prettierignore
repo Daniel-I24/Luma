@@ -1,0 +1,2 @@
+# Local secrets file (gitignored); never reformat it.
+src/environments/environment.ts

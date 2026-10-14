@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  input,
-  output,
-  computed,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, computed } from '@angular/core';
 
 /**
  * LumaBottomSheet — modal panel that slides up from the bottom of the screen.
@@ -31,10 +25,7 @@ export class LumaBottomSheet {
   protected readonly isOpen = computed(() => this.open());
 
   protected get panelClasses(): string {
-    return [
-      'luma-bottom-sheet__panel',
-      this.isOpen() ? 'luma-bottom-sheet__panel--open' : '',
-    ]
+    return ['luma-bottom-sheet__panel', this.isOpen() ? 'luma-bottom-sheet__panel--open' : '']
       .filter(Boolean)
       .join(' ');
   }

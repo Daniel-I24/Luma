@@ -1,12 +1,7 @@
 <ng-container *transloco="let t">
-  <app-luma-bottom-sheet
-    [open]="open()"
-    [title]="business()?.name ?? ''"
-    (closed)="closed.emit()"
-  >
+  <app-luma-bottom-sheet [open]="open()" [title]="business()?.name ?? ''" (closed)="closed.emit()">
     @if (business(); as biz) {
       <div class="biz-sheet">
-
         <!-- Status + distance -->
         <div class="biz-sheet__meta">
           <app-status-badge [status]="status()" />
@@ -25,7 +20,9 @@
               {{ todayHours()!.opens_at.slice(0, 5) }} – {{ todayHours()!.closes_at.slice(0, 5) }}
             </span>
           } @else {
-            <span class="biz-sheet__value biz-sheet__value--muted">{{ t('map.sheet.closedToday') }}</span>
+            <span class="biz-sheet__value biz-sheet__value--muted">{{
+              t('map.sheet.closedToday')
+            }}</span>
           }
         </div>
 
@@ -61,7 +58,6 @@
           </app-luma-button>
         </div>
         <p class="biz-sheet__hint">{{ t('map.sheet.comingSoon') }}</p>
-
       </div>
     }
   </app-luma-bottom-sheet>

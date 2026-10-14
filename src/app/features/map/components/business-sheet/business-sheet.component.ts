@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  input,
-  output,
-  computed,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, computed } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaBottomSheet, LumaButton, StatusBadge } from '@design-system';
 import type { Business, BusinessHours, Promotion } from '@shared/business/models/business.model';

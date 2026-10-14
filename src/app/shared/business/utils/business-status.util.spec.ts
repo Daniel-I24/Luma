@@ -41,7 +41,6 @@ const allWeekHours: BusinessHours[] = [0, 1, 2, 3, 4, 5, 6].map((d) =>
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
 describe('getBusinessStatus', () => {
-
   // ── 1. Open ──────────────────────────────────────────────────────────────
   it('returns "open" when current time is well within opening hours', () => {
     const now = makeDate(1, 12, 0); // Monday 12:00
@@ -134,7 +133,7 @@ describe('getBusinessStatus', () => {
   });
 
   // ── 11. Priority: today open wins over yesterday's midnight carry-over ────
-  it('gives priority to today\'s open status over yesterday\'s midnight carry-over', () => {
+  it("gives priority to today's open status over yesterday's midnight carry-over", () => {
     // Yesterday (Monday, day=1): midnight schedule 20:00–03:00.
     // Today (Tuesday, day=2): normal schedule 00:30–22:00.
     // Evaluated Tuesday at 01:00 → both could claim "open"; today wins.

@@ -6,18 +6,18 @@ import type { BusinessStatus } from '@shared/business/models/business.model';
  * Changing a token in styles.css automatically updates every marker.
  */
 const STATUS_TOKEN: Record<BusinessStatus, string> = {
-  'open':          '--status-open',
-  'closed':        '--status-closed',
-  'opening-soon':  '--status-opening-soon',
-  'closing-soon':  '--status-closing-soon',
+  open: '--status-open',
+  closed: '--status-closed',
+  'opening-soon': '--status-opening-soon',
+  'closing-soon': '--status-closing-soon',
 };
 
 /** CSS class applied to the marker element for each status. */
 const STATUS_CLASS: Record<BusinessStatus, string> = {
-  'open':          'marker--open',
-  'closed':        'marker--closed',
-  'opening-soon':  'marker--opening-soon',
-  'closing-soon':  'marker--closing-soon',
+  open: 'marker--open',
+  closed: 'marker--closed',
+  'opening-soon': 'marker--opening-soon',
+  'closing-soon': 'marker--closing-soon',
 };
 
 export interface MarkerConfig {
@@ -83,8 +83,8 @@ export class MapMarkerFactory {
   // ── Private ────────────────────────────────────────────────────────────────
 
   private resolveToken(token: string): string {
-    return getComputedStyle(document.documentElement)
-      .getPropertyValue(token)
-      .trim() || 'currentColor';
+    return (
+      getComputedStyle(document.documentElement).getPropertyValue(token).trim() || 'currentColor'
+    );
   }
 }

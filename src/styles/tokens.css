@@ -7,7 +7,7 @@
 
 @theme {
   /* === Typography === */
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
 
   /* === Spacing scale (base 4 px) === */
   --spacing-0: 0px;
@@ -33,9 +33,9 @@
 
   /* === Shadows === */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.10), 0 2px 4px -2px rgb(0 0 0 / 0.10);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.10), 0 4px 6px -4px rgb(0 0 0 / 0.10);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.10), 0 8px 10px -6px rgb(0 0 0 / 0.10);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 
   /* === Animation durations === */
   --duration-fast: 150ms;
@@ -48,14 +48,14 @@
   --color-surface-elevated: #ffffff;
   --color-text: #111827;
   --color-text-muted: #6b7280;
-  --color-primary: #2A1F8C;
+  --color-primary: #2a1f8c;
   --color-primary-hover: #231a78;
   --color-primary-fg: #ffffff;
-  --color-accent: #7C5CFC;
+  --color-accent: #7c5cfc;
   --color-accent-hover: #6b4df0;
   --color-accent-fg: #ffffff;
   --color-border: #e5e7eb;
-  --color-border-focus: #7C5CFC;
+  --color-border-focus: #7c5cfc;
   --color-success: #16a34a;
   --color-success-bg: #dcfce7;
   --color-success-fg: #14532d;

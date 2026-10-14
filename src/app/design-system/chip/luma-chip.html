@@ -11,14 +11,14 @@
   <ng-content />
 
   @if (dismissible()) {
-    <button
-      class="luma-chip__dismiss"
-      type="button"
-      aria-label="Remove"
-      [disabled]="disabled()"
-      (click)="dismiss($event)"
-    >
-      <span aria-hidden="true">×</span>
-    </button>
+  <button
+    class="luma-chip__dismiss"
+    type="button"
+    aria-label="Remove"
+    [disabled]="disabled()"
+    (click)="dismiss($event)"
+  >
+    <span aria-hidden="true">×</span>
+  </button>
   }
 </span>

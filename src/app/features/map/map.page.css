@@ -111,7 +111,15 @@
   transform: scale(1.4);
 }
 
-:global(.luma-marker--open)         { background-color: var(--status-open); }
-:global(.luma-marker--closed)       { background-color: var(--status-closed); }
-:global(.luma-marker--opening-soon) { background-color: var(--status-opening-soon); }
-:global(.luma-marker--closing-soon) { background-color: var(--status-closing-soon); }
+:global(.luma-marker--open) {
+  background-color: var(--status-open);
+}
+:global(.luma-marker--closed) {
+  background-color: var(--status-closed);
+}
+:global(.luma-marker--opening-soon) {
+  background-color: var(--status-opening-soon);
+}
+:global(.luma-marker--closing-soon) {
+  background-color: var(--status-closing-soon);
+}

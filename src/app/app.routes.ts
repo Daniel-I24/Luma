@@ -6,27 +6,22 @@ export const routes: Routes = [
   {
     path: 'auth',
     canActivate: [guestGuard],
-    loadChildren: () =>
-      import('./features/auth/auth.routes').then((m) => m.authRoutes),
+    loadChildren: () => import('./features/auth/auth.routes').then((m) => m.authRoutes),
   },
   {
     path: 'map',
     canActivate: [authGuard],
-    loadComponent: () =>
-      import('./features/map/map.page').then((m) => m.MapPage),
+    loadComponent: () => import('./features/map/map.page').then((m) => m.MapPage),
   },
   {
     path: 'profile',
     canActivate: [authGuard],
-    loadComponent: () =>
-      import('./features/profile/profile.page').then((m) => m.ProfilePage),
+    loadComponent: () => import('./features/profile/profile.page').then((m) => m.ProfilePage),
   },
   {
     path: 'design-preview',
     loadComponent: () =>
-      import('./features/design-preview/design-preview').then(
-        (m) => m.DesignPreviewPage,
-      ),
+      import('./features/design-preview/design-preview').then((m) => m.DesignPreviewPage),
   },
   {
     path: '',

@@ -11,7 +11,9 @@ function makeSupabaseStub(overrides: Record<string, unknown> = {}) {
     client: {
       auth: {
         getSession: vi.fn().mockResolvedValue({ data: { session: null } }),
-        onAuthStateChange: vi.fn().mockReturnValue({ data: { subscription: { unsubscribe: vi.fn() } } }),
+        onAuthStateChange: vi
+          .fn()
+          .mockReturnValue({ data: { subscription: { unsubscribe: vi.fn() } } }),
         signInWithPassword: vi.fn(),
         signUp: vi.fn(),
         signOut: vi.fn(),
@@ -34,10 +36,7 @@ describe('AuthService', () => {
   function setup(authOverrides: Record<string, unknown> = {}) {
     supabaseStub = makeSupabaseStub(authOverrides);
     TestBed.configureTestingModule({
-      providers: [
-        AuthService,
-        { provide: SupabaseService, useValue: supabaseStub },
-      ],
+      providers: [AuthService, { provide: SupabaseService, useValue: supabaseStub }],
     });
     service = TestBed.inject(AuthService);
   }
