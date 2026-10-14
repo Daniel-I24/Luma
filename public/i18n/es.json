@@ -1,4 +1,8 @@
 {
+  "common": {
+    "close": "Cerrar",
+    "remove": "Quitar"
+  },
   "designPreview": {
     "title": "Sistema de diseño — Luma",
     "subtitle": "Componentes base y tokens de diseño",
@@ -127,6 +131,7 @@
     }
   },
   "map": {
+    "canvasLabel": "Mapa de negocios Luma",
     "loadingBusinesses": "Cargando negocios…",
     "errorLoading": "No se pudieron cargar los negocios. Intenta de nuevo.",
     "retry": "Reintentar",

@@ -14,7 +14,7 @@
   <button
     class="luma-chip__dismiss"
     type="button"
-    aria-label="Remove"
+    [attr.aria-label]="'common.remove' | transloco"
     [disabled]="disabled()"
     (click)="dismiss($event)"
   >

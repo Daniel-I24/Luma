@@ -1,7 +1,7 @@
 <ng-container *transloco="let t">
   <div class="map-wrapper">
     <!-- Map canvas -->
-    <div #mapContainer class="map-canvas" aria-label="Mapa de negocios Luma"></div>
+    <div #mapContainer class="map-canvas" [attr.aria-label]="t('map.canvasLabel')"></div>
 
     <!-- Loading overlay -->
     @if (loading()) {

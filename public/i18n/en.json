@@ -1,4 +1,8 @@
 {
+  "common": {
+    "close": "Close",
+    "remove": "Remove"
+  },
   "designPreview": {
     "title": "Design System — Luma",
     "subtitle": "Base components and design tokens",
@@ -127,6 +131,7 @@
     }
   },
   "map": {
+    "canvasLabel": "Luma business map",
     "loadingBusinesses": "Loading businesses…",
     "errorLoading": "Could not load businesses. Please try again.",
     "retry": "Retry",
