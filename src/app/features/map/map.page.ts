@@ -19,6 +19,7 @@ import { MapCameraService } from './services/map-camera.service';
 import { MapMarkerSyncService } from './services/map-marker-sync.service';
 import { GeolocationService, PASTO_CENTRE } from './services/geolocation.service';
 import { haversineKm } from './utils/haversine.util';
+import { getMapNotices } from './utils/map-notices.util';
 import { NEARBY_RADIUS_KM } from './map.constants';
 
 @Component({
@@ -40,6 +41,16 @@ export class MapPage implements OnInit, OnDestroy {
 
   protected readonly loading = signal(false);
   protected readonly errorKey = signal<string | null>(null);
+  private readonly empty = signal(false);
+  protected readonly notices = computed(() =>
+    this.errorKey()
+      ? []
+      : getMapNotices({
+          geoState: this.geoService.state(),
+          loading: this.loading(),
+          empty: this.empty(),
+        }),
+  );
   protected readonly showLocationPrompt = signal(false);
   protected readonly selectedBusiness = signal<Business | null>(null);
   protected readonly selectedHours = signal<BusinessHours[]>([]);
@@ -102,6 +113,7 @@ export class MapPage implements OnInit, OnDestroy {
       return;
     }
 
+    this.empty.set(result.data.length === 0);
     await this.hoursCache.prefetch(result.data.map((b) => b.id));
     this.syncMarkers(result.data);
   }

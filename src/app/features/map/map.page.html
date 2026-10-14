@@ -3,10 +3,12 @@
     <!-- Map canvas -->
     <div #mapContainer class="map-canvas" [attr.aria-label]="t('map.canvasLabel')"></div>
 
-    <!-- Loading overlay -->
-    @if (loading()) {
-    <div class="map-overlay map-overlay--loading" role="status" aria-live="polite">
-      <span class="map-overlay__text">{{ t('map.loadingBusinesses') }}</span>
+    <!-- Status notices: location, loading and empty state -->
+    @if (notices().length) {
+    <div class="map-overlay map-overlay--info" role="status" aria-live="polite">
+      @for (key of notices(); track key) {
+      <p class="map-overlay__text">{{ t(key) }}</p>
+      }
     </div>
     }
 
