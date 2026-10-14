@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # environment.ts is gitignored (real keys); CI builds with placeholders.
+      - name: Create environment file
+        run: cp src/environments/environment.example.ts src/environments/environment.ts
+
+      - run: npm run build
+      - run: npm run lint
+      - run: npm test -- --watch=false
