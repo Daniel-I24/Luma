@@ -40,12 +40,6 @@
       "body": "Aquí iría la información del negocio seleccionado.",
       "close": "Cerrar"
     },
-    "status": {
-      "open": "Abierto",
-      "closed": "Cerrado",
-      "openingSoon": "Abre pronto",
-      "closingSoon": "Cierra pronto"
-    },
     "inputs": {
       "defaultLabel": "Correo electrónico",
       "defaultPlaceholder": "nombre@ejemplo.com",
@@ -155,13 +149,19 @@
       "activePromotion": "Promoción activa",
       "viewMenu": "Ver menú",
       "viewProfile": "Ver perfil"
-    },
-    "businesses": {
-      "errors": {
-        "loadFailed": "No se pudieron cargar los negocios.",
-        "promotionsFailed": "No se pudieron cargar las promociones.",
-        "hoursFailed": "No se pudieron cargar los horarios."
-      }
+    }
+  },
+  "status": {
+    "open": "Abierto",
+    "closed": "Cerrado",
+    "openingSoon": "Abre pronto",
+    "closingSoon": "Cierra pronto"
+  },
+  "businesses": {
+    "errors": {
+      "loadFailed": "No se pudieron cargar los negocios.",
+      "promotionsFailed": "No se pudieron cargar las promociones.",
+      "hoursFailed": "No se pudieron cargar los horarios."
     }
   }
 }

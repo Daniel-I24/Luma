@@ -9,14 +9,7 @@
 
         <!-- Status + distance -->
         <div class="biz-sheet__meta">
-          <app-status-badge [status]="status()">
-            @switch (status()) {
-              @case ('open')         { {{ t('status.open') }} }
-              @case ('closed')       { {{ t('status.closed') }} }
-              @case ('opening-soon') { {{ t('status.openingSoon') }} }
-              @case ('closing-soon') { {{ t('status.closingSoon') }} }
-            }
-          </app-status-badge>
+          <app-status-badge [status]="status()" />
           @if (formattedDistance()) {
             <span class="biz-sheet__distance">
               {{ t('map.sheet.distance', { distance: formattedDistance() }) }}

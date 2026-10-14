@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { TranslocoModule } from '@jsverse/transloco';
 
 export type BusinessStatus =
   | 'open'
@@ -6,8 +7,16 @@ export type BusinessStatus =
   | 'opening-soon'
   | 'closing-soon';
 
+const STATUS_LABEL_KEY: Record<BusinessStatus, string> = {
+  open: 'status.open',
+  closed: 'status.closed',
+  'opening-soon': 'status.openingSoon',
+  'closing-soon': 'status.closingSoon',
+};
+
 /**
- * StatusBadge — displays the operational status of a business.
+ * StatusBadge — displays the operational status of a business with its
+ * translated label (status.*).
  *
  * Maps to the --status-* design tokens.
  */
@@ -15,14 +24,13 @@ export type BusinessStatus =
   selector: 'app-status-badge',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [TranslocoModule],
   templateUrl: './status-badge.html',
   styleUrl: './status-badge.css',
 })
 export class StatusBadge {
   readonly status = input.required<BusinessStatus>();
 
-  /** Returns the CSS modifier class derived from the status value. */
-  protected get modifier(): string {
-    return `status-badge--${this.status()}`;
-  }
+  protected readonly modifier = computed(() => `status-badge--${this.status()}`);
+  protected readonly labelKey = computed(() => STATUS_LABEL_KEY[this.status()]);
 }
