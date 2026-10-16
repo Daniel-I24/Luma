@@ -36,6 +36,7 @@ son estimaciones calculadas en el cliente.
 - **Promociones de las tarjetas:** `BusinessHighlightsRepository.getActivePromotions`,
   también una sola consulta para todos los negocios cercanos.
 - **Menú, favoritos y reseñas:** tablas `menu_items`, `favorites` y `reviews`
-  con sus repositorios en `src/app/shared/business/data/`. El seed incluye
-  menús de prueba pero **ninguna reseña**, así que todos los negocios
+  con sus repositorios en `src/app/shared/business/data/`. Los menús de prueba
+  están en `supabase/seed_menu_items.sql` (repetible, vincula por nombre de
+  negocio). No se siembra **ninguna reseña**, así que todos los negocios
   muestran "Sin reseñas" hasta que alguien escriba una.
