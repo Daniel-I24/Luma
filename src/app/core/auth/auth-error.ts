@@ -1,3 +1,17 @@
+import { FunctionsFetchError, FunctionsHttpError } from '@supabase/supabase-js';
+
+/** Maps a delete-account Edge Function error to a Transloco key. */
+export function mapDeleteAccountError(error: unknown): string {
+  if (error instanceof FunctionsFetchError) return 'auth.errors.networkError';
+  if (error instanceof FunctionsHttpError) {
+    const response: unknown = error.context;
+    if (response instanceof Response && response.status === 401) {
+      return 'auth.errors.sessionExpired';
+    }
+  }
+  return 'auth.errors.deleteAccountFailed';
+}
+
 /**
  * Maps Supabase error messages / codes to Transloco i18n keys.
  * All user-facing strings live in es.json / en.json under auth.errors.*.

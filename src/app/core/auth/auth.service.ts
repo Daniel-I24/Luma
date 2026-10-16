@@ -1,8 +1,10 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import type { Session, User } from '@supabase/supabase-js';
 import { SupabaseService } from '@core/supabase/supabase.service';
-import { mapAuthError } from './auth-error';
+import { mapAuthError, mapDeleteAccountError } from './auth-error';
 import { signInSchema, signUpSchema, resetPasswordSchema } from './auth.schemas';
+import { UserDataRegistry } from './user-data-registry';
 
 /** Shape of an operation result returned by every auth method. */
 export interface AuthResult {
@@ -11,17 +13,23 @@ export interface AuthResult {
   errorKey?: string;
 }
 
+const OK: AuthResult = { success: true };
+const fail = (errorKey: string): AuthResult => ({ success: false, errorKey });
+
 /**
  * AuthService — manages authentication state for the entire app.
  *
  * - Uses Angular Signals for reactive session state.
  * - Validates inputs with Zod before calling Supabase.
  * - Maps Supabase errors to Transloco keys (never raw English messages).
+ * - Wipes per-user caches whenever the session ends.
  * - Never logs passwords or session tokens.
  */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly supabase = inject(SupabaseService).client;
+  private readonly router = inject(Router);
+  private readonly userData = inject(UserDataRegistry);
 
   private readonly _session = signal<Session | null>(null);
   private readonly _loading = signal<boolean>(false);
@@ -40,90 +48,77 @@ export class AuthService {
 
   // ── Public API ────────────────────────────────────────────────────
 
-  async signIn(email: string, password: string): Promise<AuthResult> {
+  signIn(email: string, password: string): Promise<AuthResult> {
     const parsed = signInSchema.safeParse({ email, password });
-    if (!parsed.success) {
-      return { success: false, errorKey: parsed.error.issues[0].message };
-    }
-
-    this._loading.set(true);
-    try {
-      const { error } = await this.supabase.auth.signInWithPassword({
-        email: parsed.data.email,
-        password: parsed.data.password,
-      });
-      if (error) return { success: false, errorKey: mapAuthError(error.message) };
-      return { success: true };
-    } finally {
-      this._loading.set(false);
-    }
+    if (!parsed.success) return Promise.resolve(fail(parsed.error.issues[0].message));
+    return this.withLoading(async () => {
+      const { error } = await this.supabase.auth.signInWithPassword(parsed.data);
+      return error ? fail(mapAuthError(error.message)) : OK;
+    });
   }
 
-  async signUp(email: string, password: string): Promise<AuthResult> {
+  signUp(email: string, password: string): Promise<AuthResult> {
     const parsed = signUpSchema.safeParse({ email, password });
-    if (!parsed.success) {
-      return { success: false, errorKey: parsed.error.issues[0].message };
-    }
-
-    this._loading.set(true);
-    try {
-      const { error } = await this.supabase.auth.signUp({
-        email: parsed.data.email,
-        password: parsed.data.password,
-      });
-      if (error) return { success: false, errorKey: mapAuthError(error.message) };
-      return { success: true };
-    } finally {
-      this._loading.set(false);
-    }
+    if (!parsed.success) return Promise.resolve(fail(parsed.error.issues[0].message));
+    return this.withLoading(async () => {
+      const { error } = await this.supabase.auth.signUp(parsed.data);
+      return error ? fail(mapAuthError(error.message)) : OK;
+    });
   }
 
-  async signOut(): Promise<AuthResult> {
-    this._loading.set(true);
-    try {
+  signOut(): Promise<AuthResult> {
+    return this.withLoading(async () => {
       const { error } = await this.supabase.auth.signOut();
-      if (error) return { success: false, errorKey: mapAuthError(error.message) };
-      return { success: true };
-    } finally {
-      this._loading.set(false);
-    }
+      if (error) return fail(mapAuthError(error.message));
+      this.userData.clearAll();
+      return OK;
+    });
   }
 
-  async resetPassword(email: string): Promise<AuthResult> {
+  resetPassword(email: string): Promise<AuthResult> {
     const parsed = resetPasswordSchema.safeParse({ email });
-    if (!parsed.success) {
-      return { success: false, errorKey: parsed.error.issues[0].message };
-    }
-
-    this._loading.set(true);
-    try {
+    if (!parsed.success) return Promise.resolve(fail(parsed.error.issues[0].message));
+    return this.withLoading(async () => {
       const { error } = await this.supabase.auth.resetPasswordForEmail(parsed.data.email);
-      if (error) return { success: false, errorKey: mapAuthError(error.message) };
-      return { success: true };
-    } finally {
-      this._loading.set(false);
-    }
+      return error ? fail(mapAuthError(error.message)) : OK;
+    });
   }
 
-  async deleteAccount(): Promise<AuthResult> {
-    // Account deletion must be handled by a Supabase Edge Function
-    // that uses the service_role key — the client cannot self-delete.
-    this._loading.set(true);
-    try {
-      const { error } = await this.supabase.functions.invoke('delete-account');
-      if (error) return { success: false, errorKey: mapAuthError(error.message) };
-      await this.supabase.auth.signOut();
-      return { success: true };
-    } finally {
-      this._loading.set(false);
-    }
+  /**
+   * Deletes the signed-in user's account through the delete-account Edge
+   * Function (it identifies the user by the session JWT), then ends the local
+   * session, wipes per-user caches and goes to the login page.
+   */
+  deleteAccount(): Promise<AuthResult> {
+    return this.withLoading(async () => {
+      const { error } = await this.supabase.functions.invoke('delete-account', { method: 'POST' });
+      if (error) return fail(mapDeleteAccountError(error));
+      // The user no longer exists server-side; local scope clears storage without a request.
+      await this.supabase.auth.signOut({ scope: 'local' });
+      this.userData.clearAll();
+      await this.router.navigate(['/auth/login']);
+      return OK;
+    });
   }
 
   // ── Private helpers ───────────────────────────────────────────────
 
+  private async withLoading(operation: () => Promise<AuthResult>): Promise<AuthResult> {
+    this._loading.set(true);
+    try {
+      return await operation();
+    } catch {
+      return fail('auth.errors.unknown');
+    } finally {
+      this._loading.set(false);
+    }
+  }
+
   private async initSession(): Promise<void> {
-    this.supabase.auth.onAuthStateChange((_event, session) => {
+    this.supabase.auth.onAuthStateChange((event, session) => {
       this._session.set(session);
+      // Also covers sessions ended elsewhere (expired refresh token, other tab).
+      if (event === 'SIGNED_OUT') this.userData.clearAll();
     });
 
     // A failed restore is treated as "no session" so guards never hang.

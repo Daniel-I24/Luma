@@ -28,6 +28,7 @@
       "secondary": "Secondary",
       "ghost": "Ghost",
       "danger": "Danger",
+      "dangerOutline": "Subtle danger",
       "disabled": "Disabled",
       "small": "Small",
       "medium": "Medium",
@@ -113,7 +114,9 @@
       "passwordTooShort": "Password must be at least 6 characters.",
       "tooManyRequests": "Too many attempts. Please wait a few minutes.",
       "networkError": "Connection error. Check your network and try again.",
-      "unknown": "An unexpected error occurred. Please try again."
+      "unknown": "An unexpected error occurred. Please try again.",
+      "deleteAccountFailed": "Could not delete your account. Please try again.",
+      "sessionExpired": "Your session has expired. Sign in again and retry."
     }
   },
   "profile": {
@@ -123,13 +126,20 @@
     "deleteAccount": "Delete account",
     "deleteSheet": {
       "title": "Delete account",
-      "warning": "This action is permanent and irreversible. All your data will be deleted.",
+      "intro": "This will permanently delete:",
+      "items": {
+        "account": "Your account and sign-in with your email",
+        "profile": "Your profile and display name",
+        "favorites": "Your favourites",
+        "reviews": "The reviews you wrote",
+        "businesses": "The businesses you manage, with their menu, hours, promotions and reviews"
+      },
+      "irreversible": "This action cannot be undone.",
       "confirm": "Yes, delete my account",
       "cancel": "Cancel"
     },
     "errors": {
       "signOut": "Could not sign out. Please try again.",
-      "deleteAccount": "Could not delete account. Please try again.",
       "displayNameLoad": "Could not load your display name.",
       "displayNameSave": "Could not save your display name. Please try again."
     },

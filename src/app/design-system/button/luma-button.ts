@@ -1,12 +1,19 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'accent' | 'danger';
+export type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'ghost'
+  | 'accent'
+  | 'danger'
+  | 'danger-outline';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 /**
  * LumaButton — base interactive button for the Luma design system.
  *
- * Variants: primary | secondary | ghost | accent | danger
+ * Variants: primary | secondary | ghost | accent | danger | danger-outline
+ * (danger-outline: discreet destructive action, e.g. deleting the account)
  * Sizes:    sm | md | lg (all keep the 44px touch target)
  */
 @Component({

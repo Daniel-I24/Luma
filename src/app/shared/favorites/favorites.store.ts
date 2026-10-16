@@ -1,15 +1,17 @@
 import { Injectable, computed, effect, inject, signal, untracked } from '@angular/core';
 import { AuthService } from '@core/auth/auth.service';
+import { type UserScopedState, UserDataRegistry } from '@core/auth/user-data-registry';
 import { ToastService } from '@design-system/toast/toast.service';
 import { FavoriteRepository } from '@shared/business/data/favorite.repository';
 
 /**
  * FavoritesStore — ids of the signed-in user's favourite businesses. Loaded
- * once per signed-in user and cleared on sign-out. Toggling is optimistic:
- * the UI changes at once and is reverted if the request fails.
+ * once per signed-in user and wiped on sign-out or account deletion, so no
+ * one sees another user's favourites on a shared device. Toggling is
+ * optimistic: the UI changes at once and is reverted if the request fails.
  */
 @Injectable({ providedIn: 'root' })
-export class FavoritesStore {
+export class FavoritesStore implements UserScopedState {
   private readonly repo = inject(FavoriteRepository);
   private readonly toasts = inject(ToastService);
   private readonly auth = inject(AuthService);
@@ -22,10 +24,17 @@ export class FavoritesStore {
   readonly ids = this._ids.asReadonly();
 
   constructor() {
+    inject(UserDataRegistry).register(this);
     effect(() => {
       const userId = this.userId();
       untracked(() => void this.onUserChange(userId));
     });
+  }
+
+  clearUserData(): void {
+    this.loadedFor = null;
+    this.pending.clear();
+    this._ids.set(new Set());
   }
 
   isFavorite(businessId: string): boolean {
@@ -36,12 +45,14 @@ export class FavoritesStore {
   async toggle(businessId: string): Promise<boolean> {
     if (this.pending.has(businessId)) return true;
     const wasFavorite = this.isFavorite(businessId);
+    const owner = this.loadedFor;
     this.pending.add(businessId);
     this.setFavorite(businessId, !wasFavorite);
     try {
       const result = wasFavorite
         ? await this.repo.remove(businessId)
         : await this.repo.add(businessId);
+      if (this.loadedFor !== owner) return false;
       if (result.errorKey) {
         this.setFavorite(businessId, wasFavorite);
         this.toasts.show({ messageKey: result.errorKey, tone: 'error' });

@@ -28,6 +28,7 @@
       "secondary": "Secundario",
       "ghost": "Fantasma",
       "danger": "Peligro",
+      "dangerOutline": "Peligro discreto",
       "disabled": "Deshabilitado",
       "small": "Pequeño",
       "medium": "Mediano",
@@ -113,7 +114,9 @@
       "passwordTooShort": "La contraseña debe tener al menos 6 caracteres.",
       "tooManyRequests": "Demasiados intentos. Espera unos minutos e intenta de nuevo.",
       "networkError": "Error de conexión. Verifica tu red e intenta de nuevo.",
-      "unknown": "Ocurrió un error inesperado. Intenta de nuevo."
+      "unknown": "Ocurrió un error inesperado. Intenta de nuevo.",
+      "deleteAccountFailed": "No se pudo eliminar la cuenta. Intenta de nuevo.",
+      "sessionExpired": "Tu sesión expiró. Inicia sesión de nuevo e intenta otra vez."
     }
   },
   "profile": {
@@ -123,13 +126,20 @@
     "deleteAccount": "Eliminar cuenta",
     "deleteSheet": {
       "title": "Eliminar cuenta",
-      "warning": "Esta acción es permanente e irreversible. Se eliminarán todos tus datos.",
+      "intro": "Se eliminará de forma permanente:",
+      "items": {
+        "account": "Tu cuenta y el acceso con tu correo",
+        "profile": "Tu perfil y tu nombre visible",
+        "favorites": "Tus favoritos",
+        "reviews": "Las reseñas que escribiste",
+        "businesses": "Los negocios que administras, con su menú, horarios, promociones y reseñas"
+      },
+      "irreversible": "Esta acción no se puede deshacer.",
       "confirm": "Sí, eliminar mi cuenta",
       "cancel": "Cancelar"
     },
     "errors": {
       "signOut": "No se pudo cerrar la sesión. Intenta de nuevo.",
-      "deleteAccount": "No se pudo eliminar la cuenta. Intenta de nuevo.",
       "displayNameLoad": "No se pudo cargar tu nombre visible.",
       "displayNameSave": "No se pudo guardar tu nombre visible. Intenta de nuevo."
     },

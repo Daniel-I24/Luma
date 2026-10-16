@@ -109,6 +109,16 @@
   background-color: var(--color-danger-hover);
 }
 
+.luma-btn--danger-outline {
+  background-color: transparent;
+  color: var(--color-danger-fg);
+  border-color: var(--color-danger-fg);
+}
+
+.luma-btn--danger-outline:hover:not(:disabled) {
+  background-color: var(--color-danger-bg);
+}
+
 /* Disabled state */
 .luma-btn--disabled,
 .luma-btn:disabled {

@@ -2,6 +2,7 @@ import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '@core/auth/auth.service';
+import { UserDataRegistry } from '@core/auth/user-data-registry';
 import { ToastService } from '@design-system/toast/toast.service';
 import { FavoriteRepository } from '@shared/business/data/favorite.repository';
 import { FavoritesStore } from './favorites.store';
@@ -70,6 +71,25 @@ describe('FavoritesStore', () => {
 
     expect(repo.add).toHaveBeenCalledOnce();
     expect(store.isFavorite('b2')).toBe(true);
+  });
+
+  it('is wiped through the user data registry (sign-out or account deletion)', () => {
+    TestBed.inject(UserDataRegistry).clearAll();
+
+    expect(store.ids().size).toBe(0);
+  });
+
+  it('drops a toggle response that arrives after the user data was wiped', async () => {
+    let resolve!: (value: unknown) => void;
+    repo.remove.mockReturnValue(new Promise((r) => (resolve = r)));
+    const pending = store.toggle('b1');
+
+    store.clearUserData();
+    resolve({ data: null, errorKey: 'businesses.errors.favoriteSaveFailed' });
+
+    expect(await pending).toBe(false);
+    expect(store.isFavorite('b1')).toBe(false);
+    expect(toasts.show).not.toHaveBeenCalled();
   });
 
   it('clears the favourites on sign-out and reloads for the next user', async () => {

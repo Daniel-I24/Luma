@@ -33,6 +33,8 @@ export class ProfilePage {
   protected readonly loading = this.auth.loading;
   protected readonly deleteSheetOpen = signal(false);
   protected readonly errorKey = signal<string | null>(null);
+  /** What account deletion removes, listed in the confirmation sheet. */
+  protected readonly deletedData = ['account', 'profile', 'favorites', 'reviews', 'businesses'] as const;
 
   protected async onSignOut(): Promise<void> {
     this.errorKey.set(null);
@@ -48,10 +50,8 @@ export class ProfilePage {
     this.deleteSheetOpen.set(false);
     this.errorKey.set(null);
     const result = await this.auth.deleteAccount();
-    if (result.success) {
-      await this.router.navigate(['/auth/login']);
-    } else {
-      this.errorKey.set('profile.errors.deleteAccount');
+    if (!result.success) {
+      this.errorKey.set(result.errorKey ?? 'auth.errors.deleteAccountFailed');
     }
   }
 }

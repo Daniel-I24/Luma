@@ -36,16 +36,17 @@
         {{ t(errorKey()!) }}
       </p>
       }
-      <div class="flex flex-col gap-3">
+      <app-luma-button
+        variant="secondary"
+        [fullWidth]="true"
+        [disabled]="loading()"
+        (clicked)="onSignOut()"
+        >{{ t('profile.signOut') }}</app-luma-button
+      >
+      <div class="mt-8">
         <app-luma-button
-          variant="secondary"
-          [fullWidth]="true"
-          [disabled]="loading()"
-          (clicked)="onSignOut()"
-          >{{ t('profile.signOut') }}</app-luma-button
-        >
-        <app-luma-button
-          variant="danger"
+          variant="danger-outline"
+          size="sm"
           [fullWidth]="true"
           [disabled]="loading()"
           (clicked)="deleteSheetOpen.set(true)"
@@ -61,7 +62,15 @@
     [title]="t('profile.deleteSheet.title')"
     (closed)="deleteSheetOpen.set(false)"
   >
-    <p class="m-0 mb-4 text-body text-fg-muted">{{ t('profile.deleteSheet.warning') }}</p>
+    <p class="m-0 mb-2 text-body text-fg">{{ t('profile.deleteSheet.intro') }}</p>
+    <ul class="m-0 mb-4 list-disc space-y-1 ps-5 text-body-sm text-fg-muted">
+      @for (item of deletedData; track item) {
+      <li>{{ t('profile.deleteSheet.items.' + item) }}</li>
+      }
+    </ul>
+    <p class="m-0 mb-4 rounded-md bg-danger-bg p-3 text-body-sm font-semibold text-danger-fg">
+      {{ t('profile.deleteSheet.irreversible') }}
+    </p>
     <div class="flex flex-col gap-3">
       <app-luma-button
         variant="danger"
