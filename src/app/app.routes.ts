@@ -3,6 +3,14 @@ import { authGuard } from '@core/auth/auth.guard';
 import { guestGuard } from '@core/auth/guest.guard';
 import { DETAIL_ROUTE_DATA } from '@core/navigation/route-transition';
 
+const DEV_ONLY_ROUTES: Routes = [
+  {
+    path: 'design-preview',
+    loadComponent: () =>
+      import('./features/design-preview/design-preview').then((m) => m.DesignPreviewPage),
+  },
+];
+
 export const routes: Routes = [
   {
     path: '',
@@ -14,11 +22,9 @@ export const routes: Routes = [
     canActivate: [guestGuard],
     loadChildren: () => import('./features/auth/auth.routes').then((m) => m.authRoutes),
   },
-  {
-    path: 'design-preview',
-    loadComponent: () =>
-      import('./features/design-preview/design-preview').then((m) => m.DesignPreviewPage),
-  },
+  // Design system showcase: development builds only. The production build
+  // defines ngDevMode as false, so the route and its chunk are dropped.
+  ...(typeof ngDevMode === 'undefined' || ngDevMode ? DEV_ONLY_ROUTES : []),
   {
     // Signed-in sections share the tab bar layout.
     path: '',
@@ -69,4 +75,5 @@ export const routes: Routes = [
       },
     ],
   },
+  { path: '**', redirectTo: 'map' },
 ];
