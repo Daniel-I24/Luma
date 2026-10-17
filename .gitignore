@@ -48,3 +48,6 @@ src/environments/environment.deploy.ts
 
 .claude/worktrees/
 .claude/settings.local.json
+
+# Supabase CLI local state (project ref, pooler host, versions)
+supabase/.temp/
