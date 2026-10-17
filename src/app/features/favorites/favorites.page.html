@@ -1,0 +1,62 @@
+<div
+  *transloco="let t"
+  class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6"
+>
+  <header class="flex items-center gap-2">
+    <app-luma-icon-button
+      icon="arrow-left"
+      variant="ghost"
+      [label]="t('favoritesPage.back')"
+      (clicked)="back()"
+    />
+    <h1 class="m-0 text-h3 text-fg">{{ t('favoritesPage.title') }}</h1>
+  </header>
+
+  @switch (state()) { @case ('loading') {
+  <div class="flex flex-col gap-3" aria-busy="true">
+    @for (i of [0, 1, 2]; track i) {
+    <app-luma-skeleton class="h-20 w-full" shape="rect" />
+    }
+    <span class="sr-only">{{ t('favoritesPage.loading') }}</span>
+  </div>
+  } @case ('error') {
+  <div role="alert">
+    <app-luma-empty-state
+      icon="alert"
+      tone="error"
+      [heading]="t('favoritesPage.error')"
+      [description]="t('businesses.errors.favoritesFailed')"
+    >
+      <app-luma-button (clicked)="retry()">{{ t('common.retry') }}</app-luma-button>
+    </app-luma-empty-state>
+  </div>
+  } @case ('ready') { @if (store.items().length === 0) {
+  <app-luma-empty-state
+    icon="heart"
+    [heading]="t('favoritesPage.empty.title')"
+    [description]="t('favoritesPage.empty.description')"
+  >
+    <app-luma-button variant="ghost" (clicked)="explore()"
+      >{{ t('favoritesPage.empty.action') }}</app-luma-button
+    >
+  </app-luma-empty-state>
+  } @else {
+  <ul class="m-0 flex list-none flex-col gap-3 p-0">
+    @for (item of store.items(); track item.business.id) {
+    <li class="motion-stagger flex items-center gap-2" [style.--stagger-index]="$index">
+      <app-luma-business-card
+        class="min-w-0 flex-1"
+        variant="list"
+        [name]="item.business.name"
+        [status]="item.status"
+        [category]="item.business.category"
+        [logoUrl]="item.business.logo_url"
+        [logoIcon]="icon(item.business.category)"
+        (selected)="open(item.business.id)"
+      />
+      <app-favorite-button [businessId]="item.business.id" />
+    </li>
+    }
+  </ul>
+  } } }
+</div>

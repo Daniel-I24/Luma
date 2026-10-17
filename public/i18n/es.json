@@ -181,7 +181,9 @@
     },
     "validation": {
       "displayNameTooLong": "El nombre puede tener hasta 40 caracteres."
-    }
+    },
+    "activity": "Tu actividad",
+    "favorites": "Mis favoritos"
   },
   "map": {
     "canvasLabel": "Mapa de negocios Luma",
@@ -463,5 +465,16 @@
   "checkout": {
     "title": "Confirmar pedido",
     "comingSoon": "Muy pronto podrás confirmar tu pedido desde aquí."
+  },
+  "favoritesPage": {
+    "title": "Mis favoritos",
+    "back": "Volver al perfil",
+    "loading": "Cargando tus favoritos…",
+    "error": "No se pudieron cargar tus favoritos",
+    "empty": {
+      "title": "Aún no tienes favoritos",
+      "description": "Toca el corazón de un negocio para guardarlo aquí.",
+      "action": "Explorar negocios"
+    }
   }
 }

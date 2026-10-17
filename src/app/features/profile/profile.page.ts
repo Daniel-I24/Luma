@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
-import { LumaAvatar, LumaBottomSheet, LumaButton } from '@design-system';
+import { LumaAvatar, LumaBottomSheet, LumaButton, LumaIcon } from '@design-system';
 import { AppearanceSettings } from './components/appearance-settings/appearance-settings';
 import { DisplayNameField } from './components/display-name-field/display-name-field';
 
@@ -20,6 +20,8 @@ import { DisplayNameField } from './components/display-name-field/display-name-f
     LumaAvatar,
     LumaBottomSheet,
     LumaButton,
+    LumaIcon,
+    RouterLink,
     AppearanceSettings,
     DisplayNameField,
   ],

@@ -50,6 +50,11 @@ export const routes: Routes = [
         loadComponent: () => import('./features/ai/ai.page').then((m) => m.AiPage),
       },
       {
+        path: 'favorites',
+        loadComponent: () =>
+          import('./features/favorites/favorites.page').then((m) => m.FavoritesPage),
+      },
+      {
         path: 'cart',
         loadComponent: () => import('./features/cart/cart.page').then((m) => m.CartPage),
       },

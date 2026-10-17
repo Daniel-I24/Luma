@@ -105,4 +105,19 @@ describe('FavoritesStore', () => {
     expect(store.isFavorite('b9')).toBe(true);
     expect(store.isFavorite('b1')).toBe(false);
   });
+
+  it('reports when the favourites are known, or failed, and reloads them on demand', async () => {
+    expect(store.ready()).toBe(true);
+    expect(store.failed()).toBe(false);
+
+    repo.getFavoriteIds.mockResolvedValue({ data: null, errorKey: 'businesses.errors.favoritesFailed' });
+    await store.reload();
+    expect(store.failed()).toBe(true);
+
+    repo.getFavoriteIds.mockResolvedValue({ data: ['b7'], errorKey: null });
+    await store.reload();
+    expect(store.failed()).toBe(false);
+    expect(store.isFavorite('b7')).toBe(true);
+  });
 });
+

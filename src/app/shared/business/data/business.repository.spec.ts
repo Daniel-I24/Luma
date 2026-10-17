@@ -6,7 +6,7 @@ import type { FakeResponse } from '../../../../testing/fake-supabase';
 import { BusinessRepository } from './business.repository';
 
 function setup(response: FakeResponse) {
-  const fake = createFakeSupabase({ business_hours: response });
+  const fake = createFakeSupabase({ business_hours: response, businesses: response });
   TestBed.configureTestingModule({ providers: [{ provide: SupabaseService, useValue: fake }] });
   return { repo: TestBed.inject(BusinessRepository), queries: fake.queries };
 }
@@ -30,5 +30,22 @@ describe('BusinessRepository.getHoursFor', () => {
     });
     expect(await repo.getHoursFor([])).toEqual({ data: [], errorKey: null });
     expect(queries).toHaveLength(1);
+  });
+});
+
+describe('BusinessRepository.getByIds', () => {
+  it('reads active businesses by id in one query', async () => {
+    const { repo, queries } = setup(ok([{ id: 'b1' }]));
+
+    expect(await repo.getByIds(['b1', 'b2'])).toEqual({ data: [{ id: 'b1' }], errorKey: null });
+    expect(queries[0].table).toBe('businesses');
+    expect(queries[0].call('in')).toEqual(['id', ['b1', 'b2']]);
+    expect(queries[0].call('eq')).toEqual(['is_active', true]);
+  });
+
+  it('maps errors to an i18n key', async () => {
+    const { repo } = setup(failure());
+
+    expect(await repo.getByIds(['b1'])).toEqual({ data: null, errorKey: 'businesses.errors.loadFailed' });
   });
 });

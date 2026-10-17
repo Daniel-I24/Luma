@@ -181,7 +181,9 @@
     },
     "validation": {
       "displayNameTooLong": "The name can be up to 40 characters long."
-    }
+    },
+    "activity": "Your activity",
+    "favorites": "My favourites"
   },
   "map": {
     "canvasLabel": "Luma business map",
@@ -463,5 +465,16 @@
   "checkout": {
     "title": "Confirm order",
     "comingSoon": "Soon you will be able to confirm your order here."
+  },
+  "favoritesPage": {
+    "title": "My favourites",
+    "back": "Back to profile",
+    "loading": "Loading your favourites…",
+    "error": "Could not load your favourites",
+    "empty": {
+      "title": "No favourites yet",
+      "description": "Tap a business's heart to save it here.",
+      "action": "Explore businesses"
+    }
   }
 }

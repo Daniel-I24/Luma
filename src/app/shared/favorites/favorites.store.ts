@@ -18,10 +18,15 @@ export class FavoritesStore implements UserScopedState {
   private readonly userId = computed(() => this.auth.user()?.id ?? null);
 
   private readonly _ids = signal<ReadonlySet<string>>(new Set());
+  private readonly _ready = signal(false);
+  private readonly _failed = signal(false);
   private readonly pending = new Set<string>();
   private loadedFor: string | null = null;
 
   readonly ids = this._ids.asReadonly();
+  /** True once the signed-in user's favourites were requested (loaded or failed). */
+  readonly ready = this._ready.asReadonly();
+  readonly failed = this._failed.asReadonly();
 
   constructor() {
     inject(UserDataRegistry).register(this);
@@ -35,6 +40,15 @@ export class FavoritesStore implements UserScopedState {
     this.loadedFor = null;
     this.pending.clear();
     this._ids.set(new Set());
+    this._ready.set(false);
+    this._failed.set(false);
+  }
+
+  /** Requests the signed-in user's favourites again (e.g. after a failure). */
+  async reload(): Promise<void> {
+    const userId = this.loadedFor;
+    this.loadedFor = null;
+    await this.onUserChange(userId);
   }
 
   isFavorite(businessId: string): boolean {
@@ -72,9 +86,14 @@ export class FavoritesStore implements UserScopedState {
     if (userId === this.loadedFor) return;
     this.loadedFor = userId;
     this._ids.set(new Set());
+    this._ready.set(false);
+    this._failed.set(false);
     if (!userId) return;
     const result = await this.repo.getFavoriteIds();
-    if (this.loadedFor === userId && result.data) this._ids.set(new Set(result.data));
+    if (this.loadedFor !== userId) return;
+    if (result.data) this._ids.set(new Set(result.data));
+    this._failed.set(!result.data);
+    this._ready.set(true);
   }
 
   private setFavorite(businessId: string, favorite: boolean): void {

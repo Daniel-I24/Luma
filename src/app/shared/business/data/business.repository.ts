@@ -59,6 +59,19 @@ export class BusinessRepository {
     return { data: data as Business | null, errorKey: null };
   }
 
+  /** Active businesses with the given ids, in one query (order not guaranteed). */
+  async getByIds(ids: readonly string[]): Promise<RepoResult<Business[]>> {
+    if (ids.length === 0) return { data: [], errorKey: null };
+    const { data, error } = await this.db
+      .from('businesses')
+      .select('*')
+      .in('id', [...ids])
+      .eq('is_active', true);
+
+    if (error) return { data: null, errorKey: 'businesses.errors.loadFailed' };
+    return { data: data as Business[], errorKey: null };
+  }
+
   /** Returns the full weekly schedule for a business. */
   async getHours(businessId: string): Promise<RepoResult<BusinessHours[]>> {
     const { data, error } = await this.db
