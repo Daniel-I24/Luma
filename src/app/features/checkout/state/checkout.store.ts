@@ -2,13 +2,13 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CartStore } from '@shared/cart/cart.store';
 import { OrderRepository } from '@shared/orders/order.repository';
-import { type PickupOption, resolvePickup, suggestedLaterTime } from '../utils/pickup-time.util';
+import { PickupScheduleStore } from './pickup-schedule.store';
 
 export const NOTES_MAX_LENGTH = 200;
 
 /**
- * CheckoutStore — the order being confirmed: pick-up choice, notes and the
- * call to create_order. Only ids and quantities leave the app; the server
+ * CheckoutStore — the order being confirmed: notes, the pick-up chosen in
+ * PickupScheduleStore and the call to create_order. Only ids and quantities leave the app; the server
  * computes the total. On success the cart is emptied and the order opens.
  */
 @Injectable()
@@ -16,9 +16,8 @@ export class CheckoutStore {
   private readonly cart = inject(CartStore);
   private readonly orders = inject(OrderRepository);
   private readonly router = inject(Router);
+  private readonly schedule = inject(PickupScheduleStore);
 
-  readonly option = signal<PickupOption>('now');
-  readonly time = signal(suggestedLaterTime());
   readonly notes = signal('');
 
   private readonly _submitting = signal(false);
@@ -29,7 +28,7 @@ export class CheckoutStore {
 
   async confirm(): Promise<void> {
     if (this._submitting() || this.cart.isEmpty()) return;
-    const pickup = resolvePickup(this.option(), this.time());
+    const pickup = this.schedule.choice();
     if (pickup.errorKey || this.notesTooLong()) {
       this._errorKey.set(pickup.errorKey ?? 'orders.errors.invalidNotes');
       return;

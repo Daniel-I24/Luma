@@ -59,6 +59,7 @@ describe('OrderRepository', () => {
     const { repo, queries } = setup({ orders: ok([{ id: ORDER_ID }]) });
 
     expect(await repo.list()).toEqual({ data: [{ id: ORDER_ID }], errorKey: null });
+    expect(queries[0].call('select')?.[0]).toContain('business_name, business_address');
     expect(queries[0].call('select')?.[0]).toContain('business:businesses(');
     expect(queries[0].call('order')).toEqual(['created_at', { ascending: false }]);
   });

@@ -518,7 +518,12 @@
       "later": "Later",
       "tomorrow": "Tomorrow",
       "todayAt": "Pick-up time (today)",
-      "tomorrowAt": "Pick-up time (tomorrow)"
+      "tomorrowAt": "Pick-up time (tomorrow)",
+      "closedNow": "The business is closed right now. Schedule your pick-up for later or tomorrow.",
+      "withinHours": "Only times within the business hours: {{ranges}}",
+      "noSlotsToday": "There are no times left today within the business hours. Choose “Tomorrow”.",
+      "noSlotsTomorrow": "The business does not open tomorrow. Try again another day.",
+      "hoursFailed": "The business hours could not be loaded."
     },
     "notes": {
       "label": "Notes for the restaurant",
@@ -534,7 +539,9 @@
     "errors": {
       "timeRequired": "Choose a valid pick-up time.",
       "tooSoon": "Choose a time at least 10 minutes from now.",
-      "tooFar": "You can schedule up to 7 days ahead."
+      "tooFar": "You can schedule up to 7 days ahead.",
+      "closedNow": "The business is closed right now. Choose a pick-up time.",
+      "outsideHours": "Choose a time within the business hours."
     }
   },
   "favoritesPage": {

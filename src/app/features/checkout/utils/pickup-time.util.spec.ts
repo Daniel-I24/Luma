@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { resolvePickup, suggestedLaterTime } from './pickup-time.util';
+import { resolvePickup } from './pickup-time.util';
 
 const now = new Date('2026-10-17T14:00:00');
 
@@ -30,12 +30,5 @@ describe('resolvePickup', () => {
   it('asks for a valid time', () => {
     expect(resolvePickup('later', '', now).errorKey).toBe('checkout.errors.timeRequired');
     expect(resolvePickup('tomorrow', '25:00', now).errorKey).toBe('checkout.errors.timeRequired');
-  });
-});
-
-describe('suggestedLaterTime', () => {
-  it('suggests half an hour ahead rounded up to 5 minutes', () => {
-    expect(suggestedLaterTime(new Date('2026-10-17T14:02:00'))).toBe('14:35');
-    expect(suggestedLaterTime(new Date('2026-10-17T23:50:00'))).toBe('00:20');
   });
 });

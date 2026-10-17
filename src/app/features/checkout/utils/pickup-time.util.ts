@@ -4,8 +4,6 @@ export type PickupOption = 'now' | 'later' | 'tomorrow';
 /** Same window the server enforces in create_order. */
 export const MIN_LEAD_MINUTES = 10;
 export const MAX_AHEAD_DAYS = 7;
-/** Suggested lead time for "Más tarde". */
-const SUGGESTED_LEAD_MINUTES = 30;
 const MINUTE_MS = 60_000;
 
 export interface PickupChoice {
@@ -37,9 +35,3 @@ export function resolvePickup(option: PickupOption, time: string, now: Date = ne
   return { pickupAt: at.toISOString(), errorKey: null };
 }
 
-/** Default "Más tarde" time: half an hour from now, rounded up to 5 minutes. */
-export function suggestedLaterTime(now: Date = new Date()): string {
-  const at = new Date(now.getTime() + SUGGESTED_LEAD_MINUTES * MINUTE_MS);
-  at.setMinutes(Math.ceil(at.getMinutes() / 5) * 5, 0, 0);
-  return `${String(at.getHours()).padStart(2, '0')}:${String(at.getMinutes()).padStart(2, '0')}`;
-}

@@ -30,7 +30,12 @@
         [routerLink]="['/orders', order.id]"
       >
         <span class="flex items-center justify-between gap-2">
-          <span class="text-title">{{ order.business?.name ?? t('orders.unknownBusiness') }}</span>
+          <span class="flex flex-col">
+            <span class="text-title">{{ order.business_name }}</span>
+            @if (order.business_id === null) {
+            <span class="text-caption text-fg-subtle">{{ t('orders.unknownBusiness') }}</span>
+            }
+          </span>
           <app-order-status-badge [status]="order.status" />
         </span>
         <span class="flex items-center justify-between gap-2 text-body-sm text-fg-muted">

@@ -30,20 +30,35 @@
       @for (option of options; track option) {
       <app-luma-chip
         [toggleable]="false"
-        [selected]="store.option() === option"
-        (selectedChange)="store.option.set(option)"
+        [selected]="schedule.option() === option"
+        [disabled]="option === 'now' && schedule.openNow() === false"
+        (selectedChange)="schedule.option.set(option)"
         >{{ t('checkout.when.' + option) }}</app-luma-chip
       >
       }
     </div>
-    @if (store.option() !== 'now') {
-    <app-luma-input
-      inputId="checkout-time"
-      type="time"
-      [label]="t(store.option() === 'later' ? 'checkout.when.todayAt' : 'checkout.when.tomorrowAt')"
-      [(value)]="store.time"
+    @if (schedule.openNow() === false) {
+    <p class="m-0 text-body-sm text-fg-muted">{{ t('checkout.when.closedNow') }}</p>
+    } @if (schedule.option() !== 'now') { @switch (schedule.state()) { @case ('loading') {
+    <app-luma-skeleton class="h-11 w-full" shape="rect" />
+    } @case ('error') {
+    <div class="flex items-center justify-between gap-3 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+      <span>{{ t('checkout.when.hoursFailed') }}</span>
+      <app-luma-button variant="ghost" size="sm" (clicked)="retryHours()">{{ t('common.retry') }}</app-luma-button>
+    </div>
+    } @default { @if (slotOptions().length) {
+    <app-luma-select
+      selectId="checkout-time"
+      [label]="t(schedule.option() === 'later' ? 'checkout.when.todayAt' : 'checkout.when.tomorrowAt')"
+      [options]="slotOptions()"
+      [hint]="t('checkout.when.withinHours', { ranges: schedule.ranges() })"
+      [(value)]="schedule.time"
     />
-    }
+    } @else {
+    <p class="m-0 rounded-md bg-warning-bg p-3 text-body-sm text-warning-fg" role="status">
+      {{ t(schedule.option() === 'later' ? 'checkout.when.noSlotsToday' : 'checkout.when.noSlotsTomorrow') }}
+    </p>
+    } } } }
   </section>
 
   <section class="flex flex-col gap-1">

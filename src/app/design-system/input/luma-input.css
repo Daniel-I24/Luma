@@ -75,3 +75,14 @@
   font-size: 0.75rem;
   color: var(--color-danger);
 }
+
+/* Shared with LumaSelect */
+.luma-input__field--select {
+  min-height: var(--spacing-11);
+  cursor: pointer;
+}
+
+.luma-input__field--select option {
+  background-color: var(--color-surface);
+  color: var(--color-fg);
+}

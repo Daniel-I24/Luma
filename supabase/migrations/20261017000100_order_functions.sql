@@ -1,10 +1,10 @@
--- ─────────────────────────────────────────────────────────────────────────────
+-- -----------------------------------------------------------------------------
 -- Migration: order_functions
 -- The only way to create orders (status changes: next migration). NOT APPLIED YET.
 -- SECURITY DEFINER with an empty search_path (every name is qualified).
 -- Errors are raised with a machine-readable message (e.g. 'too_many_pending')
 -- that the app maps to translated texts. Executable only by authenticated.
--- ─────────────────────────────────────────────────────────────────────────────
+-- -----------------------------------------------------------------------------
 
 -- Creates a pending pick-up order and returns its id. Lines arrive as
 -- [{"menu_item_id": "<uuid>", "quantity": 1-20}, ...]; any other field (e.g.
@@ -27,11 +27,15 @@ declare
   v_available integer;
   v_total    bigint;
   v_order_id uuid;
+  v_business record;
 begin
   if v_user is null then
     raise exception using errcode = '28000', message = 'not_authenticated';
   end if;
-  if not exists (select 1 from public.businesses b where b.id = p_business_id and b.is_active) then
+  select b.name, b.address into v_business
+  from public.businesses b
+  where b.id = p_business_id and b.is_active;
+  if not found then
     raise exception using errcode = 'P0001', message = 'business_unavailable';
   end if;
   if p_items is null or jsonb_typeof(p_items) <> 'array'
@@ -84,8 +88,9 @@ begin
     raise exception using errcode = 'P0001', message = 'too_many_pending';
   end if;
 
-  insert into public.orders (user_id, business_id, pickup_at, total_cop, notes)
-  values (v_user, p_business_id, p_pickup_at, v_total, v_notes)
+  -- Name and address are copied so the order survives the business.
+  insert into public.orders (user_id, business_id, business_name, business_address, pickup_at, total_cop, notes)
+  values (v_user, p_business_id, v_business.name, v_business.address, p_pickup_at, v_total, v_notes)
   returning id into v_order_id;
 
   insert into public.order_items (order_id, menu_item_id, name, unit_price_cop, quantity)

@@ -7,15 +7,18 @@ import { OrderRepository } from '@shared/orders/order.repository';
 import { ORDER_REFRESH_MS, OrderDetailPage } from './order-detail.page';
 import { OrdersPage } from './orders.page';
 
-const business = { id: 'b1', name: 'Fritanga Don Segundo', address: 'Calle 19', latitude: 1.21, longitude: -77.28 };
-const order = (status: string) => ({
+const business = { id: 'b1', latitude: 1.21, longitude: -77.28 };
+const order = (status: string, deleted = false) => ({
   id: 'o1',
+  business_id: deleted ? null : 'b1',
+  business_name: 'Fritanga Don Segundo',
+  business_address: 'Calle 19',
   status,
   pickup_at: null,
   total_cop: 14000,
   notes: null,
   created_at: '2026-10-17T12:00:00.000Z',
-  business,
+  business: deleted ? null : business,
   items: [{ id: 'i1', menu_item_id: 'm1', name: 'Fritanga', unit_price_cop: 7000, quantity: 2 }],
 });
 const flush = () => new Promise((resolve) => setTimeout(resolve));
@@ -28,7 +31,7 @@ describe('Orders pages', () => {
     TestBed.configureTestingModule({
       imports: [
         TranslocoTestingModule.forRoot({
-          langs: { es: { orders: { detail: { cancel: 'Cancelar pedido' } } } },
+          langs: { es: { orders: { unknownBusiness: 'Negocio no disponible', detail: { cancel: 'Cancelar pedido' } } } },
           translocoConfig: { availableLangs: ['es'], defaultLang: 'es' },
         }),
       ],
@@ -56,8 +59,8 @@ describe('Orders pages', () => {
     expect(link.textContent?.replace(/\s/g, ' ')).toContain('$ 14.000');
   });
 
-  async function renderDetail(status: string) {
-    repo.getById.mockResolvedValue({ data: order(status), errorKey: null });
+  async function renderDetail(status: string, deleted = false) {
+    repo.getById.mockResolvedValue({ data: order(status, deleted), errorKey: null });
     const fixture = TestBed.createComponent(OrderDetailPage);
     fixture.detectChanges();
     await flush();
@@ -74,6 +77,27 @@ describe('Orders pages', () => {
     expect(el.querySelector('a[href*="destination=1.21%2C-77.28"]')).not.toBeNull();
     expect(el.querySelector('app-order-timeline [aria-current="step"]')).not.toBeNull();
     expect(cancelButton(el)).toBeDefined();
+  });
+
+  it('keeps the copied name and address once the business is deleted, without directions', async () => {
+    const el = await renderDetail('picked_up', true);
+
+    expect(el.textContent).toContain('Fritanga Don Segundo');
+    expect(el.textContent).toContain('Negocio no disponible');
+    expect(el.textContent).toContain('Calle 19');
+    expect(el.querySelector('a[href*="destination="]')).toBeNull();
+  });
+
+  it('marks deleted businesses in the list', async () => {
+    repo.list.mockResolvedValue({ data: [order('picked_up', true), { ...order('pending'), id: 'o2' }], errorKey: null });
+    const fixture = TestBed.createComponent(OrdersPage);
+    fixture.detectChanges();
+    await flush();
+    fixture.detectChanges();
+    const links = (fixture.nativeElement as HTMLElement).querySelectorAll('a');
+
+    expect(links[0].textContent).toContain('Negocio no disponible');
+    expect(links[1].textContent).not.toContain('Negocio no disponible');
   });
 
   it('hides "Cancelar" once the order left pending', async () => {

@@ -518,7 +518,12 @@
       "later": "Más tarde",
       "tomorrow": "Mañana",
       "todayAt": "Hora de recogida (hoy)",
-      "tomorrowAt": "Hora de recogida (mañana)"
+      "tomorrowAt": "Hora de recogida (mañana)",
+      "closedNow": "El negocio está cerrado ahora. Programa tu recogida para más tarde o mañana.",
+      "withinHours": "Solo horas dentro del horario del negocio: {{ranges}}",
+      "noSlotsToday": "Hoy ya no quedan horas dentro del horario del negocio. Elige «Mañana».",
+      "noSlotsTomorrow": "Mañana el negocio no abre. Vuelve a intentarlo otro día.",
+      "hoursFailed": "No se pudo cargar el horario del negocio."
     },
     "notes": {
       "label": "Notas para el restaurante",
@@ -534,7 +539,9 @@
     "errors": {
       "timeRequired": "Elige una hora de recogida válida.",
       "tooSoon": "Elige una hora al menos 10 minutos más tarde.",
-      "tooFar": "Solo puedes programar hasta 7 días antes."
+      "tooFar": "Solo puedes programar hasta 7 días antes.",
+      "closedNow": "El negocio está cerrado ahora. Elige una hora de recogida.",
+      "outsideHours": "Elige una hora dentro del horario del negocio."
     }
   },
   "favoritesPage": {

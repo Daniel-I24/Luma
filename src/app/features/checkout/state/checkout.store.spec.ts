@@ -3,26 +3,41 @@ import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '@core/auth/auth.service';
+import { BusinessRepository } from '@shared/business/data/business.repository';
+import type { BusinessHours } from '@shared/business/models/business.model';
 import { CartStore } from '@shared/cart/cart.store';
 import { OrderRepository } from '@shared/orders/order.repository';
 import { CheckoutStore } from './checkout.store';
+import { PickupScheduleStore } from './pickup-schedule.store';
 import { useFixedClock } from '../../../../testing/fixed-clock';
 
 describe('CheckoutStore', () => {
   useFixedClock();
 
   const orders = { create: vi.fn() };
+  // Open every day 08:00-22:00; the fixed clock is Wednesday at noon.
+  const week = Array.from({ length: 7 }, (_, day) => ({
+    day_of_week: day,
+    opens_at: '08:00:00',
+    closes_at: '22:00:00',
+    is_closed: false,
+  })) as BusinessHours[];
+  const businesses = { getHours: vi.fn() };
   let store: CheckoutStore;
+  let schedule: PickupScheduleStore;
   let cart: CartStore;
   let navigate: ReturnType<typeof vi.spyOn>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     localStorage.clear();
     vi.clearAllMocks();
+    businesses.getHours.mockResolvedValue({ data: week, errorKey: null });
     TestBed.configureTestingModule({
       providers: [
         CheckoutStore,
+        PickupScheduleStore,
         provideRouter([]),
+        { provide: BusinessRepository, useValue: businesses },
         { provide: AuthService, useValue: { user: signal({ id: 'u1' }) } },
         { provide: OrderRepository, useValue: orders },
       ],
@@ -32,6 +47,9 @@ describe('CheckoutStore', () => {
     cart.add({ menuItemId: 'm1', businessId: 'b1', businessName: 'Café', name: 'Capuchino', priceCop: 6500 });
     cart.add({ menuItemId: 'm1', businessId: 'b1', businessName: 'Café', name: 'Capuchino', priceCop: 6500 });
     store = TestBed.inject(CheckoutStore);
+    schedule = TestBed.inject(PickupScheduleStore);
+    TestBed.tick();
+    await Promise.resolve();
     navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
   });
 
@@ -63,12 +81,12 @@ describe('CheckoutStore', () => {
   });
 
   it('validates the pick-up time and notes before calling the server', async () => {
-    store.option.set('later');
-    store.time.set('');
+    schedule.option.set('later');
+    schedule.time.set('');
     await store.confirm();
-    expect(store.errorKey()).toBe('checkout.errors.timeRequired');
+    expect(store.errorKey()).toBe('checkout.errors.outsideHours');
 
-    store.option.set('now');
+    schedule.option.set('now');
     store.notes.set('x'.repeat(201));
     await store.confirm();
     expect(store.errorKey()).toBe('orders.errors.invalidNotes');
@@ -77,8 +95,8 @@ describe('CheckoutStore', () => {
 
   it('schedules "Mañana" with an ISO time', async () => {
     orders.create.mockResolvedValue({ data: 'o2', errorKey: null });
-    store.option.set('tomorrow');
-    store.time.set('08:30');
+    schedule.option.set('tomorrow');
+    schedule.time.set('08:30');
 
     await store.confirm();
 

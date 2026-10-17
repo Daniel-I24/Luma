@@ -8,7 +8,8 @@ migrations are not applied to any Supabase project yet** — review them first.
 
 Migrations (apply in this order, after the existing ones):
 
-1. `20261017000000_orders.sql` — `orders`, `order_items`, `app_settings`,
+1. `20261017000000_orders.sql` — `orders` (with `business_name` and
+   `business_address` copied at purchase), `order_items`, `app_settings`,
    RLS and grants.
 2. `20261017000100_order_functions.sql` — `create_order`.
 3. `20261017000200_order_status_functions.sql` — `cancel_order`,
@@ -26,6 +27,7 @@ Migrations (apply in this order, after the existing ones):
 | At most 5 pending orders per user (advisory lock per user) | `create_order` |
 | Total cap (default 500 000 COP) | `app_settings.order_max_total_cop` |
 | Customer cancels only their own order, only while `pending` | `cancel_order` |
+| Business name and address are copied into the order; deleting the business sets `business_id` to NULL and keeps the order | `orders` FK `on delete set null` + `create_order` |
 | Owner transitions: pending→accepted/cancelled, accepted→preparing, preparing→ready, ready→picked_up | `set_order_status` |
 
 The functions are `SECURITY DEFINER` with `search_path = ''`, executable only
@@ -40,15 +42,30 @@ update public.app_settings set int_value = 300000 where key = 'order_max_total_c
 update public.app_settings set int_value = 3      where key = 'order_max_pending_per_user';
 ```
 
+## Retention
+
+- `orders.business_id` is `on delete set null`: deleting a business keeps
+  its customers' orders and lines, with the copied `business_name` and
+  `business_address`. The app shows the name with "Negocio no disponible"
+  and no directions.
+- `orders.user_id` stays `on delete cascade`: deleting an account deletes
+  its orders (right to erasure).
+- **Before charging real payments**, review the legal retention of sales
+  records (accounting and tax rules) — it may require keeping orders, or an
+  anonymised copy, after the account is deleted. That decision changes the
+  cascade above.
+
 ## Security tests
 
-`supabase/tests/orders_security.sql` and `orders_status.sql` (48 checks) run
+`supabase/tests/orders_security.sql`, `orders_status.sql` and
+`orders_retention.sql` (57 checks) run
 as the `anon` and `authenticated` roles with a JWT `sub`, inside a transaction
 that is rolled back:
 
 ```sh
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/orders_security.sql
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/orders_status.sql
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/orders_retention.sql
 ```
 
 They cover: anon cannot call the functions nor read the tables; clients
@@ -56,7 +73,10 @@ cannot insert, update or delete directly (total, status); a price sent by the
 client is ignored; items of another business or unavailable are rejected;
 line shape, pick-up window, notes and total cap; users cannot see or cancel
 someone else's orders; owners cannot read orders; cancel only while pending;
-valid and invalid owner transitions; the pending limit.
+valid and invalid owner transitions; the pending limit; the business copies
+survive a rename and a deletion (order kept, `business_id` NULL, still
+private and cancellable by its customer); deleting the account deletes its
+orders.
 
 ## Moving a test order by hand (SQL Editor)
 
@@ -84,8 +104,10 @@ without reloading.
 
 ## Limitations
 
-- The server does **not** check opening hours yet: an order can be placed for
-  a time when the business is closed.
+- Opening hours are enforced **in the app only**: at `/checkout`, "Ahora"
+  is disabled while the business is closed, and "Más tarde" / "Mañana" offer
+  only 15-minute slots inside that day's hours (including the after-midnight
+  part of hours that cross midnight). The server does not check hours yet.
 - Payment is **at pick-up only**; online payment with Wompi (hosted checkout,
   signed webhook, idempotency) is a later phase.
 - The ready time shown for "as soon as possible" orders is a client estimate

@@ -1,8 +1,8 @@
--- ─────────────────────────────────────────────────────────────────────────────
+-- -----------------------------------------------------------------------------
 -- Migration: order_status_functions
 -- Status changes of an order. NOT APPLIED YET.
 -- SECURITY DEFINER with an empty search_path; executable only by authenticated.
--- ─────────────────────────────────────────────────────────────────────────────
+-- -----------------------------------------------------------------------------
 
 -- The customer cancels their own order while it is still pending.
 create or replace function public.cancel_order(p_order_id uuid)
@@ -29,8 +29,8 @@ end;
 $$;
 
 -- The business owner moves an order forward:
--- pending → accepted | cancelled, accepted → preparing, preparing → ready,
--- ready → picked_up. No screen uses it yet.
+-- pending -> accepted | cancelled, accepted -> preparing, preparing -> ready,
+-- ready -> picked_up. No screen uses it yet.
 create or replace function public.set_order_status(p_order_id uuid, p_status text)
 returns void
 language plpgsql

@@ -18,11 +18,9 @@ export const ORDER_PROGRESS: readonly OrderStatus[] = [
   'picked_up',
 ];
 
-/** The business fields an order screen needs. */
+/** Live business data an order screen needs (null once it is gone or hidden). */
 export interface OrderBusiness {
   id: string;
-  name: string;
-  address: string;
   latitude: number;
   longitude: number;
 }
@@ -39,7 +37,11 @@ export interface OrderItem {
 /** Row of public.orders with its business (null if no longer visible). */
 export interface Order {
   id: string;
-  business_id: string;
+  /** Null once the business was deleted; the copies below remain. */
+  business_id: string | null;
+  /** Copies taken when the order was created. */
+  business_name: string;
+  business_address: string;
   status: OrderStatus;
   /** Requested pick-up time; null = as soon as possible. */
   pickup_at: string | null;

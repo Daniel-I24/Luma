@@ -24,7 +24,12 @@
   } @case ('ready') { @if (store.order(); as order) {
   <section class="flex flex-col gap-3 rounded-xl border border-border-subtle bg-surface p-4" aria-live="polite">
     <div class="flex items-center justify-between gap-2">
-      <span class="text-title text-fg">{{ order.business?.name ?? t('orders.unknownBusiness') }}</span>
+      <span class="flex flex-col">
+        <span class="text-title text-fg">{{ order.business_name }}</span>
+        @if (order.business_id === null) {
+        <span class="text-caption text-fg-subtle">{{ t('orders.unknownBusiness') }}</span>
+        }
+      </span>
       <app-order-status-badge [status]="order.status" />
     </div>
     @if (order.status === 'cancelled') {
@@ -39,11 +44,11 @@
     }
   </section>
 
-  @if (order.business; as business) {
   <section class="flex flex-col gap-2 rounded-xl border border-border-subtle bg-surface p-4">
     <p class="m-0 flex items-center gap-2 text-body text-fg-muted">
-      <app-luma-icon name="pin" size="sm" /> {{ business.address }}
+      <app-luma-icon name="pin" size="sm" /> {{ order.business_address }}
     </p>
+    @if (order.business; as business) {
     <a
       class="pressable inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-border px-4 text-title text-fg-brand no-underline focus-visible:outline-2 focus-visible:outline-border-focus"
       target="_blank"
@@ -52,8 +57,8 @@
     >
       <app-luma-icon name="map" size="sm" /> {{ t('orders.detail.directions') }}
     </a>
+    }
   </section>
-  }
 
   <section class="rounded-xl border border-border-subtle bg-surface p-4" aria-labelledby="order-lines">
     <h2 id="order-lines" class="m-0 mb-2 text-title text-fg">{{ t('orders.detail.items') }}</h2>
