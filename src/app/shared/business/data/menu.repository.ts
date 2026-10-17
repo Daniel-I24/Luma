@@ -23,4 +23,18 @@ export class MenuRepository {
     if (error) return { data: null, errorKey: 'businesses.errors.menuFailed' };
     return { data: data as MenuItem[], errorKey: null };
   }
+
+  /** Available items of many businesses in one query, in each owner's order. */
+  async getAvailableFor(businessIds: readonly string[]): Promise<RepoResult<MenuItem[]>> {
+    if (businessIds.length === 0) return { data: [], errorKey: null };
+    const { data, error } = await this.db
+      .from('menu_items')
+      .select('*')
+      .in('business_id', [...businessIds])
+      .eq('is_available', true)
+      .order('sort_order');
+
+    if (error) return { data: null, errorKey: 'businesses.errors.menuFailed' };
+    return { data: data as MenuItem[], errorKey: null };
+  }
 }

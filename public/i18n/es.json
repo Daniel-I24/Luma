@@ -278,7 +278,26 @@
   },
   "feed": {
     "title": "Descubrir",
-    "comingSoon": "Muy pronto verás aquí promociones, platos y novedades de los negocios cercanos."
+    "label": "Publicaciones de negocios cercanos",
+    "loading": "Cargando publicaciones…",
+    "position": "{{current}} de {{total}}",
+    "previous": "Publicación anterior",
+    "next": "Siguiente publicación",
+    "empty": {
+      "title": "Nada por descubrir aún",
+      "description": "Los negocios cercanos todavía no tienen promociones ni platos publicados."
+    },
+    "error": {
+      "title": "No se pudo cargar el feed",
+      "description": "Revisa tu conexión e intenta de nuevo.",
+      "more": "No se pudieron cargar más publicaciones"
+    },
+    "card": {
+      "promotion": "Promoción",
+      "dish": "Plato",
+      "validUntil": "Hasta el {{date}}",
+      "viewBusiness": "Ver restaurante"
+    }
   },
   "ai": {
     "title": "Luma IA",

@@ -1,1 +1,89 @@
-<app-coming-soon-page titleKey="feed.title" descriptionKey="feed.comingSoon" icon="compass" />
+<ng-container *transloco="let t">
+  @switch (store.state()) { @case ('loading') {
+  <div class="flex h-full flex-col" aria-busy="true">
+    <app-luma-skeleton class="min-h-0 flex-1" shape="rect" />
+    <div class="flex flex-col gap-3 bg-surface p-4">
+      <app-luma-skeleton class="h-6 w-56" />
+      <app-luma-skeleton class="h-4 w-32" />
+      <app-luma-skeleton class="h-11 w-full" shape="rect" />
+    </div>
+    <span class="sr-only">{{ t('feed.loading') }}</span>
+  </div>
+  } @case ('error') {
+  <div class="flex h-full items-center justify-center" role="alert">
+    <app-luma-empty-state
+      icon="alert"
+      tone="error"
+      [heading]="t('feed.error.title')"
+      [description]="t('feed.error.description')"
+    >
+      <app-luma-button (clicked)="store.load()">{{ t('common.retry') }}</app-luma-button>
+    </app-luma-empty-state>
+  </div>
+  } @case ('ready') { @if (store.empty()) {
+  <div class="flex h-full items-center justify-center">
+    <app-luma-empty-state
+      icon="compass"
+      [heading]="t('feed.empty.title')"
+      [description]="t('feed.empty.description')"
+    />
+  </div>
+  } @else {
+  <div class="relative h-full animate-fade-in">
+    <div
+      #scroller
+      role="feed"
+      class="h-full snap-y snap-mandatory overflow-y-auto overscroll-contain [scrollbar-width:none] motion-safe:scroll-smooth"
+      [attr.aria-label]="t('feed.label')"
+      [attr.aria-busy]="store.loadingMore()"
+      (keydown)="onKeydown($event)"
+      (scroll)="onScroll()"
+    >
+      @for (card of store.cards(); track card.id; let i = $index) {
+      <app-feed-card
+        class="h-full snap-start snap-always"
+        [card]="card"
+        [position]="i + 1"
+        [setSize]="store.hasMore() ? -1 : store.cards().length"
+        (viewBusiness)="viewBusiness(card)"
+      />
+      } @if (store.hasMore() && !store.loadingMore() && !store.moreFailed()) {
+      <div
+        class="h-px"
+        appNearViewport
+        [root]="scroller"
+        (nearViewport)="store.loadMore()"
+      ></div>
+      } @if (store.loadingMore()) {
+      <app-luma-skeleton class="h-full snap-start" shape="rect" />
+      } @if (store.moreFailed()) {
+      <div class="flex h-full snap-start items-center justify-center" role="alert">
+        <app-luma-empty-state icon="alert" tone="error" [heading]="t('feed.error.more')">
+          <app-luma-button (clicked)="store.loadMore()">{{ t('common.retry') }}</app-luma-button>
+        </app-luma-empty-state>
+      </div>
+      }
+    </div>
+
+    <div class="absolute top-4 right-4 flex flex-col items-end gap-2">
+      <span
+        class="rounded-full bg-surface-elevated px-3 py-1 text-label text-fg shadow-md"
+        aria-hidden="true"
+        >{{ t('feed.position', { current: current() + 1, total: store.cards().length }) }}</span
+      >
+      <app-luma-icon-button
+        icon="chevron-up"
+        [label]="t('feed.previous')"
+        [disabled]="current() === 0"
+        (clicked)="goTo(current() - 1)"
+      />
+      <app-luma-icon-button
+        icon="chevron-down"
+        [label]="t('feed.next')"
+        [disabled]="current() >= store.cards().length - 1"
+        (clicked)="goTo(current() + 1)"
+      />
+    </div>
+  </div>
+  } } }
+</ng-container>

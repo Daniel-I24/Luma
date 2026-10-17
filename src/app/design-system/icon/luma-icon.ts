@@ -2,12 +2,14 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import { LUMA_ICONS } from './luma-icons';
 import type { IconName } from './luma-icons';
 
-export type IconSize = 'sm' | 'md' | 'lg';
+export type IconSize = 'sm' | 'md' | 'lg' | 'xl';
 
 const SIZE_CLASS: Record<IconSize, string> = {
   sm: 'size-4',
   md: 'size-5',
   lg: 'size-6',
+  /** Hero visuals, e.g. a feed post without a photo. */
+  xl: 'size-16',
 };
 
 /**

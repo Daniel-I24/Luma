@@ -35,4 +35,22 @@ describe('MenuRepository', () => {
       errorKey: 'businesses.errors.menuFailed',
     });
   });
+
+  it('reads the available items of many businesses in one query', async () => {
+    const { repo, queries } = setup(ok([{ id: 'm1' }]));
+
+    const result = await repo.getAvailableFor(['b1', 'b2']);
+
+    expect(result).toEqual({ data: [{ id: 'm1' }], errorKey: null });
+    expect(queries).toHaveLength(1);
+    expect(queries[0].call('in')).toEqual(['business_id', ['b1', 'b2']]);
+    expect(queries[0].call('eq')).toEqual(['is_available', true]);
+  });
+
+  it('skips the query when there are no businesses', async () => {
+    const { repo, queries } = setup(ok([]));
+
+    expect(await repo.getAvailableFor([])).toEqual({ data: [], errorKey: null });
+    expect(queries).toHaveLength(0);
+  });
 });

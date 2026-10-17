@@ -278,7 +278,26 @@
   },
   "feed": {
     "title": "Discover",
-    "comingSoon": "Soon you will find promotions, dishes and news from nearby places here."
+    "label": "Posts from nearby businesses",
+    "loading": "Loading posts…",
+    "position": "{{current}} of {{total}}",
+    "previous": "Previous post",
+    "next": "Next post",
+    "empty": {
+      "title": "Nothing to discover yet",
+      "description": "Nearby businesses have not published promotions or dishes yet."
+    },
+    "error": {
+      "title": "Could not load the feed",
+      "description": "Check your connection and try again.",
+      "more": "Could not load more posts"
+    },
+    "card": {
+      "promotion": "Promotion",
+      "dish": "Dish",
+      "validUntil": "Until {{date}}",
+      "viewBusiness": "View restaurant"
+    }
   },
   "ai": {
     "title": "Luma AI",

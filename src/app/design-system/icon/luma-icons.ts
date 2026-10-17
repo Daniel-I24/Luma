@@ -18,6 +18,7 @@ export const LUMA_ICONS = {
   'arrow-left': ['M19 12H5', 'm12 19-7-7 7-7'],
   check: ['m5 12 5 5 9-10'],
   'chevron-down': ['m6 9 6 6 6-6'],
+  'chevron-up': ['m6 15 6-6 6 6'],
   clock: ['M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18Z', 'M12 7v5l3 2'],
   close: ['M6 6l12 12', 'M18 6 6 18'],
   coffee: [

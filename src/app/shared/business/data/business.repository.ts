@@ -70,4 +70,16 @@ export class BusinessRepository {
     if (error) return { data: null, errorKey: 'businesses.errors.hoursFailed' };
     return { data: data as BusinessHours[], errorKey: null };
   }
+
+  /** Weekly schedules of many businesses in one query. */
+  async getHoursFor(businessIds: readonly string[]): Promise<RepoResult<BusinessHours[]>> {
+    if (businessIds.length === 0) return { data: [], errorKey: null };
+    const { data, error } = await this.db
+      .from('business_hours')
+      .select('*')
+      .in('business_id', [...businessIds]);
+
+    if (error) return { data: null, errorKey: 'businesses.errors.hoursFailed' };
+    return { data: data as BusinessHours[], errorKey: null };
+  }
 }
