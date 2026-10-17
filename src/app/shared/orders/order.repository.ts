@@ -7,7 +7,7 @@ import type { NewOrder, Order, OrderWithItems } from './order.model';
 
 const ORDER_COLUMNS =
   'id, business_id, business_name, business_address, status, pickup_at, total_cop, notes, ' +
-  'payment_method, created_at, updated_at, business:businesses(id, latitude, longitude)';
+  'payment_method, created_at, updated_at, business:businesses(id, latitude, longitude, prep_minutes)';
 
 /** create_order returns the new order id. */
 const orderIdSchema = z.uuid();

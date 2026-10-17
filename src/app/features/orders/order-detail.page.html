@@ -36,10 +36,10 @@
     <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg">{{ t('orders.detail.cancelled') }}</p>
     } @else {
     <app-order-timeline [status]="order.status" />
-    } @if (estimate(); as time) {
+    } @if (estimate(); as estimate) {
     <p class="m-0 flex items-center gap-2 text-body text-fg">
       <app-luma-icon class="text-fg-accent" name="clock" size="sm" />
-      {{ t(order.pickup_at ? 'orders.detail.pickupAt' : 'orders.detail.readyAround', { time }) }}
+      {{ t(estimate.key, { time: estimate.time }) }}
     </p>
     }
   </section>
@@ -48,6 +48,11 @@
     <p class="m-0 flex items-center gap-2 text-body text-fg-muted">
       <app-luma-icon name="pin" size="sm" /> {{ order.business_address }}
     </p>
+    @if (travel(); as trip) {
+    <p class="m-0 text-body-sm text-fg-muted">
+      {{ t('orders.detail.travel.' + trip.mode, { minutes: trip.minutes }) }}
+    </p>
+    }
     @if (order.business; as business) {
     <a
       class="pressable inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-border px-4 text-title text-fg-brand no-underline focus-visible:outline-2 focus-visible:outline-border-focus"

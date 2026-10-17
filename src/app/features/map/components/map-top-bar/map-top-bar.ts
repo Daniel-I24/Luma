@@ -1,16 +1,17 @@
 import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaChip, LumaIcon, LumaSearchInput } from '@design-system';
+import { LumaIcon, LumaSearchInput } from '@design-system';
+import { MapFilterBar } from '../map-filter-bar/map-filter-bar';
 
 /**
  * MapTopBar — floating controls over the map: search box, zone indicator
- * and category chips taken from the loaded businesses.
+ * and the filters (button, active chips and sheet).
  */
 @Component({
   selector: 'app-map-top-bar',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaChip, LumaIcon, LumaSearchInput],
+  imports: [TranslocoModule, LumaIcon, LumaSearchInput, MapFilterBar],
   templateUrl: './map-top-bar.html',
   host: {
     class:
@@ -18,14 +19,8 @@ import { LumaChip, LumaIcon, LumaSearchInput } from '@design-system';
   },
 })
 export class MapTopBar {
-  readonly categories = input.required<readonly string[]>();
   /** i18n key of the zone indicator. */
   readonly zoneKey = input.required<string>();
 
   readonly query = model('');
-  readonly category = model<string | null>(null);
-
-  protected toggleCategory(category: string, selected: boolean): void {
-    this.category.set(selected ? category : null);
-  }
 }

@@ -6,6 +6,7 @@ import { BusinessRepository } from '@shared/business/data/business.repository';
 import type { Business } from '@shared/business/models/business.model';
 import { BusinessHoursCacheService } from '../services/business-hours-cache.service';
 import { GeolocationService } from '@shared/geo/geolocation.service';
+import { NO_FILTERS } from '../utils/map-filters.util';
 import { NearbyBusinessesStore } from './nearby-businesses.store';
 import { useFixedClock } from '../../../../testing/fixed-clock';
 
@@ -94,11 +95,12 @@ describe('NearbyBusinessesStore', () => {
     expect(store.items()[0].distanceKm).toBeNull();
   });
 
-  it('filters by query and category on the client and can clear them', async () => {
+  it('filters by query and by the sheet filters on the client and can clear them', async () => {
     await store.load(1.21, -77.28);
 
-    store.category.set('Pizza');
+    store.filters.set({ ...NO_FILTERS, categories: ['Pizza'] });
     expect(store.items().map((i) => i.business.id)).toEqual(['far']);
+    expect(store.filterCount()).toBe(1);
 
     store.clearFilters();
     store.query.set('near');

@@ -16,20 +16,5 @@
     {{ t(zoneKey()) }}
   </p>
 
-  @if (categories().length) {
-  <div
-    class="pointer-events-auto flex gap-2 overflow-x-auto px-4 py-2 [scrollbar-width:none]"
-    role="group"
-    [attr.aria-label]="t('map.categories.label')"
-  >
-    @for (option of categories(); track option) {
-    <app-luma-chip
-      class="shrink-0 shadow-sm"
-      [selected]="category() === option"
-      (selectedChange)="toggleCategory(option, $event)"
-      >{{ option }}</app-luma-chip
-    >
-    }
-  </div>
-  }
+  <app-map-filter-bar />
 </ng-container>

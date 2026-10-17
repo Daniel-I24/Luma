@@ -21,12 +21,15 @@ import {
 } from '@design-system';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
 import { formatTime } from '@shared/format/date-format.util';
+import { GeolocationService } from '@shared/geo/geolocation.service';
+import { haversineKm } from '@shared/geo/haversine.util';
+import { estimateReadyAt, estimateTravelMinutes } from '@shared/orders/order-estimates.util';
 import { OrderStatusBadge } from '@shared/orders/order-status-badge';
 import type { OrderBusiness } from '@shared/orders/order.model';
 import { pollWhileVisible } from '@shared/ui/poll-while-visible';
 import { OrderTimeline } from './components/order-timeline/order-timeline';
 import { OrderDetailStore } from './state/order-detail.store';
-import { directionsUrl, estimatedReadyAt, showsEstimate } from './utils/order-detail.util';
+import { directionsUrl, showsEstimate } from './utils/order-detail.util';
 
 /** Status refresh period while the screen is visible. */
 export const ORDER_REFRESH_MS = 15_000;
@@ -59,6 +62,7 @@ export const ORDER_REFRESH_MS = 15_000;
 export class OrderDetailPage {
   protected readonly store = inject(OrderDetailStore);
   private readonly router = inject(Router);
+  private readonly geo = inject(GeolocationService);
   private readonly transloco = inject(TranslocoService);
   private readonly lang = toSignal(this.transloco.langChanges$, {
     initialValue: this.transloco.getActiveLang(),
@@ -73,7 +77,16 @@ export class OrderDetailPage {
   protected readonly estimate = computed(() => {
     const order = this.store.order();
     if (!order || !showsEstimate(order.status)) return null;
-    return formatTime(estimatedReadyAt(order), this.lang());
+    const ready = estimateReadyAt(order, order.business?.prep_minutes);
+    const key = ready.kind === 'pickup' ? 'orders.detail.pickupAt' : 'orders.detail.readyAround';
+    return { key, time: formatTime(ready.at, this.lang()) };
+  });
+  /** Approximate trip to the business, only once the user's location is known. */
+  protected readonly travel = computed(() => {
+    const business = this.store.order()?.business;
+    if (!business || !this.geo.hasRealLocation()) return null;
+    const { lat, lng } = this.geo.coords();
+    return estimateTravelMinutes(haversineKm(lat, lng, business.latitude, business.longitude));
   });
 
   constructor() {

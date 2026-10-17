@@ -1,19 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { directionsUrl, estimatedReadyAt, showsEstimate, timelineSteps } from './order-detail.util';
+import { directionsUrl, showsEstimate, timelineSteps } from './order-detail.util';
 
 describe('order detail helpers', () => {
-  it('estimates ready time from the requested pick-up or 20 minutes after ordering', () => {
-    expect(
-      estimatedReadyAt({
-        pickup_at: '2026-10-17T18:00:00.000Z',
-        created_at: '2026-10-17T12:00:00.000Z',
-      }),
-    ).toBe('2026-10-17T18:00:00.000Z');
-    expect(estimatedReadyAt({ pickup_at: null, created_at: '2026-10-17T12:00:00.000Z' })).toBe(
-      '2026-10-17T12:20:00.000Z',
-    );
-  });
-
   it('shows the estimate only before the order is ready', () => {
     expect(['pending', 'accepted', 'preparing'].every((s) => showsEstimate(s as 'pending'))).toBe(
       true,

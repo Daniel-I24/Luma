@@ -110,9 +110,10 @@ without reloading.
   part of hours that cross midnight). The server does not check hours yet.
 - Payment is **at pick-up only**; online payment with Wompi (hosted checkout,
   signed webhook, idempotency) is a later phase.
-- The ready time shown for "as soon as possible" orders is a client estimate
-  (created + 20 min, `docs/mocks.md`); there is no preparation time per
-  business yet.
+- The ready time shown for "as soon as possible" orders is created_at +
+  the business's `prep_minutes` (20 when unknown), and the travel time is
+  a straight-line approximation shown only when the user's location is
+  known (`docs/mocks.md`).
 - Owners manage orders at `/business/:id/orders` (tabs Nuevos, En
   preparación, Listos, Historial; Aceptar, Rechazar, Preparando, Listo,
   Entregado through `set_order_status`; refresh every 15 s while visible).

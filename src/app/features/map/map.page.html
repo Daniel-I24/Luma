@@ -26,10 +26,8 @@
       </div>
       } @else {
       <app-map-top-bar
-        [categories]="store.categories()"
         [zoneKey]="zoneKey()"
         [(query)]="store.query"
-        [(category)]="store.category"
       />
       <app-map-controls
         (locate)="onCentreOnMe()"

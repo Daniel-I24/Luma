@@ -9,6 +9,12 @@ import { NEARBY_RADIUS_KM } from '../map.constants';
 import { BusinessHoursCacheService } from '../services/business-hours-cache.service';
 import { GeolocationService } from '@shared/geo/geolocation.service';
 import { extractCategories, filterBusinesses } from '../utils/business-filter.util';
+import {
+  type MapFilters,
+  NO_FILTERS,
+  activeFilterCount,
+  applyMapFilters,
+} from '../utils/map-filters.util';
 import { categoryIcon } from '@shared/business/utils/category-icon.util';
 import { haversineKm } from '@shared/geo/haversine.util';
 
@@ -31,7 +37,8 @@ export interface NearbyBusiness {
 /**
  * NearbyBusinessesStore — state of the map screen: businesses loaded around
  * the map centre, their ratings and promotions (one query each for all of
- * them) and the client-side search and category filters.
+ * them) and the client-side search and filters (open now, promotion,
+ * rating, distance and categories).
  */
 @Injectable()
 export class NearbyBusinessesStore {
@@ -51,16 +58,20 @@ export class NearbyBusinessesStore {
   private readonly _errorKey = signal<string | null>(null);
 
   readonly query = signal('');
-  readonly category = signal<string | null>(null);
+  readonly filters = signal<MapFilters>(NO_FILTERS);
   readonly loading = this._loading.asReadonly();
   readonly errorKey = this._errorKey.asReadonly();
 
   readonly categories = computed(() => extractCategories(this.businesses()));
-  readonly filtersActive = computed(() => this.query().trim() !== '' || this.category() !== null);
+  readonly filterCount = computed(() => activeFilterCount(this.filters()));
+  readonly filtersActive = computed(() => this.query().trim() !== '' || this.filterCount() > 0);
+  /** Distance can only be filtered once the user's location is known. */
+  readonly canFilterDistance = this.geo.hasRealLocation;
   readonly items = computed(() =>
-    filterBusinesses(this.businesses(), this.query(), this.category())
-      .map((business) => this.toNearby(business))
-      .sort((a, b) => (a.distanceKm ?? Infinity) - (b.distanceKm ?? Infinity)),
+    applyMapFilters(
+      filterBusinesses(this.businesses(), this.query()).map((business) => this.toNearby(business)),
+      this.filters(),
+    ).sort((a, b) => (a.distanceKm ?? Infinity) - (b.distanceKm ?? Infinity)),
   );
   readonly empty = computed(
     () => this._loaded() && !this._loading() && !this._errorKey() && this.items().length === 0,
@@ -96,7 +107,7 @@ export class NearbyBusinessesStore {
 
   clearFilters(): void {
     this.query.set('');
-    this.category.set(null);
+    this.filters.set(NO_FILTERS);
   }
 
   private toNearby(business: Business): NearbyBusiness {

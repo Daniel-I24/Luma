@@ -8,17 +8,12 @@ export function extractCategories(businesses: readonly Business[]): string[] {
 }
 
 /**
- * Client-side search and category filter over already loaded businesses.
- * Every word of the query must appear in the name, category or address.
+ * Client-side search over already loaded businesses: every word of the
+ * query must appear in the name, category or address.
  */
-export function filterBusinesses(
-  businesses: readonly Business[],
-  query: string,
-  category: string | null,
-): Business[] {
+export function filterBusinesses(businesses: readonly Business[], query: string): Business[] {
   const words = normalizeText(query).split(/\s+/).filter(Boolean);
   return businesses.filter((b) => {
-    if (category !== null && b.category.trim() !== category) return false;
     const haystack = normalizeText(`${b.name} ${b.category} ${b.address}`);
     return words.every((word) => haystack.includes(word));
   });

@@ -23,6 +23,8 @@ export interface OrderBusiness {
   id: string;
   latitude: number;
   longitude: number;
+  /** Usual preparation time in minutes. */
+  prep_minutes: number;
 }
 
 /** Row of public.order_items (copies taken when the order was created). */

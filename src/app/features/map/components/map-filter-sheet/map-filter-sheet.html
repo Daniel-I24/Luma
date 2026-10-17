@@ -1,0 +1,56 @@
+<app-luma-bottom-sheet
+  *transloco="let t"
+  titleId="map-filters-title"
+  [open]="open()"
+  [title]="t('map.filters.title')"
+  (closed)="close()"
+>
+  <div class="flex flex-col gap-5">
+    <div class="flex flex-wrap gap-2" role="group" [attr.aria-label]="t('map.filters.title')">
+      @for (flag of flags; track flag) {
+      <app-luma-chip [selected]="store.filters()[flag]" (selectedChange)="setFlag(flag, $event)">{{
+        t('map.filters.' + flag)
+      }}</app-luma-chip>
+      }
+    </div>
+
+    <section class="flex flex-col gap-2" aria-labelledby="map-filters-distance">
+      <h3 id="map-filters-distance" class="m-0 text-title text-fg">{{ t('map.filters.distance') }}</h3>
+      <div class="flex flex-wrap gap-2" role="group" aria-labelledby="map-filters-distance">
+        @for (km of distances; track km) {
+        <app-luma-chip
+          [disabled]="!store.canFilterDistance()"
+          [selected]="store.filters().maxDistanceKm === km"
+          (selectedChange)="setDistance(km, $event)"
+          >{{ t('map.filters.km', { km }) }}</app-luma-chip
+        >
+        }
+      </div>
+      @if (!store.canFilterDistance()) {
+      <p class="m-0 text-caption text-fg-muted">{{ t('map.filters.distanceNeedsLocation') }}</p>
+      }
+    </section>
+
+    @if (store.categories().length) {
+    <section class="flex flex-col gap-2" aria-labelledby="map-filters-categories">
+      <h3 id="map-filters-categories" class="m-0 text-title text-fg">{{ t('map.filters.categories') }}</h3>
+      <div class="flex flex-wrap gap-2" role="group" aria-labelledby="map-filters-categories">
+        @for (category of store.categories(); track category) {
+        <app-luma-chip [selected]="store.filters().categories.includes(category)" (selectedChange)="toggle(category)">{{
+          category
+        }}</app-luma-chip>
+        }
+      </div>
+    </section>
+    }
+
+    <div class="flex gap-3">
+      <app-luma-button variant="ghost" [fullWidth]="true" [disabled]="store.filterCount() === 0" (clicked)="clear()">{{
+        t('map.filters.clear')
+      }}</app-luma-button>
+      <app-luma-button [fullWidth]="true" (clicked)="close()">{{
+        t('map.filters.show', { count: store.items().length })
+      }}</app-luma-button>
+    </div>
+  </div>
+</app-luma-bottom-sheet>

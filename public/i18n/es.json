@@ -222,9 +222,6 @@
       "nearYou": "Cerca de ti",
       "cityCentre": "Centro de Pasto"
     },
-    "categories": {
-      "label": "Filtrar por categoría"
-    },
     "controls": {
       "zoomIn": "Acercar el mapa",
       "zoomOut": "Alejar el mapa"
@@ -245,6 +242,22 @@
     },
     "ai": {
       "cta": "Ver recomendaciones de Luma IA"
+    },
+    "filters": {
+      "title": "Filtros",
+      "button": "Filtros",
+      "buttonCount": "Filtros ({{count}})",
+      "open": "Abrir filtros, {{count}} activos",
+      "openNow": "Abierto ahora",
+      "withPromotion": "Con promoción",
+      "goodRating": "4 estrellas o más",
+      "distance": "Distancia",
+      "km": "{{km}} km",
+      "withinKm": "A {{km}} km o menos",
+      "distanceNeedsLocation": "Activa tu ubicación para filtrar por distancia.",
+      "categories": "Categorías",
+      "clear": "Limpiar",
+      "show": "Ver {{count}} resultados"
     }
   },
   "status": {
@@ -369,7 +382,7 @@
       "back": "Volver a pedidos",
       "timeline": "Estado del pedido",
       "readyAround": "Listo aprox. a las {{time}}",
-      "pickupAt": "Recogida programada a las {{time}}",
+      "pickupAt": "Para recoger a las {{time}}",
       "directions": "Cómo llegar",
       "items": "Tu pedido",
       "notes": "Notas: {{notes}}",
@@ -379,7 +392,11 @@
       "cancelDescription": "El restaurante aún no lo ha aceptado. Si lo cancelas no se preparará.",
       "cancelConfirm": "Sí, cancelar",
       "keep": "Mantener pedido",
-      "notFoundDescription": "Puede que el enlace sea incorrecto o que el pedido no sea tuyo."
+      "notFoundDescription": "Puede que el enlace sea incorrecto o que el pedido no sea tuyo.",
+      "travel": {
+        "walk": "A unos {{minutes}} min a pie (aprox.)",
+        "vehicle": "A unos {{minutes}} min en vehículo (aprox.)"
+      }
     },
     "errors": {
       "loadTitle": "No se pudieron cargar los pedidos",

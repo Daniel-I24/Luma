@@ -1,20 +1,4 @@
-import {
-  ORDER_PROGRESS,
-  type Order,
-  type OrderBusiness,
-  type OrderStatus,
-} from '@shared/orders/order.model';
-
-/** Client-side estimate of preparation time for "as soon as possible" orders (docs/mocks.md). */
-export const ESTIMATED_PREP_MINUTES = 20;
-
-/** When the order should be ready: the requested time, or creation + estimate. */
-export function estimatedReadyAt(order: Pick<Order, 'pickup_at' | 'created_at'>): string {
-  if (order.pickup_at) return order.pickup_at;
-  return new Date(
-    new Date(order.created_at).getTime() + ESTIMATED_PREP_MINUTES * 60_000,
-  ).toISOString();
-}
+import { ORDER_PROGRESS, type OrderBusiness, type OrderStatus } from '@shared/orders/order.model';
 
 /** The estimate only matters while the order is still being prepared. */
 export function showsEstimate(status: OrderStatus): boolean {

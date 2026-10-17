@@ -222,9 +222,6 @@
       "nearYou": "Near you",
       "cityCentre": "Pasto city centre"
     },
-    "categories": {
-      "label": "Filter by category"
-    },
     "controls": {
       "zoomIn": "Zoom in",
       "zoomOut": "Zoom out"
@@ -245,6 +242,22 @@
     },
     "ai": {
       "cta": "See Luma AI recommendations"
+    },
+    "filters": {
+      "title": "Filters",
+      "button": "Filters",
+      "buttonCount": "Filters ({{count}})",
+      "open": "Open filters, {{count}} active",
+      "openNow": "Open now",
+      "withPromotion": "With a promotion",
+      "goodRating": "4 stars or more",
+      "distance": "Distance",
+      "km": "{{km}} km",
+      "withinKm": "Within {{km}} km",
+      "distanceNeedsLocation": "Turn on your location to filter by distance.",
+      "categories": "Categories",
+      "clear": "Clear",
+      "show": "Show {{count}} results"
     }
   },
   "status": {
@@ -369,7 +382,7 @@
       "back": "Back to orders",
       "timeline": "Order status",
       "readyAround": "Ready around {{time}}",
-      "pickupAt": "Pick-up scheduled at {{time}}",
+      "pickupAt": "Pick up at {{time}}",
       "directions": "Get directions",
       "items": "Your items",
       "notes": "Notes: {{notes}}",
@@ -379,7 +392,11 @@
       "cancelDescription": "The restaurant has not accepted it yet. If you cancel, it will not be prepared.",
       "cancelConfirm": "Yes, cancel",
       "keep": "Keep order",
-      "notFoundDescription": "The link may be wrong or the order is not yours."
+      "notFoundDescription": "The link may be wrong or the order is not yours.",
+      "travel": {
+        "walk": "About {{minutes}} min on foot (approx.)",
+        "vehicle": "About {{minutes}} min by vehicle (approx.)"
+      }
     },
     "errors": {
       "loadTitle": "Could not load orders",

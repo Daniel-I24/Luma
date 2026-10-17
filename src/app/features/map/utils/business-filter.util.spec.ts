@@ -40,27 +40,18 @@ describe('business filter utils', () => {
   });
 
   it('returns everything without filters', () => {
-    expect(filterBusinesses(LIST, '', null)).toHaveLength(4);
+    expect(filterBusinesses(LIST, '')).toHaveLength(4);
   });
 
   it('matches the query against name, category and address ignoring accents', () => {
-    expect(filterBusinesses(LIST, 'cafe', null).map((b) => b.name)).toEqual([
+    expect(filterBusinesses(LIST, 'cafe').map((b) => b.name)).toEqual([
       'Café Central',
       'Tostadas Café',
     ]);
-    expect(filterBusinesses(LIST, 'carrera', null).map((b) => b.name)).toEqual(['Pizzería Roma']);
+    expect(filterBusinesses(LIST, 'carrera').map((b) => b.name)).toEqual(['Pizzería Roma']);
   });
 
   it('requires every word of the query', () => {
-    expect(filterBusinesses(LIST, 'cafe central', null).map((b) => b.name)).toEqual([
-      'Café Central',
-    ]);
-  });
-
-  it('combines the category filter with the query', () => {
-    expect(filterBusinesses(LIST, 'tostadas', 'Cafetería').map((b) => b.name)).toEqual([
-      'Tostadas Café',
-    ]);
-    expect(filterBusinesses(LIST, '', 'Pizza')).toHaveLength(1);
+    expect(filterBusinesses(LIST, 'cafe central').map((b) => b.name)).toEqual(['Café Central']);
   });
 });

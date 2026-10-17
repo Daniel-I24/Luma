@@ -51,15 +51,17 @@ existe): lo que sigue son estimaciones o reglas calculadas en el cliente.
   vuelven a consultar los ítems y se avisan los cambios; el servidor
   recalcula todos los precios al crear el pedido.
 
-## Hora estimada del pedido
+## Estimaciones de tiempo (aproximadas, no simuladas)
 
-- **Dónde:** `src/app/features/orders/utils/order-detail.util.ts`
-  (`ESTIMATED_PREP_MINUTES`).
-- **Cálculo:** para pedidos "lo antes posible", hora de creación + 20 minutos;
-  si el cliente programó la recogida se muestra esa hora. No hay tiempo de
-  preparación por negocio.
-- **Para reemplazarlo:** un tiempo estimado que el negocio fije al aceptar el
-  pedido (columna en `orders`).
+- **Dónde:** `src/app/shared/orders/order-estimates.util.ts`.
+- **Listo aprox.:** pedidos "lo antes posible" = hora de creación +
+  `businesses.prep_minutes` del negocio (20 si no se puede leer); si el
+  cliente programó la recogida se muestra "Para recoger a las HH:MM".
+- **Desplazamiento:** distancia en línea recta desde la ubicación del
+  usuario; a pie hasta 1,5 km (~4,8 km/h), en vehículo a ~20 km/h. Se marca
+  como aproximado; no es una ruta real.
+- **Para reemplazarlo:** tiempos de ruta de un servicio de direcciones y un
+  tiempo que el negocio confirme al aceptar el pedido.
 
 ## Lo que es real
 
