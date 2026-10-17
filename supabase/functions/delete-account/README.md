@@ -25,8 +25,11 @@ Edge Function that permanently deletes the **caller's own** account
 - The service role key comes from the `SUPABASE_SERVICE_ROLE_KEY` variable that
   Supabase injects; it is never in the code nor logged. Logs contain only fixed
   messages (no tokens, emails, ids or passwords).
-- CORS uses an allow list (`http://localhost:4200` plus `ALLOWED_ORIGIN`),
-  never `*`. Requests from other browser origins get 403.
+- CORS uses an allow list from `ALLOWED_ORIGINS`, never `*`: a
+  comma-separated list matched **exactly** (scheme, host and port; no
+  wildcards, entries containing `*` and empty entries are ignored). The legacy
+  single `ALLOWED_ORIGIN` is still read and merged in. With neither set, no
+  browser origin is allowed. Requests from other browser origins get 403.
 
 ## What is deleted (cascade)
 
@@ -49,7 +52,14 @@ be removed here too.
 | --------------------------- | -------------------------- |
 | `SUPABASE_URL`              | Injected by Supabase       |
 | `SUPABASE_SERVICE_ROLE_KEY` | Injected by Supabase       |
-| `ALLOWED_ORIGIN`            | Secret, e.g. production web origin |
+| `ALLOWED_ORIGINS`           | Secret, comma-separated exact origins (see below) |
+| `ALLOWED_ORIGIN`            | Legacy single origin, still accepted |
+
+Recommended `ALLOWED_ORIGINS`:
+
+- Production: `https://localhost,https://<vercel-domain>` (`https://localhost`
+  is the Capacitor Android WebView origin).
+- Development project only: add `http://localhost:4200` (`ng serve`).
 
 ## Test
 
@@ -63,7 +73,7 @@ deno test --no-lock
 ```sh
 supabase login
 supabase link --project-ref <project-ref>
-supabase secrets set ALLOWED_ORIGIN=https://<web-origin>
+supabase secrets set ALLOWED_ORIGINS=https://localhost,https://<vercel-domain>
 supabase functions deploy delete-account
 ```
 

@@ -41,17 +41,24 @@ Authentication → URL Configuration:
 
 ## delete-account Edge Function
 
-Set the production web origin as its only configurable origin:
+`ALLOWED_ORIGINS` is a comma-separated list of browser origins, matched
+exactly (no wildcards; empty entries are ignored). The legacy single
+`ALLOWED_ORIGIN` is still accepted and merged in. Nothing is allowed by
+default.
+
+| Origin | When |
+| --- | --- |
+| `https://localhost` | Always: Capacitor Android WebView |
+| `https://<vercel-domain>` | Always: the production web app |
+| `http://localhost:4200` | Development Supabase project only (`ng serve`) |
 
 ```sh
-supabase secrets set ALLOWED_ORIGIN=https://<your-domain>
+supabase secrets set ALLOWED_ORIGINS=https://localhost,https://<vercel-domain>
 supabase functions deploy delete-account
 ```
 
-`http://localhost:4200` is always allowed. The Android app runs on the
-Capacitor origin `https://localhost`, which is **not** allowed today (the
-function accepts one configurable origin), so deleting the account from the
-Android build fails CORS until the function accepts a list of origins.
+Vercel preview URLs are not covered (no wildcards); add a preview origin
+explicitly if you need to test account deletion there.
 
 ## Caching
 

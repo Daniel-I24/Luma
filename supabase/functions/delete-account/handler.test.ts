@@ -45,7 +45,7 @@ function request(method: string, headers: Record<string, string> = {}, body?: st
 
 function handlerFor(options: FakeOptions = {}) {
   const fake = fakeClient(options);
-  const handler = createHandler({ client: fake.client, allowedOrigins: allowedOriginsFrom('https://luma.app') });
+  const handler = createHandler({ client: fake.client, allowedOrigins: allowedOriginsFrom(`${APP_ORIGIN}, https://luma.app`) });
   return { handler, deleted: fake.deleted };
 }
 

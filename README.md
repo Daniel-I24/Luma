@@ -41,7 +41,7 @@ npm start            # http://localhost:4200
 | --- | --- | --- |
 | Local dev | `src/environments/environment.ts` | Gitignored. URL + **anon** key only. |
 | Production build | `SUPABASE_URL`, `SUPABASE_ANON_KEY` | Read by `scripts/generate-env.mjs` (`npm run build:prod`); privileged keys are rejected. |
-| Edge Function `delete-account` | `ALLOWED_ORIGIN` | Supabase secret; `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are injected by Supabase. |
+| Edge Function `delete-account` | `ALLOWED_ORIGINS` (comma-separated, exact; legacy `ALLOWED_ORIGIN` still read) | Supabase secret; `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are injected by Supabase. |
 
 The service-role key and any AI key live only in the backend.
 

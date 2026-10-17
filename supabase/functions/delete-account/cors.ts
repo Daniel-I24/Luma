@@ -1,11 +1,17 @@
-const LOCAL_DEV_ORIGIN = 'http://localhost:4200';
-
 const ALLOWED_HEADERS = 'authorization, x-client-info, apikey, content-type';
 
-/** Local dev origin plus the one configured through ALLOWED_ORIGIN, if any. */
-export function allowedOriginsFrom(configured: string | undefined): readonly string[] {
-  const extra = configured?.trim();
-  return extra ? [LOCAL_DEV_ORIGIN, extra] : [LOCAL_DEV_ORIGIN];
+/**
+ * Exact origins from ALLOWED_ORIGINS (comma-separated) plus the legacy single
+ * ALLOWED_ORIGIN. Empty entries and entries with a wildcard are ignored.
+ */
+export function allowedOriginsFrom(
+  list: string | undefined,
+  legacy?: string | undefined,
+): readonly string[] {
+  const entries = [...(list ?? '').split(','), legacy ?? '']
+    .map((entry) => entry.trim())
+    .filter((entry) => entry !== '' && !entry.includes('*'));
+  return [...new Set(entries)];
 }
 
 /** Requests without Origin come from non-browser clients; the JWT still guards them. */
@@ -13,7 +19,10 @@ export function isOriginAllowed(origin: string | null, allowed: readonly string[
   return origin === null || allowed.includes(origin);
 }
 
-export function corsHeaders(origin: string | null, allowed: readonly string[]): Record<string, string> {
+export function corsHeaders(
+  origin: string | null,
+  allowed: readonly string[],
+): Record<string, string> {
   if (origin === null || !allowed.includes(origin)) {
     return { Vary: 'Origin' };
   }
