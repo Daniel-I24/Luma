@@ -2,9 +2,11 @@
 
 Mobile-first app to discover local restaurants and shops in Pasto (Nariño,
 Colombia): an interactive map with live open/closed status, a vertical feed of
-promotions and dishes, the Luma IA recommender (rules-based today), favourites,
-reviews, a cart and pick-up orders. Spanish UI by default, English as second
-language.
+promotions and dishes with filters, the Luma IA recommender (rules-based
+today), favourites, reviews, a cart, pick-up orders with time estimates and
+in-app notifications, and a business panel where owners register their
+business, manage hours, menu, photos and promotions, publish it and handle
+incoming orders. Spanish UI by default, English as second language.
 
 ## Stack
 
@@ -12,7 +14,7 @@ language.
 | --- | --- |
 | Frontend | Angular 22 (standalone, Signals, `@if/@for`, OnPush, View Transitions) |
 | Styles | Tailwind CSS v4 on design tokens (`src/styles/`), four themes |
-| Data & auth | Supabase (Postgres + RLS, Auth, Edge Functions in Deno) |
+| Data & auth | Supabase (Postgres + RLS, Auth, Storage, Edge Functions in Deno) |
 | Map | MapLibre GL with OpenFreeMap tiles |
 | i18n | Transloco (`public/i18n/es.json`, `en.json`) |
 | Validation | Zod at the boundaries |
@@ -48,15 +50,10 @@ The service-role key and any AI key live only in the backend.
 ## Database: migrations and seeds
 
 Apply the migrations in `supabase/migrations/` **in filename (timestamp)
-order**, then the seeds:
-
-1. `20240001000000_create_profiles.sql`
-2. `20240002000000_create_businesses.sql`
-3. `20261014000000_business_profile.sql` (menu, favourites, reviews)
-4. `20261015000000_grant_existing_tables.sql`
-5. `20261017000000_orders.sql`, `20261017000100_order_functions.sql`,
-   `20261017000200_order_status_functions.sql` (orders; see
-   [docs/orders.md](docs/orders.md) — not applied to any project yet).
+order**. [docs/migrations.md](docs/migrations.md) lists the exact order, what
+each one does and its status (the orders, business panel, images, business
+orders and notifications migrations are **pending review**, not applied).
+Then the seeds:
 
 Seeds (development data, 5 businesses in Pasto):
 
@@ -76,24 +73,28 @@ Every table has Row Level Security; see the migrations for the policies.
 | `npm run build:prod` | Generates the gitignored `environment.deploy.ts` from env vars, then builds with `production,deploy` (Vercel) |
 | `npm run lint` | ESLint (TS + templates, accessibility rules) |
 | `npm test -- --watch=false` | Vitest unit tests |
-| `npm run test:scripts` | Tests of `scripts/`, including the i18n check (same keys in es/en, every literal key in `src/` exists) |
+| `npm run test:scripts` | Tests of `scripts/`: i18n check (same keys in es/en, every literal key in `src/` exists) and business categories in sync with the database CHECK |
 | `npx cap sync android` | Copies the web build into the Android project |
 
 Edge Function tests: `cd supabase/functions/delete-account && deno test --no-lock`.
-Database security tests: `supabase/tests/*.sql` (see `docs/orders.md`).
+Database security tests: `supabase/tests/*.sql` (138 checks); run them on a
+plain local Postgres with `supabase/tests/local/run.sh` (see
+[docs/migrations.md](docs/migrations.md)).
 
 ## Project structure
 
 ```
 src/app/
   core/           auth, Supabase client, i18n, theme, navigation, native bridges
-  shared/         business data (repositories, models), cart, favourites,
-                  recommendations, geo, formatting, layout, UI helpers
+  shared/         business data (repositories, write schemas), orders,
+                  notifications, media (image upload), map base, forms,
+                  cart, favourites, recommendations, geo, formatting, layout
   design-system/  base components (button, card, bottom sheet, tabs…)
   features/       one folder + lazy route per screen: map, feed, ai, cart,
-                  checkout, orders, favorites, business-profile, profile, auth
+                  checkout, orders, notifications, favorites, business-profile,
+                  business-panel, profile, auth
 src/styles/       tokens, themes, motion, view transitions, map markers
-supabase/         migrations, seeds, Edge Functions, config
+supabase/         migrations, seeds, Edge Functions, SQL security tests
 scripts/          build-time scripts (environment generation)
 docs/             project documentation
 ```
@@ -112,7 +113,8 @@ tests → script tests. Dependabot opens weekly update PRs.
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — layers, dependency rules, decisions
 - [docs/deploy.md](docs/deploy.md) — Vercel, Supabase Auth URLs, CSP and headers
 - [docs/ai.md](docs/ai.md) — Luma IA rules engine and the path to Claude
-- [docs/orders.md](docs/orders.md) — orders backend, security tests, manual status changes
+- [docs/migrations.md](docs/migrations.md) — migration order and status, constraint validation, SQL tests
+- [docs/orders.md](docs/orders.md) — orders backend, retention, owners' board, manual status changes
 - [docs/mocks.md](docs/mocks.md) — client-side estimations and what is real
 - [docs/security-notes.md](docs/security-notes.md) — dependency audit and accepted risks
 - [supabase/functions/delete-account/README.md](supabase/functions/delete-account/README.md)

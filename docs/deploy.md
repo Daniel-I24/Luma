@@ -63,12 +63,23 @@ supabase functions deploy delete-account
 Vercel preview URLs are not covered (no wildcards); add a preview origin
 explicitly if you need to test account deletion there.
 
+## Storage (business pictures)
+
+Migration `20261018000100_business_images.sql` creates the public
+`business-images` bucket (2 MB, JPEG/PNG/WebP) and its policies; nothing has
+to be configured by hand. Pictures are public https URLs, already allowed by
+`img-src https:` in the CSP. `delete-account` removes a user's business
+pictures before deleting the account.
+
 ## Caching
 
 | Files | Cache-Control |
 | --- | --- |
 | `main-*.js`, `chunk-*.js`, `polyfills-*.js`, `styles-*.css`, `media/*` (content-hashed) | `public, max-age=31536000, immutable` |
-| Everything else: `index.html`, SPA routes, `i18n/*.json`, `maplibre-gl-worker.mjs`, `map.css`, `favicon.ico` | `no-cache` (revalidate every time) |
+| Everything else: `index.html`, SPA routes, `i18n/*.json`, `maplibre-gl-worker.mjs`, `map.css`, `favicon.ico`, `robots.txt` | `no-cache` (revalidate every time) |
+
+`index.html` preloads `i18n/es.json` (the default language), which the
+first paint needs.
 
 ## Security headers
 
@@ -113,3 +124,33 @@ zero CSP violations; `/design-preview` redirects to `/map` in production.
 
 - `/design-preview` (design-system showcase) exists only in development
   builds; production drops the route and unknown URLs go to `/map`.
+
+## Audits (2026-10-17, production build)
+
+**Accessibility (axe-core 4.14, WCAG 2.0–2.2 A/AA)** on map, map filters
+sheet, feed, Luma IA, business profile, favourites, cart → checkout, orders,
+order detail, profile, notifications, login and every business panel screen,
+in the four themes: **0 serious or critical issues**. Fixed in this pass:
+MapLibre's attribution toggle was covered by the map controls and the
+location prompt (moved to bottom-left; the prompt sits above it).
+
+**Lighthouse 12 (mobile, simulated throttling)** on `/auth/login` (the only
+screen reachable without a session; Vercel-like headers and compression):
+
+| Category | Before | After |
+| --- | --- | --- |
+| Performance | 82 | 86–87 |
+| Accessibility | 100 | 100 |
+| Best practices | 100 | 100 |
+| SEO | 82 | 100 |
+
+Fixed: meta description, a valid `robots.txt`, preload of `i18n/es.json`.
+Left as is (not cheap):
+
+- FCP 2.7 s / LCP 3.3 s on slow 4G: initial bundle ~150 KB transferred
+  (Angular, Supabase client, Transloco).
+- Render-blocking `styles.css` (~230 ms): critical CSS inlining is off
+  because it needs an inline script that the CSP blocks (see above).
+- ~70 KB of unused JavaScript in the initial chunk (Supabase client parts not
+  used at start-up); would need deferring the client or lighter auth calls.
+- No production source maps (deliberate).

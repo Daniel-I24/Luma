@@ -16,12 +16,15 @@ export function createBaseMap(
 ): maplibregl.Map {
   // Bundled builds cannot locate the worker by themselves (MapLibre v6).
   maplibregl.setWorkerUrl(new URL(MAP_WORKER_PATH, document.baseURI).href);
-  return new maplibregl.Map({
+  const map = new maplibregl.Map({
     container,
     style: MAP_STYLE,
     center: [centre.lng, centre.lat],
     zoom,
-    // Map data licences require attribution; compact keeps it out of the way.
-    attributionControl: { compact: true },
+    attributionControl: false,
   });
+  // Map data licences require attribution; compact, and bottom-left so the
+  // app's own controls (bottom-right) never cover its toggle.
+  map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-left');
+  return map;
 }

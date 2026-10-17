@@ -12,7 +12,8 @@ import { LumaButton, LumaIcon } from '@design-system';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoModule, LumaButton, LumaIcon],
   templateUrl: './location-prompt.html',
-  host: { class: 'absolute inset-x-4 bottom-4 z-30 block animate-fade-in-up' },
+  // Above the map attribution (bottom-left), which must stay reachable.
+  host: { class: 'absolute inset-x-4 bottom-12 z-30 block animate-fade-in-up' },
 })
 export class LocationPrompt {
   readonly allow = output<void>();

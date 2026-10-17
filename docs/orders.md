@@ -119,4 +119,6 @@ without reloading.
   Entregado through `set_order_status`; refresh every 15 s while visible).
   Migration `20261018000200_business_orders.sql`, tests
   `business_orders_security.sql`.
-- No notifications: the customer sees changes by polling the detail screen.
+- In-app notifications (no push yet): owners are told about new orders and
+  customers about status changes (`20261018000300_notifications.sql`,
+  `/notifications`).

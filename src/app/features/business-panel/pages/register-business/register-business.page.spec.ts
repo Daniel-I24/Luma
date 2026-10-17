@@ -27,8 +27,11 @@ vi.mock('maplibre-gl', () => {
     remove() {
       return this;
     }
+    addControl() {
+      return this;
+    }
   }
-  return { Map, Marker: Chain, setWorkerUrl: () => undefined };
+  return { Map, Marker: Chain, AttributionControl: Chain, setWorkerUrl: () => undefined };
 });
 
 const flush = () => new Promise((resolve) => setTimeout(resolve));
