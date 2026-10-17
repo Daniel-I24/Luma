@@ -1,6 +1,6 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { BusinessHighlightsRepository } from '@shared/business/data/business-highlights.repository';
 import { BusinessRepository } from '@shared/business/data/business.repository';
 import { MenuRepository } from '@shared/business/data/menu.repository';
@@ -20,7 +20,12 @@ describe('AiStore', () => {
   const engine = { recommend: vi.fn() };
   let store: AiStore;
 
+  afterEach(() => vi.useRealTimers());
+
   beforeEach(() => {
+    // Statuses depend on the clock: pin it to midday.
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-10-14T12:00:00'));
     vi.clearAllMocks();
     businesses.getNearby.mockReturnValue(ok([{ id: 'b1', name: 'Café', category: 'Cafetería', latitude: 1, longitude: 2 }]));
     businesses.getHoursFor.mockReturnValue(ok(allDay('b1')));
