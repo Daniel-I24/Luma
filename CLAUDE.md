@@ -17,7 +17,7 @@ The full project rules live in `.kiro/steering/` (`product`, `tech`, `structure`
 - Typed errors: never let raw Supabase errors reach the UI; map them to domain errors with a translation key.
 - Explicit error handling in every public function; never swallow exceptions.
 - Business logic in services/facades, data access only through repositories, no business logic in templates.
-- Max 150 lines per file; if a file grows beyond that, split it.
+- Max 150 lines per code file (not the i18n JSON files); if a file grows beyond that, split it.
 
 ## Architecture
 - `src/app/{core,shared,design-system,features}`. Dependencies flow `features → shared → core`; no feature imports from another feature.

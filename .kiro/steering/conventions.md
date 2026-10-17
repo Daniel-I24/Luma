@@ -7,7 +7,7 @@ inclusion: always
 - **Todo el código en inglés**: nombres de archivos, clases, funciones, variables, comentarios, commits, tests y documentación técnica.
 - **Toda la interfaz de usuario en español** por defecto, con inglés como segundo idioma.
 - Prohibido escribir texto visible al usuario dentro de templates o TS. Todo texto va en archivos de traducción y se lee por clave.
-- i18n con Transloco (cambio de idioma en tiempo de ejecución, sin recompilar): `src/assets/i18n/es.json` y `en.json`, organizados por feature (`auth.login.title`, `map.sheet.openNow`).
+- i18n con Transloco (cambio de idioma en tiempo de ejecución, sin recompilar): `public/i18n/es.json` y `en.json`, organizados por feature (`auth.login.title`, `map.sheet.openNow`).
 - Al agregar una clave se agrega en ambos idiomas en el mismo cambio.
 
 ## Ajustes de la app (feature `settings`)
@@ -15,7 +15,8 @@ Idioma, tema visual (Indigo, Midnight, Pearl, Sunset), notificaciones, métodos 
 
 ## Tamaño y organización
 - Un archivo = una responsabilidad. Un componente por archivo, con `.ts`, `.html` y `.css` separados.
-- Límite blando: 150 líneas por archivo. Límite duro: 300. Si se pasa, se divide en componentes, servicios o utilidades.
+- Límite blando: 150 líneas por archivo de código. Límite duro: 300. Si se pasa, se divide en componentes, servicios o utilidades.
+- El límite aplica a archivos de código (`.ts`, `.html`, `.css`, `.mjs`, `.sql`), no a los JSON de traducción (`public/i18n/*.json`), que crecen con la app y se validan con `npm run test:scripts` (mismas claves en es y en).
 - Funciones cortas (idealmente < 30 líneas), sin anidamiento profundo, sin código duplicado (regla de tres: a la tercera repetición se extrae).
 - Sin código muerto, sin comentarios que expliquen lo obvio, sin `TODO` sin issue asociado.
 - Imports ordenados y con alias de rutas (`@core`, `@shared`, `@features`, `@design-system`).
