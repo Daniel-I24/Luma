@@ -6,8 +6,8 @@
 
 create schema tests;
 
--- Runs p_sql as p_role with auth.uid() = p_sub (null: no claim).
-create function tests.exec_as(p_role text, p_sub uuid, p_sql text)
+-- Takes the identity PostgREST would give a request: role + JWT claims.
+create function tests.become(p_role text, p_sub uuid)
 returns void
 language plpgsql
 as $$
@@ -15,8 +15,32 @@ begin
   perform set_config('request.jwt.claim.sub', coalesce(p_sub::text, ''), true);
   perform set_config('request.jwt.claims', json_build_object('sub', p_sub, 'role', p_role)::text, true);
   execute format('set local role %I', p_role);
-  execute p_sql;
+end;
+$$;
+
+-- Back to the test runner: no role, no claims (auth.uid() is null). Every
+-- helper calls it after each check, also after a failure, so no identity
+-- leaks into the next check or into fixture statements.
+create function tests.restore()
+returns void
+language plpgsql
+as $$
+begin
   reset role;
+  perform set_config('request.jwt.claim.sub', '', true);
+  perform set_config('request.jwt.claims', '', true);
+end;
+$$;
+
+-- Runs p_sql as p_role with auth.uid() = p_sub (null: no claim).
+create function tests.exec_as(p_role text, p_sub uuid, p_sql text)
+returns void
+language plpgsql
+as $$
+begin
+  perform tests.become(p_role, p_sub);
+  execute p_sql;
+  perform tests.restore();
 end;
 $$;
 
@@ -36,7 +60,7 @@ begin
       raise exception 'FAIL [%] expected "%" but got "%": %', p_role, p_expected, sqlerrm, p_sql;
     end if;
   end;
-  reset role;
+  perform tests.restore();
   if not v_failed then
     raise exception 'FAIL [%] expected "%" but it succeeded: %', p_role, p_expected, p_sql;
   end if;
@@ -52,11 +76,9 @@ as $$
 declare
   v_result boolean;
 begin
-  perform set_config('request.jwt.claim.sub', coalesce(p_sub::text, ''), true);
-  perform set_config('request.jwt.claims', json_build_object('sub', p_sub, 'role', p_role)::text, true);
-  execute format('set local role %I', p_role);
+  perform tests.become(p_role, p_sub);
   execute p_check into v_result;
-  reset role;
+  perform tests.restore();
   if v_result is distinct from true then
     raise exception 'FAIL [%] %: % returned %', p_role, p_label, p_check, v_result;
   end if;
@@ -64,8 +86,8 @@ begin
 end;
 $$;
 
-grant usage on schema tests to anon, authenticated;
-grant execute on all functions in schema tests to anon, authenticated;
+grant usage on schema tests to anon, authenticated, service_role;
+grant execute on all functions in schema tests to anon, authenticated, service_role;
 
 -- Fixed ids for the fixtures.
 create function tests.id(p_name text)
