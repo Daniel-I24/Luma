@@ -3,6 +3,6 @@
     <router-outlet />
   </main>
   <app-cart-bar />
-  <app-luma-tab-bar [items]="tabs" labelKey="tabBar.label" />
+  <app-luma-tab-bar [items]="tabs" labelKey="tabBar.label" [badges]="badges()" />
 </div>
 <app-cart-conflict-sheet />

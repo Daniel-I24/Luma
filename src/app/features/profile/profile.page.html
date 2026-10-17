@@ -22,13 +22,14 @@
       </div>
     </section>
 
-    <section aria-labelledby="activity-heading">
+    <section class="flex flex-col gap-2" aria-labelledby="activity-heading">
       <h2
         id="activity-heading"
         class="m-0 px-1 pt-4 pb-2 text-label tracking-wide text-fg-subtle uppercase"
       >
         {{ t('profile.activity') }}
       </h2>
+      <app-notifications-entry />
       <a
         routerLink="/favorites"
         class="pressable flex min-h-14 items-center gap-3 rounded-xl border border-border-subtle bg-surface px-4 text-fg no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"

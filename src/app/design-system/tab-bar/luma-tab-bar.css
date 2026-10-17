@@ -87,11 +87,29 @@
 }
 
 .luma-tab-bar__pill {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: var(--spacing-10);
   height: var(--spacing-8);
+}
+
+/* Count on a tab (e.g. unread notifications). */
+.luma-tab-bar__badge {
+  position: absolute;
+  top: calc(var(--spacing-1) * -0.5);
+  right: var(--spacing-1);
+  min-width: var(--spacing-4);
+  height: var(--spacing-4);
+  padding: 0 var(--spacing-1);
+  border-radius: var(--radius-full);
+  background-color: var(--color-danger);
+  color: var(--color-danger-fg-on);
+  font-size: var(--text-caption);
+  font-weight: 700;
+  line-height: var(--spacing-4);
+  text-align: center;
 }
 
 .luma-tab-bar__icon {

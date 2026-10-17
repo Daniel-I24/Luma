@@ -185,7 +185,8 @@
     "favorites": "Mis favoritos",
     "business": "Negocios",
     "myBusiness": "Mi negocio",
-    "registerBusiness": "Registrar mi negocio"
+    "registerBusiness": "Registrar mi negocio",
+    "notifications": "Notificaciones"
   },
   "map": {
     "canvasLabel": "Mapa de negocios Luma",
@@ -272,7 +273,8 @@
     "profile": "Perfil",
     "feed": "Descubrir",
     "ai": "Luma IA",
-    "orders": "Pedidos"
+    "orders": "Pedidos",
+    "badge": "{{count}} sin leer"
   },
   "rating": {
     "label": "Calificación {{rating}} de 5",
@@ -823,6 +825,32 @@
     "errors": {
       "loadFailed": "No se pudieron cargar los pedidos.",
       "updateFailed": "No se pudo actualizar el pedido. Intenta de nuevo."
+    }
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "back": "Volver al perfil",
+    "loading": "Cargando notificaciones…",
+    "new": "Nueva",
+    "empty": {
+      "title": "Sin notificaciones",
+      "description": "Aquí verás los cambios de tus pedidos y los pedidos nuevos de tu negocio."
+    },
+    "text": {
+      "orderNew": "Nuevo pedido en tu negocio",
+      "status": {
+        "pending": "Tu pedido está pendiente",
+        "accepted": "El negocio aceptó tu pedido",
+        "preparing": "Tu pedido está en preparación",
+        "ready": "Tu pedido está listo para recoger",
+        "picked_up": "Pedido entregado. ¡Buen provecho!",
+        "cancelled": "El negocio canceló tu pedido",
+        "unknown": "Tu pedido cambió de estado"
+      }
+    },
+    "errors": {
+      "loadFailed": "No se pudieron cargar las notificaciones.",
+      "markFailed": "No se pudieron marcar como leídas."
     }
   }
 }

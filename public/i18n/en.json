@@ -185,7 +185,8 @@
     "favorites": "My favourites",
     "business": "Businesses",
     "myBusiness": "My business",
-    "registerBusiness": "Register my business"
+    "registerBusiness": "Register my business",
+    "notifications": "Notifications"
   },
   "map": {
     "canvasLabel": "Luma business map",
@@ -272,7 +273,8 @@
     "profile": "Profile",
     "feed": "Discover",
     "ai": "Luma AI",
-    "orders": "Orders"
+    "orders": "Orders",
+    "badge": "{{count}} unread"
   },
   "rating": {
     "label": "Rated {{rating}} out of 5",
@@ -823,6 +825,32 @@
     "errors": {
       "loadFailed": "The orders could not be loaded.",
       "updateFailed": "The order could not be updated. Try again."
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "back": "Back to profile",
+    "loading": "Loading notifications…",
+    "new": "New",
+    "empty": {
+      "title": "No notifications",
+      "description": "Here you will see your order updates and new orders at your business."
+    },
+    "text": {
+      "orderNew": "New order at your business",
+      "status": {
+        "pending": "Your order is pending",
+        "accepted": "The business accepted your order",
+        "preparing": "Your order is being prepared",
+        "ready": "Your order is ready for pick-up",
+        "picked_up": "Order picked up. Enjoy!",
+        "cancelled": "The business cancelled your order",
+        "unknown": "Your order changed status"
+      }
+    },
+    "errors": {
+      "loadFailed": "The notifications could not be loaded.",
+      "markFailed": "They could not be marked as read."
     }
   }
 }

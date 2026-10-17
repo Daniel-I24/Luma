@@ -36,6 +36,14 @@ export class LumaTabBar {
   readonly items = input.required<readonly TabBarItem[]>();
   /** Transloco key of the navigation landmark label. */
   readonly labelKey = input.required<string>();
+  /** Counts shown on tabs, by path (e.g. unread notifications); 0 hides it. */
+  readonly badges = input<Readonly<Record<string, number>>>({});
+  /** Transloco key of the badge text for screen readers, with {{count}}. */
+  readonly badgeLabelKey = input('tabBar.badge');
+
+  protected badgeText(count: number): string {
+    return count > 9 ? '9+' : String(count);
+  }
 
   private readonly router = inject(Router);
   private readonly url = toSignal(

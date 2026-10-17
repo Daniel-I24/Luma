@@ -6,6 +6,8 @@
 export interface FakeResponse {
   data: unknown;
   error: { message: string; code?: string } | null;
+  /** For select(..., { count }) queries. */
+  count?: number | null;
 }
 
 export type QueryCall = [method: string, args: unknown[]];
@@ -35,6 +37,9 @@ export class FakeQuery implements PromiseLike<FakeResponse> {
   }
   eq(...args: unknown[]): this {
     return this.record('eq', args);
+  }
+  is(...args: unknown[]): this {
+    return this.record('is', args);
   }
   in(...args: unknown[]): this {
     return this.record('in', args);

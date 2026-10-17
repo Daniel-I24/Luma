@@ -33,11 +33,12 @@ describe('LumaTabBar', () => {
     }).compileComponents();
   });
 
-  async function render(url: string): Promise<HTMLElement> {
+  async function render(url: string, badges: Record<string, number> = {}): Promise<HTMLElement> {
     await TestBed.inject(Router).navigateByUrl(url);
     const fixture = TestBed.createComponent(LumaTabBar);
     fixture.componentRef.setInput('items', ITEMS);
     fixture.componentRef.setInput('labelKey', 'tabs.label');
+    fixture.componentRef.setInput('badges', badges);
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
@@ -76,6 +77,18 @@ describe('LumaTabBar', () => {
     const track = el.querySelector<HTMLElement>('.luma-tab-bar__track');
     expect(track?.style.getPropertyValue('--tab-index')).toBe('1');
     expect(track?.style.getPropertyValue('--tab-count')).toBe('2');
+  });
+
+  it('shows a capped count badge with screen reader text, and none for zero', async () => {
+    const el = await render('/map', { '/profile': 12, '/map': 0 });
+
+    const badges = el.querySelectorAll('.luma-tab-bar__badge');
+    expect(badges).toHaveLength(1);
+    expect(badges[0].textContent?.trim()).toBe('9+');
+    expect(badges[0].getAttribute('aria-hidden')).toBe('true');
+    expect(el.querySelectorAll('a')[1].querySelector('.sr-only')?.textContent).toContain(
+      'tabBar.badge',
+    );
   });
 });
 

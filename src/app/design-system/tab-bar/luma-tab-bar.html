@@ -20,8 +20,14 @@
         >
           <span class="luma-tab-bar__pill">
             <app-luma-icon class="luma-tab-bar__icon" [name]="item.icon" />
+            @if (badges()[item.path]; as count) {
+            <span class="luma-tab-bar__badge" aria-hidden="true">{{ badgeText(count) }}</span>
+            }
           </span>
           <span class="luma-tab-bar__label">{{ item.labelKey | transloco }}</span>
+          @if (badges()[item.path]; as count) {
+          <span class="sr-only">{{ badgeLabelKey() | transloco: { count } }}</span>
+          }
         </a>
       </li>
       }

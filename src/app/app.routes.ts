@@ -74,6 +74,11 @@ export const routes: Routes = [
         loadComponent: () => import('./features/orders/orders.page').then((m) => m.OrdersPage),
       },
       {
+        path: 'notifications',
+        loadComponent: () =>
+          import('./features/notifications/notifications.page').then((m) => m.NotificationsPage),
+      },
+      {
         path: 'business',
         canActivate: [authGuard],
         loadChildren: () =>
