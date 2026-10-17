@@ -43,6 +43,12 @@ export const businessPanelRoutes: Routes = [
       import('./pages/business-menu/business-menu.page').then((m) => m.BusinessMenuPage),
   },
   {
+    path: ':id/orders',
+    data: DETAIL_ROUTE_DATA,
+    loadComponent: () =>
+      import('./pages/business-orders/business-orders.page').then((m) => m.BusinessOrdersPage),
+  },
+  {
     path: ':id/promotions',
     data: DETAIL_ROUTE_DATA,
     loadComponent: () =>

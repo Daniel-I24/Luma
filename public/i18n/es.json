@@ -641,7 +641,9 @@
       "menu": "Menú",
       "menuHint": "Productos, precios y disponibilidad",
       "promotions": "Promociones",
-      "promotionsHint": "Ofertas con fecha de inicio y fin"
+      "promotionsHint": "Ofertas con fecha de inicio y fin",
+      "orders": "Pedidos",
+      "ordersHint": "Nuevos, en preparación y listos para recoger"
     },
     "requirements": {
       "name": "Un nombre",
@@ -784,6 +786,43 @@
       "decode": "No se pudo leer la imagen. Prueba con otra.",
       "uploadFailed": "No se pudo subir la imagen. Intenta de nuevo.",
       "deleteFailed": "No se pudo borrar la imagen anterior."
+    }
+  },
+  "businessOrders": {
+    "title": "Pedidos del negocio",
+    "tabLabel": "{{label}} ({{count}})",
+    "tabs": {
+      "new": "Nuevos",
+      "preparing": "En preparación",
+      "ready": "Listos",
+      "history": "Historial"
+    },
+    "empty": {
+      "new": "No hay pedidos nuevos.",
+      "preparing": "No hay pedidos en preparación.",
+      "ready": "No hay pedidos listos para recoger.",
+      "history": "Aún no hay pedidos entregados ni cancelados."
+    },
+    "customer": "Cliente",
+    "placedAt": "Pedido a las {{time}}",
+    "pickupAt": "Para recoger a las {{time}}",
+    "asap": "Lo antes posible",
+    "notes": "Nota del cliente:",
+    "actions": {
+      "accept": "Aceptar",
+      "reject": "Rechazar",
+      "preparing": "Preparando",
+      "ready": "Listo",
+      "deliver": "Entregado"
+    },
+    "rejectTitle": "¿Rechazar el pedido?",
+    "rejectDescription": "El cliente verá el pedido como cancelado.",
+    "rejectConfirm": "Sí, rechazar",
+    "keep": "Volver",
+    "updated": "Pedido actualizado",
+    "errors": {
+      "loadFailed": "No se pudieron cargar los pedidos.",
+      "updateFailed": "No se pudo actualizar el pedido. Intenta de nuevo."
     }
   }
 }

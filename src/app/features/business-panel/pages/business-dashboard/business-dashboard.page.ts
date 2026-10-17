@@ -10,6 +10,7 @@ import { routeBusinessId } from '../../utils/route-business-id';
 
 /** Sections of the panel; `path` is relative to /business/:id. */
 export const PANEL_SECTIONS: readonly { path: string; icon: IconName; key: string }[] = [
+  { path: 'orders', icon: 'receipt', key: 'orders' },
   { path: 'info', icon: 'store', key: 'info' },
   { path: 'hours', icon: 'clock', key: 'hours' },
   { path: 'menu', icon: 'utensils', key: 'menu' },

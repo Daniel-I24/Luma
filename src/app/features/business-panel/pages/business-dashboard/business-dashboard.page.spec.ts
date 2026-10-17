@@ -88,6 +88,7 @@ describe('BusinessDashboardPage', () => {
 
     const links = Array.from(el.querySelectorAll('a')).map((a) => a.getAttribute('href'));
     expect(links).toEqual([
+      '/business/b1/orders',
       '/business/b1/info',
       '/business/b1/hours',
       '/business/b1/menu',

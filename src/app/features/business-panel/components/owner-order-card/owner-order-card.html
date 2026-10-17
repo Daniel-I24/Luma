@@ -1,0 +1,58 @@
+<article
+  *transloco="let t"
+  class="flex flex-col gap-3 rounded-xl border border-border-subtle bg-surface p-4"
+  [attr.aria-labelledby]="'order-' + order().id"
+>
+  <header class="flex items-start justify-between gap-2">
+    <div class="flex min-w-0 flex-col">
+      <h3 [id]="'order-' + order().id" class="m-0 truncate text-title text-fg">
+        {{ order().customer_label ?? t('businessOrders.customer') }}
+      </h3>
+      <span class="text-caption text-fg-muted"
+        >{{ t('businessOrders.placedAt', { time: placedAt() }) }}</span
+      >
+    </div>
+    <app-order-status-badge [status]="order().status" />
+  </header>
+
+  <p class="m-0 text-body-sm font-semibold text-fg">
+    @if (pickupAt(); as time) { {{ t('businessOrders.pickupAt', { time }) }} } @else { {{
+    t('businessOrders.asap') }} }
+  </p>
+
+  <ul class="m-0 flex list-none flex-col gap-1 p-0">
+    @for (item of order().items; track item.id) {
+    <li class="flex justify-between gap-3 text-body text-fg-muted">
+      <span>{{ t('checkout.line', { quantity: item.quantity, name: item.name }) }}</span>
+      <span>{{ item.unit_price_cop * item.quantity | cop }}</span>
+    </li>
+    }
+  </ul>
+
+  @if (order().notes; as notes) {
+  <p
+    class="m-0 rounded-md bg-canvas-subtle p-2 text-body-sm break-words whitespace-pre-line text-fg"
+  >
+    <span class="font-semibold">{{ t('businessOrders.notes') }}</span> {{ notes }}
+  </p>
+  }
+
+  <p class="m-0 flex justify-between border-t border-border-subtle pt-2">
+    <span class="text-title text-fg">{{ t('cart.total') }}</span>
+    <span class="text-price text-fg">{{ order().total_cop | cop }}</span>
+  </p>
+
+  @if (actions().length) {
+  <div class="flex gap-2">
+    @for (next of actions(); track next.status) {
+    <app-luma-button
+      [variant]="next.variant"
+      [fullWidth]="true"
+      [disabled]="busy()"
+      (clicked)="action.emit(next)"
+      >{{ t('businessOrders.actions.' + next.key) }}</app-luma-button
+    >
+    }
+  </div>
+  }
+</article>

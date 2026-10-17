@@ -19,7 +19,7 @@ Migrations (apply in this order, after the existing ones):
 | --- | --- |
 | Clients have no INSERT/UPDATE/DELETE on `orders` / `order_items` | grants |
 | A customer reads only their orders and lines | RLS (`user_id = auth.uid()`) |
-| Business owners do not read orders yet (future safe view without `user_id`/email) | no policy |
+| Business owners read orders only through `business_orders` / `business_order_items` (their businesses, no `user_id` or email; `customer_label` = public display name or NULL) | views, `security_barrier`, SELECT for authenticated |
 | Total = Σ `menu_items.price_cop` × quantity; client prices ignored | `create_order` |
 | Active business; 1–20 distinct lines; quantities 1–20; items of that business and available | `create_order` |
 | `pickup_at` NULL (as soon as possible) or 10 min – 7 days ahead | `create_order` |
@@ -113,6 +113,9 @@ without reloading.
 - The ready time shown for "as soon as possible" orders is a client estimate
   (created + 20 min, `docs/mocks.md`); there is no preparation time per
   business yet.
-- Businesses have no screen to manage orders yet (`set_order_status` exists
-  for the business panel phase).
+- Owners manage orders at `/business/:id/orders` (tabs Nuevos, En
+  preparación, Listos, Historial; Aceptar, Rechazar, Preparando, Listo,
+  Entregado through `set_order_status`; refresh every 15 s while visible).
+  Migration `20261018000200_business_orders.sql`, tests
+  `business_orders_security.sql`.
 - No notifications: the customer sees changes by polling the detail screen.

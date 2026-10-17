@@ -641,7 +641,9 @@
       "menu": "Menu",
       "menuHint": "Products, prices and availability",
       "promotions": "Promotions",
-      "promotionsHint": "Offers with a start and end date"
+      "promotionsHint": "Offers with a start and end date",
+      "orders": "Orders",
+      "ordersHint": "New, in preparation and ready for pick-up"
     },
     "requirements": {
       "name": "A name",
@@ -784,6 +786,43 @@
       "decode": "The image could not be read. Try another one.",
       "uploadFailed": "The image could not be uploaded. Try again.",
       "deleteFailed": "The previous image could not be deleted."
+    }
+  },
+  "businessOrders": {
+    "title": "Business orders",
+    "tabLabel": "{{label}} ({{count}})",
+    "tabs": {
+      "new": "New",
+      "preparing": "In preparation",
+      "ready": "Ready",
+      "history": "History"
+    },
+    "empty": {
+      "new": "No new orders.",
+      "preparing": "No orders in preparation.",
+      "ready": "No orders ready for pick-up.",
+      "history": "No picked-up or cancelled orders yet."
+    },
+    "customer": "Customer",
+    "placedAt": "Ordered at {{time}}",
+    "pickupAt": "Pick up at {{time}}",
+    "asap": "As soon as possible",
+    "notes": "Customer note:",
+    "actions": {
+      "accept": "Accept",
+      "reject": "Reject",
+      "preparing": "Preparing",
+      "ready": "Ready",
+      "deliver": "Picked up"
+    },
+    "rejectTitle": "Reject the order?",
+    "rejectDescription": "The customer will see the order as cancelled.",
+    "rejectConfirm": "Yes, reject",
+    "keep": "Back",
+    "updated": "Order updated",
+    "errors": {
+      "loadFailed": "The orders could not be loaded.",
+      "updateFailed": "The order could not be updated. Try again."
     }
   }
 }
