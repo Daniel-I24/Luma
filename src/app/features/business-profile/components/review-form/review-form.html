@@ -11,7 +11,7 @@
     <legend class="mb-1 p-0 text-label text-fg-muted">{{ t('reviews.form.ratingLabel') }}</legend>
     @for (star of stars; track star) {
     <label
-      class="inline-flex size-11 cursor-pointer items-center justify-center rounded-md has-focus-visible:outline-2 has-focus-visible:outline-border-focus"
+      class="pressable inline-flex size-11 cursor-pointer items-center justify-center rounded-md has-focus-visible:outline-2 has-focus-visible:outline-border-focus"
       [class.text-rating]="star <= rating()"
       [class.text-fg-disabled]="star > rating()"
     >

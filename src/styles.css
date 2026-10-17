@@ -14,3 +14,5 @@
 @import './styles/themes/sunset.css';
 
 @import './styles/base.css';
+@import './styles/motion.css';
+@import './styles/view-transitions.css';

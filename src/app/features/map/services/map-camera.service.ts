@@ -49,6 +49,11 @@ export class MapCameraService {
     this.map.flyTo({ center: [lng, lat], zoom: DEFAULT_ZOOM });
   }
 
+  /** Glides to a point keeping the zoom (instant under reduced motion). */
+  easeTo(lat: number, lng: number): void {
+    this.map.easeTo({ center: [lng, lat] });
+  }
+
   /** Places (or moves) the user's position dot. */
   showUser(lat: number, lng: number): void {
     if (!this.userMarker) {

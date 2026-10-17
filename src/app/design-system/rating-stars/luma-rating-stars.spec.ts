@@ -54,8 +54,8 @@ describe('LumaRatingStars', () => {
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
 
-    const fills = Array.from(el.querySelectorAll('svg')).map((s) => s.getAttribute('fill'));
-    expect(fills).toEqual(['currentColor', 'currentColor', 'currentColor', 'currentColor', 'none']);
+    const fills = Array.from(el.querySelectorAll('svg')).map((s) => s.style.fillOpacity);
+    expect(fills).toEqual(['1', '1', '1', '1', '0']);
     expect(el.querySelector('.sr-only')?.textContent?.trim()).toBe('Calificación 4,0 de 5');
   });
 

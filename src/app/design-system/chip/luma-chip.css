@@ -22,7 +22,7 @@
     background-color var(--duration-fast) var(--ease-standard),
     border-color var(--duration-fast) var(--ease-standard),
     color var(--duration-fast) var(--ease-standard),
-    transform var(--duration-fast) var(--ease-standard);
+    transform var(--duration-instant) var(--ease-standard);
 }
 
 /* Extends the touch target to 44px without changing the visual size. */
@@ -33,7 +33,7 @@
 }
 
 .luma-chip:active {
-  transform: scale(0.95);
+  transform: scale(var(--motion-press-scale));
 }
 
 .luma-chip:focus-visible {
@@ -104,6 +104,14 @@
   transition: opacity var(--duration-fast) var(--ease-standard);
 }
 
-.luma-chip__dismiss:hover {
-  opacity: 1;
+@media (hover: hover) {
+  .luma-chip__dismiss:hover {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .luma-chip:active {
+    transform: none;
+  }
 }

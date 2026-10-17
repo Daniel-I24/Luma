@@ -37,6 +37,8 @@ export class NearbyPanel {
     initialValue: this.transloco.getActiveLang(),
   });
   protected readonly skeletons = [0, 1, 2];
+  /** Only the first cards enter one after another; the rest just appear. */
+  protected readonly staggerLimit = 6;
 
   readonly items = input.required<readonly NearbyBusiness[]>();
   readonly loading = input(false);

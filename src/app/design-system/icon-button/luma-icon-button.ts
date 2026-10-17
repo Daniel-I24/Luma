@@ -39,7 +39,7 @@ export class LumaIconButton {
   protected readonly classes = computed(() =>
     [
       'inline-flex size-11 cursor-pointer items-center justify-center rounded-md border-0',
-      'transition-transform duration-150 active:scale-95',
+      'pressable',
       'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus',
       'disabled:cursor-not-allowed disabled:opacity-45',
       VARIANT_CLASS[this.variant()],

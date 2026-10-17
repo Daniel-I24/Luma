@@ -27,12 +27,8 @@
 .luma-card--interactive {
   cursor: pointer;
   transition:
-    box-shadow var(--duration-fast) ease,
-    transform var(--duration-fast) ease;
-}
-
-.luma-card--interactive:hover {
-  box-shadow: var(--shadow-lg);
+    box-shadow var(--duration-fast) var(--ease-standard),
+    transform var(--duration-instant) var(--ease-standard);
 }
 
 .luma-card--interactive:focus-visible {
@@ -41,5 +37,17 @@
 }
 
 .luma-card--interactive:active {
-  transform: scale(0.99);
+  transform: scale(var(--motion-press-scale));
+}
+
+@media (hover: hover) {
+  .luma-card--interactive:hover {
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .luma-card--interactive:active {
+    transform: none;
+  }
 }

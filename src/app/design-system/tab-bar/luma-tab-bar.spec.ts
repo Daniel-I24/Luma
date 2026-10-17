@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { LumaTabBar } from './luma-tab-bar';
+import { LumaTabBar, activeTabIndex } from './luma-tab-bar';
 import type { TabBarItem } from './luma-tab-bar';
 
 @Component({ template: '' })
@@ -69,5 +69,24 @@ describe('LumaTabBar', () => {
 
     expect(icons).toHaveLength(2);
     expect(icons.every((svg) => svg.getAttribute('aria-hidden') === 'true')).toBe(true);
+  });
+
+  it('places the sliding indicator on the active tab', async () => {
+    const el = await render('/profile');
+    const track = el.querySelector<HTMLElement>('.luma-tab-bar__track');
+    expect(track?.style.getPropertyValue('--tab-index')).toBe('1');
+    expect(track?.style.getPropertyValue('--tab-count')).toBe('2');
+  });
+});
+
+describe('activeTabIndex', () => {
+  it('matches the tab path, its children and ignores query strings', () => {
+    expect(activeTabIndex(ITEMS, '/map')).toBe(0);
+    expect(activeTabIndex(ITEMS, '/profile/settings?x=1')).toBe(1);
+  });
+
+  it('returns -1 outside the tabs (e.g. a business profile)', () => {
+    expect(activeTabIndex(ITEMS, '/businesses/42')).toBe(-1);
+    expect(activeTabIndex(ITEMS, '/mapping')).toBe(-1);
   });
 });

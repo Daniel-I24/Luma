@@ -11,6 +11,7 @@ describe('FavoriteButton', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    store.toggle.mockResolvedValue(true);
     ids.set(new Set(['b1']));
     TestBed.configureTestingModule({
       imports: [
@@ -56,5 +57,25 @@ describe('FavoriteButton', () => {
 
     expect(store.toggle).toHaveBeenCalledWith('b2');
     expect(button.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('pops when marked and shakes when the store reverts the change', async () => {
+    let resolve!: (saved: boolean) => void;
+    store.toggle.mockReturnValue(new Promise<boolean>((r) => (resolve = r)));
+    const { fixture, button } = render('b2');
+    const host = fixture.nativeElement as HTMLElement;
+
+    button.click();
+    fixture.detectChanges();
+    expect(host.classList).toContain('motion-pop');
+
+    resolve(false);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(host.classList).toContain('motion-shake');
+
+    host.dispatchEvent(new Event('animationend'));
+    fixture.detectChanges();
+    expect(host.classList).not.toContain('motion-shake');
   });
 });

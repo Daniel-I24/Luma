@@ -39,6 +39,6 @@ describe('LumaIcon', () => {
     const svg = render({ size: 'lg', filled: true });
 
     expect(svg.getAttribute('class')).toBe('size-6');
-    expect(svg.getAttribute('fill')).toBe('currentColor');
+    expect(svg.style.fillOpacity).toBe('1');
   });
 });

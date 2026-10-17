@@ -25,7 +25,7 @@ describe('LumaDisclosure', () => {
     expect(button.getAttribute('aria-controls')).toBe('theme-panel');
     expect(panel.id).toBe('theme-panel');
     expect(panel.getAttribute('aria-labelledby')).toBe(button.id);
-    expect(panel.hidden).toBe(true);
+    expect(panel.inert).toBe(true);
   });
 
   it('shows the heading and current value', () => {
@@ -41,10 +41,10 @@ describe('LumaDisclosure', () => {
     button.click();
     fixture.detectChanges();
     expect(button.getAttribute('aria-expanded')).toBe('true');
-    expect(panel.hidden).toBe(false);
+    expect(panel.inert).toBe(false);
 
     button.click();
     fixture.detectChanges();
-    expect(panel.hidden).toBe(true);
+    expect(panel.inert).toBe(true);
   });
 });

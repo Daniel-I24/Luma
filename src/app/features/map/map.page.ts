@@ -24,7 +24,7 @@ import { MapCameraService } from './services/map-camera.service';
 import { MapMarkerSyncService } from './services/map-marker-sync.service';
 import { MapStylesLoader } from './services/map-styles.loader';
 import { BusinessSelectionStore } from './state/business-selection.store';
-import { NearbyBusinessesStore } from './state/nearby-businesses.store';
+import { NearbyBusinessesStore, type NearbyBusiness } from './state/nearby-businesses.store';
 import { getZoneLabelKey } from './utils/zone-label.util';
 
 /** MapPage — /map: live map, filters, nearby businesses and the business sheet. */
@@ -125,6 +125,12 @@ export class MapPage implements OnInit, OnDestroy {
   protected onAllowLocation(): void {
     this.showLocationPrompt.set(false);
     this.geo.requestLocation();
+  }
+
+  /** Card tapped: glide the map to the business and open its sheet. */
+  protected focusBusiness(item: NearbyBusiness): void {
+    this.camera.easeTo(item.business.latitude, item.business.longitude);
+    this.selection.select(item);
   }
 
   protected openAi(): void {

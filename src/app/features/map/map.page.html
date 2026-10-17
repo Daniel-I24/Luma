@@ -49,7 +49,7 @@
       [errorKey]="store.errorKey()"
       [filtersActive]="store.filtersActive()"
       [selectedId]="selection.selectedId()"
-      (selectBusiness)="selection.select($event)"
+      (selectBusiness)="focusBusiness($event)"
       (retry)="reload()"
       (clearFilters)="store.clearFilters()"
       (openAi)="openAi()"

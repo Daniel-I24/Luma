@@ -69,7 +69,9 @@
       [attr.aria-labelledby]="tabElementId('business', id)"
       [hidden]="tab() !== id"
     >
-      @if (tab() === id) { @switch (id) { @case ('menu') {
+      @if (tab() === id) {
+      <div class="animate-fade-in">
+      @switch (id) { @case ('menu') {
       <app-menu-tab
         [items]="store.menu()"
         [placeholderIcon]="categoryIcon(business.category)"
@@ -84,7 +86,9 @@
         (changed)="store.refreshRating()"
       />
       } @case ('info') {
-      <app-info-tab [business]="business" [hours]="store.hours()" /> } } }
+      <app-info-tab [business]="business" [hours]="store.hours()" /> } }
+      </div>
+      }
     </div>
     }
   </article>

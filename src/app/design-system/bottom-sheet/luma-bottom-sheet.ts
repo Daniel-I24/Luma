@@ -14,13 +14,15 @@ import {
 } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { LumaIcon } from '../icon/luma-icon';
+import { SheetDrag } from './sheet-drag';
 
 /**
  * LumaBottomSheet — modal panel that slides up from the bottom of the screen.
  *
  * - Role: dialog (ARIA)
- * - Overlay click and Escape key close the sheet.
- * - Entrance/exit animation respects prefers-reduced-motion.
+ * - Overlay click, Escape, the close button and dragging the handle or the
+ *   header down close the sheet.
+ * - Slides in and out (fade only under prefers-reduced-motion).
  */
 @Component({
   selector: 'app-luma-bottom-sheet',
@@ -45,6 +47,12 @@ export class LumaBottomSheet {
   private readonly panel = viewChild.required<ElementRef<HTMLElement>>('panel');
   private returnFocusTo: HTMLElement | null = null;
 
+  /** Drag-to-close on the handle or the header. */
+  protected readonly drag = new SheetDrag(
+    () => this.panel().nativeElement,
+    () => this.closed.emit(),
+  );
+
   protected readonly isOpen = computed(() => this.open());
   protected readonly labelledBy = computed(() =>
     this.title() ? this.titleId() : this.ariaLabelledBy(),
@@ -54,6 +62,7 @@ export class LumaBottomSheet {
     // Move focus into the sheet when it opens and give it back when it closes.
     effect(() => {
       if (this.isOpen()) {
+        this.drag.reset();
         this.returnFocusTo = this.document.activeElement as HTMLElement | null;
         afterNextRender(() => this.panel().nativeElement.focus(), { injector: this.injector });
       } else {
@@ -87,6 +96,7 @@ export class LumaBottomSheet {
   }
 
   protected onCloseClick(): void {
+    if (this.drag.consumeDrag()) return;
     this.closed.emit();
   }
 }

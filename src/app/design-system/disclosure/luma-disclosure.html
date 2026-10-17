@@ -1,7 +1,7 @@
 <h3 class="m-0">
   <button
     type="button"
-    class="flex min-h-14 w-full cursor-pointer items-center gap-3 border-0 bg-transparent px-4 py-3 text-left transition-colors duration-150 hover:bg-surface-selected focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-border-focus"
+    class="flex min-h-14 w-full cursor-pointer items-center gap-3 border-0 bg-transparent px-4 py-3 text-left transition-colors duration-(--duration-fast) hover:bg-surface-selected focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-border-focus"
     [id]="buttonId()"
     [attr.aria-expanded]="expanded()"
     [attr.aria-controls]="panelId()"
@@ -19,7 +19,7 @@
       }
     </span>
     <app-luma-icon
-      class="text-fg-subtle transition-transform duration-150"
+      class="text-fg-subtle transition-transform duration-(--duration-normal) ease-standard"
       name="chevron-down"
       size="sm"
       [class.rotate-180]="expanded()"
@@ -28,10 +28,13 @@
 </h3>
 <div
   role="region"
-  class="px-3 pb-3"
+  class="luma-disclosure__panel"
+  [class.luma-disclosure__panel--open]="expanded()"
   [id]="panelId()"
   [attr.aria-labelledby]="buttonId()"
-  [hidden]="!expanded()"
+  [inert]="!expanded()"
 >
-  <ng-content />
+  <div class="luma-disclosure__inner">
+    <div class="px-3 pb-3"><ng-content /></div>
+  </div>
 </div>

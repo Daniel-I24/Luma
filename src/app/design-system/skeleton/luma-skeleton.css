@@ -1,13 +1,19 @@
-/* LumaSkeleton — shimmer between two canvas tokens; motion is disabled
-   globally under prefers-reduced-motion (styles/base.css). */
+/* LumaSkeleton — subtle shimmer: a soft highlight slides across a canvas
+   token with transform only. Motion is disabled globally under
+   prefers-reduced-motion (styles/base.css). */
 :host {
+  position: relative;
   display: block;
-  background: linear-gradient(
-    90deg,
-    var(--color-canvas-subtle) 0%,
-    var(--color-canvas-muted) 50%,
-    var(--color-canvas-subtle) 100%
-  );
-  background-size: 200% 100%;
+  overflow: hidden;
+  background-color: var(--color-canvas-subtle);
+}
+
+:host::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--color-canvas-muted), transparent);
+  transform: translateX(-100%);
   animation: var(--animate-shimmer);
+  will-change: transform;
 }

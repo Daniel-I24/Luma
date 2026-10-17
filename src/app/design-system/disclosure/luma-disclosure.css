@@ -1,0 +1,25 @@
+/* LumaDisclosure — the panel unfolds with grid-template-rows (0fr → 1fr);
+   visibility switches after the fold, so collapsed content is out of the
+   tab order and the accessibility tree. */
+
+.luma-disclosure__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition:
+    grid-template-rows var(--duration-normal) var(--ease-accelerate),
+    visibility 0s linear var(--duration-normal);
+}
+
+.luma-disclosure__panel--open {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition:
+    grid-template-rows var(--duration-normal) var(--ease-decelerate),
+    visibility 0s;
+}
+
+.luma-disclosure__inner {
+  min-height: 0;
+  overflow: hidden;
+}

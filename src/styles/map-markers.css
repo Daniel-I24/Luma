@@ -28,8 +28,9 @@
   box-shadow: var(--shadow-md);
   color: var(--color-fg-inverse);
   transform: rotate(-45deg);
+  animation: marker-in var(--duration-normal) var(--ease-bounce) both;
   transition:
-    transform var(--duration-normal) var(--ease-spring),
+    transform var(--duration-normal) var(--ease-bounce),
     box-shadow var(--duration-fast) var(--ease-standard);
 }
 
@@ -60,10 +61,24 @@
   background-color: var(--color-status-closing-soon);
 }
 
-.luma-marker:hover .luma-marker__pin,
+/* Highlighted while its sheet is open. */
 .luma-marker--selected .luma-marker__pin {
-  transform: rotate(-45deg) scale(1.15);
+  transform: rotate(-45deg) scale(var(--motion-highlight-scale));
   box-shadow: var(--shadow-float);
+}
+
+@media (hover: hover) {
+  .luma-marker:hover .luma-marker__pin {
+    transform: rotate(-45deg) scale(var(--motion-highlight-scale));
+    box-shadow: var(--shadow-float);
+  }
+}
+
+@keyframes marker-in {
+  from {
+    opacity: 0;
+    transform: rotate(-45deg) scale(0.6);
+  }
 }
 
 .luma-marker:focus-visible {
@@ -74,10 +89,33 @@
 
 /* The user's own position */
 .luma-user-dot {
+  position: relative;
   width: var(--spacing-4);
   height: var(--spacing-4);
   border: 3px solid var(--color-surface);
   border-radius: var(--radius-full);
   background-color: var(--color-info);
   box-shadow: var(--shadow-md);
+}
+
+/* Soft pulse around the position dot (continuous, so it keeps will-change). */
+.luma-user-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: var(--radius-full);
+  background-color: var(--color-info);
+  animation: pulse-ring var(--duration-pulse) var(--ease-decelerate) infinite;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .luma-marker__pin {
+    animation: none;
+  }
+
+  .luma-user-dot::after {
+    display: none;
+  }
 }

@@ -28,7 +28,7 @@
   border-radius: var(--radius-lg);
   padding: 0 var(--spacing-3);
   min-height: 44px;
-  transition: border-color var(--duration-fast) ease;
+  transition: border-color var(--duration-fast) var(--ease-standard);
 }
 
 .luma-input__wrapper:focus-within {

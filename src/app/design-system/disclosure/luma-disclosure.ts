@@ -5,6 +5,7 @@ import type { IconName } from '../icon/luma-icons';
 /**
  * LumaDisclosure — settings row that expands a panel below it. The header is
  * a real button with aria-expanded/aria-controls; texts arrive translated.
+ * The panel unfolds with grid-template-rows and is inert while collapsed.
  */
 @Component({
   selector: 'app-luma-disclosure',
@@ -12,6 +13,7 @@ import type { IconName } from '../icon/luma-icons';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LumaIcon],
   templateUrl: './luma-disclosure.html',
+  styleUrl: './luma-disclosure.css',
   host: { class: 'block' },
 })
 export class LumaDisclosure {

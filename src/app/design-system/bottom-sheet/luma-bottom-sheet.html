@@ -1,5 +1,11 @@
 @if (isOpen()) {
-<div class="luma-bottom-sheet__overlay" aria-hidden="true" (click)="onOverlayClick()"></div>
+<div
+  class="luma-bottom-sheet__overlay"
+  aria-hidden="true"
+  animate.enter="motion-enter-fade"
+  animate.leave="motion-leave-fade"
+  (click)="onOverlayClick()"
+></div>
 }
 
 <div
@@ -14,7 +20,13 @@
   (click)="onPanelClick($event)"
 >
   @if (title()) {
-  <div class="luma-bottom-sheet__header">
+  <div
+    class="luma-bottom-sheet__header luma-bottom-sheet__grab"
+    (pointerdown)="drag.onPointerDown($event)"
+    (pointermove)="drag.onPointerMove($event)"
+    (pointerup)="drag.onPointerUp()"
+    (pointercancel)="drag.onPointerUp()"
+  >
     <h2 [id]="titleId()" class="luma-bottom-sheet__title">{{ title() }}</h2>
     <button
       class="luma-bottom-sheet__close"
@@ -27,10 +39,14 @@
   </div>
   } @else {
   <button
-    class="luma-bottom-sheet__handle"
+    class="luma-bottom-sheet__handle luma-bottom-sheet__grab"
     type="button"
     [attr.aria-label]="'common.close' | transloco"
     (click)="onCloseClick()"
+    (pointerdown)="drag.onPointerDown($event)"
+    (pointermove)="drag.onPointerMove($event)"
+    (pointerup)="drag.onPointerUp()"
+    (pointercancel)="drag.onPointerUp()"
   >
     <span class="luma-bottom-sheet__grip"></span>
   </button>

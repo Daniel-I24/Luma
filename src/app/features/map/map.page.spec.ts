@@ -37,6 +37,7 @@ function setup() {
     init: vi.fn(),
     destroy: vi.fn(),
     flyTo: vi.fn(),
+    easeTo: vi.fn(),
     showUser: vi.fn(),
     markFetched: vi.fn(),
     currentCenter: vi.fn(() => ({ lat: 1, lng: 2 })),
@@ -135,5 +136,15 @@ describe('MapPage', () => {
     const el = await render();
 
     expect(el.querySelector('app-nearby-panel')?.textContent).toContain('Error de carga');
+  });
+
+  it('glides the map to a tapped card and opens its sheet', async () => {
+    const { camera, markers } = setup();
+    const el = await render();
+
+    el.querySelector<HTMLButtonElement>('app-nearby-panel app-luma-business-card button')?.click();
+
+    expect(camera.easeTo).toHaveBeenCalledWith(business.latitude, business.longitude);
+    expect(markers.select).toHaveBeenCalledWith('b1');
   });
 });

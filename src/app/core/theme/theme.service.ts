@@ -5,6 +5,9 @@ import { isPlatformBrowser } from '@angular/common';
 export type Theme = 'indigo' | 'midnight' | 'pearl' | 'sunset';
 
 const STORAGE_KEY = 'luma-theme';
+/** Class that crossfades colours while the theme changes (styles/motion.css). */
+export const THEME_TRANSITION_CLASS = 'theme-transition';
+const THEME_DURATION_TOKEN = '--duration-theme';
 const DEFAULT_THEME: Theme = 'indigo';
 export const THEMES: readonly Theme[] = ['indigo', 'midnight', 'pearl', 'sunset'];
 
@@ -19,6 +22,8 @@ function isValidTheme(value: unknown): value is Theme {
  * - Exposes a readonly Signal<Theme> for reactive consumers.
  * - Applies `data-theme` on <html> synchronously to prevent FOUC.
  * - Persists every change to localStorage.
+ * - Crossfades colours when the user switches theme (never on startup, never
+ *   under prefers-reduced-motion).
  */
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
@@ -26,6 +31,7 @@ export class ThemeService {
   private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   private readonly _theme = signal<Theme>(this.resolveInitialTheme());
+  private transitionTimer: ReturnType<typeof setTimeout> | null = null;
 
   /** Readonly signal with the currently active theme. */
   readonly theme = computed(() => this._theme());
@@ -39,6 +45,7 @@ export class ThemeService {
 
   /** Change the active theme, persist it, and update the DOM. */
   setTheme(theme: Theme): void {
+    if (theme !== this._theme()) this.startColorTransition();
     this._theme.set(theme);
     if (this.isBrowser) {
       try {
@@ -50,6 +57,20 @@ export class ThemeService {
   }
 
   // ── Private helpers ────────────────────────────────────────────────
+
+  private startColorTransition(): void {
+    if (!this.isBrowser || globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      return;
+    }
+    const html = document.documentElement;
+    const durationMs = parseFloat(getComputedStyle(html).getPropertyValue(THEME_DURATION_TOKEN));
+    html.classList.add(THEME_TRANSITION_CLASS);
+    if (this.transitionTimer) clearTimeout(this.transitionTimer);
+    this.transitionTimer = setTimeout(
+      () => html.classList.remove(THEME_TRANSITION_CLASS),
+      Number.isFinite(durationMs) ? durationMs : 0,
+    );
+  }
 
   private resolveInitialTheme(): Theme {
     if (!this.isBrowser) return DEFAULT_THEME;

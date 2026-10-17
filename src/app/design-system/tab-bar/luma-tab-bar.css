@@ -1,13 +1,47 @@
 /* LumaTabBar styles — tokens only */
 
 .luma-tab-bar {
+  /* Stays still while the page content changes (View Transitions). */
+  view-transition-name: tab-bar;
   background-color: var(--color-nav);
   border-top: 1px solid var(--color-border-subtle);
   padding: 0 var(--spacing-1) env(safe-area-inset-bottom);
   transition: background-color var(--duration-normal) var(--ease-standard);
 }
 
+.luma-tab-bar__track {
+  position: relative;
+}
+
+/* Pill behind the active icon; slides between tabs with transform only. */
+.luma-tab-bar__indicator {
+  position: absolute;
+  top: var(--spacing-2);
+  left: 0;
+  display: flex;
+  justify-content: center;
+  width: calc(100% / var(--tab-count));
+  height: var(--spacing-8);
+  pointer-events: none;
+  transform: translateX(calc(var(--tab-index) * 100%));
+  transition:
+    transform var(--duration-normal) var(--ease-emphasized),
+    opacity var(--duration-fast) var(--ease-standard);
+}
+
+.luma-tab-bar__indicator::before {
+  content: '';
+  width: var(--spacing-10);
+  border-radius: var(--radius-full);
+  background-color: var(--color-nav-active-bg);
+}
+
+.luma-tab-bar__indicator--hidden {
+  opacity: 0;
+}
+
 .luma-tab-bar__list {
+  position: relative;
   display: flex;
   margin: 0;
   padding: 0;
@@ -32,11 +66,14 @@
   font-size: var(--text-caption);
   font-weight: 500;
   text-decoration: none;
-  transition: color var(--duration-fast) var(--ease-standard);
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-instant) var(--ease-standard);
 }
 
 .luma-tab-bar__link:active {
-  transform: scale(0.92);
+  transform: scale(var(--motion-press-scale));
 }
 
 .luma-tab-bar__link:focus-visible {
@@ -55,12 +92,14 @@
   justify-content: center;
   width: var(--spacing-10);
   height: var(--spacing-8);
-  border-radius: var(--radius-full);
-  transition: background-color var(--duration-fast) var(--ease-standard);
 }
 
-.luma-tab-bar__link--active .luma-tab-bar__pill {
-  background-color: var(--color-nav-active-bg);
+.luma-tab-bar__icon {
+  transition: transform var(--duration-normal) var(--ease-emphasized);
+}
+
+.luma-tab-bar__link--active .luma-tab-bar__icon {
+  transform: scale(var(--motion-active-scale));
 }
 
 .luma-tab-bar__label {
@@ -68,4 +107,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .luma-tab-bar__link:active,
+  .luma-tab-bar__link--active .luma-tab-bar__icon {
+    transform: none;
+  }
 }

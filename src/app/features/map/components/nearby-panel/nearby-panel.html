@@ -46,9 +46,15 @@
     [description]="t('map.empty.description')"
   />
   } } @else {
-  <ul class="m-0 flex list-none gap-3 overflow-x-auto px-4 pt-1 pb-3 [scrollbar-width:none]">
+  <ul
+    class="m-0 flex animate-fade-in list-none gap-3 overflow-x-auto px-4 pt-1 pb-3 [scrollbar-width:none]"
+  >
     @for (item of items(); track item.business.id) {
-    <li class="flex shrink-0">
+    <li
+      class="flex shrink-0"
+      [class.motion-stagger]="$index < staggerLimit"
+      [style.--stagger-index]="$index"
+    >
       <app-luma-business-card
         [name]="item.business.name"
         [status]="item.status"

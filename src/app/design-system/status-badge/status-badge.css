@@ -36,7 +36,7 @@
 
 .status-badge--open .status-badge__dot {
   background-color: var(--color-status-open);
-  animation: status-pulse 2s infinite;
+  animation: status-pulse var(--duration-pulse) var(--ease-standard) infinite;
 }
 
 /* Closed */
@@ -67,7 +67,7 @@
 
 .status-badge--closing-soon .status-badge__dot {
   background-color: var(--color-status-closing-soon);
-  animation: status-pulse 2s infinite;
+  animation: status-pulse var(--duration-pulse) var(--ease-standard) infinite;
 }
 
 @keyframes status-pulse {

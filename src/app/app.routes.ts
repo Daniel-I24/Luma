@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '@core/auth/auth.guard';
 import { guestGuard } from '@core/auth/guest.guard';
+import { DETAIL_ROUTE_DATA } from '@core/navigation/route-transition';
 
 export const routes: Routes = [
   {
@@ -34,6 +35,7 @@ export const routes: Routes = [
       },
       {
         path: 'businesses/:id',
+        data: DETAIL_ROUTE_DATA,
         loadComponent: () =>
           import('./features/business-profile/business-profile.page').then(
             (m) => m.BusinessProfilePage,

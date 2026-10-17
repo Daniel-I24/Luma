@@ -2,8 +2,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  afterRenderEffect,
   input,
   model,
+  viewChild,
   viewChildren,
 } from '@angular/core';
 
@@ -22,7 +24,8 @@ export const tabPanelId = (prefix: string, tabId: string): string => `${prefix}-
  * LumaTabs — accessible tablist (WAI-ARIA tabs pattern): roving tabindex,
  * ←/→ move and select (wrapping), Home/End jump to the ends. Consumers
  * render each panel with role="tabpanel", id=tabPanelId(...) and
- * aria-labelledby=tabElementId(...).
+ * aria-labelledby=tabElementId(...). An underline slides to the selected tab
+ * (transform only; it does not animate into its first position).
  */
 @Component({
   selector: 'app-luma-tabs',
@@ -39,6 +42,21 @@ export class LumaTabs {
   readonly selected = model.required<string>();
 
   private readonly buttons = viewChildren<ElementRef<HTMLButtonElement>>('tabButton');
+  private readonly indicator = viewChild.required<ElementRef<HTMLElement>>('indicator');
+
+  constructor() {
+    afterRenderEffect({
+      write: () => {
+        const index = this.tabs().findIndex((tab) => tab.id === this.selected());
+        const button = this.buttons()[index]?.nativeElement;
+        const indicator = this.indicator().nativeElement;
+        if (!button) return;
+        indicator.style.transform = `translateX(${button.offsetLeft}px) scaleX(${button.offsetWidth})`;
+        // Animate only later moves, not the first placement.
+        requestAnimationFrame(() => indicator.setAttribute('data-ready', ''));
+      },
+    });
+  }
 
   protected readonly tabElementId = tabElementId;
   protected readonly tabPanelId = tabPanelId;

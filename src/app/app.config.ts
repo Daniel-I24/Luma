@@ -6,16 +6,23 @@ import {
   provideAppInitializer,
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withViewTransitions } from '@angular/router';
 import { provideTransloco } from '@jsverse/transloco';
 import { LanguageService } from '@core/i18n/language.service';
+import { onRouteTransitionCreated } from '@core/navigation/route-transition';
 import { routes } from './app.routes';
 import { TranslocoHttpLoader } from './transloco-loader';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes),
+    provideRouter(
+      routes,
+      withViewTransitions({
+        skipInitialTransition: true,
+        onViewTransitionCreated: onRouteTransitionCreated,
+      }),
+    ),
     provideHttpClient(),
     provideTransloco({
       config: {

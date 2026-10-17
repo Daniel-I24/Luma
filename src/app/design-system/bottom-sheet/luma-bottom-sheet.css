@@ -1,11 +1,10 @@
-/* LumaBottomSheet styles — tokens only, with entrance/exit animation */
+/* LumaBottomSheet — tokens only; visibility flips after the exit finishes. */
 
 .luma-bottom-sheet__overlay {
   position: fixed;
   inset: 0;
   background-color: var(--color-overlay);
   z-index: 40;
-  animation: overlay-in var(--duration-normal) ease forwards;
 }
 
 .luma-bottom-sheet__panel {
@@ -21,11 +20,12 @@
   max-height: 85dvh;
   padding-bottom: env(safe-area-inset-bottom);
   overflow-y: auto;
-  /* Start hidden below screen */
   transform: translateY(100%);
-  transition: transform var(--duration-slow) var(--ease-emphasized);
   visibility: hidden;
   pointer-events: none;
+  transition:
+    transform var(--duration-normal) var(--ease-accelerate),
+    visibility 0s linear var(--duration-normal);
 }
 
 .luma-bottom-sheet__panel:focus {
@@ -36,6 +36,20 @@
   transform: translateY(0);
   visibility: visible;
   pointer-events: auto;
+  transition:
+    transform var(--duration-slow) var(--ease-emphasized),
+    visibility 0s;
+}
+
+/* Follows the finger: no transition, compositor hint only while dragging. */
+.luma-bottom-sheet__panel--dragging {
+  transition: none;
+  will-change: transform;
+}
+
+/* Released short of the threshold: elastic way back. */
+.luma-bottom-sheet__panel--returning {
+  transition: transform var(--duration-normal) var(--ease-bounce);
 }
 
 .luma-bottom-sheet__header {
@@ -44,11 +58,12 @@
   justify-content: space-between;
   padding: var(--spacing-4) var(--spacing-5);
   border-bottom: 1px solid var(--color-border);
+  touch-action: none; /* drag handle */
 }
 
 .luma-bottom-sheet__title {
   margin: 0;
-  font-size: 1rem;
+  font-size: var(--text-title);
   font-weight: 600;
   color: var(--color-fg);
 }
@@ -64,11 +79,13 @@
   border: none;
   cursor: pointer;
   color: var(--color-fg-muted);
-  transition: background-color var(--duration-fast) ease;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-instant) var(--ease-standard);
 }
 
-.luma-bottom-sheet__close:hover {
-  background-color: var(--color-border);
+.luma-bottom-sheet__close:active {
+  transform: scale(var(--motion-press-scale));
 }
 
 .luma-bottom-sheet__close:focus-visible {
@@ -85,7 +102,8 @@
   padding: 0;
   border: none;
   background: none;
-  cursor: pointer;
+  cursor: grab;
+  touch-action: none;
 }
 
 .luma-bottom-sheet__handle:focus-visible {
@@ -104,21 +122,28 @@
   padding: var(--spacing-5);
 }
 
-/* Overlay entrance animation */
-@keyframes overlay-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
+@media (hover: hover) {
+  .luma-bottom-sheet__close:hover {
+    background-color: var(--color-border);
   }
 }
 
+/* Reduced motion: no slide, only appear/disappear (base.css shortens it). */
 @media (prefers-reduced-motion: reduce) {
   .luma-bottom-sheet__panel {
-    transition: none;
+    transform: none;
+    opacity: 0;
+    transition:
+      opacity var(--duration-instant) linear,
+      visibility 0s linear var(--duration-instant);
   }
-  .luma-bottom-sheet__overlay {
-    animation: none;
+
+  .luma-bottom-sheet__panel--open {
+    opacity: 1;
+    transition: opacity var(--duration-instant) linear;
+  }
+
+  .luma-bottom-sheet__close:active {
+    transform: none;
   }
 }

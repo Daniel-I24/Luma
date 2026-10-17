@@ -1,0 +1,140 @@
+/* ─────────────────────────────────────────────
+   MOTION — reusable motion utilities and keyframes. Durations and curves
+   are the tokens in scale.css. Only transform and opacity are animated
+   (panels expand with grid-template-rows). Hover lives inside
+   @media (hover: hover); press feedback always applies.
+   Reduced motion: base.css turns animations and transitions into nothing,
+   and press scales are disabled here.
+───────────────────────────────────────────── */
+
+/* Press feedback (scale 0.97 in 100 ms) plus colour transitions. */
+@utility pressable {
+  transition:
+    transform var(--duration-instant) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+
+  &:active:not(:disabled) {
+    transform: scale(var(--motion-press-scale));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &:active:not(:disabled) {
+      transform: none;
+    }
+  }
+}
+
+/* Icons fill (favourite heart, rating stars) with a short crossfade. */
+app-luma-icon svg {
+  transition: fill-opacity var(--duration-fast) var(--ease-standard);
+}
+
+/* List entrance: set --stagger-index (0, 1, 2…) on each item. */
+@utility motion-stagger {
+  animation: var(--animate-fade-in-up);
+  animation-delay: calc(var(--stagger-index, 0) * var(--duration-stagger));
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+/* Favourite marked. */
+@utility motion-pop {
+  animation: pop var(--duration-normal) var(--ease-bounce);
+}
+
+/* A change was reverted (e.g. saving failed). */
+@utility motion-shake {
+  animation: shake var(--duration-slow) var(--ease-standard);
+}
+
+/* Angular animate.enter / animate.leave classes. */
+@utility motion-enter-fade {
+  animation: fade-in var(--duration-normal) var(--ease-decelerate) both;
+}
+
+@utility motion-leave-fade {
+  animation: fade-out var(--duration-normal) var(--ease-accelerate) both;
+}
+
+@utility motion-enter-down {
+  animation: slide-in-down var(--duration-normal) var(--ease-decelerate) both;
+}
+
+@utility motion-leave-up {
+  animation: slide-out-up var(--duration-fast) var(--ease-accelerate) both;
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes pop {
+  50% {
+    transform: scale(1.25);
+  }
+}
+
+@keyframes shake {
+  20%,
+  60% {
+    transform: translateX(calc(var(--spacing-1) * -1));
+  }
+  40%,
+  80% {
+    transform: translateX(var(--spacing-1));
+  }
+}
+
+@keyframes slide-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--spacing-4) * -1));
+  }
+}
+
+@keyframes slide-out-up {
+  to {
+    opacity: 0;
+    transform: translateY(calc(var(--spacing-4) * -1));
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes slide-out-right {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes pulse-ring {
+  from {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2.5);
+  }
+}
+
+/* Theme change: 200 ms colour crossfade, only while ThemeService sets the class. */
+html.theme-transition,
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
+  transition-property: background-color, border-color, color, fill, stroke !important;
+  transition-duration: var(--duration-theme) !important;
+  transition-timing-function: var(--ease-standard) !important;
+}
