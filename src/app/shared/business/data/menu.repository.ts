@@ -24,6 +24,22 @@ export class MenuRepository {
     return { data: data as MenuItem[], errorKey: null };
   }
 
+  /**
+   * Current rows of the given items in one query. Items no longer sold are
+   * absent (RLS only returns available items of active businesses).
+   */
+  async getItemsByIds(ids: readonly string[]): Promise<RepoResult<MenuItem[]>> {
+    if (ids.length === 0) return { data: [], errorKey: null };
+    const { data, error } = await this.db
+      .from('menu_items')
+      .select('*')
+      .in('id', [...ids])
+      .eq('is_available', true);
+
+    if (error) return { data: null, errorKey: 'businesses.errors.menuFailed' };
+    return { data: data as MenuItem[], errorKey: null };
+  }
+
   /** Available items of many businesses in one query, in each owner's order. */
   async getAvailableFor(businessIds: readonly string[]): Promise<RepoResult<MenuItem[]>> {
     if (businessIds.length === 0) return { data: [], errorKey: null };

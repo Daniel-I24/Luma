@@ -3,6 +3,8 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaEmptyState, LumaIcon } from '@design-system';
 import type { IconName } from '@design-system';
 import type { MenuItem } from '@shared/business/models/menu.model';
+import { AddToCart } from '@shared/cart/add-to-cart/add-to-cart';
+import { toCartProduct } from '@shared/cart/cart.model';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
 
 export interface MenuSection {
@@ -22,14 +24,14 @@ export function groupBySection(items: readonly MenuItem[]): MenuSection[] {
 }
 
 /**
- * MenuTab — the business menu grouped by section, with prices in COP.
- * Ordering is not built yet, so "Agregar" stays disabled ("Próximamente").
+ * MenuTab — the business menu grouped by section, with prices in COP and
+ * "Agregar" to put items in the cart.
  */
 @Component({
   selector: 'app-menu-tab',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaEmptyState, LumaIcon, CopCurrencyPipe],
+  imports: [TranslocoModule, LumaButton, LumaEmptyState, LumaIcon, CopCurrencyPipe, AddToCart],
   templateUrl: './menu-tab.html',
   host: { class: 'block' },
 })
@@ -37,8 +39,12 @@ export class MenuTab {
   /** Null when the menu failed to load. */
   readonly items = input.required<readonly MenuItem[] | null>();
   readonly placeholderIcon = input<IconName>('store');
+  readonly businessName = input.required<string>();
 
   readonly retry = output<void>();
 
   protected readonly sections = computed(() => groupBySection(this.items() ?? []));
+  protected readonly products = computed(
+    () => new Map((this.items() ?? []).map((i) => [i.id, toCartProduct(i, this.businessName())])),
+  );
 }

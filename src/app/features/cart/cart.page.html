@@ -1,0 +1,73 @@
+<div
+  *transloco="let t"
+  class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6"
+>
+  <header class="flex flex-col gap-1">
+    <h1 class="m-0 text-h3 text-fg">{{ t('cart.title') }}</h1>
+    @if (cart.businessName(); as name) {
+    <p class="m-0 text-body-sm text-fg-muted">{{ t('cart.from', { name }) }}</p>
+    }
+  </header>
+
+  @if (review.notices().length > 0) {
+  <div class="rounded-md bg-warning-bg p-3 text-body-sm text-warning-fg" role="alert">
+    <p class="m-0 mb-1 font-semibold">{{ t('cart.notice.title') }}</p>
+    <ul class="m-0 list-disc space-y-1 ps-5">
+      @for (notice of review.notices(); track $index) { @if (notice.kind === 'price') {
+      <li>
+        {{ t('cart.notice.price', { name: notice.name, before: notice.before | cop, after: notice.after
+        | cop }) }}
+      </li>
+      } @else {
+      <li>{{ t('cart.notice.unavailable', { name: notice.name }) }}</li>
+      } }
+    </ul>
+  </div>
+  } @if (cart.isEmpty()) {
+  <app-luma-empty-state
+    icon="receipt"
+    [heading]="t('cart.empty.title')"
+    [description]="t('cart.empty.description')"
+  >
+    <app-luma-button (clicked)="go('/map')">{{ t('cart.empty.action') }}</app-luma-button>
+  </app-luma-empty-state>
+  } @else { @if (review.state() === 'checking') {
+  <p class="m-0 text-caption text-fg-subtle" role="status">{{ t('cart.checking') }}</p>
+  } @else if (review.state() === 'failed') {
+  <p class="m-0 text-caption text-fg-subtle" role="status">{{ t('cart.checkFailed') }}</p>
+  }
+
+  <ul class="m-0 list-none rounded-xl border border-border-subtle bg-surface p-0">
+    @for (item of cart.items(); track item.menuItemId) {
+    <li class="flex items-center gap-2 border-b border-border-subtle px-4 py-3 last:border-b-0">
+      <div class="flex min-w-0 flex-1 flex-col">
+        <span class="text-body font-semibold text-fg">{{ item.name }}</span>
+        <span class="text-caption text-fg-subtle"
+          >{{ t('cart.unitPrice', { price: item.priceCop | cop }) }}</span
+        >
+      </div>
+      <app-add-to-cart [product]="products().get(item.menuItemId)!" />
+      <app-luma-icon-button
+        icon="close"
+        variant="ghost"
+        [label]="t('cart.remove', { name: item.name })"
+        (clicked)="cart.remove(item.menuItemId)"
+      />
+    </li>
+    }
+  </ul>
+
+  <div class="flex items-center justify-between">
+    <span class="text-title text-fg">{{ t('cart.total') }}</span>
+    <span class="text-price text-fg">{{ cart.totalCop() | cop }}</span>
+  </div>
+  <p class="m-0 text-caption text-fg-subtle">{{ t('cart.pricesNote') }}</p>
+  <app-luma-button
+    size="lg"
+    [fullWidth]="true"
+    [disabled]="review.state() === 'checking'"
+    (clicked)="go('/checkout')"
+    >{{ t('cart.continue') }}</app-luma-button
+  >
+  }
+</div>

@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, output } f
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LumaButton, LumaIcon, StatusBadge } from '@design-system';
+import { AddToCart } from '@shared/cart/add-to-cart/add-to-cart';
+import { toCartProduct } from '@shared/cart/cart.model';
 import { FavoriteButton } from '@shared/favorites/favorite-button/favorite-button';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
 import { formatShortDate } from '@shared/format/date-format.util';
@@ -11,7 +13,7 @@ import type { FeedCard as FeedCardModel } from '../../models/feed-card.model';
 /**
  * FeedCard — one full-screen post: visual (photo or category icon on a
  * gradient), title, price or validity, business with status and distance,
- * and the main actions. Extra actions (e.g. add to cart) are projected.
+ * and the main actions (dishes can go straight to the cart).
  */
 @Component({
   selector: 'app-feed-card',
@@ -23,6 +25,7 @@ import type { FeedCard as FeedCardModel } from '../../models/feed-card.model';
     LumaIcon,
     StatusBadge,
     FavoriteButton,
+    AddToCart,
     CopCurrencyPipe,
     DistancePipe,
   ],
@@ -44,6 +47,10 @@ export class FeedCard {
   readonly viewBusiness = output<void>();
 
   protected readonly headingId = computed(() => `feed-post-${this.position()}`);
+  protected readonly product = computed(() => {
+    const item = this.card().menuItem;
+    return item ? toCartProduct(item, this.card().business.name) : null;
+  });
   protected readonly validUntil = computed(() => {
     const iso = this.card().validUntil;
     return iso ? formatShortDate(iso, this.lang()) : null;

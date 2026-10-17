@@ -1,0 +1,12 @@
+@if (visible()) {
+<div *transloco="let t" class="bg-canvas px-4 pt-2 pb-2" animate.enter="motion-enter-fade">
+  <a
+    routerLink="/cart"
+    class="pressable flex min-h-12 items-center gap-3 rounded-lg bg-primary px-4 text-primary-fg no-underline shadow-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+  >
+    <app-luma-icon name="receipt" />
+    <span class="flex-1 text-title">{{ t('cart.bar.view', { count: cart.units() }) }}</span>
+    <span class="text-title">{{ cart.totalCop() | cop }}</span>
+  </a>
+</div>
+}

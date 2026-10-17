@@ -352,8 +352,6 @@
     },
     "menu": {
       "other": "Other",
-      "add": "Add",
-      "ordersSoon": "Ordering in the app: coming soon.",
       "emptyTitle": "Menu not available",
       "emptyDescription": "This business has not published its menu yet.",
       "errorTitle": "We could not load the menu"
@@ -386,5 +384,46 @@
     "error": {
       "title": "We could not load the business"
     }
+  },
+  "cart": {
+    "title": "Your cart",
+    "from": "From {{name}}",
+    "add": "Add",
+    "quantityOf": "Quantity of {{name}}",
+    "increase": "Add one more {{name}}",
+    "decrease": "Remove one {{name}}",
+    "remove": "Remove {{name}} from the cart",
+    "unitPrice": "{{price}} each",
+    "total": "Total",
+    "pricesNote": "Prices are confirmed when you place the order.",
+    "continue": "Continue",
+    "checking": "Checking prices and availability…",
+    "checkFailed": "We could not check the prices. They will be confirmed when you order.",
+    "bar": {
+      "view": "View cart · {{count}}"
+    },
+    "empty": {
+      "title": "Your cart is empty",
+      "description": "Add dishes from a restaurant menu or from Discover.",
+      "action": "Explore businesses"
+    },
+    "notice": {
+      "title": "We updated your cart",
+      "price": "{{name}} changed from {{before}} to {{after}}.",
+      "unavailable": "{{name}} is no longer available and was removed."
+    },
+    "conflict": {
+      "title": "Start a new cart?",
+      "description": "Your cart has items from {{current}}. To add from {{next}} it must be emptied.",
+      "confirm": "Empty and add",
+      "cancel": "Keep my cart"
+    },
+    "errors": {
+      "limit": "You reached the limit: 20 per item and 50 in total."
+    }
+  },
+  "checkout": {
+    "title": "Confirm order",
+    "comingSoon": "Soon you will be able to confirm your order here."
   }
 }

@@ -15,9 +15,6 @@
     [description]="t('businessProfile.menu.emptyDescription')"
   />
   } @else {
-  <p class="m-0 px-4 pt-3 text-caption text-fg-subtle">
-    {{ t('businessProfile.menu.ordersSoon') }}
-  </p>
   @for (section of sections(); track section.name) {
   <section [attr.aria-label]="section.name ?? t('businessProfile.menu.other')">
     <h3 class="m-0 px-4 pt-4 pb-2 text-label tracking-wide text-fg-subtle uppercase">
@@ -42,9 +39,7 @@
           }
           <div class="flex items-center justify-between gap-2">
             <span class="text-title text-fg">{{ item.price_cop | cop }}</span>
-            <app-luma-button size="sm" [disabled]="true"
-              >{{ t('businessProfile.menu.add') }}</app-luma-button
-            >
+            <app-add-to-cart [product]="products().get(item.id)!" />
           </div>
         </div>
       </li>

@@ -53,4 +53,12 @@ describe('MenuRepository', () => {
     expect(await repo.getAvailableFor([])).toEqual({ data: [], errorKey: null });
     expect(queries).toHaveLength(0);
   });
+
+  it('re-reads specific items in one query, only if still available', async () => {
+    const { repo, queries } = setup(ok([{ id: 'm1' }]));
+
+    expect(await repo.getItemsByIds(['m1', 'm2'])).toEqual({ data: [{ id: 'm1' }], errorKey: null });
+    expect(queries[0].call('in')).toEqual(['id', ['m1', 'm2']]);
+    expect(queries[0].call('eq')).toEqual(['is_available', true]);
+  });
 });

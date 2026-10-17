@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { LumaTabBar } from '@design-system';
 import type { TabBarItem } from '@design-system';
+import { CartBar } from '@shared/cart/cart-bar/cart-bar';
+import { CartConflictSheet } from '@shared/cart/cart-conflict-sheet/cart-conflict-sheet';
 import { FavoritesStore } from '@shared/favorites/favorites.store';
 
 const MAIN_TABS: readonly TabBarItem[] = [
@@ -14,13 +16,14 @@ const MAIN_TABS: readonly TabBarItem[] = [
 
 /**
  * TabLayout — shell for the signed-in sections: page content on top and the
- * main tab bar at the bottom. Mounted around the five main tabs.
+ * main tab bar at the bottom, with the cart bar and the cart conflict sheet.
+ * Mounted around the five main tabs.
  */
 @Component({
   selector: 'app-tab-layout',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterOutlet, LumaTabBar],
+  imports: [RouterOutlet, LumaTabBar, CartBar, CartConflictSheet],
   templateUrl: './tab-layout.html',
   styleUrl: './tab-layout.css',
 })

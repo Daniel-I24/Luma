@@ -1,7 +1,10 @@
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { beforeEach, describe, expect, it } from 'vitest';
+import { AuthService } from '@core/auth/auth.service';
 import type { MenuItem } from '@shared/business/models/menu.model';
+import { CartStore } from '@shared/cart/cart.store';
 import { MenuTab, groupBySection } from './menu-tab';
 
 const item = (id: string, section: string | null, price: number): MenuItem => ({
@@ -20,11 +23,10 @@ const item = (id: string, section: string | null, price: number): MenuItem => ({
 const ES = {
   common: { retry: 'Reintentar' },
   businesses: { errors: { menuFailed: 'No se pudo cargar el menú.' } },
+  cart: { add: 'Agregar' },
   businessProfile: {
     menu: {
       other: 'Otros',
-      add: 'Agregar',
-      ordersSoon: 'Pedir desde la app: próximamente.',
       emptyTitle: 'Menú no disponible',
       emptyDescription: 'Sin menú.',
       errorTitle: 'Error',
@@ -42,12 +44,15 @@ describe('MenuTab', () => {
           translocoConfig: { availableLangs: ['es'], defaultLang: 'es' },
         }),
       ],
+      providers: [{ provide: AuthService, useValue: { user: signal({ id: 'u1' }) } }],
     });
+    localStorage.clear();
   });
 
   function render(items: MenuItem[] | null): HTMLElement {
     const fixture = TestBed.createComponent(MenuTab);
     fixture.componentRef.setInput('items', items);
+    fixture.componentRef.setInput('businessName', 'Café La Merced');
     fixture.detectChanges();
     return fixture.nativeElement as HTMLElement;
   }
@@ -76,13 +81,16 @@ describe('MenuTab', () => {
     expect(el.textContent?.replace(/\s/g, ' ')).toContain('$ 1.500');
   });
 
-  it('keeps "Agregar" disabled and says ordering is coming soon', () => {
+  it('adds an item to the cart with its business and price', () => {
     const el = render([item('1', 'Bebidas', 4000)]);
 
-    const add = el.querySelector('app-luma-button button') as HTMLButtonElement;
-    expect(add.disabled).toBe(true);
-    expect(add.getAttribute('aria-disabled')).toBe('true');
-    expect(el.textContent).toContain('próximamente');
+    (el.querySelector('app-add-to-cart button') as HTMLButtonElement).click();
+
+    const cart = TestBed.inject(CartStore);
+    expect(cart.items()).toEqual([
+      { menuItemId: '1', businessId: 'b1', name: 'Plato 1', priceCop: 4000, quantity: 1 },
+    ]);
+    expect(cart.businessName()).toBe('Café La Merced');
   });
 
   it('shows empty and error states', () => {

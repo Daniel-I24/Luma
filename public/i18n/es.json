@@ -352,8 +352,6 @@
     },
     "menu": {
       "other": "Otros",
-      "add": "Agregar",
-      "ordersSoon": "Pedir desde la app: próximamente.",
       "emptyTitle": "Menú no disponible",
       "emptyDescription": "Este negocio aún no ha publicado su menú.",
       "errorTitle": "No pudimos cargar el menú"
@@ -386,5 +384,46 @@
     "error": {
       "title": "No pudimos cargar el negocio"
     }
+  },
+  "cart": {
+    "title": "Tu carrito",
+    "from": "De {{name}}",
+    "add": "Agregar",
+    "quantityOf": "Cantidad de {{name}}",
+    "increase": "Agregar uno más de {{name}}",
+    "decrease": "Quitar uno de {{name}}",
+    "remove": "Quitar {{name}} del carrito",
+    "unitPrice": "{{price}} c/u",
+    "total": "Total",
+    "pricesNote": "Los precios se confirman al hacer el pedido.",
+    "continue": "Continuar",
+    "checking": "Comprobando precios y disponibilidad…",
+    "checkFailed": "No pudimos comprobar los precios. Se confirmarán al hacer el pedido.",
+    "bar": {
+      "view": "Ver carrito · {{count}}"
+    },
+    "empty": {
+      "title": "Tu carrito está vacío",
+      "description": "Agrega platos desde el menú de un restaurante o desde Descubrir.",
+      "action": "Explorar negocios"
+    },
+    "notice": {
+      "title": "Actualizamos tu carrito",
+      "price": "{{name}} cambió de {{before}} a {{after}}.",
+      "unavailable": "{{name}} ya no está disponible y se quitó."
+    },
+    "conflict": {
+      "title": "¿Empezar un carrito nuevo?",
+      "description": "Tu carrito tiene productos de {{current}}. Para agregar de {{next}} hay que vaciarlo.",
+      "confirm": "Vaciar y agregar",
+      "cancel": "Mantener mi carrito"
+    },
+    "errors": {
+      "limit": "Llegaste al máximo: 20 por producto y 50 en total."
+    }
+  },
+  "checkout": {
+    "title": "Confirmar pedido",
+    "comingSoon": "Muy pronto podrás confirmar tu pedido desde aquí."
   }
 }
