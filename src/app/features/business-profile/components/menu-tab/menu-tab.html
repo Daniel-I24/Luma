@@ -26,11 +26,13 @@
         <span
           class="flex size-17 shrink-0 items-center justify-center overflow-hidden rounded-md bg-canvas-subtle text-fg-subtle"
         >
-          @if (item.image_url; as image) {
-          <img class="size-full object-cover" alt="" loading="lazy" [src]="image" />
-          } @else {
-          <app-luma-icon size="lg" [name]="placeholderIcon()" />
-          }
+          <app-luma-image
+            [src]="item.image_url"
+            [alt]="item.name"
+            [width]="68"
+            [height]="68"
+            [fallbackIcon]="placeholderIcon()"
+          />
         </span>
         <div class="flex min-w-0 flex-1 flex-col gap-1">
           <span class="text-body font-semibold text-fg">{{ item.name }}</span>

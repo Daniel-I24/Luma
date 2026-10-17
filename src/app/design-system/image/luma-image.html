@@ -1,0 +1,16 @@
+@if (src() && !failed()) {
+<img
+  class="size-full object-cover"
+  decoding="async"
+  [attr.loading]="eager() ? 'eager' : 'lazy'"
+  [src]="src()"
+  [alt]="alt()"
+  [width]="width()"
+  [height]="height()"
+  (error)="failed.set(true)"
+/>
+} @else {
+<span class="flex size-full items-center justify-center" [attr.role]="alt() ? 'img' : null" [attr.aria-label]="alt() || null">
+  <app-luma-icon [name]="fallbackIcon()" [size]="iconSize()" />
+</span>
+}

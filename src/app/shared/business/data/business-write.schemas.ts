@@ -15,7 +15,7 @@ const text = (min: number, max: number, key: string) =>
   z.string(key).check(z.trim(), z.minLength(min, key), z.maxLength(max, key));
 const optionalText = (max: number, key: string) =>
   z.nullable(z.string(key).check(z.trim(), z.maxLength(max, key)));
-const httpsUrl = z.nullable(z.string().check(z.regex(/^https:\/\//i, `${V}.imageUrl`)));
+export const httpsUrl = z.nullable(z.string().check(z.regex(/^https:\/\//i, `${V}.imageUrl`)));
 
 const registerShape = {
   name: text(2, 80, `${V}.name`),
@@ -43,6 +43,12 @@ export const businessInfoSchema = z.object({
     .check(z.minimum(5, `${V}.prepMinutes`), z.maximum(180, `${V}.prepMinutes`)),
 });
 export type BusinessInfoInput = z.infer<typeof businessInfoSchema>;
+
+/** Logo and cover of a business (Storage URLs). */
+export const businessImagesSchema = z.partial(
+  z.object({ logo_url: httpsUrl, cover_url: httpsUrl }),
+);
+export type BusinessImagesInput = z.infer<typeof businessImagesSchema>;
 
 /** One day of the weekly schedule; closing before opening crosses midnight. */
 export const dayHoursSchema = z

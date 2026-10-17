@@ -5,8 +5,10 @@ import type { Business } from '../models/business.model';
 import type { RepoResult } from './business.repository';
 import { mapWriteError } from './business-write-error';
 import {
+  type BusinessImagesInput,
   type BusinessInfoInput,
   type NewBusinessInput,
+  businessImagesSchema,
   businessInfoSchema,
   newBusinessSchema,
 } from './business-write.schemas';
@@ -71,6 +73,16 @@ export class OwnedBusinessRepository {
 
   async updateInfo(id: string, input: BusinessInfoInput): Promise<RepoResult<true>> {
     const parsed = businessInfoSchema.safeParse(input);
+    if (!parsed.success) return { data: null, errorKey: INVALID };
+    const { error } = await this.db.from('businesses').update(parsed.data).eq('id', id);
+    if (error)
+      return { data: null, errorKey: mapWriteError(error, 'businessPanel.errors.saveFailed') };
+    return { data: true, errorKey: null };
+  }
+
+  /** Sets the logo and/or cover URL (https only). */
+  async updateImages(id: string, input: BusinessImagesInput): Promise<RepoResult<true>> {
+    const parsed = businessImagesSchema.safeParse(input);
     if (!parsed.success) return { data: null, errorKey: INVALID };
     const { error } = await this.db.from('businesses').update(parsed.data).eq('id', id);
     if (error)

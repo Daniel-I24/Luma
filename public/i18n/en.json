@@ -761,6 +761,29 @@
       "invalidData": "Some data is not valid. Check it.",
       "duplicate": "That already exists.",
       "forbidden": "You are not allowed to change this business."
+    },
+    "images": {
+      "logo": "Logo",
+      "cover": "Cover",
+      "item": "Product photo",
+      "promotion": "Promotion image",
+      "saved": "Image updated"
+    }
+  },
+  "media": {
+    "upload": "Upload image",
+    "change": "Change image",
+    "remove": "Remove image",
+    "uploading": "Uploading image…",
+    "hint": "JPG, PNG or WebP. It is resized to 1280 px and the photo data, such as the location, is removed.",
+    "coverAlt": "Cover of {{name}}",
+    "logoAlt": "Logo of {{name}}",
+    "errors": {
+      "type": "Choose a JPG, PNG or WebP image.",
+      "size": "The image is too large. Try another one.",
+      "decode": "The image could not be read. Try another one.",
+      "uploadFailed": "The image could not be uploaded. Try again.",
+      "deleteFailed": "The previous image could not be deleted."
     }
   }
 }

@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaInput } from '@design-system';
+import { ImageField } from '../image-field/image-field';
 import { type PromotionInput, promotionSchema } from '@shared/business/data/business-write.schemas';
 import type { Promotion } from '@shared/business/models/business.model';
 import {
@@ -37,6 +38,7 @@ interface PromoDraft {
   description: string;
   startsAt: string;
   endsAt: string;
+  imageUrl: string | null;
 }
 
 function draftOf(promotion: Promotion | null, now: Date): PromoDraft {
@@ -45,6 +47,7 @@ function draftOf(promotion: Promotion | null, now: Date): PromoDraft {
     description: promotion?.description ?? '',
     startsAt: toLocalInput(promotion?.starts_at ?? now.toISOString()),
     endsAt: toLocalInput(promotion?.ends_at ?? new Date(now.getTime() + 7 * DAY_MS).toISOString()),
+    imageUrl: promotion?.image_url ?? null,
   };
 }
 
@@ -53,13 +56,14 @@ function draftOf(promotion: Promotion | null, now: Date): PromoDraft {
   selector: 'app-promotion-form',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaInput],
+  imports: [TranslocoModule, LumaButton, LumaInput, ImageField],
   templateUrl: './promotion-form.html',
 })
 export class PromotionForm {
   private readonly document = inject(DOCUMENT);
 
   readonly promotion = input<Promotion | null>(null);
+  readonly businessId = input.required<string>();
   readonly busy = input(false);
   readonly submitted = output<PromotionInput>();
   readonly cancelled = output<void>();
@@ -94,7 +98,7 @@ export class PromotionForm {
       description: draft.description.trim() || null,
       starts_at: fromLocalInput(draft.startsAt),
       ends_at: fromLocalInput(draft.endsAt),
-      image_url: this.promotion()?.image_url ?? null,
+      image_url: draft.imageUrl,
     });
     const errors = parsed.success ? {} : { ...fieldErrors(parsed.error.issues) };
     if (parsed.success && Date.parse(parsed.data.ends_at) <= Date.now()) {

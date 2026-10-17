@@ -1,0 +1,48 @@
+<div
+  *transloco="let t"
+  class="flex flex-col gap-2"
+  role="group"
+  [attr.aria-labelledby]="fieldId() + '-label'"
+>
+  <span [id]="fieldId() + '-label'" class="text-label-lg text-fg">{{ label() }}</span>
+  <div class="flex items-center gap-3">
+    <span
+      class="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-md bg-canvas-subtle text-fg-subtle"
+      [attr.aria-busy]="uploading()"
+    >
+      @if (uploading()) {
+      <app-luma-skeleton class="size-full" shape="rect" />
+      } @else {
+      <app-luma-image
+        [src]="url()"
+        [alt]="url() ? alt() : ''"
+        [width]="80"
+        [height]="80"
+        fallbackIcon="image"
+      />
+      }
+    </span>
+    <div class="flex flex-col gap-2">
+      <app-luma-button
+        variant="secondary"
+        size="sm"
+        [buttonId]="fieldId()"
+        [describedBy]="fieldId() + '-hint'"
+        [disabled]="uploading()"
+        (clicked)="pick()"
+        >{{ t(uploading() ? 'media.uploading' : url() ? 'media.change' : 'media.upload')
+        }}</app-luma-button
+      >
+      @if (url() && !uploading()) {
+      <app-luma-button variant="ghost" size="sm" (clicked)="clear()"
+        >{{ t('media.remove') }}</app-luma-button
+      >
+      }
+    </div>
+  </div>
+  <input #file type="file" hidden [accept]="accept" (change)="onFile($event)" />
+  <p [id]="fieldId() + '-hint'" class="m-0 text-caption text-fg-muted">{{ t('media.hint') }}</p>
+  @if (errorKey(); as key) {
+  <p class="m-0 text-body-sm text-danger" role="alert">{{ t(key) }}</p>
+  }
+</div>

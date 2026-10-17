@@ -4,7 +4,8 @@
 >
   <app-panel-header [heading]="t('businessPanel.info.title')" [backLink]="['/business', id()]" />
   <app-panel-state [state]="panel.state()" (retry)="load()">
-    <form class="flex flex-col gap-5" novalidate (submit)="save($event)">
+    <app-business-images />
+    <form class="mt-5 flex flex-col gap-5" novalidate (submit)="save($event)">
       <app-business-basics-fields [idPrefix]="idPrefix" [(errors)]="errors" [(draft)]="draft" />
 
       <div class="flex flex-col gap-1">

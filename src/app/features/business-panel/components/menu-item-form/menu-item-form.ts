@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaInput } from '@design-system';
+import { ImageField } from '../image-field/image-field';
 import { type MenuItemInput, menuItemSchema } from '@shared/business/data/business-write.schemas';
 import type { MenuItem } from '@shared/business/models/menu.model';
 import {
@@ -38,6 +39,7 @@ interface ItemDraft {
   section: string;
   sortOrder: string;
   available: boolean;
+  imageUrl: string | null;
 }
 
 function draftOf(item: MenuItem | null): ItemDraft {
@@ -48,6 +50,7 @@ function draftOf(item: MenuItem | null): ItemDraft {
     section: item?.section ?? '',
     sortOrder: String(item?.sort_order ?? 0),
     available: item?.is_available ?? true,
+    imageUrl: item?.image_url ?? null,
   };
 }
 
@@ -56,7 +59,7 @@ function draftOf(item: MenuItem | null): ItemDraft {
   selector: 'app-menu-item-form',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaInput],
+  imports: [TranslocoModule, LumaButton, LumaInput, ImageField],
   templateUrl: './menu-item-form.html',
 })
 export class MenuItemForm {
@@ -64,6 +67,7 @@ export class MenuItemForm {
 
   /** Item being edited, or null for a new one. */
   readonly item = input<MenuItem | null>(null);
+  readonly businessId = input.required<string>();
   readonly busy = input(false);
   readonly submitted = output<MenuItemInput>();
   readonly cancelled = output<void>();
@@ -104,7 +108,7 @@ export class MenuItemForm {
       section: draft.section.trim() || null,
       sort_order: Number(draft.sortOrder || 0),
       is_available: draft.available,
-      image_url: this.item()?.image_url ?? null,
+      image_url: draft.imageUrl,
     });
     if (!parsed.success) {
       this.errors.set(fieldErrors(parsed.error.issues));

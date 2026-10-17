@@ -18,6 +18,7 @@ import {
   withoutErrors,
 } from '@shared/forms/form-errors';
 import { BusinessBasicsFields } from '../../components/business-basics-fields/business-basics-fields';
+import { BusinessImages } from '../../components/business-images/business-images';
 import { PanelHeader } from '../../components/panel-header/panel-header';
 import { PanelStateView } from '../../components/panel-state/panel-state';
 import { PanelBusinessStore } from '../../state/panel-business.store';
@@ -42,6 +43,7 @@ export const DESCRIPTION_MAX = 300;
     LumaButton,
     LumaInput,
     BusinessBasicsFields,
+    BusinessImages,
     PanelHeader,
     PanelStateView,
   ],

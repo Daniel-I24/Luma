@@ -3,6 +3,7 @@ import type { MenuItemInput } from '@shared/business/data/business-write.schemas
 import { MenuRepository } from '@shared/business/data/menu.repository';
 import { MenuWriteRepository } from '@shared/business/data/menu-write.repository';
 import type { MenuItem } from '@shared/business/models/menu.model';
+import { BusinessImageRepository } from '@shared/media/business-image.repository';
 
 export interface MenuSection {
   /** null for items without a section. */
@@ -15,6 +16,7 @@ export interface MenuSection {
 export class MenuPanelStore {
   private readonly reader = inject(MenuRepository);
   private readonly writer = inject(MenuWriteRepository);
+  private readonly images = inject(BusinessImageRepository);
 
   private readonly _items = signal<readonly MenuItem[]>([]);
   private readonly _busy = signal(false);
@@ -43,13 +45,17 @@ export class MenuPanelStore {
     return !result.errorKey;
   }
 
-  /** Creates (no id) or updates an item; resolves to true when saved. */
+  /** Creates (no id) or updates an item; a replaced picture is deleted once saved. */
   async save(businessId: string, id: string | null, input: MenuItemInput): Promise<boolean> {
     return this.run(async () => {
       const result = id
         ? await this.writer.update(id, input)
         : await this.writer.create(businessId, input);
-      if (result.data) this.upsert(result.data);
+      const previous = this._items().find((item) => item.id === id)?.image_url;
+      if (result.data) {
+        this.upsert(result.data);
+        if (previous && previous !== result.data.image_url) await this.images.remove(previous);
+      }
       return result.errorKey;
     });
   }
@@ -62,10 +68,15 @@ export class MenuPanelStore {
     });
   }
 
+  /** Deletes an item and then its picture. */
   async remove(id: string): Promise<boolean> {
     return this.run(async () => {
+      const image = this._items().find((item) => item.id === id)?.image_url;
       const result = await this.writer.remove(id);
-      if (result.data) this._items.update((items) => items.filter((item) => item.id !== id));
+      if (result.data) {
+        this._items.update((items) => items.filter((item) => item.id !== id));
+        await this.images.remove(image);
+      }
       return result.errorKey;
     });
   }

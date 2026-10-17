@@ -1,4 +1,5 @@
 import { corsHeaders, isOriginAllowed } from './cors.ts';
+import { type CleanupClient, removeBusinessImages } from './storage-cleanup.ts';
 
 /** The subset of the Supabase admin client this function needs (injectable for tests). */
 export interface AdminAuthClient {
@@ -11,7 +12,7 @@ export interface AdminAuthClient {
 }
 
 export interface HandlerDeps {
-  readonly client: AdminAuthClient;
+  readonly client: AdminAuthClient & CleanupClient;
   readonly allowedOrigins: readonly string[];
 }
 
@@ -25,7 +26,10 @@ export function extractBearerToken(header: string | null): string | null {
 }
 
 /** The only source of identity: the caller's own JWT, validated by Supabase Auth. */
-export async function resolveCallerId(client: AdminAuthClient, token: string): Promise<string | null> {
+export async function resolveCallerId(
+  client: AdminAuthClient,
+  token: string,
+): Promise<string | null> {
   const { data, error } = await client.auth.getUser(token);
   return error || !data.user ? null : data.user.id;
 }
@@ -57,6 +61,9 @@ export function createHandler(deps: HandlerDeps): (req: Request) => Promise<Resp
       const token = extractBearerToken(req.headers.get('Authorization'));
       const userId = token ? await resolveCallerId(deps.client, token) : null;
       if (!userId) return fail(401, 'unauthorized');
+
+      // Pictures first: once the account is gone, nothing links them to it.
+      await removeBusinessImages(deps.client, userId);
 
       if (!(await deleteAccount(deps.client, userId))) {
         console.error('delete-account: admin deleteUser returned an error');

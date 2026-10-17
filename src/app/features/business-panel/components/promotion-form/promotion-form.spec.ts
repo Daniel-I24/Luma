@@ -3,6 +3,7 @@ import { TranslocoTestingModule } from '@jsverse/transloco';
 import { beforeEach, describe, expect, it } from 'vitest';
 import type { PromotionInput } from '@shared/business/data/business-write.schemas';
 import { useFixedClock } from '../../../../../testing/fixed-clock';
+import { BusinessImageRepository } from '@shared/media/business-image.repository';
 import { PromotionForm } from './promotion-form';
 
 describe('PromotionForm', () => {
@@ -17,11 +18,13 @@ describe('PromotionForm', () => {
           translocoConfig: { availableLangs: ['es'], defaultLang: 'es' },
         }),
       ],
+      providers: [{ provide: BusinessImageRepository, useValue: {} }],
     });
   });
 
   function render() {
     const fixture = TestBed.createComponent(PromotionForm);
+    fixture.componentRef.setInput('businessId', 'b1');
     document.body.appendChild(fixture.nativeElement);
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;

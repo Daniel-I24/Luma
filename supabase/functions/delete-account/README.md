@@ -14,7 +14,7 @@ Edge Function that permanently deletes the **caller's own** account
 | Origin not in the allow list           | 403    | `{ "error": "origin_not_allowed" }` |
 | Any method other than POST / OPTIONS   | 405    | `{ "error": "method_not_allowed" }` |
 | Missing, malformed or invalid token    | 401    | `{ "error": "unauthorized" }`       |
-| Deletion failed / Auth unreachable     | 500    | `{ "error": "delete_failed" }`      |
+| Deletion failed / Auth or Storage down | 500    | `{ "error": "delete_failed" }`      |
 
 ## Security
 
@@ -43,8 +43,16 @@ Edge Function that permanently deletes the **caller's own** account
   `promotions`, `menu_items`, and the favorites and reviews **other users**
   left on those businesses.
 
-There are no Storage buckets yet; when uploads are added, their objects must
-be removed here too.
+Before that, the function deletes the pictures of the user's businesses from
+the `business-images` bucket (`{business_id}/{logo|cover|menu|promotions}/…`,
+see `storage-cleanup.ts`). If Storage fails, it answers 500
+`delete_failed` and the account is **not** deleted, so the user can retry
+without leaving files behind.
+
+Orders the user placed are deleted too (`orders.user_id` cascade); orders
+that other customers placed at the user's businesses are kept with
+`business_id` set to NULL and the copied business name and address
+(`docs/orders.md`).
 
 ## Configuration
 

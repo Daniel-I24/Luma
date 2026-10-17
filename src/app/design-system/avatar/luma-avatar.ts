@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, linkedSignal } from '@angular/core';
 import { LumaIcon } from '../icon/luma-icon';
 import type { IconSize } from '../icon/luma-icon';
 import type { IconName } from '../icon/luma-icons';
@@ -13,6 +13,9 @@ const ICON_SIZE: Record<AvatarSize, IconSize> = {
   lg: 'md',
   xl: 'lg',
 };
+
+/** Rendered size in CSS pixels (width/height attributes of the image). */
+const SIZE_PX: Record<AvatarSize, number> = { xs: 24, sm: 32, md: 40, lg: 48, xl: 64 };
 
 const SIZE_CLASS: Record<AvatarSize, string> = {
   xs: 'size-6 text-caption',
@@ -44,7 +47,9 @@ export class LumaAvatar {
   /** Icon shown instead of the initials when there is no image (e.g. a category). */
   readonly fallbackIcon = input<IconName | null>(null);
 
-  protected readonly failed = signal(false);
+  /** Reset whenever the source changes. */
+  protected readonly failed = linkedSignal({ source: this.src, computation: () => false });
+  protected readonly sizePx = computed(() => SIZE_PX[this.size()]);
   protected readonly iconSize = computed(() => ICON_SIZE[this.size()]);
 
   protected readonly initials = computed(() =>

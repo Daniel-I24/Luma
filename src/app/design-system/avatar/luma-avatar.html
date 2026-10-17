@@ -3,6 +3,9 @@
   <img
     class="size-full object-cover"
     loading="lazy"
+    decoding="async"
+    [width]="sizePx()"
+    [height]="sizePx()"
     [src]="src()"
     [alt]="decorative() ? '' : name()"
     (error)="failed.set(true)"

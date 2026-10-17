@@ -1,0 +1,30 @@
+@if (panel.business(); as business) {
+<section
+  *transloco="let t"
+  class="flex flex-col gap-4 rounded-xl border border-border-subtle bg-surface p-4"
+>
+  <app-image-field
+    fieldId="business-logo"
+    kind="logo"
+    [label]="t('businessPanel.images.logo')"
+    [alt]="t('media.logoAlt', { name: business.name })"
+    [businessId]="business.id"
+    [url]="business.logo_url"
+    (changed)="save(business, 'logo_url', $event)"
+  />
+  <app-image-field
+    fieldId="business-cover"
+    kind="cover"
+    [label]="t('businessPanel.images.cover')"
+    [alt]="t('media.coverAlt', { name: business.name })"
+    [businessId]="business.id"
+    [url]="business.cover_url"
+    (changed)="save(business, 'cover_url', $event)"
+  />
+  @if (errorKey(); as key) {
+  <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+    {{ t(key) }}
+  </p>
+  }
+</section>
+}

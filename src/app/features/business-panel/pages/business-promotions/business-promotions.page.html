@@ -68,6 +68,7 @@
     @if (editing() !== undefined) {
     <app-promotion-form
       [promotion]="editing() ?? null"
+      [businessId]="id()"
       [busy]="promos.busy()"
       (submitted)="save($event)"
       (cancelled)="editing.set(undefined)"

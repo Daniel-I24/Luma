@@ -1,56 +1,7 @@
 import { assertEquals } from '@std/assert';
 
-import { allowedOriginsFrom } from './cors.ts';
-import { type AdminAuthClient, createHandler, extractBearerToken } from './handler.ts';
-
-const APP_ORIGIN = 'http://localhost:4200';
-const VALID_TOKEN = 'valid-token';
-const CALLER_ID = 'caller-id';
-
-interface FakeOptions {
-  readonly deleteError?: unknown;
-  readonly throwOnGetUser?: boolean;
-}
-
-function fakeClient(options: FakeOptions = {}) {
-  const deleted: string[] = [];
-  const client: AdminAuthClient = {
-    auth: {
-      getUser: (jwt) => {
-        if (options.throwOnGetUser) return Promise.reject(new Error('network down'));
-        return Promise.resolve(
-          jwt === VALID_TOKEN
-            ? { data: { user: { id: CALLER_ID } }, error: null }
-            : { data: { user: null }, error: new Error('invalid JWT') },
-        );
-      },
-      admin: {
-        deleteUser: (id) => {
-          deleted.push(id);
-          return Promise.resolve({ error: options.deleteError ?? null });
-        },
-      },
-    },
-  };
-  return { client, deleted };
-}
-
-function request(method: string, headers: Record<string, string> = {}, body?: string): Request {
-  return new Request('http://localhost/functions/v1/delete-account', {
-    method,
-    headers: { Origin: APP_ORIGIN, ...headers },
-    body,
-  });
-}
-
-function handlerFor(options: FakeOptions = {}) {
-  const fake = fakeClient(options);
-  const handler = createHandler({
-    client: fake.client,
-    allowedOrigins: allowedOriginsFrom(`${APP_ORIGIN}, https://luma.app`),
-  });
-  return { handler, deleted: fake.deleted };
-}
+import { extractBearerToken } from './handler.ts';
+import { APP_ORIGIN, CALLER_ID, VALID_TOKEN, handlerFor, request } from './handler.test-helper.ts';
 
 Deno.test('rejects methods other than POST and OPTIONS with 405', async () => {
   const { handler, deleted } = handlerFor();
@@ -118,6 +69,29 @@ Deno.test('returns a generic 500 when the deletion fails', async () => {
 
 Deno.test('returns a generic 500 when Auth is unreachable', async () => {
   const { handler, deleted } = handlerFor({ throwOnGetUser: true });
+  const res = await handler(request('POST', { Authorization: `Bearer ${VALID_TOKEN}` }));
+  assertEquals(res.status, 500);
+  assertEquals(await res.json(), { error: 'delete_failed' });
+  assertEquals(deleted, []);
+});
+
+Deno.test('deletes the caller pictures before the account', async () => {
+  const { handler, deleted, removed } = handlerFor({
+    businesses: { [CALLER_ID]: ['b1'] },
+    files: { 'b1/logo': ['l.webp'] },
+  });
+  const res = await handler(request('POST', { Authorization: `Bearer ${VALID_TOKEN}` }));
+  assertEquals(res.status, 200);
+  assertEquals(removed, ['b1/logo/l.webp']);
+  assertEquals(deleted, [CALLER_ID]);
+});
+
+Deno.test('keeps the account when its pictures cannot be deleted', async () => {
+  const { handler, deleted } = handlerFor({
+    businesses: { [CALLER_ID]: ['b1'] },
+    files: { 'b1/logo': ['l.webp'] },
+    failRemove: true,
+  });
   const res = await handler(request('POST', { Authorization: `Bearer ${VALID_TOKEN}` }));
   assertEquals(res.status, 500);
   assertEquals(await res.json(), { error: 'delete_failed' });

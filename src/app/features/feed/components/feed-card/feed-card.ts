@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import { LumaButton, LumaIcon, StatusBadge } from '@design-system';
+import { LumaButton, LumaIcon, LumaImage, StatusBadge } from '@design-system';
 import { AddToCart } from '@shared/cart/add-to-cart/add-to-cart';
 import { toCartProduct } from '@shared/cart/cart.model';
 import { FavoriteButton } from '@shared/favorites/favorite-button/favorite-button';
@@ -23,6 +23,7 @@ import type { FeedCard as FeedCardModel } from '../../models/feed-card.model';
     TranslocoModule,
     LumaButton,
     LumaIcon,
+    LumaImage,
     StatusBadge,
     FavoriteButton,
     AddToCart,

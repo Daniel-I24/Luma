@@ -2,11 +2,13 @@ import { Injectable, inject, signal } from '@angular/core';
 import type { PromotionInput } from '@shared/business/data/business-write.schemas';
 import { PromotionWriteRepository } from '@shared/business/data/promotion-write.repository';
 import type { Promotion } from '@shared/business/models/business.model';
+import { BusinessImageRepository } from '@shared/media/business-image.repository';
 
 /** PromotionsPanelStore — every promotion of the managed business and its edits. */
 @Injectable()
 export class PromotionsPanelStore {
   private readonly repo = inject(PromotionWriteRepository);
+  private readonly images = inject(BusinessImageRepository);
 
   private readonly _promotions = signal<readonly Promotion[]>([]);
   private readonly _busy = signal(false);
@@ -21,13 +23,15 @@ export class PromotionsPanelStore {
     return !result.errorKey;
   }
 
-  /** Creates (no id) or updates a promotion; resolves to true when saved. */
+  /** Creates (no id) or updates a promotion; a replaced picture is deleted once saved. */
   async save(businessId: string, id: string | null, input: PromotionInput): Promise<boolean> {
     return this.run(async () => {
       const result = id
         ? await this.repo.update(id, input)
         : await this.repo.create(businessId, input);
       const saved = result.data;
+      const previous = this._promotions().find((p) => p.id === id)?.image_url;
+      if (saved && previous && previous !== saved.image_url) await this.images.remove(previous);
       if (saved) {
         this._promotions.update((list) =>
           list.some((p) => p.id === saved.id)

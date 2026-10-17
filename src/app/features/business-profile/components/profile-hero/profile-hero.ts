@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import { LumaAvatar, LumaIcon, LumaIconButton, StatusBadge } from '@design-system';
+import { LumaAvatar, LumaIcon, LumaIconButton, LumaImage, StatusBadge } from '@design-system';
 import type { Business, BusinessStatus } from '@shared/business/models/business.model';
 import { categoryIcon } from '@shared/business/utils/category-icon.util';
 import { FavoriteButton } from '@shared/favorites/favorite-button/favorite-button';
@@ -20,6 +20,7 @@ import { DistancePipe } from '@shared/geo/distance.pipe';
     TranslocoModule,
     LumaAvatar,
     LumaIcon,
+    LumaImage,
     LumaIconButton,
     StatusBadge,
     FavoriteButton,

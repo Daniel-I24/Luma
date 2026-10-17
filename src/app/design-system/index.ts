@@ -59,3 +59,5 @@ export type { TabItem } from './tabs/luma-tabs';
 
 export { LumaSelect } from './select/luma-select';
 export type { SelectOption } from './select/luma-select';
+
+export { LumaImage } from './image/luma-image';

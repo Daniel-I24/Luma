@@ -761,6 +761,29 @@
       "invalidData": "Algunos datos no son válidos. Revísalos.",
       "duplicate": "Ese dato ya existe.",
       "forbidden": "No tienes permiso para modificar este negocio."
+    },
+    "images": {
+      "logo": "Logo",
+      "cover": "Portada",
+      "item": "Foto del producto",
+      "promotion": "Imagen de la promoción",
+      "saved": "Imagen actualizada"
+    }
+  },
+  "media": {
+    "upload": "Subir imagen",
+    "change": "Cambiar imagen",
+    "remove": "Quitar imagen",
+    "uploading": "Subiendo imagen…",
+    "hint": "JPG, PNG o WebP. Se reduce a 1280 px y se borran los datos de la foto, como la ubicación.",
+    "coverAlt": "Portada de {{name}}",
+    "logoAlt": "Logo de {{name}}",
+    "errors": {
+      "type": "Elige una imagen JPG, PNG o WebP.",
+      "size": "La imagen es demasiado grande. Prueba con otra.",
+      "decode": "No se pudo leer la imagen. Prueba con otra.",
+      "uploadFailed": "No se pudo subir la imagen. Intenta de nuevo.",
+      "deleteFailed": "No se pudo borrar la imagen anterior."
     }
   }
 }

@@ -9,11 +9,16 @@
   <div
     class="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden bg-linear-to-br from-primary to-accent text-primary-fg"
   >
-    @if (card().imageUrl; as src) {
-    <img class="absolute inset-0 size-full object-cover" [src]="src" alt="" loading="lazy" decoding="async" />
-    } @else {
-    <app-luma-icon [name]="card().icon" size="xl" />
-    }
+    <div class="absolute inset-0">
+      <app-luma-image
+        iconSize="xl"
+        [src]="card().imageUrl"
+        [alt]="card().title"
+        [width]="390"
+        [height]="560"
+        [fallbackIcon]="card().icon"
+      />
+    </div>
     <span
       class="absolute top-4 left-4 inline-flex items-center gap-1 rounded-full bg-surface-elevated px-3 py-1 text-label text-fg shadow-md"
     >

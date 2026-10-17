@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaButton, LumaEmptyState, LumaIcon } from '@design-system';
+import { LumaButton, LumaEmptyState, LumaImage } from '@design-system';
 import type { IconName } from '@design-system';
 import type { MenuItem } from '@shared/business/models/menu.model';
 import { AddToCart } from '@shared/cart/add-to-cart/add-to-cart';
@@ -31,7 +31,7 @@ export function groupBySection(items: readonly MenuItem[]): MenuSection[] {
   selector: 'app-menu-tab',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaEmptyState, LumaIcon, CopCurrencyPipe, AddToCart],
+  imports: [TranslocoModule, LumaButton, LumaEmptyState, LumaImage, CopCurrencyPipe, AddToCart],
   templateUrl: './menu-tab.html',
   host: { class: 'block' },
 })

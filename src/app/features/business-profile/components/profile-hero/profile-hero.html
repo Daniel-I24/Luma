@@ -1,7 +1,14 @@
 <ng-container *transloco="let t">
   <div class="relative h-45 w-full overflow-hidden bg-canvas-subtle">
-    @if (business().cover_url; as cover) {
-    <img class="size-full object-cover" alt="" loading="lazy" [src]="cover" />
+    @if (business().cover_url) {
+    <app-luma-image
+      [src]="business().cover_url"
+      [alt]="t('media.coverAlt', { name: business().name })"
+      [width]="390"
+      [height]="180"
+      [eager]="true"
+      [fallbackIcon]="icon()"
+    />
     } @else {
     <div class="flex size-full items-center justify-center text-fg-subtle">
       <span

@@ -74,6 +74,7 @@
     @if (editing() !== undefined) {
     <app-menu-item-form
       [item]="editing() ?? null"
+      [businessId]="id()"
       [busy]="menu.busy()"
       (submitted)="save($event)"
       (cancelled)="editing.set(undefined)"
