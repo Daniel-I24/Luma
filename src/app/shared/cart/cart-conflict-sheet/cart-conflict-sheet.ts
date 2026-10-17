@@ -19,7 +19,7 @@ import { CartStore } from '../cart.store';
       (closed)="actions.cancelReplace()"
     >
       <p class="m-0 mb-4 text-body text-fg-muted">
-        {{ t('cart.conflict.description', { current: cart.businessName() ?? '', next: pending()?.businessName ?? '' }) }}
+        {{ t('cart.conflict.description', { current: cart.businessName() ?? '', next: pending()?.[0]?.businessName ?? '' }) }}
       </p>
       <div class="flex flex-col gap-3">
         <app-luma-button [fullWidth]="true" (clicked)="actions.confirmReplace()">{{

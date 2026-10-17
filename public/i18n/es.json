@@ -301,7 +301,45 @@
   },
   "ai": {
     "title": "Luma IA",
-    "comingSoon": "Muy pronto Luma te recomendará lugares y combos según tu momento del día."
+    "subtitle": "Lugares y combos según tu momento del día.",
+    "loading": "Buscando recomendaciones…",
+    "picks": "Recomendados para ti",
+    "disclaimer": "Recomendaciones según la hora, la distancia, las calificaciones, las promociones y tus favoritos.",
+    "moments": {
+      "label": "Momento del día",
+      "breakfast": "Desayuno",
+      "midMorning": "Media mañana",
+      "lunch": "Almuerzo",
+      "afternoon": "Media tarde",
+      "dinner": "Cena",
+      "night": "Nocturna"
+    },
+    "reasons": {
+      "label": "Por qué:",
+      "moment": "Ideal para este momento",
+      "near": "Cerca",
+      "topRated": "Bien calificado",
+      "promotion": "Promoción activa",
+      "favorite": "En tus favoritos"
+    },
+    "combo": {
+      "title": "Combo sugerido en {{name}}",
+      "roles": {
+        "main": "Plato",
+        "side": "Acompañamiento",
+        "drink": "Bebida"
+      },
+      "total": "Total",
+      "add": "Agregar combo al carrito"
+    },
+    "empty": {
+      "title": "Nada abierto para este momento",
+      "description": "Prueba con otro momento del día."
+    },
+    "error": {
+      "title": "No se pudieron cargar las recomendaciones",
+      "description": "Revisa tu conexión e intenta de nuevo."
+    }
   },
   "orders": {
     "title": "Pedidos",

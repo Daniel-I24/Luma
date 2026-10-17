@@ -1,1 +1,64 @@
-<app-coming-soon-page titleKey="ai.title" descriptionKey="ai.comingSoon" icon="sparkles" />
+<div
+  *transloco="let t"
+  class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6"
+>
+  <header class="flex flex-col gap-1">
+    <h1 class="m-0 flex items-center gap-2 text-h3 text-fg">
+      <app-luma-icon class="text-fg-accent" name="sparkles" />
+      {{ t('ai.title') }}
+    </h1>
+    <p class="m-0 text-body-sm text-fg-muted">{{ t('ai.subtitle') }}</p>
+  </header>
+
+  <div
+    class="-mx-4 flex gap-2 overflow-x-auto px-4 py-1 [scrollbar-width:none]"
+    role="group"
+    [attr.aria-label]="t('ai.moments.label')"
+  >
+    @for (moment of moments; track moment) {
+    <app-luma-chip
+      class="shrink-0"
+      [toggleable]="false"
+      [selected]="store.moment() === moment"
+      (selectedChange)="store.selectMoment(moment)"
+      >{{ t('ai.moments.' + moment) }}</app-luma-chip
+    >
+    }
+  </div>
+
+  @switch (store.state()) { @case ('loading') {
+  <div class="flex flex-col gap-3" aria-busy="true">
+    @for (i of [0, 1, 2]; track i) {
+    <app-luma-skeleton class="h-20 w-full" shape="rect" />
+    }
+    <span class="sr-only">{{ t('ai.loading') }}</span>
+  </div>
+  } @case ('error') {
+  <div role="alert">
+    <app-luma-empty-state
+      icon="alert"
+      tone="error"
+      [heading]="t('ai.error.title')"
+      [description]="t('ai.error.description')"
+    >
+      <app-luma-button (clicked)="store.load()">{{ t('common.retry') }}</app-luma-button>
+    </app-luma-empty-state>
+  </div>
+  } @case ('ready') { @if (store.result(); as result) { @if (result.businesses.length === 0) {
+  <app-luma-empty-state
+    icon="clock"
+    [heading]="t('ai.empty.title')"
+    [description]="t('ai.empty.description')"
+  />
+  } @else {
+  <app-recommendation-list
+    class="animate-fade-in"
+    [picks]="result.businesses"
+    (open)="openBusiness($event)"
+  />
+  @if (result.combo; as combo) {
+  <app-combo-card class="animate-fade-in" [combo]="combo" />
+  } } } } }
+
+  <p class="m-0 text-caption text-fg-subtle">{{ t('ai.disclaimer') }}</p>
+</div>

@@ -37,7 +37,7 @@ describe('CartActions', () => {
   it('asks before mixing businesses and replaces the cart only when confirmed', () => {
     actions.add(product('m1', 'b1'));
     actions.add(product('x1', 'b2'));
-    expect(actions.pendingConflict()?.menuItemId).toBe('x1');
+    expect(actions.pendingConflict()?.map((p) => p.menuItemId)).toEqual(['x1']);
 
     actions.cancelReplace();
     expect(actions.pendingConflict()).toBeNull();
@@ -55,5 +55,15 @@ describe('CartActions', () => {
     actions.add(product('m1', 'b1'));
 
     expect(toasts.show).toHaveBeenCalledWith({ messageKey: 'cart.errors.limit', tone: 'error' });
+  });
+
+  it('adds a combo in one go, asking once when another business is in the cart', () => {
+    actions.add(product('m1', 'b1'));
+    actions.addAll([product('x1', 'b2'), product('x2', 'b2'), product('x3', 'b2')]);
+    expect(actions.pendingConflict()).toHaveLength(3);
+
+    actions.confirmReplace();
+
+    expect(cart.items().map((i) => i.menuItemId)).toEqual(['x1', 'x2', 'x3']);
   });
 });

@@ -301,7 +301,45 @@
   },
   "ai": {
     "title": "Luma AI",
-    "comingSoon": "Soon Luma will recommend places and combos for every moment of your day."
+    "subtitle": "Places and combos for your moment of the day.",
+    "loading": "Finding recommendations…",
+    "picks": "Recommended for you",
+    "disclaimer": "Recommendations based on the time, distance, ratings, promotions and your favourites.",
+    "moments": {
+      "label": "Moment of the day",
+      "breakfast": "Breakfast",
+      "midMorning": "Mid-morning",
+      "lunch": "Lunch",
+      "afternoon": "Afternoon",
+      "dinner": "Dinner",
+      "night": "Late night"
+    },
+    "reasons": {
+      "label": "Why:",
+      "moment": "Right for this moment",
+      "near": "Nearby",
+      "topRated": "Highly rated",
+      "promotion": "Active promotion",
+      "favorite": "In your favourites"
+    },
+    "combo": {
+      "title": "Suggested combo at {{name}}",
+      "roles": {
+        "main": "Main",
+        "side": "Side",
+        "drink": "Drink"
+      },
+      "total": "Total",
+      "add": "Add combo to cart"
+    },
+    "empty": {
+      "title": "Nothing open for this moment",
+      "description": "Try another moment of the day."
+    },
+    "error": {
+      "title": "Could not load recommendations",
+      "description": "Check your connection and try again."
+    }
   },
   "orders": {
     "title": "Orders",

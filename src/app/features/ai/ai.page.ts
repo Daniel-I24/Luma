@@ -1,13 +1,45 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ComingSoonPage } from '@shared/layout/coming-soon-page/coming-soon-page';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { TranslocoModule } from '@jsverse/transloco';
+import { LumaButton, LumaChip, LumaEmptyState, LumaIcon, LumaSkeleton } from '@design-system';
+import { DAY_MOMENTS } from '@shared/recommendations/recommendation.model';
+import { ComboCard } from './components/combo-card/combo-card';
+import { RecommendationList } from './components/recommendation-list/recommendation-list';
+import { AiStore } from './state/ai.store';
 
-/** AiPage — /ai (protected by authGuard). Luma AI recommender and custom combos; not built yet. */
+/**
+ * AiPage — /ai: "Luma IA" recommendations for a moment of the day (chips,
+ * current moment preselected): three businesses and, when possible, a combo
+ * that can go straight to the cart.
+ */
 @Component({
   selector: 'app-ai-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ComingSoonPage],
+  imports: [
+    TranslocoModule,
+    LumaButton,
+    LumaChip,
+    LumaEmptyState,
+    LumaIcon,
+    LumaSkeleton,
+    ComboCard,
+    RecommendationList,
+  ],
+  providers: [AiStore],
   templateUrl: './ai.page.html',
-  host: { class: 'block h-full' },
+  host: { class: 'block' },
 })
-export class AiPage {}
+export class AiPage {
+  protected readonly store = inject(AiStore);
+  private readonly router = inject(Router);
+  protected readonly moments = DAY_MOMENTS;
+
+  constructor() {
+    void this.store.load();
+  }
+
+  protected openBusiness(id: string): void {
+    void this.router.navigate(['/businesses', id]);
+  }
+}

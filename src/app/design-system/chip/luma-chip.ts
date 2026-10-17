@@ -26,6 +26,8 @@ export class LumaChip {
   readonly dismissible = input<boolean>(false);
   readonly icon = input<IconName | null>(null);
   readonly disabled = input<boolean>(false);
+  /** False for single-choice groups: tapping the selected chip keeps it selected. */
+  readonly toggleable = input<boolean>(true);
 
   readonly dismissed = output<void>();
 
@@ -42,6 +44,7 @@ export class LumaChip {
   }
 
   protected toggle(): void {
+    if (!this.toggleable() && this.selected()) return;
     if (!this.disabled()) {
       this.selected.set(!this.selected());
     }
