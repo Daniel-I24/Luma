@@ -7,6 +7,7 @@ import type { Business } from '@shared/business/models/business.model';
 import { BusinessHoursCacheService } from '../services/business-hours-cache.service';
 import { GeolocationService } from '@shared/geo/geolocation.service';
 import { NearbyBusinessesStore } from './nearby-businesses.store';
+import { useFixedClock } from '../../../../testing/fixed-clock';
 
 const biz = (id: string, category: string, latitude: number): Business => ({
   id,
@@ -26,6 +27,8 @@ const biz = (id: string, category: string, latitude: number): Business => ({
 });
 
 describe('NearbyBusinessesStore', () => {
+  useFixedClock();
+
   const repo = { getNearby: vi.fn() };
   const highlights = { getRatings: vi.fn(), getActivePromotions: vi.fn() };
   const located = signal(false);

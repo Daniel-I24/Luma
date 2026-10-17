@@ -6,11 +6,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { BusinessRepository } from '@shared/business/data/business.repository';
 import { FavoritesStore } from '@shared/favorites/favorites.store';
 import { FavoritesPage } from './favorites.page';
+import { useFixedClock } from '../../../testing/fixed-clock';
 
 const flush = () => new Promise((resolve) => setTimeout(resolve));
 const business = (id: string, name: string) => ({ id, name, category: 'Cafetería', logo_url: null });
 
 describe('FavoritesPage', () => {
+  useFixedClock();
+
   const ids = signal<ReadonlySet<string>>(new Set(['b2', 'b1']));
   const ready = signal(true);
   const favorites = { ids, ready, failed: signal(false), reload: vi.fn(), toggle: vi.fn() };

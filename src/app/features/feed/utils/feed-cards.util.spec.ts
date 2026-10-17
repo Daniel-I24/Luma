@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { Business, BusinessHours, Promotion } from '@shared/business/models/business.model';
 import type { MenuItem } from '@shared/business/models/menu.model';
 import { DISHES_PER_BUSINESS, buildFeedCards, interleave } from './feed-cards.util';
+import { useFixedClock } from '../../../../testing/fixed-clock';
 
 const business = (id: string, category = 'Restaurante') => ({ id, name: id, category }) as Business;
 const promo = (id: string, business_id: string, ends_at: string) =>
@@ -31,6 +32,8 @@ describe('interleave', () => {
 });
 
 describe('buildFeedCards', () => {
+  useFixedClock();
+
   it('alternates promotions and dishes, nearest business first', () => {
     const cards = build({
       promotions: [promo('p-far', 'far', '2026-10-20'), promo('p-near', 'near', '2026-10-30')],

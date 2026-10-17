@@ -3,6 +3,7 @@ import { TranslocoTestingModule } from '@jsverse/transloco';
 import { beforeEach, describe, expect, it } from 'vitest';
 import type { Business, BusinessHours } from '@shared/business/models/business.model';
 import { InfoTab } from './info-tab';
+import { useFixedClock } from '../../../../../testing/fixed-clock';
 
 const ES = {
   businessProfile: {
@@ -29,6 +30,8 @@ const day = (d: BusinessHours['day_of_week'], closed = false): BusinessHours => 
 });
 
 describe('InfoTab', () => {
+  useFixedClock();
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -59,13 +62,14 @@ describe('InfoTab', () => {
     expect(rows[6].textContent).toContain('Cerrado');
   });
 
-  it('highlights today', () => {
+  it('highlights today (the fixed clock is a Wednesday)', () => {
     const today = Array.from(render([day(1)]).querySelectorAll('li')).filter(
       (li) => li.getAttribute('aria-current') === 'date',
     );
 
     expect(today).toHaveLength(1);
     expect(today[0].textContent).toContain('Hoy');
+    expect(today[0].textContent?.toLowerCase()).toContain('miércoles');
   });
 
   it('offers a tel: link and the address', () => {

@@ -6,8 +6,11 @@ import { AuthService } from '@core/auth/auth.service';
 import { CartStore } from '@shared/cart/cart.store';
 import { OrderRepository } from '@shared/orders/order.repository';
 import { CheckoutStore } from './checkout.store';
+import { useFixedClock } from '../../../../testing/fixed-clock';
 
 describe('CheckoutStore', () => {
+  useFixedClock();
+
   const orders = { create: vi.fn() };
   let store: CheckoutStore;
   let cart: CartStore;
@@ -81,6 +84,6 @@ describe('CheckoutStore', () => {
 
     const { pickupAt } = orders.create.mock.calls[0][0] as { pickupAt: string };
     const at = new Date(pickupAt);
-    expect([at.getHours(), at.getMinutes()]).toEqual([8, 30]);
+    expect([at.getDate(), at.getHours(), at.getMinutes()]).toEqual([15, 8, 30]);
   });
 });

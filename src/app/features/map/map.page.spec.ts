@@ -10,6 +10,7 @@ import { BusinessHoursCacheService } from './services/business-hours-cache.servi
 import { MapCameraService } from './services/map-camera.service';
 import { MapMarkerSyncService } from './services/map-marker-sync.service';
 import { MapStylesLoader } from './services/map-styles.loader';
+import { useFixedClock } from '../../../testing/fixed-clock';
 
 const ES = {
   map: {
@@ -83,6 +84,8 @@ async function render() {
 }
 
 describe('MapPage', () => {
+  useFixedClock();
+
   beforeEach(() => vi.clearAllMocks());
 
   it('starts MapLibre on the real map container and loads nearby businesses', async () => {

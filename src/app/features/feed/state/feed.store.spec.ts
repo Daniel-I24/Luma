@@ -6,6 +6,7 @@ import { MenuRepository } from '@shared/business/data/menu.repository';
 import type { Business } from '@shared/business/models/business.model';
 import { GeolocationService, PASTO_CENTRE } from '@shared/geo/geolocation.service';
 import { FEED_BATCH_SIZE, FeedStore } from './feed.store';
+import { useFixedClock } from '../../../../testing/fixed-clock';
 
 const business = (n: number) =>
   ({ id: `b${n}`, name: `B${n}`, category: 'Cafetería', latitude: PASTO_CENTRE.lat + n / 1000, longitude: PASTO_CENTRE.lng }) as Business;
@@ -14,6 +15,8 @@ const dishFor = (business_id: string) =>
 const ok = <T>(data: T) => Promise.resolve({ data, errorKey: null });
 
 describe('FeedStore', () => {
+  useFixedClock();
+
   const businesses = { getNearby: vi.fn(), getHoursFor: vi.fn() };
   const highlights = { getActivePromotions: vi.fn() };
   const menu = { getAvailableFor: vi.fn() };

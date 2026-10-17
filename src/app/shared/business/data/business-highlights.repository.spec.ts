@@ -4,6 +4,7 @@ import { SupabaseService } from '@core/supabase/supabase.service';
 import { createFakeSupabase, failure, ok } from '../../../../testing/fake-supabase';
 import type { FakeResponse } from '../../../../testing/fake-supabase';
 import { BusinessHighlightsRepository } from './business-highlights.repository';
+import { FIXED_NOW, useFixedClock } from '../../../../testing/fixed-clock';
 
 function setup(responses: Record<string, FakeResponse>) {
   const fake = createFakeSupabase(responses);
@@ -12,6 +13,8 @@ function setup(responses: Record<string, FakeResponse>) {
 }
 
 describe('BusinessHighlightsRepository', () => {
+  useFixedClock();
+
   it('loads the promotions of several businesses in one query', async () => {
     const promo = { id: 'p1', business_id: 'b1', title: '2×1' };
     const { repo, queries } = setup({ promotions: ok([promo]) });
@@ -22,6 +25,9 @@ describe('BusinessHighlightsRepository', () => {
     expect(queries).toHaveLength(1);
     expect(queries[0].call('in')).toEqual(['business_id', ['b1', 'b2', 'b3']]);
     expect(queries[0].call('eq')).toEqual(['is_active', true]);
+    const now = new Date(FIXED_NOW).toISOString();
+    expect(queries[0].call('lte')).toEqual(['starts_at', now]);
+    expect(queries[0].call('gte')).toEqual(['ends_at', now]);
   });
 
   it('loads the ratings of several businesses in one query, as numbers', async () => {
