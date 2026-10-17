@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { EnvError, jwtRole, readSupabaseEnv, renderEnvironment } from './generate-env.mjs';
+import { readFileSync } from 'node:fs';
+import { EnvError, jwtRole, readSupabaseEnv, renderEnvironment, TARGET_PATH } from './generate-env.mjs';
 
 const jwt = (payload) =>
   ['{"alg":"HS256"}', JSON.stringify(payload)]
@@ -58,4 +59,22 @@ test('renders a typed production environment with escaped values', () => {
   assert.match(source, /url: "https:\/\/abcd\.supabase\.co"/);
   assert.match(source, /anonKey: "k\\"ey"/);
   assert.match(source, /as const;/);
+});
+
+test('writes the gitignored deploy environment, never the committed prod one', () => {
+  assert.equal(TARGET_PATH, 'src/environments/environment.deploy.ts');
+  const ignored = readFileSync(new URL('../.gitignore', import.meta.url), 'utf8').split(/\r?\n/);
+  assert.ok(ignored.includes(TARGET_PATH), '.gitignore must list the generated file');
+});
+
+test('the deploy configuration swaps environment.ts for the generated file', () => {
+  const angular = JSON.parse(readFileSync(new URL('../angular.json', import.meta.url), 'utf8'));
+  const deploy = angular.projects.luma.architect.build.configurations.deploy;
+  assert.deepEqual(deploy.fileReplacements, [
+    { replace: 'src/environments/environment.ts', with: TARGET_PATH },
+  ]);
+  const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+  assert.match(pkg.scripts['build:prod'], /generate-env\.mjs && ng build --configuration production,deploy$/);
+  const vercel = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'));
+  assert.equal(vercel.buildCommand, 'npm run build:prod');
 });

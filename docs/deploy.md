@@ -17,16 +17,19 @@ Functions live in Supabase. Nothing here deploys anything by itself.
    | `SUPABASE_URL` | `https://<project-ref>.supabase.co` |
    | `SUPABASE_ANON_KEY` | the **anon / publishable** key |
 
-   `scripts/generate-env.mjs` writes `src/environments/environment.prod.ts`
-   from them before `ng build`. It fails the build when a variable is missing,
-   when the URL is not https, or when the key is privileged (`sb_secret_…` or
-   a JWT whose `role` is `service_role`). It never prints the key.
+   `scripts/generate-env.mjs` writes `src/environments/environment.deploy.ts`
+   (gitignored) from them, then `ng build --configuration production,deploy`
+   runs: the `deploy` configuration in `angular.json` only adds the
+   `fileReplacements` entry `environment.ts → environment.deploy.ts`. The
+   script fails the build when a variable is missing, when the URL is not
+   https, or when the key is privileged (`sb_secret_…` or a JWT whose `role`
+   is `service_role`). It never prints the key.
 4. Node 24 (same as CI).
 
-`environment.prod.ts` is committed with placeholders so CI and local builds
-work. If you run `npm run build:prod` locally, restore it afterwards
-(`git checkout src/environments/environment.prod.ts`) instead of committing
-it.
+`environment.prod.ts` stays committed with placeholders and is never
+rewritten, so CI (`npm run build`, plain production configuration) and local
+builds keep compiling. Running `npm run build:prod` locally leaves no change
+to commit.
 
 ## Supabase Auth URLs
 

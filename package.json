@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
-    "build:prod": "node scripts/generate-env.mjs && ng build --configuration production",
+    "build:prod": "node scripts/generate-env.mjs && ng build --configuration production,deploy",
     "test:scripts": "node --test scripts/*.test.mjs"
   },
   "private": true,

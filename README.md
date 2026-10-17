@@ -73,7 +73,7 @@ Every table has Row Level Security; see the migrations for the policies.
 | --- | --- |
 | `npm start` | Dev server with `environment.ts` |
 | `npm run build` | Production build with placeholder env (what CI runs) |
-| `npm run build:prod` | Generates `environment.prod.ts` from env vars, then builds (Vercel) |
+| `npm run build:prod` | Generates the gitignored `environment.deploy.ts` from env vars, then builds with `production,deploy` (Vercel) |
 | `npm run lint` | ESLint (TS + templates, accessibility rules) |
 | `npm test -- --watch=false` | Vitest unit tests |
 | `npm run test:scripts` | Tests of `scripts/` |
