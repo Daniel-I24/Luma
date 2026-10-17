@@ -54,7 +54,9 @@ order**, then the seeds:
 2. `20240002000000_create_businesses.sql`
 3. `20261014000000_business_profile.sql` (menu, favourites, reviews)
 4. `20261015000000_grant_existing_tables.sql`
-5. Any later migration, in order.
+5. `20261017000000_orders.sql`, `20261017000100_order_functions.sql`,
+   `20261017000200_order_status_functions.sql` (orders; see
+   [docs/orders.md](docs/orders.md) — not applied to any project yet).
 
 Seeds (development data, 5 businesses in Pasto):
 
@@ -78,6 +80,7 @@ Every table has Row Level Security; see the migrations for the policies.
 | `npx cap sync android` | Copies the web build into the Android project |
 
 Edge Function tests: `cd supabase/functions/delete-account && deno test --no-lock`.
+Database security tests: `supabase/tests/*.sql` (see `docs/orders.md`).
 
 ## Project structure
 
@@ -109,6 +112,7 @@ tests → script tests. Dependabot opens weekly update PRs.
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — layers, dependency rules, decisions
 - [docs/deploy.md](docs/deploy.md) — Vercel, Supabase Auth URLs, CSP and headers
 - [docs/ai.md](docs/ai.md) — Luma IA rules engine and the path to Claude
+- [docs/orders.md](docs/orders.md) — orders backend, security tests, manual status changes
 - [docs/mocks.md](docs/mocks.md) — client-side estimations and what is real
 - [docs/security-notes.md](docs/security-notes.md) — dependency audit and accepted risks
 - [supabase/functions/delete-account/README.md](supabase/functions/delete-account/README.md)

@@ -49,7 +49,7 @@ Edge Functions.
 | Tailwind v4 on CSS-variable tokens, default palette disabled | One place to change colours; four themes with the same token structure |
 | Motion with CSS + View Transitions, no animation library | Only transform/opacity animate; respects reduced motion; no bundle cost |
 | Recommendations behind `RecommendationEngine` | Rules today, Claude via Edge Function later without touching callers (`docs/ai.md`) |
-| Client cart, server prices | The cart is informative; prices are recalculated on the server when an order is created |
+| Client cart, server prices | The cart is informative; `create_order` recalculates every total (`docs/orders.md`) |
 | `delete-account` Edge Function | Only the service role can delete `auth.users`; identity comes from the JWT only |
 | Static hosting with strict CSP | No server code in the web tier; `docs/deploy.md` lists the two justified relaxations |
 | Capacitor for Android | Same codebase as the web app |

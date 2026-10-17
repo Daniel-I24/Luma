@@ -1,0 +1,87 @@
+<div
+  *transloco="let t"
+  class="mx-auto flex max-w-lg flex-col gap-5 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6"
+>
+  <header class="flex items-center gap-2">
+    <app-luma-icon-button icon="arrow-left" variant="ghost" [label]="t('checkout.back')" (clicked)="back()" />
+    <h1 class="m-0 text-h3 text-fg">{{ t('checkout.title') }}</h1>
+  </header>
+
+  @if (cart.isEmpty()) {
+  <app-luma-empty-state icon="receipt" [heading]="t('cart.empty.title')" [description]="t('cart.empty.description')">
+    <app-luma-button (clicked)="explore()">{{ t('cart.empty.action') }}</app-luma-button>
+  </app-luma-empty-state>
+  } @else {
+  <section class="rounded-xl border border-border-subtle bg-surface p-4" aria-labelledby="checkout-summary">
+    <h2 id="checkout-summary" class="m-0 mb-2 text-title text-fg">{{ cart.businessName() }}</h2>
+    <ul class="m-0 flex list-none flex-col gap-1 p-0">
+      @for (item of cart.items(); track item.menuItemId) {
+      <li class="flex justify-between gap-3 text-body text-fg-muted">
+        <span>{{ t('checkout.line', { quantity: item.quantity, name: item.name }) }}</span>
+        <span>{{ item.priceCop * item.quantity | cop }}</span>
+      </li>
+      }
+    </ul>
+  </section>
+
+  <section class="flex flex-col gap-2" aria-labelledby="checkout-when">
+    <h2 id="checkout-when" class="m-0 text-title text-fg">{{ t('checkout.when.title') }}</h2>
+    <div class="flex flex-wrap gap-2" role="group" [attr.aria-labelledby]="'checkout-when'">
+      @for (option of options; track option) {
+      <app-luma-chip
+        [toggleable]="false"
+        [selected]="store.option() === option"
+        (selectedChange)="store.option.set(option)"
+        >{{ t('checkout.when.' + option) }}</app-luma-chip
+      >
+      }
+    </div>
+    @if (store.option() !== 'now') {
+    <app-luma-input
+      inputId="checkout-time"
+      type="time"
+      [label]="t(store.option() === 'later' ? 'checkout.when.todayAt' : 'checkout.when.tomorrowAt')"
+      [(value)]="store.time"
+    />
+    }
+  </section>
+
+  <section class="flex flex-col gap-1">
+    <label class="text-title text-fg" for="checkout-notes">{{ t('checkout.notes.label') }}</label>
+    <textarea
+      id="checkout-notes"
+      rows="3"
+      class="w-full resize-y rounded-md border border-border bg-surface p-3 text-body text-fg placeholder:text-fg-subtle focus-visible:border-primary focus-visible:outline-2 focus-visible:outline-border-focus"
+      aria-describedby="checkout-notes-count"
+      [attr.maxlength]="notesMax"
+      [placeholder]="t('checkout.notes.placeholder')"
+      [value]="store.notes()"
+      (input)="onNotes($event)"
+    ></textarea>
+    <p id="checkout-notes-count" class="m-0 text-right text-caption text-fg-subtle" aria-live="polite">
+      {{ t('reviews.form.counter', { count: store.notes().length, max: notesMax }) }}
+    </p>
+  </section>
+
+  <section class="flex items-center gap-3 rounded-xl border border-border-subtle bg-surface p-4">
+    <app-luma-icon class="text-fg-brand" name="check" />
+    <div class="flex flex-col">
+      <span class="text-title text-fg">{{ t('checkout.payment.payAtPickup') }}</span>
+      <span class="text-caption text-fg-subtle">{{ t('checkout.payment.hint') }}</span>
+    </div>
+  </section>
+
+  <div class="flex items-center justify-between">
+    <span class="text-title text-fg">{{ t('cart.total') }}</span>
+    <span class="text-price text-fg">{{ cart.totalCop() | cop }}</span>
+  </div>
+  <p class="m-0 text-caption text-fg-subtle">{{ t('checkout.totalNote') }}</p>
+
+  @if (store.errorKey(); as key) {
+  <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
+  }
+  <app-luma-button size="lg" [fullWidth]="true" [disabled]="store.submitting()" (clicked)="store.confirm()">{{
+    t(store.submitting() ? 'checkout.confirming' : 'checkout.confirm')
+  }}</app-luma-button>
+  }
+</div>

@@ -1,1 +1,45 @@
-<app-coming-soon-page titleKey="orders.title" descriptionKey="orders.comingSoon" icon="receipt" />
+<div
+  *transloco="let t"
+  class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6"
+>
+  <h1 class="m-0 text-h3 text-fg">{{ t('orders.title') }}</h1>
+
+  @switch (state()) { @case ('loading') {
+  <div class="flex flex-col gap-3" aria-busy="true">
+    @for (i of [0, 1, 2]; track i) {
+    <app-luma-skeleton class="h-20 w-full" shape="rect" />
+    }
+    <span class="sr-only">{{ t('orders.loading') }}</span>
+  </div>
+  } @case ('error') {
+  <div role="alert">
+    <app-luma-empty-state icon="alert" tone="error" [heading]="t('orders.errors.loadTitle')" [description]="t('orders.errors.loadFailed')">
+      <app-luma-button (clicked)="load()">{{ t('common.retry') }}</app-luma-button>
+    </app-luma-empty-state>
+  </div>
+  } @case ('ready') { @if (orders().length === 0) {
+  <app-luma-empty-state icon="receipt" [heading]="t('orders.empty.title')" [description]="t('orders.empty.description')">
+    <app-luma-button (clicked)="explore()">{{ t('orders.empty.action') }}</app-luma-button>
+  </app-luma-empty-state>
+  } @else {
+  <ul class="m-0 flex list-none flex-col gap-3 p-0">
+    @for (order of orders(); track order.id) {
+    <li class="motion-stagger" [style.--stagger-index]="$index < 6 ? $index : 0">
+      <a
+        class="pressable flex flex-col gap-2 rounded-xl border border-border-subtle bg-surface p-4 text-fg no-underline shadow-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+        [routerLink]="['/orders', order.id]"
+      >
+        <span class="flex items-center justify-between gap-2">
+          <span class="text-title">{{ order.business?.name ?? t('orders.unknownBusiness') }}</span>
+          <app-order-status-badge [status]="order.status" />
+        </span>
+        <span class="flex items-center justify-between gap-2 text-body-sm text-fg-muted">
+          <span>{{ when(order) }}</span>
+          <span class="text-title text-fg">{{ order.total_cop | cop }}</span>
+        </span>
+      </a>
+    </li>
+    }
+  </ul>
+  } } }
+</div>

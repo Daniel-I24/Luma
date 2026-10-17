@@ -2,7 +2,6 @@
   "common": {
     "close": "Cerrar",
     "remove": "Quitar",
-    "comingSoon": "Próximamente",
     "retry": "Reintentar"
   },
   "designPreview": {
@@ -345,7 +344,54 @@
   },
   "orders": {
     "title": "Pedidos",
-    "comingSoon": "Muy pronto podrás pedir, pagar y seguir tus pedidos desde aquí."
+    "loading": "Cargando pedidos…",
+    "unknownBusiness": "Negocio no disponible",
+    "empty": {
+      "title": "Aún no tienes pedidos",
+      "description": "Arma tu carrito desde el menú de un restaurante y recógelo cuando quieras.",
+      "action": "Explorar negocios"
+    },
+    "status": {
+      "pending": "Pendiente",
+      "accepted": "Aceptado",
+      "preparing": "En preparación",
+      "ready": "Listo para recoger",
+      "picked_up": "Recogido",
+      "cancelled": "Cancelado"
+    },
+    "detail": {
+      "title": "Tu pedido",
+      "back": "Volver a pedidos",
+      "timeline": "Estado del pedido",
+      "readyAround": "Listo aprox. a las {{time}}",
+      "pickupAt": "Recogida programada a las {{time}}",
+      "directions": "Cómo llegar",
+      "items": "Tu pedido",
+      "notes": "Notas: {{notes}}",
+      "cancelled": "Este pedido fue cancelado.",
+      "cancel": "Cancelar pedido",
+      "cancelTitle": "¿Cancelar el pedido?",
+      "cancelDescription": "El restaurante aún no lo ha aceptado. Si lo cancelas no se preparará.",
+      "cancelConfirm": "Sí, cancelar",
+      "keep": "Mantener pedido",
+      "notFoundDescription": "Puede que el enlace sea incorrecto o que el pedido no sea tuyo."
+    },
+    "errors": {
+      "loadTitle": "No se pudieron cargar los pedidos",
+      "loadFailed": "Revisa tu conexión e intenta de nuevo.",
+      "createFailed": "No se pudo crear el pedido. Intenta de nuevo.",
+      "cancelFailed": "No se pudo cancelar el pedido. Intenta de nuevo.",
+      "notAuthenticated": "Tu sesión expiró. Inicia sesión de nuevo.",
+      "businessUnavailable": "Este negocio no está recibiendo pedidos.",
+      "invalidItems": "Revisa los productos y cantidades de tu carrito.",
+      "itemUnavailable": "Un producto de tu carrito ya no está disponible. Revisa tu carrito.",
+      "invalidPickupTime": "La hora de recogida debe ser entre 10 minutos y 7 días desde ahora.",
+      "invalidNotes": "Las notas pueden tener hasta 200 caracteres.",
+      "totalTooHigh": "El total supera el máximo permitido por pedido.",
+      "tooManyPending": "Tienes demasiados pedidos pendientes. Espera a que avancen o cancela alguno.",
+      "notFound": "Pedido no encontrado",
+      "invalidTransition": "El pedido ya cambió de estado y no se puede cancelar."
+    }
   },
   "reviews": {
     "validation": {
@@ -464,7 +510,32 @@
   },
   "checkout": {
     "title": "Confirmar pedido",
-    "comingSoon": "Muy pronto podrás confirmar tu pedido desde aquí."
+    "back": "Volver al carrito",
+    "line": "{{quantity}} × {{name}}",
+    "when": {
+      "title": "¿Cuándo recoges?",
+      "now": "Ahora",
+      "later": "Más tarde",
+      "tomorrow": "Mañana",
+      "todayAt": "Hora de recogida (hoy)",
+      "tomorrowAt": "Hora de recogida (mañana)"
+    },
+    "notes": {
+      "label": "Notas para el restaurante",
+      "placeholder": "Ej.: sin cebolla, salsa aparte"
+    },
+    "payment": {
+      "payAtPickup": "Pagar al recoger",
+      "hint": "Pagas en el local cuando recojas tu pedido."
+    },
+    "totalNote": "El restaurante confirma el precio final al recibir el pedido.",
+    "confirm": "Confirmar pedido",
+    "confirming": "Enviando pedido…",
+    "errors": {
+      "timeRequired": "Elige una hora de recogida válida.",
+      "tooSoon": "Elige una hora al menos 10 minutos más tarde.",
+      "tooFar": "Solo puedes programar hasta 7 días antes."
+    }
   },
   "favoritesPage": {
     "title": "Mis favoritos",

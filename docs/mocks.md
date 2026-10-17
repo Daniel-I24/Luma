@@ -51,6 +51,16 @@ existe): lo que sigue son estimaciones o reglas calculadas en el cliente.
   vuelven a consultar los ítems y se avisan los cambios; el servidor
   recalcula todos los precios al crear el pedido.
 
+## Hora estimada del pedido
+
+- **Dónde:** `src/app/features/orders/utils/order-detail.util.ts`
+  (`ESTIMATED_PREP_MINUTES`).
+- **Cálculo:** para pedidos "lo antes posible", hora de creación + 20 minutos;
+  si el cliente programó la recogida se muestra esa hora. No hay tiempo de
+  preparación por negocio.
+- **Para reemplazarlo:** un tiempo estimado que el negocio fije al aceptar el
+  pedido (columna en `orders`).
+
 ## Lo que es real
 
 - Negocios, categorías, horarios, estado (abierto, cierra pronto, cerrado,

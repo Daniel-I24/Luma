@@ -70,17 +70,25 @@ export class FakeQuery implements PromiseLike<FakeResponse> {
   }
 }
 
-/** Builds a fake client; tables without a configured response return `[]`. */
+/**
+ * Builds a fake client; tables without a configured response return `[]`.
+ * RPC responses are configured as `rpc:<function name>`.
+ */
 export function createFakeSupabase(responses: Record<string, FakeResponse> = {}) {
   const queries: FakeQuery[] = [];
+  const rpcCalls: [name: string, args: unknown][] = [];
   const client = {
     from(table: string): FakeQuery {
       const query = new FakeQuery(table, responses[table] ?? { data: [], error: null });
       queries.push(query);
       return query;
     },
+    rpc(name: string, args: unknown): Promise<FakeResponse> {
+      rpcCalls.push([name, args]);
+      return Promise.resolve(responses[`rpc:${name}`] ?? { data: null, error: null });
+    },
   };
-  return { client, queries };
+  return { client, queries, rpcCalls };
 }
 
 export const ok = (data: unknown): FakeResponse => ({ data, error: null });

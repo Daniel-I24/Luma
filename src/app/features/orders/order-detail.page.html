@@ -1,0 +1,98 @@
+<div
+  *transloco="let t"
+  class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6"
+>
+  <header class="flex items-center gap-2">
+    <app-luma-icon-button icon="arrow-left" variant="ghost" [label]="t('orders.detail.back')" (clicked)="back()" />
+    <h1 class="m-0 text-h3 text-fg">{{ t('orders.detail.title') }}</h1>
+  </header>
+
+  @switch (store.state()) { @case ('loading') {
+  <div class="flex flex-col gap-3" aria-busy="true">
+    <app-luma-skeleton class="h-40 w-full" shape="rect" />
+    <app-luma-skeleton class="h-24 w-full" shape="rect" />
+    <span class="sr-only">{{ t('orders.loading') }}</span>
+  </div>
+  } @case ('notFound') {
+  <app-luma-empty-state icon="receipt" [heading]="t('orders.errors.notFound')" [description]="t('orders.detail.notFoundDescription')" />
+  } @case ('error') {
+  <div role="alert">
+    <app-luma-empty-state icon="alert" tone="error" [heading]="t('orders.errors.loadTitle')" [description]="t('orders.errors.loadFailed')">
+      <app-luma-button (clicked)="reload()">{{ t('common.retry') }}</app-luma-button>
+    </app-luma-empty-state>
+  </div>
+  } @case ('ready') { @if (store.order(); as order) {
+  <section class="flex flex-col gap-3 rounded-xl border border-border-subtle bg-surface p-4" aria-live="polite">
+    <div class="flex items-center justify-between gap-2">
+      <span class="text-title text-fg">{{ order.business?.name ?? t('orders.unknownBusiness') }}</span>
+      <app-order-status-badge [status]="order.status" />
+    </div>
+    @if (order.status === 'cancelled') {
+    <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg">{{ t('orders.detail.cancelled') }}</p>
+    } @else {
+    <app-order-timeline [status]="order.status" />
+    } @if (estimate(); as time) {
+    <p class="m-0 flex items-center gap-2 text-body text-fg">
+      <app-luma-icon class="text-fg-accent" name="clock" size="sm" />
+      {{ t(order.pickup_at ? 'orders.detail.pickupAt' : 'orders.detail.readyAround', { time }) }}
+    </p>
+    }
+  </section>
+
+  @if (order.business; as business) {
+  <section class="flex flex-col gap-2 rounded-xl border border-border-subtle bg-surface p-4">
+    <p class="m-0 flex items-center gap-2 text-body text-fg-muted">
+      <app-luma-icon name="pin" size="sm" /> {{ business.address }}
+    </p>
+    <a
+      class="pressable inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-border px-4 text-title text-fg-brand no-underline focus-visible:outline-2 focus-visible:outline-border-focus"
+      target="_blank"
+      rel="noopener noreferrer"
+      [href]="directions(business)"
+    >
+      <app-luma-icon name="map" size="sm" /> {{ t('orders.detail.directions') }}
+    </a>
+  </section>
+  }
+
+  <section class="rounded-xl border border-border-subtle bg-surface p-4" aria-labelledby="order-lines">
+    <h2 id="order-lines" class="m-0 mb-2 text-title text-fg">{{ t('orders.detail.items') }}</h2>
+    <ul class="m-0 flex list-none flex-col gap-1 p-0">
+      @for (item of order.items; track item.id) {
+      <li class="flex justify-between gap-3 text-body text-fg-muted">
+        <span>{{ t('checkout.line', { quantity: item.quantity, name: item.name }) }}</span>
+        <span>{{ item.unit_price_cop * item.quantity | cop }}</span>
+      </li>
+      }
+    </ul>
+    <p class="m-0 mt-3 flex justify-between border-t border-border-subtle pt-3">
+      <span class="text-title text-fg">{{ t('cart.total') }}</span>
+      <span class="text-price text-fg">{{ order.total_cop | cop }}</span>
+    </p>
+    <p class="m-0 mt-1 text-caption text-fg-subtle">{{ t('checkout.payment.payAtPickup') }}</p>
+    @if (order.notes; as notes) {
+    <p class="m-0 mt-2 text-body-sm text-fg-muted">{{ t('orders.detail.notes', { notes }) }}</p>
+    }
+  </section>
+
+  @if (store.errorKey(); as key) {
+  <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
+  } @if (order.status === 'pending') {
+  <app-luma-button variant="danger-outline" [fullWidth]="true" [disabled]="store.cancelling()" (clicked)="confirmOpen.set(true)">{{
+    t('orders.detail.cancel')
+  }}</app-luma-button>
+  } } } }
+
+  <app-luma-bottom-sheet
+    titleId="cancel-order-title"
+    [open]="confirmOpen()"
+    [title]="t('orders.detail.cancelTitle')"
+    (closed)="confirmOpen.set(false)"
+  >
+    <p class="m-0 mb-4 text-body text-fg-muted">{{ t('orders.detail.cancelDescription') }}</p>
+    <div class="flex flex-col gap-3">
+      <app-luma-button variant="danger" [fullWidth]="true" (clicked)="cancel()">{{ t('orders.detail.cancelConfirm') }}</app-luma-button>
+      <app-luma-button variant="ghost" [fullWidth]="true" (clicked)="confirmOpen.set(false)">{{ t('orders.detail.keep') }}</app-luma-button>
+    </div>
+  </app-luma-bottom-sheet>
+</div>

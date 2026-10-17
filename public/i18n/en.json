@@ -2,7 +2,6 @@
   "common": {
     "close": "Close",
     "remove": "Remove",
-    "comingSoon": "Coming soon",
     "retry": "Try again"
   },
   "designPreview": {
@@ -345,7 +344,54 @@
   },
   "orders": {
     "title": "Orders",
-    "comingSoon": "Soon you will be able to order, pay and track your orders from here."
+    "loading": "Loading orders…",
+    "unknownBusiness": "Business unavailable",
+    "empty": {
+      "title": "No orders yet",
+      "description": "Fill your cart from a restaurant menu and pick it up when you like.",
+      "action": "Explore businesses"
+    },
+    "status": {
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "preparing": "Preparing",
+      "ready": "Ready for pick-up",
+      "picked_up": "Picked up",
+      "cancelled": "Cancelled"
+    },
+    "detail": {
+      "title": "Your order",
+      "back": "Back to orders",
+      "timeline": "Order status",
+      "readyAround": "Ready around {{time}}",
+      "pickupAt": "Pick-up scheduled at {{time}}",
+      "directions": "Get directions",
+      "items": "Your items",
+      "notes": "Notes: {{notes}}",
+      "cancelled": "This order was cancelled.",
+      "cancel": "Cancel order",
+      "cancelTitle": "Cancel the order?",
+      "cancelDescription": "The restaurant has not accepted it yet. If you cancel, it will not be prepared.",
+      "cancelConfirm": "Yes, cancel",
+      "keep": "Keep order",
+      "notFoundDescription": "The link may be wrong or the order is not yours."
+    },
+    "errors": {
+      "loadTitle": "Could not load orders",
+      "loadFailed": "Check your connection and try again.",
+      "createFailed": "Could not create the order. Please try again.",
+      "cancelFailed": "Could not cancel the order. Please try again.",
+      "notAuthenticated": "Your session expired. Sign in again.",
+      "businessUnavailable": "This business is not taking orders.",
+      "invalidItems": "Check the items and quantities in your cart.",
+      "itemUnavailable": "An item in your cart is no longer available. Review your cart.",
+      "invalidPickupTime": "Pick-up time must be between 10 minutes and 7 days from now.",
+      "invalidNotes": "Notes can be up to 200 characters.",
+      "totalTooHigh": "The total exceeds the maximum allowed per order.",
+      "tooManyPending": "You have too many pending orders. Wait for them to progress or cancel one.",
+      "notFound": "Order not found",
+      "invalidTransition": "The order already changed status and cannot be cancelled."
+    }
   },
   "reviews": {
     "validation": {
@@ -464,7 +510,32 @@
   },
   "checkout": {
     "title": "Confirm order",
-    "comingSoon": "Soon you will be able to confirm your order here."
+    "back": "Back to cart",
+    "line": "{{quantity}} × {{name}}",
+    "when": {
+      "title": "When will you pick it up?",
+      "now": "Now",
+      "later": "Later",
+      "tomorrow": "Tomorrow",
+      "todayAt": "Pick-up time (today)",
+      "tomorrowAt": "Pick-up time (tomorrow)"
+    },
+    "notes": {
+      "label": "Notes for the restaurant",
+      "placeholder": "E.g. no onion, sauce on the side"
+    },
+    "payment": {
+      "payAtPickup": "Pay at pick-up",
+      "hint": "You pay at the counter when you pick up your order."
+    },
+    "totalNote": "The restaurant confirms the final price when it receives the order.",
+    "confirm": "Confirm order",
+    "confirming": "Sending order…",
+    "errors": {
+      "timeRequired": "Choose a valid pick-up time.",
+      "tooSoon": "Choose a time at least 10 minutes from now.",
+      "tooFar": "You can schedule up to 7 days ahead."
+    }
   },
   "favoritesPage": {
     "title": "My favourites",

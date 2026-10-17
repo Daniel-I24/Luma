@@ -73,6 +73,12 @@ export const routes: Routes = [
         path: 'orders',
         loadComponent: () => import('./features/orders/orders.page').then((m) => m.OrdersPage),
       },
+      {
+        path: 'orders/:id',
+        data: DETAIL_ROUTE_DATA,
+        loadComponent: () =>
+          import('./features/orders/order-detail.page').then((m) => m.OrderDetailPage),
+      },
     ],
   },
   { path: '**', redirectTo: 'map' },
