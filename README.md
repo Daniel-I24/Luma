@@ -76,7 +76,7 @@ Every table has Row Level Security; see the migrations for the policies.
 | `npm run build:prod` | Generates the gitignored `environment.deploy.ts` from env vars, then builds with `production,deploy` (Vercel) |
 | `npm run lint` | ESLint (TS + templates, accessibility rules) |
 | `npm test -- --watch=false` | Vitest unit tests |
-| `npm run test:scripts` | Tests of `scripts/` |
+| `npm run test:scripts` | Tests of `scripts/`, including the i18n check (same keys in es/en, every literal key in `src/` exists) |
 | `npx cap sync android` | Copies the web build into the Android project |
 
 Edge Function tests: `cd supabase/functions/delete-account && deno test --no-lock`.

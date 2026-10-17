@@ -42,4 +42,5 @@ The full project rules live in `.kiro/steering/` (`product`, `tech`, `structure`
 npm run build
 npx ng lint
 npm test -- --watch=false
+npm run test:scripts
 ```
