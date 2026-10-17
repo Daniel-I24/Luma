@@ -182,7 +182,10 @@
       "displayNameTooLong": "The name can be up to 40 characters long."
     },
     "activity": "Your activity",
-    "favorites": "My favourites"
+    "favorites": "My favourites",
+    "business": "Businesses",
+    "myBusiness": "My business",
+    "registerBusiness": "Register my business"
   },
   "map": {
     "canvasLabel": "Luma business map",
@@ -553,6 +556,211 @@
       "title": "No favourites yet",
       "description": "Tap a business's heart to save it here.",
       "action": "Explore businesses"
+    }
+  },
+  "businessCategories": {
+    "restaurant": "Restaurant",
+    "cafe": "Café",
+    "bakery": "Bakery",
+    "pastry": "Pastry shop",
+    "iceCream": "Ice cream shop",
+    "pizza": "Pizzeria",
+    "burger": "Burger joint",
+    "fastFood": "Fast food",
+    "bar": "Bar",
+    "store": "Shop"
+  },
+  "businessPanel": {
+    "back": "Back",
+    "loading": "Loading…",
+    "notFound": {
+      "title": "Business not found",
+      "description": "It does not exist or is not yours."
+    },
+    "list": {
+      "title": "My businesses",
+      "empty": {
+        "title": "You don't have a business yet",
+        "description": "Register it to show it on the map and receive orders."
+      },
+      "register": "Register my business",
+      "registerAnother": "Register another business",
+      "published": "Published",
+      "draft": "Not published"
+    },
+    "form": {
+      "name": "Business name",
+      "namePlaceholder": "E.g. Fritanga Don Segundo",
+      "category": "Category",
+      "categoryPlaceholder": "Choose a category",
+      "phone": "Phone (optional)",
+      "phoneHint": "E.g. +57 300 123 4567",
+      "address": "Address",
+      "addressPlaceholder": "E.g. Calle 18 # 25-30, Pasto",
+      "description": "Description (optional)",
+      "counter": "{{count}}/{{max}}",
+      "prepMinutes": "Preparation time (minutes)",
+      "prepHint": "Between 5 and 180. Used to estimate when an order will be ready.",
+      "save": "Save changes",
+      "saving": "Saving…",
+      "saved": "Changes saved",
+      "fixErrors": "Check the highlighted fields."
+    },
+    "location": {
+      "label": "Location",
+      "hint": "Tap the map to drop the pin; you can drag it.",
+      "mapLabel": "Map to choose the business location",
+      "useCurrent": "Use my location",
+      "useCentre": "Pin the map centre",
+      "chosen": "Pin at {{lat}}, {{lng}}",
+      "none": "You haven't chosen the location yet.",
+      "mapFailed": "The map could not be loaded. Use your current location.",
+      "denied": "We couldn't get your location. Tap the map to choose it."
+    },
+    "register": {
+      "title": "Register my business",
+      "subtitle": "It starts unpublished: add hours and a menu, then publish it when ready.",
+      "submit": "Register business",
+      "created": "Business registered"
+    },
+    "dashboard": {
+      "publishTitle": "Publishing",
+      "ready": "Everything is ready to publish.",
+      "missingTitle": "To publish, you still need:",
+      "publish": "Publish",
+      "unpublish": "Unpublish",
+      "publishedToast": "Your business is now visible on Luma.",
+      "unpublishedToast": "Your business is no longer visible on Luma.",
+      "visible": "Visible on the map and the feed.",
+      "hidden": "Only you can see it.",
+      "manage": "Manage",
+      "info": "Information",
+      "infoHint": "Name, contact, location and preparation time",
+      "hours": "Opening hours",
+      "hoursHint": "Days and hours you are open",
+      "menu": "Menu",
+      "menuHint": "Products, prices and availability",
+      "promotions": "Promotions",
+      "promotionsHint": "Offers with a start and end date"
+    },
+    "requirements": {
+      "name": "A name",
+      "category": "A category",
+      "location": "The location on the map",
+      "openDay": "At least one open day in the hours",
+      "availableItem": "At least one available product on the menu"
+    },
+    "info": {
+      "title": "Information"
+    },
+    "hours": {
+      "title": "Opening hours",
+      "hint": "If the closing time is earlier than the opening time, the hours cross midnight.",
+      "open": "Open",
+      "opens": "Opens",
+      "closes": "Closes",
+      "crossesMidnight": "Closes the next day at {{time}}.",
+      "days": {
+        "0": "Sunday",
+        "1": "Monday",
+        "2": "Tuesday",
+        "3": "Wednesday",
+        "4": "Thursday",
+        "5": "Friday",
+        "6": "Saturday"
+      },
+      "save": "Save hours"
+    },
+    "menu": {
+      "title": "Menu",
+      "add": "Add product",
+      "empty": {
+        "title": "Your menu is empty",
+        "description": "Add your products so customers can order."
+      },
+      "noSection": "No section",
+      "available": "Available",
+      "soldOut": "Sold out",
+      "availability": "Available: {{name}}",
+      "edit": "Edit {{name}}",
+      "delete": "Delete {{name}}",
+      "newTitle": "New product",
+      "editTitle": "Edit product",
+      "name": "Name",
+      "description": "Description (optional)",
+      "price": "Price (COP)",
+      "priceHint": "Whole pesos, no decimals.",
+      "section": "Section (optional)",
+      "sectionPlaceholder": "E.g. Drinks",
+      "sortOrder": "Order",
+      "sortOrderHint": "Lower numbers show first.",
+      "isAvailable": "Available to order",
+      "save": "Save product",
+      "cancel": "Cancel",
+      "deleteTitle": "Delete product?",
+      "deleteDescription": "“{{name}}” will be removed from the menu. Past orders keep it.",
+      "deleteConfirm": "Yes, delete",
+      "saved": "Product saved",
+      "deleted": "Product deleted"
+    },
+    "promotions": {
+      "title": "Promotions",
+      "add": "New promotion",
+      "empty": {
+        "title": "No promotions",
+        "description": "Create an offer with a start and end date."
+      },
+      "phase": {
+        "scheduled": "Scheduled",
+        "running": "Active",
+        "ended": "Ended"
+      },
+      "dates": "{{from}} – {{to}}",
+      "edit": "Edit {{title}}",
+      "end": "End",
+      "newTitle": "New promotion",
+      "editTitle": "Edit promotion",
+      "promoTitle": "Title",
+      "description": "Description (optional)",
+      "startsAt": "Starts",
+      "endsAt": "Ends",
+      "save": "Save promotion",
+      "cancel": "Cancel",
+      "endTitle": "End the promotion?",
+      "endDescription": "“{{title}}” will stop showing right away.",
+      "endConfirm": "Yes, end it",
+      "saved": "Promotion saved",
+      "ended": "Promotion ended"
+    },
+    "validation": {
+      "name": "Enter a name of 2 to 80 characters.",
+      "category": "Choose a category.",
+      "phone": "Enter a valid phone: 7 to 20 digits, may start with +.",
+      "address": "Enter an address of 5 to 200 characters.",
+      "location": "Choose the location on the map.",
+      "description": "300 characters at most.",
+      "prepMinutes": "Enter a whole number between 5 and 180.",
+      "time": "Enter a valid time.",
+      "sameTimes": "The closing time must differ from the opening time.",
+      "itemName": "Enter a name of 1 to 80 characters.",
+      "price": "Enter a price in whole pesos, no decimals.",
+      "section": "40 characters at most.",
+      "sortOrder": "Enter a whole number between 0 and 9999.",
+      "promoTitle": "Enter a title of 3 to 80 characters.",
+      "date": "Choose a date and time.",
+      "datesOrder": "The end date must be after the start date.",
+      "endsInPast": "The end date must be in the future.",
+      "imageUrl": "The image must be an https address."
+    },
+    "errors": {
+      "loadFailed": "Your business information could not be loaded.",
+      "saveFailed": "The changes could not be saved. Try again.",
+      "deleteFailed": "It could not be deleted. Try again.",
+      "publishFailed": "Publishing could not be changed. Try again.",
+      "publishRequirements": "It can't be published yet: complete the requirements.",
+      "invalidData": "Some data is not valid. Check it.",
+      "duplicate": "That already exists.",
+      "forbidden": "You are not allowed to change this business."
     }
   }
 }

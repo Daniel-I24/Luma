@@ -4,6 +4,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
 import { LumaAvatar, LumaBottomSheet, LumaButton, LumaIcon } from '@design-system';
 import { AppearanceSettings } from './components/appearance-settings/appearance-settings';
+import { BusinessEntry } from './components/business-entry/business-entry';
 import { DisplayNameField } from './components/display-name-field/display-name-field';
 
 /**
@@ -23,6 +24,7 @@ import { DisplayNameField } from './components/display-name-field/display-name-f
     LumaIcon,
     RouterLink,
     AppearanceSettings,
+    BusinessEntry,
     DisplayNameField,
   ],
   templateUrl: './profile.page.html',
@@ -36,7 +38,13 @@ export class ProfilePage {
   protected readonly deleteSheetOpen = signal(false);
   protected readonly errorKey = signal<string | null>(null);
   /** What account deletion removes, listed in the confirmation sheet. */
-  protected readonly deletedData = ['account', 'profile', 'favorites', 'reviews', 'businesses'] as const;
+  protected readonly deletedData = [
+    'account',
+    'profile',
+    'favorites',
+    'reviews',
+    'businesses',
+  ] as const;
 
   protected async onSignOut(): Promise<void> {
     this.errorKey.set(null);

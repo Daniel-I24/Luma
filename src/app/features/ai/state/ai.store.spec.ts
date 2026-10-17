@@ -10,7 +10,13 @@ import type { RecommendationRequest } from '@shared/recommendations/recommendati
 import { AiStore } from './ai.store';
 
 const allDay = (business_id: string) =>
-  [0, 1, 2, 3, 4, 5, 6].map((d) => ({ business_id, day_of_week: d, opens_at: '00:00', closes_at: '23:59', is_closed: false }));
+  [0, 1, 2, 3, 4, 5, 6].map((d) => ({
+    business_id,
+    day_of_week: d,
+    opens_at: '00:00',
+    closes_at: '23:59',
+    is_closed: false,
+  }));
 const ok = <T>(data: T) => Promise.resolve({ data, errorKey: null });
 
 describe('AiStore', () => {
@@ -27,9 +33,13 @@ describe('AiStore', () => {
     vi.useFakeTimers({ toFake: ['Date'] });
     vi.setSystemTime(new Date('2026-10-14T12:00:00'));
     vi.clearAllMocks();
-    businesses.getNearby.mockReturnValue(ok([{ id: 'b1', name: 'Café', category: 'Cafetería', latitude: 1, longitude: 2 }]));
+    businesses.getNearby.mockReturnValue(
+      ok([{ id: 'b1', name: 'Café', category: 'Cafetería', latitude: 1, longitude: 2 }]),
+    );
     businesses.getHoursFor.mockReturnValue(ok(allDay('b1')));
-    highlights.getRatings.mockReturnValue(ok(new Map([['b1', { businessId: 'b1', rating: 4.5, reviewCount: 3 }]])));
+    highlights.getRatings.mockReturnValue(
+      ok(new Map([['b1', { businessId: 'b1', rating: 4.5, reviewCount: 3 }]])),
+    );
     highlights.getActivePromotions.mockReturnValue(ok([{ business_id: 'b1' }]));
     menus.getAvailableFor.mockReturnValue(ok([{ id: 'm1', business_id: 'b1' }]));
     engine.recommend.mockResolvedValue({ businesses: [], combo: null });
@@ -68,7 +78,9 @@ describe('AiStore', () => {
     await store.load();
     await store.selectMoment('dinner');
 
-    expect(engine.recommend).toHaveBeenLastCalledWith(expect.objectContaining({ moment: 'dinner' }));
+    expect(engine.recommend).toHaveBeenLastCalledWith(
+      expect.objectContaining({ moment: 'dinner' }),
+    );
     expect(businesses.getNearby).toHaveBeenCalledOnce();
   });
 

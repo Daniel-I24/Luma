@@ -25,11 +25,15 @@ export class OrderRepository {
   async create(order: NewOrder): Promise<RepoResult<string>> {
     const { data, error } = await this.db.rpc('create_order', {
       p_business_id: order.businessId,
-      p_items: order.items.map((item) => ({ menu_item_id: item.menuItemId, quantity: item.quantity })),
+      p_items: order.items.map((item) => ({
+        menu_item_id: item.menuItemId,
+        quantity: item.quantity,
+      })),
       p_pickup_at: order.pickupAt,
       p_notes: order.notes,
     });
-    if (error) return { data: null, errorKey: mapOrderError(error.message, 'orders.errors.createFailed') };
+    if (error)
+      return { data: null, errorKey: mapOrderError(error.message, 'orders.errors.createFailed') };
     const id = orderIdSchema.safeParse(data);
     if (!id.success) return { data: null, errorKey: 'orders.errors.createFailed' };
     return { data: id.data, errorKey: null };
@@ -50,7 +54,9 @@ export class OrderRepository {
   async getById(id: string): Promise<RepoResult<OrderWithItems | null>> {
     const { data, error } = await this.db
       .from('orders')
-      .select(`${ORDER_COLUMNS}, items:order_items(id, menu_item_id, name, unit_price_cop, quantity)`)
+      .select(
+        `${ORDER_COLUMNS}, items:order_items(id, menu_item_id, name, unit_price_cop, quantity)`,
+      )
       .eq('id', id)
       .maybeSingle();
     if (error) return { data: null, errorKey: 'orders.errors.loadFailed' };
@@ -59,7 +65,8 @@ export class OrderRepository {
 
   async cancel(id: string): Promise<RepoResult<true>> {
     const { error } = await this.db.rpc('cancel_order', { p_order_id: id });
-    if (error) return { data: null, errorKey: mapOrderError(error.message, 'orders.errors.cancelFailed') };
+    if (error)
+      return { data: null, errorKey: mapOrderError(error.message, 'orders.errors.cancelFailed') };
     return { data: true, errorKey: null };
   }
 }

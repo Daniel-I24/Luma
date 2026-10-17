@@ -9,7 +9,7 @@ import { MapPage } from './map.page';
 import { BusinessHoursCacheService } from './services/business-hours-cache.service';
 import { MapCameraService } from './services/map-camera.service';
 import { MapMarkerSyncService } from './services/map-marker-sync.service';
-import { MapStylesLoader } from './services/map-styles.loader';
+import { MapStylesLoader } from '@shared/map/map-styles.loader';
 import { useFixedClock } from '../../../testing/fixed-clock';
 
 const ES = {
@@ -44,9 +44,7 @@ function setup() {
     currentCenter: vi.fn(() => ({ lat: 1, lng: 2 })),
     instance: {},
   };
-  const repo = {
-    getNearby: vi.fn().mockResolvedValue({ data: [business], errorKey: null }),
-  };
+  const repo = { getNearby: vi.fn().mockResolvedValue({ data: [business], errorKey: null }) };
   const markers = { syncMarkers: vi.fn(), select: vi.fn(), clear: vi.fn() };
   TestBed.configureTestingModule({
     imports: [
@@ -85,7 +83,6 @@ async function render() {
 
 describe('MapPage', () => {
   useFixedClock();
-
   beforeEach(() => vi.clearAllMocks());
 
   it('starts MapLibre on the real map container and loads nearby businesses', async () => {

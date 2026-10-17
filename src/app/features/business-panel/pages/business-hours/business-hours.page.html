@@ -1,0 +1,67 @@
+<div
+  *transloco="let t"
+  class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6"
+>
+  <app-panel-header
+    [heading]="t('businessPanel.hours.title')"
+    [subtitle]="t('businessPanel.hours.hint')"
+    [backLink]="['/business', id()]"
+  />
+  <app-panel-state [state]="panel.state()" (retry)="load()">
+    <form class="flex flex-col gap-3" novalidate (submit)="save($event)">
+      @for (day of week(); track day.day_of_week) {
+      <fieldset
+        class="m-0 flex flex-col gap-3 rounded-xl border border-border-subtle bg-surface p-4"
+      >
+        <legend class="sr-only">{{ t('businessPanel.hours.days.' + day.day_of_week) }}</legend>
+        <div class="flex min-h-11 items-center justify-between gap-3">
+          <span class="text-title text-fg" aria-hidden="true"
+            >{{ t('businessPanel.hours.days.' + day.day_of_week) }}</span
+          >
+          <label class="flex min-h-11 cursor-pointer items-center gap-2 text-body text-fg">
+            <input
+              type="checkbox"
+              class="size-5 accent-primary"
+              [id]="'hours-' + day.day_of_week + '-open'"
+              [checked]="!day.is_closed"
+              (change)="onOpenChange(day.day_of_week, $event)"
+            />
+            {{ t('businessPanel.hours.open') }}
+          </label>
+        </div>
+        @if (!day.is_closed) {
+        <div class="grid grid-cols-2 gap-3">
+          <app-luma-input
+            type="time"
+            [inputId]="'hours-' + day.day_of_week + '-opens'"
+            [label]="t('businessPanel.hours.opens')"
+            [value]="day.opens_at"
+            (valueChange)="update(day.day_of_week, { opens_at: $event })"
+          />
+          <app-luma-input
+            type="time"
+            [inputId]="'hours-' + day.day_of_week + '-closes'"
+            [label]="t('businessPanel.hours.closes')"
+            [errorMessage]="errors()[day.day_of_week] ? t(errors()[day.day_of_week]) : undefined"
+            [value]="day.closes_at"
+            (valueChange)="update(day.day_of_week, { closes_at: $event })"
+          />
+        </div>
+        @if (crossesMidnight(day)) {
+        <p class="m-0 rounded-md bg-info-bg p-2 text-body-sm text-info-fg" role="status">
+          {{ t('businessPanel.hours.crossesMidnight', { time: day.closes_at }) }}
+        </p>
+        } }
+      </fieldset>
+      } @if (errorKey(); as key) {
+      <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+        {{ t(key) }}
+      </p>
+      }
+      <app-luma-button type="submit" size="lg" [fullWidth]="true" [disabled]="saving()"
+        >{{ t(saving() ? 'businessPanel.form.saving' : 'businessPanel.hours.save')
+        }}</app-luma-button
+      >
+    </form>
+  </app-panel-state>
+</div>

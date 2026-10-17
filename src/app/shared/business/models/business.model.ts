@@ -15,6 +15,8 @@ export interface Business {
   address: string;
   phone: string | null;
   is_active: boolean;
+  /** Usual preparation time in minutes (5-180). */
+  prep_minutes: number;
   created_at: string;
   updated_at: string;
 }

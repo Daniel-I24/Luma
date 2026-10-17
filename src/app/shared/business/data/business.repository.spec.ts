@@ -46,6 +46,9 @@ describe('BusinessRepository.getByIds', () => {
   it('maps errors to an i18n key', async () => {
     const { repo } = setup(failure());
 
-    expect(await repo.getByIds(['b1'])).toEqual({ data: null, errorKey: 'businesses.errors.loadFailed' });
+    expect(await repo.getByIds(['b1'])).toEqual({
+      data: null,
+      errorKey: 'businesses.errors.loadFailed',
+    });
   });
 });

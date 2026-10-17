@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, untracked } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  untracked,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import {
@@ -41,7 +48,9 @@ export class FavoritesPage {
   protected readonly icon = categoryIcon;
 
   /** Loading until the favourite ids themselves are known. */
-  protected readonly state = computed(() => (this.favorites.ready() ? this.store.state() : 'loading'));
+  protected readonly state = computed(() =>
+    this.favorites.ready() ? this.store.state() : 'loading',
+  );
 
   constructor() {
     effect(() => {

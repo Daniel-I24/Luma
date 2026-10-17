@@ -1,0 +1,48 @@
+<div *transloco="let t" class="flex flex-col gap-4">
+  <app-luma-input
+    [inputId]="idPrefix() + '-name'"
+    [label]="t('businessPanel.form.name')"
+    [placeholder]="t('businessPanel.form.namePlaceholder')"
+    [required]="true"
+    [maxLength]="80"
+    [errorMessage]="error('name')"
+    [value]="draft().name"
+    (valueChange)="set('name', $event)"
+  />
+  <app-luma-select
+    [selectId]="idPrefix() + '-category'"
+    [label]="t('businessPanel.form.category')"
+    [placeholder]="t('businessPanel.form.categoryPlaceholder')"
+    [required]="true"
+    [options]="categories()"
+    [errorMessage]="error('category')"
+    [value]="draft().category"
+    (valueChange)="set('category', $event)"
+  />
+  <app-luma-input
+    [inputId]="idPrefix() + '-phone'"
+    type="tel"
+    [label]="t('businessPanel.form.phone')"
+    [hint]="t('businessPanel.form.phoneHint')"
+    [maxLength]="20"
+    [errorMessage]="error('phone')"
+    [value]="draft().phone"
+    (valueChange)="set('phone', $event)"
+  />
+  <app-luma-input
+    [inputId]="idPrefix() + '-address'"
+    [label]="t('businessPanel.form.address')"
+    [placeholder]="t('businessPanel.form.addressPlaceholder')"
+    [required]="true"
+    [maxLength]="200"
+    [errorMessage]="error('address')"
+    [value]="draft().address"
+    (valueChange)="set('address', $event)"
+  />
+  <app-location-picker
+    [pickerId]="idPrefix() + '-location'"
+    [errorMessage]="error('latitude') ?? error('longitude')"
+    [position]="draft().location"
+    (positionChange)="setLocation($event)"
+  />
+</div>

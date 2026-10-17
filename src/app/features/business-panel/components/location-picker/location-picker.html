@@ -1,0 +1,51 @@
+<fieldset
+  *transloco="let t"
+  class="m-0 flex flex-col gap-2 border-0 p-0"
+  [attr.aria-describedby]="pickerId() + '-status'"
+>
+  <legend class="mb-1 p-0 text-label-lg text-fg">{{ t('businessPanel.location.label') }}</legend>
+  <p class="m-0 text-caption text-fg-muted">{{ t('businessPanel.location.hint') }}</p>
+  @if (mapFailed()) {
+  <p class="m-0 rounded-md bg-warning-bg p-3 text-body-sm text-warning-fg" role="status">
+    {{ t('businessPanel.location.mapFailed') }}
+  </p>
+  }
+  <div
+    #map
+    class="h-56 w-full overflow-hidden rounded-lg border bg-map-canvas"
+    [class.border-danger]="!!errorMessage()"
+    [class.border-border]="!errorMessage()"
+    [class.hidden]="mapFailed()"
+    role="application"
+    [attr.aria-label]="t('businessPanel.location.mapLabel')"
+  ></div>
+  <div class="flex flex-wrap gap-2">
+    <app-luma-button
+      variant="secondary"
+      size="sm"
+      [buttonId]="pickerId()"
+      [disabled]="mapFailed()"
+      (clicked)="useMapCentre()"
+      >{{ t('businessPanel.location.useCentre') }}</app-luma-button
+    >
+    <app-luma-button
+      variant="ghost"
+      size="sm"
+      [disabled]="locating()"
+      (clicked)="useCurrentLocation()"
+      >{{ t('businessPanel.location.useCurrent') }}</app-luma-button
+    >
+  </div>
+  <p
+    [id]="pickerId() + '-status'"
+    class="m-0 text-body-sm"
+    [class.text-danger]="!!errorMessage()"
+    [class.text-fg-muted]="!errorMessage()"
+    aria-live="polite"
+  >
+    @if (errorMessage(); as error) { {{ error }} } @else if (position(); as at) { {{
+    t('businessPanel.location.chosen', { lat: format(at.lat), lng: format(at.lng) }) }} } @else if
+    (geoState() === 'denied') { {{ t('businessPanel.location.denied') }} } @else { {{
+    t('businessPanel.location.none') }} }
+  </p>
+</fieldset>

@@ -20,7 +20,11 @@ function parseTime(time: string): [number, number] | null {
 }
 
 /** Turns the checkout choice into the pick-up time to send. */
-export function resolvePickup(option: PickupOption, time: string, now: Date = new Date()): PickupChoice {
+export function resolvePickup(
+  option: PickupOption,
+  time: string,
+  now: Date = new Date(),
+): PickupChoice {
   if (option === 'now') return { pickupAt: null, errorKey: null };
   const parsed = parseTime(time);
   if (!parsed) return { pickupAt: null, errorKey: 'checkout.errors.timeRequired' };
@@ -31,7 +35,7 @@ export function resolvePickup(option: PickupOption, time: string, now: Date = ne
 
   const lead = (at.getTime() - now.getTime()) / MINUTE_MS;
   if (lead < MIN_LEAD_MINUTES) return { pickupAt: null, errorKey: 'checkout.errors.tooSoon' };
-  if (lead > MAX_AHEAD_DAYS * 24 * 60) return { pickupAt: null, errorKey: 'checkout.errors.tooFar' };
+  if (lead > MAX_AHEAD_DAYS * 24 * 60)
+    return { pickupAt: null, errorKey: 'checkout.errors.tooFar' };
   return { pickupAt: at.toISOString(), errorKey: null };
 }
-

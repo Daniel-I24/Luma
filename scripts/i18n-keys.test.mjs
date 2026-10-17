@@ -2,7 +2,13 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { extractKeyLiterals, findMissingKeys, flattenKeys, keyDifference } from './i18n-keys.mjs';
+import {
+  extractKeyLiterals,
+  findMissingKeys,
+  flattenKeys,
+  flattenPaths,
+  keyDifference,
+} from './i18n-keys.mjs';
 
 const read = (lang) =>
   JSON.parse(readFileSync(new URL(`../public/i18n/${lang}.json`, import.meta.url), 'utf8'));
@@ -23,6 +29,10 @@ test('every key written as a literal in src/ exists in the translations', () => 
 
 test('flattens nested objects into dotted leaf paths', () => {
   assert.deepEqual(flattenKeys({ a: { b: 'x', c: { d: 'y' } }, e: 'z' }), ['a.b', 'a.c.d', 'e']);
+});
+
+test('lists namespaces and leaves, so prefix literals count as known', () => {
+  assert.deepEqual(flattenPaths({ a: { b: 'x' }, c: 'y' }), ['a', 'a.b', 'c']);
 });
 
 test('reports keys missing on either side', () => {

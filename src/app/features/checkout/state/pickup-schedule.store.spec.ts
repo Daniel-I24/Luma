@@ -8,7 +8,12 @@ import { useFixedClock } from '../../../../testing/fixed-clock';
 
 // The fixed clock is Wednesday (3) 2026-10-14 at 12:00.
 const day = (d: number, opens: string, closes: string, closed = false) =>
-  ({ day_of_week: d, opens_at: `${opens}:00`, closes_at: `${closes}:00`, is_closed: closed }) as BusinessHours;
+  ({
+    day_of_week: d,
+    opens_at: `${opens}:00`,
+    closes_at: `${closes}:00`,
+    is_closed: closed,
+  }) as BusinessHours;
 
 describe('PickupScheduleStore', () => {
   useFixedClock();
@@ -16,12 +21,20 @@ describe('PickupScheduleStore', () => {
   const businesses = { getHours: vi.fn() };
 
   async function setup(hours: BusinessHours[] | null): Promise<PickupScheduleStore> {
-    businesses.getHours.mockResolvedValue(hours ? { data: hours, errorKey: null } : { data: null, errorKey: 'x' });
+    businesses.getHours.mockResolvedValue(
+      hours ? { data: hours, errorKey: null } : { data: null, errorKey: 'x' },
+    );
     TestBed.configureTestingModule({
       providers: [PickupScheduleStore, { provide: BusinessRepository, useValue: businesses }],
     });
     localStorage.clear();
-    TestBed.inject(CartStore).add({ menuItemId: 'm1', businessId: 'b1', businessName: 'Café', name: 'Pan', priceCop: 1000 });
+    TestBed.inject(CartStore).add({
+      menuItemId: 'm1',
+      businessId: 'b1',
+      businessName: 'Café',
+      name: 'Pan',
+      priceCop: 1000,
+    });
     const store = TestBed.inject(PickupScheduleStore);
     TestBed.tick();
     await Promise.resolve();
@@ -63,7 +76,16 @@ describe('PickupScheduleStore', () => {
   it('handles hours that cross midnight on both days', async () => {
     const store = await setup([day(3, '22:00', '01:00'), day(4, '09:00', '09:30')]);
     store.option.set('later');
-    expect(store.slots()).toEqual(['22:00', '22:15', '22:30', '22:45', '23:00', '23:15', '23:30', '23:45']);
+    expect(store.slots()).toEqual([
+      '22:00',
+      '22:15',
+      '22:30',
+      '22:45',
+      '23:00',
+      '23:15',
+      '23:30',
+      '23:45',
+    ]);
 
     store.option.set('tomorrow');
     expect(store.ranges()).toBe('00:00–00:45, 09:00–09:15');

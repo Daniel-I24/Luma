@@ -39,7 +39,9 @@ export function readSupabaseEnv(env) {
   }
   if (parsed.protocol !== 'https:') throw new EnvError('SUPABASE_URL must use https.');
   if (anonKey.startsWith('sb_secret_')) {
-    throw new EnvError('SUPABASE_ANON_KEY is a secret key (sb_secret_…). Use the publishable/anon key.');
+    throw new EnvError(
+      'SUPABASE_ANON_KEY is a secret key (sb_secret_…). Use the publishable/anon key.',
+    );
   }
   if (jwtRole(anonKey) === 'service_role') {
     throw new EnvError('SUPABASE_ANON_KEY is a service_role JWT. Use the anon key.');
@@ -71,7 +73,9 @@ if (isMain) {
     writeFileSync(target, renderEnvironment(values));
     process.stdout.write(`generate-env: environment.deploy.ts written for ${values.url}\n`);
   } catch (error) {
-    process.stderr.write(`generate-env: ${error instanceof EnvError ? error.message : 'unexpected error'}\n`);
+    process.stderr.write(
+      `generate-env: ${error instanceof EnvError ? error.message : 'unexpected error'}\n`,
+    );
     process.exit(1);
   }
 }

@@ -119,3 +119,12 @@
     display: none;
   }
 }
+
+/* Pin of the business location picker (business panel). */
+.luma-marker--picked {
+  cursor: grab;
+}
+
+.luma-marker--picked .luma-marker__pin {
+  background-color: var(--color-primary);
+}

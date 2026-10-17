@@ -41,11 +41,16 @@ describe('OrderRepository', () => {
   it('maps the database rule that failed to a translation key', async () => {
     const { repo } = setup({ 'rpc:create_order': failure('too_many_pending') });
 
-    expect(await repo.create(newOrder)).toEqual({ data: null, errorKey: 'orders.errors.tooManyPending' });
+    expect(await repo.create(newOrder)).toEqual({
+      data: null,
+      errorKey: 'orders.errors.tooManyPending',
+    });
   });
 
   it('never shows raw errors: unknown ones and malformed ids become generic keys', async () => {
-    expect(await setup({ 'rpc:create_order': failure('connection reset') }).repo.create(newOrder)).toEqual({
+    expect(
+      await setup({ 'rpc:create_order': failure('connection reset') }).repo.create(newOrder),
+    ).toEqual({
       data: null,
       errorKey: 'orders.errors.createFailed',
     });
@@ -75,7 +80,10 @@ describe('OrderRepository', () => {
   it('cancels through cancel_order and maps its errors', async () => {
     const { repo, rpcCalls } = setup({ 'rpc:cancel_order': failure('invalid_transition') });
 
-    expect(await repo.cancel(ORDER_ID)).toEqual({ data: null, errorKey: 'orders.errors.invalidTransition' });
+    expect(await repo.cancel(ORDER_ID)).toEqual({
+      data: null,
+      errorKey: 'orders.errors.invalidTransition',
+    });
     expect(rpcCalls).toEqual([['cancel_order', { p_order_id: ORDER_ID }]]);
   });
 });

@@ -74,6 +74,14 @@ export const routes: Routes = [
         loadComponent: () => import('./features/orders/orders.page').then((m) => m.OrdersPage),
       },
       {
+        path: 'business',
+        canActivate: [authGuard],
+        loadChildren: () =>
+          import('./features/business-panel/business-panel.routes').then(
+            (m) => m.businessPanelRoutes,
+          ),
+      },
+      {
         path: 'orders/:id',
         data: DETAIL_ROUTE_DATA,
         loadComponent: () =>

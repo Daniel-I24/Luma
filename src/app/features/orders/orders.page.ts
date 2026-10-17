@@ -16,7 +16,15 @@ type ListState = 'loading' | 'ready' | 'error';
   selector: 'app-orders-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, RouterLink, LumaButton, LumaEmptyState, LumaSkeleton, CopCurrencyPipe, OrderStatusBadge],
+  imports: [
+    TranslocoModule,
+    RouterLink,
+    LumaButton,
+    LumaEmptyState,
+    LumaSkeleton,
+    CopCurrencyPipe,
+    OrderStatusBadge,
+  ],
   templateUrl: './orders.page.html',
   host: { class: 'block' },
 })

@@ -182,7 +182,10 @@
       "displayNameTooLong": "El nombre puede tener hasta 40 caracteres."
     },
     "activity": "Tu actividad",
-    "favorites": "Mis favoritos"
+    "favorites": "Mis favoritos",
+    "business": "Negocios",
+    "myBusiness": "Mi negocio",
+    "registerBusiness": "Registrar mi negocio"
   },
   "map": {
     "canvasLabel": "Mapa de negocios Luma",
@@ -553,6 +556,211 @@
       "title": "Aún no tienes favoritos",
       "description": "Toca el corazón de un negocio para guardarlo aquí.",
       "action": "Explorar negocios"
+    }
+  },
+  "businessCategories": {
+    "restaurant": "Restaurante",
+    "cafe": "Cafetería",
+    "bakery": "Panadería",
+    "pastry": "Pastelería",
+    "iceCream": "Heladería",
+    "pizza": "Pizzería",
+    "burger": "Hamburguesería",
+    "fastFood": "Comida rápida",
+    "bar": "Bar",
+    "store": "Tienda"
+  },
+  "businessPanel": {
+    "back": "Volver",
+    "loading": "Cargando…",
+    "notFound": {
+      "title": "Negocio no encontrado",
+      "description": "No existe o no está a tu nombre."
+    },
+    "list": {
+      "title": "Mis negocios",
+      "empty": {
+        "title": "Aún no tienes un negocio",
+        "description": "Regístralo para mostrarlo en el mapa y recibir pedidos."
+      },
+      "register": "Registrar mi negocio",
+      "registerAnother": "Registrar otro negocio",
+      "published": "Publicado",
+      "draft": "Sin publicar"
+    },
+    "form": {
+      "name": "Nombre del negocio",
+      "namePlaceholder": "Ej.: Fritanga Don Segundo",
+      "category": "Categoría",
+      "categoryPlaceholder": "Elige una categoría",
+      "phone": "Teléfono (opcional)",
+      "phoneHint": "Ej.: +57 300 123 4567",
+      "address": "Dirección",
+      "addressPlaceholder": "Ej.: Calle 18 # 25-30, Pasto",
+      "description": "Descripción (opcional)",
+      "counter": "{{count}}/{{max}}",
+      "prepMinutes": "Tiempo de preparación (minutos)",
+      "prepHint": "Entre 5 y 180. Sirve para estimar cuándo estará listo un pedido.",
+      "save": "Guardar cambios",
+      "saving": "Guardando…",
+      "saved": "Cambios guardados",
+      "fixErrors": "Revisa los campos marcados."
+    },
+    "location": {
+      "label": "Ubicación",
+      "hint": "Toca el mapa para colocar el pin; puedes arrastrarlo.",
+      "mapLabel": "Mapa para elegir la ubicación del negocio",
+      "useCurrent": "Usar mi ubicación",
+      "useCentre": "Fijar en el centro del mapa",
+      "chosen": "Pin colocado en {{lat}}, {{lng}}",
+      "none": "Aún no has elegido la ubicación.",
+      "mapFailed": "No se pudo cargar el mapa. Usa tu ubicación actual.",
+      "denied": "No pudimos obtener tu ubicación. Toca el mapa para elegirla."
+    },
+    "register": {
+      "title": "Registrar mi negocio",
+      "subtitle": "Se crea sin publicar: completa horario y menú y publícalo cuando esté listo.",
+      "submit": "Registrar negocio",
+      "created": "Negocio registrado"
+    },
+    "dashboard": {
+      "publishTitle": "Publicación",
+      "ready": "Todo listo para publicar.",
+      "missingTitle": "Para publicar falta:",
+      "publish": "Publicar",
+      "unpublish": "Despublicar",
+      "publishedToast": "Tu negocio ya es visible en Luma.",
+      "unpublishedToast": "Tu negocio ya no es visible en Luma.",
+      "visible": "Visible en el mapa y el feed.",
+      "hidden": "Solo tú lo ves.",
+      "manage": "Administrar",
+      "info": "Información",
+      "infoHint": "Nombre, contacto, ubicación y tiempo de preparación",
+      "hours": "Horario",
+      "hoursHint": "Días y horas de atención",
+      "menu": "Menú",
+      "menuHint": "Productos, precios y disponibilidad",
+      "promotions": "Promociones",
+      "promotionsHint": "Ofertas con fecha de inicio y fin"
+    },
+    "requirements": {
+      "name": "Un nombre",
+      "category": "Una categoría",
+      "location": "La ubicación en el mapa",
+      "openDay": "Al menos un día abierto en el horario",
+      "availableItem": "Al menos un producto disponible en el menú"
+    },
+    "info": {
+      "title": "Información"
+    },
+    "hours": {
+      "title": "Horario",
+      "hint": "Si la hora de cierre es anterior a la de apertura, el horario cruza la medianoche.",
+      "open": "Abierto",
+      "opens": "Abre",
+      "closes": "Cierra",
+      "crossesMidnight": "Cierra al día siguiente a las {{time}}.",
+      "days": {
+        "0": "Domingo",
+        "1": "Lunes",
+        "2": "Martes",
+        "3": "Miércoles",
+        "4": "Jueves",
+        "5": "Viernes",
+        "6": "Sábado"
+      },
+      "save": "Guardar horario"
+    },
+    "menu": {
+      "title": "Menú",
+      "add": "Añadir producto",
+      "empty": {
+        "title": "Tu menú está vacío",
+        "description": "Añade tus productos para que los clientes puedan pedir."
+      },
+      "noSection": "Sin sección",
+      "available": "Disponible",
+      "soldOut": "Agotado",
+      "availability": "Disponible: {{name}}",
+      "edit": "Editar {{name}}",
+      "delete": "Eliminar {{name}}",
+      "newTitle": "Nuevo producto",
+      "editTitle": "Editar producto",
+      "name": "Nombre",
+      "description": "Descripción (opcional)",
+      "price": "Precio (COP)",
+      "priceHint": "Pesos enteros, sin decimales.",
+      "section": "Sección (opcional)",
+      "sectionPlaceholder": "Ej.: Bebidas",
+      "sortOrder": "Orden",
+      "sortOrderHint": "Los números menores aparecen primero.",
+      "isAvailable": "Disponible para pedir",
+      "save": "Guardar producto",
+      "cancel": "Cancelar",
+      "deleteTitle": "¿Eliminar producto?",
+      "deleteDescription": "«{{name}}» se quitará del menú. Los pedidos anteriores lo conservan.",
+      "deleteConfirm": "Sí, eliminar",
+      "saved": "Producto guardado",
+      "deleted": "Producto eliminado"
+    },
+    "promotions": {
+      "title": "Promociones",
+      "add": "Nueva promoción",
+      "empty": {
+        "title": "Sin promociones",
+        "description": "Crea una oferta con fecha de inicio y fin."
+      },
+      "phase": {
+        "scheduled": "Programada",
+        "running": "Activa",
+        "ended": "Terminada"
+      },
+      "dates": "{{from}} – {{to}}",
+      "edit": "Editar {{title}}",
+      "end": "Terminar",
+      "newTitle": "Nueva promoción",
+      "editTitle": "Editar promoción",
+      "promoTitle": "Título",
+      "description": "Descripción (opcional)",
+      "startsAt": "Empieza",
+      "endsAt": "Termina",
+      "save": "Guardar promoción",
+      "cancel": "Cancelar",
+      "endTitle": "¿Terminar la promoción?",
+      "endDescription": "«{{title}}» dejará de mostrarse de inmediato.",
+      "endConfirm": "Sí, terminar",
+      "saved": "Promoción guardada",
+      "ended": "Promoción terminada"
+    },
+    "validation": {
+      "name": "Escribe un nombre de 2 a 80 caracteres.",
+      "category": "Elige una categoría.",
+      "phone": "Escribe un teléfono válido: de 7 a 20 dígitos, puede empezar con +.",
+      "address": "Escribe una dirección de 5 a 200 caracteres.",
+      "location": "Elige la ubicación en el mapa.",
+      "description": "Máximo 300 caracteres.",
+      "prepMinutes": "Escribe un número entero entre 5 y 180.",
+      "time": "Escribe una hora válida.",
+      "sameTimes": "La hora de cierre debe ser distinta de la de apertura.",
+      "itemName": "Escribe un nombre de 1 a 80 caracteres.",
+      "price": "Escribe un precio en pesos enteros, sin decimales.",
+      "section": "Máximo 40 caracteres.",
+      "sortOrder": "Escribe un número entero entre 0 y 9999.",
+      "promoTitle": "Escribe un título de 3 a 80 caracteres.",
+      "date": "Elige una fecha y hora.",
+      "datesOrder": "La fecha de fin debe ser posterior a la de inicio.",
+      "endsInPast": "La fecha de fin debe estar en el futuro.",
+      "imageUrl": "La imagen debe ser una dirección https."
+    },
+    "errors": {
+      "loadFailed": "No se pudo cargar la información de tu negocio.",
+      "saveFailed": "No se pudieron guardar los cambios. Intenta de nuevo.",
+      "deleteFailed": "No se pudo eliminar. Intenta de nuevo.",
+      "publishFailed": "No se pudo cambiar la publicación. Intenta de nuevo.",
+      "publishRequirements": "Aún no se puede publicar: completa los requisitos.",
+      "invalidData": "Algunos datos no son válidos. Revísalos.",
+      "duplicate": "Ese dato ya existe.",
+      "forbidden": "No tienes permiso para modificar este negocio."
     }
   }
 }

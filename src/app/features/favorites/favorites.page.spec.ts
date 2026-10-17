@@ -9,7 +9,12 @@ import { FavoritesPage } from './favorites.page';
 import { useFixedClock } from '../../../testing/fixed-clock';
 
 const flush = () => new Promise((resolve) => setTimeout(resolve));
-const business = (id: string, name: string) => ({ id, name, category: 'Cafetería', logo_url: null });
+const business = (id: string, name: string) => ({
+  id,
+  name,
+  category: 'Cafetería',
+  logo_url: null,
+});
 
 describe('FavoritesPage', () => {
   useFixedClock();
@@ -23,7 +28,10 @@ describe('FavoritesPage', () => {
     vi.clearAllMocks();
     ids.set(new Set(['b2', 'b1']));
     ready.set(true);
-    repo.getByIds.mockResolvedValue({ data: [business('b1', 'Fritanga'), business('b2', 'Café')], errorKey: null });
+    repo.getByIds.mockResolvedValue({
+      data: [business('b1', 'Fritanga'), business('b2', 'Café')],
+      errorKey: null,
+    });
     repo.getHoursFor.mockResolvedValue({ data: [], errorKey: null });
     TestBed.configureTestingModule({
       imports: [

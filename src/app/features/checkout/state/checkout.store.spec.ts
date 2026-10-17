@@ -44,8 +44,20 @@ describe('CheckoutStore', () => {
     });
     cart = TestBed.inject(CartStore);
     TestBed.tick();
-    cart.add({ menuItemId: 'm1', businessId: 'b1', businessName: 'Café', name: 'Capuchino', priceCop: 6500 });
-    cart.add({ menuItemId: 'm1', businessId: 'b1', businessName: 'Café', name: 'Capuchino', priceCop: 6500 });
+    cart.add({
+      menuItemId: 'm1',
+      businessId: 'b1',
+      businessName: 'Café',
+      name: 'Capuchino',
+      priceCop: 6500,
+    });
+    cart.add({
+      menuItemId: 'm1',
+      businessId: 'b1',
+      businessName: 'Café',
+      name: 'Capuchino',
+      priceCop: 6500,
+    });
     store = TestBed.inject(CheckoutStore);
     schedule = TestBed.inject(PickupScheduleStore);
     TestBed.tick();

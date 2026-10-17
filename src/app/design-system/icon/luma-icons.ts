@@ -69,6 +69,37 @@ export const LUMA_ICONS = {
   tag: ['M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9-9-9Z', 'M7.5 7.5h.01'],
   utensils: ['M6 3v6a2 2 0 0 0 4 0V3', 'M8 3v18', 'M17 21V3c-2 1-3 4-3 7v4h3'],
   user: ['M12 4a4 4 0 1 0 0 8a4 4 0 1 0 0-8Z', 'M4 20c0-4 3.6-6 8-6s8 2 8 6'],
+  edit: ['M12 20h9', 'M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z'],
+  trash: [
+    'M3 6h18',
+    'M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2',
+    'M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6',
+    'M10 11v6',
+    'M14 11v6',
+  ],
+  bell: ['M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9', 'M10.3 21a1.94 1.94 0 0 0 3.4 0'],
+  image: [
+    'M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z',
+    'M9 11a2 2 0 1 0 0-4a2 2 0 1 0 0 4Z',
+    'M21 15l-5-5L5 21',
+  ],
+  filter: [
+    'M4 21v-7',
+    'M4 10V3',
+    'M12 21v-9',
+    'M12 8V3',
+    'M20 21v-5',
+    'M20 12V3',
+    'M1 14h6',
+    'M9 8h6',
+    'M17 16h6',
+  ],
+  calendar: [
+    'M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z',
+    'M16 2v4',
+    'M8 2v4',
+    'M3 10h18',
+  ],
 } as const satisfies Record<string, readonly string[]>;
 
 export type IconName = keyof typeof LUMA_ICONS;

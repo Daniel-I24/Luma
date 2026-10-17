@@ -1,7 +1,13 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { readFileSync } from 'node:fs';
-import { EnvError, jwtRole, readSupabaseEnv, renderEnvironment, TARGET_PATH } from './generate-env.mjs';
+import {
+  EnvError,
+  jwtRole,
+  readSupabaseEnv,
+  renderEnvironment,
+  TARGET_PATH,
+} from './generate-env.mjs';
 
 const jwt = (payload) =>
   ['{"alg":"HS256"}', JSON.stringify(payload)]
@@ -34,13 +40,17 @@ test('rejects privileged keys: sb_secret_ and service_role JWTs', () => {
     /secret key/,
   );
   assert.throws(
-    () => readSupabaseEnv({ SUPABASE_URL: URL_OK, SUPABASE_ANON_KEY: jwt({ role: 'service_role' }) }),
+    () =>
+      readSupabaseEnv({ SUPABASE_URL: URL_OK, SUPABASE_ANON_KEY: jwt({ role: 'service_role' }) }),
     /service_role/,
   );
 });
 
 test('rejects URLs that are invalid or not https', () => {
-  assert.throws(() => readSupabaseEnv({ SUPABASE_URL: 'nope', SUPABASE_ANON_KEY: 'k' }), /valid URL/);
+  assert.throws(
+    () => readSupabaseEnv({ SUPABASE_URL: 'nope', SUPABASE_ANON_KEY: 'k' }),
+    /valid URL/,
+  );
   assert.throws(
     () => readSupabaseEnv({ SUPABASE_URL: 'http://abcd.supabase.co', SUPABASE_ANON_KEY: 'k' }),
     /https/,
@@ -74,7 +84,10 @@ test('the deploy configuration swaps environment.ts for the generated file', () 
     { replace: 'src/environments/environment.ts', with: TARGET_PATH },
   ]);
   const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
-  assert.match(pkg.scripts['build:prod'], /generate-env\.mjs && ng build --configuration production,deploy$/);
+  assert.match(
+    pkg.scripts['build:prod'],
+    /generate-env\.mjs && ng build --configuration production,deploy$/,
+  );
   const vercel = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'));
   assert.equal(vercel.buildCommand, 'npm run build:prod');
 });

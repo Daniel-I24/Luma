@@ -11,7 +11,7 @@ import { extname, join } from 'node:path';
 
 const KEY_SHAPE = /^[a-z][a-zA-Z0-9]*(\.[a-zA-Z0-9_-]+)+$/;
 const FILE_NAME = /\.(css|html|js|mjs|json|ts|svg|png|jpe?g|webp|woff2)$/;
-const SINGLE_QUOTED =/'([^'\\\n]*)'/g;
+const SINGLE_QUOTED = /'([^'\\\n]*)'/g;
 const BACKTICK = /`([^`\\$]*)`/g;
 const STATIC_ATTRIBUTE = /\s[a-zA-Z][\w.-]*="([^"]*)"/g;
 
@@ -20,6 +20,16 @@ export function flattenKeys(tree, prefix = '') {
   return Object.entries(tree).flatMap(([name, value]) => {
     const path = prefix ? `${prefix}.${name}` : name;
     return value !== null && typeof value === 'object' ? flattenKeys(value, path) : [path];
+  });
+}
+
+/** Dotted paths of every node (namespaces and leaves) of a translation object. */
+export function flattenPaths(tree, prefix = '') {
+  return Object.entries(tree).flatMap(([name, value]) => {
+    const path = prefix ? `${prefix}.${name}` : name;
+    return value !== null && typeof value === 'object'
+      ? [path, ...flattenPaths(value, path)]
+      : [path];
   });
 }
 
@@ -65,9 +75,12 @@ function sourceFiles(dir) {
   });
 }
 
-/** Every key-shaped literal in srcDir that is not a key of the translations. */
+/**
+ * Every key-shaped literal in srcDir that is neither a key nor a namespace of
+ * the translations (a namespace literal is a prefix, e.g. for zod messages).
+ */
 export function findMissingKeys(srcDir, translations) {
-  const known = new Set(flattenKeys(translations));
+  const known = new Set(flattenPaths(translations));
   const namespaces = new Set(Object.keys(translations));
   const missing = [];
   for (const file of sourceFiles(srcDir)) {

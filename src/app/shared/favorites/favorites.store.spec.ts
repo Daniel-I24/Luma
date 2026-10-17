@@ -110,7 +110,10 @@ describe('FavoritesStore', () => {
     expect(store.ready()).toBe(true);
     expect(store.failed()).toBe(false);
 
-    repo.getFavoriteIds.mockResolvedValue({ data: null, errorKey: 'businesses.errors.favoritesFailed' });
+    repo.getFavoriteIds.mockResolvedValue({
+      data: null,
+      errorKey: 'businesses.errors.favoritesFailed',
+    });
     await store.reload();
     expect(store.failed()).toBe(true);
 
@@ -120,4 +123,3 @@ describe('FavoritesStore', () => {
     expect(store.isFavorite('b7')).toBe(true);
   });
 });
-

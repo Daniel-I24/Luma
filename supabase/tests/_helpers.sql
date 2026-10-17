@@ -53,6 +53,7 @@ declare
   v_result boolean;
 begin
   perform set_config('request.jwt.claim.sub', coalesce(p_sub::text, ''), true);
+  perform set_config('request.jwt.claims', json_build_object('sub', p_sub, 'role', p_role)::text, true);
   execute format('set local role %I', p_role);
   execute p_check into v_result;
   reset role;

@@ -41,7 +41,9 @@ export class CheckoutStore {
     try {
       const result = await this.orders.create({
         businessId,
-        items: this.cart.items().map((item) => ({ menuItemId: item.menuItemId, quantity: item.quantity })),
+        items: this.cart
+          .items()
+          .map((item) => ({ menuItemId: item.menuItemId, quantity: item.quantity })),
         pickupAt: pickup.pickupAt,
         notes: this.notes().trim() || null,
       });

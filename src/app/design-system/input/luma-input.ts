@@ -2,14 +2,7 @@ import { ChangeDetectionStrategy, Component, input, model } from '@angular/core'
 import { FormsModule } from '@angular/forms';
 
 export type InputType =
-  | 'text'
-  | 'email'
-  | 'password'
-  | 'search'
-  | 'tel'
-  | 'url'
-  | 'number'
-  | 'time';
+  'text' | 'email' | 'password' | 'search' | 'tel' | 'url' | 'number' | 'time' | 'datetime-local';
 
 /**
  * LumaInput — styled text input for the Luma design system.

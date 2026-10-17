@@ -37,7 +37,8 @@ export function windowsForDay(hours: readonly BusinessHours[], day: number): Day
 }
 
 const pad = (n: number) => String(n).padStart(2, '0');
-export const minutesToTime = (minutes: number) => `${pad(Math.floor(minutes / 60))}:${pad(minutes % 60)}`;
+export const minutesToTime = (minutes: number) =>
+  `${pad(Math.floor(minutes / 60))}:${pad(minutes % 60)}`;
 
 /**
  * "HH:MM" pick-up times offered on `date`'s calendar day: inside the opening
@@ -65,7 +66,9 @@ export function slotRanges(slots: readonly string[]): string[] {
   const ranges: string[] = [];
   let start = 0;
   for (let i = 1; i <= slots.length; i++) {
-    const gap = i === slots.length || timeToMinutes(slots[i]) - timeToMinutes(slots[i - 1]) !== SLOT_STEP_MINUTES;
+    const gap =
+      i === slots.length ||
+      timeToMinutes(slots[i]) - timeToMinutes(slots[i - 1]) !== SLOT_STEP_MINUTES;
     if (!gap) continue;
     ranges.push(start === i - 1 ? slots[start] : `${slots[start]}–${slots[i - 1]}`);
     start = i;

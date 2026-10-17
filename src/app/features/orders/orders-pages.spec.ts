@@ -31,7 +31,14 @@ describe('Orders pages', () => {
     TestBed.configureTestingModule({
       imports: [
         TranslocoTestingModule.forRoot({
-          langs: { es: { orders: { unknownBusiness: 'Negocio no disponible', detail: { cancel: 'Cancelar pedido' } } } },
+          langs: {
+            es: {
+              orders: {
+                unknownBusiness: 'Negocio no disponible',
+                detail: { cancel: 'Cancelar pedido' },
+              },
+            },
+          },
           translocoConfig: { availableLangs: ['es'], defaultLang: 'es' },
         }),
       ],
@@ -69,7 +76,9 @@ describe('Orders pages', () => {
   }
 
   const cancelButton = (el: HTMLElement) =>
-    Array.from(el.querySelectorAll('button')).find((b) => b.textContent?.includes('Cancelar pedido'));
+    Array.from(el.querySelectorAll('button')).find((b) =>
+      b.textContent?.includes('Cancelar pedido'),
+    );
 
   it('shows directions with the business coordinates and allows cancelling while pending', async () => {
     const el = await renderDetail('pending');
@@ -89,7 +98,10 @@ describe('Orders pages', () => {
   });
 
   it('marks deleted businesses in the list', async () => {
-    repo.list.mockResolvedValue({ data: [order('picked_up', true), { ...order('pending'), id: 'o2' }], errorKey: null });
+    repo.list.mockResolvedValue({
+      data: [order('picked_up', true), { ...order('pending'), id: 'o2' }],
+      errorKey: null,
+    });
     const fixture = TestBed.createComponent(OrdersPage);
     fixture.detectChanges();
     await flush();

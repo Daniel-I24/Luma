@@ -9,9 +9,21 @@ import { FEED_BATCH_SIZE, FeedStore } from './feed.store';
 import { useFixedClock } from '../../../../testing/fixed-clock';
 
 const business = (n: number) =>
-  ({ id: `b${n}`, name: `B${n}`, category: 'Cafetería', latitude: PASTO_CENTRE.lat + n / 1000, longitude: PASTO_CENTRE.lng }) as Business;
-const dishFor = (business_id: string) =>
-  ({ id: `d-${business_id}`, business_id, name: 'Plato', price_cop: 1000, sort_order: 1, is_available: true });
+  ({
+    id: `b${n}`,
+    name: `B${n}`,
+    category: 'Cafetería',
+    latitude: PASTO_CENTRE.lat + n / 1000,
+    longitude: PASTO_CENTRE.lng,
+  }) as Business;
+const dishFor = (business_id: string) => ({
+  id: `d-${business_id}`,
+  business_id,
+  name: 'Plato',
+  price_cop: 1000,
+  sort_order: 1,
+  is_available: true,
+});
 const ok = <T>(data: T) => Promise.resolve({ data, errorKey: null });
 
 describe('FeedStore', () => {
@@ -86,7 +98,9 @@ describe('FeedStore', () => {
 
   it('flags a failed next page without losing the loaded posts', async () => {
     await store.load();
-    highlights.getActivePromotions.mockReturnValueOnce(Promise.resolve({ data: null, errorKey: 'x' }));
+    highlights.getActivePromotions.mockReturnValueOnce(
+      Promise.resolve({ data: null, errorKey: 'x' }),
+    );
 
     await store.loadMore();
 

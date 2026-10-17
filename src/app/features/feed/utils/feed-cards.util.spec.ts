@@ -8,7 +8,16 @@ const business = (id: string, category = 'Restaurante') => ({ id, name: id, cate
 const promo = (id: string, business_id: string, ends_at: string) =>
   ({ id, business_id, title: id, description: null, image_url: null, ends_at }) as Promotion;
 const dish = (id: string, business_id: string, sort_order: number, is_available = true) =>
-  ({ id, business_id, name: id, description: null, image_url: null, price_cop: 1000, sort_order, is_available }) as MenuItem;
+  ({
+    id,
+    business_id,
+    name: id,
+    description: null,
+    image_url: null,
+    price_cop: 1000,
+    sort_order,
+    is_available,
+  }) as MenuItem;
 
 const near = business('near', 'Cafetería');
 const far = business('far');
@@ -75,8 +84,20 @@ describe('buildFeedCards', () => {
       distanceKm: (b) => (b.id === 'near' ? 0.4 : null),
     });
 
-    expect(promoCard).toMatchObject({ kind: 'promotion', priceCop: null, validUntil: '2026-10-30T00:00:00Z', menuItem: null });
-    expect(dishCard).toMatchObject({ kind: 'dish', priceCop: 1000, validUntil: null, icon: 'coffee', status: 'closed', distanceKm: 0.4 });
+    expect(promoCard).toMatchObject({
+      kind: 'promotion',
+      priceCop: null,
+      validUntil: '2026-10-30T00:00:00Z',
+      menuItem: null,
+    });
+    expect(dishCard).toMatchObject({
+      kind: 'dish',
+      priceCop: 1000,
+      validUntil: null,
+      icon: 'coffee',
+      status: 'closed',
+      distanceKm: 0.4,
+    });
     expect(dishCard.menuItem?.id).toBe('d');
   });
 

@@ -1,6 +1,10 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { BusinessRepository } from '@shared/business/data/business.repository';
-import type { Business, BusinessHours, BusinessStatus } from '@shared/business/models/business.model';
+import type {
+  Business,
+  BusinessHours,
+  BusinessStatus,
+} from '@shared/business/models/business.model';
 import { getBusinessStatus } from '@shared/business/utils/business-status.util';
 import { FavoritesStore } from '@shared/favorites/favorites.store';
 

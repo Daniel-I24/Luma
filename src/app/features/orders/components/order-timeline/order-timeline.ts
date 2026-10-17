@@ -11,7 +11,11 @@ import { timelineSteps } from '../../utils/order-detail.util';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoModule, LumaIcon],
   template: `
-    <ol *transloco="let t" class="m-0 flex list-none flex-col gap-0 p-0" [attr.aria-label]="t('orders.detail.timeline')">
+    <ol
+      *transloco="let t"
+      class="m-0 flex list-none flex-col gap-0 p-0"
+      [attr.aria-label]="t('orders.detail.timeline')"
+    >
       @for (step of steps(); track step.status; let last = $last) {
         <li class="flex gap-3" [attr.aria-current]="step.state === 'current' ? 'step' : null">
           <span class="flex flex-col items-center">
@@ -24,10 +28,16 @@ import { timelineSteps } from '../../utils/order-detail.util';
               }
             </span>
             @if (!last) {
-              <span class="min-h-6 w-0.5 flex-1" [class]="step.state === 'done' ? 'bg-primary' : 'bg-border'"></span>
+              <span
+                class="min-h-6 w-0.5 flex-1"
+                [class]="step.state === 'done' ? 'bg-primary' : 'bg-border'"
+              ></span>
             }
           </span>
-          <span class="pb-4 text-body" [class]="step.state === 'upcoming' ? 'text-fg-subtle' : 'font-semibold text-fg'">
+          <span
+            class="pb-4 text-body"
+            [class]="step.state === 'upcoming' ? 'text-fg-subtle' : 'font-semibold text-fg'"
+          >
             {{ t('orders.status.' + step.status) }}
           </span>
         </li>

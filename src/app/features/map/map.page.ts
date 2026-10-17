@@ -22,7 +22,7 @@ import { NearbyPanel } from './components/nearby-panel/nearby-panel';
 import { GeolocationService, PASTO_CENTRE } from '@shared/geo/geolocation.service';
 import { MapCameraService } from './services/map-camera.service';
 import { MapMarkerSyncService } from './services/map-marker-sync.service';
-import { MapStylesLoader } from './services/map-styles.loader';
+import { MapStylesLoader } from '@shared/map/map-styles.loader';
 import { BusinessSelectionStore } from './state/business-selection.store';
 import { NearbyBusinessesStore, type NearbyBusiness } from './state/nearby-businesses.store';
 import { getZoneLabelKey } from './utils/zone-label.util';

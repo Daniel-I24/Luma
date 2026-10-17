@@ -2,7 +2,12 @@ import { describe, expect, it } from 'vitest';
 import type { BusinessHours } from '@shared/business/models/business.model';
 import { pickupSlots, slotRanges, windowsForDay } from './pickup-slots.util';
 
-const entry = (day: BusinessHours['day_of_week'], opens: string, closes: string, closed = false): BusinessHours => ({
+const entry = (
+  day: BusinessHours['day_of_week'],
+  opens: string,
+  closes: string,
+  closed = false,
+): BusinessHours => ({
   id: `h${day}`,
   business_id: 'b1',
   day_of_week: day,
@@ -28,9 +33,9 @@ describe('windowsForDay', () => {
   });
 
   it('keeps the tail even when the next day is closed, and adds the next day hours', () => {
-    expect(windowsForDay([entry(6, '18:00', '02:00'), entry(0, '09:00', '12:00', true)], 0)).toEqual([
-      { from: 0, to: 120 },
-    ]);
+    expect(
+      windowsForDay([entry(6, '18:00', '02:00'), entry(0, '09:00', '12:00', true)], 0),
+    ).toEqual([{ from: 0, to: 120 }]);
     expect(windowsForDay([entry(6, '18:00', '02:00'), entry(0, '09:00', '12:00')], 0)).toEqual([
       { from: 0, to: 120 },
       { from: 540, to: 720 },
@@ -56,7 +61,14 @@ describe('pickupSlots', () => {
     const hours = [entry(6, '22:00', '01:00'), entry(0, '10:00', '11:00')];
     const tomorrow = new Date('2026-10-18T00:00:00');
     expect(pickupSlots(hours, tomorrow, SATURDAY_NOON)).toEqual([
-      '00:00', '00:15', '00:30', '00:45', '10:00', '10:15', '10:30', '10:45',
+      '00:00',
+      '00:15',
+      '00:30',
+      '00:45',
+      '10:00',
+      '10:15',
+      '10:30',
+      '10:45',
     ]);
   });
 

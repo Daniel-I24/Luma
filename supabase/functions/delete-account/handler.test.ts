@@ -45,7 +45,10 @@ function request(method: string, headers: Record<string, string> = {}, body?: st
 
 function handlerFor(options: FakeOptions = {}) {
   const fake = fakeClient(options);
-  const handler = createHandler({ client: fake.client, allowedOrigins: allowedOriginsFrom(`${APP_ORIGIN}, https://luma.app`) });
+  const handler = createHandler({
+    client: fake.client,
+    allowedOrigins: allowedOriginsFrom(`${APP_ORIGIN}, https://luma.app`),
+  });
   return { handler, deleted: fake.deleted };
 }
 
@@ -68,7 +71,9 @@ Deno.test('answers the CORS preflight for an allowed origin', async () => {
 
 Deno.test('rejects origins outside the allow list and never answers with *', async () => {
   const { handler, deleted } = handlerFor();
-  const res = await handler(request('POST', { Origin: 'https://evil.example', Authorization: `Bearer ${VALID_TOKEN}` }));
+  const res = await handler(
+    request('POST', { Origin: 'https://evil.example', Authorization: `Bearer ${VALID_TOKEN}` }),
+  );
   assertEquals(res.status, 403);
   assertEquals(res.headers.get('Access-Control-Allow-Origin'), null);
   assertEquals(deleted, []);
@@ -93,7 +98,11 @@ Deno.test('returns 401 with an invalid token', async () => {
 Deno.test('deletes only the caller, ignoring any id in the body or URL', async () => {
   const { handler, deleted } = handlerFor();
   const res = await handler(
-    request('POST', { Authorization: `Bearer ${VALID_TOKEN}` }, JSON.stringify({ user_id: 'victim-id' })),
+    request(
+      'POST',
+      { Authorization: `Bearer ${VALID_TOKEN}` },
+      JSON.stringify({ user_id: 'victim-id' }),
+    ),
   );
   assertEquals(res.status, 200);
   assertEquals(await res.json(), { deleted: true });

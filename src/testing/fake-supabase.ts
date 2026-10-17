@@ -5,7 +5,7 @@
  */
 export interface FakeResponse {
   data: unknown;
-  error: { message: string } | null;
+  error: { message: string; code?: string } | null;
 }
 
 export type QueryCall = [method: string, args: unknown[]];
@@ -27,6 +27,9 @@ export class FakeQuery implements PromiseLike<FakeResponse> {
   update(...args: unknown[]): this {
     return this.record('update', args);
   }
+  upsert(...args: unknown[]): this {
+    return this.record('upsert', args);
+  }
   delete(...args: unknown[]): this {
     return this.record('delete', args);
   }
@@ -47,6 +50,9 @@ export class FakeQuery implements PromiseLike<FakeResponse> {
   }
   limit(...args: unknown[]): this {
     return this.record('limit', args);
+  }
+  single(): this {
+    return this.record('single', []);
   }
   maybeSingle(): this {
     return this.record('maybeSingle', []);

@@ -1,0 +1,78 @@
+<form *transloco="let t" class="flex flex-col gap-4" novalidate (submit)="submit($event)">
+  <app-luma-input
+    inputId="menu-item-name"
+    [label]="t('businessPanel.menu.name')"
+    [required]="true"
+    [maxLength]="80"
+    [errorMessage]="errors()['name'] ? t(errors()['name']) : undefined"
+    [value]="draft().name"
+    (valueChange)="set('name', $event)"
+  />
+  <div class="grid grid-cols-2 gap-3">
+    <app-luma-input
+      inputId="menu-item-price"
+      type="number"
+      [label]="t('businessPanel.menu.price')"
+      [hint]="t('businessPanel.menu.priceHint')"
+      [required]="true"
+      [errorMessage]="errors()['price_cop'] ? t(errors()['price_cop']) : undefined"
+      [value]="draft().price"
+      (valueChange)="set('price', $event)"
+    />
+    <app-luma-input
+      inputId="menu-item-order"
+      type="number"
+      [label]="t('businessPanel.menu.sortOrder')"
+      [hint]="t('businessPanel.menu.sortOrderHint')"
+      [errorMessage]="errors()['sort_order'] ? t(errors()['sort_order']) : undefined"
+      [value]="draft().sortOrder"
+      (valueChange)="set('sortOrder', $event)"
+    />
+  </div>
+  <app-luma-input
+    inputId="menu-item-section"
+    [label]="t('businessPanel.menu.section')"
+    [placeholder]="t('businessPanel.menu.sectionPlaceholder')"
+    [maxLength]="40"
+    [errorMessage]="errors()['section'] ? t(errors()['section']) : undefined"
+    [value]="draft().section"
+    (valueChange)="set('section', $event)"
+  />
+  <div class="flex flex-col gap-1">
+    <label class="text-label-lg text-fg" for="menu-item-description"
+      >{{ t('businessPanel.menu.description') }}</label
+    >
+    <textarea
+      id="menu-item-description"
+      rows="2"
+      maxlength="300"
+      class="w-full resize-y rounded-md border border-border bg-surface p-3 text-body text-fg focus-visible:outline-2 focus-visible:outline-border-focus"
+      [attr.aria-invalid]="errors()['description'] ? 'true' : null"
+      [attr.aria-describedby]="errors()['description'] ? 'menu-item-description-error' : null"
+      [value]="draft().description"
+      (input)="onDescription($event)"
+    ></textarea>
+    @if (errors()['description']; as key) {
+    <span id="menu-item-description-error" class="text-caption text-danger" role="alert"
+      >{{ t(key) }}</span
+    >
+    }
+  </div>
+  <label class="flex min-h-11 cursor-pointer items-center gap-2 text-body text-fg">
+    <input
+      type="checkbox"
+      class="size-5 accent-primary"
+      [checked]="draft().available"
+      (change)="onAvailable($event)"
+    />
+    {{ t('businessPanel.menu.isAvailable') }}
+  </label>
+  <div class="flex flex-col gap-2">
+    <app-luma-button type="submit" [fullWidth]="true" [disabled]="busy()"
+      >{{ t('businessPanel.menu.save') }}</app-luma-button
+    >
+    <app-luma-button variant="ghost" [fullWidth]="true" (clicked)="cancelled.emit()"
+      >{{ t('businessPanel.menu.cancel') }}</app-luma-button
+    >
+  </div>
+</form>

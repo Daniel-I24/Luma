@@ -1,12 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 export type ButtonVariant =
-  | 'primary'
-  | 'secondary'
-  | 'ghost'
-  | 'accent'
-  | 'danger'
-  | 'danger-outline';
+  'primary' | 'secondary' | 'ghost' | 'accent' | 'danger' | 'danger-outline';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 /**
@@ -31,6 +26,10 @@ export class LumaButton {
   readonly disabled = input<boolean>(false);
   readonly type = input<'button' | 'submit' | 'reset'>('button');
   readonly ariaLabel = input<string | undefined>(undefined);
+  /** id of the native button, e.g. to move the focus to it. */
+  readonly buttonId = input<string | null>(null);
+  /** id of an element that describes the button (aria-describedby). */
+  readonly describedBy = input<string | null>(null);
 
   readonly clicked = output<void>();
 

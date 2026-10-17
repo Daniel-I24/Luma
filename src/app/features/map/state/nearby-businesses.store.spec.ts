@@ -23,6 +23,7 @@ const biz = (id: string, category: string, latitude: number): Business => ({
   phone: null,
   is_active: true,
   created_at: '',
+  prep_minutes: 20,
   updated_at: '',
 });
 

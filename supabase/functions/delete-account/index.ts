@@ -16,6 +16,9 @@ const client = createClient(url, serviceRoleKey, {
 Deno.serve(
   createHandler({
     client,
-    allowedOrigins: allowedOriginsFrom(Deno.env.get('ALLOWED_ORIGINS'), Deno.env.get('ALLOWED_ORIGIN')),
+    allowedOrigins: allowedOriginsFrom(
+      Deno.env.get('ALLOWED_ORIGINS'),
+      Deno.env.get('ALLOWED_ORIGIN'),
+    ),
   }),
 );

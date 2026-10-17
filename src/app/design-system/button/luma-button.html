@@ -1,6 +1,8 @@
 <button
   [class]="hostClasses"
   [type]="type()"
+  [attr.id]="buttonId()"
+  [attr.aria-describedby]="describedBy()"
   [disabled]="disabled()"
   [attr.aria-label]="ariaLabel() ?? null"
   [attr.aria-disabled]="disabled() ? 'true' : null"

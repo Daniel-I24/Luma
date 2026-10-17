@@ -1,4 +1,12 @@
-import { Injectable, computed, effect, inject, linkedSignal, signal, untracked } from '@angular/core';
+import {
+  Injectable,
+  computed,
+  effect,
+  inject,
+  linkedSignal,
+  signal,
+  untracked,
+} from '@angular/core';
 import { BusinessRepository } from '@shared/business/data/business.repository';
 import type { BusinessHours } from '@shared/business/models/business.model';
 import { getBusinessStatus } from '@shared/business/utils/business-status.util';
