@@ -25,6 +25,9 @@ const biz = (id: string, category: string, latitude: number): Business => ({
   is_active: true,
   created_at: '',
   prep_minutes: 20,
+  verification_status: 'approved',
+  verification_note: null,
+  verified_at: null,
   updated_at: '',
 });
 

@@ -895,5 +895,39 @@
       "loadFailed": "No se pudieron cargar las notificaciones.",
       "markFailed": "No se pudieron marcar como leídas."
     }
+  },
+  "verification": {
+    "validation": {
+      "nit": "Escribe un NIT válido con su dígito de verificación (ej.: 800.197.268-4)."
+    },
+    "errors": {
+      "loadFailed": "No se pudo cargar la información de verificación.",
+      "saveFailed": "No se pudieron guardar los datos. Intenta de nuevo.",
+      "docType": "Sube una imagen (JPG, PNG o WebP) o un PDF.",
+      "docSize": "El archivo supera 5 MB.",
+      "uploadFailed": "No se pudo subir el documento. Intenta de nuevo.",
+      "deleteFailed": "No se pudo eliminar el documento.",
+      "submitFailed": "No se pudo enviar a revisión. Intenta de nuevo."
+    }
+  },
+  "admin": {
+    "errors": {
+      "loadFailed": "No se pudo cargar la información.",
+      "notAdmin": "Esta acción es solo para el equipo de revisión.",
+      "noteRequired": "Escribe una nota para el negocio al rechazar o suspender.",
+      "invalidTransition": "El negocio ya cambió de estado. Recarga la cola.",
+      "reviewFailed": "No se pudo guardar la decisión. Intenta de nuevo.",
+      "docFailed": "No se pudo abrir el documento.",
+      "docsDeleteFailed": "La decisión se guardó, pero no se pudieron borrar los documentos."
+    }
+  },
+  "reports": {
+    "validation": {
+      "comment": "Máximo 300 caracteres."
+    },
+    "errors": {
+      "alreadyReported": "Ya recibimos tu reporte sobre este negocio. Lo estamos revisando.",
+      "failed": "No se pudo enviar el reporte. Intenta de nuevo."
+    }
   }
 }

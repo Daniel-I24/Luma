@@ -19,6 +19,9 @@ function biz(name: string, category: string, address = 'Calle 18, Pasto'): Busin
     is_active: true,
     created_at: '',
     prep_minutes: 20,
+    verification_status: 'approved',
+    verification_note: null,
+    verified_at: null,
     updated_at: '',
   };
 }

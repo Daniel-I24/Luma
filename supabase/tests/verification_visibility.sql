@@ -73,4 +73,12 @@ select tests.exec_as('authenticated', tests.id('adm'), $$
 select tests.expect_true('authenticated', tests.id('adm'),
   $$select count(*) = 0 from public.admin_open_reports()$$, 'a resolved report leaves the queue');
 
+-- -- NIT check digit: same public examples as the app's Nit tests ---------------
+select tests.expect_true('authenticated', tests.id('cus'),
+  $$select public.is_valid_nit('800197268-4') and public.is_valid_nit('899999068-1')
+       and public.is_valid_nit('890903938-8') and public.is_valid_nit('890900608-9')
+       and public.is_valid_nit('860034313-7') and public.is_valid_nit('899999034-1')
+       and not public.is_valid_nit('800197268-5') and not public.is_valid_nit('800.197.268-4')$$,
+  'DIAN check digit (stored form only)');
+
 rollback;

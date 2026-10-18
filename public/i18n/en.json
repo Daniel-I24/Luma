@@ -895,5 +895,39 @@
       "loadFailed": "The notifications could not be loaded.",
       "markFailed": "They could not be marked as read."
     }
+  },
+  "verification": {
+    "validation": {
+      "nit": "Enter a valid NIT with its check digit (e.g. 800.197.268-4)."
+    },
+    "errors": {
+      "loadFailed": "The verification information could not be loaded.",
+      "saveFailed": "The data could not be saved. Try again.",
+      "docType": "Upload an image (JPG, PNG or WebP) or a PDF.",
+      "docSize": "The file is larger than 5 MB.",
+      "uploadFailed": "The document could not be uploaded. Try again.",
+      "deleteFailed": "The document could not be deleted.",
+      "submitFailed": "It could not be sent for review. Try again."
+    }
+  },
+  "admin": {
+    "errors": {
+      "loadFailed": "The information could not be loaded.",
+      "notAdmin": "This action is for the review team only.",
+      "noteRequired": "Write a note for the business when rejecting or suspending.",
+      "invalidTransition": "The business already changed status. Reload the queue.",
+      "reviewFailed": "The decision could not be saved. Try again.",
+      "docFailed": "The document could not be opened.",
+      "docsDeleteFailed": "The decision was saved, but the documents could not be deleted."
+    }
+  },
+  "reports": {
+    "validation": {
+      "comment": "300 characters at most."
+    },
+    "errors": {
+      "alreadyReported": "We already received your report about this business. We are reviewing it.",
+      "failed": "The report could not be sent. Try again."
+    }
   }
 }
