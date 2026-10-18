@@ -26,10 +26,11 @@ category names (`Cafetería`), and the Supabase SQL editor and CLI are UTF-8.
 | 18 | `20261020000310_reports_admin.sql` | Admin list of open reports | Pending review |
 | 19 | `20261020000400_verification_storage.sql` | Private `verification-docs` bucket and its Storage policies | Pending review |
 | 20 | `20261021000000_promotion_discounts.sql` | Promotion discounts on one item (5-90 %, same business, max 5 active), list/final price and promotion on order lines, `create_order` prices with the best current discount | Pending review |
+| 21 | `20261022000000_ai_gateway.sql` | Luma IA: closed `ai_usage`/`ai_cache`, `consume_ai_quota`, cache functions (service_role only), `ai_recommend_candidates`, `owner_sales_summary` | Pending review |
 
 A clean install was checked on 2026-10-18: every file above applied in this
 order on an empty Postgres 17 database with the local stubs, then every SQL
-suite passed (275 checks after migration 20).
+suite passed (296 checks after migration 21).
 
 "Applied" is what the project documentation recorded before this batch
 (the orders migrations were the first ones marked as not applied); nothing
@@ -81,7 +82,7 @@ alter table public.promotions validate constraint promotions_image_url_https;
 
 ## Security tests
 
-`supabase/tests/*.sql` (275 checks) run as the `anon` and `authenticated`
+`supabase/tests/*.sql` (296 checks) run as the `anon` and `authenticated`
 roles with a JWT `sub` (customers, owners and admins), each file in a
 transaction that is rolled back.
 
@@ -114,5 +115,6 @@ transaction that is rolled back.
 | `notifications_security.sql` | triggers (incl. cancellation to the owner), own rows only, `read_at` only, no client inserts |
 | `account_types_security.sql` | account type from metadata, private columns, `become_business_owner`, business limit |
 | `verification_visibility.sql` | only active and approved businesses are public (tables, views, Storage, `create_order`) |
+| `ai_gateway.sql` | closed AI tables, daily quotas (user, business, global), service_role-only cache, public/open candidates, owner-only sales aggregates without customer ids |
 | `promotion_discounts.sql` | discount rules, item of the same business, 5 active max, visibility, best discount and rounding in `create_order`, client prices ignored |
 | `verification_workflow.sql` | submit and review RPCs, admin-only actions, re-review trigger, reports, private legal data and documents |
