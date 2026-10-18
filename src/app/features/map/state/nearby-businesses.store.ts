@@ -28,7 +28,7 @@ export interface NearbyBusiness {
   rating: BusinessRating | null;
   /** True when ratings loaded, so a null rating really means "no reviews". */
   ratingsLoaded: boolean;
-  /** First active promotion, if any. */
+  /** Active promotion to show (biggest discount first), if any. */
   promotion: Promotion | null;
   /** Stands in for a missing logo, from the business category. */
   logoIcon: IconName;
@@ -127,10 +127,13 @@ export class NearbyBusinessesStore {
   }
 }
 
+/** The promotion to show per business: the biggest discount, else the first. */
 function firstPerBusiness(promotions: readonly Promotion[]): Map<string, Promotion> {
   const byBusiness = new Map<string, Promotion>();
+  const off = (p: Promotion) => (p.menu_item_id ? (p.discount_percent ?? 0) : 0);
   for (const promo of promotions) {
-    if (!byBusiness.has(promo.business_id)) byBusiness.set(promo.business_id, promo);
+    const current = byBusiness.get(promo.business_id);
+    if (!current || off(promo) > off(current)) byBusiness.set(promo.business_id, promo);
   }
   return byBusiness;
 }

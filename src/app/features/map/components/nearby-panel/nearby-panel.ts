@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import {
   LumaBusinessCard,
@@ -9,6 +10,7 @@ import {
   LumaSkeleton,
 } from '@design-system';
 import { DistancePipe } from '@shared/geo/distance.pipe';
+import type { Promotion } from '@shared/business/models/business.model';
 import type { NearbyBusiness } from '../../state/nearby-businesses.store';
 
 /**
@@ -33,6 +35,7 @@ import type { NearbyBusiness } from '../../state/nearby-businesses.store';
 })
 export class NearbyPanel {
   private readonly transloco = inject(TranslocoService);
+  private readonly router = inject(Router);
   protected readonly lang = toSignal(this.transloco.langChanges$, {
     initialValue: this.transloco.getActiveLang(),
   });
@@ -50,4 +53,17 @@ export class NearbyPanel {
   readonly retry = output<void>();
   readonly clearFilters = output<void>();
   readonly openAi = output<void>();
+
+  /** "-25 % · Title" for discounts, the title otherwise. */
+  protected promoLabel(promotion: Promotion): string {
+    if (!promotion.menu_item_id || promotion.discount_percent === null) return promotion.title;
+    const off = this.transloco.translate('promotions.card.discount', {
+      percent: promotion.discount_percent,
+    });
+    return `${off} · ${promotion.title}`;
+  }
+
+  protected openPromotions(): void {
+    void this.router.navigate(['/promotions']);
+  }
 }

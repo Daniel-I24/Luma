@@ -48,12 +48,7 @@
         (viewBusiness)="viewBusiness(card)"
       />
       } @if (store.hasMore() && !store.loadingMore() && !store.moreFailed()) {
-      <div
-        class="h-px"
-        appNearViewport
-        [root]="scroller"
-        (nearViewport)="store.loadMore()"
-      ></div>
+      <div class="h-px" appNearViewport [root]="scroller" (nearViewport)="store.loadMore()"></div>
       } @if (store.loadingMore()) {
       <app-luma-skeleton class="h-full snap-start" shape="rect" />
       } @if (store.moreFailed()) {
@@ -66,6 +61,11 @@
     </div>
 
     <div class="absolute top-4 right-4 flex flex-col items-end gap-2">
+      <a
+        routerLink="/promotions"
+        class="inline-flex min-h-11 items-center gap-1 rounded-full bg-primary px-3 text-label font-semibold text-primary-fg no-underline shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+        >{{ t('promotions.title') }}</a
+      >
       <span
         class="rounded-full bg-surface-elevated px-3 py-1 text-label text-fg shadow-md"
         aria-hidden="true"

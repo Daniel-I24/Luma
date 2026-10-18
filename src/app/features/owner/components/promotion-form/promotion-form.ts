@@ -11,9 +11,11 @@ import {
 } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaInput } from '@design-system';
+import { DiscountFields } from '../discount-fields/discount-fields';
 import { ImageField } from '../image-field/image-field';
 import { type PromotionInput, promotionSchema } from '@shared/business/data/business-write.schemas';
 import type { Promotion } from '@shared/business/models/business.model';
+import type { MenuItem } from '@shared/business/models/menu.model';
 import {
   type FieldErrors,
   fieldErrors,
@@ -27,11 +29,18 @@ const FIELD_ORDER = [
   ['starts_at', 'promo-starts'],
   ['ends_at', 'promo-ends'],
   ['description', 'promo-description'],
+  ['menu_item_id', 'promo-item'],
+  ['discount_percent', 'promo-percent'],
 ] as const;
 const DAY_MS = 86_400_000;
 
 /** Draft field -> validated field, to clear its error on edit. */
-const DRAFT_FIELD: Record<string, string> = { startsAt: 'starts_at', endsAt: 'ends_at' };
+const DRAFT_FIELD: Record<string, string> = {
+  startsAt: 'starts_at',
+  endsAt: 'ends_at',
+  menuItemId: 'menu_item_id',
+  discount: 'discount_percent',
+};
 
 interface PromoDraft {
   title: string;
@@ -39,6 +48,8 @@ interface PromoDraft {
   startsAt: string;
   endsAt: string;
   imageUrl: string | null;
+  menuItemId: string | null;
+  discount: string;
 }
 
 function draftOf(promotion: Promotion | null, now: Date): PromoDraft {
@@ -48,6 +59,8 @@ function draftOf(promotion: Promotion | null, now: Date): PromoDraft {
     startsAt: toLocalInput(promotion?.starts_at ?? now.toISOString()),
     endsAt: toLocalInput(promotion?.ends_at ?? new Date(now.getTime() + 7 * DAY_MS).toISOString()),
     imageUrl: promotion?.image_url ?? null,
+    menuItemId: promotion?.menu_item_id ?? null,
+    discount: promotion?.discount_percent?.toString() ?? '',
   };
 }
 
@@ -56,7 +69,7 @@ function draftOf(promotion: Promotion | null, now: Date): PromoDraft {
   selector: 'app-promotion-form',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaInput, ImageField],
+  imports: [TranslocoModule, LumaButton, LumaInput, DiscountFields, ImageField],
   templateUrl: './promotion-form.html',
 })
 export class PromotionForm {
@@ -64,6 +77,8 @@ export class PromotionForm {
 
   readonly promotion = input<Promotion | null>(null);
   readonly businessId = input.required<string>();
+  /** Products of the business that a discount can apply to. */
+  readonly items = input<readonly MenuItem[]>([]);
   readonly busy = input(false);
   readonly submitted = output<PromotionInput>();
   readonly cancelled = output<void>();
@@ -99,6 +114,8 @@ export class PromotionForm {
       starts_at: fromLocalInput(draft.startsAt),
       ends_at: fromLocalInput(draft.endsAt),
       image_url: draft.imageUrl,
+      menu_item_id: draft.menuItemId,
+      discount_percent: draft.discount.trim() ? Number(draft.discount) : null,
     });
     const errors = parsed.success ? {} : { ...fieldErrors(parsed.error.issues) };
     if (parsed.success && Date.parse(parsed.data.ends_at) <= Date.now()) {

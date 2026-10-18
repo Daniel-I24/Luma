@@ -842,7 +842,9 @@
       "date": "Elige una fecha y hora.",
       "datesOrder": "La fecha de fin debe ser posterior a la de inicio.",
       "endsInPast": "La fecha de fin debe estar en el futuro.",
-      "imageUrl": "La imagen debe ser una dirección https."
+      "imageUrl": "La imagen debe ser una dirección https.",
+      "discount": "El descuento debe ser un número entero entre 5 y 90.",
+      "discountNeedsItem": "Elige el producto al que se aplica el descuento."
     },
     "errors": {
       "loadFailed": "No se pudo cargar la información de tu negocio.",
@@ -854,7 +856,9 @@
       "duplicate": "Ese dato ya existe.",
       "forbidden": "No tienes permiso para modificar este negocio.",
       "notBusinessOwner": "Solo las cuentas de negocio pueden registrar negocios.",
-      "businessLimit": "Llegaste al máximo de negocios por cuenta."
+      "businessLimit": "Llegaste al máximo de negocios por cuenta.",
+      "promotionLimit": "Ya tienes 5 promociones activas. Termina una para crear otra.",
+      "promotionItemMismatch": "Ese producto no es de este negocio."
     },
     "images": {
       "logo": "Logo",
@@ -1292,6 +1296,18 @@
       "confirm": "Guardar y enviar a revisión",
       "cancel": "Seguir editando",
       "saved": "Cambios guardados. Tu negocio volvió a revisión."
+    },
+    "discount": {
+      "legend": "Descuento (opcional)",
+      "item": "Producto",
+      "noItem": "Sin descuento: solo anuncio",
+      "percent": "Porcentaje de descuento",
+      "percentHint": "Entre 5 y 90 %.",
+      "preview": "Los clientes verán {{final}} (antes {{list}}).",
+      "previewEmpty": "Escribe un porcentaje para ver el precio final.",
+      "margin": "Revisa tu margen antes de publicar. El precio final lo calcula Luma al confirmar cada pedido.",
+      "limit": "{{count}} de {{max}} promociones activas.",
+      "limitReached": "Tienes {{count}} de {{max}} promociones activas: termina una para crear otra."
     }
   },
   "promotions": {

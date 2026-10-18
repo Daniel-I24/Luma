@@ -5,9 +5,17 @@
   <app-panel-header [heading]="t('businessPanel.promotions.title')" />
   <app-panel-state [state]="panel.state()" (retry)="load()">
     <div class="flex flex-col gap-4">
-      <app-luma-button [fullWidth]="true" (clicked)="openForm(null)"
+      <app-luma-button
+        [fullWidth]="true"
+        describedBy="promo-limit"
+        [disabled]="!promos.canAdd()"
+        (clicked)="openForm(null)"
         >{{ t('businessPanel.promotions.add') }}</app-luma-button
       >
+      <p id="promo-limit" class="m-0 text-body-sm text-fg-muted">
+        {{ t(promos.canAdd() ? 'owner.discount.limit' : 'owner.discount.limitReached', { count:
+        promos.activeCount(), max: promos.maxActive }) }}
+      </p>
       @if (promos.errorKey(); as key) {
       <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
         {{ t(key) }}
@@ -24,6 +32,12 @@
         <li class="flex items-start gap-2 rounded-xl border border-border-subtle bg-surface p-3">
           <div class="flex min-w-0 flex-1 flex-col gap-1">
             <span class="text-body font-medium text-fg">{{ promo.title }}</span>
+            @if (promo.discount_percent; as percent) {
+            <span class="text-body-sm font-semibold text-danger"
+              >{{ t('promotions.card.discount', { percent: percent }) }} · {{ itemName(promo)
+              }}</span
+            >
+            }
             <span class="text-caption text-fg-muted"
               >{{ t('businessPanel.promotions.dates', { from: when(promo.starts_at), to:
               when(promo.ends_at) }) }}</span
@@ -66,6 +80,7 @@
     <app-promotion-form
       [promotion]="editing() ?? null"
       [businessId]="id()"
+      [items]="promos.items()"
       [busy]="promos.busy()"
       (submitted)="save($event)"
       (cancelled)="editing.set(undefined)"

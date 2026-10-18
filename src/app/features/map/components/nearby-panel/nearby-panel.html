@@ -3,6 +3,8 @@
     class="px-4"
     headingId="nearby-heading"
     [heading]="t('map.nearby.title')"
+    [actionLabel]="t('promotions.title')"
+    (action)="openPromotions()"
   />
 
   @if (loading()) {
@@ -63,7 +65,7 @@
         [logoIcon]="item.logoIcon"
         [rating]="item.rating?.rating ?? null"
         [ratingFallback]="item.ratingsLoaded ? t('rating.none') : null"
-        [promoLabel]="item.promotion?.title ?? null"
+        [promoLabel]="item.promotion ? promoLabel(item.promotion) : null"
         [distanceLabel]="item.distanceKm | distance: lang()"
         [current]="item.business.id === selectedId()"
         (selected)="selectBusiness.emit(item)"

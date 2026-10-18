@@ -78,6 +78,10 @@ export class BusinessPromotionsPage {
     await Promise.all([this.panel.load(id), this.promos.load(id)]);
   }
 
+  protected itemName(promotion: Promotion): string {
+    return this.promos.items().find((i) => i.id === promotion.menu_item_id)?.name ?? '';
+  }
+
   protected when(iso: string): string {
     return formatDateTime(iso, this.lang());
   }

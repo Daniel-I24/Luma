@@ -46,6 +46,15 @@
     >
     }
   </div>
+  <app-discount-fields
+    [items]="items()"
+    [itemError]="errors()['menu_item_id'] ? t(errors()['menu_item_id']) : undefined"
+    [percentError]="errors()['discount_percent'] ? t(errors()['discount_percent']) : undefined"
+    [itemId]="draft().menuItemId"
+    (itemIdChange)="set('menuItemId', $event)"
+    [percent]="draft().discount"
+    (percentChange)="set('discount', $event)"
+  />
   <app-image-field
     fieldId="promo-image"
     kind="promotions"

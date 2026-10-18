@@ -89,6 +89,8 @@ describe('business panel write repositories', () => {
       title: '2x1',
       description: null,
       image_url: null,
+      menu_item_id: null,
+      discount_percent: null,
       starts_at: '2026-10-20T10:00:00-05:00',
       ends_at: '2026-10-19T10:00:00-05:00',
     };

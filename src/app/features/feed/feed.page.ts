@@ -6,7 +6,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaEmptyState, LumaIconButton, LumaSkeleton } from '@design-system';
 import { NearViewportDirective } from '@shared/ui/near-viewport.directive';
@@ -25,6 +25,7 @@ import { FeedStore } from './state/feed.store';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     TranslocoModule,
+    RouterLink,
     LumaButton,
     LumaEmptyState,
     LumaIconButton,

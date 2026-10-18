@@ -1,0 +1,38 @@
+<fieldset *transloco="let t" class="m-0 flex flex-col gap-3 border-0 p-0">
+  <legend class="mb-1 p-0 text-label-lg text-fg">{{ t('owner.discount.legend') }}</legend>
+  <div class="flex flex-col gap-1">
+    <label class="text-label text-fg" for="promo-item">{{ t('owner.discount.item') }}</label>
+    <select
+      id="promo-item"
+      class="min-h-11 rounded-md border border-border bg-surface px-2 text-body text-fg focus-visible:outline-2 focus-visible:outline-border-focus"
+      [attr.aria-invalid]="itemError() ? 'true' : null"
+      [attr.aria-describedby]="itemError() ? 'promo-item-error' : null"
+      (change)="onItem($event)"
+    >
+      <option value="" [selected]="!itemId()">{{ t('owner.discount.noItem') }}</option>
+      @for (option of items(); track option.id) {
+      <option [value]="option.id" [selected]="option.id === itemId()">{{ option.name }}</option>
+      }
+    </select>
+    @if (itemError(); as error) {
+    <span id="promo-item-error" class="text-caption text-danger" role="alert">{{ error }}</span>
+    }
+  </div>
+  @if (item()) {
+  <app-luma-input
+    inputId="promo-percent"
+    type="number"
+    inputMode="numeric"
+    [label]="t('owner.discount.percent')"
+    [hint]="t('owner.discount.percentHint')"
+    [errorMessage]="percentError()"
+    [value]="percent()"
+    (valueChange)="percent.set($event)"
+  />
+  <p class="m-0 rounded-md bg-surface-selected p-3 text-body-sm text-fg" aria-live="polite">
+    @if (preview(); as price) { {{ t('owner.discount.preview', { final: (price.final | cop), list:
+    (price.list | cop) }) }} } @else { {{ t('owner.discount.previewEmpty') }} }
+  </p>
+  <p class="m-0 text-caption text-fg-muted">{{ t('owner.discount.margin') }}</p>
+  }
+</fieldset>

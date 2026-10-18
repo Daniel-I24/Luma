@@ -842,7 +842,9 @@
       "date": "Choose a date and time.",
       "datesOrder": "The end date must be after the start date.",
       "endsInPast": "The end date must be in the future.",
-      "imageUrl": "The image must be an https address."
+      "imageUrl": "The image must be an https address.",
+      "discount": "The discount must be a whole number between 5 and 90.",
+      "discountNeedsItem": "Choose the product the discount applies to."
     },
     "errors": {
       "loadFailed": "Your business information could not be loaded.",
@@ -854,7 +856,9 @@
       "duplicate": "That already exists.",
       "forbidden": "You are not allowed to change this business.",
       "notBusinessOwner": "Only business accounts can register businesses.",
-      "businessLimit": "You reached the maximum number of businesses per account."
+      "businessLimit": "You reached the maximum number of businesses per account.",
+      "promotionLimit": "You already have 5 active deals. End one to create another.",
+      "promotionItemMismatch": "That product does not belong to this business."
     },
     "images": {
       "logo": "Logo",
@@ -1292,6 +1296,18 @@
       "confirm": "Save and send for review",
       "cancel": "Keep editing",
       "saved": "Changes saved. Your business is back under review."
+    },
+    "discount": {
+      "legend": "Discount (optional)",
+      "item": "Product",
+      "noItem": "No discount: announcement only",
+      "percent": "Percent off",
+      "percentHint": "Between 5 and 90 %.",
+      "preview": "Customers will see {{final}} (was {{list}}).",
+      "previewEmpty": "Enter a percentage to see the final price.",
+      "margin": "Check your margin before publishing. Luma computes the final price when each order is confirmed.",
+      "limit": "{{count}} of {{max}} active deals.",
+      "limitReached": "You have {{count}} of {{max}} active deals: end one to create another."
     }
   },
   "promotions": {

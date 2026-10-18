@@ -1,5 +1,4 @@
 import { OpeningHours } from '@shared/business/domain/opening-hours';
-import type { Promotion } from '@shared/business/models/business.model';
 import type { GeoCoords } from '@shared/geo/geolocation.service';
 import { haversineKm } from '@shared/geo/haversine.util';
 import type { PromotionDeal } from './promotion-deal';
@@ -55,16 +54,4 @@ export function arrangeDeals(
     ending: (a, b) => Date.parse(a.deal.endsAt) - Date.parse(b.deal.endsAt) || byDistance(a, b),
   };
   return kept.sort(compare[sort]);
-}
-
-/** Best current discount per business, for the feed and map cards. */
-export function bestDiscountByBusiness(
-  promotions: readonly Pick<Promotion, 'business_id' | 'menu_item_id' | 'discount_percent'>[],
-): Map<string, number> {
-  const best = new Map<string, number>();
-  for (const p of promotions) {
-    if (p.discount_percent === null || p.menu_item_id === null) continue;
-    best.set(p.business_id, Math.max(best.get(p.business_id) ?? 0, p.discount_percent));
-  }
-  return best;
 }

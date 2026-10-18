@@ -1,14 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { PromotionInput } from '@shared/business/data/business-write.schemas';
-import { useFixedClock } from '../../../../../testing/fixed-clock';
 import { BusinessImageRepository } from '@shared/media/business-image.repository';
 import { PromotionForm } from './promotion-form';
 
-describe('PromotionForm', () => {
-  useFixedClock('2026-10-14T12:00:00');
+const items = [
+  { id: 'm1', business_id: 'b1', name: 'Empanada', price_cop: 9990, is_available: true },
+] as never[];
 
+describe('PromotionForm with a discount', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -18,77 +19,65 @@ describe('PromotionForm', () => {
           translocoConfig: { availableLangs: ['es'], defaultLang: 'es' },
         }),
       ],
-      providers: [{ provide: BusinessImageRepository, useValue: {} }],
+      providers: [
+        { provide: BusinessImageRepository, useValue: { upload: vi.fn(), remove: vi.fn() } },
+      ],
     });
   });
 
   function render() {
     const fixture = TestBed.createComponent(PromotionForm);
     fixture.componentRef.setInput('businessId', 'b1');
+    fixture.componentRef.setInput('items', items);
     document.body.appendChild(fixture.nativeElement);
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
-    const emitted: PromotionInput[] = [];
-    fixture.componentInstance.submitted.subscribe((value) => emitted.push(value));
+    const submitted: PromotionInput[] = [];
+    fixture.componentInstance.submitted.subscribe((input) => submitted.push(input));
     const type = (id: string, value: string) => {
-      const input = el.querySelector<HTMLInputElement>(`#${id}`)!;
-      input.value = value;
-      input.dispatchEvent(new Event('input'));
+      const field = el.querySelector<HTMLInputElement>(`#${id}`)!;
+      field.value = value;
+      field.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+    };
+    const choose = (value: string) => {
+      const select = el.querySelector<HTMLSelectElement>('#promo-item')!;
+      select.value = value;
+      select.dispatchEvent(new Event('change'));
       fixture.detectChanges();
     };
     const submit = () => {
-      el.querySelector('form')!.dispatchEvent(new Event('submit'));
+      el.querySelector('form')!.dispatchEvent(new Event('submit', { cancelable: true }));
       fixture.detectChanges();
     };
-    return { fixture, el, emitted, type, submit };
+    return { el, type, choose, submit, submitted };
   }
 
-  it('starts now and ends a week later', async () => {
-    const { fixture, el } = render();
-    await fixture.whenStable();
+  it('previews the final price and sends the item and percent', () => {
+    const { el, type, choose, submit, submitted } = render();
+    type('promo-title', 'Empanada feliz');
+    choose('m1');
+    type('promo-percent', '15');
 
-    expect(el.querySelector<HTMLInputElement>('#promo-starts')!.value).toBe('2026-10-14T12:00');
-    expect(el.querySelector<HTMLInputElement>('#promo-ends')!.value).toBe('2026-10-21T12:00');
-  });
-
-  it('requires the end after the start', () => {
-    const { el, emitted, type, submit } = render();
-    type('promo-title', '2x1 viernes');
-    type('promo-ends', '2026-10-13T12:00');
-
+    expect(el.textContent).toContain('owner.discount.preview');
+    expect(el.textContent).toContain('owner.discount.margin');
     submit();
 
-    expect(emitted).toEqual([]);
-    expect(el.textContent).toContain('businessPanel.validation.datesOrder');
-    expect(document.activeElement?.id).toBe('promo-ends');
+    expect(submitted[0]).toMatchObject({ menu_item_id: 'm1', discount_percent: 15 });
   });
 
-  it('requires the end in the future', () => {
-    const { el, emitted, type, submit } = render();
-    type('promo-title', '2x1 viernes');
-    type('promo-starts', '2026-10-01T12:00');
-    type('promo-ends', '2026-10-10T12:00');
-
+  it('rejects percents outside 5-90 and sends no discount without a product', () => {
+    const { el, type, choose, submit, submitted } = render();
+    type('promo-title', 'Empanada feliz');
+    choose('m1');
+    type('promo-percent', '95');
     submit();
 
-    expect(emitted).toEqual([]);
-    expect(el.textContent).toContain('businessPanel.validation.endsInPast');
-  });
+    expect(submitted).toEqual([]);
+    expect(el.textContent).toContain('businessPanel.validation.discount');
 
-  it('emits ISO dates for a valid promotion', () => {
-    const { emitted, type, submit } = render();
-    type('promo-title', '2x1 viernes');
-
+    choose('');
     submit();
-
-    expect(emitted).toEqual([
-      {
-        title: '2x1 viernes',
-        description: null,
-        image_url: null,
-        starts_at: new Date('2026-10-14T12:00:00').toISOString(),
-        ends_at: new Date('2026-10-21T12:00:00').toISOString(),
-      },
-    ]);
+    expect(submitted[0]).toMatchObject({ menu_item_id: null, discount_percent: null });
   });
 });

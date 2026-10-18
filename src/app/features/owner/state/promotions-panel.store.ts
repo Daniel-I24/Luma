@@ -1,7 +1,12 @@
-import { Injectable, inject, signal } from '@angular/core';
-import type { PromotionInput } from '@shared/business/data/business-write.schemas';
+import { Injectable, computed, inject, signal } from '@angular/core';
+import {
+  MAX_ACTIVE_PROMOTIONS,
+  type PromotionInput,
+} from '@shared/business/data/business-write.schemas';
+import { MenuRepository } from '@shared/business/data/menu.repository';
 import { PromotionWriteRepository } from '@shared/business/data/promotion-write.repository';
 import type { Promotion } from '@shared/business/models/business.model';
+import type { MenuItem } from '@shared/business/models/menu.model';
 import { BusinessImageRepository } from '@shared/media/business-image.repository';
 
 /** PromotionsPanelStore — every promotion of the managed business and its edits. */
@@ -9,6 +14,7 @@ import { BusinessImageRepository } from '@shared/media/business-image.repository
 export class PromotionsPanelStore {
   private readonly repo = inject(PromotionWriteRepository);
   private readonly images = inject(BusinessImageRepository);
+  private readonly menus = inject(MenuRepository);
 
   private readonly _promotions = signal<readonly Promotion[]>([]);
   private readonly _busy = signal(false);
@@ -16,10 +22,24 @@ export class PromotionsPanelStore {
   readonly promotions = this._promotions.asReadonly();
   readonly busy = this._busy.asReadonly();
   readonly errorKey = this._errorKey.asReadonly();
+  private readonly _items = signal<readonly MenuItem[]>([]);
+  /** Products a discount can apply to. */
+  readonly items = this._items.asReadonly();
+  readonly maxActive = MAX_ACTIVE_PROMOTIONS;
+  /** Active and not ended yet: what counts towards the limit. */
+  readonly activeCount = computed(
+    () =>
+      this._promotions().filter((p) => p.is_active && Date.parse(p.ends_at) > Date.now()).length,
+  );
+  readonly canAdd = computed(() => this.activeCount() < MAX_ACTIVE_PROMOTIONS);
 
   async load(businessId: string): Promise<boolean> {
-    const result = await this.repo.listForOwner(businessId);
+    const [result, items] = await Promise.all([
+      this.repo.listForOwner(businessId),
+      this.menus.getMenu(businessId),
+    ]);
     this._promotions.set(result.data ?? []);
+    this._items.set(items.data ?? []);
     return !result.errorKey;
   }
 

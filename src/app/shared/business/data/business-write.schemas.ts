@@ -88,11 +88,23 @@ export const promotionSchema = z
     starts_at: z.iso.datetime({ offset: true, message: `${V}.date` }),
     ends_at: z.iso.datetime({ offset: true, message: `${V}.date` }),
     image_url: httpsUrl,
+    menu_item_id: z.nullable(z.string()),
+    discount_percent: z.nullable(
+      z.int(`${V}.discount`).check(z.minimum(5, `${V}.discount`), z.maximum(90, `${V}.discount`)),
+    ),
   })
   .check(
     z.refine((promo) => Date.parse(promo.ends_at) > Date.parse(promo.starts_at), {
       message: `${V}.datesOrder`,
       path: ['ends_at'],
     }),
+    // Mirrors promotions_discount_needs_item.
+    z.refine((promo) => promo.discount_percent === null || promo.menu_item_id !== null, {
+      message: `${V}.discountNeedsItem`,
+      path: ['menu_item_id'],
+    }),
   );
+
+/** Most promotions active at once per business (promotions_guard, app_settings). */
+export const MAX_ACTIVE_PROMOTIONS = 5;
 export type PromotionInput = z.infer<typeof promotionSchema>;

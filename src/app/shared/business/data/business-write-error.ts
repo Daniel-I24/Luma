@@ -3,6 +3,8 @@ const MESSAGE_KEYS: Readonly<Record<string, string>> = {
   publish_requirements_missing: 'businessPanel.errors.publishRequirements',
   not_business_owner: 'businessPanel.errors.notBusinessOwner',
   business_limit_reached: 'businessPanel.errors.businessLimit',
+  promotion_limit: 'businessPanel.errors.promotionLimit',
+  promotion_item_mismatch: 'businessPanel.errors.promotionItemMismatch',
 };
 const CODE_KEYS: Readonly<Record<string, string>> = {
   '23514': 'businessPanel.errors.invalidData',

@@ -75,13 +75,12 @@ agent's sessions).
 
 ## In progress
 
-- Block D (promotions): SQL done and committed (migration 20261021000000,
-  23 checks, 275 total). App: shared PromotionCard and deals repository,
-  customer /promotions (sort, filters, loading/empty/error, Pedir), restaurant
-  Promos tab reuses the card, feed cards show the discount. LEFT in D: links
-  to /promotions from Descubrir and "Cercanos a ti", discount on map cards,
-  owner promotion form (item selector, percent with final-price preview,
-  Terminar ahora, visible limit of 5), specs for the card/page/deal utils.
+- Block D done: migration 20261021000000 (discounts, trigger, server prices in
+  create_order; 23 SQL checks), customer /promotions (sort, filters, states,
+  Pedir), shared PromotionCard reused by the restaurant Promos tab, links from
+  Descubrir and "Cercanos a ti", discounts on feed and map cards, owner form
+  with product, percent, final-price preview, margin notice, Terminar ahora and
+  the visible limit of 5.
 - Then blocks E (AI), F (APK), G (polish and docs) are not started.
 
 ## Left
