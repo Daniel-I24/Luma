@@ -34,7 +34,6 @@ agent's sessions).
   profile, home path), `ownerGuard` and `accountHomeGuard`; /business is
   owner-only and the Profile shows it only to owners (the customer
   "¿Tienes un negocio?" sheet comes in PARTE 5).
-
 - PARTE 4 — SQL (migrations 20261020000000 to 20261020000400: status,
   admins, NIT check digit, legal data, documents + private bucket,
   is_business_public in every public policy/view/Storage/create_order,
@@ -42,6 +41,16 @@ agent's sessions).
   object, `/admin` (queue, review with signed document URLs, decision with
   mandatory note; `adminGuard` fixed to inject before awaiting), report sheet
   and "Verificado" badge on the restaurant profile. Docs come with PARTE 5.
+- PARTE 7 — delete-account removes `business-images` and `verification-docs`
+  files before `deleteUser` (500 and account kept if Storage fails), asks for
+  a sign-in at most 10 minutes old (403 `reauth_required`, own message in the
+  app), CORS moved to `supabase/functions/_shared/cors.ts`. 26 Deno tests
+  (`docker run denoland/deno` when Deno is not installed).
+- Block A (2026-10-18): every migration applies in order on an empty
+  Postgres 17 with the stubs and all SQL suites pass (252 checks); gitignore
+  hygiene checked; invariants re-checked with targeted tests (two new SQL
+  checks: owners cannot write `verification_note`, admins cannot write
+  `verification_status` directly).
 
 ## In progress
 

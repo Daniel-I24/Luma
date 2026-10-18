@@ -17,6 +17,18 @@ category names (`Cafetería`), and the Supabase SQL editor and CLI are UTF-8.
 | 9 | `20261018000100_business_images.sql` | `business-images` bucket, Storage policies, https-only image URLs | Pending review |
 | 10 | `20261018000200_business_orders.sql` | Owner views `business_orders`, `business_order_items` | Pending review |
 | 11 | `20261018000300_notifications.sql` | `notifications`, RLS, triggers on `orders` | Pending review |
+| 12 | `20261019000000_account_types.sql` | `account_type`, private `full_name`/`phone`, consent, onboarding version, `become_business_owner`, max 3 businesses | Pending review |
+| 13 | `20261020000000_business_verification.sql` | `verification_status`/`note`/`verified_at`, `admins`, `is_admin`, `am_i_admin`, NIT check digit | Pending review |
+| 14 | `20261020000100_public_visibility.sql` | `is_business_public` in every public policy and view | Pending review |
+| 15 | `20261020000110_create_order_public.sql` | `create_order` only for public businesses | Pending review |
+| 16 | `20261020000200_verification_access.sql` | `business_legal`, `business_verification_docs`, no client writes to `verification_*` | Pending review |
+| 17 | `20261020000300_verification_workflow.sql` | `submit_business_for_review`, `review_business`, re-review trigger, `reports` | Pending review |
+| 18 | `20261020000310_reports_admin.sql` | Admin list of open reports | Pending review |
+| 19 | `20261020000400_verification_storage.sql` | Private `verification-docs` bucket and its Storage policies | Pending review |
+
+A clean install was checked on 2026-10-18: every file above applied in this
+order on an empty Postgres 17 database with the local stubs, then every SQL
+suite passed (250 checks).
 
 "Applied" is what the project documentation recorded before this batch
 (the orders migrations were the first ones marked as not applied); nothing
@@ -51,22 +63,30 @@ select id from public.business_hours where not is_closed and opens_at = closes_a
 Fix them, then validate:
 
 ```sql
-alter table public.businesses
-  validate constraint businesses_name_length,
-  validate constraint businesses_category_valid;
--- one "alter table ... validate constraint <name>;" per constraint:
--- businesses_description_length, businesses_address_length,
--- businesses_phone_format, businesses_location_range,
--- businesses_logo_url_https, businesses_cover_url_https,
--- business_hours_open_differs, promotions_title_length,
--- promotions_description_length, promotions_dates_order,
--- promotions_image_url_https
+alter table public.businesses validate constraint businesses_name_length;
+alter table public.businesses validate constraint businesses_category_valid;
+alter table public.businesses validate constraint businesses_description_length;
+alter table public.businesses validate constraint businesses_address_length;
+alter table public.businesses validate constraint businesses_phone_format;
+alter table public.businesses validate constraint businesses_location_range;
+alter table public.businesses validate constraint businesses_logo_url_https;
+alter table public.businesses validate constraint businesses_cover_url_https;
+alter table public.business_hours validate constraint business_hours_open_differs;
+alter table public.promotions validate constraint promotions_title_length;
+alter table public.promotions validate constraint promotions_description_length;
+alter table public.promotions validate constraint promotions_dates_order;
+alter table public.promotions validate constraint promotions_image_url_https;
 ```
 
 ## Security tests
 
-`supabase/tests/*.sql` (179 checks) run as the `anon` and `authenticated`
-roles with a JWT `sub`, each file in a transaction that is rolled back.
+`supabase/tests/*.sql` (250 checks) run as the `anon` and `authenticated`
+roles with a JWT `sub` (customers, owners and admins), each file in a
+transaction that is rolled back.
+
+- With Docker only: `docker run -d --name luma-pg -e POSTGRES_HOST_AUTH_METHOD=trust -v "$PWD":/repo:ro postgres:17`,
+  then `docker exec -w /repo -e PGUSER=postgres luma-pg bash supabase/tests/local/run.sh`
+  and `docker rm -f luma-pg` when done.
 
 - On a Supabase database (local stack or a branch) with every migration
   applied: `psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/<file>.sql`.
@@ -91,3 +111,6 @@ roles with a JWT `sub`, each file in a transaction that is rolled back.
 | `business_images_security.sql` | bucket limits, Storage paths, other owners/buckets, https URLs |
 | `business_orders_security.sql` | owner views: isolation, no `user_id`/email, read only |
 | `notifications_security.sql` | triggers (incl. cancellation to the owner), own rows only, `read_at` only, no client inserts |
+| `account_types_security.sql` | account type from metadata, private columns, `become_business_owner`, business limit |
+| `verification_visibility.sql` | only active and approved businesses are public (tables, views, Storage, `create_order`) |
+| `verification_workflow.sql` | submit and review RPCs, admin-only actions, re-review trigger, reports, private legal data and documents |

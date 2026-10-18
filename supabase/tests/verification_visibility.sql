@@ -33,6 +33,11 @@ select tests.expect_error('authenticated', tests.id('owner'),
 select tests.expect_error('authenticated', tests.id('owner'),
   $$update public.businesses set verified_at = now() where id = tests.id('v1')$$, 'permission denied');
 select tests.expect_error('authenticated', tests.id('owner'),
+  $$update public.businesses set verification_note = 'ok' where id = tests.id('v1')$$, 'permission denied');
+-- Admins decide only through review_business, never with a direct write.
+select tests.expect_error('authenticated', tests.id('adm'),
+  $$update public.businesses set verification_status = 'approved' where id = tests.id('v1')$$, 'permission denied');
+select tests.expect_error('authenticated', tests.id('owner'),
   $$insert into public.businesses (owner_id, name, category, latitude, longitude, address, verification_status)
     values (tests.id('owner'), 'Sneaky', 'Bar', 1, 1, 'Calle 1 # 1-1', 'approved')$$, 'permission denied');
 select tests.expect_error('authenticated', tests.id('cus'),
