@@ -1,0 +1,56 @@
+<div
+  *transloco="let t"
+  class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6"
+>
+  <app-panel-header [heading]="t('businessOrders.title')" />
+  <app-panel-state
+    [state]="panel.state() === 'ready' ? board.state() : panel.state()"
+    (retry)="load()"
+  >
+    <div class="-mx-4">
+      <app-luma-tabs
+        idPrefix="orders"
+        [label]="t('businessOrders.title')"
+        [tabs]="tabs()"
+        [(selected)]="tab"
+      />
+    </div>
+    <div
+      role="tabpanel"
+      class="flex flex-col gap-3 pt-4"
+      [id]="panelId('orders', tab())"
+      [attr.aria-labelledby]="'orders-tab-' + tab()"
+    >
+      @if (board.errorKey(); as key) {
+      <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+        {{ t(key) }}
+      </p>
+      } @for (order of visible(); track order.id) {
+      <app-owner-order-card
+        [order]="order"
+        [busy]="board.busyId() === order.id"
+        (action)="onAction(order, $event)"
+      />
+      } @empty {
+      <app-luma-empty-state icon="receipt" [heading]="t('businessOrders.empty.' + tab())" />
+      }
+    </div>
+  </app-panel-state>
+
+  <app-luma-bottom-sheet
+    titleId="reject-order-title"
+    [open]="rejecting() !== null"
+    [title]="t('businessOrders.rejectTitle')"
+    (closed)="rejecting.set(null)"
+  >
+    <p class="m-0 mb-4 text-body text-fg-muted">{{ t('businessOrders.rejectDescription') }}</p>
+    <div class="flex flex-col gap-3">
+      <app-luma-button variant="danger" [fullWidth]="true" (clicked)="confirmReject()"
+        >{{ t('businessOrders.rejectConfirm') }}</app-luma-button
+      >
+      <app-luma-button variant="ghost" [fullWidth]="true" (clicked)="rejecting.set(null)"
+        >{{ t('businessOrders.keep') }}</app-luma-button
+      >
+    </div>
+  </app-luma-bottom-sheet>
+</div>

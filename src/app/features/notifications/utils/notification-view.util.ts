@@ -1,3 +1,4 @@
+import { ownerPaths } from '@shared/account/owner-paths';
 import {
   type AppNotification,
   OWNER_NOTIFICATION_TYPES,
@@ -14,8 +15,8 @@ export function notificationKey(notification: Pick<AppNotification, 'type' | 'st
 export function notificationLink(notification: AppNotification): string[] | null {
   if (OWNER_NOTIFICATION_TYPES.includes(notification.type)) {
     return notification.business_id
-      ? ['/business', notification.business_id, 'orders']
-      : ['/business'];
+      ? ownerPaths.section(notification.business_id, 'orders')
+      : ownerPaths.home();
   }
   return notification.order_id ? ['/orders', notification.order_id] : null;
 }

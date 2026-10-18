@@ -262,8 +262,6 @@
     "activity": "Tu actividad",
     "favorites": "Mis favoritos",
     "business": "Negocios",
-    "myBusiness": "Mi negocio",
-    "registerBusiness": "Registrar mi negocio",
     "notifications": "Notificaciones",
     "becomeOwner": {
       "title": "¿Tienes un negocio? Regístralo",
@@ -282,7 +280,8 @@
       "tutorial": "Ver el tutorial",
       "terms": "Términos y condiciones",
       "privacy": "Política de privacidad"
-    }
+    },
+    "ownerAppHint": "Gestiona tus negocios, pedidos y promociones."
   },
   "map": {
     "canvasLabel": "Mapa de negocios Luma",
@@ -693,17 +692,6 @@
       "title": "Negocio no encontrado",
       "description": "No existe o no está a tu nombre."
     },
-    "list": {
-      "title": "Mis negocios",
-      "empty": {
-        "title": "Aún no tienes un negocio",
-        "description": "Regístralo para mostrarlo en el mapa y recibir pedidos."
-      },
-      "register": "Registrar mi negocio",
-      "registerAnother": "Registrar otro negocio",
-      "published": "Publicado",
-      "draft": "Sin publicar"
-    },
     "form": {
       "name": "Nombre del negocio",
       "namePlaceholder": "Ej.: Fritanga Don Segundo",
@@ -744,22 +732,9 @@
       "ready": "Todo listo para publicar.",
       "missingTitle": "Para publicar falta:",
       "publish": "Publicar",
-      "unpublish": "Despublicar",
       "publishedToast": "Tu negocio ya es visible en Luma.",
-      "unpublishedToast": "Tu negocio ya no es visible en Luma.",
       "visible": "Visible en el mapa y el feed.",
-      "hidden": "Solo tú lo ves.",
-      "manage": "Administrar",
-      "info": "Información",
-      "infoHint": "Nombre, contacto, ubicación y tiempo de preparación",
-      "hours": "Horario",
-      "hoursHint": "Días y horas de atención",
-      "menu": "Menú",
-      "menuHint": "Productos, precios y disponibilidad",
-      "promotions": "Promociones",
-      "promotionsHint": "Ofertas con fecha de inicio y fin",
-      "orders": "Pedidos",
-      "ordersHint": "Nuevos, en preparación y listos para recoger"
+      "hidden": "Solo tú lo ves."
     },
     "requirements": {
       "name": "Un nombre",
@@ -1223,6 +1198,101 @@
         "title": "Mantén tus horarios",
         "body": "Con el horario al día, los clientes solo te piden cuando estás abierto."
       }
+    }
+  },
+  "owner": {
+    "brand": "Luma Negocios",
+    "switchLabel": "Negocio que estás viendo",
+    "addBusiness": "Añadir otro negocio",
+    "addBusinessShort": "Añadir",
+    "limitReached": "Máximo {{max}} negocios",
+    "backFromCustomerView": "Estás viendo Luma como cliente · Volver a Luma Negocios",
+    "tabs": {
+      "label": "Secciones de Luma Negocios",
+      "summary": "Resumen",
+      "orders": "Pedidos",
+      "menu": "Menú",
+      "promotions": "Promos",
+      "business": "Mi negocio"
+    },
+    "summary": {
+      "title": "Resumen"
+    },
+    "verification": {
+      "title": "Verificación",
+      "hint": {
+        "draft": "Completa lo pendiente y envía tu negocio a revisión. Nadie lo ve hasta que lo verifiquemos.",
+        "pending": "Nuestro equipo está revisando tu negocio. Te avisaremos cuando terminemos.",
+        "approved": "Tu negocio está verificado. Ya puedes publicarlo o pausarlo cuando quieras.",
+        "rejected": "El equipo pidió cambios. Corrígelos y vuelve a enviarlo.",
+        "suspended": "Tu negocio está suspendido y no es visible. Escríbenos si crees que es un error."
+      },
+      "teamNote": "Nota del equipo de Luma",
+      "missingTitle": "Te falta:",
+      "requirements": {
+        "name": "El nombre del negocio",
+        "category": "La categoría",
+        "address": "La dirección",
+        "location": "La ubicación en el mapa",
+        "phone": "El teléfono del negocio",
+        "open_day": "Al menos un día abierto en el horario",
+        "available_item": "Al menos un producto disponible en el menú",
+        "legal": "Los datos legales (NIT y razón social)",
+        "doc_rut": "El RUT",
+        "doc_facade": "Una foto de la fachada"
+      },
+      "readyToSubmit": "Todo listo para enviar a revisión.",
+      "fix": "Corregir los datos y documentos",
+      "submit": "Enviar a revisión",
+      "resubmit": "Reenviar a revisión",
+      "submitted": "Enviado. Te avisaremos cuando lo revisemos."
+    },
+    "publish": {
+      "published": "Publicado",
+      "paused": "Pausado",
+      "pause": "Pausar",
+      "pausedToast": "Tu negocio quedó en pausa y ya no aparece a los clientes."
+    },
+    "today": {
+      "title": "Hoy",
+      "openOrders": "Ver los pedidos de hoy",
+      "new": "Nuevos",
+      "preparing": "En preparación",
+      "ready": "Listos",
+      "sold": "Total vendido"
+    },
+    "myBusiness": {
+      "title": "Mi negocio",
+      "info": "Datos y ubicación",
+      "infoHint": "Nombre, categoría, teléfono, dirección, fotos y tiempo de preparación",
+      "hours": "Horario",
+      "hoursHint": "Los días y horas en que atiendes",
+      "verification": "Datos legales y documentos",
+      "verificationEditable": "NIT, razón social, RUT y fachada",
+      "verificationLocked": "Solo lectura mientras no estén pendientes de cambios",
+      "more": "Más",
+      "customerView": "Ver como cliente"
+    },
+    "verificationPage": {
+      "title": "Datos legales y documentos",
+      "locked": "Puedes ver estos datos, pero solo se editan en borrador o cuando el equipo pide cambios.",
+      "legalTitle": "Datos legales",
+      "legalPrivacy": "Privados: solo los ve el equipo de revisión de Luma.",
+      "saveLegal": "Guardar datos legales",
+      "legalSaved": "Datos legales guardados.",
+      "required": "Obligatorio",
+      "docsTitle": "Documentos",
+      "docsHint": "Imagen (JPG, PNG o WebP) o PDF de hasta 5 MB. Nunca se muestran a los clientes.",
+      "upload": "Subir archivo",
+      "deleteDoc": "Eliminar documento",
+      "docUploaded": "Documento subido."
+    },
+    "reReview": {
+      "title": "¿Volver a revisión?",
+      "body": "Cambiar el nombre, la dirección o la ubicación de un negocio verificado lo envía de nuevo a revisión y deja de verse hasta que lo aprobemos.",
+      "confirm": "Guardar y enviar a revisión",
+      "cancel": "Seguir editando",
+      "saved": "Cambios guardados. Tu negocio volvió a revisión."
     }
   }
 }

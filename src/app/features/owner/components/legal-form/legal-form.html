@@ -1,0 +1,49 @@
+<form
+  *transloco="let t"
+  class="flex flex-col gap-4 rounded-xl border border-border-subtle bg-surface p-4"
+  novalidate
+  aria-labelledby="legal-title"
+  (submit)="save($event)"
+>
+  <h2 id="legal-title" class="m-0 text-title text-fg">
+    {{ t('owner.verificationPage.legalTitle') }}
+  </h2>
+  <app-luma-input
+    inputId="legal-tax-id"
+    inputMode="numeric"
+    [label]="t('verification.legal.taxId')"
+    placeholder="800.197.268-4"
+    [required]="true"
+    [maxLength]="15"
+    [disabled]="!store.editable()"
+    [value]="taxId()"
+    (valueChange)="taxId.set($event)"
+    [errorMessage]="nitError() ? t('verification.validation.nit') : undefined"
+  />
+  <app-luma-input
+    inputId="legal-name"
+    [label]="t('verification.legal.legalName')"
+    [required]="true"
+    [maxLength]="150"
+    [disabled]="!store.editable()"
+    [value]="legalName()"
+    (valueChange)="legalName.set($event)"
+    [errorMessage]="textError() && legalName().trim().length < 2 ? t('owner.verificationPage.required') : undefined"
+  />
+  <app-luma-input
+    inputId="legal-rep"
+    [label]="t('verification.legal.legalRep')"
+    [required]="true"
+    [maxLength]="120"
+    [disabled]="!store.editable()"
+    [value]="legalRep()"
+    (valueChange)="legalRep.set($event)"
+    [errorMessage]="textError() && legalRep().trim().length < 2 ? t('owner.verificationPage.required') : undefined"
+  />
+  <p class="m-0 text-caption text-fg-muted">{{ t('owner.verificationPage.legalPrivacy') }}</p>
+  @if (store.editable()) {
+  <app-luma-button type="submit" [fullWidth]="true" [disabled]="store.busy()">
+    {{ t('owner.verificationPage.saveLegal') }}
+  </app-luma-button>
+  }
+</form>

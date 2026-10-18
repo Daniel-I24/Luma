@@ -61,15 +61,26 @@ agent's sessions).
   shown on landing and from the Profile). Profile: help and legal links and
   the customer "¿Tienes un negocio? Regístralo" (`become_business_owner`).
   Decisions in `docs/DECISIONS.md`.
+- PARTE 5 — Luma Negocios: `features/owner`, shell `/owner` with its own tab
+  bar (Resumen, Pedidos, Menú, Promos, Mi negocio), business switcher and
+  "Añadir" up to 3, `/owner` lands on the last business or the registration,
+  owners land on `/owner` after signing in; Resumen (verification card per
+  state with linked missing steps and submit/resubmit, Publicado/Pausado once
+  approved, today's figures); Mi negocio (data, hours, legal data and
+  documents, customer view, tutorial, sign out, delete account); re-review
+  warning when a verified business changes name, address or location;
+  banner back from the customer view. `/business/**` removed. Docs:
+  `verification.md`, `admin.md` (admin SQL), `roles.md`. Not checked in a
+  browser (needs an owner session); covered by component tests.
 
 ## In progress
 
-- Session 2026-10-18, owner brief blocks A to G: A and B done; next C
-  (Luma Negocios shell `/owner`).
+- Session 2026-10-18, owner brief blocks A to G: A, B and C done; next D
+  (promotions with discounts).
 
 ## Left
 
-- 5 (Luma Negocios shell), promotions with discounts (brief block D), AI
+- Promotions with discounts (brief block D), AI
   with a swappable provider (block E, owner authorised it in the brief),
   8 (APK only, no performance work), polish (block G), 10 (docs).
 - PARTE 9 and the performance section of PARTE 8: on hold until the owner

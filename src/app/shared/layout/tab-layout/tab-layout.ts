@@ -5,6 +5,7 @@ import type { TabBarItem } from '@design-system';
 import { CartBar } from '@shared/cart/cart-bar/cart-bar';
 import { CartConflictSheet } from '@shared/cart/cart-conflict-sheet/cart-conflict-sheet';
 import { FavoritesStore } from '@shared/favorites/favorites.store';
+import { OwnerReturnBanner } from '@shared/layout/owner-return-banner/owner-return-banner';
 import { UnreadNotifications } from '@shared/notifications/unread-notifications';
 import { pollWhileVisible } from '@shared/ui/poll-while-visible';
 
@@ -29,7 +30,7 @@ const MAIN_TABS: readonly TabBarItem[] = [
   selector: 'app-tab-layout',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterOutlet, LumaTabBar, CartBar, CartConflictSheet],
+  imports: [RouterOutlet, LumaTabBar, CartBar, CartConflictSheet, OwnerReturnBanner],
   templateUrl: './tab-layout.html',
   styleUrl: './tab-layout.css',
   providers: [UnreadNotifications],

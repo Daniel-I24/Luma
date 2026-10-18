@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaBottomSheet, LumaButton, LumaIcon } from '@design-system';
+import { ownerPaths } from '@shared/account/owner-paths';
 import { SessionProfileStore } from '@shared/account/session-profile.store';
 
 /**
@@ -35,6 +36,6 @@ export class BecomeOwnerEntry {
       return;
     }
     this.open.set(false);
-    await this.router.navigate(['/business', 'new']);
+    await this.router.navigate(ownerPaths.register());
   }
 }

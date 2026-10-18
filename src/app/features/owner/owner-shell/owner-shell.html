@@ -1,0 +1,59 @@
+<ng-container *transloco="let t">
+  <header
+    class="flex flex-wrap items-center gap-2 border-b border-border-subtle bg-surface px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-3))] pb-3"
+  >
+    <p class="m-0 flex flex-1 items-center gap-2 text-title text-fg">
+      <app-luma-icon name="store" class="text-fg-brand" />
+      {{ t('owner.brand') }}
+    </p>
+    @if (location() && (context.businesses()?.length ?? 0) > 1) {
+    <label class="sr-only" for="owner-business-switch">{{ t('owner.switchLabel') }}</label>
+    <select
+      id="owner-business-switch"
+      class="min-h-11 max-w-44 truncate rounded-md border border-border bg-surface px-2 text-body-sm text-fg focus-visible:outline-2 focus-visible:outline-border-focus"
+      [value]="location()!.id"
+      (change)="switchTo($event)"
+    >
+      @for (business of context.businesses(); track business.id) {
+      <option [value]="business.id" [selected]="business.id === location()!.id">
+        {{ business.name }}
+      </option>
+      }
+    </select>
+    } @if (location()) { @if (context.canAddMore()) {
+    <a
+      class="inline-flex min-h-11 items-center gap-1 rounded-md px-2 text-body-sm font-semibold text-fg-brand"
+      [routerLink]="registerLink"
+      [attr.aria-label]="t('owner.addBusiness')"
+    >
+      <app-luma-icon name="plus" size="sm" />
+      <span class="hidden min-[400px]:inline">{{ t('owner.addBusinessShort') }}</span>
+    </a>
+    } @else {
+    <span class="text-caption text-fg-muted">{{ t('owner.limitReached', { max: 3 }) }}</span>
+    } }
+  </header>
+
+  @if (context.errorKey() && context.businesses() === null) {
+  <div class="mx-auto mt-6 flex max-w-lg flex-col gap-3 px-4">
+    <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+      {{ t(context.errorKey()!) }}
+    </p>
+    <button
+      type="button"
+      class="min-h-11 rounded-md border border-border bg-surface text-body font-semibold text-fg"
+      (click)="context.load()"
+    >
+      {{ t('common.retry') }}
+    </button>
+  </div>
+  }
+
+  <main class="relative min-h-0 flex-1 overflow-y-auto">
+    <router-outlet />
+  </main>
+
+  @if (tabs().length) {
+  <app-luma-tab-bar [items]="tabs()" labelKey="owner.tabs.label" />
+  }
+</ng-container>

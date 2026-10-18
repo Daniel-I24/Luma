@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
-import { LumaAvatar, LumaBottomSheet, LumaButton, LumaIcon } from '@design-system';
+import { LumaAvatar, LumaIcon } from '@design-system';
+import { AccountActions } from '@shared/account/account-actions/account-actions';
 import { SessionProfileStore } from '@shared/account/session-profile.store';
 import { AdminEntry } from './components/admin-entry/admin-entry';
 import { BecomeOwnerEntry } from './components/become-owner-entry/become-owner-entry';
@@ -14,8 +15,8 @@ import { DisplayNameField } from './components/display-name-field/display-name-f
 
 /**
  * ProfilePage — /profile (protected by authGuard)
- * Shows the user, the appearance settings (theme and language), sign-out and
- * account deletion with confirmation.
+ * Shows the user, activity, business entry, appearance settings, help and
+ * legal links, and the account actions (sign-out, deletion).
  */
 @Component({
   selector: 'app-profile-page',
@@ -24,10 +25,9 @@ import { DisplayNameField } from './components/display-name-field/display-name-f
   imports: [
     TranslocoModule,
     LumaAvatar,
-    LumaBottomSheet,
-    LumaButton,
     LumaIcon,
     RouterLink,
+    AccountActions,
     AdminEntry,
     BecomeOwnerEntry,
     HelpLinks,
@@ -40,7 +40,6 @@ import { DisplayNameField } from './components/display-name-field/display-name-f
 })
 export class ProfilePage {
   private readonly auth = inject(AuthService);
-  private readonly router = inject(Router);
 
   protected readonly user = this.auth.user;
   /** The business panel is for business-owner accounts. */
@@ -48,34 +47,4 @@ export class ProfilePage {
   protected readonly isBusinessOwner = this.sessionProfile.isBusinessOwner;
   /** The customer offer waits for the account type, so owners never see it flash. */
   protected readonly profileLoaded = computed(() => this.sessionProfile.profile() !== null);
-  protected readonly loading = this.auth.loading;
-  protected readonly deleteSheetOpen = signal(false);
-  protected readonly errorKey = signal<string | null>(null);
-  /** What account deletion removes, listed in the confirmation sheet. */
-  protected readonly deletedData = [
-    'account',
-    'profile',
-    'favorites',
-    'reviews',
-    'businesses',
-  ] as const;
-
-  protected async onSignOut(): Promise<void> {
-    this.errorKey.set(null);
-    const result = await this.auth.signOut();
-    if (result.success) {
-      await this.router.navigate(['/auth/login']);
-    } else {
-      this.errorKey.set('profile.errors.signOut');
-    }
-  }
-
-  protected async onDeleteAccount(): Promise<void> {
-    this.deleteSheetOpen.set(false);
-    this.errorKey.set(null);
-    const result = await this.auth.deleteAccount();
-    if (!result.success) {
-      this.errorKey.set(result.errorKey ?? 'auth.errors.deleteAccountFailed');
-    }
-  }
 }

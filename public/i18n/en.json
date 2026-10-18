@@ -262,8 +262,6 @@
     "activity": "Your activity",
     "favorites": "My favourites",
     "business": "Businesses",
-    "myBusiness": "My business",
-    "registerBusiness": "Register my business",
     "notifications": "Notifications",
     "becomeOwner": {
       "title": "Have a business? Register it",
@@ -282,7 +280,8 @@
       "tutorial": "Watch the tutorial",
       "terms": "Terms and conditions",
       "privacy": "Privacy policy"
-    }
+    },
+    "ownerAppHint": "Manage your businesses, orders and deals."
   },
   "map": {
     "canvasLabel": "Luma business map",
@@ -693,17 +692,6 @@
       "title": "Business not found",
       "description": "It does not exist or is not yours."
     },
-    "list": {
-      "title": "My businesses",
-      "empty": {
-        "title": "You don't have a business yet",
-        "description": "Register it to show it on the map and receive orders."
-      },
-      "register": "Register my business",
-      "registerAnother": "Register another business",
-      "published": "Published",
-      "draft": "Not published"
-    },
     "form": {
       "name": "Business name",
       "namePlaceholder": "E.g. Fritanga Don Segundo",
@@ -744,22 +732,9 @@
       "ready": "Everything is ready to publish.",
       "missingTitle": "To publish, you still need:",
       "publish": "Publish",
-      "unpublish": "Unpublish",
       "publishedToast": "Your business is now visible on Luma.",
-      "unpublishedToast": "Your business is no longer visible on Luma.",
       "visible": "Visible on the map and the feed.",
-      "hidden": "Only you can see it.",
-      "manage": "Manage",
-      "info": "Information",
-      "infoHint": "Name, contact, location and preparation time",
-      "hours": "Opening hours",
-      "hoursHint": "Days and hours you are open",
-      "menu": "Menu",
-      "menuHint": "Products, prices and availability",
-      "promotions": "Promotions",
-      "promotionsHint": "Offers with a start and end date",
-      "orders": "Orders",
-      "ordersHint": "New, in preparation and ready for pick-up"
+      "hidden": "Only you can see it."
     },
     "requirements": {
       "name": "A name",
@@ -1223,6 +1198,101 @@
         "title": "Keep your hours up to date",
         "body": "With current hours, customers only order while you are open."
       }
+    }
+  },
+  "owner": {
+    "brand": "Luma Business",
+    "switchLabel": "Business you are viewing",
+    "addBusiness": "Add another business",
+    "addBusinessShort": "Add",
+    "limitReached": "Up to {{max}} businesses",
+    "backFromCustomerView": "You are viewing Luma as a customer · Back to Luma Business",
+    "tabs": {
+      "label": "Luma Business sections",
+      "summary": "Summary",
+      "orders": "Orders",
+      "menu": "Menu",
+      "promotions": "Deals",
+      "business": "My business"
+    },
+    "summary": {
+      "title": "Summary"
+    },
+    "verification": {
+      "title": "Verification",
+      "hint": {
+        "draft": "Complete what is missing and send your business for review. Nobody sees it until we verify it.",
+        "pending": "Our team is reviewing your business. We will let you know when we finish.",
+        "approved": "Your business is verified. You can publish or pause it whenever you want.",
+        "rejected": "The team asked for changes. Fix them and send it again.",
+        "suspended": "Your business is suspended and not visible. Write to us if you think this is a mistake."
+      },
+      "teamNote": "Note from the Luma team",
+      "missingTitle": "Still missing:",
+      "requirements": {
+        "name": "The business name",
+        "category": "The category",
+        "address": "The address",
+        "location": "The location on the map",
+        "phone": "The business phone",
+        "open_day": "At least one open day in the hours",
+        "available_item": "At least one available product on the menu",
+        "legal": "The legal data (tax id and company name)",
+        "doc_rut": "The RUT",
+        "doc_facade": "A photo of the storefront"
+      },
+      "readyToSubmit": "Everything is ready to send for review.",
+      "fix": "Fix the data and documents",
+      "submit": "Send for review",
+      "resubmit": "Send for review again",
+      "submitted": "Sent. We will let you know once it is reviewed."
+    },
+    "publish": {
+      "published": "Published",
+      "paused": "Paused",
+      "pause": "Pause",
+      "pausedToast": "Your business is paused and no longer shown to customers."
+    },
+    "today": {
+      "title": "Today",
+      "openOrders": "See today's orders",
+      "new": "New",
+      "preparing": "Preparing",
+      "ready": "Ready",
+      "sold": "Total sold"
+    },
+    "myBusiness": {
+      "title": "My business",
+      "info": "Details and location",
+      "infoHint": "Name, category, phone, address, photos and preparation time",
+      "hours": "Opening hours",
+      "hoursHint": "The days and hours you serve",
+      "verification": "Legal data and documents",
+      "verificationEditable": "Tax id, company name, RUT and storefront",
+      "verificationLocked": "Read only unless changes are requested",
+      "more": "More",
+      "customerView": "View as a customer"
+    },
+    "verificationPage": {
+      "title": "Legal data and documents",
+      "locked": "You can see this data, but it can only be edited as a draft or when the team asks for changes.",
+      "legalTitle": "Legal data",
+      "legalPrivacy": "Private: only the Luma review team sees it.",
+      "saveLegal": "Save legal data",
+      "legalSaved": "Legal data saved.",
+      "required": "Required",
+      "docsTitle": "Documents",
+      "docsHint": "Image (JPG, PNG or WebP) or PDF up to 5 MB. Never shown to customers.",
+      "upload": "Upload file",
+      "deleteDoc": "Delete document",
+      "docUploaded": "Document uploaded."
+    },
+    "reReview": {
+      "title": "Send back for review?",
+      "body": "Changing the name, address or location of a verified business sends it back for review, and it is hidden until we approve it.",
+      "confirm": "Save and send for review",
+      "cancel": "Keep editing",
+      "saved": "Changes saved. Your business is back under review."
     }
   }
 }

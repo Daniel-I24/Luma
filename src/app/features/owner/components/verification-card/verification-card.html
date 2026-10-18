@@ -1,0 +1,66 @@
+<section
+  *transloco="let t"
+  class="flex flex-col gap-3 rounded-xl border border-border-subtle bg-surface p-4"
+  aria-labelledby="verification-title"
+>
+  <div class="flex items-center justify-between gap-2">
+    <h2 id="verification-title" class="m-0 text-title text-fg">
+      {{ t('owner.verification.title') }}
+    </h2>
+    <span
+      class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-caption"
+      [class]="look().tone"
+    >
+      <app-luma-icon [name]="look().icon" size="sm" />
+      {{ t('verification.status.' + status()) }}
+    </span>
+  </div>
+  <p class="m-0 text-body-sm text-fg-muted">{{ t('owner.verification.hint.' + status()) }}</p>
+
+  @if (business().verification_note && (status() === 'rejected' || status() === 'suspended')) {
+  <div class="rounded-md bg-canvas-subtle p-3">
+    <p class="m-0 text-label text-fg">{{ t('owner.verification.teamNote') }}</p>
+    <p class="m-0 mt-1 text-body-sm text-fg">{{ business().verification_note }}</p>
+  </div>
+  } @if (status() === 'draft' || status() === 'rejected') { @if (missing().length) {
+  <div id="review-missing">
+    <p class="m-0 text-label text-fg">{{ t('owner.verification.missingTitle') }}</p>
+    <ul class="m-0 mt-1 flex list-none flex-col p-0">
+      @for (requirement of missing(); track requirement) {
+      <li>
+        <a
+          class="flex min-h-11 items-center gap-2 text-body-sm font-medium text-fg-brand"
+          [routerLink]="stepLink(requirement)"
+        >
+          <app-luma-icon name="alert" size="sm" />
+          {{ t('owner.verification.requirements.' + requirement) }}
+        </a>
+      </li>
+      }
+    </ul>
+  </div>
+  } @else {
+  <p id="review-missing" class="m-0 text-body-sm text-success-fg">
+    {{ t('owner.verification.readyToSubmit') }}
+  </p>
+  } @if (status() === 'rejected') {
+  <a
+    class="inline-flex min-h-11 items-center text-body-sm font-semibold text-fg-brand"
+    [routerLink]="verificationLink()"
+    >{{ t('owner.verification.fix') }}</a
+  >
+  }
+  <app-luma-button
+    [fullWidth]="true"
+    describedBy="review-missing"
+    [disabled]="busy() || !canSubmit()"
+    (clicked)="submitted.emit()"
+    >{{ t(status() === 'rejected' ? 'owner.verification.resubmit' : 'owner.verification.submit')
+    }}</app-luma-button
+  >
+  } @if (errorKey(); as key) {
+  <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+    {{ t(key) }}
+  </p>
+  }
+</section>

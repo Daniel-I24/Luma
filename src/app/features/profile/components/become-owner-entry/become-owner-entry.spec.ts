@@ -46,7 +46,7 @@ describe('BecomeOwnerEntry', () => {
     expect(el.textContent).toContain('profile.becomeOwner.title');
     confirm().click();
 
-    await vi.waitFor(() => expect(navigate).toHaveBeenCalledWith(['/business', 'new']));
+    await vi.waitFor(() => expect(navigate).toHaveBeenCalledWith(['/owner', 'new']));
   });
 
   it('keeps the sheet open with an error when the upgrade fails', async () => {

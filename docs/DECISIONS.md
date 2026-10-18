@@ -55,3 +55,31 @@ alternative that was not taken. The safest, most reversible option wins.
   traps the user.
 - **Alternative**: an overlay on the home screen. Harder to make accessible
   (focus trap, back button) for no gain.
+
+## 2026-10-18 — Luma Negocios lives in `features/owner`, one business per URL
+
+- **What**: the business panel folder moved to `features/owner`; every tab
+  is under `/owner/:businessId/...` and the old `/business/**` routes were
+  removed. The selected business is only remembered in memory (wiped on
+  sign-out).
+- **Why**: a business id in the URL makes every screen linkable (owner
+  notifications open `/owner/:id/orders`) and the switcher trivial; not
+  persisting the selection means a shared device never shows the previous
+  owner's business.
+- **Alternative**: keep `/business` and add a global "current business".
+  Hidden state, harder to test.
+
+## 2026-10-18 — "Total vendido" counts picked-up orders of the Bogota day
+
+- **What**: today's figures use orders created today in America/Bogota;
+  the total sums only `picked_up` orders.
+- **Why**: the same day boundary as `create_order`, and money is only
+  "sold" once the customer picks the order up (payment is at pick-up).
+- **Alternative**: count accepted orders too. Overstates sales when orders
+  are cancelled later.
+
+## 2026-10-18 — Sign-out and account deletion are one shared component
+
+- **What**: `shared/account/account-actions` (sign out, delete sheet) is used
+  by the Profile and by "Mi negocio".
+- **Why**: features cannot import each other; one copy of the deletion flow.

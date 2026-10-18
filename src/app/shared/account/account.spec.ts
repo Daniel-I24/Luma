@@ -83,7 +83,7 @@ describe('SessionProfileStore and guards', () => {
 
     expect(await run(ownerGuard)).toBe(true);
     const home = await run(accountHomeGuard);
-    expect(TestBed.inject(Router).serializeUrl(home as UrlTree)).toBe('/business');
+    expect(TestBed.inject(Router).serializeUrl(home as UrlTree)).toBe('/owner');
   });
 
   it('upgrades a customer once and reloads the profile', async () => {

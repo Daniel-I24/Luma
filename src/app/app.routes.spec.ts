@@ -13,10 +13,12 @@ describe('app routes', () => {
     expect(routes.some((route) => route.path === 'design-preview')).toBe(true);
   });
 
-  it('guards the lazy business panel for signed-in business owners', () => {
-    const tabs = routes.find((route) => route.children?.some((child) => child.path === 'business'));
-    const panel = tabs?.children?.find((child) => child.path === 'business');
-    expect(panel?.canActivate).toEqual([authGuard, ownerGuard]);
-    expect(panel?.loadChildren).toBeTypeOf('function');
+  it('guards Luma Negocios (/owner) for signed-in business owners, outside the customer tabs', () => {
+    const owner = routes.find((route) => route.path === 'owner');
+    expect(owner?.canActivate).toEqual([authGuard, ownerGuard]);
+    expect(owner?.loadChildren).toBeTypeOf('function');
+    expect(routes.some((route) => route.children?.some((child) => child.path === 'business'))).toBe(
+      false,
+    );
   });
 });

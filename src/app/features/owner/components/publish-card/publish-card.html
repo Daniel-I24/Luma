@@ -1,0 +1,54 @@
+<section
+  *transloco="let t"
+  class="flex flex-col gap-3 rounded-xl border border-border-subtle bg-surface p-4"
+  aria-labelledby="publish-title"
+>
+  <div class="flex items-center justify-between gap-2">
+    <h2 id="publish-title" class="m-0 text-title text-fg">
+      {{ t('businessPanel.dashboard.publishTitle') }}
+    </h2>
+    <span
+      class="rounded-full px-2 py-1 text-caption"
+      [class]="business().is_active ? 'bg-success-bg text-success-fg' : 'bg-canvas-muted text-fg-muted'"
+      >{{ t(business().is_active ? 'owner.publish.published' : 'owner.publish.paused') }}</span
+    >
+  </div>
+  <p class="m-0 text-body-sm text-fg-muted">
+    {{ t(business().is_active ? 'businessPanel.dashboard.visible' :
+    'businessPanel.dashboard.hidden') }}
+  </p>
+  @if (!business().is_active) { @if (publish.missing().length) {
+  <div id="publish-missing" class="rounded-md bg-warning-bg p-3 text-body-sm text-warning-fg">
+    <p class="m-0 font-semibold">{{ t('businessPanel.dashboard.missingTitle') }}</p>
+    <ul class="m-0 mt-1 ps-5">
+      @for (requirement of publish.missing(); track requirement) {
+      <li>{{ t('businessPanel.requirements.' + requirement) }}</li>
+      }
+    </ul>
+  </div>
+  } @else {
+  <p id="publish-missing" class="m-0 text-body-sm text-success-fg">
+    {{ t('businessPanel.dashboard.ready') }}
+  </p>
+  }
+  <app-luma-button
+    [fullWidth]="true"
+    describedBy="publish-missing"
+    [disabled]="publish.busy() || publish.missing().length > 0"
+    (clicked)="toggled.emit(true)"
+    >{{ t('businessPanel.dashboard.publish') }}</app-luma-button
+  >
+  } @else {
+  <app-luma-button
+    variant="secondary"
+    [fullWidth]="true"
+    [disabled]="publish.busy()"
+    (clicked)="toggled.emit(false)"
+    >{{ t('owner.publish.pause') }}</app-luma-button
+  >
+  } @if (publish.errorKey(); as key) {
+  <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+    {{ t(key) }}
+  </p>
+  }
+</section>

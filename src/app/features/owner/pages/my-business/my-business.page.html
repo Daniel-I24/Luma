@@ -1,0 +1,61 @@
+<div *transloco="let t" class="mx-auto flex max-w-lg flex-col gap-2 px-4 pt-4 pb-6">
+  <app-panel-state [state]="panel.state()" (retry)="panel.load(id())">
+    @if (panel.business(); as business) {
+    <app-panel-header [heading]="t('owner.myBusiness.title')" [subtitle]="business.name" />
+
+    <ul class="m-0 mt-2 flex list-none flex-col gap-2 p-0">
+      @for (item of screens; track item.screen) {
+      <li>
+        <a
+          class="pressable flex min-h-16 items-center gap-3 rounded-xl border border-border-subtle bg-surface px-4 py-3 text-fg no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+          [routerLink]="screenLink(item.screen)"
+        >
+          <span
+            class="inline-flex size-9 shrink-0 items-center justify-center rounded-md bg-surface-selected text-fg-brand"
+          >
+            <app-luma-icon [name]="item.icon" />
+          </span>
+          <span class="flex flex-1 flex-col">
+            <span class="text-body font-medium">{{ t('owner.myBusiness.' + item.key) }}</span>
+            <span class="text-caption text-fg-muted">
+              @if (item.screen === 'verification') { {{ t(docsEditable() ?
+              'owner.myBusiness.verificationEditable' : 'owner.myBusiness.verificationLocked') }} }
+              @else { {{ t('owner.myBusiness.' + item.key + 'Hint') }} }
+            </span>
+          </span>
+          <app-luma-icon class="-rotate-90 text-fg-subtle" name="chevron-down" size="sm" />
+        </a>
+      </li>
+      }
+    </ul>
+
+    <h2 class="m-0 px-1 pt-4 pb-2 text-label tracking-wide text-fg-subtle uppercase">
+      {{ t('owner.myBusiness.more') }}
+    </h2>
+    <a
+      routerLink="/map"
+      class="pressable flex min-h-14 items-center gap-3 rounded-xl border border-border-subtle bg-surface px-4 text-fg no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+    >
+      <app-luma-icon name="map" class="text-fg-brand" />
+      <span class="flex-1 text-body font-medium">{{ t('owner.myBusiness.customerView') }}</span>
+    </a>
+    <a
+      [routerLink]="tutorialPath"
+      class="pressable flex min-h-14 items-center gap-3 rounded-xl border border-border-subtle bg-surface px-4 text-fg no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+    >
+      <app-luma-icon name="sparkles" class="text-fg-brand" />
+      <span class="flex-1 text-body font-medium">{{ t('profile.help.tutorial') }}</span>
+    </a>
+
+    <section class="mt-4" aria-labelledby="owner-account-heading">
+      <h2
+        id="owner-account-heading"
+        class="m-0 px-1 pb-2 text-label tracking-wide text-fg-subtle uppercase"
+      >
+        {{ t('profile.account') }}
+      </h2>
+      <app-account-actions />
+    </section>
+    }
+  </app-panel-state>
+</div>

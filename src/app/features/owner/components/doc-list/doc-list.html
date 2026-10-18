@@ -1,0 +1,50 @@
+<section
+  *transloco="let t"
+  class="flex flex-col gap-4 rounded-xl border border-border-subtle bg-surface p-4"
+  aria-labelledby="docs-title"
+>
+  <div class="flex flex-col gap-1">
+    <h2 id="docs-title" class="m-0 text-title text-fg">
+      {{ t('owner.verificationPage.docsTitle') }}
+    </h2>
+    <p class="m-0 text-caption text-fg-muted">{{ t('owner.verificationPage.docsHint') }}</p>
+  </div>
+  @for (kind of kinds; track kind) {
+  <div class="flex flex-col gap-2">
+    <p class="m-0 text-label-lg text-fg">
+      {{ t('verification.docs.kinds.' + kind) }} @if (isRequired(kind)) {
+      <span class="text-caption text-fg-muted">({{ t('owner.verificationPage.required') }})</span>
+      }
+    </p>
+    @for (doc of byKind()[kind]; track doc.id) {
+    <div class="flex min-h-11 items-center gap-2 rounded-md bg-canvas-subtle px-3">
+      <app-luma-icon name="receipt" size="sm" class="text-fg-muted" />
+      <span class="min-w-0 flex-1 truncate text-body-sm text-fg">{{ fileName(doc) }}</span>
+      @if (store.editable()) {
+      <app-luma-icon-button
+        icon="trash"
+        variant="ghost"
+        [label]="t('owner.verificationPage.deleteDoc')"
+        [disabled]="store.busy()"
+        (clicked)="remove(doc)"
+      />
+      }
+    </div>
+    } @if (store.editable()) {
+    <label
+      class="pressable inline-flex min-h-11 cursor-pointer items-center gap-2 self-start rounded-md border border-border px-3 text-body-sm font-semibold text-fg-brand has-focus-visible:outline-2 has-focus-visible:outline-border-focus"
+    >
+      <app-luma-icon name="plus" size="sm" />
+      {{ t('owner.verificationPage.upload') }}
+      <input
+        class="sr-only"
+        type="file"
+        [accept]="accept"
+        [disabled]="store.busy()"
+        (change)="upload(kind, $event)"
+      />
+    </label>
+    }
+  </div>
+  }
+</section>

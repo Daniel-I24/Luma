@@ -34,7 +34,7 @@ const registerShape = {
 export const newBusinessSchema = z.object(registerShape);
 export type NewBusinessInput = z.infer<typeof newBusinessSchema>;
 
-/** Information form (/business/:id/info). */
+/** Information form (/owner/:id/business/info). */
 export const businessInfoSchema = z.object({
   ...registerShape,
   description: optionalText(300, `${V}.description`),

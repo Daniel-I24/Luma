@@ -79,7 +79,7 @@ describe('NotificationsPage', () => {
     el.querySelectorAll('li button')[1].dispatchEvent(new Event('click'));
 
     expect(navigate).toHaveBeenNthCalledWith(1, ['/orders', 'o1']);
-    expect(navigate).toHaveBeenNthCalledWith(2, ['/business', 'b1', 'orders']);
+    expect(navigate).toHaveBeenNthCalledWith(2, ['/owner', 'b1', 'orders']);
   });
 
   it(`refreshes every ${NOTIFICATIONS_REFRESH_MS / 1000} s while visible`, async () => {
@@ -122,7 +122,7 @@ describe('notification view', () => {
         read_at: null,
         business_id: 'b9',
       }),
-    ).toEqual(['/business', 'b9', 'orders']);
+    ).toEqual(['/owner', 'b9', 'orders']);
     const orphan = {
       ...base,
       id: 'n',
@@ -131,7 +131,7 @@ describe('notification view', () => {
       status: null,
       read_at: null,
     } as const;
-    expect(notificationLink(orphan)).toEqual(['/business']);
+    expect(notificationLink(orphan)).toEqual(['/owner']);
     expect(notificationLink({ ...orphan, type: 'order_status', order_id: null })).toBeNull();
   });
 });

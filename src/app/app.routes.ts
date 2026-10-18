@@ -40,6 +40,12 @@ export const routes: Routes = [
   // defines ngDevMode as false, so the route and its chunk are dropped.
   ...(typeof ngDevMode === 'undefined' || ngDevMode ? DEV_ONLY_ROUTES : []),
   {
+    // Luma Negocios: business-owner accounts, with their own shell and tabs.
+    path: 'owner',
+    canActivate: [authGuard, ownerGuard],
+    loadChildren: () => import('./features/owner/owner.routes').then((m) => m.ownerRoutes),
+  },
+  {
     // Review team; adminRoutes also checks am_i_admin.
     path: 'admin',
     canActivate: [authGuard],
@@ -97,14 +103,6 @@ export const routes: Routes = [
         path: 'notifications',
         loadComponent: () =>
           import('./features/notifications/notifications.page').then((m) => m.NotificationsPage),
-      },
-      {
-        path: 'business',
-        canActivate: [authGuard, ownerGuard],
-        loadChildren: () =>
-          import('./features/business-panel/business-panel.routes').then(
-            (m) => m.businessPanelRoutes,
-          ),
       },
       {
         path: 'orders/:id',

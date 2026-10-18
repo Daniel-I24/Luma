@@ -1,0 +1,98 @@
+<div
+  *transloco="let t"
+  class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6"
+>
+  <app-panel-header [heading]="t('businessPanel.promotions.title')" />
+  <app-panel-state [state]="panel.state()" (retry)="load()">
+    <div class="flex flex-col gap-4">
+      <app-luma-button [fullWidth]="true" (clicked)="openForm(null)"
+        >{{ t('businessPanel.promotions.add') }}</app-luma-button
+      >
+      @if (promos.errorKey(); as key) {
+      <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+        {{ t(key) }}
+      </p>
+      } @if (promos.promotions().length === 0) {
+      <app-luma-empty-state
+        icon="tag"
+        [heading]="t('businessPanel.promotions.empty.title')"
+        [description]="t('businessPanel.promotions.empty.description')"
+      />
+      } @else {
+      <ul class="m-0 flex list-none flex-col gap-2 p-0">
+        @for (promo of promos.promotions(); track promo.id) {
+        <li class="flex items-start gap-2 rounded-xl border border-border-subtle bg-surface p-3">
+          <div class="flex min-w-0 flex-1 flex-col gap-1">
+            <span class="text-body font-medium text-fg">{{ promo.title }}</span>
+            <span class="text-caption text-fg-muted"
+              >{{ t('businessPanel.promotions.dates', { from: when(promo.starts_at), to:
+              when(promo.ends_at) }) }}</span
+            >
+            <span
+              class="w-fit rounded-full px-2 py-0.5 text-caption"
+              [class]="phaseClass[phase(promo)]"
+              >{{ t('businessPanel.promotions.phase.' + phase(promo)) }}</span
+            >
+          </div>
+          @if (phase(promo) !== 'ended') {
+          <app-luma-icon-button
+            icon="edit"
+            variant="ghost"
+            [label]="t('businessPanel.promotions.edit', { title: promo.title })"
+            (clicked)="openForm(promo)"
+          />
+          <app-luma-button
+            variant="ghost"
+            size="sm"
+            [disabled]="promos.busy()"
+            (clicked)="ending.set(promo)"
+            >{{ t('businessPanel.promotions.end') }}</app-luma-button
+          >
+          }
+        </li>
+        }
+      </ul>
+      }
+    </div>
+  </app-panel-state>
+
+  <app-luma-bottom-sheet
+    titleId="promo-sheet-title"
+    [open]="editing() !== undefined"
+    [title]="t(editing() ? 'businessPanel.promotions.editTitle' : 'businessPanel.promotions.newTitle')"
+    (closed)="editing.set(undefined)"
+  >
+    @if (editing() !== undefined) {
+    <app-promotion-form
+      [promotion]="editing() ?? null"
+      [businessId]="id()"
+      [busy]="promos.busy()"
+      (submitted)="save($event)"
+      (cancelled)="editing.set(undefined)"
+    />
+    @if (promos.errorKey(); as key) {
+    <p class="m-0 mt-3 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+      {{ t(key) }}
+    </p>
+    } }
+  </app-luma-bottom-sheet>
+
+  <app-luma-bottom-sheet
+    titleId="promo-end-title"
+    [open]="ending() !== null"
+    [title]="t('businessPanel.promotions.endTitle')"
+    (closed)="ending.set(null)"
+  >
+    <p class="m-0 mb-4 text-body text-fg-muted">
+      {{ t('businessPanel.promotions.endDescription', { title: ending()?.title ?? '' }) }}
+    </p>
+    <div class="flex flex-col gap-3">
+      <app-luma-button variant="danger" [fullWidth]="true" (clicked)="confirmEnd()"
+        >{{ t('businessPanel.promotions.endConfirm') }}</app-luma-button
+      >
+      <app-luma-button variant="ghost" [fullWidth]="true" (clicked)="ending.set(null)"
+        >{{ t('businessPanel.promotions.cancel') }}</app-luma-button
+      >
+    </div>
+  </app-luma-bottom-sheet>
+</div>
