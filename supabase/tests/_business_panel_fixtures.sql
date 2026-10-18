@@ -11,3 +11,7 @@ insert into public.business_hours (business_id, day_of_week, opens_at, closes_at
   (tests.id('eve-biz'), 1, '18:00', '02:00');
 insert into public.promotions (business_id, title, starts_at, ends_at) values
   (tests.id('eve-biz'), 'Old promo', now() - interval '9 days', now() - interval '2 days');
+
+-- Both are business-owner accounts (only those may create businesses).
+update public.profiles set account_type = 'business_owner'
+where id in (tests.id('owner'), tests.id('eve'));

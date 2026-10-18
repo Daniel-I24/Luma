@@ -19,3 +19,5 @@ grant usage on schema public to anon, authenticated, service_role;
 alter default privileges in schema public grant all on tables to anon, authenticated, service_role;
 alter default privileges in schema public grant all on functions to anon, authenticated, service_role;
 alter default privileges in schema public grant all on sequences to anon, authenticated, service_role;
+-- Columns of auth.users the migrations and functions read.
+alter table auth.users add column if not exists raw_user_meta_data jsonb;
