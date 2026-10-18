@@ -24,37 +24,38 @@ begin
   -- ── Businesses ─────────────────────────────────────────────────────────────
 
   insert into public.businesses
-    (id, owner_id, name, description, category, latitude, longitude, address, phone, is_active)
+    (id, owner_id, name, description, category, latitude, longitude, address, phone, is_active,
+     verification_status, verified_at)
   values
     -- 1. Restaurante near Plaza de Nariño — open all day
     (b1, owner, 'Fritanga Don Segundo',
      'Fritanga y bandeja típica nariñense en el centro de Pasto.',
      'Restaurante', 1.2136, -77.2811,
-     'Calle 19 # 22-40, Pasto, Nariño', '+573001112233', true),
+     'Calle 19 # 22-40, Pasto, Nariño', '+573001112233', true, 'approved', now()),
 
     -- 2. Café near Parque Infantil — opens late morning
     (b2, owner, 'Café La Merced',
      'Café de origen nariñense, repostería artesanal y desayunos.',
      'Cafetería', 1.2150, -77.2795,
-     'Carrera 24 # 18-12, Pasto, Nariño', '+573104445566', true),
+     'Carrera 24 # 18-12, Pasto, Nariño', '+573104445566', true, 'approved', now()),
 
     -- 3. Panadería near Universidad de Nariño — closes early
     (b3, owner, 'Panadería El Volcán',
      'Pan artesanal horneado cada mañana. Especialidad: pan de cuajada.',
      'Panadería', 1.2094, -77.2862,
-     'Calle 18 # 29-55, Pasto, Nariño', '+573207778899', true),
+     'Calle 18 # 29-55, Pasto, Nariño', '+573207778899', true, 'approved', now()),
 
     -- 4. Heladería — opens noon, closes late
     (b4, owner, 'Heladería Galeras',
      'Helados artesanales de frutas exóticas del Pacífico y la Amazonía.',
      'Heladería', 1.2168, -77.2830,
-     'Carrera 25 # 17-08, Pasto, Nariño', '+573158889900', true),
+     'Carrera 25 # 17-08, Pasto, Nariño', '+573158889900', true, 'approved', now()),
 
     -- 5. Tienda de abarrotes — 24 h (overnight crossover schedule)
     (b5, owner, 'Minimarket San Juan',
      'Tienda de barrio con todo lo que necesitas, abierta casi todo el día.',
      'Tienda', 1.2121, -77.2850,
-     'Calle 20 # 27-33, Pasto, Nariño', '+573012223344', true);
+     'Calle 20 # 27-33, Pasto, Nariño', '+573012223344', true, 'approved', now());
 
   -- ── business_hours ──────────────────────────────────────────────────────────
   -- Day encoding: 0=Sun 1=Mon 2=Tue 3=Wed 4=Thu 5=Fri 6=Sat

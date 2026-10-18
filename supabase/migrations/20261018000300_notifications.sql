@@ -17,10 +17,13 @@ create table if not exists public.notifications (
   id         uuid        not null default gen_random_uuid(),
   user_id    uuid        not null references auth.users (id) on delete cascade,
   type       text        not null constraint notifications_type_valid
-    check (type in ('order_status', 'order_new', 'order_cancelled')),
+    check (type in ('order_status', 'order_new', 'order_cancelled', 'business_review')),
   order_id   uuid        references public.orders (id) on delete cascade,
+  -- For business_review: the reviewed business; status holds the decision.
+  business_id uuid       references public.businesses (id) on delete cascade,
   status     text        constraint notifications_status_valid check (
-    status is null or status in ('pending', 'accepted', 'preparing', 'ready', 'picked_up', 'cancelled')
+    status is null or status in ('pending', 'accepted', 'preparing', 'ready', 'picked_up', 'cancelled',
+                                 'approved', 'rejected', 'suspended')
   ),
   created_at timestamptz not null default now(),
   read_at    timestamptz,

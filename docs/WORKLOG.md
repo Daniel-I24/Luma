@@ -37,7 +37,12 @@ agent's sessions).
 
 ## In progress
 
-- (nothing)
+- PARTE 4 — SQL done (migrations 20261020000000 to 20261020000400: status,
+  admins, NIT check digit, legal data, documents + private bucket,
+  is_business_public in every public policy/view/Storage/create_order,
+  submit/review RPCs, re-review trigger, reports; 48 SQL checks, 249 total;
+  seed approved). Left: Nit value object, /admin app, report sheet and
+  "Verificado" badge, docs (verification, admin, roles).
 
 ## Left
 

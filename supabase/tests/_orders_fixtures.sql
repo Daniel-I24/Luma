@@ -11,6 +11,10 @@ insert into public.businesses (id, owner_id, name, category, latitude, longitude
   (tests.id('b2'), tests.id('owner'), 'Test Café',     'Cafetería',   1.21, -77.28, 'Calle 2', true),
   (tests.id('b3'), tests.id('owner'), 'Test Cerrado',  'Tienda',      1.21, -77.28, 'Calle 3', false);
 
+-- Test businesses are verified (b3 is unpublished).
+update public.businesses set verification_status = 'approved'
+where id in (tests.id('b1'), tests.id('b2'), tests.id('b3'));
+
 -- b1 and b2 are open all day, every day (create_order checks opening hours).
 insert into public.business_hours (business_id, day_of_week, opens_at, closes_at)
 select b, d, '00:00', '23:59:59.999999'

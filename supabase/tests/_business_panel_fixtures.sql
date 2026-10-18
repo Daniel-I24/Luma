@@ -7,6 +7,7 @@ insert into auth.users (id, email) values
 -- Eve owns a published business with hours, a menu and an expired promotion.
 insert into public.businesses (id, owner_id, name, category, latitude, longitude, address, is_active) values
   (tests.id('eve-biz'), tests.id('eve'), 'Eve Bar', 'Bar', 1.21, -77.28, 'Calle 5 # 1-1', true);
+update public.businesses set verification_status = 'approved' where id = tests.id('eve-biz');
 insert into public.business_hours (business_id, day_of_week, opens_at, closes_at) values
   (tests.id('eve-biz'), 1, '18:00', '02:00');
 insert into public.promotions (business_id, title, starts_at, ends_at) values

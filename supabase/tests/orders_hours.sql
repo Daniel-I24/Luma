@@ -14,6 +14,7 @@ begin;
 insert into public.businesses (id, owner_id, name, category, latitude, longitude, address, is_active) values
   (tests.id('c1'), tests.id('owner'), 'Closed All Week', 'Bar', 1.21, -77.28, 'Calle 7 # 1-1', true),
   (tests.id('c2'), tests.id('owner'), 'Narrow Window', 'Bar', 1.21, -77.28, 'Calle 8 # 1-1', true);
+update public.businesses set verification_status = 'approved' where id in (tests.id('c1'), tests.id('c2'));
 insert into public.business_hours (business_id, day_of_week, opens_at, closes_at, is_closed)
 select tests.id('c1'), d, '08:00', '18:00', true from generate_series(0, 6) d;
 insert into public.business_hours (business_id, day_of_week, opens_at, closes_at)

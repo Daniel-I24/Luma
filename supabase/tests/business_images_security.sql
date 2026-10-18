@@ -52,12 +52,15 @@ select tests.expect_error('authenticated', tests.id('owner'),
 
 -- -- anyone reads; nobody else updates, moves or deletes -----------------------
 select tests.expect_true('anon', null,
-  $$select count(*) = 2 from storage.objects where bucket_id = 'business-images'$$, 'public read');
+  $$select count(*) = 0 from storage.objects where bucket_id = 'business-images'$$,
+  'pictures of an unpublished business are not listed publicly');
+select tests.expect_true('authenticated', tests.id('owner'),
+  $$select count(*) = 2 from storage.objects where bucket_id = 'business-images'$$, 'the owner lists them');
 select tests.exec_as('authenticated', tests.id('eve'),
   $$update storage.objects set metadata = '{"x": 1}' where name = tests.image_path('mine', 'logo')$$);
 select tests.exec_as('authenticated', tests.id('eve'),
   $$delete from storage.objects where name = tests.image_path('mine', 'logo')$$);
-select tests.expect_true('anon', null,
+select tests.expect_true('authenticated', tests.id('owner'),
   $$select metadata is null from storage.objects where name = tests.image_path('mine', 'logo')$$,
   'another user cannot change or delete the object');
 select tests.expect_error('authenticated', tests.id('owner'),
@@ -65,7 +68,7 @@ select tests.expect_error('authenticated', tests.id('owner'),
   'row-level security');
 select tests.exec_as('authenticated', tests.id('owner'),
   $$delete from storage.objects where name = tests.image_path('mine', 'menu', 'jpg')$$);
-select tests.expect_true('anon', null,
+select tests.expect_true('authenticated', tests.id('owner'),
   $$select count(*) = 1 from storage.objects where bucket_id = 'business-images'$$, 'the owner deletes their object');
 select tests.expect_true('anon', null,
   $$select not has_function_privilege('anon', 'public.can_write_business_image(text)', 'execute')$$,

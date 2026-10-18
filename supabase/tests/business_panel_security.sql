@@ -91,7 +91,12 @@ select tests.exec_as('authenticated', tests.id('owner'),
 select tests.exec_as('authenticated', tests.id('owner'),
   $$update public.businesses set is_active = true where id = tests.id('mine')$$);
 select tests.expect_true('anon', null,
-  $$select count(*) = 1 from public.businesses where id = tests.id('mine')$$, 'published business is public');
+  $$select count(*) = 0 from public.businesses where id = tests.id('mine')$$,
+  'published but not verified stays hidden');
+update public.businesses set verification_status = 'approved' where id = tests.id('mine');
+select tests.expect_true('anon', null,
+  $$select count(*) = 1 from public.businesses where id = tests.id('mine')$$,
+  'published and verified business is public');
 select tests.exec_as('authenticated', tests.id('owner'),
   $$update public.businesses set is_active = false where id = tests.id('mine')$$);
 select tests.expect_true('anon', null,
