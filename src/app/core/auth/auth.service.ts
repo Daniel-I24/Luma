@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import type { Session, User } from '@supabase/supabase-js';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import { mapAuthError, mapDeleteAccountError } from './auth-error';
-import { signInSchema, signUpSchema, resetPasswordSchema } from './auth.schemas';
+import { signInSchema, signUpSchema } from './auth.schemas';
 import { UserDataRegistry } from './user-data-registry';
 
 /** Shape of an operation result returned by every auth method. */
@@ -13,8 +13,8 @@ export interface AuthResult {
   errorKey?: string;
 }
 
-const OK: AuthResult = { success: true };
-const fail = (errorKey: string): AuthResult => ({ success: false, errorKey });
+export const OK: AuthResult = { success: true };
+export const fail = (errorKey: string): AuthResult => ({ success: false, errorKey });
 
 /**
  * AuthService — manages authentication state for the entire app.
@@ -62,7 +62,9 @@ export class AuthService {
     if (!parsed.success) return Promise.resolve(fail(parsed.error.issues[0].message));
     return this.withLoading(async () => {
       const { error } = await this.supabase.auth.signUp(parsed.data);
-      return error ? fail(mapAuthError(error.message)) : OK;
+      const errorKey = error ? mapAuthError(error.message) : null;
+      // Never reveal that an email is already registered: same next step.
+      return errorKey && errorKey !== 'auth.errors.emailAlreadyRegistered' ? fail(errorKey) : OK;
     });
   }
 
@@ -72,15 +74,6 @@ export class AuthService {
       if (error) return fail(mapAuthError(error.message));
       this.userData.clearAll();
       return OK;
-    });
-  }
-
-  resetPassword(email: string): Promise<AuthResult> {
-    const parsed = resetPasswordSchema.safeParse({ email });
-    if (!parsed.success) return Promise.resolve(fail(parsed.error.issues[0].message));
-    return this.withLoading(async () => {
-      const { error } = await this.supabase.auth.resetPasswordForEmail(parsed.data.email);
-      return error ? fail(mapAuthError(error.message)) : OK;
     });
   }
 

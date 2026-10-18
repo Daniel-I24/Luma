@@ -25,6 +25,9 @@ export function mapAuthError(message: string): string {
   if (msg.includes('user already registered') || msg.includes('already been registered')) {
     return 'auth.errors.emailAlreadyRegistered';
   }
+  if (msg.includes('token has expired or is invalid') || msg.includes('otp_expired')) {
+    return 'auth.errors.codeInvalid';
+  }
   if (msg.includes('email not confirmed')) {
     return 'auth.errors.emailNotConfirmed';
   }

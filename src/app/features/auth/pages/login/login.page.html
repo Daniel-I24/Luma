@@ -13,7 +13,7 @@
           type="email"
           [required]="true"
           [value]="form.controls.email.value"
-          (valueChange)="form.controls.email.setValue($event)"
+          (valueChange)="form.controls.email.setValue($event); form.controls.email.markAsDirty()"
           [errorMessage]="form.controls.email.dirty && form.controls.email.invalid
             ? t('auth.validation.emailInvalid') : undefined"
         />
@@ -24,14 +24,20 @@
           type="password"
           [required]="true"
           [value]="form.controls.password.value"
-          (valueChange)="form.controls.password.setValue($event)"
+          (valueChange)="form.controls.password.setValue($event); form.controls.password.markAsDirty()"
           [errorMessage]="form.controls.password.dirty && form.controls.password.invalid
-            ? t('auth.validation.passwordTooShort') : undefined"
+            ? t('auth.validation.passwordRequired') : undefined"
         />
 
         @if (submission.errorKey()) {
         <p class="auth-error" role="alert">{{ t(submission.errorKey()!) }}</p>
-        }
+        } @if (unconfirmed()) {
+        <app-luma-button variant="secondary" [disabled]="resend.submitting()" (clicked)="verifyEmail()">{{
+          t('auth.login.verifyEmail')
+        }}</app-luma-button>
+        @if (resend.errorKey(); as key) {
+        <p class="auth-error" role="alert">{{ t(key) }}</p>
+        } }
 
         <app-luma-button
           variant="primary"

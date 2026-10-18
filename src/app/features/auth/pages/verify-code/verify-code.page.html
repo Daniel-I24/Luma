@@ -1,0 +1,54 @@
+<ng-container *transloco="let t">
+  <div class="auth-page">
+    <app-luma-card elevation="raised">
+      <header class="auth-header">
+        <h1 class="auth-title">{{ t('auth.verify.title') }}</h1>
+        <p class="auth-subtitle">
+          @if (knownEmail(); as address) { {{ t('auth.verify.subtitleTo', { email: address }) }} } @else {
+          {{ t('auth.verify.subtitle') }} }
+        </p>
+      </header>
+
+      <form class="auth-form" novalidate (submit)="onSubmit($event)">
+        @if (!knownEmail()) {
+        <app-luma-input
+          inputId="verify-email"
+          type="email"
+          autocomplete="email"
+          [label]="t('auth.login.emailLabel')"
+          [required]="true"
+          [value]="email()"
+          (valueChange)="email.set($event)"
+        />
+        }
+        <app-luma-input
+          inputId="verify-code"
+          inputMode="numeric"
+          autocomplete="one-time-code"
+          [label]="t('auth.verify.codeLabel', { length: codeLength })"
+          [hint]="t('auth.verify.codeHint')"
+          [required]="true"
+          [errorMessage]="submission.errorKey() ? t(submission.errorKey()!) : undefined"
+          [value]="code()"
+          (valueChange)="onCode($event)"
+        />
+
+        <app-luma-button variant="primary" size="lg" type="submit" class="auth-submit" [disabled]="submission.submitting()">{{
+          t(submission.submitting() ? 'auth.verify.checking' : 'auth.verify.submit')
+        }}</app-luma-button>
+      </form>
+
+      <div class="auth-footer" aria-live="polite">
+        @if (resent()) {
+        <p class="auth-switch" role="status">{{ t('auth.verify.resent') }}</p>
+        } @if (resend.errorKey(); as key) {
+        <p class="auth-error" role="alert">{{ t(key) }}</p>
+        }
+        <app-luma-button variant="ghost" [disabled]="cooldown.remaining() > 0 || resend.submitting()" (clicked)="resendCode()">{{
+          cooldown.remaining() > 0 ? t('auth.verify.resendIn', { seconds: cooldown.remaining() }) : t('auth.verify.resend')
+        }}</app-luma-button>
+        <a [routerLink]="['/auth/login']" class="auth-link">{{ t('auth.forgotPassword.backToLogin') }}</a>
+      </div>
+    </app-luma-card>
+  </div>
+</ng-container>

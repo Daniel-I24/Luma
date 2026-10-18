@@ -76,7 +76,8 @@
       "submit": "Ingresar",
       "forgotPassword": "¿Olvidaste tu contraseña?",
       "noAccount": "¿No tienes cuenta?",
-      "register": "Regístrate"
+      "register": "Regístrate",
+      "verifyEmail": "Verificar mi correo"
     },
     "register": {
       "title": "Crear cuenta",
@@ -84,27 +85,29 @@
       "emailLabel": "Correo electrónico",
       "emailPlaceholder": "nombre@ejemplo.com",
       "passwordLabel": "Contraseña",
-      "passwordPlaceholder": "Mínimo 6 caracteres",
+      "passwordPlaceholder": "Mínimo 8, con letras y números",
       "submit": "Crear cuenta",
       "hasAccount": "¿Ya tienes cuenta?",
-      "login": "Inicia sesión",
-      "successTitle": "¡Casi listo!",
-      "successMessage": "Revisa tu correo para confirmar tu cuenta."
+      "login": "Inicia sesión"
     },
     "forgotPassword": {
       "title": "Recuperar contraseña",
-      "subtitle": "Te enviaremos un enlace para restablecer tu contraseña",
+      "subtitle": "Te enviaremos un código de 6 dígitos para crear una contraseña nueva.",
       "emailLabel": "Correo electrónico",
       "emailPlaceholder": "nombre@ejemplo.com",
-      "submit": "Enviar enlace",
+      "submit": "Enviar código",
       "backToLogin": "Volver a iniciar sesión",
-      "successTitle": "Enlace enviado",
-      "successMessage": "Revisa tu correo electrónico para restablecer tu contraseña."
+      "codeSent": "Si el correo tiene una cuenta, te enviamos un código. Escríbelo junto a tu nueva contraseña.",
+      "newPassword": "Nueva contraseña",
+      "save": "Guardar e ingresar",
+      "changeEmail": "Usar otro correo"
     },
     "validation": {
       "emailRequired": "El correo electrónico es obligatorio.",
       "emailInvalid": "Ingresa un correo electrónico válido.",
-      "passwordTooShort": "La contraseña debe tener al menos 6 caracteres."
+      "passwordRequired": "Escribe tu contraseña.",
+      "passwordWeak": "Usa al menos 8 caracteres, con letras y números.",
+      "codeInvalid": "Escribe los 6 dígitos del código."
     },
     "errors": {
       "invalidCredentials": "Correo o contraseña incorrectos.",
@@ -115,7 +118,23 @@
       "networkError": "Error de conexión. Verifica tu red e intenta de nuevo.",
       "unknown": "Ocurrió un error inesperado. Intenta de nuevo.",
       "deleteAccountFailed": "No se pudo eliminar la cuenta. Intenta de nuevo.",
-      "sessionExpired": "Tu sesión expiró. Inicia sesión de nuevo e intenta otra vez."
+      "sessionExpired": "Tu sesión expiró. Inicia sesión de nuevo e intenta otra vez.",
+      "codeInvalid": "El código es incorrecto o ya caducó. Revísalo o pide uno nuevo."
+    },
+    "verify": {
+      "title": "Escribe tu código",
+      "subtitle": "Escribe el correo con el que te registraste y el código que te enviamos.",
+      "subtitleTo": "Te enviamos un código a {{email}}. Si no lo ves, revisa el correo no deseado.",
+      "codeLabel": "Código de {{length}} dígitos",
+      "codeHint": "Puedes pegarlo; se envía al completarlo.",
+      "submit": "Verificar",
+      "checking": "Verificando…",
+      "resend": "Reenviar código",
+      "resendIn": "Reenviar código en {{seconds}} s",
+      "resent": "Si el correo tiene una cuenta pendiente, te enviamos un código nuevo."
+    },
+    "password": {
+      "show": "Mostrar contraseña"
     }
   },
   "profile": {

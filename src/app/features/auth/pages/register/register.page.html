@@ -1,15 +1,6 @@
 <ng-container *transloco="let t">
   <div class="auth-page">
     <app-luma-card elevation="raised">
-      @if (success()) {
-      <div class="auth-success" role="status">
-        <h2 class="auth-success__title">{{ t('auth.register.successTitle') }}</h2>
-        <p class="auth-success__message">{{ t('auth.register.successMessage') }}</p>
-        <app-luma-button variant="secondary" size="md">
-          <a [routerLink]="['/auth/login']">{{ t('auth.register.login') }}</a>
-        </app-luma-button>
-      </div>
-      } @else {
       <header class="auth-header">
         <h1 class="auth-title">{{ t('auth.register.title') }}</h1>
         <p class="auth-subtitle">{{ t('auth.register.subtitle') }}</p>
@@ -22,7 +13,7 @@
           type="email"
           [required]="true"
           [value]="form.controls.email.value"
-          (valueChange)="form.controls.email.setValue($event)"
+          (valueChange)="form.controls.email.setValue($event); form.controls.email.markAsDirty()"
           [errorMessage]="form.controls.email.dirty && form.controls.email.invalid
               ? t('auth.validation.emailInvalid') : undefined"
         />
@@ -31,11 +22,12 @@
           [label]="t('auth.register.passwordLabel')"
           [placeholder]="t('auth.register.passwordPlaceholder')"
           type="password"
+          autocomplete="new-password"
           [required]="true"
           [value]="form.controls.password.value"
-          (valueChange)="form.controls.password.setValue($event)"
+          (valueChange)="form.controls.password.setValue($event); form.controls.password.markAsDirty()"
           [errorMessage]="form.controls.password.dirty && form.controls.password.invalid
-              ? t('auth.validation.passwordTooShort') : undefined"
+              ? t('auth.validation.passwordWeak') : undefined"
         />
 
         @if (submission.errorKey()) {
@@ -58,7 +50,6 @@
           <a [routerLink]="['/auth/login']" class="auth-link"> {{ t('auth.register.login') }} </a>
         </p>
       </footer>
-      }
     </app-luma-card>
   </div>
 </ng-container>

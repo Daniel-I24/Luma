@@ -21,6 +21,11 @@ agent's sessions).
   (`OpeningHours` in TS = `business_open_at` in SQL, shared cases JSON),
   owner notified when a customer cancels (`order_cancelled`),
   `business_closed` message, docs.
+- PARTE 2 — 6-digit codes instead of email links: `AuthCodeService`
+  (confirm, resend, recovery), `/auth/verify` (numeric one-time-code field,
+  paste, auto-send, 60 s resend), unconfirmed login → verify, recovery in two
+  steps, new passwords ≥ 8 with letters and numbers, no email enumeration,
+  `detectSessionInUrl: false`, `docs/auth-emails.md`.
 
 ## In progress
 
@@ -28,7 +33,7 @@ agent's sessions).
 
 ## Left
 
-- PARTE 2 (OTP codes), 3 (account types), 4 (business verification),
+- PARTE 3 (account types), 4 (business verification),
   5 (Luma Negocios shell), 6 (signup steps, legal pages, tutorial),
   7 (delete-account), 8 (APK only, no performance work), 10 (docs).
 - PARTE 9 and the performance section of PARTE 8: on hold until the owner

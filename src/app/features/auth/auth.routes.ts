@@ -11,6 +11,11 @@ export const authRoutes: Routes = [
     loadComponent: () => import('./pages/register/register.page').then((m) => m.RegisterPage),
   },
   {
+    path: 'verify',
+    loadComponent: () =>
+      import('./pages/verify-code/verify-code.page').then((m) => m.VerifyCodePage),
+  },
+  {
     path: 'forgot-password',
     loadComponent: () =>
       import('./pages/forgot-password/forgot-password.page').then((m) => m.ForgotPasswordPage),

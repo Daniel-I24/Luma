@@ -1,40 +1,57 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
-import { AuthService } from '@core/auth/auth.service';
+import { AuthCodeService } from '@core/auth/auth-code.service';
+import { CODE_LENGTH, normalizeCode } from '@core/auth/auth.schemas';
 import { LumaButton, LumaCard, LumaInput } from '@design-system';
 import { AuthFormSubmission } from '../../forms/auth-form-submission';
 
+type Step = 'email' | 'code';
+
 /**
- * ForgotPasswordPage — /auth/forgot-password
- * Sends a password-reset email via Supabase.
+ * ForgotPasswordPage — /auth/forgot-password: asks for the email, emails a
+ * 6-digit code, then takes the code and the new password and signs in. The
+ * same confirmation is shown whether or not the email has an account.
  */
 @Component({
   selector: 'app-forgot-password-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, RouterLink, TranslocoModule, LumaButton, LumaCard, LumaInput],
+  imports: [RouterLink, TranslocoModule, LumaButton, LumaCard, LumaInput],
   templateUrl: './forgot-password.page.html',
   styleUrl: './forgot-password.page.css',
 })
 export class ForgotPasswordPage {
-  private readonly auth = inject(AuthService);
-  private readonly fb = inject(FormBuilder);
+  private readonly codes = inject(AuthCodeService);
+  private readonly router = inject(Router);
 
-  protected readonly form = this.fb.nonNullable.group({
-    email: ['', [Validators.required, Validators.email]],
-  });
-
+  protected readonly step = signal<Step>('email');
+  protected readonly email = signal('');
+  protected readonly code = signal('');
+  protected readonly password = signal('');
+  protected readonly showPassword = signal(false);
+  protected readonly codeLength = CODE_LENGTH;
   protected readonly submission = new AuthFormSubmission();
-  protected readonly success = signal(false);
 
-  protected onSubmit(): Promise<void> {
-    const { email } = this.form.getRawValue();
+  protected onCode(value: string): void {
+    this.code.set(normalizeCode(value));
+  }
+
+  protected requestCode(event: Event): Promise<void> {
+    event.preventDefault();
     return this.submission.run(
-      this.form,
-      () => this.auth.resetPassword(email),
-      () => this.success.set(true),
+      { invalid: this.email().trim() === '' },
+      () => this.codes.requestRecoveryCode(this.email()),
+      () => this.step.set('code'),
+    );
+  }
+
+  protected recover(event: Event): Promise<void> {
+    event.preventDefault();
+    return this.submission.run(
+      { invalid: this.code().length !== CODE_LENGTH },
+      () => this.codes.recoverPassword(this.email(), this.code(), this.password()),
+      () => this.router.navigate(['/map']),
     );
   }
 }

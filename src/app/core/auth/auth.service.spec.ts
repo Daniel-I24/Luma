@@ -89,7 +89,7 @@ describe('AuthService', () => {
     expect(result.success).toBe(true);
   });
 
-  it('signUp: returns error key when email is already registered', async () => {
+  it('signUp: never reveals that an email is already registered', async () => {
     setup({
       signUp: vi.fn().mockResolvedValue({
         error: { message: 'User already registered' },
@@ -98,8 +98,22 @@ describe('AuthService', () => {
 
     const result = await service.signUp('existing@example.com', 'password123');
 
-    expect(result.success).toBe(false);
-    expect(result.errorKey).toBe('auth.errors.emailAlreadyRegistered');
+    expect(result).toEqual({ success: true });
+  });
+
+  it('signUp: rejects weak passwords before calling Supabase', async () => {
+    const signUp = vi.fn();
+    setup({ signUp });
+
+    expect(await service.signUp('a@example.com', 'abcdefgh')).toEqual({
+      success: false,
+      errorKey: 'auth.validation.passwordWeak',
+    });
+    expect(await service.signUp('a@example.com', 'abc123')).toEqual({
+      success: false,
+      errorKey: 'auth.validation.passwordWeak',
+    });
+    expect(signUp).not.toHaveBeenCalled();
   });
 
   // ── signOut ────────────────────────────────────────────────────────────────

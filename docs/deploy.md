@@ -31,16 +31,13 @@ rewritten, so CI (`npm run build`, plain production configuration) and local
 builds keep compiling. Running `npm run build:prod` locally leaves no change
 to commit.
 
-## Supabase Auth URLs
+## Supabase Auth
 
-Authentication → URL Configuration:
-
-- **Site URL**: `https://<your-domain>`
-- **Redirect URLs**:
-  - `https://<your-domain>/**`
-  - `https://*-<team>.vercel.app/**` (preview deployments, if used)
-  - `http://localhost:4200/**` (local development)
-  - `https://localhost/**` (Capacitor Android WebView origin)
+Accounts are confirmed and passwords reset with emailed 6-digit codes, never
+with links: paste the templates in [docs/auth-emails.md](auth-emails.md) and
+configure your own SMTP before real users sign up. The **Site URL**
+(Authentication → URL Configuration) can be `https://<your-domain>`; no
+redirect URL is needed for these flows.
 
 ## delete-account Edge Function
 

@@ -1,14 +1,16 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
+import { MIN_PASSWORD_LENGTH, PASSWORD_PATTERN } from '@core/auth/auth.schemas';
+import { PendingVerification } from '@core/auth/pending-verification';
 import { LumaButton, LumaCard, LumaInput } from '@design-system';
 import { AuthFormSubmission } from '../../forms/auth-form-submission';
 
 /**
  * RegisterPage — /auth/register
- * Handles new user registration.
+ * Creates the account, then asks for the emailed code (/auth/verify).
  */
 @Component({
   selector: 'app-register-page',
@@ -22,14 +24,21 @@ export class RegisterPage {
   private readonly auth = inject(AuthService);
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
+  private readonly pending = inject(PendingVerification);
 
   protected readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
+    password: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(MIN_PASSWORD_LENGTH),
+        Validators.pattern(PASSWORD_PATTERN),
+      ],
+    ],
   });
 
   protected readonly submission = new AuthFormSubmission();
-  protected readonly success = signal(false);
 
   protected onSubmit(): Promise<void> {
     const { email, password } = this.form.getRawValue();
@@ -40,12 +49,9 @@ export class RegisterPage {
     );
   }
 
+  /** The same next step whether or not the email already had an account. */
   private async onRegistered(): Promise<void> {
-    if (this.auth.user() !== null) {
-      await this.router.navigate(['/map']);
-    } else {
-      // Email confirmation pending: no session yet.
-      this.success.set(true);
-    }
+    this.pending.set(this.form.controls.email.value);
+    await this.router.navigate(['/auth/verify']);
   }
 }

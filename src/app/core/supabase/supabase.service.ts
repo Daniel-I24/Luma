@@ -17,7 +17,9 @@ export class SupabaseService {
       auth: {
         autoRefreshToken: true,
         persistSession: true,
-        detectSessionInUrl: true,
+        // No sign-in links: accounts are confirmed and passwords reset with
+        // emailed codes, so a URL never carries a session.
+        detectSessionInUrl: false,
       },
     },
   );

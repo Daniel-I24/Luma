@@ -76,7 +76,8 @@
       "submit": "Sign in",
       "forgotPassword": "Forgot your password?",
       "noAccount": "Don't have an account?",
-      "register": "Sign up"
+      "register": "Sign up",
+      "verifyEmail": "Verify my email"
     },
     "register": {
       "title": "Create account",
@@ -84,27 +85,29 @@
       "emailLabel": "Email address",
       "emailPlaceholder": "name@example.com",
       "passwordLabel": "Password",
-      "passwordPlaceholder": "At least 6 characters",
+      "passwordPlaceholder": "At least 8, with letters and numbers",
       "submit": "Create account",
       "hasAccount": "Already have an account?",
-      "login": "Sign in",
-      "successTitle": "Almost there!",
-      "successMessage": "Check your email to confirm your account."
+      "login": "Sign in"
     },
     "forgotPassword": {
       "title": "Reset password",
-      "subtitle": "We'll send you a link to reset your password",
+      "subtitle": "We'll send you a 6-digit code to create a new password.",
       "emailLabel": "Email address",
       "emailPlaceholder": "name@example.com",
-      "submit": "Send link",
+      "submit": "Send code",
       "backToLogin": "Back to sign in",
-      "successTitle": "Link sent",
-      "successMessage": "Check your email to reset your password."
+      "codeSent": "If the email has an account, we sent a code. Enter it with your new password.",
+      "newPassword": "New password",
+      "save": "Save and sign in",
+      "changeEmail": "Use another email"
     },
     "validation": {
       "emailRequired": "Email address is required.",
       "emailInvalid": "Enter a valid email address.",
-      "passwordTooShort": "Password must be at least 6 characters."
+      "passwordRequired": "Enter your password.",
+      "passwordWeak": "Use at least 8 characters, with letters and numbers.",
+      "codeInvalid": "Enter the 6 digits of the code."
     },
     "errors": {
       "invalidCredentials": "Incorrect email or password.",
@@ -115,7 +118,23 @@
       "networkError": "Connection error. Check your network and try again.",
       "unknown": "An unexpected error occurred. Please try again.",
       "deleteAccountFailed": "Could not delete your account. Please try again.",
-      "sessionExpired": "Your session has expired. Sign in again and retry."
+      "sessionExpired": "Your session has expired. Sign in again and retry.",
+      "codeInvalid": "The code is wrong or has expired. Check it or ask for a new one."
+    },
+    "verify": {
+      "title": "Enter your code",
+      "subtitle": "Enter the email you signed up with and the code we sent you.",
+      "subtitleTo": "We sent a code to {{email}}. If you don't see it, check your spam folder.",
+      "codeLabel": "{{length}}-digit code",
+      "codeHint": "You can paste it; it is sent once complete.",
+      "submit": "Verify",
+      "checking": "Verifying…",
+      "resend": "Resend code",
+      "resendIn": "Resend code in {{seconds}} s",
+      "resent": "If the email has a pending account, we sent a new code."
+    },
+    "password": {
+      "show": "Show password"
     }
   },
   "profile": {

@@ -29,6 +29,10 @@ export class LumaInput {
   readonly required = input<boolean>(false);
   /** Native maxlength; pair it with a counter in the hint. */
   readonly maxLength = input<number | null>(null);
+  /** Virtual keyboard hint, e.g. 'numeric' for codes. */
+  readonly inputMode = input<string | null>(null);
+  /** e.g. 'one-time-code', 'email', 'new-password', 'current-password'. */
+  readonly autocomplete = input<string | null>(null);
 
   /** Two-way bindable value. */
   readonly value = model<string>('');
