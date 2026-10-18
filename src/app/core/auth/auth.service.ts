@@ -85,7 +85,7 @@ export class AuthService {
   deleteAccount(): Promise<AuthResult> {
     return this.withLoading(async () => {
       const { error } = await this.supabase.functions.invoke('delete-account', { method: 'POST' });
-      if (error) return fail(mapDeleteAccountError(error));
+      if (error) return fail(await mapDeleteAccountError(error));
       // The user no longer exists server-side; local scope clears storage without a request.
       await this.supabase.auth.signOut({ scope: 'local' });
       this.userData.clearAll();

@@ -119,6 +119,7 @@
       "unknown": "Ocurrió un error inesperado. Intenta de nuevo.",
       "deleteAccountFailed": "No se pudo eliminar la cuenta. Intenta de nuevo.",
       "sessionExpired": "Tu sesión expiró. Inicia sesión de nuevo e intenta otra vez.",
+      "reauthRequired": "Por seguridad, cierra sesión, vuelve a entrar y elimina la cuenta en los 10 minutos siguientes.",
       "codeInvalid": "El código es incorrecto o ya caducó. Revísalo o pide uno nuevo."
     },
     "verify": {

@@ -119,6 +119,7 @@
       "unknown": "An unexpected error occurred. Please try again.",
       "deleteAccountFailed": "Could not delete your account. Please try again.",
       "sessionExpired": "Your session has expired. Sign in again and retry.",
+      "reauthRequired": "For your security, sign out, sign back in and delete your account within 10 minutes.",
       "codeInvalid": "The code is wrong or has expired. Check it or ask for a new one."
     },
     "verify": {

@@ -72,6 +72,21 @@ describe('AuthService — ending the session', () => {
     });
   });
 
+  it('deleteAccount: asks to sign in again when the last sign-in is too old (403)', async () => {
+    functions.invoke.mockResolvedValue({
+      data: null,
+      error: new FunctionsHttpError(
+        new Response('{"error":"reauth_required"}', { status: 403 }),
+      ),
+    });
+
+    expect(await service.deleteAccount()).toEqual({
+      success: false,
+      errorKey: 'auth.errors.reauthRequired',
+    });
+    expect(auth.signOut).not.toHaveBeenCalled();
+  });
+
   it('deleteAccount: maps a network failure to the network key', async () => {
     functions.invoke.mockResolvedValue({ data: null, error: new FunctionsFetchError(new Error()) });
 

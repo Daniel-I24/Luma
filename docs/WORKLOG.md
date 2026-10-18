@@ -50,8 +50,6 @@ agent's sessions).
 
 ## Left
 
-- PARTE 4 (business verification),
-  5 (Luma Negocios shell), 6 (signup steps, legal pages, tutorial),
-  7 (delete-account), 8 (APK only, no performance work), 10 (docs).
+- 5 (Luma Negocios shell), 6 (signup steps, legal pages, tutorial), 8 (APK only, no performance work), 10 (docs).
 - PARTE 9 and the performance section of PARTE 8: on hold until the owner
   asks.

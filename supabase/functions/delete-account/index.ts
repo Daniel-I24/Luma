@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 
-import { allowedOriginsFrom } from './cors.ts';
+import { allowedOriginsFrom } from '../_shared/cors.ts';
 import { createHandler } from './handler.ts';
 import type { CleanupClient } from './storage-cleanup.ts';
 

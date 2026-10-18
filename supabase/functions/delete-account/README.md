@@ -14,12 +14,17 @@ Edge Function that permanently deletes the **caller's own** account
 | Origin not in the allow list           | 403    | `{ "error": "origin_not_allowed" }` |
 | Any method other than POST / OPTIONS   | 405    | `{ "error": "method_not_allowed" }` |
 | Missing, malformed or invalid token    | 401    | `{ "error": "unauthorized" }`       |
+| Last sign-in more than 10 minutes ago  | 403    | `{ "error": "reauth_required" }`    |
 | Deletion failed / Auth or Storage down | 500    | `{ "error": "delete_failed" }`      |
 
 ## Security
 
 - The user is identified **only** by the JWT, validated with `auth.getUser()`.
   Any user id in the body or URL is ignored: a caller can only delete themself.
+- Recent sign-in required: `last_sign_in_at` (password or emailed code) must
+  be at most 10 minutes old. A refreshed token does not count, so a stolen or
+  forgotten session cannot erase the account. The app asks the user to sign in
+  again (`auth.errors.reauthRequired`).
 - `verify_jwt = true` stays on in `supabase/config.toml`, so the platform also
   rejects requests without a valid JWT before the code runs.
 - The service role key comes from the `SUPABASE_SERVICE_ROLE_KEY` variable that
@@ -43,13 +48,15 @@ Edge Function that permanently deletes the **caller's own** account
   `promotions`, `menu_items`, and the favorites and reviews **other users**
   left on those businesses.
 
-Before that, the function deletes the pictures of the user's businesses from
-the `business-images` bucket (`{business_id}/{logo|cover|menu|promotions}/…`,
-see `storage-cleanup.ts`). If Storage fails, it answers 500
+Before that, the function deletes the files of the user's businesses: the
+pictures in `business-images` (`{business_id}/{logo|cover|menu|promotions}/…`)
+and the private verification documents in `verification-docs`
+(`{business_id}/{rut|facade|other}/…`), see `storage-cleanup.ts`. If Storage fails, it answers 500
 `delete_failed` and the account is **not** deleted, so the user can retry
 without leaving files behind.
 
-Orders the user placed are deleted too (`orders.user_id` cascade); orders
+Orders the user placed are anonymised, not deleted (`orders.user_id` set to
+NULL and `notes` cleared), so the businesses keep their history; orders
 that other customers placed at the user's businesses are kept with
 `business_id` set to NULL and the copied business name and address
 (`docs/orders.md`).
@@ -73,7 +80,7 @@ Recommended `ALLOWED_ORIGINS`:
 
 ```sh
 cd supabase/functions/delete-account
-deno test --no-lock
+deno test --no-lock . ../_shared
 ```
 
 ## Deploy (manual)
