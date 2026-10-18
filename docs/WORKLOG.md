@@ -26,6 +26,14 @@ agent's sessions).
   paste, auto-send, 60 s resend), unconfirmed login → verify, recovery in two
   steps, new passwords ≥ 8 with letters and numbers, no email enumeration,
   `detectSessionInUrl: false`, `docs/auth-emails.md`.
+- PARTE 3 — migration `20261019000000_account_types.sql` (account_type,
+  private full_name/phone, consent set by the server, onboarding version,
+  become_business_owner, only owners create businesses, max 3) with 20 SQL
+  checks; app: `AccountType` and `Phone` value objects, `AccountProfileRepository`
+  contract + Supabase implementation, `SessionProfileStore` (accountType,
+  profile, home path), `ownerGuard` and `accountHomeGuard`; /business is
+  owner-only and the Profile shows it only to owners (the customer
+  "¿Tienes un negocio?" sheet comes in PARTE 5).
 
 ## In progress
 
@@ -33,7 +41,7 @@ agent's sessions).
 
 ## Left
 
-- PARTE 3 (account types), 4 (business verification),
+- PARTE 4 (business verification),
   5 (Luma Negocios shell), 6 (signup steps, legal pages, tutorial),
   7 (delete-account), 8 (APK only, no performance work), 10 (docs).
 - PARTE 9 and the performance section of PARTE 8: on hold until the owner

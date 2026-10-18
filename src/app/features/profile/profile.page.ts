@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
 import { LumaAvatar, LumaBottomSheet, LumaButton, LumaIcon } from '@design-system';
+import { SessionProfileStore } from '@shared/account/session-profile.store';
 import { AppearanceSettings } from './components/appearance-settings/appearance-settings';
 import { BusinessEntry } from './components/business-entry/business-entry';
 import { NotificationsEntry } from './components/notifications-entry/notifications-entry';
@@ -36,6 +37,8 @@ export class ProfilePage {
   private readonly router = inject(Router);
 
   protected readonly user = this.auth.user;
+  /** The business panel is for business-owner accounts. */
+  protected readonly isBusinessOwner = inject(SessionProfileStore).isBusinessOwner;
   protected readonly loading = this.auth.loading;
   protected readonly deleteSheetOpen = signal(false);
   protected readonly errorKey = signal<string | null>(null);

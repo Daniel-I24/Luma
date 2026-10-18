@@ -4,6 +4,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { AuthCodeService } from '@core/auth/auth-code.service';
 import { CODE_LENGTH, normalizeCode } from '@core/auth/auth.schemas';
 import { LumaButton, LumaCard, LumaInput } from '@design-system';
+import { SessionProfileStore } from '@shared/account/session-profile.store';
 import { AuthFormSubmission } from '../../forms/auth-form-submission';
 
 type Step = 'email' | 'code';
@@ -24,6 +25,7 @@ type Step = 'email' | 'code';
 export class ForgotPasswordPage {
   private readonly codes = inject(AuthCodeService);
   private readonly router = inject(Router);
+  private readonly sessionProfile = inject(SessionProfileStore);
 
   protected readonly step = signal<Step>('email');
   protected readonly email = signal('');
@@ -51,7 +53,12 @@ export class ForgotPasswordPage {
     return this.submission.run(
       { invalid: this.code().length !== CODE_LENGTH },
       () => this.codes.recoverPassword(this.email(), this.code(), this.password()),
-      () => this.router.navigate(['/map']),
+      () => this.goHome(),
     );
+  }
+
+  /** Lands on the home of the account type (customers: /map). */
+  private async goHome(): Promise<boolean> {
+    return this.router.navigateByUrl(await this.sessionProfile.homePath());
   }
 }

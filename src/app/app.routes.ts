@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from '@core/auth/auth.guard';
 import { guestGuard } from '@core/auth/guest.guard';
 import { DETAIL_ROUTE_DATA } from '@core/navigation/route-transition';
+import { accountHomeGuard, ownerGuard } from '@shared/account/account.guards';
 
 const DEV_ONLY_ROUTES: Routes = [
   {
@@ -13,9 +14,11 @@ const DEV_ONLY_ROUTES: Routes = [
 
 export const routes: Routes = [
   {
+    // Each account type has its own home (customers: /map).
     path: '',
-    redirectTo: 'map',
     pathMatch: 'full',
+    canActivate: [authGuard, accountHomeGuard],
+    children: [],
   },
   {
     path: 'auth',
@@ -80,7 +83,7 @@ export const routes: Routes = [
       },
       {
         path: 'business',
-        canActivate: [authGuard],
+        canActivate: [authGuard, ownerGuard],
         loadChildren: () =>
           import('./features/business-panel/business-panel.routes').then(
             (m) => m.businessPanelRoutes,

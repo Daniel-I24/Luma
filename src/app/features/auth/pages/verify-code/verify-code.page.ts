@@ -6,6 +6,7 @@ import { CODE_LENGTH, normalizeCode } from '@core/auth/auth.schemas';
 import { PendingVerification } from '@core/auth/pending-verification';
 import { LumaButton, LumaCard, LumaInput } from '@design-system';
 import { createCountdown } from '@shared/ui/countdown';
+import { SessionProfileStore } from '@shared/account/session-profile.store';
 import { AuthFormSubmission } from '../../forms/auth-form-submission';
 
 /** Seconds before another code can be requested. */
@@ -28,6 +29,7 @@ export class VerifyCodePage {
   private readonly codes = inject(AuthCodeService);
   private readonly pending = inject(PendingVerification);
   private readonly router = inject(Router);
+  private readonly sessionProfile = inject(SessionProfileStore);
 
   protected readonly knownEmail = this.pending.email;
   protected readonly email = signal(this.pending.email() ?? '');
@@ -55,7 +57,7 @@ export class VerifyCodePage {
       () => this.codes.confirmSignup(this.email(), this.code()),
       () => {
         this.pending.clear();
-        return this.router.navigate(['/map']);
+        return this.goHome();
       },
     );
   }
@@ -75,5 +77,10 @@ export class VerifyCodePage {
   protected onSubmit(event: Event): void {
     event.preventDefault();
     void this.verify();
+  }
+
+  /** Lands on the home of the account type (customers: /map). */
+  private async goHome(): Promise<boolean> {
+    return this.router.navigateByUrl(await this.sessionProfile.homePath());
   }
 }

@@ -1,6 +1,8 @@
 /** Errors of the business panel writes, as translation keys. */
 const MESSAGE_KEYS: Readonly<Record<string, string>> = {
   publish_requirements_missing: 'businessPanel.errors.publishRequirements',
+  not_business_owner: 'businessPanel.errors.notBusinessOwner',
+  business_limit_reached: 'businessPanel.errors.businessLimit',
 };
 const CODE_KEYS: Readonly<Record<string, string>> = {
   '23514': 'businessPanel.errors.invalidData',

@@ -4,6 +4,7 @@ import { TranslocoTestingModule } from '@jsverse/transloco';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthCodeService } from '@core/auth/auth-code.service';
 import { PendingVerification } from '@core/auth/pending-verification';
+import { SessionProfileStore } from '@shared/account/session-profile.store';
 import { RESEND_COOLDOWN_SECONDS, VerifyCodePage } from './verify-code.page';
 
 const flush = () => new Promise((resolve) => setTimeout(resolve));
@@ -21,7 +22,11 @@ describe('VerifyCodePage', () => {
           translocoConfig: { availableLangs: ['es'], defaultLang: 'es' },
         }),
       ],
-      providers: [provideRouter([]), { provide: AuthCodeService, useValue: codes }],
+      providers: [
+        provideRouter([]),
+        { provide: AuthCodeService, useValue: codes },
+        { provide: SessionProfileStore, useValue: { homePath: () => Promise.resolve('/map') } },
+      ],
     });
   });
 
@@ -52,14 +57,14 @@ describe('VerifyCodePage', () => {
 
   it('sends the code as soon as 6 digits are pasted, then opens the app', async () => {
     codes.confirmSignup.mockResolvedValue({ success: true });
-    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
     const { type } = render();
 
     type('12 34 56');
     await flush();
 
     expect(codes.confirmSignup).toHaveBeenCalledWith('ana@example.com', '123456');
-    expect(navigate).toHaveBeenCalledWith(['/map']);
+    expect(navigate).toHaveBeenCalledWith('/map');
     expect(TestBed.inject(PendingVerification).email()).toBeNull();
   });
 

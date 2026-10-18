@@ -159,7 +159,10 @@
     "errors": {
       "signOut": "No se pudo cerrar la sesión. Intenta de nuevo.",
       "displayNameLoad": "No se pudo cargar tu nombre visible.",
-      "displayNameSave": "No se pudo guardar tu nombre visible. Intenta de nuevo."
+      "displayNameSave": "No se pudo guardar tu nombre visible. Intenta de nuevo.",
+      "load": "No se pudo cargar tu perfil.",
+      "becomeOwner": "No se pudo activar tu cuenta de negocio. Intenta de nuevo.",
+      "save": "No se pudieron guardar los cambios."
     },
     "account": "Cuenta",
     "appearance": {
@@ -801,7 +804,9 @@
       "publishRequirements": "Aún no se puede publicar: completa los requisitos.",
       "invalidData": "Algunos datos no son válidos. Revísalos.",
       "duplicate": "Ese dato ya existe.",
-      "forbidden": "No tienes permiso para modificar este negocio."
+      "forbidden": "No tienes permiso para modificar este negocio.",
+      "notBusinessOwner": "Solo las cuentas de negocio pueden registrar negocios.",
+      "businessLimit": "Llegaste al máximo de negocios por cuenta."
     },
     "images": {
       "logo": "Logo",

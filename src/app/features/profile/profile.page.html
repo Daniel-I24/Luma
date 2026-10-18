@@ -44,6 +44,7 @@
       </a>
     </section>
 
+    @if (isBusinessOwner()) {
     <section aria-labelledby="business-heading">
       <h2
         id="business-heading"
@@ -53,6 +54,7 @@
       </h2>
       <app-business-entry />
     </section>
+    }
 
     <app-appearance-settings />
 

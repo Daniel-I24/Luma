@@ -3,6 +3,7 @@ import { Router, provideRouter } from '@angular/router';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthCodeService } from '@core/auth/auth-code.service';
+import { SessionProfileStore } from '@shared/account/session-profile.store';
 import { ForgotPasswordPage } from './forgot-password.page';
 
 const flush = () => new Promise((resolve) => setTimeout(resolve));
@@ -20,14 +21,18 @@ describe('ForgotPasswordPage', () => {
           translocoConfig: { availableLangs: ['es'], defaultLang: 'es' },
         }),
       ],
-      providers: [provideRouter([]), { provide: AuthCodeService, useValue: codes }],
+      providers: [
+        provideRouter([]),
+        { provide: AuthCodeService, useValue: codes },
+        { provide: SessionProfileStore, useValue: { homePath: () => Promise.resolve('/map') } },
+      ],
     });
   });
 
   it('asks for the email, then for the code and the new password, then signs in', async () => {
     codes.requestRecoveryCode.mockResolvedValue({ success: true });
     codes.recoverPassword.mockResolvedValue({ success: true });
-    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
     const fixture = TestBed.createComponent(ForgotPasswordPage);
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
@@ -53,6 +58,6 @@ describe('ForgotPasswordPage', () => {
     await submit();
 
     expect(codes.recoverPassword).toHaveBeenCalledWith('ana@example.com', '654321', 'nueva2026');
-    expect(navigate).toHaveBeenCalledWith(['/map']);
+    expect(navigate).toHaveBeenCalledWith('/map');
   });
 });

@@ -159,7 +159,10 @@
     "errors": {
       "signOut": "Could not sign out. Please try again.",
       "displayNameLoad": "Could not load your display name.",
-      "displayNameSave": "Could not save your display name. Please try again."
+      "displayNameSave": "Could not save your display name. Please try again.",
+      "load": "Your profile could not be loaded.",
+      "becomeOwner": "Your business account could not be activated. Try again.",
+      "save": "The changes could not be saved."
     },
     "account": "Account",
     "appearance": {
@@ -801,7 +804,9 @@
       "publishRequirements": "It can't be published yet: complete the requirements.",
       "invalidData": "Some data is not valid. Check it.",
       "duplicate": "That already exists.",
-      "forbidden": "You are not allowed to change this business."
+      "forbidden": "You are not allowed to change this business.",
+      "notBusinessOwner": "Only business accounts can register businesses.",
+      "businessLimit": "You reached the maximum number of businesses per account."
     },
     "images": {
       "logo": "Logo",
