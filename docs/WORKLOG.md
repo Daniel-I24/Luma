@@ -81,7 +81,11 @@ agent's sessions).
   Descubrir and "Cercanos a ti", discounts on feed and map cards, owner form
   with product, percent, final-price preview, margin notice, Terminar ahora and
   the visible limit of 5.
-- Then blocks E (AI), F (APK), G (polish and docs) are not started.
+- Block E in progress: E1 gateway done (`supabase/functions/_shared/llm`,
+  Gemini / OpenAI-compatible / Anthropic by secrets, 10 s timeout, one retry,
+  8 Deno tests). Next: E3 SQL quotas and cache, E4 recommend, E5
+  suggest-promotions, E6 app, E8 docs.
+- Then blocks F (APK) and G (polish and docs) are not started.
 
 ## Left
 
