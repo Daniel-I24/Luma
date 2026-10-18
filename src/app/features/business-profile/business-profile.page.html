@@ -71,23 +71,27 @@
     >
       @if (tab() === id) {
       <div class="animate-fade-in">
-      @switch (id) { @case ('menu') {
-      <app-menu-tab
-        [items]="store.menu()"
-        [placeholderIcon]="categoryIcon(business.category)"
-        [businessName]="business.name"
-        (retry)="reload()"
-      />
-      } @case ('promos') { <app-promos-tab [promotions]="store.promotions()" /> } @case ('reviews')
-      {
-      <app-reviews-tab
-        [businessId]="business.id"
-        [rating]="store.rating()"
-        [isOwner]="isOwner()"
-        (changed)="store.refreshRating()"
-      />
-      } @case ('info') {
-      <app-info-tab [business]="business" [hours]="store.hours()" /> } }
+        @switch (id) { @case ('menu') {
+        <app-menu-tab
+          [items]="store.menu()"
+          [placeholderIcon]="categoryIcon(business.category)"
+          [businessName]="business.name"
+          (retry)="reload()"
+        />
+        } @case ('promos') {
+        <app-promos-tab
+          [promotions]="store.promotions()"
+          [recommendedId]="store.recommendedDealId()"
+        />
+        } @case ('reviews') {
+        <app-reviews-tab
+          [businessId]="business.id"
+          [rating]="store.rating()"
+          [isOwner]="isOwner()"
+          (changed)="store.refreshRating()"
+        />
+        } @case ('info') {
+        <app-info-tab [business]="business" [hours]="store.hours()" /> } }
       </div>
       }
     </div>

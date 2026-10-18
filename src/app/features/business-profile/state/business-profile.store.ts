@@ -43,6 +43,13 @@ export class BusinessProfileStore {
   readonly rating = this._rating.asReadonly();
   readonly ratingsLoaded = this._ratingsLoaded.asReadonly();
   readonly promotions = this._promotions.asReadonly();
+  /** "Recomendada por Luma IA": the biggest discount on an available item (none without discounts). */
+  readonly recommendedDealId = computed(
+    () =>
+      [...this._promotions()]
+        .filter((deal) => deal.discountPercent !== null && deal.item?.available)
+        .sort((a, b) => (b.discountPercent ?? 0) - (a.discountPercent ?? 0))[0]?.id ?? null,
+  );
   /** Null when the menu could not be loaded. */
   readonly menu = this._menu.asReadonly();
   readonly status = computed(() => getBusinessStatus(this._hours()));

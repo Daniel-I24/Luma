@@ -1,0 +1,59 @@
+<section
+  *transloco="let t"
+  class="flex flex-col gap-3 rounded-xl border border-border-subtle bg-surface p-4"
+  aria-labelledby="ideas-title"
+  [attr.aria-busy]="state() === 'loading'"
+>
+  <h2 id="ideas-title" class="m-0 flex items-center gap-2 text-title text-fg">
+    <app-luma-icon name="sparkles" class="text-fg-accent" />
+    {{ t('owner.ideas.title') }}
+  </h2>
+
+  @switch (state()) { @case ('loading') { @for (i of [0, 1]; track i) {
+  <app-luma-skeleton class="h-20 w-full" shape="rect" />
+  }
+  <span class="sr-only">{{ t('owner.ideas.loading') }}</span>
+  } @case ('error') {
+  <div class="flex flex-col gap-2" role="alert">
+    <p class="m-0 text-body-sm text-danger-fg">{{ t('owner.ideas.loadFailed') }}</p>
+    <app-luma-button variant="secondary" size="sm" (clicked)="load()"
+      >{{ t('common.retry') }}</app-luma-button
+    >
+  </div>
+  } @default { @if (result()?.ideas?.length) {
+  <ul class="m-0 flex list-none flex-col gap-3 p-0">
+    @for (idea of result()!.ideas; track idea.menu_item_id) {
+    <li class="flex flex-col gap-2 rounded-lg bg-canvas-subtle p-3">
+      <p class="m-0 flex flex-wrap items-baseline gap-2">
+        <span class="text-body font-semibold text-fg">{{ idea.item_name }}</span>
+        <span class="rounded-full bg-danger px-2 py-0.5 text-caption font-bold text-danger-fg-on">
+          {{ t('promotions.card.discount', { percent: idea.discount_percent }) }}
+        </span>
+        <span class="text-caption text-fg-muted"
+          >{{ t('owner.ideas.duration', { days: idea.duration_days }) }}</span
+        >
+      </p>
+      <p class="m-0 text-body-sm text-fg-muted">
+        {{ t('owner.ideas.reasons.' + idea.reason, { units: idea.units_60d, days: idea.days_listed,
+        weekday: idea.slot ? t('owner.ideas.weekdays.' + idea.slot.dow) : '', slot: idea.slot ?
+        t('owner.ideas.slots.' + idea.slot.slot) : '' }) }}
+      </p>
+      <p class="m-0 text-body-sm text-fg">
+        {{ t('owner.discount.preview', { final: (idea.final_cop | cop), list: (idea.list_cop | cop)
+        }) }}
+      </p>
+      <app-luma-button size="sm" (clicked)="create.emit(idea)"
+        >{{ t('owner.ideas.create') }}</app-luma-button
+      >
+    </li>
+    }
+  </ul>
+  } @else {
+  <p class="m-0 text-body-sm text-fg-muted">{{ t('owner.ideas.empty') }}</p>
+  }
+  <p class="m-0 text-caption text-fg-muted">
+    {{ t('owner.ideas.margin') }} · {{ t(result()?.source === 'ai' ? 'owner.ideas.sourceAi' :
+    'owner.ideas.sourceRules') }}
+  </p>
+  } }
+</section>

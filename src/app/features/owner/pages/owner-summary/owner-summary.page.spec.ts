@@ -8,6 +8,7 @@ import { MenuRepository } from '@shared/business/data/menu.repository';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
 import { VerificationRepository } from '@shared/business/verification/verification.repository';
 import { BusinessOrderRepository } from '@shared/orders/business-order.repository';
+import { PROMOTION_ADVISOR } from '@shared/promotions/advisor/promotion-advisor';
 import { OwnerSummaryPage } from './owner-summary.page';
 
 const base = {
@@ -29,6 +30,7 @@ describe('OwnerSummaryPage', () => {
   const menus = { getMenu: vi.fn() };
   const verification = { getLegal: vi.fn(), listDocs: vi.fn(), submit: vi.fn() };
   const orders = { list: vi.fn() };
+  const advisor = { suggest: vi.fn() };
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -38,6 +40,7 @@ describe('OwnerSummaryPage', () => {
     verification.getLegal.mockResolvedValue({ data: null, errorKey: null });
     verification.listDocs.mockResolvedValue({ data: [], errorKey: null });
     orders.list.mockResolvedValue({ data: [], errorKey: null });
+    advisor.suggest.mockResolvedValue({ source: 'rules', ideas: [] });
     TestBed.configureTestingModule({
       imports: [
         TranslocoTestingModule.forRoot({
@@ -53,6 +56,7 @@ describe('OwnerSummaryPage', () => {
         { provide: MenuRepository, useValue: menus },
         { provide: VerificationRepository, useValue: verification },
         { provide: BusinessOrderRepository, useValue: orders },
+        { provide: PROMOTION_ADVISOR, useValue: advisor },
       ],
     });
   });

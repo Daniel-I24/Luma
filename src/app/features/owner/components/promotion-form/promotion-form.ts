@@ -22,7 +22,8 @@ import {
   focusFirstError,
   withoutErrors,
 } from '@shared/forms/form-errors';
-import { fromLocalInput, toLocalInput } from '../../utils/promotion-phase.util';
+import { fromLocalInput } from '../../utils/promotion-phase.util';
+import { type PromoDraft, type PromotionPrefill, draftOf } from './promotion-draft';
 
 const FIELD_ORDER = [
   ['title', 'promo-title'],
@@ -32,7 +33,6 @@ const FIELD_ORDER = [
   ['menu_item_id', 'promo-item'],
   ['discount_percent', 'promo-percent'],
 ] as const;
-const DAY_MS = 86_400_000;
 
 /** Draft field -> validated field, to clear its error on edit. */
 const DRAFT_FIELD: Record<string, string> = {
@@ -41,28 +41,6 @@ const DRAFT_FIELD: Record<string, string> = {
   menuItemId: 'menu_item_id',
   discount: 'discount_percent',
 };
-
-interface PromoDraft {
-  title: string;
-  description: string;
-  startsAt: string;
-  endsAt: string;
-  imageUrl: string | null;
-  menuItemId: string | null;
-  discount: string;
-}
-
-function draftOf(promotion: Promotion | null, now: Date): PromoDraft {
-  return {
-    title: promotion?.title ?? '',
-    description: promotion?.description ?? '',
-    startsAt: toLocalInput(promotion?.starts_at ?? now.toISOString()),
-    endsAt: toLocalInput(promotion?.ends_at ?? new Date(now.getTime() + 7 * DAY_MS).toISOString()),
-    imageUrl: promotion?.image_url ?? null,
-    menuItemId: promotion?.menu_item_id ?? null,
-    discount: promotion?.discount_percent?.toString() ?? '',
-  };
-}
 
 /** PromotionForm — create or edit a promotion; the end must be after the start and in the future. */
 @Component({
@@ -76,6 +54,7 @@ export class PromotionForm {
   private readonly document = inject(DOCUMENT);
 
   readonly promotion = input<Promotion | null>(null);
+  readonly prefill = input<PromotionPrefill | null>(null);
   readonly businessId = input.required<string>();
   /** Products of the business that a discount can apply to. */
   readonly items = input<readonly MenuItem[]>([]);
@@ -83,14 +62,15 @@ export class PromotionForm {
   readonly submitted = output<PromotionInput>();
   readonly cancelled = output<void>();
 
-  protected readonly draft = signal<PromoDraft>(draftOf(null, new Date()));
+  protected readonly draft = signal<PromoDraft>(draftOf(null, new Date(), null));
   protected readonly errors = signal<FieldErrors>({});
 
   constructor() {
     effect(() => {
       const promotion = this.promotion();
+      const prefill = this.prefill();
       untracked(() => {
-        this.draft.set(draftOf(promotion, new Date()));
+        this.draft.set(draftOf(promotion, new Date(), prefill));
         this.errors.set({});
       });
     });

@@ -29,10 +29,13 @@ export interface RecommendationCandidate {
 export interface RecommendationRequest {
   moment: DayMoment;
   candidates: readonly RecommendationCandidate[];
+  /** The user's location (remote engine only); null when not shared. */
+  origin?: { lat: number; lng: number } | null;
 }
 
 /** Why a business was picked (shown to the user as short labels). */
-export type RecommendationReason = 'moment' | 'near' | 'topRated' | 'promotion' | 'favorite';
+export type RecommendationReason =
+  'moment' | 'near' | 'topRated' | 'promotion' | 'favorite' | 'variety';
 
 export interface RecommendedBusiness {
   candidate: RecommendationCandidate;

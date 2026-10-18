@@ -5,6 +5,9 @@
   <app-panel-header [heading]="t('businessPanel.promotions.title')" />
   <app-panel-state [state]="panel.state()" (retry)="load()">
     <div class="flex flex-col gap-4">
+      @if (panel.business()?.verification_status === 'approved' && promos.canAdd()) {
+      <app-ideas-card [businessId]="id()" (create)="openIdea($event)" />
+      }
       <app-luma-button
         [fullWidth]="true"
         describedBy="promo-limit"
@@ -79,6 +82,7 @@
     @if (editing() !== undefined) {
     <app-promotion-form
       [promotion]="editing() ?? null"
+      [prefill]="prefill()"
       [businessId]="id()"
       [items]="promos.items()"
       [busy]="promos.busy()"

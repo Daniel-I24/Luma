@@ -83,3 +83,35 @@ alternative that was not taken. The safest, most reversible option wins.
 - **What**: `shared/account/account-actions` (sign out, delete sheet) is used
   by the Profile and by "Mi negocio".
 - **Why**: features cannot import each other; one copy of the deletion flow.
+
+## 2026-10-18 — Luma IA: rules by default, remote behind a constant
+
+- **What**: `AI_MODE` (`src/app/core/config/ai-mode.ts`) is `'rules'`; with
+  `'remote'` the app calls the Edge Functions and falls back to the rules.
+- **Why**: nothing is deployed and `environment.ts` cannot be touched; a
+  typed constant keeps the default safe and the switch one line.
+- **Alternative**: a field in `environment.ts` (forbidden to edit) or a
+  runtime flag in the database (more moving parts for a one-time switch).
+
+## 2026-10-18 — The promotion rules exist twice (function and app)
+
+- **What**: the rules advisor lives in
+  `supabase/functions/suggest-promotions/ideas.ts` (below 10 orders) and in
+  `src/app/shared/promotions/advisor/rules-promotion-ideas.ts` (rules mode).
+- **Why**: Deno functions and the Angular app cannot share source files;
+  both copies are small, documented as mirrors and tested with the same
+  scenarios.
+- **Alternative**: a SQL function used by both. One copy, but harder to
+  test and to evolve than a pure function.
+
+## 2026-10-18 — Gemini and OpenAI-compatible JSON without schema fields
+
+- **What**: Gemini uses `responseMimeType: application/json` and
+  OpenAI-compatible providers `response_format: json_object`; the JSON Schema
+  travels in the instructions and every answer is validated strictly.
+  Anthropic uses `output_config.format`.
+- **Why**: the schema fields differ between providers and models (and
+  OpenAI-compatible hosts vary); JSON mode plus strict validation works on
+  all of them.
+- **Alternative**: provider-specific schema fields. Tighter output, but more
+  breakage when providers change.

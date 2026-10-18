@@ -434,7 +434,8 @@
       "near": "Nearby",
       "topRated": "Highly rated",
       "promotion": "Active promotion",
-      "favorite": "In your favourites"
+      "favorite": "In your favourites",
+      "variety": "For a change"
     },
     "combo": {
       "title": "Suggested combo at {{name}}",
@@ -453,6 +454,16 @@
     "error": {
       "title": "Could not load recommendations",
       "description": "Check your connection and try again."
+    },
+    "another": "Another option",
+    "why": {
+      "moment": "{{name}} suits this time of day.",
+      "near": "{{name}} is very close to you.",
+      "topRated": "{{name}} is one of the best rated around.",
+      "promotion": "{{name}} has a deal running now.",
+      "favorite": "{{name}} is one of your favourites.",
+      "variety": "{{name}} is something different for a change.",
+      "default": "{{name}} is open and close to you."
     }
   },
   "orders": {
@@ -1308,6 +1319,40 @@
       "margin": "Check your margin before publishing. Luma computes the final price when each order is confirmed.",
       "limit": "{{count}} of {{max}} active deals.",
       "limitReached": "You have {{count}} of {{max}} active deals: end one to create another."
+    },
+    "ideas": {
+      "title": "Luma AI ideas",
+      "loading": "Looking for deal ideas…",
+      "loadFailed": "We could not prepare ideas right now.",
+      "empty": "No ideas for now: your products sell well or already have a deal.",
+      "duration": "for {{days}} days",
+      "create": "Create deal",
+      "margin": "Check your margin before publishing",
+      "sourceAi": "AI ideas based on your sales",
+      "sourceRules": "Ideas based on your sales of the last 60 days",
+      "promoTitle": "{{percent}} % off {{item}}",
+      "reasons": {
+        "slow_item": "It has not sold in 60 days and has been on your menu for {{days}} days.",
+        "new_item": "It is new ({{days}} days on the menu) and sold {{units}} times: make it known.",
+        "quiet_slot": "It is your best seller ({{units}} in 60 days); use it to liven up {{weekday}} {{slot}}, your quietest time.",
+        "top_seller": "It is your best seller ({{units}} in 60 days)."
+      },
+      "weekdays": {
+        "0": "Sunday",
+        "1": "Monday",
+        "2": "Tuesday",
+        "3": "Wednesday",
+        "4": "Thursday",
+        "5": "Friday",
+        "6": "Saturday"
+      },
+      "slots": {
+        "morning": "morning",
+        "midday": "lunchtime",
+        "afternoon": "afternoon",
+        "evening": "evening",
+        "night": "late night"
+      }
     }
   },
   "promotions": {

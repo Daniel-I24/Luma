@@ -51,11 +51,17 @@
     [description]="t('ai.empty.description')"
   />
   } @else {
+  <p class="m-0 rounded-md bg-surface-selected p-3 text-body-sm text-fg" aria-live="polite">
+    {{ t(whyKey(result), { name: result.businesses[0].candidate.business.name }) }}
+  </p>
   <app-recommendation-list
     class="animate-fade-in"
     [picks]="result.businesses"
     (open)="openBusiness($event)"
   />
+  <app-luma-button variant="secondary" [fullWidth]="true" (clicked)="store.another()"
+    >{{ t('ai.another') }}</app-luma-button
+  >
   @if (result.combo; as combo) {
   <app-combo-card class="animate-fade-in" [combo]="combo" />
   } } } } }

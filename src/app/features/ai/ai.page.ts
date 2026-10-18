@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaChip, LumaEmptyState, LumaIcon, LumaSkeleton } from '@design-system';
-import { DAY_MOMENTS } from '@shared/recommendations/recommendation.model';
+import { DAY_MOMENTS, type Recommendation } from '@shared/recommendations/recommendation.model';
 import { ComboCard } from './components/combo-card/combo-card';
 import { RecommendationList } from './components/recommendation-list/recommendation-list';
 import { AiStore } from './state/ai.store';
@@ -41,5 +41,11 @@ export class AiPage {
 
   protected openBusiness(id: string): void {
     void this.router.navigate(['/businesses', id]);
+  }
+
+  /** One translated sentence for the first pick, from its main reason. */
+  protected whyKey(result: Recommendation): string {
+    const reason = result.businesses[0]?.reasons[0];
+    return reason ? `ai.why.${reason}` : 'ai.why.default';
   }
 }

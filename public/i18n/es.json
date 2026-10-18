@@ -434,7 +434,8 @@
       "near": "Cerca",
       "topRated": "Bien calificado",
       "promotion": "Promoción activa",
-      "favorite": "En tus favoritos"
+      "favorite": "En tus favoritos",
+      "variety": "Para variar"
     },
     "combo": {
       "title": "Combo sugerido en {{name}}",
@@ -453,6 +454,16 @@
     "error": {
       "title": "No se pudieron cargar las recomendaciones",
       "description": "Revisa tu conexión e intenta de nuevo."
+    },
+    "another": "Otra opción",
+    "why": {
+      "moment": "{{name}} encaja con este momento del día.",
+      "near": "{{name}} está muy cerca de ti.",
+      "topRated": "{{name}} es de los mejor calificados de la zona.",
+      "promotion": "{{name}} tiene una promoción activa ahora.",
+      "favorite": "{{name}} está entre tus favoritos.",
+      "variety": "{{name}} es una opción diferente para variar.",
+      "default": "{{name}} está abierto y cerca de ti."
     }
   },
   "orders": {
@@ -1308,6 +1319,40 @@
       "margin": "Revisa tu margen antes de publicar. El precio final lo calcula Luma al confirmar cada pedido.",
       "limit": "{{count}} de {{max}} promociones activas.",
       "limitReached": "Tienes {{count}} de {{max}} promociones activas: termina una para crear otra."
+    },
+    "ideas": {
+      "title": "Ideas de Luma IA",
+      "loading": "Buscando ideas para tus promociones…",
+      "loadFailed": "No pudimos preparar ideas ahora.",
+      "empty": "Por ahora no hay ideas: tus productos se venden bien o ya tienen promoción.",
+      "duration": "por {{days}} días",
+      "create": "Crear promoción",
+      "margin": "Revisa tu margen antes de publicar",
+      "sourceAi": "Ideas generadas con IA a partir de tus ventas",
+      "sourceRules": "Ideas basadas en tus ventas de los últimos 60 días",
+      "promoTitle": "{{percent}} % en {{item}}",
+      "reasons": {
+        "slow_item": "No se ha vendido en 60 días y lleva {{days}} días en tu menú.",
+        "new_item": "Es nuevo ({{days}} días en el menú) y se ha vendido {{units}} veces: dalo a conocer.",
+        "quiet_slot": "Es tu producto más vendido ({{units}} en 60 días); úsalo para animar el {{weekday}} en la {{slot}}, tu momento más flojo.",
+        "top_seller": "Es tu producto más vendido ({{units}} en 60 días)."
+      },
+      "weekdays": {
+        "0": "domingo",
+        "1": "lunes",
+        "2": "martes",
+        "3": "miércoles",
+        "4": "jueves",
+        "5": "viernes",
+        "6": "sábado"
+      },
+      "slots": {
+        "morning": "mañana",
+        "midday": "hora del almuerzo",
+        "afternoon": "tarde",
+        "evening": "noche",
+        "night": "madrugada"
+      }
     }
   },
   "promotions": {

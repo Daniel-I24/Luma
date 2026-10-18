@@ -36,6 +36,8 @@ export class AiStore {
   private readonly _state = signal<AiState>('loading');
   private readonly _result = signal<Recommendation | null>(null);
   private candidates: RecommendationCandidate[] = [];
+  /** Businesses already shown, left out by "Otra opción". */
+  private readonly shown = new Set<string>();
 
   readonly moment = this._moment.asReadonly();
   readonly state = this._state.asReadonly();
@@ -72,14 +74,25 @@ export class AiStore {
 
   async selectMoment(moment: DayMoment): Promise<void> {
     this._moment.set(moment);
+    this.shown.clear();
     if (this._state() === 'ready') await this.recommend();
+  }
+
+  /** "Otra opción": the next best places, without the ones already shown (then from the start). */
+  async another(): Promise<void> {
+    for (const pick of this._result()?.businesses ?? []) this.shown.add(pick.candidate.business.id);
+    if (this.candidates.every((c) => this.shown.has(c.business.id))) this.shown.clear();
+    await this.recommend();
   }
 
   private async recommend(): Promise<void> {
     const favorites = this.favorites.ids();
-    const candidates = this.candidates.map((c) => ({ ...c, isFavorite: favorites.has(c.business.id) }));
+    const candidates = this.candidates
+      .filter((c) => !this.shown.has(c.business.id))
+      .map((c) => ({ ...c, isFavorite: favorites.has(c.business.id) }));
+    const origin = this.geo.hasRealLocation() ? this.geo.coords() : null;
     try {
-      this._result.set(await this.engine.recommend({ moment: this._moment(), candidates }));
+      this._result.set(await this.engine.recommend({ moment: this._moment(), candidates, origin }));
       this._state.set('ready');
     } catch {
       this._state.set('error');

@@ -13,6 +13,7 @@
 
     @if (business.verification_status === 'approved') {
     <app-publish-card [business]="business" (toggled)="setPublished($event)" />
+    <app-ideas-card [businessId]="business.id" (create)="createFromIdea($event)" />
     }
 
     <app-today-stats [stats]="stats()" [ordersLink]="ordersLink()" />

@@ -6,9 +6,12 @@ import {
   inject,
   untracked,
 } from '@angular/core';
+import { Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { ToastService } from '@design-system';
 import { ownerPaths } from '@shared/account/owner-paths';
+import type { PromotionIdea } from '@shared/promotions/advisor/promotion-idea';
+import { IdeasCard } from '../../components/ideas-card/ideas-card';
 import { PanelHeader } from '../../components/panel-header/panel-header';
 import { PanelStateView } from '../../components/panel-state/panel-state';
 import { PublishCard } from '../../components/publish-card/publish-card';
@@ -33,6 +36,7 @@ import { todayStats } from '../../utils/today-stats.util';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     TranslocoModule,
+    IdeasCard,
     PanelHeader,
     PanelStateView,
     PublishCard,
@@ -50,6 +54,7 @@ export class OwnerSummaryPage {
   private readonly orders = inject(BusinessOrdersStore);
   private readonly context = inject(OwnerContextStore);
   private readonly toast = inject(ToastService);
+  private readonly router = inject(Router);
   protected readonly id = routeBusinessId();
 
   protected readonly missing = computed(() => {
@@ -93,5 +98,16 @@ export class OwnerSummaryPage {
     this.context.patch(this.id(), { is_active: published });
     const key = published ? 'businessPanel.dashboard.publishedToast' : 'owner.publish.pausedToast';
     this.toast.show({ messageKey: key, tone: 'success' });
+  }
+
+  /** Opens the Promos tab with the idea in the form; nothing is published yet. */
+  protected createFromIdea(idea: PromotionIdea): void {
+    void this.router.navigate(ownerPaths.section(this.id(), 'promotions'), {
+      queryParams: {
+        item: idea.menu_item_id,
+        percent: idea.discount_percent,
+        days: idea.duration_days,
+      },
+    });
   }
 }

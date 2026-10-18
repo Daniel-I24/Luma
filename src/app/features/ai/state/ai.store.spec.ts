@@ -93,4 +93,25 @@ describe('AiStore', () => {
     await store.load();
     expect(store.state()).toBe('error');
   });
+
+  it('"Otra opción" leaves out what was shown, then starts over', async () => {
+    const place = (id: string) => ({ id, name: id, category: 'Cafetería', latitude: 1, longitude: 2 });
+    businesses.getNearby.mockReturnValue(ok([place('b1'), place('b2')]));
+    businesses.getHoursFor.mockReturnValue(ok([...allDay('b1'), ...allDay('b2')]));
+    const pick = (id: string) => ({
+      businesses: [{ candidate: { business: { id } }, score: 1, reasons: [] }],
+      combo: null,
+    });
+    const ids = () =>
+      (engine.recommend.mock.lastCall?.[0] as RecommendationRequest).candidates.map((c) => c.business.id);
+    engine.recommend.mockResolvedValue(pick('b1'));
+    await store.load();
+
+    engine.recommend.mockResolvedValue(pick('b2'));
+    await store.another();
+    expect(ids()).toEqual(['b2']);
+
+    await store.another();
+    expect(ids()).toEqual(['b1', 'b2']);
+  });
 });

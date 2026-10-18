@@ -81,12 +81,13 @@ agent's sessions).
   Descubrir and "Cercanos a ti", discounts on feed and map cards, owner form
   with product, percent, final-price preview, margin notice, Terminar ahora and
   the visible limit of 5.
-- Block E in progress: E1 gateway done (`supabase/functions/_shared/llm`,
-  Gemini / OpenAI-compatible / Anthropic by secrets, 10 s timeout, one retry,
-  8 Deno tests); E3 SQL done (migration 20261022000000, 21 checks, 296
-  total); E4 `recommend` and E5 `suggest-promotions` Edge Functions done
-  (14 Deno tests; JWT + caller client, quota, cache, strict validation,
-  server prices, rules below 10 orders). Next: E6 app, E8 docs.
+- Block E done (E1-E8): LLM gateway `_shared/llm` (Gemini, OpenAI-compatible,
+  Anthropic by secrets), migration 20261022000000 (quotas, cache, candidates,
+  owner sales summary), Edge Functions `recommend` and `suggest-promotions`,
+  app `AI_MODE` (rules by default, remote with fallback), /ai reason sentence
+  and "Otra opción", "Recomendada por Luma IA" in Promos, "Ideas de Luma IA"
+  in Resumen and Promociones (prefilled form, owner publishes), docs/ai.md.
+  E9 (payments design) not started.
 - Then blocks F (APK) and G (polish and docs) are not started.
 
 ## Left
