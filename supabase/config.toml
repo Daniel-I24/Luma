@@ -2,3 +2,9 @@ project_id = "luma"
 
 [functions.delete-account]
 verify_jwt = true
+
+[functions.recommend]
+verify_jwt = true
+
+[functions.suggest-promotions]
+verify_jwt = true

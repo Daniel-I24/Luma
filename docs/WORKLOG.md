@@ -84,8 +84,9 @@ agent's sessions).
 - Block E in progress: E1 gateway done (`supabase/functions/_shared/llm`,
   Gemini / OpenAI-compatible / Anthropic by secrets, 10 s timeout, one retry,
   8 Deno tests); E3 SQL done (migration 20261022000000, 21 checks, 296
-  total). Next: E4 recommend, E5
-  suggest-promotions, E6 app, E8 docs.
+  total); E4 `recommend` and E5 `suggest-promotions` Edge Functions done
+  (14 Deno tests; JWT + caller client, quota, cache, strict validation,
+  server prices, rules below 10 orders). Next: E6 app, E8 docs.
 - Then blocks F (APK) and G (polish and docs) are not started.
 
 ## Left
