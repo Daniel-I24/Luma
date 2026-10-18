@@ -4,6 +4,7 @@ import type { Session, User } from '@supabase/supabase-js';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import { mapAuthError, mapDeleteAccountError } from './auth-error';
 import { signInSchema, signUpSchema } from './auth.schemas';
+import { type SignUpProfile, signUpMetadata } from './sign-up-profile';
 import { UserDataRegistry } from './user-data-registry';
 
 /** Shape of an operation result returned by every auth method. */
@@ -57,11 +58,13 @@ export class AuthService {
     });
   }
 
-  signUp(email: string, password: string): Promise<AuthResult> {
+  /** `profile` travels as user metadata, read and re-validated by handle_new_user. */
+  signUp(email: string, password: string, profile?: SignUpProfile): Promise<AuthResult> {
     const parsed = signUpSchema.safeParse({ email, password });
     if (!parsed.success) return Promise.resolve(fail(parsed.error.issues[0].message));
     return this.withLoading(async () => {
-      const { error } = await this.supabase.auth.signUp(parsed.data);
+      const options = profile ? { data: signUpMetadata(profile) } : undefined;
+      const { error } = await this.supabase.auth.signUp({ ...parsed.data, options });
       const errorKey = error ? mapAuthError(error.message) : null;
       // Never reveal that an email is already registered: same next step.
       return errorKey && errorKey !== 'auth.errors.emailAlreadyRegistered' ? fail(errorKey) : OK;

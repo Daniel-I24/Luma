@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { describe, it, expect, vi } from 'vitest';
 import { AuthService } from './auth.service';
+import { signUpMetadata } from './sign-up-profile';
 import { SupabaseService } from '@core/supabase/supabase.service';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -87,6 +88,27 @@ describe('AuthService', () => {
     const result = await service.signUp('newuser@example.com', 'password123');
 
     expect(result.success).toBe(true);
+  });
+
+  it('signUp: sends the profile as the metadata handle_new_user reads', async () => {
+    const signUp = vi.fn().mockResolvedValue({ error: null });
+    setup({ signUp });
+
+    const profile = {
+      accountType: 'customer',
+      fullName: 'Ana',
+      phone: null,
+      acceptedTerms: true,
+      termsVersion: 'v1',
+    } as const;
+
+    await service.signUp('ana@example.com', 'password123', profile);
+
+    expect(signUp).toHaveBeenCalledWith({
+      email: 'ana@example.com',
+      password: 'password123',
+      options: { data: signUpMetadata(profile) },
+    });
   });
 
   it('signUp: never reveals that an email is already registered', async () => {

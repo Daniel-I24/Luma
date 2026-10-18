@@ -1,0 +1,33 @@
+<article
+  *transloco="let t"
+  class="mx-auto flex max-w-2xl flex-col gap-5 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-4))] pb-[calc(env(safe-area-inset-bottom)+var(--spacing-8))]"
+>
+  <header class="flex items-center gap-2">
+    <app-luma-icon-button
+      icon="arrow-left"
+      variant="ghost"
+      [label]="t('common.back')"
+      (clicked)="back()"
+    />
+    <h1 class="m-0 text-title text-fg">{{ t('legal.' + document() + '.title') }}</h1>
+  </header>
+
+  <p
+    class="m-0 rounded-md bg-warning-bg p-3 text-body-sm font-semibold text-warning-fg"
+    role="note"
+  >
+    {{ t('legal.draftNotice') }}
+  </p>
+  <p class="m-0 text-body-sm text-fg-muted">{{ t('legal.version', { version: version }) }}</p>
+
+  @for (section of sections(); track section) {
+  <section class="flex flex-col gap-2" [attr.aria-labelledby]="'legal-' + section">
+    <h2 [id]="'legal-' + section" class="m-0 text-label-lg text-fg">
+      {{ t('legal.' + document() + '.sections.' + section + '.title') }}
+    </h2>
+    <p class="m-0 text-body text-fg-muted">
+      {{ t('legal.' + document() + '.sections.' + section + '.body') }}
+    </p>
+  </section>
+  }
+</article>

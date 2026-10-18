@@ -24,7 +24,7 @@ describe('ForgotPasswordPage', () => {
       providers: [
         provideRouter([]),
         { provide: AuthCodeService, useValue: codes },
-        { provide: SessionProfileStore, useValue: { homePath: () => Promise.resolve('/map') } },
+        { provide: SessionProfileStore, useValue: { landingPath: () => Promise.resolve('/map') } },
       ],
     });
   });

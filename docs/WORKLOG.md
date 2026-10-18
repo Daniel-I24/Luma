@@ -50,15 +50,27 @@ agent's sessions).
   Postgres 17 with the stubs and all SQL suites pass (252 checks); gitignore
   hygiene checked; invariants re-checked with targeted tests (two new SQL
   checks: owners cannot write `verification_note`, admins cannot write
-  `verification_status` directly).
+  `verification_status` directly). CI fix committed: spec files isolated
+  (`fb359e1`), green 30x alone and 10x in the full suite on one Linux core.
+- PARTE 6 — stepped sign-up (`/auth/register`: account type, name and
+  +57 mobile, email and password with show/hide, strength meter and common
+  passwords, terms + privacy + legal age; metadata for `handle_new_user`;
+  draft kept in memory across the legal pages), `/legal/terms` and
+  `/legal/privacy` drafts with a visible notice, tutorial `/welcome` per
+  account type (scroll snap, Omitir/Empezar, `onboarding_seen_version`,
+  shown on landing and from the Profile). Profile: help and legal links and
+  the customer "¿Tienes un negocio? Regístralo" (`become_business_owner`).
+  Decisions in `docs/DECISIONS.md`.
 
 ## In progress
 
-- Session 2026-10-18 (block A of the owner's brief): CI fix, tree audit,
-  clean install of every migration, invariants re-checked.
+- Session 2026-10-18, owner brief blocks A to G: A and B done; next C
+  (Luma Negocios shell `/owner`).
 
 ## Left
 
-- 5 (Luma Negocios shell), 6 (signup steps, legal pages, tutorial), 8 (APK only, no performance work), 10 (docs).
+- 5 (Luma Negocios shell), promotions with discounts (brief block D), AI
+  with a swappable provider (block E, owner authorised it in the brief),
+  8 (APK only, no performance work), polish (block G), 10 (docs).
 - PARTE 9 and the performance section of PARTE 8: on hold until the owner
   asks.

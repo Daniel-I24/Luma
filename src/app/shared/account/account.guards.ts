@@ -13,8 +13,9 @@ export const ownerGuard: CanActivateFn = async () => {
   return store.isBusinessOwner() ? true : router.parseUrl(await store.homePath());
 };
 
-/** Sends a signed-in user to the home of their account type. */
+/** Sends a signed-in user to the tutorial (once per version) or the home of their account type. */
 export const accountHomeGuard: CanActivateFn = async () => {
   const store = inject(SessionProfileStore);
-  return inject(Router).parseUrl(await store.homePath());
+  const router = inject(Router);
+  return router.parseUrl(await store.landingPath());
 };

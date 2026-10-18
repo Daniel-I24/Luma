@@ -59,6 +59,6 @@ export class ForgotPasswordPage {
 
   /** Lands on the home of the account type (customers: /map). */
   private async goHome(): Promise<boolean> {
-    return this.router.navigateByUrl(await this.sessionProfile.homePath());
+    return this.router.navigateByUrl(await this.sessionProfile.landingPath());
   }
 }

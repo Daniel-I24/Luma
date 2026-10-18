@@ -2,7 +2,8 @@
   "common": {
     "close": "Cerrar",
     "remove": "Quitar",
-    "retry": "Reintentar"
+    "retry": "Reintentar",
+    "back": "Volver"
   },
   "designPreview": {
     "title": "Sistema de diseño — Luma",
@@ -136,6 +137,60 @@
     },
     "password": {
       "show": "Mostrar contraseña"
+    },
+    "signup": {
+      "progress": "Paso {{current}} de {{total}}",
+      "progressLabel": "Progreso del registro",
+      "next": "Continuar",
+      "back": "Atrás",
+      "steps": {
+        "accountType": "¿Cómo usarás Luma?",
+        "personal": "Tus datos",
+        "credentials": "Tu correo y contraseña",
+        "consent": "Términos y privacidad"
+      },
+      "accountType": {
+        "legend": "Elige un tipo de cuenta",
+        "customer": "Quiero pedir",
+        "customerHint": "Descubre lugares cerca, pide y recoge.",
+        "owner": "Tengo un negocio",
+        "ownerHint": "Publica tu menú y promociones y recibe pedidos."
+      },
+      "personal": {
+        "fullName": "Nombre completo",
+        "fullNamePlaceholder": "Ana Pérez",
+        "phone": "Celular",
+        "phoneHintOwner": "Celular de Colombia. Lo usamos para verificar tu negocio.",
+        "phoneHintCustomer": "Opcional. Celular de Colombia.",
+        "privacy": "Tus datos son privados: los negocios no ven tu teléfono ni tu correo."
+      },
+      "credentials": {
+        "passwordRule": "Mínimo 8 caracteres, con letras y números.",
+        "showPassword": "Mostrar contraseña",
+        "hidePassword": "Ocultar contraseña",
+        "strength": {
+          "weak": "Débil",
+          "fair": "Aceptable",
+          "strong": "Fuerte"
+        }
+      },
+      "consent": {
+        "acceptedTerms": "Acepto los términos y condiciones.",
+        "acceptedTermsLink": "Leer los términos",
+        "acceptedPrivacy": "Autorizo el tratamiento de mis datos según la política de privacidad.",
+        "acceptedPrivacyLink": "Leer la política de privacidad",
+        "isAdult": "Confirmo que soy mayor de edad (18 años o más)."
+      },
+      "validation": {
+        "accountType": "Elige cómo usarás Luma.",
+        "fullName": "Escribe tu nombre completo (2 a 80 caracteres).",
+        "phone": "Escribe un celular colombiano válido, por ejemplo 300 123 4567.",
+        "phoneRequired": "Las cuentas de negocio necesitan un celular.",
+        "passwordCommon": "Esa contraseña es muy común. Elige otra.",
+        "terms": "Debes aceptar los términos para continuar.",
+        "privacy": "Debes autorizar el tratamiento de datos para continuar.",
+        "adult": "Debes ser mayor de edad para crear una cuenta."
+      }
     }
   },
   "profile": {
@@ -209,7 +264,25 @@
     "business": "Negocios",
     "myBusiness": "Mi negocio",
     "registerBusiness": "Registrar mi negocio",
-    "notifications": "Notificaciones"
+    "notifications": "Notificaciones",
+    "becomeOwner": {
+      "title": "¿Tienes un negocio? Regístralo",
+      "hint": "Publica tu menú y recibe pedidos en Luma.",
+      "sheetTitle": "Cambiar a cuenta de negocio",
+      "intro": "Tu cuenta pasará a ser una cuenta de negocio y podrás registrar hasta 3 negocios.",
+      "keeps": "Conservas tus pedidos, favoritos y reseñas.",
+      "review": "Cada negocio se publica cuando nuestro equipo lo verifica.",
+      "oneWay": "El cambio no se puede deshacer desde la app.",
+      "confirm": "Cambiar y registrar mi negocio",
+      "cancel": "Ahora no",
+      "failed": "No pudimos cambiar tu cuenta. Intenta de nuevo."
+    },
+    "help": {
+      "section": "Ayuda y legal",
+      "tutorial": "Ver el tutorial",
+      "terms": "Términos y condiciones",
+      "privacy": "Política de privacidad"
+    }
   },
   "map": {
     "canvasLabel": "Mapa de negocios Luma",
@@ -1008,5 +1081,148 @@
     "comment": "Comentario (opcional)",
     "send": "Enviar reporte",
     "sent": "Gracias. Revisaremos tu reporte."
+  },
+  "legal": {
+    "draftNotice": "Borrador sujeto a revisión legal. Este texto aún no es definitivo.",
+    "version": "Versión {{version}}",
+    "terms": {
+      "title": "Términos y condiciones",
+      "sections": {
+        "controller": {
+          "title": "Quién presta el servicio",
+          "body": "Luma es operada por [razón social, NIT y domicilio por definir]. Al crear una cuenta aceptas estos términos."
+        },
+        "service": {
+          "title": "Qué es Luma",
+          "body": "Luma te ayuda a descubrir restaurantes y tiendas cercanos, ver sus menús y promociones, hacer pedidos y recogerlos en el local. Luma no prepara ni entrega productos: cada negocio es responsable de lo que vende."
+        },
+        "accounts": {
+          "title": "Tu cuenta",
+          "body": "Debes ser mayor de edad y dar datos verdaderos. Eres responsable de guardar tu contraseña. Puedes eliminar tu cuenta en cualquier momento desde tu Perfil."
+        },
+        "orders": {
+          "title": "Pedidos y precios",
+          "body": "Los pedidos se recogen en el local. El precio final lo calcula el servidor con el menú y las promociones vigentes al confirmar; el negocio puede rechazar un pedido. El pago se hace al recoger mientras no haya pago en línea."
+        },
+        "businesses": {
+          "title": "Negocios",
+          "body": "Quien registra un negocio declara que tiene derecho a representarlo y que la información que publica es veraz: nombre, dirección, ubicación, horario, menú, precios y promociones."
+        },
+        "verification": {
+          "title": "Verificación y suspensión de negocios",
+          "body": "Luma revisa los negocios antes de mostrarlos (datos legales, NIT y documentos) para evitar información falsa. Puede pedir cambios, rechazar o suspender un negocio que incumpla estos términos o reciba reportes fundados, e informa el motivo al dueño."
+        },
+        "conduct": {
+          "title": "Uso aceptable",
+          "body": "No uses Luma para fraudes, pedidos falsos, contenido ofensivo o para obtener datos de otras personas. Podemos suspender cuentas que lo hagan."
+        },
+        "liability": {
+          "title": "Responsabilidad",
+          "body": "Luma se esfuerza por que la información sea correcta, pero los datos de cada negocio los publica su dueño. [Alcance de la responsabilidad por definir con asesoría legal.]"
+        },
+        "changes": {
+          "title": "Cambios",
+          "body": "Si cambiamos estos términos te lo avisaremos en la app y, cuando la ley lo exija, pediremos de nuevo tu aceptación."
+        },
+        "contact": {
+          "title": "Contacto",
+          "body": "Escríbenos a [correo de contacto por definir]."
+        }
+      }
+    },
+    "privacy": {
+      "title": "Política de privacidad",
+      "sections": {
+        "controller": {
+          "title": "Responsable del tratamiento",
+          "body": "[Razón social, NIT, domicilio y correo por definir], conforme a la Ley 1581 de 2012 y el Decreto 1377 de 2013."
+        },
+        "data": {
+          "title": "Qué datos tratamos",
+          "body": "Correo y contraseña (cifrada), nombre completo, celular (obligatorio para negocios, opcional para clientes), tus pedidos, favoritos y reseñas. No pedimos tu dirección: los pedidos se recogen en el local. Luma no recibe datos de tarjetas."
+        },
+        "purposes": {
+          "title": "Para qué los usamos",
+          "body": "Crear y proteger tu cuenta, tramitar tus pedidos, enviarte códigos y avisos del servicio, verificar negocios y atender reportes. No vendemos tus datos ni los usamos para publicidad de terceros."
+        },
+        "location": {
+          "title": "Tu ubicación",
+          "body": "Solo con tu permiso, para mostrarte lo que está cerca. Se usa en tu dispositivo y en las consultas de cercanía; no guardamos un historial de tus ubicaciones. Puedes negar o retirar el permiso cuando quieras."
+        },
+        "sharing": {
+          "title": "Con quién se comparten",
+          "body": "El negocio al que pides ve tu pedido y el nombre que muestras, nunca tu correo, teléfono ni identificador. Usamos proveedores de infraestructura (alojamiento y base de datos) que tratan los datos por encargo nuestro."
+        },
+        "rights": {
+          "title": "Tus derechos",
+          "body": "Puedes conocer, actualizar y rectificar tus datos, pedir prueba de tu autorización, saber cómo se usan, revocar la autorización o pedir su supresión, y presentar quejas ante la Superintendencia de Industria y Comercio."
+        },
+        "exercise": {
+          "title": "Cómo ejercerlos",
+          "body": "Desde tu Perfil puedes editar tus datos y eliminar tu cuenta. Para otras solicitudes escribe a [correo de contacto por definir]; respondemos consultas en 10 días hábiles y reclamos en 15."
+        },
+        "retention": {
+          "title": "Cuánto tiempo los guardamos",
+          "body": "Mientras tengas tu cuenta. Al eliminarla borramos tu perfil, favoritos, reseñas y archivos; los pedidos se conservan anonimizados para la contabilidad del negocio."
+        },
+        "security": {
+          "title": "Seguridad",
+          "body": "Conexiones cifradas, acceso a los datos restringido por cuenta y documentos de verificación privados, visibles solo para su dueño y el equipo de revisión."
+        },
+        "minors": {
+          "title": "Menores de edad",
+          "body": "Luma es para mayores de edad. Si sabemos que una cuenta pertenece a un menor, la eliminaremos."
+        },
+        "changes": {
+          "title": "Cambios a esta política",
+          "body": "Te avisaremos en la app antes de que un cambio importante entre en vigor."
+        }
+      }
+    }
+  },
+  "onboarding": {
+    "label": "Tutorial de bienvenida",
+    "position": "Pantalla {{current}} de {{total}}",
+    "goTo": "Ir a la pantalla {{current}}",
+    "skip": "Omitir",
+    "next": "Siguiente",
+    "start": "Empezar",
+    "saveFailed": "No pudimos guardar que viste el tutorial; puede volver a aparecer.",
+    "customer": {
+      "discover": {
+        "title": "Descubre en el mapa",
+        "body": "Encuentra restaurantes y tiendas cerca de ti y mira cuáles están abiertos ahora."
+      },
+      "promotions": {
+        "title": "Mira las promociones",
+        "body": "Descuentos de los negocios de tu zona, con el precio final a la vista."
+      },
+      "order": {
+        "title": "Pide y recoge",
+        "body": "Arma tu pedido, elige cuándo recogerlo y paga en el local."
+      },
+      "favorites": {
+        "title": "Guarda tus favoritos",
+        "body": "Ten a mano los lugares que te gustan para volver con un toque."
+      }
+    },
+    "owner": {
+      "verify": {
+        "title": "Registra y verifica tu negocio",
+        "body": "Completa tus datos y documentos; nuestro equipo lo revisa antes de publicarlo."
+      },
+      "menu": {
+        "title": "Publica tu menú y promociones",
+        "body": "Productos con precio y foto, y descuentos que los clientes ven en el mapa."
+      },
+      "orders": {
+        "title": "Gestiona tus pedidos",
+        "body": "Recibe avisos, acepta, prepara y marca cada pedido como listo para recoger."
+      },
+      "hours": {
+        "title": "Mantén tus horarios",
+        "body": "Con el horario al día, los clientes solo te piden cuando estás abierto."
+      }
+    }
   }
 }

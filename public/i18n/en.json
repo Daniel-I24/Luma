@@ -2,7 +2,8 @@
   "common": {
     "close": "Close",
     "remove": "Remove",
-    "retry": "Try again"
+    "retry": "Try again",
+    "back": "Back"
   },
   "designPreview": {
     "title": "Design System — Luma",
@@ -136,6 +137,60 @@
     },
     "password": {
       "show": "Show password"
+    },
+    "signup": {
+      "progress": "Step {{current}} of {{total}}",
+      "progressLabel": "Sign-up progress",
+      "next": "Continue",
+      "back": "Back",
+      "steps": {
+        "accountType": "How will you use Luma?",
+        "personal": "About you",
+        "credentials": "Your email and password",
+        "consent": "Terms and privacy"
+      },
+      "accountType": {
+        "legend": "Choose an account type",
+        "customer": "I want to order",
+        "customerHint": "Discover places nearby, order and pick up.",
+        "owner": "I have a business",
+        "ownerHint": "Publish your menu and deals and take orders."
+      },
+      "personal": {
+        "fullName": "Full name",
+        "fullNamePlaceholder": "Ana Pérez",
+        "phone": "Mobile",
+        "phoneHintOwner": "Colombian mobile. We use it to verify your business.",
+        "phoneHintCustomer": "Optional. Colombian mobile.",
+        "privacy": "Your data is private: businesses never see your phone or email."
+      },
+      "credentials": {
+        "passwordRule": "At least 8 characters, with letters and numbers.",
+        "showPassword": "Show password",
+        "hidePassword": "Hide password",
+        "strength": {
+          "weak": "Weak",
+          "fair": "Fair",
+          "strong": "Strong"
+        }
+      },
+      "consent": {
+        "acceptedTerms": "I accept the terms and conditions.",
+        "acceptedTermsLink": "Read the terms",
+        "acceptedPrivacy": "I authorise the processing of my data under the privacy policy.",
+        "acceptedPrivacyLink": "Read the privacy policy",
+        "isAdult": "I confirm I am of legal age (18 or older)."
+      },
+      "validation": {
+        "accountType": "Choose how you will use Luma.",
+        "fullName": "Enter your full name (2 to 80 characters).",
+        "phone": "Enter a valid Colombian mobile, for example 300 123 4567.",
+        "phoneRequired": "Business accounts need a mobile number.",
+        "passwordCommon": "That password is too common. Choose another one.",
+        "terms": "You must accept the terms to continue.",
+        "privacy": "You must authorise data processing to continue.",
+        "adult": "You must be of legal age to create an account."
+      }
     }
   },
   "profile": {
@@ -209,7 +264,25 @@
     "business": "Businesses",
     "myBusiness": "My business",
     "registerBusiness": "Register my business",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+    "becomeOwner": {
+      "title": "Have a business? Register it",
+      "hint": "Publish your menu and take orders on Luma.",
+      "sheetTitle": "Switch to a business account",
+      "intro": "Your account becomes a business account and you can register up to 3 businesses.",
+      "keeps": "You keep your orders, favourites and reviews.",
+      "review": "Each business goes live once our team verifies it.",
+      "oneWay": "This change cannot be undone from the app.",
+      "confirm": "Switch and register my business",
+      "cancel": "Not now",
+      "failed": "We could not switch your account. Please try again."
+    },
+    "help": {
+      "section": "Help and legal",
+      "tutorial": "Watch the tutorial",
+      "terms": "Terms and conditions",
+      "privacy": "Privacy policy"
+    }
   },
   "map": {
     "canvasLabel": "Luma business map",
@@ -1008,5 +1081,148 @@
     "comment": "Comment (optional)",
     "send": "Send report",
     "sent": "Thanks. We will review your report."
+  },
+  "legal": {
+    "draftNotice": "Draft pending legal review. This text is not final yet.",
+    "version": "Version {{version}}",
+    "terms": {
+      "title": "Terms and conditions",
+      "sections": {
+        "controller": {
+          "title": "Who provides the service",
+          "body": "Luma is operated by [company name, tax id and address to be defined]. By creating an account you accept these terms."
+        },
+        "service": {
+          "title": "What Luma is",
+          "body": "Luma helps you discover nearby restaurants and shops, see their menus and deals, place orders and pick them up in store. Luma does not prepare or deliver products: each business is responsible for what it sells."
+        },
+        "accounts": {
+          "title": "Your account",
+          "body": "You must be of legal age and give true information. You are responsible for keeping your password safe. You can delete your account at any time from your Profile."
+        },
+        "orders": {
+          "title": "Orders and prices",
+          "body": "Orders are picked up in store. The server computes the final price from the menu and the deals valid when you confirm; the business may reject an order. You pay on pick-up until online payment is available."
+        },
+        "businesses": {
+          "title": "Businesses",
+          "body": "Whoever registers a business declares they may represent it and that what they publish is true: name, address, location, hours, menu, prices and deals."
+        },
+        "verification": {
+          "title": "Business verification and suspension",
+          "body": "Luma reviews businesses before showing them (legal data, tax id and documents) to prevent false information. It may ask for changes, reject or suspend a business that breaks these terms or receives well-founded reports, and tells the owner why."
+        },
+        "conduct": {
+          "title": "Acceptable use",
+          "body": "Do not use Luma for fraud, fake orders, offensive content or to obtain other people's data. We may suspend accounts that do."
+        },
+        "liability": {
+          "title": "Liability",
+          "body": "Luma works to keep information accurate, but each business's data is published by its owner. [Scope of liability to be defined with legal advice.]"
+        },
+        "changes": {
+          "title": "Changes",
+          "body": "If we change these terms we will tell you in the app and, when the law requires it, ask for your acceptance again."
+        },
+        "contact": {
+          "title": "Contact",
+          "body": "Write to [contact email to be defined]."
+        }
+      }
+    },
+    "privacy": {
+      "title": "Privacy policy",
+      "sections": {
+        "controller": {
+          "title": "Data controller",
+          "body": "[Company name, tax id, address and email to be defined], under Colombian Law 1581 of 2012 and Decree 1377 of 2013."
+        },
+        "data": {
+          "title": "What data we process",
+          "body": "Email and password (encrypted), full name, mobile number (required for businesses, optional for customers), your orders, favourites and reviews. We never ask for your address: orders are picked up in store. Luma never receives card data."
+        },
+        "purposes": {
+          "title": "What we use it for",
+          "body": "Creating and protecting your account, handling your orders, sending you codes and service notices, verifying businesses and handling reports. We do not sell your data or use it for third-party advertising."
+        },
+        "location": {
+          "title": "Your location",
+          "body": "Only with your permission, to show you what is nearby. It is used on your device and in proximity queries; we keep no history of your locations. You can deny or withdraw the permission at any time."
+        },
+        "sharing": {
+          "title": "Who it is shared with",
+          "body": "The business you order from sees your order and your display name, never your email, phone or id. We use infrastructure providers (hosting and database) that process data on our behalf."
+        },
+        "rights": {
+          "title": "Your rights",
+          "body": "You can access, update and correct your data, ask for proof of your consent, know how it is used, withdraw consent or ask for deletion, and complain to the Superintendence of Industry and Commerce (SIC)."
+        },
+        "exercise": {
+          "title": "How to exercise them",
+          "body": "From your Profile you can edit your data and delete your account. For other requests write to [contact email to be defined]; we answer queries within 10 business days and claims within 15."
+        },
+        "retention": {
+          "title": "How long we keep it",
+          "body": "While you keep your account. When you delete it we erase your profile, favourites, reviews and files; orders are kept anonymised for the business's records."
+        },
+        "security": {
+          "title": "Security",
+          "body": "Encrypted connections, data access restricted per account, and private verification documents visible only to their owner and the review team."
+        },
+        "minors": {
+          "title": "Minors",
+          "body": "Luma is for adults. If we learn an account belongs to a minor, we will delete it."
+        },
+        "changes": {
+          "title": "Changes to this policy",
+          "body": "We will tell you in the app before an important change takes effect."
+        }
+      }
+    }
+  },
+  "onboarding": {
+    "label": "Welcome tutorial",
+    "position": "Screen {{current}} of {{total}}",
+    "goTo": "Go to screen {{current}}",
+    "skip": "Skip",
+    "next": "Next",
+    "start": "Get started",
+    "saveFailed": "We could not save that you saw the tutorial; it may show again.",
+    "customer": {
+      "discover": {
+        "title": "Discover on the map",
+        "body": "Find restaurants and shops near you and see which ones are open now."
+      },
+      "promotions": {
+        "title": "Browse the deals",
+        "body": "Discounts from businesses around you, with the final price in sight."
+      },
+      "order": {
+        "title": "Order and pick up",
+        "body": "Build your order, choose when to pick it up and pay in store."
+      },
+      "favorites": {
+        "title": "Save your favourites",
+        "body": "Keep the places you love one tap away."
+      }
+    },
+    "owner": {
+      "verify": {
+        "title": "Register and verify your business",
+        "body": "Complete your details and documents; our team reviews it before it goes live."
+      },
+      "menu": {
+        "title": "Publish your menu and deals",
+        "body": "Products with prices and photos, and discounts customers see on the map."
+      },
+      "orders": {
+        "title": "Manage your orders",
+        "body": "Get notified, accept, prepare and mark each order ready for pick-up."
+      },
+      "hours": {
+        "title": "Keep your hours up to date",
+        "body": "With current hours, customers only order while you are open."
+      }
+    }
   }
 }

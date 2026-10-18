@@ -25,6 +25,17 @@ export const routes: Routes = [
     canActivate: [guestGuard],
     loadChildren: () => import('./features/auth/auth.routes').then((m) => m.authRoutes),
   },
+  {
+    // Tutorial after signing in (once per version) and from the Profile.
+    path: 'welcome',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/onboarding/welcome.page').then((m) => m.WelcomePage),
+  },
+  {
+    // Terms and privacy: public, linked from the sign-up and the Profile.
+    path: 'legal',
+    loadChildren: () => import('./features/legal/legal.routes').then((m) => m.legalRoutes),
+  },
   // Design system showcase: development builds only. The production build
   // defines ngDevMode as false, so the route and its chunk are dropped.
   ...(typeof ngDevMode === 'undefined' || ngDevMode ? DEV_ONLY_ROUTES : []),

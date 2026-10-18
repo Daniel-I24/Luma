@@ -6,7 +6,7 @@ export const MIN_PASSWORD_LENGTH = 8;
 /** Length of the codes Supabase emails ({{ .Token }}). */
 export const CODE_LENGTH = 6;
 
-const emailSchema = z
+export const emailSchema = z
   .string()
   .check(
     z.trim(),

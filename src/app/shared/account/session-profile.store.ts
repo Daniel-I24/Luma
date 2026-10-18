@@ -3,6 +3,7 @@ import { AuthService } from '@core/auth/auth.service';
 import { ACCOUNT_HOMES } from './account-homes';
 import { type AccountProfile, AccountProfileRepository } from './account-profile.repository';
 import type { AccountType } from './account-type';
+import { ONBOARDING_PATH, ONBOARDING_VERSION, needsOnboarding } from './onboarding';
 
 /**
  * SessionProfileStore — the signed-in user's account profile next to the
@@ -41,6 +42,22 @@ export class SessionProfileStore {
   async homePath(): Promise<string> {
     await this.whenLoaded();
     return ACCOUNT_HOMES[this.accountType()?.value ?? 'customer'];
+  }
+
+  /** Where to go right after signing in: the tutorial once per version, then home. */
+  async landingPath(): Promise<string> {
+    const home = await this.homePath();
+    return needsOnboarding(this._profile()) ? ONBOARDING_PATH : home;
+  }
+
+  /** Records that the tutorial was seen (or skipped); false when it could not be saved. */
+  async markOnboardingSeen(): Promise<boolean> {
+    const userId = this.auth.user()?.id;
+    if (!userId) return false;
+    const result = await this.repo.setOnboardingSeen(userId, ONBOARDING_VERSION);
+    if (!result.data) return false;
+    this._profile.update((p) => (p ? { ...p, onboardingSeenVersion: ONBOARDING_VERSION } : p));
+    return true;
   }
 
   /** customer → business_owner; resolves to true when the account is an owner. */

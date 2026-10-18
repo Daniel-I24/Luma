@@ -1,10 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
 import { LumaAvatar, LumaBottomSheet, LumaButton, LumaIcon } from '@design-system';
 import { SessionProfileStore } from '@shared/account/session-profile.store';
 import { AdminEntry } from './components/admin-entry/admin-entry';
+import { BecomeOwnerEntry } from './components/become-owner-entry/become-owner-entry';
+import { HelpLinks } from './components/help-links/help-links';
 import { AppearanceSettings } from './components/appearance-settings/appearance-settings';
 import { BusinessEntry } from './components/business-entry/business-entry';
 import { NotificationsEntry } from './components/notifications-entry/notifications-entry';
@@ -27,6 +29,8 @@ import { DisplayNameField } from './components/display-name-field/display-name-f
     LumaIcon,
     RouterLink,
     AdminEntry,
+    BecomeOwnerEntry,
+    HelpLinks,
     AppearanceSettings,
     BusinessEntry,
     DisplayNameField,
@@ -40,7 +44,10 @@ export class ProfilePage {
 
   protected readonly user = this.auth.user;
   /** The business panel is for business-owner accounts. */
-  protected readonly isBusinessOwner = inject(SessionProfileStore).isBusinessOwner;
+  private readonly sessionProfile = inject(SessionProfileStore);
+  protected readonly isBusinessOwner = this.sessionProfile.isBusinessOwner;
+  /** The customer offer waits for the account type, so owners never see it flash. */
+  protected readonly profileLoaded = computed(() => this.sessionProfile.profile() !== null);
   protected readonly loading = this.auth.loading;
   protected readonly deleteSheetOpen = signal(false);
   protected readonly errorKey = signal<string | null>(null);

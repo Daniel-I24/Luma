@@ -1,0 +1,64 @@
+<section
+  *transloco="let t"
+  class="mx-auto flex min-h-dvh max-w-lg flex-col pt-[calc(env(safe-area-inset-top)+var(--spacing-4))] pb-[calc(env(safe-area-inset-bottom)+var(--spacing-6))]"
+  [attr.aria-label]="t('onboarding.label')"
+  aria-roledescription="carousel"
+>
+  <div class="flex justify-end px-4">
+    <app-luma-button variant="ghost" size="sm" [disabled]="finishing()" (clicked)="finish()">
+      {{ t('onboarding.skip') }}
+    </app-luma-button>
+  </div>
+
+  <div
+    #track
+    class="flex flex-1 snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none]"
+    (scroll)="onScroll()"
+  >
+    @for (slide of slides(); track slide.key; let i = $index) {
+    <article
+      class="flex w-full shrink-0 snap-start flex-col items-center justify-center gap-6 px-8 text-center"
+      aria-roledescription="slide"
+      [attr.aria-label]="t('onboarding.position', { current: i + 1, total: slides().length })"
+      [attr.aria-hidden]="i !== index() ? 'true' : null"
+      [attr.inert]="i !== index() ? '' : null"
+    >
+      <div
+        class="flex size-40 items-center justify-center rounded-full bg-linear-to-br from-primary to-accent text-primary-fg shadow-lg"
+        aria-hidden="true"
+      >
+        <app-luma-icon [name]="slide.icon" size="xl" />
+      </div>
+      <h1 class="m-0 text-h3 text-fg">
+        {{ t('onboarding.' + audience() + '.' + slide.key + '.title') }}
+      </h1>
+      <p class="m-0 text-body text-fg-muted">
+        {{ t('onboarding.' + audience() + '.' + slide.key + '.body') }}
+      </p>
+    </article>
+    }
+  </div>
+
+  <div class="flex flex-col gap-4 px-4">
+    <div class="flex justify-center gap-1">
+      @for (slide of slides(); track slide.key; let i = $index) {
+      <button
+        type="button"
+        class="flex size-11 cursor-pointer items-center justify-center border-0 bg-transparent focus-visible:outline-2 focus-visible:outline-border-focus"
+        [attr.aria-label]="t('onboarding.goTo', { current: i + 1 })"
+        [attr.aria-current]="i === index() ? 'step' : null"
+        (click)="goTo(i)"
+      >
+        <span
+          class="block size-2.5 rounded-full bg-primary transition-transform duration-(--duration-fast) motion-reduce:transition-none"
+          [class.opacity-30]="i !== index()"
+          [class.scale-125]="i === index()"
+        ></span>
+      </button>
+      }
+    </div>
+    <app-luma-button size="lg" [fullWidth]="true" [disabled]="finishing()" (clicked)="next()">
+      {{ t(isLast() ? 'onboarding.start' : 'onboarding.next') }}
+    </app-luma-button>
+  </div>
+</section>
