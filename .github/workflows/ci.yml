@@ -30,5 +30,6 @@ jobs:
 
       - run: npm run build
       - run: npm run lint
-      - run: npm test -- --watch=false
+      # Verbose: every test and the full detail of each failure in the log.
+      - run: npm test -- --watch=false --reporters=verbose
       - run: npm run test:scripts

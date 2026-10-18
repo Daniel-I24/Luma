@@ -5,6 +5,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
 import { RegisterBusinessPage } from './register-business.page';
 
+// Only effective because spec files run isolated (angular.json "isolate"):
+// otherwise a spec that loaded the real MapLibre first would leak it here.
 vi.mock('maplibre-gl', () => {
   class Chain {
     on() {
@@ -34,8 +36,6 @@ vi.mock('maplibre-gl', () => {
   return { Map, Marker: Chain, AttributionControl: Chain, setWorkerUrl: () => undefined };
 });
 
-const flush = () => new Promise((resolve) => setTimeout(resolve));
-
 describe('RegisterBusinessPage', () => {
   const repo = { create: vi.fn() };
 
@@ -57,8 +57,7 @@ describe('RegisterBusinessPage', () => {
     const fixture = TestBed.createComponent(RegisterBusinessPage);
     document.body.appendChild(fixture.nativeElement);
     fixture.detectChanges();
-    await flush();
-    fixture.detectChanges();
+    await fixture.whenStable();
     const el = fixture.nativeElement as HTMLElement;
     const type = (id: string, value: string) => {
       const input = el.querySelector<HTMLInputElement | HTMLSelectElement>(`#${id}`)!;
@@ -66,12 +65,26 @@ describe('RegisterBusinessPage', () => {
       input.dispatchEvent(new Event(input instanceof HTMLSelectElement ? 'change' : 'input'));
       fixture.detectChanges();
     };
+    /** Pins the map centre; fails here, not on submit, if the map did not start. */
+    const pinLocation = () => {
+      el.querySelector<HTMLButtonElement>('#register-location')!.click();
+      fixture.detectChanges();
+      expect(el.querySelector('#register-location-status')?.textContent).toContain(
+        'businessPanel.location.chosen',
+      );
+    };
     const submit = async () => {
       el.querySelector('form')!.dispatchEvent(new Event('submit'));
-      await flush();
       fixture.detectChanges();
+      await fixture.whenStable();
     };
-    return { fixture, el, type, submit };
+    /** Waits for what the async submit (repository call) leaves on screen. */
+    const settled = (assertion: () => void) =>
+      vi.waitFor(() => {
+        fixture.detectChanges();
+        assertion();
+      });
+    return { el, type, pinLocation, submit, settled };
   }
 
   it('shows each error next to its field and focuses the first one', async () => {
@@ -96,15 +109,15 @@ describe('RegisterBusinessPage', () => {
   it('registers the business with the pinned location and opens it', async () => {
     repo.create.mockResolvedValue({ data: 'new-id', errorKey: null });
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
-    const { el, type, submit, fixture } = await render();
+    const { type, pinLocation, submit, settled } = await render();
     type('register-name', 'Fritanga Don Segundo');
     type('register-category', 'Restaurante');
     type('register-address', 'Calle 18 # 25-30');
-    el.querySelector<HTMLButtonElement>('#register-location')!.click();
-    fixture.detectChanges();
+    pinLocation();
 
     await submit();
 
+    await settled(() => expect(navigate).toHaveBeenCalledWith(['/business', 'new-id']));
     expect(repo.create).toHaveBeenCalledWith({
       name: 'Fritanga Don Segundo',
       category: 'Restaurante',
@@ -113,22 +126,22 @@ describe('RegisterBusinessPage', () => {
       latitude: 1.2136,
       longitude: -77.2811,
     });
-    expect(navigate).toHaveBeenCalledWith(['/business', 'new-id']);
   });
 
   it('keeps the form and shows the server error', async () => {
     repo.create.mockResolvedValue({ data: null, errorKey: 'businessPanel.errors.saveFailed' });
-    const { el, type, submit, fixture } = await render();
+    const { el, type, pinLocation, submit, settled } = await render();
     type('register-name', 'Fritanga');
     type('register-category', 'Bar');
     type('register-address', 'Calle 18 # 25-30');
-    el.querySelector<HTMLButtonElement>('#register-location')!.click();
-    fixture.detectChanges();
+    pinLocation();
 
     await submit();
 
-    expect(el.querySelector('[role="alert"]')?.textContent).toContain(
-      'businessPanel.errors.saveFailed',
+    await settled(() =>
+      expect(el.querySelector('[role="alert"]')?.textContent).toContain(
+        'businessPanel.errors.saveFailed',
+      ),
     );
   });
 });

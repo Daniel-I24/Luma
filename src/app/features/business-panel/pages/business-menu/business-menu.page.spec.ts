@@ -6,6 +6,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { MenuRepository } from '@shared/business/data/menu.repository';
 import { MenuWriteRepository } from '@shared/business/data/menu-write.repository';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
+import { BusinessImageRepository } from '@shared/media/business-image.repository';
 import { BusinessMenuPage } from './business-menu.page';
 
 const flush = () => new Promise((resolve) => setTimeout(resolve));
@@ -51,6 +52,8 @@ describe('BusinessMenuPage', () => {
           },
         },
         { provide: MenuWriteRepository, useValue: writer },
+        // The real one would create a Supabase client.
+        { provide: BusinessImageRepository, useValue: { remove: vi.fn() } },
       ],
     });
   });

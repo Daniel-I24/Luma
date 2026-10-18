@@ -1,5 +1,7 @@
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { AuthService } from '@core/auth/auth.service';
 import { BusinessRepository } from '@shared/business/data/business.repository';
 import type { BusinessHours } from '@shared/business/models/business.model';
 import { CartStore } from '@shared/cart/cart.store';
@@ -25,7 +27,12 @@ describe('PickupScheduleStore', () => {
       hours ? { data: hours, errorKey: null } : { data: null, errorKey: 'x' },
     );
     TestBed.configureTestingModule({
-      providers: [PickupScheduleStore, { provide: BusinessRepository, useValue: businesses }],
+      providers: [
+        PickupScheduleStore,
+        { provide: BusinessRepository, useValue: businesses },
+        // CartStore reads the user; the real AuthService would create a Supabase client.
+        { provide: AuthService, useValue: { user: signal(null) } },
+      ],
     });
     localStorage.clear();
     TestBed.inject(CartStore).add({
