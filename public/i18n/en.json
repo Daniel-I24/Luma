@@ -561,7 +561,6 @@
       "errorTitle": "We could not load the menu"
     },
     "promos": {
-      "until": "Until {{date}}",
       "emptyTitle": "No deals",
       "emptyDescription": "This business has no active deals right now."
     },
@@ -1293,6 +1292,47 @@
       "confirm": "Save and send for review",
       "cancel": "Keep editing",
       "saved": "Changes saved. Your business is back under review."
+    }
+  },
+  "promotions": {
+    "title": "Deals",
+    "loading": "Loading deals…",
+    "count": "{{count}} deals",
+    "seeAll": "See all deals",
+    "errors": {
+      "loadFailed": "Could not load the deals."
+    },
+    "empty": {
+      "title": "No current deals",
+      "body": "Come back soon: businesses post new ones every day.",
+      "filteredTitle": "Nothing with those filters",
+      "filteredBody": "Try removing a filter."
+    },
+    "sort": {
+      "distance": "Closest",
+      "discount": "Biggest discount",
+      "ending": "Ending soon"
+    },
+    "filters": {
+      "label": "Deal filters",
+      "sort": "Sort",
+      "minDiscount": "Minimum discount",
+      "atLeast": "From {{percent}} %",
+      "anyDiscount": "Any discount",
+      "openNow": "Open now",
+      "category": "Category",
+      "clear": "Clear filters"
+    },
+    "card": {
+      "discount": "-{{percent}} %",
+      "recommended": "Recommended by Luma AI",
+      "before": "Before: ",
+      "now": "Now: ",
+      "endsToday": "Ends today",
+      "endsTomorrow": "Ends tomorrow",
+      "endsInDays": "Ends in {{days}} days",
+      "order": "Order",
+      "soldOut": "Sold out"
     }
   }
 }

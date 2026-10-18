@@ -2,6 +2,7 @@ import type { Business, BusinessHours, Promotion } from '@shared/business/models
 import type { MenuItem } from '@shared/business/models/menu.model';
 import { getBusinessStatus } from '@shared/business/utils/business-status.util';
 import { categoryIcon } from '@shared/business/utils/category-icon.util';
+import { promotionPrice } from '@shared/promotions/promotion-deal';
 import type { FeedCard } from '../models/feed-card.model';
 
 /** At most this many dishes per business, so one menu never floods the feed. */
@@ -46,6 +47,7 @@ export function buildFeedCards(batch: FeedBatch): FeedCard[] {
   );
 
   const context = cardContext(batch);
+  const dishDiscount = bestDiscountByItem(batch.promotions);
   return interleave<FeedCard>(
     promotions.map((p) => ({
       ...context(p.business_id),
@@ -55,6 +57,8 @@ export function buildFeedCards(batch: FeedBatch): FeedCard[] {
       description: p.description,
       imageUrl: p.image_url,
       priceCop: null,
+      listPriceCop: null,
+      discountPercent: p.menu_item_id ? p.discount_percent : null,
       validUntil: p.ends_at,
       menuItem: null,
     })),
@@ -65,7 +69,9 @@ export function buildFeedCards(batch: FeedBatch): FeedCard[] {
       title: m.name,
       description: m.description,
       imageUrl: m.image_url,
-      priceCop: m.price_cop,
+      priceCop: promotionPrice(m.price_cop, dishDiscount.get(m.id) ?? null),
+      listPriceCop: dishDiscount.has(m.id) ? m.price_cop : null,
+      discountPercent: dishDiscount.get(m.id) ?? null,
       validUntil: null,
       menuItem: m,
     })),
@@ -97,4 +103,14 @@ function cardContext(batch: FeedBatch) {
       icon: categoryIcon(business.category),
     };
   };
+}
+
+/** Best current discount of each discounted menu item. */
+function bestDiscountByItem(promotions: readonly Promotion[]): Map<string, number> {
+  const best = new Map<string, number>();
+  for (const p of promotions) {
+    if (!p.menu_item_id || p.discount_percent === null) continue;
+    best.set(p.menu_item_id, Math.max(best.get(p.menu_item_id) ?? 0, p.discount_percent));
+  }
+  return best;
 }

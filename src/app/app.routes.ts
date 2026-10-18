@@ -78,6 +78,12 @@ export const routes: Routes = [
         loadComponent: () => import('./features/feed/feed.page').then((m) => m.FeedPage),
       },
       {
+        path: 'promotions',
+        data: DETAIL_ROUTE_DATA,
+        loadComponent: () =>
+          import('./features/promotions/promotions.page').then((m) => m.PromotionsPage),
+      },
+      {
         path: 'ai',
         loadComponent: () => import('./features/ai/ai.page').then((m) => m.AiPage),
       },

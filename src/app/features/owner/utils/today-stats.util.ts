@@ -1,7 +1,5 @@
 import type { BusinessOrder } from '@shared/orders/business-order.repository';
-
-/** The business day follows Colombia, like create_order (America/Bogota). */
-export const BUSINESS_TIME_ZONE = 'America/Bogota';
+import { bogotaDay } from '@shared/utils/business-day';
 
 export interface TodayStats {
   /** Waiting for the owner to accept. */
@@ -11,11 +9,6 @@ export interface TodayStats {
   readonly ready: number;
   /** Total of today's picked-up orders, in COP. */
   readonly soldCop: number;
-}
-
-/** "YYYY-MM-DD" of an instant in Bogota. */
-export function bogotaDay(instant: Date): string {
-  return instant.toLocaleDateString('en-CA', { timeZone: BUSINESS_TIME_ZONE });
 }
 
 /** Figures of the day for the summary, from the orders placed today. */

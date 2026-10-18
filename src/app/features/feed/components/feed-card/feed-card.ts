@@ -50,7 +50,12 @@ export class FeedCard {
   protected readonly headingId = computed(() => `feed-post-${this.position()}`);
   protected readonly product = computed(() => {
     const item = this.card().menuItem;
-    return item ? toCartProduct(item, this.card().business.name) : null;
+    if (!item) return null;
+    // Informative price shown on the card; the server charges its own.
+    return {
+      ...toCartProduct(item, this.card().business.name),
+      priceCop: this.card().priceCop ?? item.price_cop,
+    };
   });
   protected readonly validUntil = computed(() => {
     const iso = this.card().validUntil;

@@ -3,7 +3,8 @@ import type { BusinessOrder } from '@shared/orders/business-order.repository';
 import { ownerLocation } from '../owner-shell/owner-shell';
 import { changesNeedReReview } from './re-review.util';
 import { missingForReview } from './review-checklist.util';
-import { bogotaDay, todayStats } from './today-stats.util';
+import { bogotaDay } from '@shared/utils/business-day';
+import { todayStats } from './today-stats.util';
 
 const business = {
   name: 'Mi Fritanga',

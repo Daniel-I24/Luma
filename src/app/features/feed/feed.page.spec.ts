@@ -16,6 +16,8 @@ const card = (n: number): FeedCard =>
     description: null,
     imageUrl: null,
     priceCop: 1000 * n,
+    listPriceCop: null,
+    discountPercent: null,
     validUntil: null,
     business: { id: `b${n}`, name: `Negocio ${n}` },
     status: 'open',
@@ -56,7 +58,9 @@ describe('FeedPage', () => {
         provideRouter([]),
         { provide: FavoritesStore, useValue: { ids: signal(new Set()), toggle: vi.fn() } },
       ],
-    }).overrideComponent(FeedPage, { set: { providers: [{ provide: FeedStore, useValue: store }] } });
+    }).overrideComponent(FeedPage, {
+      set: { providers: [{ provide: FeedStore, useValue: store }] },
+    });
   });
 
   function render() {

@@ -75,8 +75,14 @@ agent's sessions).
 
 ## In progress
 
-- Session 2026-10-18, owner brief blocks A to G: A, B and C done; next D
-  (promotions with discounts).
+- Block D (promotions): SQL done and committed (migration 20261021000000,
+  23 checks, 275 total). App: shared PromotionCard and deals repository,
+  customer /promotions (sort, filters, loading/empty/error, Pedir), restaurant
+  Promos tab reuses the card, feed cards show the discount. LEFT in D: links
+  to /promotions from Descubrir and "Cercanos a ti", discount on map cards,
+  owner promotion form (item selector, percent with final-price preview,
+  Terminar ahora, visible limit of 5), specs for the card/page/deal utils.
+- Then blocks E (AI), F (APK), G (polish and docs) are not started.
 
 ## Left
 

@@ -10,8 +10,12 @@ export interface FeedCard {
   title: string;
   description: string | null;
   imageUrl: string | null;
-  /** Whole COP; dishes only. */
+  /** Whole COP; dishes only (after their best current discount). */
   priceCop: number | null;
+  /** Menu price when a discount lowers priceCop; null otherwise. */
+  listPriceCop: number | null;
+  /** Percent off (promotion cards and discounted dishes); null otherwise. */
+  discountPercent: number | null;
   /** ISO end of a promotion; null for dishes. */
   validUntil: string | null;
   business: Business;

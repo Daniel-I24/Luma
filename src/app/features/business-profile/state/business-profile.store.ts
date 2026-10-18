@@ -2,12 +2,14 @@ import { Injectable, PendingTasks, computed, inject, signal } from '@angular/cor
 import { BusinessHighlightsRepository } from '@shared/business/data/business-highlights.repository';
 import { BusinessRepository } from '@shared/business/data/business.repository';
 import { MenuRepository } from '@shared/business/data/menu.repository';
-import type { Business, BusinessHours, Promotion } from '@shared/business/models/business.model';
+import type { Business, BusinessHours } from '@shared/business/models/business.model';
 import type { MenuItem } from '@shared/business/models/menu.model';
 import type { BusinessRating } from '@shared/business/models/review.model';
 import { getBusinessStatus } from '@shared/business/utils/business-status.util';
 import { GeolocationService } from '@shared/geo/geolocation.service';
 import { haversineKm } from '@shared/geo/haversine.util';
+import type { PromotionDeal } from '@shared/promotions/promotion-deal';
+import { PromotionDealRepository } from '@shared/promotions/promotion-deal.repository';
 
 export type ProfileState = 'loading' | 'ready' | 'notFound' | 'error';
 
@@ -22,6 +24,7 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export class BusinessProfileStore {
   private readonly businesses = inject(BusinessRepository);
   private readonly highlights = inject(BusinessHighlightsRepository);
+  private readonly deals = inject(PromotionDealRepository);
   private readonly menuRepo = inject(MenuRepository);
   private readonly geo = inject(GeolocationService);
   private readonly pendingTasks = inject(PendingTasks);
@@ -31,7 +34,7 @@ export class BusinessProfileStore {
   private readonly _hours = signal<BusinessHours[]>([]);
   private readonly _rating = signal<BusinessRating | null>(null);
   private readonly _ratingsLoaded = signal(false);
-  private readonly _promotions = signal<Promotion[]>([]);
+  private readonly _promotions = signal<PromotionDeal[]>([]);
   private readonly _menu = signal<MenuItem[] | null>(null);
 
   readonly state = this._state.asReadonly();
@@ -80,14 +83,14 @@ export class BusinessProfileStore {
     const [hours, ratings, promotions, menu] = await Promise.all([
       this.businesses.getHours(business.id),
       this.highlights.getRatings([business.id]),
-      this.highlights.getActivePromotions([business.id]),
+      this.deals.listForBusiness(business.id),
       this.menuRepo.getMenu(business.id),
     ]);
     this._business.set(business);
     this._hours.set(hours.data ?? []);
     this._rating.set(ratings.data?.get(business.id) ?? null);
     this._ratingsLoaded.set(ratings.data !== null);
-    this._promotions.set(promotions.data ?? []);
+    this._promotions.set(promotions.data?.map((entry) => entry.deal) ?? []);
     this._menu.set(menu.data);
   }
 }

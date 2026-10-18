@@ -25,6 +25,12 @@
       <app-luma-icon [name]="card().kind === 'promotion' ? 'tag' : 'utensils'" size="sm" />
       {{ t('feed.card.' + card().kind) }}
     </span>
+    @if (card().discountPercent; as percent) {
+    <span
+      class="absolute top-14 left-4 rounded-full bg-danger px-3 py-1 text-label font-bold text-danger-fg-on shadow-md"
+      >{{ t('promotions.card.discount', { percent: percent }) }}</span
+    >
+    }
   </div>
 
   <div class="flex flex-col gap-3 bg-surface px-4 pt-4 pb-5">
@@ -34,7 +40,11 @@
       <p class="m-0 line-clamp-2 text-body-sm text-fg-muted">{{ description }}</p>
       }
       <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
-        @if (card().priceCop !== null) {
+        @if (card().listPriceCop; as list) {
+        <span class="text-body-sm text-fg-muted line-through"
+          ><span class="sr-only">{{ t('promotions.card.before') }}</span>{{ list | cop }}</span
+        >
+        } @if (card().priceCop !== null) {
         <span class="text-price text-fg">{{ card().priceCop! | cop }}</span>
         } @if (product(); as product) {
         <app-add-to-cart class="ml-auto" [product]="product" />

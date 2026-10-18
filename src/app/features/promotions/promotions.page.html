@@ -1,0 +1,56 @@
+<div
+  *transloco="let t"
+  class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6"
+>
+  <header class="flex items-center gap-2">
+    <app-luma-icon-button
+      icon="arrow-left"
+      variant="ghost"
+      [label]="t('common.back')"
+      (clicked)="back()"
+    />
+    <h1 class="m-0 text-h3 text-fg">{{ t('promotions.title') }}</h1>
+  </header>
+
+  <app-promotion-filters />
+
+  @switch (store.state()) { @case ('loading') {
+  <div class="flex flex-col gap-3" aria-busy="true">
+    @for (i of skeletons; track i) {
+    <app-luma-skeleton class="h-40 w-full" shape="rect" />
+    }
+    <span class="sr-only">{{ t('promotions.loading') }}</span>
+  </div>
+  } @case ('error') {
+  <div role="alert">
+    <app-luma-empty-state
+      icon="alert"
+      tone="error"
+      [heading]="t(store.errorKey() ?? 'promotions.errors.loadFailed')"
+    >
+      <app-luma-button (clicked)="store.load()">{{ t('common.retry') }}</app-luma-button>
+    </app-luma-empty-state>
+  </div>
+  } @default { @if (store.listed().length) {
+  <p class="sr-only" aria-live="polite">
+    {{ t('promotions.count', { count: store.listed().length }) }}
+  </p>
+  <ul class="m-0 flex list-none flex-col gap-3 p-0">
+    @for (entry of store.listed(); track entry.deal.id) {
+    <li><app-promotion-card [deal]="entry.deal" [distanceKm]="entry.distanceKm" /></li>
+    }
+  </ul>
+  } @else {
+  <app-luma-empty-state
+    icon="tag"
+    [heading]="t(store.hasFilters() ? 'promotions.empty.filteredTitle' : 'promotions.empty.title')"
+    [description]="t(store.hasFilters() ? 'promotions.empty.filteredBody' : 'promotions.empty.body')"
+  >
+    @if (store.hasFilters()) {
+    <app-luma-button variant="secondary" (clicked)="store.clearFilters()"
+      >{{ t('promotions.filters.clear') }}</app-luma-button
+    >
+    }
+  </app-luma-empty-state>
+  } } }
+</div>

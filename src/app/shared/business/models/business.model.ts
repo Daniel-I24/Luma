@@ -61,6 +61,10 @@ export interface Promotion {
   starts_at: string; // ISO-8601
   ends_at: string; // ISO-8601
   is_active: boolean;
+  /** Item the discount applies to, or null for a text-only promotion. */
+  menu_item_id: string | null;
+  /** 5-90 when the promotion discounts menu_item_id. */
+  discount_percent: number | null;
   created_at: string;
 }
 

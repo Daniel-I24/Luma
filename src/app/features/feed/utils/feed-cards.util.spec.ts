@@ -87,12 +87,16 @@ describe('buildFeedCards', () => {
     expect(promoCard).toMatchObject({
       kind: 'promotion',
       priceCop: null,
+      listPriceCop: null,
+      discountPercent: null,
       validUntil: '2026-10-30T00:00:00Z',
       menuItem: null,
     });
     expect(dishCard).toMatchObject({
       kind: 'dish',
       priceCop: 1000,
+      listPriceCop: null,
+      discountPercent: null,
       validUntil: null,
       icon: 'coffee',
       status: 'closed',

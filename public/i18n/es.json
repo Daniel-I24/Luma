@@ -561,7 +561,6 @@
       "errorTitle": "No pudimos cargar el menú"
     },
     "promos": {
-      "until": "Hasta el {{date}}",
       "emptyTitle": "Sin promociones",
       "emptyDescription": "Este negocio no tiene promociones activas ahora."
     },
@@ -1293,6 +1292,47 @@
       "confirm": "Guardar y enviar a revisión",
       "cancel": "Seguir editando",
       "saved": "Cambios guardados. Tu negocio volvió a revisión."
+    }
+  },
+  "promotions": {
+    "title": "Promociones",
+    "loading": "Cargando promociones…",
+    "count": "{{count}} promociones",
+    "seeAll": "Ver todas las promociones",
+    "errors": {
+      "loadFailed": "No se pudieron cargar las promociones."
+    },
+    "empty": {
+      "title": "No hay promociones vigentes",
+      "body": "Vuelve pronto: los negocios publican nuevas a diario.",
+      "filteredTitle": "Nada con esos filtros",
+      "filteredBody": "Prueba quitando algún filtro."
+    },
+    "sort": {
+      "distance": "Más cerca",
+      "discount": "Mayor descuento",
+      "ending": "Terminan pronto"
+    },
+    "filters": {
+      "label": "Filtros de promociones",
+      "sort": "Ordenar",
+      "minDiscount": "Descuento mínimo",
+      "atLeast": "Desde {{percent}} %",
+      "anyDiscount": "Cualquier descuento",
+      "openNow": "Abierto ahora",
+      "category": "Categoría",
+      "clear": "Quitar filtros"
+    },
+    "card": {
+      "discount": "-{{percent}} %",
+      "recommended": "Recomendada por Luma IA",
+      "before": "Antes: ",
+      "now": "Ahora: ",
+      "endsToday": "Termina hoy",
+      "endsTomorrow": "Termina mañana",
+      "endsInDays": "Termina en {{days}} días",
+      "order": "Pedir",
+      "soldOut": "Agotado"
     }
   }
 }

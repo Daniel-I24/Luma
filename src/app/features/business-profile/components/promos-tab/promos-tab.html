@@ -7,24 +7,20 @@
   />
   } @else {
   <ul class="m-0 flex list-none flex-col gap-3 p-4">
-    @for (promo of promotions(); track promo.id) {
-    <li class="flex gap-3 rounded-lg border border-border-subtle bg-surface p-4 shadow-card">
-      <span
-        class="inline-flex size-10 shrink-0 items-center justify-center rounded-md bg-surface-selected text-fg-accent"
-      >
-        <app-luma-icon name="tag" />
-      </span>
-      <div class="flex min-w-0 flex-col gap-1">
-        <h3 class="m-0 text-title text-fg">{{ promo.title }}</h3>
-        @if (promo.description; as description) {
-        <p class="m-0 text-body-sm text-fg-muted">{{ description }}</p>
-        }
-        <p class="m-0 text-caption text-fg-subtle">
-          {{ t('businessProfile.promos.until', { date: endDate(promo) }) }}
-        </p>
-      </div>
+    @for (deal of promotions(); track deal.id) {
+    <li>
+      <app-promotion-card
+        [deal]="deal"
+        [showBusiness]="false"
+        [recommended]="deal.id === recommendedId()"
+      />
     </li>
     }
   </ul>
   }
+  <a
+    class="mx-4 mb-4 inline-flex min-h-11 items-center text-body-sm font-semibold text-fg-brand"
+    routerLink="/promotions"
+    >{{ t('promotions.seeAll') }}</a
+  >
 </ng-container>

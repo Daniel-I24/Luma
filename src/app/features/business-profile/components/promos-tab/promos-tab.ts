@@ -1,29 +1,21 @@
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import { LumaEmptyState, LumaIcon } from '@design-system';
-import type { Promotion } from '@shared/business/models/business.model';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { TranslocoModule } from '@jsverse/transloco';
+import { LumaEmptyState } from '@design-system';
+import { PromotionCard } from '@shared/promotions/promotion-card/promotion-card';
+import type { PromotionDeal } from '@shared/promotions/promotion-deal';
 
-/** PromosTab — active promotions of the business with their end date. */
+/** PromosTab — current promotions of the business, with the same card as /promotions. */
 @Component({
   selector: 'app-promos-tab',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaEmptyState, LumaIcon],
+  imports: [TranslocoModule, RouterLink, LumaEmptyState, PromotionCard],
   templateUrl: './promos-tab.html',
   host: { class: 'block' },
 })
 export class PromosTab {
-  private readonly transloco = inject(TranslocoService);
-  private readonly lang = toSignal(this.transloco.langChanges$, {
-    initialValue: this.transloco.getActiveLang(),
-  });
-
-  readonly promotions = input.required<readonly Promotion[]>();
-
-  protected endDate(promotion: Promotion): string {
-    return new Intl.DateTimeFormat(this.lang(), { dateStyle: 'medium' }).format(
-      new Date(promotion.ends_at),
-    );
-  }
+  readonly promotions = input.required<readonly PromotionDeal[]>();
+  /** Id of the deal Luma IA recommends for this moment, if any. */
+  readonly recommendedId = input<string | null>(null);
 }

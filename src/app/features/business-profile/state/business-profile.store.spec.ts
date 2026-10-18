@@ -2,6 +2,7 @@ import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { BusinessHighlightsRepository } from '@shared/business/data/business-highlights.repository';
+import { PromotionDealRepository } from '@shared/promotions/promotion-deal.repository';
 import { BusinessRepository } from '@shared/business/data/business.repository';
 import { MenuRepository } from '@shared/business/data/menu.repository';
 import type { Business } from '@shared/business/models/business.model';
@@ -18,7 +19,8 @@ const business = {
 
 describe('BusinessProfileStore', () => {
   const businesses = { getById: vi.fn(), getHours: vi.fn() };
-  const highlights = { getRatings: vi.fn(), getActivePromotions: vi.fn() };
+  const highlights = { getRatings: vi.fn() };
+  const deals = { listForBusiness: vi.fn() };
   const menu = { getMenu: vi.fn() };
   let store: BusinessProfileStore;
 
@@ -30,13 +32,17 @@ describe('BusinessProfileStore', () => {
       data: new Map([[ID, { businessId: ID, rating: 4.3, reviewCount: 7 }]]),
       errorKey: null,
     });
-    highlights.getActivePromotions.mockResolvedValue({ data: [{ id: 'p1' }], errorKey: null });
+    deals.listForBusiness.mockResolvedValue({
+      data: [{ deal: { id: 'p1' }, hours: [] }],
+      errorKey: null,
+    });
     menu.getMenu.mockResolvedValue({ data: [{ id: 'm1' }], errorKey: null });
     TestBed.configureTestingModule({
       providers: [
         BusinessProfileStore,
         { provide: BusinessRepository, useValue: businesses },
         { provide: BusinessHighlightsRepository, useValue: highlights },
+        { provide: PromotionDealRepository, useValue: deals },
         { provide: MenuRepository, useValue: menu },
         {
           provide: GeolocationService,

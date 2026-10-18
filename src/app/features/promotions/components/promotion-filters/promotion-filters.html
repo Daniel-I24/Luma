@@ -1,0 +1,53 @@
+<section
+  *transloco="let t"
+  class="flex flex-col gap-3"
+  [attr.aria-label]="t('promotions.filters.label')"
+>
+  <div class="flex flex-wrap items-center gap-2">
+    <label class="sr-only" for="promo-sort">{{ t('promotions.filters.sort') }}</label>
+    <select id="promo-sort" [class]="selectClass" [value]="store.sort()" (change)="onSort($event)">
+      @for (sort of sorts; track sort) {
+      <option [value]="sort" [selected]="sort === store.sort()">
+        {{ t('promotions.sort.' + sort) }}
+      </option>
+      }
+    </select>
+    <label class="sr-only" for="promo-min">{{ t('promotions.filters.minDiscount') }}</label>
+    <select id="promo-min" [class]="selectClass" (change)="onMinDiscount($event)">
+      @for (min of minDiscounts; track min) {
+      <option [value]="min" [selected]="min === store.filters().minDiscount">
+        {{ min ? t('promotions.filters.atLeast', { percent: min }) :
+        t('promotions.filters.anyDiscount') }}
+      </option>
+      }
+    </select>
+    <label class="inline-flex min-h-11 cursor-pointer items-center gap-2 text-body-sm text-fg">
+      <input
+        type="checkbox"
+        class="size-5 accent-primary"
+        [checked]="store.filters().openNow"
+        (change)="store.setFilter('openNow', !store.filters().openNow)"
+      />
+      {{ t('promotions.filters.openNow') }}
+    </label>
+  </div>
+  <div
+    class="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none]"
+    role="group"
+    [attr.aria-label]="t('promotions.filters.category')"
+  >
+    @for (category of categories; track category.value) {
+    <button
+      type="button"
+      [class]="chipClass"
+      [class.border-primary]="store.filters().category === category.value"
+      [class.bg-surface-selected]="store.filters().category === category.value"
+      [class.border-border]="store.filters().category !== category.value"
+      [attr.aria-pressed]="store.filters().category === category.value"
+      (click)="toggleCategory(category.value)"
+    >
+      {{ t('businessCategories.' + category.key) }}
+    </button>
+    }
+  </div>
+</section>

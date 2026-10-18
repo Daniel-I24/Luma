@@ -1,0 +1,74 @@
+<article
+  *transloco="let t"
+  class="flex flex-col gap-3 rounded-xl border border-border-subtle bg-surface p-4"
+  [attr.aria-label]="deal().title"
+>
+  <div class="flex items-start gap-3">
+    <div
+      class="relative flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-linear-to-br from-primary to-accent text-primary-fg"
+    >
+      @if (deal().imageUrl; as src) {
+      <img class="size-full object-cover" [src]="src" alt="" loading="lazy" />
+      } @else {
+      <app-luma-icon name="tag" size="lg" />
+      }
+    </div>
+    <div class="flex min-w-0 flex-1 flex-col gap-1">
+      <div class="flex flex-wrap items-center gap-2">
+        @if (deal().discountPercent; as percent) {
+        <span class="rounded-full bg-danger px-2 py-0.5 text-caption font-bold text-danger-fg-on">
+          {{ t('promotions.card.discount', { percent: percent }) }}
+        </span>
+        } @if (recommended()) {
+        <span
+          class="inline-flex items-center gap-1 rounded-full bg-surface-selected px-2 py-0.5 text-caption font-semibold text-fg-brand"
+        >
+          <app-luma-icon name="sparkles" size="sm" />
+          {{ t('promotions.card.recommended') }}
+        </span>
+        }
+      </div>
+      <h3 class="m-0 text-body font-semibold text-fg">{{ deal().title }}</h3>
+      @if (deal().item; as item) {
+      <p class="m-0 flex flex-wrap items-baseline gap-2">
+        @if (item.finalCop < item.listCop) {
+        <span class="text-body-sm text-fg-muted line-through">
+          <span class="sr-only">{{ t('promotions.card.before') }}</span>{{ item.listCop | cop }}
+        </span>
+        }
+        <span class="text-title text-fg">
+          <span class="sr-only">{{ t('promotions.card.now') }}</span>{{ item.finalCop | cop }}
+        </span>
+        <span class="text-body-sm text-fg-muted">· {{ item.name }}</span>
+      </p>
+      } @else if (deal().description) {
+      <p class="m-0 text-body-sm text-fg-muted">{{ deal().description }}</p>
+      }
+    </div>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-body-sm text-fg-muted">
+    @if (showBusiness()) {
+    <a
+      class="inline-flex min-h-11 items-center gap-1 font-semibold text-fg-brand"
+      [routerLink]="['/businesses', deal().business.id]"
+    >
+      <app-luma-icon name="store" size="sm" />{{ deal().business.name }}
+    </a>
+    } @if (distanceKm() | distance: lang(); as distance) {
+    <span class="inline-flex items-center gap-1"
+      ><app-luma-icon name="pin" size="sm" />{{ distance }}</span
+    >
+    }
+    <span class="inline-flex items-center gap-1">
+      <app-luma-icon name="clock" size="sm" />
+      {{ t(endsLabel().key, endsLabel().params) }}
+    </span>
+  </div>
+
+  @if (deal().item) {
+  <app-luma-button [fullWidth]="true" [disabled]="!canOrder()" (clicked)="order()">
+    {{ t(canOrder() ? 'promotions.card.order' : 'promotions.card.soldOut') }}
+  </app-luma-button>
+  }
+</article>
