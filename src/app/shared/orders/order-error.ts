@@ -2,6 +2,7 @@
 const ORDER_ERROR_KEYS: Readonly<Record<string, string>> = {
   not_authenticated: 'orders.errors.notAuthenticated',
   business_unavailable: 'orders.errors.businessUnavailable',
+  business_closed: 'orders.errors.businessClosed',
   invalid_items: 'orders.errors.invalidItems',
   duplicate_items: 'orders.errors.invalidItems',
   item_unavailable: 'orders.errors.itemUnavailable',

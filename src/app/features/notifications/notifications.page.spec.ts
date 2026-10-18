@@ -109,6 +109,20 @@ describe('notification view', () => {
     expect(notificationKey({ type: 'order_status', status: null })).toBe(
       'notifications.text.status.unknown',
     );
+    expect(notificationKey({ type: 'order_cancelled', status: 'cancelled' })).toBe(
+      'notifications.text.orderCancelled',
+    );
+    expect(
+      notificationLink({
+        ...base,
+        id: 'c',
+        type: 'order_cancelled',
+        order_id: 'o',
+        status: 'cancelled',
+        read_at: null,
+        business_id: 'b9',
+      }),
+    ).toEqual(['/business', 'b9', 'orders']);
     const orphan = {
       ...base,
       id: 'n',

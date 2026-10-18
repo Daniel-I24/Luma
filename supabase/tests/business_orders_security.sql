@@ -11,6 +11,8 @@ begin;
 insert into auth.users (id, email) values (tests.id('eve'), 'eve@test.local');
 insert into public.businesses (id, owner_id, name, category, latitude, longitude, address, is_active) values
   (tests.id('eve-biz'), tests.id('eve'), 'Eve Bar', 'Bar', 1.21, -77.28, 'Calle 5 # 1-1', true);
+insert into public.business_hours (business_id, day_of_week, opens_at, closes_at)
+select tests.id('eve-biz'), d, '00:00', '23:59:59.999999' from generate_series(0, 6) d;
 insert into public.menu_items (id, business_id, name, price_cop) values
   (tests.id('m9'), tests.id('eve-biz'), 'Cerveza', 7000);
 -- Ana has a public display name; Bob does not.

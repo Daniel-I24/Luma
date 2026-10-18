@@ -48,17 +48,43 @@ update public.app_settings set int_value = 3      where key = 'order_max_pending
   its customers' orders and lines, with the copied `business_name` and
   `business_address`. The app shows the name with "Negocio no disponible"
   and no directions.
-- `orders.user_id` stays `on delete cascade`: deleting an account deletes
-  its orders (right to erasure).
+- **Anonymised, not deleted:** `orders.user_id` is `on delete set null`.
+  Deleting an account keeps its orders and lines for the business's history;
+  the trigger `orders_anonymise_notes` clears `notes` (the only text the
+  customer wrote) as soon as `user_id` becomes NULL. The owner keeps seeing
+  them in `business_orders` with `customer_label` NULL ("Cliente"); no
+  customer can read them any more.
 - **Before charging real payments**, review the legal retention of sales
-  records (accounting and tax rules) — it may require keeping orders, or an
-  anonymised copy, after the account is deleted. That decision changes the
-  cascade above.
+  records (accounting and tax rules) with a lawyer: amounts, dates and lines
+  are kept; nothing identifies the customer.
+
+## Opening hours on the server
+
+`create_order` rejects with `business_closed` when the business is closed at
+`now()` ("Ahora") or at the requested pick-up time. It uses
+`public.business_open_at(business, at)`, which implements the app's single
+rule (`shared/business/domain/opening-hours.ts`):
+
+- a row of day D is open on D from `opens_at` until `closes_at`; when
+  `closes_at < opens_at` it crosses midnight and ends at `closes_at` of D+1;
+- only that crossing makes D+1's early morning open — today's row never opens
+  today's early morning;
+- a closed day neither opens nor carries an early morning to the next day;
+- `opens_at = closes_at` is invalid (CHECK `business_hours_open_differs` and
+  the panel's validation);
+- the closing minute is already closed; the opening minute is open.
+
+The time zone is defined once, in `public.app_local_time()`
+(America/Bogota). The app evaluates the same rule on the device clock, which
+is the same zone for users in Colombia. The cases in
+`supabase/tests/fixtures/opening_hours_cases.json` are run by Vitest
+(`OpeningHours`) and by `opening_hours_cases.sql`; map statuses ("abre
+pronto", "cierra pronto") come from the same object.
 
 ## Security tests
 
-`supabase/tests/orders_security.sql`, `orders_status.sql` and
-`orders_retention.sql` (57 checks) run
+`supabase/tests/orders_security.sql`, `orders_status.sql`,
+`orders_retention.sql`, `orders_hours.sql` and `opening_hours_cases.sql` run
 as the `anon` and `authenticated` roles with a JWT `sub`, inside a transaction
 that is rolled back:
 
@@ -104,10 +130,9 @@ without reloading.
 
 ## Limitations
 
-- Opening hours are enforced **in the app only**: at `/checkout`, "Ahora"
-  is disabled while the business is closed, and "Más tarde" / "Mañana" offer
-  only 15-minute slots inside that day's hours (including the after-midnight
-  part of hours that cross midnight). The server does not check hours yet.
+- Opening hours: at `/checkout`, "Ahora" is disabled while the business is
+  closed and "Más tarde" / "Mañana" offer only 15-minute slots inside the
+  hours; the server checks them again (see above).
 - Payment is **at pick-up only**; online payment with Wompi (hosted checkout,
   signed webhook, idempotency) is a later phase.
 - The ready time shown for "as soon as possible" orders is created_at +
@@ -120,5 +145,5 @@ without reloading.
   Migration `20261018000200_business_orders.sql`, tests
   `business_orders_security.sql`.
 - In-app notifications (no push yet): owners are told about new orders and
-  customers about status changes (`20261018000300_notifications.sql`,
+  about cancellations by the customer, customers about status changes (`20261018000300_notifications.sql`,
   `/notifications`).

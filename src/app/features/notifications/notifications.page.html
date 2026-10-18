@@ -33,7 +33,7 @@
         (click)="open(notification)"
       >
         <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-md bg-surface-selected text-fg-brand">
-          <app-luma-icon [name]="notification.type === 'order_new' ? 'store' : 'receipt'" />
+          <app-luma-icon [name]="notification.type === 'order_status' ? 'receipt' : 'store'" />
         </span>
         <span class="flex min-w-0 flex-1 flex-col">
           <span class="text-body font-medium">{{ t(textKey(notification)) }}</span>

@@ -1,6 +1,6 @@
 import type { DayHoursInput } from '@shared/business/data/business-write.schemas';
 import type { BusinessHours } from '@shared/business/models/business.model';
-import { timeToMinutes } from '@shared/business/utils/business-status.util';
+import { timeToMinutes } from '@shared/business/domain/opening-hours';
 
 /** Days in the order the editor shows them (Monday first; 0 = Sunday). */
 export const WEEK_FROM_MONDAY = [1, 2, 3, 4, 5, 6, 0] as const;

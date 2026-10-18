@@ -12,9 +12,10 @@
 --     safe view without user_id or email.
 --   - Retention: business_name and business_address are copies taken at
 --     purchase time and business_id is set to NULL if the business is
---     deleted, so the customer keeps the record. user_id stays ON DELETE
---     CASCADE (deleting the account deletes its orders); review the legal
---     retention of records before charging real payments (docs/orders.md).
+--     deleted, so the customer keeps the record.
+--   - Anonymised, not deleted: user_id is ON DELETE SET NULL. When an
+--     account is deleted its orders stay for the business's history, and a
+--     trigger clears the customer's free-text notes (docs/orders.md).
 -- -----------------------------------------------------------------------------
 
 -- 1. Settings read by the order functions -----------------------------------
@@ -38,7 +39,7 @@ alter table public.app_settings enable row level security;
 -- 2. orders -----------------------------------------------------------------
 create table if not exists public.orders (
   id             uuid        not null default gen_random_uuid(),
-  user_id        uuid        not null default auth.uid() references auth.users (id) on delete cascade,
+  user_id        uuid        default auth.uid() references auth.users (id) on delete set null,
   business_id    uuid        references public.businesses (id) on delete set null,
   business_name    text      not null
     constraint orders_business_name_length check (char_length(business_name) between 1 and 120),
@@ -60,6 +61,7 @@ create table if not exists public.orders (
 );
 
 comment on table  public.orders           is 'Pick-up orders. Written only by the order functions.';
+comment on column public.orders.user_id is 'The customer; NULL once their account was deleted (anonymised order).';
 comment on column public.orders.business_id is 'NULL once the business is deleted; the copies below remain.';
 comment on column public.orders.business_name is 'Business name copied when the order was created.';
 comment on column public.orders.business_address is 'Business address copied when the order was created.';
@@ -69,6 +71,28 @@ comment on column public.orders.total_cop is 'Whole COP, always computed on the 
 create index if not exists orders_user_idx on public.orders (user_id, created_at desc);
 create index if not exists orders_business_idx on public.orders (business_id, created_at desc);
 create index if not exists orders_user_pending_idx on public.orders (user_id) where status = 'pending';
+
+-- An anonymised order keeps no text the customer wrote.
+create or replace function public.orders_anonymise_notes()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+begin
+  if new.user_id is null and old.user_id is not null then
+    new.notes := null;
+  end if;
+  return new;
+end;
+$$;
+
+revoke execute on function public.orders_anonymise_notes() from public, anon, authenticated;
+
+drop trigger if exists orders_anonymise_notes on public.orders;
+create trigger orders_anonymise_notes
+  before update of user_id on public.orders
+  for each row
+  execute procedure public.orders_anonymise_notes();
 
 drop trigger if exists orders_set_updated_at on public.orders;
 create trigger orders_set_updated_at

@@ -65,7 +65,7 @@ alter table public.businesses
 
 ## Security tests
 
-`supabase/tests/*.sql` (138 checks) run as the `anon` and `authenticated`
+`supabase/tests/*.sql` (179 checks) run as the `anon` and `authenticated`
 roles with a JWT `sub`, each file in a transaction that is rolled back.
 
 - On a Supabase database (local stack or a branch) with every migration
@@ -74,15 +74,20 @@ roles with a JWT `sub`, each file in a transaction that is rolled back.
   `PSQL=psql PGPORT=5432 PGUSER=postgres supabase/tests/local/run.sh` creates
   a throwaway `luma_test` database, loads the minimal stubs in
   `supabase/tests/local/` (API roles, `auth.uid()`, `storage` schema), applies
-  every migration and runs every suite.
+  every migration and runs every suite. It passes the shared cases file to
+  `opening_hours_cases.sql` as the psql variable `cases`; on a Supabase
+  database add `-v cases="$(cat supabase/tests/fixtures/opening_hours_cases.json)"`.
 
 | File | Covers |
 | --- | --- |
 | `orders_security.sql` | privileges, server-side totals, `create_order` validation |
 | `orders_status.sql` | visibility, cancelling, owner transitions, pending limit |
-| `orders_retention.sql` | business copies, deleted business, deleted account |
+| `orders_retention.sql` | business copies, deleted business, deleted account (anonymised) |
+| `orders_hours.sql` | `create_order` against the opening hours, "Ahora" and scheduled |
+| `opening_hours_cases.sql` | `business_open_at` with the cases shared with the app |
+| `harness_identity.sql` | the helpers restore role and JWT after every check |
 | `business_panel_security.sql` | registering, constraints, editing others, publishing guard |
 | `business_panel_content.sql` | hours (upsert, other businesses), menu, promotions |
 | `business_images_security.sql` | bucket limits, Storage paths, other owners/buckets, https URLs |
 | `business_orders_security.sql` | owner views: isolation, no `user_id`/email, read only |
-| `notifications_security.sql` | triggers, own rows only, `read_at` only, no client inserts |
+| `notifications_security.sql` | triggers (incl. cancellation to the owner), own rows only, `read_at` only, no client inserts |

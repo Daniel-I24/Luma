@@ -21,9 +21,11 @@ for migration in supabase/migrations/*.sql; do quiet -d "$DB" -f "$migration" >/
 echo "migrations: ok"
 
 [ $# -gt 0 ] || set -- supabase/tests/[a-z]*.sql
+# Opening-hours cases shared with the app (opening_hours_cases.sql).
+CASES=$(cat supabase/tests/fixtures/opening_hours_cases.json)
 total=0
 for test in "$@"; do
-  output=$(run -d "$DB" -f "$test" 2>&1) || { echo "FAIL $test"; echo "$output" | grep -E 'ERROR|FAIL' | head -5; exit 1; }
+  output=$(run -d "$DB" -v cases="$CASES" -f "$test" 2>&1) || { echo "FAIL $test"; echo "$output" | grep -E 'ERROR|FAIL' | head -5; exit 1; }
   checks=$(echo "$output" | grep -c 'NOTICE:  ok' || true)
   total=$((total + checks))
   echo "pass $test: $checks checks"

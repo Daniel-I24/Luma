@@ -412,7 +412,8 @@
       "totalTooHigh": "El total supera el máximo permitido por pedido.",
       "tooManyPending": "Tienes demasiados pedidos pendientes. Espera a que avancen o cancela alguno.",
       "notFound": "Pedido no encontrado",
-      "invalidTransition": "El pedido ya cambió de estado y no se puede cancelar."
+      "invalidTransition": "El pedido ya cambió de estado y no se puede cancelar.",
+      "businessClosed": "El negocio está cerrado a esa hora. Elige otra hora de recogida."
     }
   },
   "reviews": {
@@ -863,7 +864,8 @@
         "picked_up": "Pedido entregado. ¡Buen provecho!",
         "cancelled": "El negocio canceló tu pedido",
         "unknown": "Tu pedido cambió de estado"
-      }
+      },
+      "orderCancelled": "Un cliente canceló su pedido"
     },
     "errors": {
       "loadFailed": "No se pudieron cargar las notificaciones.",

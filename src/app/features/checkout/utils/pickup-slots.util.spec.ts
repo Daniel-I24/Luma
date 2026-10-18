@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { BusinessHours } from '@shared/business/models/business.model';
-import { pickupSlots, slotRanges, windowsForDay } from './pickup-slots.util';
+import { OpeningHours } from '@shared/business/domain/opening-hours';
+import { pickupSlots, slotRanges } from './pickup-slots.util';
 
 const entry = (
   day: BusinessHours['day_of_week'],
@@ -19,31 +20,37 @@ const entry = (
 // 2026-10-17 is a Saturday (6); 2026-10-18 a Sunday (0).
 const SATURDAY_NOON = new Date('2026-10-17T12:00:00');
 
-describe('windowsForDay', () => {
+describe('OpeningHours.windowsFor (used by the slots)', () => {
   it('uses the day hours, or nothing when closed or missing', () => {
-    expect(windowsForDay([entry(6, '08:00', '19:00')], 6)).toEqual([{ from: 480, to: 1140 }]);
-    expect(windowsForDay([entry(6, '08:00', '19:00', true)], 6)).toEqual([]);
-    expect(windowsForDay([], 6)).toEqual([]);
+    expect(OpeningHours.from([entry(6, '08:00', '19:00')]).windowsFor(6)).toEqual([
+      { from: 480, to: 1140 },
+    ]);
+    expect(OpeningHours.from([entry(6, '08:00', '19:00', true)]).windowsFor(6)).toEqual([]);
+    expect(OpeningHours.from([]).windowsFor(6)).toEqual([]);
   });
 
   it('cuts a midnight-crossing schedule at midnight and carries its tail to the next day', () => {
     const hours = [entry(6, '18:00', '02:00')];
-    expect(windowsForDay(hours, 6)).toEqual([{ from: 1080, to: 1440 }]);
-    expect(windowsForDay(hours, 0)).toEqual([{ from: 0, to: 120 }]);
+    expect(OpeningHours.from(hours).windowsFor(6)).toEqual([{ from: 1080, to: 1440 }]);
+    expect(OpeningHours.from(hours).windowsFor(0)).toEqual([{ from: 0, to: 120 }]);
   });
 
   it('keeps the tail even when the next day is closed, and adds the next day hours', () => {
     expect(
-      windowsForDay([entry(6, '18:00', '02:00'), entry(0, '09:00', '12:00', true)], 0),
+      OpeningHours.from([entry(6, '18:00', '02:00'), entry(0, '09:00', '12:00', true)]).windowsFor(
+        0,
+      ),
     ).toEqual([{ from: 0, to: 120 }]);
-    expect(windowsForDay([entry(6, '18:00', '02:00'), entry(0, '09:00', '12:00')], 0)).toEqual([
+    expect(
+      OpeningHours.from([entry(6, '18:00', '02:00'), entry(0, '09:00', '12:00')]).windowsFor(0),
+    ).toEqual([
       { from: 0, to: 120 },
       { from: 540, to: 720 },
     ]);
   });
 
   it('treats closing at midnight as no tail', () => {
-    expect(windowsForDay([entry(6, '18:00', '00:00')], 0)).toEqual([]);
+    expect(OpeningHours.from([entry(6, '18:00', '00:00')]).windowsFor(0)).toEqual([]);
   });
 });
 

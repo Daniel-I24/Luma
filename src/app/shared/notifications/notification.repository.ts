@@ -3,15 +3,23 @@ import { SupabaseService } from '@core/supabase/supabase.service';
 import type { RepoResult } from '@shared/business/data/business.repository';
 import type { OrderStatus } from '@shared/orders/order.model';
 
+/** Who is told what (notifications_type_valid). */
+export type NotificationType = 'order_status' | 'order_new' | 'order_cancelled';
+/** Notifications sent to the owner of the business of the order. */
+export const OWNER_NOTIFICATION_TYPES: readonly NotificationType[] = [
+  'order_new',
+  'order_cancelled',
+];
+
 /** Row of public.notifications (the text is built by the app from type and status). */
 export interface AppNotification {
   id: string;
-  type: 'order_status' | 'order_new';
+  type: NotificationType;
   order_id: string | null;
   status: OrderStatus | null;
   created_at: string;
   read_at: string | null;
-  /** For order_new: the business of the order (read from business_orders). */
+  /** For owner notifications: the business of the order (read from business_orders). */
   business_id: string | null;
 }
 
@@ -37,7 +45,7 @@ export class NotificationRepository {
     if (error) return { data: null, errorKey: LOAD_FAILED };
     const rows = data as Omit<AppNotification, 'business_id'>[];
     const orderIds = rows
-      .filter((n) => n.type === 'order_new' && n.order_id)
+      .filter((n) => OWNER_NOTIFICATION_TYPES.includes(n.type) && n.order_id)
       .map((n) => n.order_id!);
     const businessOf = new Map<string, string>();
     if (orderIds.length) {

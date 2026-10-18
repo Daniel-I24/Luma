@@ -412,7 +412,8 @@
       "totalTooHigh": "The total exceeds the maximum allowed per order.",
       "tooManyPending": "You have too many pending orders. Wait for them to progress or cancel one.",
       "notFound": "Order not found",
-      "invalidTransition": "The order already changed status and cannot be cancelled."
+      "invalidTransition": "The order already changed status and cannot be cancelled.",
+      "businessClosed": "The business is closed at that time. Choose another pick-up time."
     }
   },
   "reviews": {
@@ -863,7 +864,8 @@
         "picked_up": "Order picked up. Enjoy!",
         "cancelled": "The business cancelled your order",
         "unknown": "Your order changed status"
-      }
+      },
+      "orderCancelled": "A customer cancelled their order"
     },
     "errors": {
       "loadFailed": "The notifications could not be loaded.",

@@ -1,0 +1,27 @@
+{
+  "description": "Shared opening-hours cases run by Vitest (OpeningHours) and by the SQL harness (business_open_at). day: 0 = Sunday ... 6 = Saturday; times are local (America/Bogota). status is checked by the app only (soon window: 30 minutes).",
+  "cases": [
+    { "name": "normal hours, middle of the day", "hours": [{ "day": 1, "opens": "08:00", "closes": "18:00" }], "at": { "day": 1, "time": "12:00" }, "open": true, "status": "open" },
+    { "name": "exact opening minute", "hours": [{ "day": 1, "opens": "08:00", "closes": "18:00" }], "at": { "day": 1, "time": "08:00" }, "open": true, "status": "open" },
+    { "name": "one minute before opening", "hours": [{ "day": 1, "opens": "08:00", "closes": "18:00" }], "at": { "day": 1, "time": "07:59" }, "open": false, "status": "opening-soon" },
+    { "name": "exact closing minute", "hours": [{ "day": 1, "opens": "08:00", "closes": "18:00" }], "at": { "day": 1, "time": "18:00" }, "open": false, "status": "closed" },
+    { "name": "closing soon", "hours": [{ "day": 1, "opens": "08:00", "closes": "18:00" }], "at": { "day": 1, "time": "17:45" }, "open": true, "status": "closing-soon" },
+    { "name": "long before opening", "hours": [{ "day": 1, "opens": "08:00", "closes": "18:00" }], "at": { "day": 1, "time": "05:00" }, "open": false, "status": "closed" },
+    { "name": "crossing midnight, evening side", "hours": [{ "day": 1, "opens": "18:00", "closes": "02:00" }], "at": { "day": 1, "time": "23:30" }, "open": true, "status": "open" },
+    { "name": "crossing midnight, early next day", "hours": [{ "day": 1, "opens": "18:00", "closes": "02:00" }], "at": { "day": 2, "time": "01:00" }, "open": true, "status": "open" },
+    { "name": "crossing midnight, closing soon next day", "hours": [{ "day": 1, "opens": "18:00", "closes": "02:00" }], "at": { "day": 2, "time": "01:40" }, "open": true, "status": "closing-soon" },
+    { "name": "crossing midnight, exact close next day", "hours": [{ "day": 1, "opens": "18:00", "closes": "02:00" }], "at": { "day": 2, "time": "02:00" }, "open": false, "status": "closed" },
+    { "name": "today's crossing row never opens today's early morning", "hours": [{ "day": 1, "opens": "18:00", "closes": "02:00" }], "at": { "day": 1, "time": "01:00" }, "open": false, "status": "closed" },
+    { "name": "previous day closed drags no early morning", "hours": [{ "day": 0, "opens": "18:00", "closes": "02:00", "closed": true }, { "day": 1, "opens": "08:00", "closes": "12:00" }], "at": { "day": 1, "time": "01:00" }, "open": false, "status": "closed" },
+    { "name": "next day closed keeps the previous night's tail", "hours": [{ "day": 1, "opens": "18:00", "closes": "02:00" }, { "day": 2, "opens": "08:00", "closes": "12:00", "closed": true }], "at": { "day": 2, "time": "01:00" }, "open": true, "status": "open" },
+    { "name": "next day closed does not open in its daytime", "hours": [{ "day": 1, "opens": "18:00", "closes": "02:00" }, { "day": 2, "opens": "08:00", "closes": "12:00", "closed": true }], "at": { "day": 2, "time": "09:00" }, "open": false, "status": "closed" },
+    { "name": "closing at midnight", "hours": [{ "day": 1, "opens": "18:00", "closes": "00:00" }], "at": { "day": 1, "time": "23:59" }, "open": true, "status": "closing-soon" },
+    { "name": "closing at midnight, next day 00:00", "hours": [{ "day": 1, "opens": "18:00", "closes": "00:00" }], "at": { "day": 2, "time": "00:00" }, "open": false, "status": "closed" },
+    { "name": "Sunday to Monday", "hours": [{ "day": 0, "opens": "20:00", "closes": "01:00" }], "at": { "day": 1, "time": "00:30" }, "open": true, "status": "closing-soon" },
+    { "name": "Sunday evening", "hours": [{ "day": 0, "opens": "20:00", "closes": "01:00" }], "at": { "day": 0, "time": "22:00" }, "open": true, "status": "open" },
+    { "name": "Saturday night into Sunday", "hours": [{ "day": 6, "opens": "19:00", "closes": "03:00" }], "at": { "day": 0, "time": "02:00" }, "open": true, "status": "open" },
+    { "name": "closed day", "hours": [{ "day": 1, "opens": "08:00", "closes": "18:00", "closed": true }], "at": { "day": 1, "time": "12:00" }, "open": false, "status": "closed" },
+    { "name": "no row for the day", "hours": [{ "day": 2, "opens": "08:00", "closes": "18:00" }], "at": { "day": 1, "time": "12:00" }, "open": false, "status": "closed" },
+    { "name": "opening soon after a previous-night tail", "hours": [{ "day": 0, "opens": "20:00", "closes": "01:00" }, { "day": 1, "opens": "06:00", "closes": "10:00" }], "at": { "day": 1, "time": "05:45" }, "open": false, "status": "opening-soon" }
+  ]
+}

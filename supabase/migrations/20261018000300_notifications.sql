@@ -17,7 +17,7 @@ create table if not exists public.notifications (
   id         uuid        not null default gen_random_uuid(),
   user_id    uuid        not null references auth.users (id) on delete cascade,
   type       text        not null constraint notifications_type_valid
-    check (type in ('order_status', 'order_new')),
+    check (type in ('order_status', 'order_new', 'order_cancelled')),
   order_id   uuid        references public.orders (id) on delete cascade,
   status     text        constraint notifications_status_valid check (
     status is null or status in ('pending', 'accepted', 'preparing', 'ready', 'picked_up', 'cancelled')
@@ -71,8 +71,8 @@ begin
 end;
 $$;
 
--- Status change: tell the customer, unless they made the change themselves
--- (cancelling their own order).
+-- Status change made by the business: tell the customer (if the order still
+-- has one). Cancelled by the customer: tell the owner of the business.
 create or replace function public.notify_order_status_changed()
 returns trigger
 language plpgsql
@@ -80,8 +80,17 @@ security definer
 set search_path = ''
 as $$
 begin
-  if new.status is distinct from old.status
-     and new.user_id is distinct from (select auth.uid()) then
+  if new.status is not distinct from old.status then
+    return new;
+  end if;
+  if new.user_id is not null and new.user_id = (select auth.uid()) then
+    if new.status = 'cancelled' then
+      insert into public.notifications (user_id, type, order_id, status)
+      select b.owner_id, 'order_cancelled', new.id, new.status
+      from public.businesses b
+      where b.id = new.business_id;
+    end if;
+  elsif new.user_id is not null then
     insert into public.notifications (user_id, type, order_id, status)
     values (new.user_id, 'order_status', new.id, new.status);
   end if;

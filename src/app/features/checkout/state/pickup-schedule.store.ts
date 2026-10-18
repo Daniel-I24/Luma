@@ -8,9 +8,8 @@ import {
   untracked,
 } from '@angular/core';
 import { BusinessRepository } from '@shared/business/data/business.repository';
+import { OpeningHours } from '@shared/business/domain/opening-hours';
 import type { BusinessHours } from '@shared/business/models/business.model';
-import { getBusinessStatus } from '@shared/business/utils/business-status.util';
-import { isOpenStatus } from '@shared/business/utils/business-status-normal.util';
 import { CartStore } from '@shared/cart/cart.store';
 import { pollWhileVisible } from '@shared/ui/poll-while-visible';
 import { pickupSlots, slotRanges } from '../utils/pickup-slots.util';
@@ -40,7 +39,7 @@ export class PickupScheduleStore {
   /** True/false once the hours are known; null while loading or on error. */
   readonly openNow = computed(() => {
     const hours = this._hours();
-    return hours ? isOpenStatus(getBusinessStatus([...hours], this.now())) : null;
+    return hours ? OpeningHours.from(hours).isOpenAt(this.now()) : null;
   });
 
   /** "Ahora" by default, moved to "Más tarde" when the business is closed. */

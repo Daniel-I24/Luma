@@ -25,6 +25,10 @@ select tests.expect_true('authenticated', tests.id('ana'),
 select tests.exec_as('authenticated', tests.id('bob'), $$select public.cancel_order(tests.order_id('n-bob'))$$);
 select tests.expect_true('authenticated', tests.id('bob'),
   $$select count(*) = 0 from public.notifications$$, 'no notification for a change the customer made');
+select tests.expect_true('authenticated', tests.id('owner'),
+  $$select count(*) = 1 from public.notifications
+    where type = 'order_cancelled' and order_id = tests.order_id('n-bob')$$,
+  'the owner is told when the customer cancels');
 
 -- -- nobody reads, marks or deletes someone else's -------------------------------
 select tests.expect_true('authenticated', tests.id('bob'),
