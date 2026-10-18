@@ -908,7 +908,28 @@
       "uploadFailed": "No se pudo subir el documento. Intenta de nuevo.",
       "deleteFailed": "No se pudo eliminar el documento.",
       "submitFailed": "No se pudo enviar a revisión. Intenta de nuevo."
-    }
+    },
+    "status": {
+      "draft": "Borrador",
+      "pending": "En revisión",
+      "approved": "Verificado",
+      "rejected": "Requiere cambios",
+      "suspended": "Suspendido"
+    },
+    "legal": {
+      "taxId": "NIT",
+      "legalName": "Razón social",
+      "legalRep": "Representante legal"
+    },
+    "docs": {
+      "kinds": {
+        "rut": "RUT",
+        "facade": "Foto de la fachada",
+        "other": "Otro documento"
+      }
+    },
+    "badge": "Verificado",
+    "badgeHint": "El equipo de Luma revisó los datos de este negocio."
   },
   "admin": {
     "errors": {
@@ -919,6 +940,50 @@
       "reviewFailed": "No se pudo guardar la decisión. Intenta de nuevo.",
       "docFailed": "No se pudo abrir el documento.",
       "docsDeleteFailed": "La decisión se guardó, pero no se pudieron borrar los documentos."
+    },
+    "title": "Revisión de negocios",
+    "entry": "Equipo de revisión",
+    "entryHint": "Negocios pendientes y reportes",
+    "back": "Volver",
+    "loading": "Cargando…",
+    "queue": {
+      "pending": "Pendientes ({{count}})",
+      "reports": "Reportes ({{count}})",
+      "since": "enviado {{date}}",
+      "noPending": "No hay negocios esperando revisión.",
+      "noReports": "No hay reportes abiertos.",
+      "markReviewed": "Marcar revisado",
+      "dismiss": "Descartar"
+    },
+    "review": {
+      "title": "Revisar negocio",
+      "notFound": "Este negocio no existe o fue eliminado.",
+      "lastNote": "Última nota: {{note}}",
+      "location": "Ubicación",
+      "mapLabel": "Mapa con la ubicación del negocio ({{lat}}, {{lng}})",
+      "legal": "Datos legales",
+      "noLegal": "El negocio aún no registró sus datos legales.",
+      "nitHint": "El NIT solo se validó en formato; confírmalo en el RUES.",
+      "rues": "Consultar en el RUES (se abre en otra pestaña)",
+      "docs": "Documentos",
+      "noDocs": "No hay documentos.",
+      "note": "Nota para el negocio",
+      "cancel": "Cancelar",
+      "actions": {
+        "approved": "Aprobar",
+        "rejected": "Rechazar",
+        "suspended": "Suspender"
+      },
+      "confirm": {
+        "approved": "¿Aprobar este negocio?",
+        "rejected": "¿Rechazar este negocio?",
+        "suspended": "¿Suspender este negocio?"
+      },
+      "explain": {
+        "approved": "Quedará visible para los clientes si está publicado. Sus documentos se borrarán.",
+        "rejected": "El negocio verá tu nota y podrá corregir y reenviar. Los documentos se conservan.",
+        "suspended": "Dejará de ser visible para los clientes. El negocio verá tu nota."
+      }
     }
   },
   "reports": {
@@ -928,6 +993,19 @@
     "errors": {
       "alreadyReported": "Ya recibimos tu reporte sobre este negocio. Lo estamos revisando.",
       "failed": "No se pudo enviar el reporte. Intenta de nuevo."
-    }
+    },
+    "action": "Reportar",
+    "title": "Reportar este negocio",
+    "intro": "Cuéntanos qué pasa. El negocio no sabrá quién lo reportó.",
+    "reasonLabel": "Motivo",
+    "reasons": {
+      "false_info": "Información falsa",
+      "not_exists": "El negocio no existe",
+      "inappropriate": "Contenido inapropiado",
+      "other": "Otro motivo"
+    },
+    "comment": "Comentario (opcional)",
+    "send": "Enviar reporte",
+    "sent": "Gracias. Revisaremos tu reporte."
   }
 }

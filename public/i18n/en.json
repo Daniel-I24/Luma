@@ -908,7 +908,28 @@
       "uploadFailed": "The document could not be uploaded. Try again.",
       "deleteFailed": "The document could not be deleted.",
       "submitFailed": "It could not be sent for review. Try again."
-    }
+    },
+    "status": {
+      "draft": "Draft",
+      "pending": "In review",
+      "approved": "Verified",
+      "rejected": "Needs changes",
+      "suspended": "Suspended"
+    },
+    "legal": {
+      "taxId": "NIT (tax id)",
+      "legalName": "Legal name",
+      "legalRep": "Legal representative"
+    },
+    "docs": {
+      "kinds": {
+        "rut": "RUT",
+        "facade": "Storefront photo",
+        "other": "Other document"
+      }
+    },
+    "badge": "Verified",
+    "badgeHint": "The Luma team reviewed this business's details."
   },
   "admin": {
     "errors": {
@@ -919,6 +940,50 @@
       "reviewFailed": "The decision could not be saved. Try again.",
       "docFailed": "The document could not be opened.",
       "docsDeleteFailed": "The decision was saved, but the documents could not be deleted."
+    },
+    "title": "Business review",
+    "entry": "Review team",
+    "entryHint": "Pending businesses and reports",
+    "back": "Back",
+    "loading": "Loading…",
+    "queue": {
+      "pending": "Pending ({{count}})",
+      "reports": "Reports ({{count}})",
+      "since": "sent {{date}}",
+      "noPending": "No businesses waiting for review.",
+      "noReports": "No open reports.",
+      "markReviewed": "Mark reviewed",
+      "dismiss": "Dismiss"
+    },
+    "review": {
+      "title": "Review business",
+      "notFound": "This business does not exist or was deleted.",
+      "lastNote": "Last note: {{note}}",
+      "location": "Location",
+      "mapLabel": "Map with the business location ({{lat}}, {{lng}})",
+      "legal": "Legal details",
+      "noLegal": "The business has not added its legal details yet.",
+      "nitHint": "Only the NIT format was checked; confirm it in RUES.",
+      "rues": "Look it up in RUES (opens in a new tab)",
+      "docs": "Documents",
+      "noDocs": "No documents.",
+      "note": "Note for the business",
+      "cancel": "Cancel",
+      "actions": {
+        "approved": "Approve",
+        "rejected": "Reject",
+        "suspended": "Suspend"
+      },
+      "confirm": {
+        "approved": "Approve this business?",
+        "rejected": "Reject this business?",
+        "suspended": "Suspend this business?"
+      },
+      "explain": {
+        "approved": "Customers will see it if it is published. Its documents will be deleted.",
+        "rejected": "The business will see your note and can fix and resubmit. Documents are kept.",
+        "suspended": "Customers will no longer see it. The business will see your note."
+      }
     }
   },
   "reports": {
@@ -928,6 +993,19 @@
     "errors": {
       "alreadyReported": "We already received your report about this business. We are reviewing it.",
       "failed": "The report could not be sent. Try again."
-    }
+    },
+    "action": "Report",
+    "title": "Report this business",
+    "intro": "Tell us what is wrong. The business will not know who reported it.",
+    "reasonLabel": "Reason",
+    "reasons": {
+      "false_info": "False information",
+      "not_exists": "The business does not exist",
+      "inappropriate": "Inappropriate content",
+      "other": "Other reason"
+    },
+    "comment": "Comment (optional)",
+    "send": "Send report",
+    "sent": "Thanks. We will review your report."
   }
 }

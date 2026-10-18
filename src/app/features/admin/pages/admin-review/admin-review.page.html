@@ -1,0 +1,96 @@
+<div
+  *transloco="let t"
+  class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6"
+>
+  <header class="flex items-center gap-2">
+    <app-luma-icon-button icon="arrow-left" variant="ghost" [label]="t('admin.back')" (clicked)="back()" />
+    <h1 class="m-0 text-h3 text-fg">{{ t('admin.review.title') }}</h1>
+  </header>
+
+  @switch (store.state()) { @case ('loading') {
+  <div class="flex flex-col gap-3" aria-busy="true">
+    <app-luma-skeleton class="h-32 w-full" shape="rect" />
+    <app-luma-skeleton class="h-48 w-full" shape="rect" />
+    <span class="sr-only">{{ t('admin.loading') }}</span>
+  </div>
+  } @case ('error') {
+  <div role="alert">
+    <app-luma-empty-state icon="alert" tone="error" [heading]="t('admin.errors.loadFailed')">
+      <app-luma-button (clicked)="reload()">{{ t('common.retry') }}</app-luma-button>
+    </app-luma-empty-state>
+  </div>
+  } @case ('notFound') {
+  <app-luma-empty-state icon="search" [heading]="t('admin.review.notFound')" />
+  } @default { @if (store.business(); as business) { @if (store.errorKey(); as key) {
+  <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
+  }
+  <section class="flex flex-col gap-1 rounded-xl border border-border-subtle bg-surface p-4" aria-labelledby="review-business">
+    <h2 id="review-business" class="m-0 text-title text-fg">{{ business.name }}</h2>
+    <span class="text-body-sm font-semibold text-fg-brand">{{ t('verification.status.' + business.verification_status) }}</span>
+    <span class="text-body-sm text-fg-muted">{{ business.category }}</span>
+    <span class="text-body-sm break-words text-fg">{{ business.address }}</span>
+    @if (business.phone; as phone) {
+    <span class="text-body-sm text-fg">{{ phone }}</span>
+    } @if (business.description; as description) {
+    <p class="m-0 text-body-sm break-words whitespace-pre-line text-fg-muted">{{ description }}</p>
+    } @if (business.verification_note; as note) {
+    <p class="m-0 rounded-md bg-canvas-subtle p-3 text-body-sm break-words text-fg">{{ t('admin.review.lastNote', { note }) }}</p>
+    }
+  </section>
+
+  <section class="flex flex-col gap-2" aria-labelledby="review-location">
+    <h2 id="review-location" class="m-0 text-label-lg text-fg">{{ t('admin.review.location') }}</h2>
+    <app-location-preview [lat]="business.latitude" [lng]="business.longitude" />
+  </section>
+
+  <section class="flex flex-col gap-2 rounded-xl border border-border-subtle bg-surface p-4" aria-labelledby="review-legal">
+    <h2 id="review-legal" class="m-0 text-label-lg text-fg">{{ t('admin.review.legal') }}</h2>
+    @if (store.legal(); as legal) {
+    <dl class="m-0 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-body-sm">
+      <dt class="text-fg-muted">{{ t('verification.legal.taxId') }}</dt>
+      <dd class="m-0 text-fg">{{ nit() }}</dd>
+      <dt class="text-fg-muted">{{ t('verification.legal.legalName') }}</dt>
+      <dd class="m-0 break-words text-fg">{{ legal.legal_name }}</dd>
+      <dt class="text-fg-muted">{{ t('verification.legal.legalRep') }}</dt>
+      <dd class="m-0 break-words text-fg">{{ legal.legal_rep_name }}</dd>
+    </dl>
+    <p class="m-0 text-caption text-fg-subtle">{{ t('admin.review.nitHint') }}</p>
+    } @else {
+    <p class="m-0 text-body-sm text-fg-muted">{{ t('admin.review.noLegal') }}</p>
+    }
+    <a
+      class="inline-flex min-h-11 items-center text-body-sm font-semibold text-fg-brand"
+      target="_blank"
+      rel="noopener noreferrer"
+      [href]="ruesUrl"
+      >{{ t('admin.review.rues') }}</a
+    >
+  </section>
+
+  <section class="flex flex-col gap-2" aria-labelledby="review-docs">
+    <h2 id="review-docs" class="m-0 text-label-lg text-fg">{{ t('admin.review.docs') }}</h2>
+    @for (doc of store.docs(); track doc.id) {
+    <app-luma-button variant="secondary" [fullWidth]="true" (clicked)="openDoc(doc)">{{
+      t('verification.docs.kinds.' + doc.kind)
+    }}</app-luma-button>
+    } @empty {
+    <p class="m-0 text-body-sm text-fg-muted">{{ t('admin.review.noDocs') }}</p>
+    }
+  </section>
+
+  @if (actions().length) {
+  <div class="flex flex-col gap-2">
+    @for (action of actions(); track action) {
+    <app-luma-button
+      [variant]="action === 'approved' ? 'primary' : 'danger'"
+      [fullWidth]="true"
+      [disabled]="store.busy()"
+      (clicked)="decision.set(action)"
+      >{{ t('admin.review.actions.' + action) }}</app-luma-button
+    >
+    }
+  </div>
+  }
+  <app-review-decision [decision]="decision()" [busy]="store.busy()" (confirmed)="decide($event)" (closed)="decision.set(null)" />
+  } } }
+</div>

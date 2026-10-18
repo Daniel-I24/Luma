@@ -1,0 +1,61 @@
+<div
+  *transloco="let t"
+  class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6"
+>
+  <header class="flex items-center gap-2">
+    <app-luma-icon-button icon="arrow-left" variant="ghost" [label]="t('admin.back')" (clicked)="back()" />
+    <h1 class="m-0 text-h3 text-fg">{{ t('admin.title') }}</h1>
+  </header>
+
+  @switch (store.state()) { @case ('loading') {
+  <div class="flex flex-col gap-3" aria-busy="true">
+    <app-luma-skeleton class="h-20 w-full" shape="rect" />
+    <app-luma-skeleton class="h-20 w-full" shape="rect" />
+    <span class="sr-only">{{ t('admin.loading') }}</span>
+  </div>
+  } @case ('error') {
+  <div role="alert">
+    <app-luma-empty-state icon="alert" tone="error" [heading]="t('admin.errors.loadFailed')">
+      <app-luma-button (clicked)="store.load()">{{ t('common.retry') }}</app-luma-button>
+    </app-luma-empty-state>
+  </div>
+  } @default {
+  <div class="-mx-4">
+    <app-luma-tabs idPrefix="admin" [label]="t('admin.title')" [tabs]="tabs()" [(selected)]="tab" />
+  </div>
+  <div role="tabpanel" class="flex flex-col gap-3" [id]="panelId('admin', tab())" [attr.aria-labelledby]="'admin-tab-' + tab()">
+    @if (store.errorKey(); as key) {
+    <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
+    } @if (tab() === 'pending') { @for (business of store.pending(); track business.id) {
+    <a
+      class="pressable flex min-h-16 flex-col gap-1 rounded-xl border border-border-subtle bg-surface p-4 text-fg no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+      [routerLink]="['/admin/businesses', business.id]"
+    >
+      <span class="text-title">{{ business.name }}</span>
+      <span class="text-caption text-fg-muted">{{ business.category }} · {{ t('admin.queue.since', { date: when(business.updated_at) }) }}</span>
+    </a>
+    } @empty {
+    <app-luma-empty-state icon="check" [heading]="t('admin.queue.noPending')" />
+    } } @else { @for (report of store.reports(); track report.id) {
+    <article class="flex flex-col gap-2 rounded-xl border border-border-subtle bg-surface p-4">
+      <a class="text-title text-fg-brand" [routerLink]="['/admin/businesses', report.business_id]">{{ report.business_name }}</a>
+      <span class="text-body-sm font-semibold text-fg">{{ t('reports.reasons.' + report.reason) }}</span>
+      @if (report.comment; as comment) {
+      <p class="m-0 text-body-sm break-words whitespace-pre-line text-fg-muted">{{ comment }}</p>
+      }
+      <span class="text-caption text-fg-subtle">{{ when(report.created_at) }}</span>
+      <div class="flex gap-2">
+        <app-luma-button variant="secondary" size="sm" (clicked)="store.resolve(report, 'reviewed')">{{
+          t('admin.queue.markReviewed')
+        }}</app-luma-button>
+        <app-luma-button variant="ghost" size="sm" (clicked)="store.resolve(report, 'dismissed')">{{
+          t('admin.queue.dismiss')
+        }}</app-luma-button>
+      </div>
+    </article>
+    } @empty {
+    <app-luma-empty-state icon="check" [heading]="t('admin.queue.noReports')" />
+    } }
+  </div>
+  } }
+</div>

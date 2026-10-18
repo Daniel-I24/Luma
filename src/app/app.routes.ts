@@ -29,6 +29,12 @@ export const routes: Routes = [
   // defines ngDevMode as false, so the route and its chunk are dropped.
   ...(typeof ngDevMode === 'undefined' || ngDevMode ? DEV_ONLY_ROUTES : []),
   {
+    // Review team; adminRoutes also checks am_i_admin.
+    path: 'admin',
+    canActivate: [authGuard],
+    loadChildren: () => import('./features/admin/admin.routes').then((m) => m.adminRoutes),
+  },
+  {
     // Signed-in sections share the tab bar layout.
     path: '',
     loadComponent: () => import('@shared/layout/tab-layout/tab-layout').then((m) => m.TabLayout),

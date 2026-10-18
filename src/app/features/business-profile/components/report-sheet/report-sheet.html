@@ -1,0 +1,32 @@
+<ng-container *transloco="let t">
+  <app-luma-button variant="ghost" size="sm" (clicked)="open.set(true)">{{ t('reports.action') }}</app-luma-button>
+  <app-luma-bottom-sheet titleId="report-sheet-title" [open]="open()" [title]="t('reports.title')" (closed)="close()">
+    <div class="flex flex-col gap-3">
+      <p class="m-0 text-body text-fg-muted">{{ t('reports.intro') }}</p>
+      <fieldset class="m-0 flex flex-col gap-1 border-0 p-0">
+        <legend class="mb-1 text-label-lg text-fg">{{ t('reports.reasonLabel') }}</legend>
+        @for (option of reasons; track option) {
+        <label
+          class="flex min-h-11 cursor-pointer items-center gap-3 rounded-md border-2 border-border-subtle px-3 text-body text-fg hover:bg-canvas-subtle has-checked:border-primary has-checked:bg-surface-selected has-focus-visible:outline-2 has-focus-visible:outline-border-focus"
+        >
+          <input class="sr-only" type="radio" name="report-reason" [value]="option" [checked]="reason() === option" (change)="reason.set(option)" />
+          {{ t('reports.reasons.' + option) }}
+        </label>
+        }
+      </fieldset>
+      <label class="text-label-lg text-fg" for="report-comment">{{ t('reports.comment') }}</label>
+      <textarea
+        id="report-comment"
+        rows="3"
+        class="w-full resize-y rounded-md border border-border bg-surface p-3 text-body text-fg focus-visible:outline-2 focus-visible:outline-border-focus"
+        [attr.maxlength]="commentMax"
+        [value]="comment()"
+        (input)="onComment($event)"
+      ></textarea>
+      @if (errorKey(); as key) {
+      <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
+      }
+      <app-luma-button [fullWidth]="true" [disabled]="!reason() || sending()" (clicked)="send()">{{ t('reports.send') }}</app-luma-button>
+    </div>
+  </app-luma-bottom-sheet>
+</ng-container>

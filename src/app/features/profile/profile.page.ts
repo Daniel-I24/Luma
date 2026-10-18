@@ -4,6 +4,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
 import { LumaAvatar, LumaBottomSheet, LumaButton, LumaIcon } from '@design-system';
 import { SessionProfileStore } from '@shared/account/session-profile.store';
+import { AdminEntry } from './components/admin-entry/admin-entry';
 import { AppearanceSettings } from './components/appearance-settings/appearance-settings';
 import { BusinessEntry } from './components/business-entry/business-entry';
 import { NotificationsEntry } from './components/notifications-entry/notifications-entry';
@@ -25,6 +26,7 @@ import { DisplayNameField } from './components/display-name-field/display-name-f
     LumaButton,
     LumaIcon,
     RouterLink,
+    AdminEntry,
     AppearanceSettings,
     BusinessEntry,
     DisplayNameField,

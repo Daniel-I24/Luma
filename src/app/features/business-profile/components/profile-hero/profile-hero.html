@@ -46,6 +46,14 @@
       <p class="m-0 text-body-sm text-fg-subtle">{{ business().category }}</p>
       <div class="flex flex-wrap items-center gap-2">
         <app-status-badge size="sm" [status]="status()" />
+        @if (business().verification_status === 'approved') {
+        <span
+          class="inline-flex items-center gap-1 rounded-full bg-success-bg px-2 text-caption font-semibold text-success-fg"
+          [title]="t('verification.badgeHint')"
+        >
+          <app-luma-icon name="check" size="sm" /> {{ t('verification.badge') }}
+        </span>
+        }
         @if (distanceKm() | distance: lang(); as distance) {
         <span class="text-caption text-fg-subtle">{{ distance }}</span>
         }

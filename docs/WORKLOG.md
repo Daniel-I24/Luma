@@ -35,14 +35,18 @@ agent's sessions).
   owner-only and the Profile shows it only to owners (the customer
   "¿Tienes un negocio?" sheet comes in PARTE 5).
 
-## In progress
-
-- PARTE 4 — SQL done (migrations 20261020000000 to 20261020000400: status,
+- PARTE 4 — SQL (migrations 20261020000000 to 20261020000400: status,
   admins, NIT check digit, legal data, documents + private bucket,
   is_business_public in every public policy/view/Storage/create_order,
-  submit/review RPCs, re-review trigger, reports; 48 SQL checks, 249 total;
-  seed approved). Left: Nit value object, /admin app, report sheet and
-  "Verificado" badge, docs (verification, admin, roles).
+  submit/review RPCs, re-review trigger, reports; seed approved), `Nit` value
+  object, `/admin` (queue, review with signed document URLs, decision with
+  mandatory note; `adminGuard` fixed to inject before awaiting), report sheet
+  and "Verificado" badge on the restaurant profile. Docs come with PARTE 5.
+
+## In progress
+
+- Session 2026-10-18 (block A of the owner's brief): CI fix, tree audit,
+  clean install of every migration, invariants re-checked.
 
 ## Left
 

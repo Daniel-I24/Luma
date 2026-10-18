@@ -3,6 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LumaIcon } from '@design-system';
 import type { Business, BusinessHours } from '@shared/business/models/business.model';
+import { ReportSheet } from '../report-sheet/report-sheet';
 
 /** Week starting on Monday, as is customary in Colombia (JS: 0 = Sunday). */
 const WEEK: readonly BusinessHours['day_of_week'][] = [1, 2, 3, 4, 5, 6, 0];
@@ -22,7 +23,7 @@ export interface ScheduleRow {
   selector: 'app-info-tab',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaIcon],
+  imports: [TranslocoModule, LumaIcon, ReportSheet],
   templateUrl: './info-tab.html',
   host: { class: 'block' },
 })
