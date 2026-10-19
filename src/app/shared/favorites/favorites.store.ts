@@ -3,6 +3,7 @@ import { AuthService } from '@core/auth/auth.service';
 import { type UserScopedState, UserDataRegistry } from '@core/auth/user-data-registry';
 import { ToastService } from '@design-system/toast/toast.service';
 import { FavoriteRepository } from '@shared/business/data/favorite.repository';
+import { NativeHaptics } from '@core/native/native-haptics';
 
 /**
  * FavoritesStore — ids of the signed-in user's favourite businesses. Loaded
@@ -14,6 +15,7 @@ import { FavoriteRepository } from '@shared/business/data/favorite.repository';
 export class FavoritesStore implements UserScopedState {
   private readonly repo = inject(FavoriteRepository);
   private readonly toasts = inject(ToastService);
+  private readonly haptics = inject(NativeHaptics);
   private readonly auth = inject(AuthService);
   private readonly userId = computed(() => this.auth.user()?.id ?? null);
 
@@ -72,6 +74,7 @@ export class FavoritesStore implements UserScopedState {
         this.toasts.show({ messageKey: result.errorKey, tone: 'error' });
         return false;
       }
+      if (!wasFavorite) void this.haptics.tap();
       this.toasts.show({
         messageKey: wasFavorite ? 'favorites.removed' : 'favorites.added',
         tone: 'success',

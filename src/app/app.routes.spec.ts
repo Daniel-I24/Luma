@@ -4,8 +4,10 @@ import { ownerGuard } from '@shared/account/account.guards';
 import { routes } from './app.routes';
 
 describe('app routes', () => {
-  it('sends unknown URLs to the map', () => {
-    expect(routes.at(-1)).toEqual({ path: '**', redirectTo: 'map' });
+  it('shows a not-found page for unknown URLs', () => {
+    const last = routes.at(-1);
+    expect(last?.path).toBe('**');
+    expect(last?.loadComponent).toBeTypeOf('function');
   });
 
   it('includes the design preview outside production builds', () => {

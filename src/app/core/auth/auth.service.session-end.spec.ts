@@ -75,9 +75,7 @@ describe('AuthService — ending the session', () => {
   it('deleteAccount: asks to sign in again when the last sign-in is too old (403)', async () => {
     functions.invoke.mockResolvedValue({
       data: null,
-      error: new FunctionsHttpError(
-        new Response('{"error":"reauth_required"}', { status: 403 }),
-      ),
+      error: new FunctionsHttpError(new Response('{"error":"reauth_required"}', { status: 403 })),
     });
 
     expect(await service.deleteAccount()).toEqual({
@@ -90,7 +88,7 @@ describe('AuthService — ending the session', () => {
   it('deleteAccount: maps a network failure to the network key', async () => {
     functions.invoke.mockResolvedValue({ data: null, error: new FunctionsFetchError(new Error()) });
 
-    expect((await service.deleteAccount()).errorKey).toBe('auth.errors.networkError');
+    expect((await service.deleteAccount()).errorKey).toBe('errors.serviceUnavailable');
   });
 
   it('deleteAccount: turns an unexpected exception into a generic error', async () => {

@@ -1,8 +1,13 @@
 import { FunctionsFetchError, FunctionsHttpError } from '@supabase/supabase-js';
 
+/** No answer from the server: the device is offline, or the service is down. */
+export function networkErrorKey(online: boolean): string {
+  return online ? 'errors.serviceUnavailable' : 'errors.offline';
+}
+
 /** Maps a delete-account Edge Function error to a Transloco key. */
-export async function mapDeleteAccountError(error: unknown): Promise<string> {
-  if (error instanceof FunctionsFetchError) return 'auth.errors.networkError';
+export async function mapDeleteAccountError(error: unknown, online = true): Promise<string> {
+  if (error instanceof FunctionsFetchError) return networkErrorKey(online);
   if (error instanceof FunctionsHttpError) {
     const response: unknown = error.context;
     if (response instanceof Response && response.status === 401) {
@@ -25,7 +30,7 @@ function isErrorBody(body: unknown, code: string): boolean {
  * Maps Supabase error messages / codes to Transloco i18n keys.
  * All user-facing strings live in es.json / en.json under auth.errors.*.
  */
-export function mapAuthError(message: string): string {
+export function mapAuthError(message: string, online = true): string {
   const msg = message.toLowerCase();
 
   if (msg.includes('invalid login credentials') || msg.includes('invalid credentials')) {
@@ -47,7 +52,7 @@ export function mapAuthError(message: string): string {
     return 'auth.errors.tooManyRequests';
   }
   if (msg.includes('network') || msg.includes('fetch')) {
-    return 'auth.errors.networkError';
+    return networkErrorKey(online);
   }
 
   return 'auth.errors.unknown';

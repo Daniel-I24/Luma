@@ -1,6 +1,7 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import type { Session, User } from '@supabase/supabase-js';
+import { ConnectivityService } from '@core/network/connectivity.service';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import { mapAuthError, mapDeleteAccountError } from './auth-error';
 import { signInSchema, signUpSchema } from './auth.schemas';
@@ -31,6 +32,7 @@ export class AuthService {
   private readonly supabase = inject(SupabaseService).client;
   private readonly router = inject(Router);
   private readonly userData = inject(UserDataRegistry);
+  private readonly online = inject(ConnectivityService).online;
 
   private readonly _session = signal<Session | null>(null);
   private readonly _loading = signal<boolean>(false);
@@ -54,7 +56,7 @@ export class AuthService {
     if (!parsed.success) return Promise.resolve(fail(parsed.error.issues[0].message));
     return this.withLoading(async () => {
       const { error } = await this.supabase.auth.signInWithPassword(parsed.data);
-      return error ? fail(mapAuthError(error.message)) : OK;
+      return error ? fail(mapAuthError(error.message, this.online())) : OK;
     });
   }
 
@@ -65,7 +67,7 @@ export class AuthService {
     return this.withLoading(async () => {
       const options = profile ? { data: signUpMetadata(profile) } : undefined;
       const { error } = await this.supabase.auth.signUp({ ...parsed.data, options });
-      const errorKey = error ? mapAuthError(error.message) : null;
+      const errorKey = error ? mapAuthError(error.message, this.online()) : null;
       // Never reveal that an email is already registered: same next step.
       return errorKey && errorKey !== 'auth.errors.emailAlreadyRegistered' ? fail(errorKey) : OK;
     });
@@ -74,7 +76,7 @@ export class AuthService {
   signOut(): Promise<AuthResult> {
     return this.withLoading(async () => {
       const { error } = await this.supabase.auth.signOut();
-      if (error) return fail(mapAuthError(error.message));
+      if (error) return fail(mapAuthError(error.message, this.online()));
       this.userData.clearAll();
       return OK;
     });
@@ -88,7 +90,7 @@ export class AuthService {
   deleteAccount(): Promise<AuthResult> {
     return this.withLoading(async () => {
       const { error } = await this.supabase.functions.invoke('delete-account', { method: 'POST' });
-      if (error) return fail(await mapDeleteAccountError(error));
+      if (error) return fail(await mapDeleteAccountError(error, this.online()));
       // The user no longer exists server-side; local scope clears storage without a request.
       await this.supabase.auth.signOut({ scope: 'local' });
       this.userData.clearAll();

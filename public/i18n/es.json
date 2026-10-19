@@ -116,7 +116,6 @@
       "emailNotConfirmed": "Debes confirmar tu correo antes de ingresar.",
       "passwordTooShort": "La contraseña debe tener al menos 6 caracteres.",
       "tooManyRequests": "Demasiados intentos. Espera unos minutos e intenta de nuevo.",
-      "networkError": "Error de conexión. Verifica tu red e intenta de nuevo.",
       "unknown": "Ocurrió un error inesperado. Intenta de nuevo.",
       "deleteAccountFailed": "No se pudo eliminar la cuenta. Intenta de nuevo.",
       "sessionExpired": "Tu sesión expiró. Inicia sesión de nuevo e intenta otra vez.",
@@ -1395,5 +1394,17 @@
       "order": "Pedir",
       "soldOut": "Agotado"
     }
+  },
+  "errors": {
+    "offline": "No tienes conexión a internet. Revisa tu red e intenta de nuevo.",
+    "serviceUnavailable": "El servicio no responde en este momento. Intenta de nuevo en unos minutos.",
+    "offlineBanner": "Sin conexión: algunas funciones no están disponibles.",
+    "placeholderConfig": "Modo desarrollo: environment.ts tiene valores de plantilla (placeholder.supabase.co). La app no puede conectarse a Supabase.",
+    "unexpected": "Algo salió mal. Puedes seguir usando la app; si se repite, recárgala."
+  },
+  "notFound": {
+    "title": "No encontramos esta página",
+    "description": "La dirección no existe o ya no está disponible.",
+    "home": "Ir al inicio"
   }
 }

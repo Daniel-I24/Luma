@@ -118,5 +118,9 @@ export const routes: Routes = [
       },
     ],
   },
-  { path: '**', redirectTo: 'map' },
+  {
+    // Unknown addresses get a page with a way out (signed in or not).
+    path: '**',
+    loadComponent: () => import('./features/not-found/not-found.page').then((m) => m.NotFoundPage),
+  },
 ];

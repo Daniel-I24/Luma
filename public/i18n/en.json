@@ -116,7 +116,6 @@
       "emailNotConfirmed": "Please confirm your email before signing in.",
       "passwordTooShort": "Password must be at least 6 characters.",
       "tooManyRequests": "Too many attempts. Please wait a few minutes.",
-      "networkError": "Connection error. Check your network and try again.",
       "unknown": "An unexpected error occurred. Please try again.",
       "deleteAccountFailed": "Could not delete your account. Please try again.",
       "sessionExpired": "Your session has expired. Sign in again and retry.",
@@ -1395,5 +1394,17 @@
       "order": "Order",
       "soldOut": "Sold out"
     }
+  },
+  "errors": {
+    "offline": "You are offline. Check your connection and try again.",
+    "serviceUnavailable": "The service is not responding right now. Try again in a few minutes.",
+    "offlineBanner": "Offline: some features are unavailable.",
+    "placeholderConfig": "Development mode: environment.ts has template values (placeholder.supabase.co). The app cannot reach Supabase.",
+    "unexpected": "Something went wrong. You can keep using the app; if it happens again, reload it."
+  },
+  "notFound": {
+    "title": "We could not find this page",
+    "description": "The address does not exist or is no longer available.",
+    "home": "Go home"
   }
 }

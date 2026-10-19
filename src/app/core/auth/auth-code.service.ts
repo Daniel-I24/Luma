@@ -1,11 +1,16 @@
 import { Injectable, inject, signal } from '@angular/core';
+import { ConnectivityService } from '@core/network/connectivity.service';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import { mapAuthError } from './auth-error';
 import { recoverPasswordSchema, resetPasswordSchema, verifyCodeSchema } from './auth.schemas';
 import { type AuthResult, OK, fail } from './auth.service';
 
 /** Errors that may be shown without revealing whether an account exists. */
-const NEUTRAL_ERRORS = new Set(['auth.errors.tooManyRequests', 'auth.errors.networkError']);
+const NEUTRAL_ERRORS = new Set([
+  'auth.errors.tooManyRequests',
+  'errors.offline',
+  'errors.serviceUnavailable',
+]);
 
 /**
  * AuthCodeService — email flows with 6-digit codes ({{ .Token }} in the
@@ -16,6 +21,7 @@ const NEUTRAL_ERRORS = new Set(['auth.errors.tooManyRequests', 'auth.errors.netw
 @Injectable({ providedIn: 'root' })
 export class AuthCodeService {
   private readonly auth = inject(SupabaseService).client.auth;
+  private readonly online = inject(ConnectivityService).online;
   private readonly _busy = signal(false);
   readonly busy = this._busy.asReadonly();
 
@@ -29,7 +35,7 @@ export class AuthCodeService {
         token: parsed.data.code,
         type: 'signup',
       });
-      return error ? fail(mapAuthError(error.message)) : OK;
+      return error ? fail(mapAuthError(error.message, this.online())) : OK;
     });
   }
 
@@ -52,9 +58,9 @@ export class AuthCodeService {
         token: parsed.data.code,
         type: 'recovery',
       });
-      if (verified.error) return fail(mapAuthError(verified.error.message));
+      if (verified.error) return fail(mapAuthError(verified.error.message, this.online()));
       const { error } = await this.auth.updateUser({ password: parsed.data.password });
-      return error ? fail(mapAuthError(error.message)) : OK;
+      return error ? fail(mapAuthError(error.message, this.online())) : OK;
     });
   }
 
@@ -66,7 +72,7 @@ export class AuthCodeService {
     if (!parsed.success) return Promise.resolve(fail(parsed.error.issues[0].message));
     return this.run(async () => {
       const { error } = await send(parsed.data.email);
-      const key = error ? mapAuthError(error.message) : null;
+      const key = error ? mapAuthError(error.message, this.online()) : null;
       return key && NEUTRAL_ERRORS.has(key) ? fail(key) : OK;
     });
   }

@@ -1,6 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import {
   ApplicationConfig,
+  ErrorHandler,
   inject,
   isDevMode,
   provideAppInitializer,
@@ -9,7 +10,9 @@ import {
 import { provideRouter, withViewTransitions } from '@angular/router';
 import { provideTransloco } from '@jsverse/transloco';
 import { LanguageService } from '@core/i18n/language.service';
+import { ConnectivityService } from '@core/network/connectivity.service';
 import { NativeShell } from '@core/native/native-shell';
+import { AppErrorHandler } from '@shared/errors/app-error-handler';
 import { onRouteTransitionCreated } from '@core/navigation/route-transition';
 import { routes } from './app.routes';
 import { TranslocoHttpLoader } from './transloco-loader';
@@ -17,6 +20,8 @@ import { TranslocoHttpLoader } from './transloco-loader';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
+    // Unhandled errors show a friendly notice instead of a blank screen.
+    { provide: ErrorHandler, useClass: AppErrorHandler },
     provideRouter(
       routes,
       withViewTransitions({
@@ -42,6 +47,9 @@ export const appConfig: ApplicationConfig = {
     provideAppInitializer(() => {
       inject(NativeShell)
         .init()
+        .catch(() => undefined);
+      inject(ConnectivityService)
+        .watchNative()
         .catch(() => undefined);
     }),
   ],

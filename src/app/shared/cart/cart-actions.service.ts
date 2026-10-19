@@ -1,4 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
+import { NativeHaptics } from '@core/native/native-haptics';
 import { ToastService } from '@design-system/toast/toast.service';
 import type { CartProduct } from './cart.model';
 import { CartStore } from './cart.store';
@@ -12,6 +13,7 @@ import { CartStore } from './cart.store';
 export class CartActions {
   private readonly cart = inject(CartStore);
   private readonly toasts = inject(ToastService);
+  private readonly haptics = inject(NativeHaptics);
   private readonly _pending = signal<readonly CartProduct[] | null>(null);
 
   /** Products waiting for the user to confirm emptying the cart. */
@@ -45,6 +47,7 @@ export class CartActions {
 
   private addEach(products: readonly CartProduct[]): void {
     const outcomes = products.map((product) => this.cart.add(product));
+    if (outcomes.includes('added')) void this.haptics.tap();
     if (outcomes.includes('limit')) {
       this.toasts.show({ messageKey: 'cart.errors.limit', tone: 'error' });
     }

@@ -1,5 +1,6 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { NativeHaptics } from '@core/native/native-haptics';
 import { CartStore } from '@shared/cart/cart.store';
 import { OrderRepository } from '@shared/orders/order.repository';
 import { PAYMENT_GATEWAY } from '@shared/payments/payment-gateway';
@@ -19,6 +20,7 @@ export class CheckoutStore {
   private readonly router = inject(Router);
   private readonly schedule = inject(PickupScheduleStore);
   private readonly payments = inject(PAYMENT_GATEWAY);
+  private readonly haptics = inject(NativeHaptics);
   /** Translation key of the payment method shown at checkout. */
   readonly paymentLabelKey = this.payments.labelKey;
 
@@ -56,6 +58,7 @@ export class CheckoutStore {
         return;
       }
       this.cart.clear();
+      void this.haptics.tap();
       // Pay at pick-up: nothing to do online; the order screen says so.
       await this.payments.start(result.data);
       await this.router.navigate(['/orders', result.data]);

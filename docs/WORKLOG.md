@@ -95,7 +95,12 @@ agent's sessions).
   hardened (no backup, no cleartext, location), back button and keyboard
   (`NativeShell`), icon and splash from `assets/logo.svg`, CSP evaluated,
   docs/android.md. assembleDebug passed locally with JDK 21.
-- Then block G (polish and docs) is not started.
+- Block G in progress: network errors split into "sin conexión" and "servicio
+  no disponible" (ConnectivityService, also @capacitor/network), global
+  offline notice, dev warning for template environment values, 404 page,
+  AppErrorHandler (friendly notice), haptics on add to cart, favourite and
+  order. Next: screen pass and docs (README, ARCHITECTURE, deploy, mocks,
+  orders, legal-notes).
 
 ## Left
 
