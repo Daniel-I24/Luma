@@ -51,3 +51,8 @@ src/environments/environment.deploy.ts
 
 # Supabase CLI local state (project ref, pooler host, versions)
 supabase/.temp/
+
+# Android signing: never commit keystores or their passwords
+*.jks
+*.keystore
+keystore.properties

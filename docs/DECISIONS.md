@@ -115,3 +115,23 @@ alternative that was not taken. The safest, most reversible option wins.
   all of them.
 - **Alternative**: provider-specific schema fields. Tighter output, but more
   breakage when providers change.
+
+## 2026-10-18 — APK: JDK chosen by version, icon tool run on demand
+
+- **What**: `scripts/apk.mjs` accepts only JDK 17-24 (Gradle 8.14); an
+  invalid or too-new `JAVA_HOME` falls back to Android Studio's JBR or
+  another installed JDK. `@capacitor/assets` is run with `npx` once and is
+  not a dependency.
+- **Why**: this machine's Android Studio bundles JDK 25, which Gradle 8.14
+  cannot run (assembleDebug passed with Temurin 21). `@capacitor/assets`
+  brings `sharp`/`tar` versions with high and critical advisories.
+- **Alternative**: upgrading Gradle and the Android Gradle Plugin to run on
+  JDK 25 (larger change, to do with the next Capacitor upgrade).
+
+## 2026-10-18 — No CSP meta in the APK yet
+
+- **What**: evaluated, not added (docs/android.md).
+- **Why**: `connect-src` depends on the environment's Supabase URL and the
+  tile hosts; the APK only loads bundled files over https and blocks
+  cleartext.
+- **Alternative**: generate the meta at build time with `generate-env.mjs`.

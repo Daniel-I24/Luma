@@ -1,5 +1,13 @@
 apply plugin: 'com.android.application'
 
+// Version from package.json: "1.2.3" -> versionName 1.2.3, versionCode 10203.
+def appVersion = new groovy.json.JsonSlurper().parse(file('../../package.json')).version as String
+def versionParts = (appVersion =~ /^(\d+)\.(\d+)\.(\d+)/)[0][1..3].collect { it as int }
+def appVersionCode = versionParts[0] * 10000 + versionParts[1] * 100 + versionParts[2]
+
+// Release signing only from environment variables; the keystore never goes to git.
+def keystorePath = System.getenv('LUMA_KEYSTORE_PATH')
+
 android {
     namespace = "com.luma.app"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -7,8 +15,8 @@ android {
         applicationId "com.luma.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode appVersionCode
+        versionName appVersion
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -16,8 +24,19 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        release {
+            if (keystorePath) {
+                storeFile file(keystorePath)
+                storePassword System.getenv('LUMA_KEYSTORE_PASSWORD')
+                keyAlias System.getenv('LUMA_KEY_ALIAS')
+                keyPassword System.getenv('LUMA_KEY_PASSWORD')
+            }
+        }
+    }
     buildTypes {
         release {
+            if (keystorePath) signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

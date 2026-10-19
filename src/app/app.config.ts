@@ -9,6 +9,7 @@ import {
 import { provideRouter, withViewTransitions } from '@angular/router';
 import { provideTransloco } from '@jsverse/transloco';
 import { LanguageService } from '@core/i18n/language.service';
+import { NativeShell } from '@core/native/native-shell';
 import { onRouteTransitionCreated } from '@core/navigation/route-transition';
 import { routes } from './app.routes';
 import { TranslocoHttpLoader } from './transloco-loader';
@@ -36,5 +37,12 @@ export const appConfig: ApplicationConfig = {
     }),
     // Activate the stored language before the first render (no flash of Spanish).
     provideAppInitializer(() => inject(LanguageService).init()),
+    // Android back button and keyboard (no-op on the web). Never blocks startup:
+    // if a plugin fails to load, the app keeps the plain web behaviour.
+    provideAppInitializer(() => {
+      inject(NativeShell)
+        .init()
+        .catch(() => undefined);
+    }),
   ],
 };

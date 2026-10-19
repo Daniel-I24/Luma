@@ -89,7 +89,13 @@ agent's sessions).
   in Resumen and Promociones (prefilled form, owner publishes), docs/ai.md.
   E9: `PAYMENT_GATEWAY` (`PayAtPickupGateway`, used by checkout) and the Wompi
   plan in docs/payments.md (not implemented).
-- Then blocks F (APK) and G (polish and docs) are not started.
+- PARTE 8 / Block F (APK, no performance work): `npm run apk:debug` and
+  `apk:release` (`scripts/apk.mjs`, signing from LUMA_KEYSTORE_*, JDK 17-24
+  detection with JBR fallback), version from package.json (1.0.0), manifest
+  hardened (no backup, no cleartext, location), back button and keyboard
+  (`NativeShell`), icon and splash from `assets/logo.svg`, CSP evaluated,
+  docs/android.md. assembleDebug passed locally with JDK 21.
+- Then block G (polish and docs) is not started.
 
 ## Left
 

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Luma brand mark: a map pin with an "L", on the Indigo theme primary (#14174a). -->
+  <defs>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#e6e7f7"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" fill="#14174a"/>
+  <path d="M512 196c-129 0-232 101-232 228 0 166 232 404 232 404s232-238 232-404c0-127-103-228-232-228z" fill="url(#glow)"/>
+  <path d="M452 318h64v172h96v58H452z" fill="#14174a"/>
+</svg>

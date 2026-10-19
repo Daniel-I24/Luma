@@ -1,6 +1,6 @@
 {
   "name": "luma",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -9,7 +9,9 @@
     "test": "ng test",
     "lint": "ng lint",
     "build:prod": "node scripts/generate-env.mjs && ng build --configuration production,deploy",
-    "test:scripts": "node --test scripts/*.test.mjs"
+    "test:scripts": "node --test scripts/*.test.mjs",
+    "apk:debug": "node scripts/apk.mjs debug",
+    "apk:release": "node scripts/apk.mjs release"
   },
   "private": true,
   "packageManager": "npm@11.21.0",
@@ -21,7 +23,11 @@
     "@angular/platform-browser": "^22.2.3",
     "@angular/router": "^22.2.3",
     "@capacitor/android": "^8.5.3",
+    "@capacitor/app": "^8.1.2",
     "@capacitor/core": "^8.5.3",
+    "@capacitor/haptics": "^8.0.2",
+    "@capacitor/keyboard": "^8.0.6",
+    "@capacitor/network": "^8.0.1",
     "@capacitor/status-bar": "^8.0.4",
     "@fontsource-variable/inter": "^5.3.0",
     "@jsverse/transloco": "^8.4.0",
