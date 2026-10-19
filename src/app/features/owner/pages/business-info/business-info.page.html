@@ -30,7 +30,7 @@
         <p
           [id]="idPrefix + '-description-help'"
           class="m-0 text-right text-caption"
-          [class.text-danger]="!!errors()['description']"
+          [class.text-danger-fg]="!!errors()['description']"
           [class.text-fg-subtle]="!errors()['description']"
         >
           @if (errors()['description']; as key) { {{ t(key) }} } @else { {{

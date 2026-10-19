@@ -20,7 +20,7 @@
       (input)="onNote($event)"
     ></textarea>
     @if (missingNote()) {
-    <p id="review-note-error" class="m-0 text-caption text-danger" role="alert">{{ t('admin.errors.noteRequired') }}</p>
+    <p id="review-note-error" class="m-0 text-caption text-danger-fg" role="alert">{{ t('admin.errors.noteRequired') }}</p>
     } }
     <app-luma-button
       [variant]="decision() === 'approved' ? 'primary' : 'danger'"

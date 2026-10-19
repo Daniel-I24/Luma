@@ -43,6 +43,6 @@
   <input #file type="file" hidden [accept]="accept" (change)="onFile($event)" />
   <p [id]="fieldId() + '-hint'" class="m-0 text-caption text-fg-muted">{{ t('media.hint') }}</p>
   @if (errorKey(); as key) {
-  <p class="m-0 text-body-sm text-danger" role="alert">{{ t(key) }}</p>
+  <p class="m-0 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
   }
 </div>
