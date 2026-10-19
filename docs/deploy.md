@@ -39,7 +39,14 @@ configure your own SMTP before real users sign up. The **Site URL**
 (Authentication → URL Configuration) can be `https://<your-domain>`; no
 redirect URL is needed for these flows.
 
-## delete-account Edge Function
+## Edge Functions
+
+Three functions, all POST with a JWT and the same CORS allow list:
+`delete-account` (account erasure, recent sign-in required), `recommend` and
+`suggest-promotions` (Luma IA, optional: the app runs on rules until
+`AI_MODE` is `remote`, see [ai.md](ai.md)). Shared code lives in
+`supabase/functions/_shared`.
+
 
 `ALLOWED_ORIGINS` is a comma-separated list of browser origins, matched
 exactly (no wildcards; empty entries are ignored). The legacy single
@@ -55,18 +62,30 @@ default.
 ```sh
 supabase secrets set ALLOWED_ORIGINS=https://localhost,https://<vercel-domain>
 supabase functions deploy delete-account
+# Luma IA (optional): secrets first, then
+supabase secrets set LLM_PROVIDER=gemini LLM_MODEL=<model-id> LLM_API_KEY=<key>
+supabase functions deploy recommend
+supabase functions deploy suggest-promotions
 ```
 
 Vercel preview URLs are not covered (no wildcards); add a preview origin
-explicitly if you need to test account deletion there.
+explicitly if you need to test these functions there.
 
-## Storage (business pictures)
+## Storage
 
 Migration `20261018000100_business_images.sql` creates the public
 `business-images` bucket (2 MB, JPEG/PNG/WebP) and its policies; nothing has
 to be configured by hand. Pictures are public https URLs, already allowed by
-`img-src https:` in the CSP. `delete-account` removes a user's business
-pictures before deleting the account.
+`img-src https:` in the CSP. Migration
+`20261020000400_verification_storage.sql` creates the **private**
+`verification-docs` bucket (5 MB, images and PDF) read by the owner and, with
+60-second signed URLs, by admins. `delete-account` removes both a user's
+business pictures and verification documents before deleting the account.
+
+## Android
+
+The APK bundles the same build (`npm run apk:debug` / `apk:release`):
+[android.md](android.md). Add `https://localhost` to `ALLOWED_ORIGINS`.
 
 ## Caching
 
@@ -115,12 +134,13 @@ Sent on every response (`vercel.json`):
 
 Login, redirect to the map, MapLibre canvas with tiles from
 `tiles.openfreemap.org`, markers, theme change and language change work with
-zero CSP violations; `/design-preview` redirects to `/map` in production.
+zero CSP violations (verified on the 2026-10-17 build). In production
+`/design-preview` does not exist and opens the 404 page.
 
 ## Production-only behaviour
 
 - `/design-preview` (design-system showcase) exists only in development
-  builds; production drops the route and unknown URLs go to `/map`.
+  builds; production drops the route and unknown URLs open the 404 page.
 
 ## Audits (2026-10-17, production build)
 

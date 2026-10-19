@@ -15,13 +15,18 @@ Migrations (apply in this order, after the existing ones):
 3. `20261017000200_order_status_functions.sql` — `cancel_order`,
    `set_order_status`.
 
+Later migrations redefine `create_order`: only public businesses
+(`20261020000110_create_order_public.sql`) and promotion discounts
+(`20261021000000_promotion_discounts.sql`).
+
 | Rule | Where |
 | --- | --- |
 | Clients have no INSERT/UPDATE/DELETE on `orders` / `order_items` | grants |
 | A customer reads only their orders and lines | RLS (`user_id = auth.uid()`) |
 | Business owners read orders only through `business_orders` / `business_order_items` (their businesses, no `user_id` or email; `customer_label` = public display name or NULL) | views, `security_barrier`, SELECT for authenticated |
-| Total = Σ `menu_items.price_cop` × quantity; client prices ignored | `create_order` |
-| Active business; 1–20 distinct lines; quantities 1–20; items of that business and available | `create_order` |
+| Unit price = menu price minus the best current discount of that item (`round(list × (100 − %) / 100)`, nearest peso, halves up); total = Σ unit price × quantity; client prices ignored | `create_order` → `order_line_prices` |
+| Each line keeps `list_price_cop`, the final `unit_price_cop` and `promotion_id` | `order_items` |
+| Public business (published and approved); 1–20 distinct lines; quantities 1–20; items of that business and available | `create_order` |
 | `pickup_at` NULL (as soon as possible) or 10 min – 7 days ahead | `create_order` |
 | Notes ≤ 200 characters; payment `pay_at_pickup` only | `create_order` + checks |
 | At most 5 pending orders per user (advisory lock per user) | `create_order` |
@@ -84,7 +89,9 @@ pronto", "cierra pronto") come from the same object.
 ## Security tests
 
 `supabase/tests/orders_security.sql`, `orders_status.sql`,
-`orders_retention.sql`, `orders_hours.sql` and `opening_hours_cases.sql` run
+`orders_retention.sql`, `orders_hours.sql`, `opening_hours_cases.sql` and
+`promotion_discounts.sql` (discounts, rounding, expired or foreign
+promotions) run
 as the `anon` and `authenticated` roles with a JWT `sub`, inside a transaction
 that is rolled back:
 
@@ -133,13 +140,13 @@ without reloading.
 - Opening hours: at `/checkout`, "Ahora" is disabled while the business is
   closed and "Más tarde" / "Mañana" offer only 15-minute slots inside the
   hours; the server checks them again (see above).
-- Payment is **at pick-up only**; online payment with Wompi (hosted checkout,
-  signed webhook, idempotency) is a later phase.
+- Payment is **at pick-up only** (`PAYMENT_GATEWAY` = `PayAtPickupGateway`);
+  the Wompi plan is in [payments.md](payments.md).
 - The ready time shown for "as soon as possible" orders is created_at +
   the business's `prep_minutes` (20 when unknown), and the travel time is
   a straight-line approximation shown only when the user's location is
   known (`docs/mocks.md`).
-- Owners manage orders at `/business/:id/orders` (tabs Nuevos, En
+- Owners manage orders at `/owner/:id/orders` (tab Pedidos of Luma Negocios) (tabs Nuevos, En
   preparación, Listos, Historial; Aceptar, Rechazar, Preparando, Listo,
   Entregado through `set_order_status`; refresh every 15 s while visible).
   Migration `20261018000200_business_orders.sql`, tests

@@ -31,8 +31,13 @@ existe): lo que sigue son estimaciones o reglas calculadas en el cliente.
   puntuación por distancia, calificación real, promoción activa y favoritos.
   El combo (plato + acompañamiento + bebida) sale de un diccionario de
   secciones del menú. Detalle en `docs/ai.md`.
-- **Para reemplazarlo:** `ClaudeRecommendationEngine` detrás de la misma
-  interfaz, llamando a una Edge Function (clave solo en el servidor).
+- **Modo remoto (opcional):** con `AI_MODE = 'remote'` la Edge Function
+  `recommend` usa un modelo de lenguaje (pasarela `_shared/llm`) y, si falla,
+  vuelven las reglas. La etiqueta "Recomendada por Luma IA" de la pestaña
+  Promos es una regla: el mayor descuento de un producto disponible.
+- **Ideas de promociones (dueños):** por defecto, reglas sobre agregados
+  reales de ventas (`owner_sales_summary`); en modo remoto, la Edge Function
+  `suggest-promotions`. Nunca se publica nada sin el dueño.
 
 ## Orden del feed (Descubrir)
 
@@ -75,7 +80,11 @@ existe): lo que sigue son estimaciones o reglas calculadas en el cliente.
   consulta falla no se muestra nada (no se confunde con "sin reseñas").
   Antes era un mock (`MockBusinessRatingProvider`), ya eliminado.
 - **Promociones de las tarjetas:** `BusinessHighlightsRepository.getActivePromotions`,
-  también una sola consulta para todos los negocios cercanos.
+  también una sola consulta para todos los negocios cercanos. Los
+  descuentos (`discount_percent`) son reales y el precio final que se cobra lo
+  calcula `create_order`; la app muestra el mismo redondeo.
+- **Cifras de "Hoy" en Luma Negocios:** pedidos reales del negocio en el día
+  de Bogotá; el total vendido suma los pedidos recogidos.
 - **Menú, favoritos y reseñas:** tablas `menu_items`, `favorites` y `reviews`
   con sus repositorios en `src/app/shared/business/data/`. Los menús de prueba
   están en `supabase/seed_menu_items.sql` (repetible, vincula por nombre de

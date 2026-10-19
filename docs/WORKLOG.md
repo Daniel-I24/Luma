@@ -95,17 +95,20 @@ agent's sessions).
   hardened (no backup, no cleartext, location), back button and keyboard
   (`NativeShell`), icon and splash from `assets/logo.svg`, CSP evaluated,
   docs/android.md. assembleDebug passed locally with JDK 21.
-- Block G in progress: network errors split into "sin conexión" and "servicio
-  no disponible" (ConnectivityService, also @capacitor/network), global
-  offline notice, dev warning for template environment values, 404 page,
-  AppErrorHandler (friendly notice), haptics on add to cart, favourite and
-  order. Next: screen pass and docs (README, ARCHITECTURE, deploy, mocks,
-  orders, legal-notes).
+- Block G done: offline vs service errors, offline notice, dev warning for
+  template environment values, 404 page, AppErrorHandler, haptics, AA
+  contrast check of the new screens in the four themes (error text moved to
+  `text-danger-fg`), docs (README, ARCHITECTURE, deploy, mocks, orders,
+  legal-notes, DECISIONS). Local test Postgres stopped.
 
 ## Left
 
-- Promotions with discounts (brief block D), AI
-  with a swappable provider (block E, owner authorised it in the brief),
-  8 (APK only, no performance work), polish (block G), 10 (docs).
-- PARTE 9 and the performance section of PARTE 8: on hold until the owner
-  asks.
+- Visual pass in a browser of the owner and admin screens (needs a session
+  with an owner/admin account; covered by component tests only).
+- Migrations 5 to 21 to review and apply (docs/migrations.md), then
+  VALIDATE the NOT VALID constraints.
+- To switch Luma IA to remote: deploy the functions and set the secrets
+  (docs/ai.md), then AI_MODE = remote.
+- Gradle/AGP upgrade to build with JDK 25 (Android Studio's current JBR).
+- PARTE 9 (Wompi) and the performance section of PARTE 8: on hold until the
+  owner asks; the Wompi plan is in docs/payments.md.
