@@ -2,6 +2,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CartStore } from '@shared/cart/cart.store';
 import { OrderRepository } from '@shared/orders/order.repository';
+import { PAYMENT_GATEWAY } from '@shared/payments/payment-gateway';
 import { PickupScheduleStore } from './pickup-schedule.store';
 
 export const NOTES_MAX_LENGTH = 200;
@@ -17,6 +18,9 @@ export class CheckoutStore {
   private readonly orders = inject(OrderRepository);
   private readonly router = inject(Router);
   private readonly schedule = inject(PickupScheduleStore);
+  private readonly payments = inject(PAYMENT_GATEWAY);
+  /** Translation key of the payment method shown at checkout. */
+  readonly paymentLabelKey = this.payments.labelKey;
 
   readonly notes = signal('');
 
@@ -52,6 +56,8 @@ export class CheckoutStore {
         return;
       }
       this.cart.clear();
+      // Pay at pick-up: nothing to do online; the order screen says so.
+      await this.payments.start(result.data);
       await this.router.navigate(['/orders', result.data]);
     } finally {
       this._submitting.set(false);

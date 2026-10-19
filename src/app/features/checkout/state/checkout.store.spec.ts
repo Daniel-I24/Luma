@@ -7,6 +7,7 @@ import { BusinessRepository } from '@shared/business/data/business.repository';
 import type { BusinessHours } from '@shared/business/models/business.model';
 import { CartStore } from '@shared/cart/cart.store';
 import { OrderRepository } from '@shared/orders/order.repository';
+import { PAYMENT_GATEWAY } from '@shared/payments/payment-gateway';
 import { CheckoutStore } from './checkout.store';
 import { PickupScheduleStore } from './pickup-schedule.store';
 import { useFixedClock } from '../../../../testing/fixed-clock';
@@ -27,6 +28,10 @@ describe('CheckoutStore', () => {
   let schedule: PickupScheduleStore;
   let cart: CartStore;
   let navigate: ReturnType<typeof vi.spyOn>;
+  const payments = {
+    labelKey: 'checkout.payment.payAtPickup',
+    start: vi.fn().mockResolvedValue({ kind: 'pay_at_pickup' }),
+  };
 
   beforeEach(async () => {
     localStorage.clear();
@@ -40,6 +45,7 @@ describe('CheckoutStore', () => {
         { provide: BusinessRepository, useValue: businesses },
         { provide: AuthService, useValue: { user: signal({ id: 'u1' }) } },
         { provide: OrderRepository, useValue: orders },
+        { provide: PAYMENT_GATEWAY, useValue: payments },
       ],
     });
     cart = TestBed.inject(CartStore);
@@ -78,6 +84,7 @@ describe('CheckoutStore', () => {
       notes: 'Sin azúcar',
     });
     expect(cart.isEmpty()).toBe(true);
+    expect(payments.start).toHaveBeenCalledWith('o1');
     expect(navigate).toHaveBeenCalledWith(['/orders', 'o1']);
   });
 

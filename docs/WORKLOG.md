@@ -87,7 +87,8 @@ agent's sessions).
   app `AI_MODE` (rules by default, remote with fallback), /ai reason sentence
   and "Otra opción", "Recomendada por Luma IA" in Promos, "Ideas de Luma IA"
   in Resumen and Promociones (prefilled form, owner publishes), docs/ai.md.
-  E9 (payments design) not started.
+  E9: `PAYMENT_GATEWAY` (`PayAtPickupGateway`, used by checkout) and the Wompi
+  plan in docs/payments.md (not implemented).
 - Then blocks F (APK) and G (polish and docs) are not started.
 
 ## Left

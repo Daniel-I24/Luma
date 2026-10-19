@@ -3,16 +3,28 @@
   class="mx-auto flex max-w-lg flex-col gap-5 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6"
 >
   <header class="flex items-center gap-2">
-    <app-luma-icon-button icon="arrow-left" variant="ghost" [label]="t('checkout.back')" (clicked)="back()" />
+    <app-luma-icon-button
+      icon="arrow-left"
+      variant="ghost"
+      [label]="t('checkout.back')"
+      (clicked)="back()"
+    />
     <h1 class="m-0 text-h3 text-fg">{{ t('checkout.title') }}</h1>
   </header>
 
   @if (cart.isEmpty()) {
-  <app-luma-empty-state icon="receipt" [heading]="t('cart.empty.title')" [description]="t('cart.empty.description')">
+  <app-luma-empty-state
+    icon="receipt"
+    [heading]="t('cart.empty.title')"
+    [description]="t('cart.empty.description')"
+  >
     <app-luma-button (clicked)="explore()">{{ t('cart.empty.action') }}</app-luma-button>
   </app-luma-empty-state>
   } @else {
-  <section class="rounded-xl border border-border-subtle bg-surface p-4" aria-labelledby="checkout-summary">
+  <section
+    class="rounded-xl border border-border-subtle bg-surface p-4"
+    aria-labelledby="checkout-summary"
+  >
     <h2 id="checkout-summary" class="m-0 mb-2 text-title text-fg">{{ cart.businessName() }}</h2>
     <ul class="m-0 flex list-none flex-col gap-1 p-0">
       @for (item of cart.items(); track item.menuItemId) {
@@ -42,9 +54,14 @@
     } @if (schedule.option() !== 'now') { @switch (schedule.state()) { @case ('loading') {
     <app-luma-skeleton class="h-11 w-full" shape="rect" />
     } @case ('error') {
-    <div class="flex items-center justify-between gap-3 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+    <div
+      class="flex items-center justify-between gap-3 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg"
+      role="alert"
+    >
       <span>{{ t('checkout.when.hoursFailed') }}</span>
-      <app-luma-button variant="ghost" size="sm" (clicked)="retryHours()">{{ t('common.retry') }}</app-luma-button>
+      <app-luma-button variant="ghost" size="sm" (clicked)="retryHours()"
+        >{{ t('common.retry') }}</app-luma-button
+      >
     </div>
     } @default { @if (slotOptions().length) {
     <app-luma-select
@@ -56,7 +73,8 @@
     />
     } @else {
     <p class="m-0 rounded-md bg-warning-bg p-3 text-body-sm text-warning-fg" role="status">
-      {{ t(schedule.option() === 'later' ? 'checkout.when.noSlotsToday' : 'checkout.when.noSlotsTomorrow') }}
+      {{ t(schedule.option() === 'later' ? 'checkout.when.noSlotsToday' :
+      'checkout.when.noSlotsTomorrow') }}
     </p>
     } } } }
   </section>
@@ -73,7 +91,11 @@
       [value]="store.notes()"
       (input)="onNotes($event)"
     ></textarea>
-    <p id="checkout-notes-count" class="m-0 text-right text-caption text-fg-subtle" aria-live="polite">
+    <p
+      id="checkout-notes-count"
+      class="m-0 text-right text-caption text-fg-subtle"
+      aria-live="polite"
+    >
       {{ t('reviews.form.counter', { count: store.notes().length, max: notesMax }) }}
     </p>
   </section>
@@ -81,7 +103,7 @@
   <section class="flex items-center gap-3 rounded-xl border border-border-subtle bg-surface p-4">
     <app-luma-icon class="text-fg-brand" name="check" />
     <div class="flex flex-col">
-      <span class="text-title text-fg">{{ t('checkout.payment.payAtPickup') }}</span>
+      <span class="text-title text-fg">{{ t(store.paymentLabelKey) }}</span>
       <span class="text-caption text-fg-subtle">{{ t('checkout.payment.hint') }}</span>
     </div>
   </section>
@@ -93,10 +115,16 @@
   <p class="m-0 text-caption text-fg-subtle">{{ t('checkout.totalNote') }}</p>
 
   @if (store.errorKey(); as key) {
-  <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
+  <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+    {{ t(key) }}
+  </p>
   }
-  <app-luma-button size="lg" [fullWidth]="true" [disabled]="store.submitting()" (clicked)="store.confirm()">{{
-    t(store.submitting() ? 'checkout.confirming' : 'checkout.confirm')
-  }}</app-luma-button>
+  <app-luma-button
+    size="lg"
+    [fullWidth]="true"
+    [disabled]="store.submitting()"
+    (clicked)="store.confirm()"
+    >{{ t(store.submitting() ? 'checkout.confirming' : 'checkout.confirm') }}</app-luma-button
+  >
   }
 </div>
