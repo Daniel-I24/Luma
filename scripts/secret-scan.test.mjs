@@ -14,8 +14,9 @@ test('only service_role JWTs are secrets (anon keys are public)', () => {
 test('finds private keys and provider API keys, never echoing them', () => {
   const kinds = scanText(
     [
-      '-----BEGIN PRIVATE KEY-----',
-      'sb_secret_abcdefghijklmnop',
+      // Assembled at run time so this file passes its own scan.
+      `-----BEGIN ${'PRIVATE'} KEY-----`,
+      `${'sb_'}secret_abcdefghijklmnop`,
       `AIza${'x'.repeat(35)}`,
       `sk-ant-${'a'.repeat(30)}`,
       `ghp_${'a'.repeat(36)}`,
