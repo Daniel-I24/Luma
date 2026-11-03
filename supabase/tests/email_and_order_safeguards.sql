@@ -65,7 +65,7 @@ select tests.expect_true('postgres', null, $$
 select tests.exec_as('authenticated', tests.id('owner'), $$
   select public.set_order_status((select id from public.business_orders where business_id = tests.id('pub') and status = 'pending' limit 1), 'accepted')$$);
 select tests.exec_as('authenticated', tests.id('owner'), $$
-  select public.set_order_status((select id from public.business_orders where business_id = tests.id('pub') and status = 'accepted' limit 1), 'cancelled')$$);
+  select public.set_order_status((select id from public.business_orders where business_id = tests.id('pub') and status = 'accepted' limit 1), 'cancelled', 'out_of_stock')$$);
 select tests.expect_true('postgres', null,
   $$select count(*) = 2 from public.orders where business_id = tests.id('pub') and status = 'cancelled'$$,
   'accepted orders can be cancelled by the owner');
