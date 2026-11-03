@@ -203,3 +203,40 @@ alternative that was not taken. The safest, most reversible option wins.
 - **Why**: the APK serves its own copy of version.json from https://localhost;
   environment.ts may not be edited, and a wrong URL must never block the app.
 - **Alternative**: an `apiUrl`/`siteUrl` field generated in environment.deploy.ts.
+
+## 2026-10-24 — Round 2: claim_push_batch is dropped and created again
+
+- **What**: `20261029000000_push_business_id.sql` drops `claim_push_batch(integer)`
+  and creates it with the extra `business_id` column, re-granting only
+  `service_role`.
+- **Why**: Postgres cannot change the columns a function returns with
+  `create or replace`. The arguments and grants stay the same, the
+  migration runs in one transaction and only push-dispatch calls it.
+- **Alternative**: a second function `claim_push_batch_v2`. Leaves a dead
+  function with service-role access behind.
+
+## 2026-10-24 — One rate-limit RPC with buckets in app_settings
+
+- **What**: `hit_rate_limit(bucket)` counts the caller's requests in fixed
+  windows; a bucket exists only when `rate_<bucket>_max` and
+  `rate_<bucket>_window_seconds` exist. extract-menu calls it before
+  decoding any image.
+- **Why**: the daily quotas count model calls (so cache hits are free) and
+  do not stop a burst of large requests that fail later. One generic,
+  closed function is reused by later functions (payments) without a new
+  table each time. Callers can only spend their own bucket.
+- **Alternative**: a per-function counter table, or counting in memory in
+  the Edge Function (lost on every cold start and per instance).
+
+## 2026-10-24 — knip config in the repository, export cleanup in phase 6
+
+- **What**: `knip.json` (entries for Angular specs, scripts and Deno
+  functions) is versioned; knip and depcheck run with `npx` only. The
+  unused exports knip lists (mostly constants exported for their specs and
+  types of `.util.ts` files) are cleaned when phase 6 turns those files
+  into classes.
+- **Why**: without a config knip reports the generated Android assets and
+  every CSS file. Removing exports now would be redone by the phase 6
+  restructuring.
+- **Alternative**: knip as a devDependency with a CI job (one more
+  dependency to audit), or removing the exports twice.

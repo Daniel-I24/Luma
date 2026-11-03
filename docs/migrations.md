@@ -35,6 +35,20 @@ category names (`Cafetería`), and the Supabase SQL editor and CLI are UTF-8.
 | 27 | `20261027000100_push_dispatch.sql` | `private.push_settings`, pg_net poke trigger, pg_cron fallback, `claim_push_batch`, `remove_device_tokens` | Pending review |
 | 28 | `20261028000000_export_my_data.sql` | `export_my_data` (habeas data, 3 a day) | Pending review |
 
+### Round 2 (2026-10-24, pending review)
+
+Migrations 5 to 28 are reviewed and applied by the owner and are never
+edited again. Round 2 adds new files only, all later than
+`20261028000000`; a changed function is redefined with `create or replace`
+keeping its arguments and grants (a changed return type needs a drop and a
+create in the same file, noted in the file header).
+
+| # | File | What it does | Status |
+| --- | --- | --- | --- |
+| 29 | `20261029000000_push_business_id.sql` | `claim_push_batch` also returns `business_id` (drop + create: new return column; same arguments and grants) | Pending review |
+| 30 | `20261029000100_round1_hardening.sql` | `notify_promotion` capped at `promotion_notify_max_recipients` (500); `handle_new_user` compares jsonb instead of casting; `register_device_token` needs a confirmed email | Pending review |
+| 31 | `20261029000200_rate_limits.sql` | Closed `rate_limit_hits`, `hit_rate_limit(bucket)` with buckets defined in `app_settings` (`menu_scan`: 6 per 10 minutes) | Pending review |
+
 **Database freeze (2026-10-19)**: the list above is final for the launch.
 After the freeze, migrations and functions change only to fix real bugs
 (each noted in docs/WORKLOG.md); other ideas go to
@@ -159,6 +173,8 @@ transaction that is rolled back.
 | `push_notifications.sql` | tokens, preferences, `notify_promotion` rules, claim at most once, pg_net poke |
 | `export_my_data.sql` | own data only, no tokens, no customer data for owners, daily limit |
 | `policy_helpers.sql` | direct checks of the helpers used by policies |
+| `round1_hardening.sql` | sign-up metadata never raises, devices need a confirmed email, promotion recipient cap, business id in push claims, microsecond `updated_at` in `review_business` |
+| `rate_limits.sql` | `hit_rate_limit`: unknown buckets, own bucket per user, window reset, closed table |
 
 `scripts/db-drift.test.mjs` (`npm run test:scripts`) checks without a
 database: Storage folders vs delete-account, functions in config.toml, and

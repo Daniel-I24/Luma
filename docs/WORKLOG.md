@@ -9,7 +9,28 @@ How to verify: `npm run build`, `npx ng lint`, `npm test -- --watch=false`,
 suites with `supabase/tests/local/run.sh` (local Postgres on port 54329 in the
 agent's sessions).
 
-## Done
+## Round 2 (from 2026-10-24)
+
+Prompt: round 2 (phases 0 to 7). Migrations 5 to 28 are applied by the
+owner and never edited; new migrations only, later than 20261028000000.
+Local checks in the agent's sessions: Postgres 18 on port 54329 for the
+SQL suites, Deno 2.5.6 in Docker for the functions.
+
+- FASE 0 done (2026-10-24): Definition of Done in CLAUDE.md; push-dispatch
+  isolates each send, sets the Android channel (orders / promotions),
+  deletes a token only when FCM blames it, sends business_id (migration
+  29), the app creates the channels and routes taps (PushRoute);
+  extract-menu checks shape, session, ownership and the new per-user rate
+  limit (migration 31, hit_rate_limit) before decoding images;
+  review_business microsecond tests (SQL and app); migration 30
+  (notify_promotion cap 500, handle_new_user without casts, devices need a
+  confirmed email); deploy.md lists each function with its JWT flag.
+  Closed green: build (initial 638.66 kB), lint, 673 app tests, 58 script
+  tests, 434 SQL checks, 92 Deno tests + type check, check:interactive,
+  secret scan, npm audit --omit=dev 0. check:hardcoded-urls comes in
+  phase 5. Cleanup: docs/cleanup-report.md (nothing removed).
+
+## Done (round 1)
 
 - PARTE 0 — history cleaned (`backup-before-temp-cleanup` and
   `refs/original/refs/heads/main` kept until the owner says otherwise),
