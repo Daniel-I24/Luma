@@ -1148,6 +1148,26 @@
         "suspended": "Customers will no longer see it. The business will see your note."
       },
       "reload": "Reload"
+    },
+    "mfa": {
+      "title": "Two-step verification",
+      "stepApp": "Open an authenticator app (Google Authenticator, Microsoft Authenticator or another).",
+      "stepSecret": "Add a new account with the secret key below.",
+      "stepCode": "Type the 6-digit code the app shows.",
+      "secretLabel": "Secret key (do not share it)",
+      "copy": "Copy key",
+      "copied": "Key copied.",
+      "copyFailed": "Could not copy it. Type it by hand.",
+      "challenge": "For security, the review team confirms every session with the code from their authenticator app.",
+      "codeLabel": "6-digit code",
+      "submit": "Verify",
+      "checking": "Verifying...",
+      "errors": {
+        "loadFailed": "Could not prepare the verification. Check your connection.",
+        "enrollFailed": "Could not create the verification. Try again.",
+        "invalidCode": "The code is wrong or expired. Use the current code from the app.",
+        "codeShape": "Type the 6 digits of the code."
+      }
     }
   },
   "reports": {

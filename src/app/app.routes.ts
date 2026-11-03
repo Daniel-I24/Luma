@@ -69,7 +69,7 @@ export const routes: Routes = [
     loadChildren: () => import('./features/owner/owner.routes').then((m) => m.ownerRoutes),
   },
   {
-    // Review team; adminRoutes also checks am_i_admin.
+    // Review team; adminRoutes also checks admin_access (MFA at /admin/mfa).
     path: 'admin',
     canActivate: [authGuard],
     loadChildren: () => import('./features/admin/admin.routes').then((m) => m.adminRoutes),

@@ -18,10 +18,14 @@ const ADMIN_ERRORS: Readonly<Record<string, string>> = {
   stale_review: 'admin.errors.staleReview',
 };
 
+/** admin_access(): not an admin, an admin who still has to pass MFA (aal2), or ready. */
+export type AdminAccess = 'none' | 'needs_mfa' | 'ok';
+
 /** Contract: what the review team reads and decides (Supabase is one implementation). */
 @Injectable({ providedIn: 'root', useFactory: () => new SupabaseAdminRepository() })
 export abstract class AdminRepository {
-  abstract amIAdmin(): Promise<boolean>;
+  /** 'none' also when the server cannot be reached: never a guess in favour of access. */
+  abstract access(): Promise<AdminAccess>;
   abstract pendingBusinesses(): Promise<RepoResult<Business[]>>;
   abstract business(id: string): Promise<RepoResult<Business | null>>;
   abstract signedDocUrl(doc: VerificationDoc): Promise<RepoResult<string>>;
@@ -41,9 +45,9 @@ export abstract class AdminRepository {
 export class SupabaseAdminRepository extends AdminRepository {
   private readonly db = inject(SupabaseService).client;
 
-  async amIAdmin(): Promise<boolean> {
-    const { data, error } = await this.db.rpc('am_i_admin');
-    return !error && data === true;
+  async access(): Promise<AdminAccess> {
+    const { data, error } = await this.db.rpc('admin_access');
+    return !error && (data === 'ok' || data === 'needs_mfa') ? data : 'none';
   }
 
   async pendingBusinesses(): Promise<RepoResult<Business[]>> {

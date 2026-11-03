@@ -1,0 +1,52 @@
+<div
+  *transloco="let t"
+  class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6"
+>
+  <h1 class="m-0 text-h2 text-fg">{{ t('admin.mfa.title') }}</h1>
+
+  @switch (mfa.phase()) { @case ('loading') {
+  <app-luma-skeleton shape="rect" class="block h-40" />
+  } @case ('error') {
+  <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+    {{ t(mfa.errorKey() ?? 'admin.mfa.errors.loadFailed') }}
+  </p>
+  <app-luma-button variant="secondary" [fullWidth]="true" (clicked)="mfa.start()"
+    >{{ t('common.retry') }}</app-luma-button
+  >
+  } @default {
+  <app-luma-card>
+    @if (mfa.phase() === 'enroll') {
+    <ol class="m-0 mb-4 flex list-decimal flex-col gap-2 pl-5 text-body text-fg-muted">
+      <li>{{ t('admin.mfa.stepApp') }}</li>
+      <li>{{ t('admin.mfa.stepSecret') }}</li>
+      <li>{{ t('admin.mfa.stepCode') }}</li>
+    </ol>
+    <p class="m-0 mb-2 text-label text-fg-subtle">{{ t('admin.mfa.secretLabel') }}</p>
+    <p class="m-0 mb-3 rounded-md bg-canvas-subtle p-3 font-mono text-body break-all text-fg">
+      {{ mfa.secret() }}
+    </p>
+    <app-luma-button variant="secondary" [fullWidth]="true" (clicked)="copySecret()"
+      >{{ t('admin.mfa.copy') }}</app-luma-button
+    >
+    } @else {
+    <p class="m-0 mb-4 text-body text-fg-muted">{{ t('admin.mfa.challenge') }}</p>
+    }
+
+    <form class="mt-4 flex flex-col gap-3" novalidate (submit)="onSubmit($event)">
+      <app-luma-input
+        inputId="admin-mfa-code"
+        inputMode="numeric"
+        autocomplete="one-time-code"
+        [label]="t('admin.mfa.codeLabel')"
+        [required]="true"
+        [errorMessage]="mfa.errorKey() ? t(mfa.errorKey()!) : undefined"
+        [value]="code()"
+        (valueChange)="code.set($event)"
+      />
+      <app-luma-button variant="primary" type="submit" [fullWidth]="true" [disabled]="mfa.busy()"
+        >{{ t(mfa.busy() ? 'admin.mfa.checking' : 'admin.mfa.submit') }}</app-luma-button
+      >
+    </form>
+  </app-luma-card>
+  } }
+</div>

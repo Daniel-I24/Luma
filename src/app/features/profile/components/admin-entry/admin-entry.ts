@@ -6,7 +6,8 @@ import { AdminRepository } from '@shared/business/verification/admin.repository'
 
 /**
  * AdminEntry — Profile link to /admin. Renders nothing unless the server says
- * the user is in the review team (am_i_admin); the route checks it again.
+ * the user is in the review team (admin_access, MFA pending or done); the
+ * route checks it again and asks for the TOTP code when needed.
  */
 @Component({
   selector: 'app-admin-entry',
@@ -38,6 +39,6 @@ export class AdminEntry {
   protected readonly isAdmin = signal(false);
 
   constructor() {
-    void this.repo.amIAdmin().then((admin) => this.isAdmin.set(admin));
+    void this.repo.access().then((access) => this.isAdmin.set(access !== 'none'));
   }
 }
