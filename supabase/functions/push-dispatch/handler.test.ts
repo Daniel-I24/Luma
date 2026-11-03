@@ -77,6 +77,10 @@ Deno.test('texts are Spanish, use only the public business name and skip unknown
   assertEquals(pushText({ ...row(1), type: 'business_review', status: 'approved' })?.title, 'Negocio aprobado');
   assertEquals(pushText({ ...row(1), status: 'weird' }), null);
   assertEquals(pushText({ ...row(1), type: 'other' }), null);
+  assertEquals(pushText({ ...row(1), type: 'payment', status: 'approved' })?.title, 'Pago aprobado');
+  assertEquals(pushText({ ...row(1), type: 'payment', status: 'refund_required' })?.title, 'Reembolso en proceso');
+  assertEquals(pushText({ ...row(1), type: 'payment', status: 'weird' }), null);
+  assertEquals(pushText({ ...row(1), type: 'review_invite', status: null })?.body, 'Cuéntanos cómo te fue en Café Público.');
   assertEquals(cleanName(null), 'Luma');
   assertEquals(cleanName('x'.repeat(60)).length, 40);
 });

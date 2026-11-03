@@ -119,6 +119,41 @@ failure of an older attempt is recorded but never overwrites the order.
 | `WOMPI_EVENTS_SECRET` | `test_events_` / `prod_events_` | `wompi-webhook` |
 
 The functions refuse to run when a key's prefix does not match `WOMPI_ENV`.
+`PAYMENTS_CRON_SECRET` (at least 32 characters, `openssl rand -hex 32`) lets
+pg_cron call `reconcile-payments`; the same value goes in
+`private.payments_cron` (migration 49).
+
+## Edge Functions (`supabase/functions`)
+
+| Function | `verify_jwt` | Does |
+| --- | --- | --- |
+| `create-payment` | true | customer JWT, confirmed email, CORS allow list, 512-byte body `{ order_id }`, rate limit `create_payment` (10 per 10 minutes), checks the order with the customer's own client (RLS), calls `prepare_payment`, answers `{ checkout_url, expires_at, attempt, sandbox }` |
+| `wompi-webhook` | **false** | POST, `application/json`, at most 64 KB, then the verifier chain (schema, checksum, idempotency, API confirmation, match); every rejection answers `400 {}`; `200 {}` only after processing |
+| `reconcile-payments` | **false** | `x-cron-secret` or an admin JWT with aal2 (logged); asks the API about open attempts with a transaction id older than 3 minutes |
+| `void-payment` | true | admin JWT with aal2; card: void by API, confirm VOIDED, record it; other methods: `{ result: 'manual' }` |
+
+Shared code (`_shared/payments`): `Money`, `PaymentStateMachine`,
+`IntegritySignature`, `CheckoutUrlBuilder` (Builder), `MerchantCredentials`
+with `PlatformMerchantCredentials` and `MerchantCredentialsFactory`
+(Strategy and Factory), `WompiApi` (Adapter), `WompiEventParser` and
+`EventChecksum`, `PaymentEventVerifier` (chain of responsibility:
+`SchemaStep`, `ChecksumStep`, `IdempotencyStep`, `ApiConfirmationStep`,
+`MatchAndApplyStep`), `PaymentApplier`, `Reconciler`, `PaymentRepository`
+with `SupabasePaymentRepository`, `PaymentLog` (typed fields, codes only).
+Provider URLs: `_shared/config/provider-urls.ts`; app link:
+`_shared/config/app-links.ts` (`luma://payments/return`).
+
+## Setting it up (owner, in order)
+
+1. Wompi dashboard (sandbox first): copy the four keys and set the events
+   URL to `https://<ref>.supabase.co/functions/v1/wompi-webhook`.
+2. `supabase secrets set WOMPI_ENV=test WOMPI_PUBLIC_KEY=... WOMPI_PRIVATE_KEY=... WOMPI_INTEGRITY_SECRET=... WOMPI_EVENTS_SECRET=... PAYMENTS_CRON_SECRET=<64 hex>`.
+3. Deploy the four functions with their flags (docs/deploy.md).
+4. SQL editor: `insert into private.payments_cron (function_url, secret) values ('https://<ref>.supabase.co/functions/v1/reconcile-payments', '<same secret>');`
+5. `update public.app_settings set int_value = 1 where key = 'payments_enabled';`
+6. Try every sandbox case below; for production repeat with `WOMPI_ENV=prod`,
+   the production keys and events URL, and
+   `update public.app_settings set int_value = 1 where key = 'payments_production';`.
 
 ## Sandbox test data (docs.wompi.co, datos de prueba)
 
@@ -160,5 +195,11 @@ going live; not legal advice):
 
 ## Tests
 
-- SQL: `payments_flow.sql`, `payments_admin.sql`, `create_order_final.sql`.
-- Edge Functions and app: listed in phase 2 and 3 (`docs/WORKLOG.md`).
+- SQL: `payments_flow.sql`, `payments_admin.sql`, `payment_service.sql`, `create_order_final.sql`.
+- Deno: `_shared/payments` (documented integrity vector, checksum steps,
+  tampered data, wrong secret, wrong environment, amount, currency and
+  reference mismatches, repeated and old events, missing transaction, fake
+  API answers, the 49 shared vectors, log redaction), `create-payment`,
+  `wompi-webhook` (huge body, malformed JSON, identical rejections, logs
+  without secrets or personal data), `reconcile-payments`, `void-payment`.
+- App: phase 3.

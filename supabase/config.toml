@@ -18,3 +18,17 @@ verify_jwt = true
 # Called by the database with a shared secret (x-push-secret), not by users.
 [functions.push-dispatch]
 verify_jwt = false
+
+[functions.create-payment]
+verify_jwt = true
+
+# Called by Wompi, not by users: authenticated by the event checksum (WOMPI_EVENTS_SECRET).
+[functions.wompi-webhook]
+verify_jwt = false
+
+# Called by pg_cron (x-cron-secret, PAYMENTS_CRON_SECRET) or by an admin with aal2 (checked in the function).
+[functions.reconcile-payments]
+verify_jwt = false
+
+[functions.void-payment]
+verify_jwt = true

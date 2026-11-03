@@ -34,6 +34,15 @@ const REVIEW: Record<string, (b: string) => PushText> = {
   suspended: (b) => ({ title: 'Negocio suspendido', body: `${b} fue suspendido. Revisa las notas.` }),
 };
 
+const PAYMENT: Record<string, (b: string) => PushText> = {
+  approved: (b) => ({ title: 'Pago aprobado', body: `Tu pago en ${b} fue aprobado. Tu pedido ya está en camino.` }),
+  declined: (b) => ({ title: 'Pago rechazado', body: `Tu pago en ${b} no fue aprobado. Puedes intentarlo de nuevo.` }),
+  error: (b) => ({ title: 'Pago no completado', body: `Hubo un problema con tu pago en ${b}. Puedes intentarlo de nuevo.` }),
+  voided: (b) => ({ title: 'Pago anulado', body: `Tu pago en ${b} fue anulado.` }),
+  refund_required: (b) => ({ title: 'Reembolso en proceso', body: `Tu pedido en ${b} se canceló. Vamos a devolverte el pago.` }),
+  refunded: (b) => ({ title: 'Reembolso hecho', body: `Te devolvimos el pago de tu pedido en ${b}.` }),
+};
+
 /**
  * Spanish text of a push (the server does not know the app language; the
  * in-app list stays translated). Never customer names or user-written text,
@@ -52,6 +61,10 @@ export function pushText(row: PushRow): PushText | null {
       return REVIEW[row.status ?? '']?.(b) ?? null;
     case 'promotion':
       return { title: 'Nueva promoción', body: `${b} tiene una promoción nueva.` };
+    case 'payment':
+      return PAYMENT[row.status ?? '']?.(b) ?? null;
+    case 'review_invite':
+      return { title: '¿Qué tal tu pedido?', body: `Cuéntanos cómo te fue en ${b}.` };
     default:
       return null;
   }

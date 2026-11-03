@@ -41,7 +41,7 @@ redirect URL is needed for these flows.
 
 ## Edge Functions
 
-Six functions; shared code lives in `supabase/functions/_shared`. All of
+Ten functions; shared code lives in `supabase/functions/_shared` (payments: `_shared/payments`, provider URLs: `_shared/config`). All of
 them work without their optional secrets: they answer `ai_unavailable`,
 `geocode_unavailable` or `push_unavailable` and the app falls back.
 
@@ -53,6 +53,10 @@ them work without their optional secrets: they answer `ai_unavailable`,
 | `extract-menu` | app, AI_MODE remote | yes | `LLM_*` (+ `LLM_VISION_MODEL`) | scan unavailable; manual menu |
 | `geocode` | app (map search) | yes | `GEOCODE_PROVIDER` (+ key/contact) | businesses-only search |
 | `push-dispatch` | the database (pg_net, pg_cron) | **no** (shared secret) | `FCM_SERVICE_ACCOUNT`, `PUSH_DISPATCH_SECRET` | in-app notifications only |
+| `create-payment` | app (checkout, online payment) | yes | `WOMPI_*` | `payments_unavailable`; pay at pick-up still works |
+| `wompi-webhook` | Wompi | **no** (event checksum) | `WOMPI_*` | every event rejected; Wompi retries |
+| `reconcile-payments` | pg_cron, admins | **no** (secret or admin JWT) | `WOMPI_*`, `PAYMENTS_CRON_SECRET` | the webhook alone settles payments |
+| `void-payment` | admin panel | yes | `WOMPI_*` | refunds by hand in the Wompi dashboard |
 
 `ALLOWED_ORIGINS` is a comma-separated list of browser origins, matched
 exactly (no wildcards; empty entries are ignored). The legacy single
@@ -84,6 +88,10 @@ shared secret or a signature instead.
 | `suggest-promotions` | `supabase functions deploy suggest-promotions` | true | user JWT (docs/ai.md) |
 | `extract-menu` | `supabase functions deploy extract-menu` | true | user JWT (docs/ai.md) |
 | `push-dispatch` | `supabase functions deploy push-dispatch --no-verify-jwt` | **false** | `x-push-secret` (`PUSH_DISPATCH_SECRET`, docs/push.md) |
+| `create-payment` | `supabase functions deploy create-payment` | true | customer JWT (docs/payments.md) |
+| `wompi-webhook` | `supabase functions deploy wompi-webhook --no-verify-jwt` | **false** | Wompi event checksum (`WOMPI_EVENTS_SECRET`) |
+| `reconcile-payments` | `supabase functions deploy reconcile-payments --no-verify-jwt` | **false** | `x-cron-secret` (`PAYMENTS_CRON_SECRET`) or an admin JWT with aal2, checked in the function |
+| `void-payment` | `supabase functions deploy void-payment` | true | admin JWT with aal2 |
 
 Never deploy a JWT function with `--no-verify-jwt`: the function code
 checks the session too, but the gateway check is the first line of
