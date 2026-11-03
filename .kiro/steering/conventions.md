@@ -20,6 +20,7 @@ Idioma, tema visual (Cielo andino, Noche, Barniz, Maíz), notificaciones, métod
 - Funciones cortas (idealmente < 30 líneas), sin anidamiento profundo, sin código duplicado (regla de tres: a la tercera repetición se extrae).
 - Sin código muerto, sin comentarios que expliquen lo obvio, sin `TODO` sin issue asociado.
 - Imports ordenados y con alias de rutas (`@core`, `@shared`, `@features`, `@design-system`).
+- Sin funciones sueltas exportadas ni archivos `.util.ts`: el comportamiento vive en clases (métodos estáticos o servicios inyectables); solo las fábricas funcionales de Angular (`*Fn`, `provide*`). Límites de ESLint en CI: complejidad 10, 40 líneas por función, 150 por archivo, profundidad 3, 4 parámetros, sin números mágicos (salvo 0, 1, -1), JSDoc en clases y métodos públicos, capas features → shared → core. Detalle en `docs/architecture/patterns.md`.
 
 ## Reutilización de UI (cambiar un color en un solo lugar)
 - Cada elemento visual base vive en un único componente en `design-system/` (por ejemplo `LumaButton`, `LumaCard`, `LumaBottomSheet`). Los features **nunca** replican estilos de estos elementos.
