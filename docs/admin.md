@@ -63,6 +63,17 @@ Admins cannot write `verification_*` columns directly (no column grants):
 every decision goes through `review_business`, which also notifies the
 owner (`business_review`).
 
+## Screens
+
+- `/admin/mfa`: TOTP enrollment (secret key for the authenticator app) and
+  the 6-digit challenge on every new session.
+- `/admin`: the review queue; `/admin/businesses/:id` shows the warning signs
+  (`business_review_flags`) above the location, legal data and documents.
+- `/admin/operations`: payments that need a person (void by API for cards,
+  "Marcar reembolsado" for the rest), "Conciliar ahora", customers with
+  no-show strikes ("Limpiar") and the recent audit log. Ids are shortened on
+  screen; no names, emails or phones are shown.
+
 ## Review checklist
 
 1. NIT and legal name match [RUES](https://www.rues.org.co/) and the RUT.

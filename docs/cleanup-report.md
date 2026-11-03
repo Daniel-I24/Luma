@@ -31,3 +31,10 @@ touched; redefinitions live in new files.
 Removed: nothing. Hard-coded provider URLs moved into named constants
 (`_shared/config/provider-urls.ts`, `core/config/external-urls.ts`); no
 file became unused.
+
+## Round 2, phase 3 (2026-10-26)
+
+Removed: the translation keys `auth.signup.personal.phoneHintOwner` and
+`phoneHintCustomer` (the mobile is required for every account now; no
+reference left). The app-side `Money` draft was not added (docs/DECISIONS.md).
+knip: no unused files or dependencies.

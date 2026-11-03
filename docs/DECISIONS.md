@@ -344,3 +344,32 @@ alternative that was not taken. The safest, most reversible option wins.
 - **Why**: an unused value object in the app would be dead code; the rule
   "every amount comes from the server" makes it unnecessary.
 - **Alternative**: a mirrored app class used only for display.
+
+## 2026-10-26 — The business wizard is a hub over the existing screens
+
+- **What**: `/owner/:id/setup` lists the steps (basics, location, hours,
+  contact, legal data and documents, menu) with their state, computed from
+  what the server-side draft still lacks (`missingForReview`), and opens the
+  existing edit screens with `?setup=1`, where "Volver al asistente" appears.
+  The final review sends the business with `submit_business_for_review`.
+- **Why**: the draft is the business row itself, so the wizard resumes on any
+  device without a second copy of the data; every form keeps one
+  implementation and its tests.
+- **Alternative**: a separate multi-step form with its own local draft
+  (duplicated forms and validation, a draft that lives on one phone only).
+
+## 2026-10-26 — The mobile is required for every account
+
+- **What**: the sign-up asks every account (customers too) for a +57 mobile,
+  and explains why ("verificar la cuenta y evitar pedidos falsos").
+- **Why**: `is_profile_complete()` needs it before ordering (round 2 anti-fraud
+  rules); asking at sign-up avoids a surprise at checkout.
+- **Alternative**: keep it optional and ask at the first order ("Mis datos"
+  still covers accounts created before round 2).
+
+## 2026-10-26 — Place search moved to shared/geo
+
+- **What**: `PlaceSearchRepository` lives in `shared/geo` and is used by the
+  map search and by the owner's address search.
+- **Why**: features may not import each other (CLAUDE.md).
+- **Alternative**: a second repository in the owner feature (duplicate code).

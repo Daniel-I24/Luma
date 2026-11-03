@@ -38,6 +38,15 @@ Visibility is decided in one place, `is_business_public(uuid)`
 (`is_active and verification_status = 'approved'`), used by every public
 policy and view, Storage reads and `create_order`.
 
+## The wizard (owners)
+
+A new business opens `/owner/:id/setup`: progress bar and the steps basics,
+location (address search, draggable pin, department and municipality, a
+warning when the pin is more than 300 m from the searched address), hours,
+contact (optional), legal data and documents (RUT and facade), and menu (by
+hand or scanned with AI), then the final review with "Enviar a revisión".
+It resumes at the first step with something missing.
+
 ## What the review needs
 
 `submit_business_for_review` returns `{ ok, missing[] }` and only moves the

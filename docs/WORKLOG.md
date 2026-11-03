@@ -62,6 +62,28 @@ SQL suites, Deno 2.5.6 in Docker for the functions.
   printed its Supabase URL line (project reference, not a key); every scan
   now excludes src/environments.
 
+- FASE 3 done (2026-10-26): owner cancel reasons and "No llegó" (15 min
+  after ready), "Pagado en línea"; admin TOTP (/admin/mfa, admin_access)
+  and /admin/operations (payment issues, void/refund mark, reconcile,
+  strikes, audit) plus review warning signs; "Mis datos" (/account/details)
+  with the DANE catalog (public/data/dane-municipalities.json built by
+  scripts/dane-catalog.mjs, ResidenceCatalog lazy, ResidencePicker), avatar
+  settings (private, consent, share switch; owner card shows it signed);
+  six-step sign-up (mobile required, residence, optional photo with
+  consent, saved after the code by SignupCompletion); online payments in
+  the app (PaymentGatewayFactory: PayAtPickupGateway, WompiGateway with
+  @capacitor/browser 8.0.5, sandbox banner, OrderPayment with retries and
+  resume refresh, luma://payments/return, "Completar pago", refunds policy
+  draft); "Tu estado" trust card; S1 "Pedir de nuevo", S2 review invite and
+  readable payment notices, S3 order pause (owner card, cart "Pedidos en
+  pausa"), S4 sales summary chart; package com.lumapasto.app; LocationIQ
+  recommended with its credit and a 48 h cache; map starts at the
+  residence; checkout warns about another department; business wizard
+  /owner/:id/setup with address search and pin-distance warning.
+  Closed green: build, lint, app tests, 64 script tests, 630 SQL checks,
+  124 Deno tests + type check, interactive, hard-coded URLs, secret scan,
+  npm audit 0. knip: no unused files or dependencies.
+
 ## Done (round 1)
 
 - PARTE 0 — history cleaned (`backup-before-temp-cleanup` and
