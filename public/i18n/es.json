@@ -602,7 +602,13 @@
       "closed": "Cerrado",
       "contact": "Contacto",
       "call": "Llamar al {{phone}}",
-      "address": "Dirección"
+      "address": "Dirección",
+      "link": {
+        "whatsapp": "Escribir por WhatsApp a {{value}} (abre WhatsApp)",
+        "instagram": "Instagram {{value}} (abre en otra pestaña)",
+        "facebook": "Facebook {{value}} (abre en otra pestaña)",
+        "website": "Sitio web {{value}} (abre en otra pestaña)"
+      }
     },
     "notFound": {
       "title": "Negocio no encontrado",
@@ -611,6 +617,10 @@
     },
     "error": {
       "title": "No pudimos cargar el negocio"
+    },
+    "photos": {
+      "title": "Fotos del lugar",
+      "photo": "Foto {{n}} de {{name}}"
     }
   },
   "cart": {

@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { BusinessPhotoRepository } from '@shared/business/data/business-photo.repository';
 import type { Business, BusinessHours } from '@shared/business/models/business.model';
 import { InfoTab } from './info-tab';
 import { useFixedClock } from '../../../../../testing/fixed-clock';
@@ -41,12 +42,15 @@ describe('InfoTab', () => {
           translocoConfig: { availableLangs: ['es'], defaultLang: 'es' },
         }),
       ],
+      providers: [
+        { provide: BusinessPhotoRepository, useValue: { list: vi.fn().mockResolvedValue({ data: [], errorKey: null }) } },
+      ],
     });
   });
 
-  function render(hours: BusinessHours[]): HTMLElement {
+  function render(hours: BusinessHours[], biz: Business = business): HTMLElement {
     const fixture = TestBed.createComponent(InfoTab);
-    fixture.componentRef.setInput('business', business);
+    fixture.componentRef.setInput('business', biz);
     fixture.componentRef.setInput('hours', hours);
     fixture.detectChanges();
     return fixture.nativeElement as HTMLElement;
@@ -78,5 +82,21 @@ describe('InfoTab', () => {
     expect(el.querySelector('a')?.getAttribute('href')).toBe('tel:+573001112233');
     expect(el.textContent).toContain('Calle 19 # 22-40');
     expect(el.textContent).toContain('Horario no disponible');
+  });
+
+  it('links WhatsApp, Instagram and the website in a new tab, never unsafe values', () => {
+    const el = render([], {
+      ...business,
+      whatsapp: '+573001234567',
+      instagram: 'cafe.publico',
+      facebook: null,
+      website: 'javascript:alert(1)',
+    });
+    const external = Array.from(el.querySelectorAll('a[target="_blank"]'));
+    expect(external.map((a) => a.getAttribute('href'))).toEqual([
+      'https://wa.me/573001234567',
+      'https://instagram.com/cafe.publico',
+    ]);
+    expect(external.every((a) => a.getAttribute('rel') === 'noopener noreferrer')).toBe(true);
   });
 });

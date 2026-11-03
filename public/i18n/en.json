@@ -602,7 +602,13 @@
       "closed": "Closed",
       "contact": "Contact",
       "call": "Call {{phone}}",
-      "address": "Address"
+      "address": "Address",
+      "link": {
+        "whatsapp": "Message {{value}} on WhatsApp (opens WhatsApp)",
+        "instagram": "Instagram {{value}} (opens in a new tab)",
+        "facebook": "Facebook {{value}} (opens in a new tab)",
+        "website": "Website {{value}} (opens in a new tab)"
+      }
     },
     "notFound": {
       "title": "Business not found",
@@ -611,6 +617,10 @@
     },
     "error": {
       "title": "We could not load the business"
+    },
+    "photos": {
+      "title": "Photos of the place",
+      "photo": "Photo {{n}} of {{name}}"
     }
   },
   "cart": {

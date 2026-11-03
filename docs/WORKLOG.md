@@ -124,6 +124,9 @@ agent's sessions).
   (keep, name, price, section; no price = must type it) -> saved one by one
   after the current menu, stops at menu_limit. "Avisar a mis seguidores" on
   running promotions (notify_promotion, errors mapped).
+- FASE 2.4 public profile: photo strip (hidden when empty or unreadable) and
+  contact links (wa.me, instagram.com, facebook.com, https web; new tab with
+  noopener; malformed values never linked) in the Info tab.
 
 - Block D done: migration 20261021000000 (discounts, trigger, server prices in
   create_order; 23 SQL checks), customer /promotions (sort, filters, states,

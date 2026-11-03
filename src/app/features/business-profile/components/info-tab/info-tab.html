@@ -1,4 +1,6 @@
 <div *transloco="let t" class="flex flex-col gap-5 p-4">
+  <app-photo-strip [businessId]="business().id" [businessName]="business().name" />
+
   <section aria-labelledby="info-hours">
     <h3 id="info-hours" class="m-0 mb-2 flex items-center gap-2 text-title text-fg">
       <app-luma-icon class="text-fg-subtle" name="clock" /> {{ t('businessProfile.info.hours') }}
@@ -41,6 +43,17 @@
       [attr.aria-label]="t('businessProfile.info.call', { phone: phone })"
     >
       <app-luma-icon name="phone" /> {{ phone }}
+    </a>
+    }
+    @for (link of links(); track link.field) {
+    <a
+      class="flex min-h-11 items-center gap-2 rounded-md text-body text-fg-accent no-underline focus-visible:outline-2 focus-visible:outline-border-focus"
+      target="_blank"
+      rel="noopener noreferrer"
+      [href]="link.href"
+      [attr.aria-label]="t('businessProfile.info.link.' + link.field, { value: link.text })"
+    >
+      <app-luma-icon [name]="link.icon" /> {{ link.text }}
     </a>
     }
     <p class="m-0 flex items-start gap-2 text-body text-fg">

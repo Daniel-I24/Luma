@@ -1,9 +1,18 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import { LumaIcon } from '@design-system';
+import { type IconName, LumaIcon } from '@design-system';
 import type { Business, BusinessHours } from '@shared/business/models/business.model';
+import { type ContactField, contactLinks } from '@shared/business/models/business-contact';
+import { PhotoStrip } from '../photo-strip/photo-strip';
 import { ReportSheet } from '../report-sheet/report-sheet';
+
+const CONTACT_ICON: Record<ContactField, IconName> = {
+  whatsapp: 'phone',
+  instagram: 'image',
+  facebook: 'user',
+  website: 'globe',
+};
 
 /** Week starting on Monday, as is customary in Colombia (JS: 0 = Sunday). */
 const WEEK: readonly BusinessHours['day_of_week'][] = [1, 2, 3, 4, 5, 6, 0];
@@ -18,12 +27,12 @@ export interface ScheduleRow {
   isToday: boolean;
 }
 
-/** InfoTab — weekly schedule (today highlighted), phone and address. */
+/** InfoTab — photos, weekly schedule (today highlighted), contact, social links and address. */
 @Component({
   selector: 'app-info-tab',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaIcon, ReportSheet],
+  imports: [TranslocoModule, LumaIcon, PhotoStrip, ReportSheet],
   templateUrl: './info-tab.html',
   host: { class: 'block' },
 })
@@ -35,6 +44,11 @@ export class InfoTab {
 
   readonly business = input.required<Business>();
   readonly hours = input.required<readonly BusinessHours[]>();
+
+  /** Only well-formed values become links (wa.me, instagram.com, facebook.com, https). */
+  protected readonly links = computed(() =>
+    contactLinks(this.business()).map((link) => ({ ...link, icon: CONTACT_ICON[link.field] })),
+  );
 
   protected readonly rows = computed<ScheduleRow[]>(() => {
     const weekday = new Intl.DateTimeFormat(this.lang(), { weekday: 'long' });
