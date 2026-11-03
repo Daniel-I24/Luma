@@ -102,6 +102,20 @@ SQL suites, Deno 2.5.6 in Docker for the functions.
   files or dependencies (82 unused exports left for FASE 6). Dev-only audit
   advisories (fast-uri, undici, uuid via @capacitor/cli) noted for FASE 5.
 
+- FASE 5 done (2026-10-26): history scan (npm run scan:history, report
+  only) found the Supabase CLI link data committed once on 2026-10-17
+  (project reference, no keys) and two false positives; reported in
+  docs/security-findings.md, history not rewritten; supabase/.temp is a
+  forbidden path; tree clean. Design preview no longer bundled in
+  production (dev-routes.ts replaced). SECURITY.md, docs/security.md,
+  docs/threat-model.md (STRIDE, 16 threats with controls and tests),
+  docs/payments-checklist.md, CodeQL workflow (JS/TS, Java, Actions,
+  security-extended). SecureSessionStorage evaluated and not adopted
+  (DECISIONS). npm audit fix for dev deps; vite advisory accepted (dev
+  server only). .env files ignored. Closed green: build, lint, 735 app
+  tests, 76 script tests, all checks, secret scan, audit 0; SQL and Deno
+  unchanged in this phase. Magic numbers go to FASE 6 (lint rule).
+
 ## Done (round 1)
 
 - PARTE 0 — history cleaned (`backup-before-temp-cleanup` and
