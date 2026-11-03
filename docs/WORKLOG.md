@@ -182,6 +182,11 @@ agent's sessions).
   zod/mini. Initial 995 kB -> 638 kB (222 -> 161 kB transferred). Budget
   750 kB warning / 900 kB error; scripts/bundle-rules.test.mjs forbids
   classic zod and maplibre in the shell and pins the budget.
+- Final verification 2026-10-19: build ok (initial 637.74 kB), lint ok, 668 app
+  tests, 58 script tests, 410 SQL checks + 10 rehearsal checks, 87 Deno tests,
+  npm audit --omit=dev 0, secret scan ok, check:interactive ok. Since the
+  freeze (3621e42) the only supabase/ change is the push-dispatch test fixture.
+  Next for the owner: docs/launch-checklist.md.
 
 - Block D done: migration 20261021000000 (discounts, trigger, server prices in
   create_order; 23 SQL checks), customer /promotions (sort, filters, states,
