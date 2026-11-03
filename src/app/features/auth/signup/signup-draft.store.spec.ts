@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { SignupDraftStore } from './signup-draft.store';
+import { Residence } from '@shared/geo/residence';
 
 describe('SignupDraftStore', () => {
   let store: SignupDraftStore;
@@ -37,11 +38,15 @@ describe('SignupDraftStore', () => {
     store.update('accountType', 'customer');
     store.next();
     store.update('fullName', 'Ana Pérez');
+    store.update('phone', '300 123 4567');
+    store.next();
+    store.update('residence', Residence.of('Nariño', 'Pasto', '52001'));
+    store.next();
     store.next();
     store.update('email', 'ana@example.com');
 
-    expect(store.back()).toBe(true);
-    expect(store.back()).toBe(true);
+    expect(store.step()).toBe('credentials');
+    for (let i = 0; i < 4; i++) expect(store.back()).toBe(true);
     expect(store.back()).toBe(false);
     expect(store.draft()).toMatchObject({
       accountType: 'customer',
@@ -53,16 +58,18 @@ describe('SignupDraftStore', () => {
   it('does not move past the last step and forgets everything on reset', () => {
     store.update('accountType', 'customer');
     store.update('fullName', 'Ana');
+    store.update('phone', '300 123 4567');
+    store.update('residence', Residence.of('Nariño', 'Pasto', '52001'));
     store.update('email', 'ana@example.com');
     store.update('password', 'tamal2024');
     store.update('acceptedTerms', true);
     store.update('acceptedPrivacy', true);
     store.update('isAdult', true);
-    for (let i = 0; i < 4; i++) store.next();
+    for (let i = 0; i < 6; i++) store.next();
 
     expect(store.isLast()).toBe(true);
     expect(store.next()).toBeNull();
-    expect(store.index()).toBe(3);
+    expect(store.index()).toBe(5);
 
     store.reset();
     expect(store.index()).toBe(0);

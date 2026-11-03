@@ -1,0 +1,34 @@
+<div *transloco="let t" class="flex flex-col gap-3">
+  <p class="m-0 text-body-sm text-fg-muted">{{ t('auth.signup.photo.intro') }}</p>
+  @if (preview(); as url) {
+  <img
+    [src]="url"
+    [alt]="t('auth.signup.photo.previewAlt')"
+    class="size-32 self-center rounded-full border border-border-subtle object-cover"
+  />
+  <label class="flex min-h-11 items-start gap-3 text-body text-fg">
+    <input
+      id="signup-avatarConsent"
+      type="checkbox"
+      class="mt-1 size-5 accent-primary"
+      [checked]="store.draft().avatarConsent"
+      (change)="setConsent($event)"
+    />
+    <span>{{ t('auth.signup.photo.consent') }}</span>
+  </label>
+  @if (store.errors().avatarConsent; as key) {
+  <p class="m-0 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
+  }
+  <app-luma-button variant="danger-outline" (clicked)="remove()">{{ t('auth.signup.photo.remove') }}</app-luma-button>
+  } @else {
+  <label
+    class="pressable flex min-h-11 cursor-pointer items-center justify-center rounded-xl border border-dashed border-border-strong bg-surface px-4 text-body font-medium text-fg"
+  >
+    <input type="file" class="sr-only" [accept]="accept" (change)="pick($event)" />
+    {{ t('auth.signup.photo.choose') }}
+  </label>
+  <p class="m-0 text-caption text-fg-subtle">{{ t('auth.signup.photo.optional') }}</p>
+  } @if (fileError(); as key) {
+  <p class="m-0 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
+  }
+</div>

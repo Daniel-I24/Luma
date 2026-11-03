@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaInput } from '@design-system';
 import { SignupDraftStore } from '../../signup-draft.store';
 import { MAX_FULL_NAME } from '../../signup-validation';
 
-/** Step 2 — full name and Colombian mobile (required only for business owners). */
+/** Step 2 — full name and Colombian mobile (required: it verifies the account and stops fake orders). */
 @Component({
   selector: 'app-personal-step',
   standalone: true,
@@ -30,14 +30,8 @@ import { MAX_FULL_NAME } from '../../signup-validation';
         autocomplete="tel-national"
         [label]="t('auth.signup.personal.phone')"
         placeholder="300 123 4567"
-        [hint]="
-          t(
-            phoneRequired()
-              ? 'auth.signup.personal.phoneHintOwner'
-              : 'auth.signup.personal.phoneHintCustomer'
-          )
-        "
-        [required]="phoneRequired()"
+        [hint]="t('auth.signup.personal.phonePurpose')"
+        [required]="true"
         [maxLength]="16"
         [value]="store.draft().phone"
         (valueChange)="store.update('phone', $event)"
@@ -50,7 +44,4 @@ import { MAX_FULL_NAME } from '../../signup-validation';
 export class PersonalStep {
   protected readonly store = inject(SignupDraftStore);
   protected readonly maxName = MAX_FULL_NAME;
-  protected readonly phoneRequired = computed(
-    () => this.store.draft().accountType === 'business_owner',
-  );
 }

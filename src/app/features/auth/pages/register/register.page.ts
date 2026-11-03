@@ -18,14 +18,18 @@ import { AccountTypeStep } from '../../signup/components/account-type-step/accou
 import { ConsentStep } from '../../signup/components/consent-step/consent-step';
 import { CredentialsStep } from '../../signup/components/credentials-step/credentials-step';
 import { PersonalStep } from '../../signup/components/personal-step/personal-step';
+import { PhotoStep } from '../../signup/components/photo-step/photo-step';
+import { ResidenceStep } from '../../signup/components/residence-step/residence-step';
 import { SignupProgress } from '../../signup/components/signup-progress/signup-progress';
+import { SignupCompletion } from '../../signup/signup-completion';
 import { SignupDraftStore } from '../../signup/signup-draft.store';
 
 const STEP_TITLE_ID = 'signup-step-title';
 
 /**
- * RegisterPage — /auth/register in four steps (account type, personal data,
- * credentials, consent); then the emailed code (/auth/verify).
+ * RegisterPage — /auth/register in six steps (account type, personal data,
+ * residence, optional photo, credentials, consent); then the emailed code
+ * (/auth/verify), after which residence and photo are saved.
  */
 @Component({
   selector: 'app-register-page',
@@ -39,6 +43,8 @@ const STEP_TITLE_ID = 'signup-step-title';
     SignupProgress,
     AccountTypeStep,
     PersonalStep,
+    ResidenceStep,
+    PhotoStep,
     CredentialsStep,
     ConsentStep,
   ],
@@ -51,6 +57,7 @@ export class RegisterPage {
   private readonly pending = inject(PendingVerification);
   private readonly document = inject(DOCUMENT);
   private readonly injector = inject(Injector);
+  private readonly completion = inject(SignupCompletion);
 
   protected readonly store = inject(SignupDraftStore);
   protected readonly submission = new AuthFormSubmission();
@@ -84,7 +91,10 @@ export class RegisterPage {
           termsVersion: LEGAL_VERSIONS.terms,
           privacyVersion: LEGAL_VERSIONS.privacy,
         }),
-      () => this.onRegistered(draft.email),
+      () => {
+        this.completion.hold(draft);
+        return this.onRegistered(draft.email);
+      },
     );
   }
 

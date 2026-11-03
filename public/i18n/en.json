@@ -146,7 +146,9 @@
         "accountType": "How will you use Luma?",
         "personal": "About you",
         "credentials": "Your email and password",
-        "consent": "Terms and privacy"
+        "consent": "Terms and privacy",
+        "residence": "Where do you live?",
+        "photo": "Profile photo (optional)"
       },
       "accountType": {
         "legend": "Choose an account type",
@@ -159,9 +161,8 @@
         "fullName": "Full name",
         "fullNamePlaceholder": "Ana Pérez",
         "phone": "Mobile",
-        "phoneHintOwner": "Colombian mobile. We use it to verify your business.",
-        "phoneHintCustomer": "Optional. Colombian mobile.",
-        "privacy": "Your data is private: businesses never see your phone or email."
+        "privacy": "Your data is private: businesses never see your phone or email.",
+        "phonePurpose": "Required. We use it to verify your account and prevent fake orders; businesses never see it."
       },
       "credentials": {
         "passwordRule": "At least 8 characters, with letters and numbers.",
@@ -188,7 +189,17 @@
         "passwordCommon": "That password is too common. Choose another one.",
         "terms": "You must accept the terms to continue.",
         "privacy": "You must authorise data processing to continue.",
-        "adult": "You must be of legal age to create an account."
+        "adult": "You must be of legal age to create an account.",
+        "residence": "Choose your department and municipality.",
+        "avatarConsent": "To use the photo, accept how we use it or remove it."
+      },
+      "photo": {
+        "intro": "You can add a photo so the business recognises you at pick-up. It is optional and you can remove it any time.",
+        "choose": "Choose photo",
+        "optional": "You can skip this step.",
+        "previewAlt": "Preview of your profile photo",
+        "consent": "I agree that Luma keeps this photo privately. Only the business preparing my order will see it, if I turn that option on, and it is deleted with my account.",
+        "remove": "Remove photo"
       }
     }
   },
@@ -1784,5 +1795,12 @@
     "strikes": "Orders not picked up in the last 30 days: {{count}}.",
     "until": "The limit ends on {{date}}.",
     "improve": "Pick up {{count}} more order(s) to become a trusted customer."
+  },
+  "avatar": {
+    "errors": {
+      "consent": "Accept how the photo is used to save it.",
+      "upload": "Could not save the photo. You can try again from My details.",
+      "remove": "Could not remove the photo. Try again."
+    }
   }
 }

@@ -4,8 +4,9 @@ import { isCommonPassword } from './common-passwords';
 import { STEP_FIELDS, type SignupDraft, type SignupErrors, type SignupStep } from './signup-draft';
 
 const V = 'auth.signup.validation';
-/** Mirrors profiles.full_name (at most 80 characters). */
+/** Mirrors profiles.full_name (at most 80) and is_profile_complete (at least 3). */
 export const MAX_FULL_NAME = 80;
+const MIN_FULL_NAME = 3;
 
 type Rule = (draft: SignupDraft) => string | null;
 
@@ -13,13 +14,17 @@ const RULES: Readonly<Record<keyof SignupDraft, Rule>> = {
   accountType: (d) => (d.accountType ? null : `${V}.accountType`),
   fullName: (d) => {
     const name = d.fullName.trim();
-    return name.length >= 2 && name.length <= MAX_FULL_NAME ? null : `${V}.fullName`;
+    return name.length >= MIN_FULL_NAME && name.length <= MAX_FULL_NAME ? null : `${V}.fullName`;
   },
-  // Required for business owners (the review team calls them), optional for customers.
+  // Required for everyone (is_profile_complete): it verifies the account and stops fake orders.
   phone: (d) => {
-    if (!d.phone.trim()) return d.accountType === 'business_owner' ? `${V}.phoneRequired` : null;
+    if (!d.phone.trim()) return `${V}.phoneRequired`;
     return Phone.parse(d.phone) ? null : `${V}.phone`;
   },
+  residence: (d) => (d.residence ? null : `${V}.residence`),
+  avatar: () => null,
+  // The photo is optional; when there is one, its consent is required.
+  avatarConsent: (d) => (!d.avatar || d.avatarConsent ? null : `${V}.avatarConsent`),
   email: (d) => {
     const parsed = emailSchema.safeParse(d.email);
     return parsed.success ? null : parsed.error.issues[0].message;

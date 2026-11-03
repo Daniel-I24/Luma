@@ -4,12 +4,18 @@ import { TranslocoTestingModule } from '@jsverse/transloco';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '@core/auth/auth.service';
 import { PendingVerification } from '@core/auth/pending-verification';
+import { Residence } from '@shared/geo/residence';
+import { ResidenceCatalog } from '@shared/geo/residence-catalog';
 import { LEGAL_VERSIONS } from '@shared/legal/legal-version';
+import { SignupCompletion } from '../../signup/signup-completion';
 import { SignupDraftStore } from '../../signup/signup-draft.store';
 import { RegisterPage } from './register.page';
 
 describe('RegisterPage (stepped sign-up)', () => {
   const auth = { signUp: vi.fn() };
+  const completion = { hold: vi.fn() };
+  const catalog = { load: vi.fn().mockResolvedValue(true), departments: () => [], search: () => [], municipality: () => null };
+  const pasto = Residence.of('Nariño', 'Pasto', '52001');
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -21,7 +27,12 @@ describe('RegisterPage (stepped sign-up)', () => {
           translocoConfig: { availableLangs: ['es'], defaultLang: 'es' },
         }),
       ],
-      providers: [provideRouter([]), { provide: AuthService, useValue: auth }],
+      providers: [
+        provideRouter([]),
+        { provide: AuthService, useValue: auth },
+        { provide: SignupCompletion, useValue: completion },
+        { provide: ResidenceCatalog, useValue: catalog },
+      ],
     });
     TestBed.inject(SignupDraftStore).reset();
   });
@@ -54,7 +65,7 @@ describe('RegisterPage (stepped sign-up)', () => {
     return { el, type, click, submit, settle, title };
   }
 
-  it('walks the four steps and signs up with the profile metadata', async () => {
+  it('walks the six steps, signs up with the profile metadata and holds residence and photo', async () => {
     auth.signUp.mockResolvedValue({ success: true });
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     const { type, click, submit, title } = await render();
@@ -66,6 +77,13 @@ describe('RegisterPage (stepped sign-up)', () => {
 
     await type('signup-fullName', 'Ana Pérez');
     await type('signup-phone', '300 123 4567');
+    await submit();
+    expect(title()).toBe('auth.signup.steps.residence');
+    await submit();
+    expect(title()).toBe('auth.signup.steps.residence');
+    TestBed.inject(SignupDraftStore).update('residence', pasto);
+    await submit();
+    expect(title()).toBe('auth.signup.steps.photo');
     await submit();
     await type('signup-email', 'ana@example.com');
     await type('signup-password', 'tamal-pastuso-7');
@@ -88,6 +106,7 @@ describe('RegisterPage (stepped sign-up)', () => {
       privacyVersion: LEGAL_VERSIONS.privacy,
     });
     expect(TestBed.inject(PendingVerification).email()).toBe('ana@example.com');
+    expect(completion.hold).toHaveBeenCalledWith(expect.objectContaining({ residence: pasto, avatar: null, phone: '300 123 4567' }));
     expect(TestBed.inject(SignupDraftStore).draft().password).toBe('');
   });
 
@@ -109,6 +128,7 @@ describe('RegisterPage (stepped sign-up)', () => {
     await click('input[value="customer"]');
     await submit();
     await type('signup-fullName', 'Ana Pérez');
+    await type('signup-phone', '300 123 4567');
     await submit();
 
     const back = Array.from(el.querySelectorAll('button')).find((b) =>
@@ -127,12 +147,14 @@ describe('RegisterPage (stepped sign-up)', () => {
     const { el, submit } = await render();
     store.update('accountType', 'customer');
     store.update('fullName', 'Ana');
+    store.update('phone', '300 123 4567');
+    store.update('residence', pasto);
     store.update('email', 'ana@example.com');
     store.update('password', 'tamal2024');
     store.update('acceptedTerms', true);
     store.update('acceptedPrivacy', true);
     store.update('isAdult', true);
-    for (let i = 0; i < 3; i++) await submit();
+    for (let i = 0; i < 5; i++) await submit();
 
     await submit();
 

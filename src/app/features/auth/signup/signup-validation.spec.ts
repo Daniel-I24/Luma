@@ -14,10 +14,10 @@ describe('validateStep', () => {
     expect(validateStep('accountType', draft({ accountType: 'customer' }))).toEqual({});
   });
 
-  it('makes the mobile optional for customers and required for business owners', () => {
+  it('requires the mobile of every account (it verifies the account and stops fake orders)', () => {
     expect(
       validateStep('personal', draft({ accountType: 'customer', fullName: 'Ana Pérez' })),
-    ).toEqual({});
+    ).toEqual({ phone: 'auth.signup.validation.phoneRequired' });
     expect(
       validateStep('personal', draft({ accountType: 'business_owner', fullName: 'Ana Pérez' })),
     ).toEqual({ phone: 'auth.signup.validation.phoneRequired' });

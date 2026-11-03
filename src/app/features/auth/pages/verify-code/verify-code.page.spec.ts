@@ -5,11 +5,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthCodeService } from '@core/auth/auth-code.service';
 import { PendingVerification } from '@core/auth/pending-verification';
 import { SessionProfileStore } from '@shared/account/session-profile.store';
+import { SignupCompletion } from '../../signup/signup-completion';
 import { RESEND_COOLDOWN_SECONDS, VerifyCodePage } from './verify-code.page';
 
 const flush = () => new Promise((resolve) => setTimeout(resolve));
 
 describe('VerifyCodePage', () => {
+  const completion = { complete: vi.fn().mockResolvedValue([]) };
   const codes = { confirmSignup: vi.fn(), resendSignupCode: vi.fn() };
 
   beforeEach(() => {
@@ -26,6 +28,7 @@ describe('VerifyCodePage', () => {
         provideRouter([]),
         { provide: AuthCodeService, useValue: codes },
         { provide: SessionProfileStore, useValue: { landingPath: () => Promise.resolve('/map') } },
+        { provide: SignupCompletion, useValue: completion },
       ],
     });
   });
@@ -65,6 +68,7 @@ describe('VerifyCodePage', () => {
 
     expect(codes.confirmSignup).toHaveBeenCalledWith('ana@example.com', '123456');
     expect(navigate).toHaveBeenCalledWith('/map');
+    expect(completion.complete).toHaveBeenCalled();
     expect(TestBed.inject(PendingVerification).email()).toBeNull();
   });
 

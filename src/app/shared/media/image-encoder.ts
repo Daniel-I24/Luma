@@ -25,19 +25,28 @@ function toBlob(canvas: HTMLCanvasElement, type: string, quality: number): Promi
 }
 
 /**
- * Decodes the picture (applying its EXIF orientation), scales it down to
- * MAX_IMAGE_SIDE and encodes it again as WebP, or JPEG where the browser
+ * Decodes the picture (applying its EXIF orientation), optionally keeps its
+ * centred square, scales it down to MAX_IMAGE_SIDE and encodes it again as WebP, or JPEG where the browser
  * cannot write WebP. Drawing on a canvas keeps only the pixels, so every
  * metadata block (EXIF, including the GPS position) is dropped.
  */
-export async function reencodeImage(file: Blob, maxSide = MAX_IMAGE_SIDE): Promise<EncodedImage> {
+export async function reencodeImage(
+  file: Blob,
+  maxSide = MAX_IMAGE_SIDE,
+  options: { readonly square?: boolean } = {},
+): Promise<EncodedImage> {
   let bitmap: ImageBitmap;
   try {
     bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
   } catch {
     throw new ImageEncodeError('media.errors.decode');
   }
-  const size = fitWithin(bitmap.width, bitmap.height, maxSide);
+  // Square: the centred square of the picture (profile photos).
+  const crop = options.square ? Math.min(bitmap.width, bitmap.height) : null;
+  const source = crop
+    ? { x: (bitmap.width - crop) / 2, y: (bitmap.height - crop) / 2, width: crop, height: crop }
+    : { x: 0, y: 0, width: bitmap.width, height: bitmap.height };
+  const size = fitWithin(source.width, source.height, maxSide);
   const canvas = document.createElement('canvas');
   canvas.width = size.width;
   canvas.height = size.height;
@@ -46,7 +55,7 @@ export async function reencodeImage(file: Blob, maxSide = MAX_IMAGE_SIDE): Promi
     bitmap.close();
     throw new ImageEncodeError('media.errors.decode');
   }
-  context.drawImage(bitmap, 0, 0, size.width, size.height);
+  context.drawImage(bitmap, source.x, source.y, source.width, source.height, 0, 0, size.width, size.height);
   bitmap.close();
 
   for (const format of FORMATS) {

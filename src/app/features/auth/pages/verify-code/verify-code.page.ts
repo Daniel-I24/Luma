@@ -8,6 +8,7 @@ import { LumaButton, LumaCard, LumaInput } from '@design-system';
 import { createCountdown } from '@shared/ui/countdown';
 import { SessionProfileStore } from '@shared/account/session-profile.store';
 import { AuthFormSubmission } from '../../forms/auth-form-submission';
+import { SignupCompletion } from '../../signup/signup-completion';
 
 /** Seconds before another code can be requested. */
 export const RESEND_COOLDOWN_SECONDS = 60;
@@ -30,6 +31,7 @@ export class VerifyCodePage {
   private readonly pending = inject(PendingVerification);
   private readonly router = inject(Router);
   private readonly sessionProfile = inject(SessionProfileStore);
+  private readonly completion = inject(SignupCompletion);
 
   protected readonly knownEmail = this.pending.email;
   protected readonly email = signal(this.pending.email() ?? '');
@@ -55,8 +57,10 @@ export class VerifyCodePage {
     return this.submission.run(
       { invalid: !this.complete() || this.email().trim() === '' },
       () => this.codes.confirmSignup(this.email(), this.code()),
-      () => {
+      async () => {
         this.pending.clear();
+        // Residence and photo from the sign-up; a failure is fixed later in "Mis datos".
+        await this.completion.complete();
         return this.goHome();
       },
     );
