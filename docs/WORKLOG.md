@@ -134,6 +134,15 @@ SQL suites, Deno 2.5.6 in Docker for the functions.
   Deno unchanged in this phase. Edge Functions are outside the new ESLint
   rules (Deno lint is a follow-up).
 
+- FASE 7 done (2026-10-27): docs/requirements-traceability.md maps the 16
+  required capabilities to code and tests; two gaps fixed
+  (SignupCompletion and the sign-up photo step had no tests). Final DoD
+  green: build (650 kB initial), lint, 740 app tests, 79 script tests,
+  630 SQL checks, 124 Deno tests and type check of 10 functions,
+  interactive, hard-coded URLs, buttons, contrast, tokens, secret scan,
+  npm audit --omit=dev 0, knip without unused files or dependencies.
+  Round 2 closed.
+
 ## Done (round 1)
 
 - PARTE 0 — history cleaned (`backup-before-temp-cleanup` and
@@ -341,12 +350,17 @@ SQL suites, Deno 2.5.6 in Docker for the functions.
 
 ## Left
 
-- Visual pass in a browser of the owner and admin screens (needs a session
-  with an owner/admin account; covered by component tests only).
-- Migrations 5 to 21 to review and apply (docs/migrations.md), then
-  VALIDATE the NOT VALID constraints.
-- To switch Luma IA to remote: deploy the functions and set the secrets
-  (docs/ai.md), then AI_MODE = remote.
-- Gradle/AGP upgrade to build with JDK 25 (Android Studio's current JBR).
-- PARTE 9 (Wompi) and the performance section of PARTE 8: on hold until the
-  owner asks; the Wompi plan is in docs/payments.md.
+- Review and apply the 21 round 2 migrations (20261029000000 to
+  20261030000700) in order; run `supabase/tests/local/run.sh` against a
+  copy first.
+- Online payments: set the Wompi secrets and cron, deploy the four payment
+  functions, run the sandbox list in docs/payments-checklist.md, then
+  `payments_enabled = 1`.
+- Signed release APK with the owner's keystore and a test on a device.
+- Visual pass on a device of the screens with real data (business profile,
+  order detail, owner panel, admin) — the screen harness covers empty
+  states only.
+- Edge Functions under the same lint limits (Deno lint) and depcheck
+  (not run: an unpinned npx package; knip covers dependencies).
+- Optional: rewrite history to drop supabase/.temp before making the
+  repository public (docs/security-findings.md).
