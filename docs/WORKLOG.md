@@ -106,6 +106,11 @@ agent's sessions).
   changes only for real bugs, each listed below; other ideas in
   docs/db-followups.md.
   Post-freeze supabase/ changes: none yet.
+- FASE 2.1 auth: unconfirmed emails never get a session (sign-in, restore,
+  auth events); unreadable profile -> /account-error (Reintentar / Cerrar
+  sesion) via accountReadyGuard on the tab layout and welcome, ownerGuard and
+  homePath; never a customer guess. The localhost link in the signup email is
+  Supabase config (template with {{ .Token }}, Site URL): launch checklist.
 
 - Block D done: migration 20261021000000 (discounts, trigger, server prices in
   create_order; 23 SQL checks), customer /promotions (sort, filters, states,

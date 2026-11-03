@@ -20,7 +20,7 @@ function setup(getSession: () => Promise<unknown>): AuthService {
 
 describe('AuthService.ready', () => {
   it('resolves with the restored session user', async () => {
-    const user = { id: 'user-1' };
+    const user = { id: 'user-1', email_confirmed_at: '2026-10-01T00:00:00Z' };
     const service = setup(() => Promise.resolve({ data: { session: { user } }, error: null }));
 
     expect(service.user()).toBeNull();

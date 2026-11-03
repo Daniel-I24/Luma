@@ -16,6 +16,10 @@ export interface AuthResult {
 }
 
 export const OK: AuthResult = { success: true };
+
+/** A session counts only when its email is confirmed (6-digit code). */
+const isConfirmed = (session: Session | null): session is Session =>
+  !!session?.user.email_confirmed_at;
 export const fail = (errorKey: string): AuthResult => ({ success: false, errorKey });
 
 /**
@@ -55,8 +59,15 @@ export class AuthService {
     const parsed = signInSchema.safeParse({ email, password });
     if (!parsed.success) return Promise.resolve(fail(parsed.error.issues[0].message));
     return this.withLoading(async () => {
-      const { error } = await this.supabase.auth.signInWithPassword(parsed.data);
-      return error ? fail(mapAuthError(error.message, this.online())) : OK;
+      const { data, error } = await this.supabase.auth.signInWithPassword(parsed.data);
+      if (error) return fail(mapAuthError(error.message, this.online()));
+      // Even if the project stops requiring confirmation, an unconfirmed
+      // email never gets a session in the app (the database refuses its writes).
+      if (!isConfirmed(data.session)) {
+        await this.supabase.auth.signOut({ scope: 'local' });
+        return fail('auth.errors.emailNotConfirmed');
+      }
+      return OK;
     });
   }
 
@@ -114,7 +125,7 @@ export class AuthService {
 
   private async initSession(): Promise<void> {
     this.supabase.auth.onAuthStateChange((event, session) => {
-      this._session.set(session);
+      this._session.set(isConfirmed(session) ? session : null);
       // Also covers sessions ended elsewhere (expired refresh token, other tab).
       if (event === 'SIGNED_OUT') this.userData.clearAll();
     });
@@ -122,7 +133,7 @@ export class AuthService {
     // A failed restore is treated as "no session" so guards never hang.
     try {
       const { data, error } = await this.supabase.auth.getSession();
-      this._session.set(error ? null : data.session);
+      this._session.set(error || !isConfirmed(data.session) ? null : data.session);
     } catch {
       this._session.set(null);
     }

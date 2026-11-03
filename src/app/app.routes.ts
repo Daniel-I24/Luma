@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from '@core/auth/auth.guard';
 import { guestGuard } from '@core/auth/guest.guard';
 import { DETAIL_ROUTE_DATA } from '@core/navigation/route-transition';
-import { accountHomeGuard, ownerGuard } from '@shared/account/account.guards';
+import { accountHomeGuard, accountReadyGuard, ownerGuard } from '@shared/account/account.guards';
 
 const DEV_ONLY_ROUTES: Routes = [
   {
@@ -28,8 +28,15 @@ export const routes: Routes = [
   {
     // Tutorial after signing in (once per version) and from the Profile.
     path: 'welcome',
-    canActivate: [authGuard],
+    canActivate: [authGuard, accountReadyGuard],
     loadComponent: () => import('./features/onboarding/welcome.page').then((m) => m.WelcomePage),
+  },
+  {
+    // The account type could not be read: "Reintentar", never a guess.
+    path: 'account-error',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/account-error/account-error.page').then((m) => m.AccountErrorPage),
   },
   {
     // Terms and privacy: public, linked from the sign-up and the Profile.
@@ -55,7 +62,7 @@ export const routes: Routes = [
     // Signed-in sections share the tab bar layout.
     path: '',
     loadComponent: () => import('@shared/layout/tab-layout/tab-layout').then((m) => m.TabLayout),
-    canActivate: [authGuard],
+    canActivate: [authGuard, accountReadyGuard],
     children: [
       {
         path: 'map',

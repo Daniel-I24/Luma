@@ -42,7 +42,10 @@ describe('AuthService', () => {
 
   it('signIn: returns success on valid credentials', async () => {
     setup({
-      signInWithPassword: vi.fn().mockResolvedValue({ error: null }),
+      signInWithPassword: vi.fn().mockResolvedValue({
+        data: { session: { user: { email_confirmed_at: '2026-10-01T00:00:00Z' } } },
+        error: null,
+      }),
     });
 
     const result = await service.signIn('user@example.com', 'password123');

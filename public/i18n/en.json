@@ -1410,5 +1410,12 @@
     "title": "We could not find this page",
     "description": "The address does not exist or is no longer available.",
     "home": "Go home"
+  },
+  "accountError": {
+    "title": "We couldn't load your account",
+    "description": "We don't know yet whether your account is a customer or a business one, so we won't show you the wrong screens. Please try again in a moment.",
+    "retry": "Retry",
+    "stillFailing": "Still not working. If Luma's database is being updated, wait a few minutes.",
+    "signOut": "Sign out"
   }
 }

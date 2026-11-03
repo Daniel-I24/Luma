@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 import { type CanActivateFn, Router } from '@angular/router';
+import { ACCOUNT_ERROR_PATH } from './account-homes';
 import { SessionProfileStore } from './session-profile.store';
 
 /**
@@ -18,4 +19,15 @@ export const accountHomeGuard: CanActivateFn = async () => {
   const store = inject(SessionProfileStore);
   const router = inject(Router);
   return router.parseUrl(await store.landingPath());
+};
+
+/**
+ * Screens that depend on the account type: wait for the profile; when it
+ * could not be read, go to the error screen instead of guessing.
+ */
+export const accountReadyGuard: CanActivateFn = async () => {
+  const store = inject(SessionProfileStore);
+  const router = inject(Router);
+  await store.whenLoaded();
+  return store.failed() ? router.parseUrl(ACCOUNT_ERROR_PATH) : true;
 };

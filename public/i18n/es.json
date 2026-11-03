@@ -1410,5 +1410,12 @@
     "title": "No encontramos esta página",
     "description": "La dirección no existe o ya no está disponible.",
     "home": "Ir al inicio"
+  },
+  "accountError": {
+    "title": "No pudimos cargar tu cuenta",
+    "description": "No sabemos aún si tu cuenta es de cliente o de negocio, así que no te mostramos ninguna pantalla por error. Intenta de nuevo en un momento.",
+    "retry": "Reintentar",
+    "stillFailing": "Sigue sin funcionar. Si la base de datos de Luma se está actualizando, espera unos minutos.",
+    "signOut": "Cerrar sesión"
   }
 }
