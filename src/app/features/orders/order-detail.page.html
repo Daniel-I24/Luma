@@ -94,6 +94,8 @@
   <app-luma-button variant="danger-outline" [fullWidth]="true" [disabled]="store.cancelling()" (clicked)="confirmOpen.set(true)">{{
     t('orders.detail.cancel')
   }}</app-luma-button>
+  } @if ((order.status === 'picked_up' || order.status === 'cancelled') && reorder.canReorder(order)) {
+  <app-luma-button variant="secondary" [fullWidth]="true" (clicked)="orderAgain(order)">{{ t('orders.detail.orderAgain') }}</app-luma-button>
   } } } }
 
   <app-luma-bottom-sheet

@@ -4,7 +4,8 @@ import type { RepoResult } from '@shared/business/data/business.repository';
 import type { OrderStatus } from '@shared/orders/order.model';
 
 /** Who is told what (notifications_type_valid). */
-export type NotificationType = 'order_status' | 'order_new' | 'order_cancelled';
+export type NotificationType =
+  | 'order_status' | 'order_new' | 'order_cancelled' | 'business_review' | 'promotion' | 'payment' | 'review_invite';
 /** Notifications sent to the owner of the business of the order. */
 export const OWNER_NOTIFICATION_TYPES: readonly NotificationType[] = [
   'order_new',
@@ -16,14 +17,15 @@ export interface AppNotification {
   id: string;
   type: NotificationType;
   order_id: string | null;
-  status: OrderStatus | null;
+  /** Order status, review decision or payment status, depending on the type. */
+  status: OrderStatus | string | null;
   created_at: string;
   read_at: string | null;
   /** For owner notifications: the business of the order (read from business_orders). */
   business_id: string | null;
 }
 
-const COLUMNS = 'id, type, order_id, status, created_at, read_at';
+const COLUMNS = 'id, type, order_id, business_id, status, created_at, read_at';
 const LIST_LIMIT = 50;
 const LOAD_FAILED = 'notifications.errors.loadFailed';
 
@@ -43,7 +45,7 @@ export class NotificationRepository {
       .order('created_at', { ascending: false })
       .limit(LIST_LIMIT);
     if (error) return { data: null, errorKey: LOAD_FAILED };
-    const rows = data as Omit<AppNotification, 'business_id'>[];
+    const rows = data as AppNotification[];
     const orderIds = rows
       .filter((n) => OWNER_NOTIFICATION_TYPES.includes(n.type) && n.order_id)
       .map((n) => n.order_id!);
@@ -61,7 +63,7 @@ export class NotificationRepository {
     return {
       data: rows.map((n) => ({
         ...n,
-        business_id: n.order_id ? (businessOf.get(n.order_id) ?? null) : null,
+        business_id: n.business_id ?? (n.order_id ? (businessOf.get(n.order_id) ?? null) : null),
       })),
       errorKey: null,
     };

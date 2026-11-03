@@ -528,7 +528,8 @@
       "travel": {
         "walk": "About {{minutes}} min on foot (approx.)",
         "vehicle": "About {{minutes}} min by vehicle (approx.)"
-      }
+      },
+      "orderAgain": "Order again"
     },
     "errors": {
       "loadTitle": "Could not load orders",
@@ -1068,7 +1069,24 @@
         "cancelled": "The business cancelled your order",
         "unknown": "Your order changed status"
       },
-      "orderCancelled": "A customer cancelled their order"
+      "orderCancelled": "A customer cancelled their order",
+      "reviewInvite": "How was your order? Tell us and rate the business",
+      "promotion": "A business you saved has a new promotion",
+      "payment": {
+        "approved": "Your payment was approved",
+        "declined": "Your payment was declined: you can try again",
+        "error": "Your payment was not completed",
+        "voided": "Your payment was voided",
+        "refund_required": "Your order was cancelled: we will refund your payment",
+        "refunded": "We refunded your payment",
+        "unknown": "Your payment status changed"
+      },
+      "businessReview": {
+        "approved": "Your business was approved and is now visible",
+        "rejected": "Your business needs changes: check the notes",
+        "suspended": "Your business was suspended: check the notes",
+        "unknown": "Your business review changed"
+      }
     },
     "errors": {
       "loadFailed": "The notifications could not be loaded.",

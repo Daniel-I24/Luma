@@ -528,7 +528,8 @@
       "travel": {
         "walk": "A unos {{minutes}} min a pie (aprox.)",
         "vehicle": "A unos {{minutes}} min en vehículo (aprox.)"
-      }
+      },
+      "orderAgain": "Pedir de nuevo"
     },
     "errors": {
       "loadTitle": "No se pudieron cargar los pedidos",
@@ -1068,7 +1069,24 @@
         "cancelled": "El negocio canceló tu pedido",
         "unknown": "Tu pedido cambió de estado"
       },
-      "orderCancelled": "Un cliente canceló su pedido"
+      "orderCancelled": "Un cliente canceló su pedido",
+      "reviewInvite": "¿Qué tal tu pedido? Cuéntanos cómo te fue y califica el negocio",
+      "promotion": "Un negocio que guardaste tiene una promoción nueva",
+      "payment": {
+        "approved": "Tu pago fue aprobado",
+        "declined": "Tu pago fue rechazado: puedes intentarlo de nuevo",
+        "error": "Tu pago no se completó",
+        "voided": "Tu pago fue anulado",
+        "refund_required": "Tu pedido se canceló: vamos a devolverte el pago",
+        "refunded": "Te devolvimos el pago",
+        "unknown": "El estado de tu pago cambió"
+      },
+      "businessReview": {
+        "approved": "Tu negocio fue aprobado y ya es visible",
+        "rejected": "Tu negocio necesita cambios: revisa las notas",
+        "suspended": "Tu negocio fue suspendido: revisa las notas",
+        "unknown": "La revisión de tu negocio cambió"
+      }
     },
     "errors": {
       "loadFailed": "No se pudieron cargar las notificaciones.",

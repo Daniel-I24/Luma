@@ -8,6 +8,10 @@ import {
 export function notificationKey(notification: Pick<AppNotification, 'type' | 'status'>): string {
   if (notification.type === 'order_new') return 'notifications.text.orderNew';
   if (notification.type === 'order_cancelled') return 'notifications.text.orderCancelled';
+  if (notification.type === 'review_invite') return 'notifications.text.reviewInvite';
+  if (notification.type === 'promotion') return 'notifications.text.promotion';
+  if (notification.type === 'payment') return `notifications.text.payment.${notification.status ?? 'unknown'}`;
+  if (notification.type === 'business_review') return `notifications.text.businessReview.${notification.status ?? 'unknown'}`;
   return `notifications.text.status.${notification.status ?? 'unknown'}`;
 }
 
@@ -18,5 +22,9 @@ export function notificationLink(notification: AppNotification): string[] | null
       ? ownerPaths.section(notification.business_id, 'orders')
       : ownerPaths.home();
   }
-  return notification.order_id ? ['/orders', notification.order_id] : null;
+  const { type, business_id: businessId, order_id: orderId } = notification;
+  // Invitation to review and promotions open the business; review decisions the owner panel.
+  if ((type === 'review_invite' || type === 'promotion') && businessId) return ['/businesses', businessId];
+  if (type === 'business_review') return businessId ? ownerPaths.section(businessId, 'summary') : ownerPaths.home();
+  return orderId ? ['/orders', orderId] : null;
 }

@@ -25,10 +25,11 @@ import { GeolocationService } from '@shared/geo/geolocation.service';
 import { haversineKm } from '@shared/geo/haversine.util';
 import { estimateReadyAt, estimateTravelMinutes } from '@shared/orders/order-estimates.util';
 import { OrderStatusBadge } from '@shared/orders/order-status-badge';
-import type { OrderBusiness } from '@shared/orders/order.model';
+import type { OrderBusiness, OrderWithItems } from '@shared/orders/order.model';
 import { pollWhileVisible } from '@shared/ui/poll-while-visible';
 import { AppEvents } from '@core/native/app-events';
 import { OrderPayment } from './components/order-payment/order-payment';
+import { ReorderService } from './services/reorder.service';
 import { OrderTimeline } from './components/order-timeline/order-timeline';
 import { OrderDetailStore } from './state/order-detail.store';
 import { directionsUrl, showsEstimate } from './utils/order-detail.util';
@@ -79,6 +80,7 @@ export class OrderDetailPage {
   );
 
   protected readonly confirmOpen = signal(false);
+  protected readonly reorder = inject(ReorderService);
   protected readonly estimate = computed(() => {
     const order = this.store.order();
     if (!order || !showsEstimate(order.status)) return null;
@@ -122,6 +124,11 @@ export class OrderDetailPage {
   protected async cancel(): Promise<void> {
     this.confirmOpen.set(false);
     await this.store.cancel();
+  }
+
+  /** "Pedir de nuevo": the old lines go back to the cart, which re-checks the menu. */
+  protected orderAgain(order: OrderWithItems): void {
+    if (this.reorder.reorder(order)) void this.router.navigate(['/cart']);
   }
 
   protected back(): void {
