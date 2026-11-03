@@ -3,7 +3,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { LumaBottomSheet, LumaButton } from '@design-system';
 import type { ReviewDecision } from '@shared/business/verification/verification.model';
 
-export const NOTE_MAX = 300;
+const NOTE_MAX = 300;
 
 /**
  * ReviewDecision — confirms an admin decision. Rejecting or suspending needs

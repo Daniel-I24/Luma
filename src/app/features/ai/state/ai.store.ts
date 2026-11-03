@@ -15,7 +15,7 @@ import type {
 } from '@shared/recommendations/recommendation.model';
 import { RecommendationScoring } from '@shared/recommendations/rules-recommendation.engine';
 
-export const AI_RADIUS_KM = 10;
+const AI_RADIUS_KM = 10;
 export type AiState = 'loading' | 'ready' | 'error';
 
 /**

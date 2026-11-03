@@ -38,3 +38,28 @@ Removed: the translation keys `auth.signup.personal.phoneHintOwner` and
 `phoneHintCustomer` (the mobile is required for every account now; no
 reference left). The app-side `Money` draft was not added (docs/DECISIONS.md).
 knip: no unused files or dependencies.
+
+## Round 2, phase 4 (2026-10-26)
+
+Removed: the old splash PNGs and launcher template layers (vector icons
+replace them), the `pulse`, `spring`, `bounce` and `fade-in-up` motion
+tokens and the `pulse-ring` keyframes (no reference left), the Inter font
+package. knip: no unused files or dependencies.
+
+## Round 2, phase 5 (2026-10-26)
+
+Removed: nothing. The design preview is no longer bundled in production
+(dev-routes.ts replaced), the code stays for development.
+
+## Round 2, phase 6 (2026-10-27)
+
+- Renamed every `*.util.ts` (and its spec) when its functions became
+  classes: e.g. `pickup-slots.util.ts` → `pickup-slots.ts`,
+  `sheet-drag.util.ts` → `sheet-drag-math.ts`, `combo.util.ts` →
+  `combo-builder.ts`, `normalize-text.util.ts` → `text-normalizer.ts`.
+- `export` removed from 48 symbols used only inside their own file
+  (knip "unused exports"); the constant `HOURS_PER_DAY` deleted (unused).
+- `LumaToastHost` removed from the design-system barrel (imported by path
+  so it stays out of the barrel's eager graph).
+- Kept on purpose: the design-system barrel's type re-exports (its public
+  API) and the Edge Function exports (Deno modules, outside this pass).

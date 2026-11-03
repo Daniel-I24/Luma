@@ -1,14 +1,14 @@
 import * as z from 'zod/mini';
 
 /** Reason codes of an idea; the app translates them with the figures below. */
-export const IDEA_REASONS = ['slow_item', 'new_item', 'quiet_slot', 'top_seller'] as const;
+const IDEA_REASONS = ['slow_item', 'new_item', 'quiet_slot', 'top_seller'] as const;
 export type IdeaReason = (typeof IDEA_REASONS)[number];
-export const IDEA_SLOTS = ['morning', 'midday', 'afternoon', 'evening', 'night'] as const;
+const IDEA_SLOTS = ['morning', 'midday', 'afternoon', 'evening', 'night'] as const;
 
 const slotSchema = z.object({ dow: z.number(), slot: z.enum(IDEA_SLOTS) });
 
 /** One idea, as suggest-promotions answers it (server prices). */
-export const ideaSchema = z.object({
+const ideaSchema = z.object({
   menu_item_id: z.string(),
   item_name: z.string(),
   discount_percent: z.number(),

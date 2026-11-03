@@ -4,7 +4,7 @@ import type { MenuItem } from '@shared/business/models/menu.model';
 import { MIN_NAME_LENGTH } from '@shared/business/data/business-write.schemas';
 
 /** What a business needs before it can be published (in display order). */
-export const PUBLISH_REQUIREMENTS = [
+const PUBLISH_REQUIREMENTS = [
   'name',
   'category',
   'location',

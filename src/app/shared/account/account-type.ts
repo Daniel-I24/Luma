@@ -1,5 +1,5 @@
 /** Account types (mirrors profiles_account_type_valid). */
-export const ACCOUNT_TYPES = ['customer', 'business_owner'] as const;
+const ACCOUNT_TYPES = ['customer', 'business_owner'] as const;
 export type AccountTypeValue = (typeof ACCOUNT_TYPES)[number];
 
 /** AccountType — what kind of user this is; unknown values are customers. */

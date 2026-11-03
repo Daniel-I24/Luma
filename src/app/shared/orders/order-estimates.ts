@@ -2,14 +2,14 @@ import type { Order } from './order.model';
 import { MINUTES_PER_HOUR, MS_PER_MINUTE } from '@core/config/units';
 
 /** Up to this distance the estimate assumes walking. */
-export const WALK_MAX_KM = 1.5;
+const WALK_MAX_KM = 1.5;
 /** About 4.8 km/h. */
 const WALK_KM_PER_MIN = 0.08;
 /** City traffic in Pasto, about 20 km/h. */
 const VEHICLE_KMH = 20;
 const VEHICLE_KM_PER_MIN = VEHICLE_KMH / MINUTES_PER_HOUR;
 /** Used when the business's preparation time is not available. */
-export const DEFAULT_PREP_MINUTES = 20;
+const DEFAULT_PREP_MINUTES = 20;
 
 export interface TravelEstimate {
   readonly mode: 'walk' | 'vehicle';

@@ -14,7 +14,7 @@ import type {
 import { PERCENT } from '@core/config/units';
 
 /** Search radius sent to the function (its maximum). */
-export const REMOTE_RADIUS_KM = 10;
+const REMOTE_RADIUS_KM = 10;
 
 /** Reason codes of the function → the app's reasons. */
 const REASON_MAP: Readonly<Record<string, RecommendationReason>> = {

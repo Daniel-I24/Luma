@@ -3,7 +3,7 @@
  * letters-and-numbers rule (compared lowercase). Not exhaustive: it stops
  * the most guessed ones; Supabase's leaked-password protection can add more.
  */
-export const COMMON_PASSWORDS: ReadonlySet<string> = new Set([
+const COMMON_PASSWORDS: ReadonlySet<string> = new Set([
   'password1',
   'password12',
   'password123',

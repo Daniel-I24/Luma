@@ -48,7 +48,7 @@ export abstract class AdminRepository {
 }
 
 /** SupabaseAdminRepository — admin reads and decisions (aal2 checked in SQL). */
-export class SupabaseAdminRepository extends AdminRepository {
+class SupabaseAdminRepository extends AdminRepository {
   private readonly db = inject(SupabaseService).client;
 
   /** Whether the user is an admin and has a verified second factor. */

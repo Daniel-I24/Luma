@@ -25,7 +25,7 @@ export const BUSINESS_CATEGORY_VALUES = BUSINESS_CATEGORIES.map((c) => c.value) 
 ];
 
 /** BusinessCategories — translation keys of the business categories. */
-export class BusinessCategories {
+class BusinessCategories {
   /** Translation key of a stored category, or null for legacy free-text values. */
   public static categoryLabelKey(value: string): string | null {
     const category = BUSINESS_CATEGORIES.find((c) => c.value === value);

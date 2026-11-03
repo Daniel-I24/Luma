@@ -3,7 +3,7 @@ import { METERS_PER_KM, MINUTES_PER_HOUR } from '@core/config/units';
 /** Short distances are rounded to 10 m. */
 const METERS_STEP = 10;
 /** Average walking speed used to estimate travel time (estimate, not routing). */
-export const WALKING_SPEED_KMH = 5;
+const WALKING_SPEED_KMH = 5;
 
 /** Distance — walking minutes and readable distances. */
 export class Distance {

@@ -1,7 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { type Place, type PlaceAttribution, PlaceSearchRepository } from '@shared/geo/place-search.repository';
 
-export const MIN_PLACE_QUERY = 3;
+const MIN_PLACE_QUERY = 3;
 
 /**
  * PlaceSearchStore — neighbourhoods, addresses and places for the map

@@ -13,7 +13,7 @@ export abstract class ExternalBrowser {
 }
 
 /** CapacitorExternalBrowser — the system browser on Android, a new tab on the web. */
-export class CapacitorExternalBrowser extends ExternalBrowser {
+class CapacitorExternalBrowser extends ExternalBrowser {
   constructor(private readonly document: Document) {
     super();
   }

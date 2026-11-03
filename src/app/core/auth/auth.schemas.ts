@@ -27,7 +27,7 @@ export const newPasswordSchema = z
     z.regex(PASSWORD_PATTERN, 'auth.validation.passwordWeak'),
   );
 
-export const codeSchema = z
+const codeSchema = z
   .string()
   .check(z.regex(new RegExp(`^\\d{${CODE_LENGTH}}$`), 'auth.validation.codeInvalid'));
 

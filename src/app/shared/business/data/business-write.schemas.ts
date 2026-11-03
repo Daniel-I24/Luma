@@ -7,9 +7,9 @@ import { BUSINESS_CATEGORY_VALUES } from './business-categories';
  * the database; messages are translation keys.
  */
 const V = 'businessPanel.validation';
-export const PHONE_PATTERN = /^\+?[0-9][0-9 ]{6,19}$/;
-export const TIME_PATTERN = /^([01]\d|2[0-3]):[0-5]\d$/;
-export const MAX_PRICE_COP = 2_147_483_647;
+const PHONE_PATTERN = /^\+?[0-9][0-9 ]{6,19}$/;
+const TIME_PATTERN = /^([01]\d|2[0-3]):[0-5]\d$/;
+const MAX_PRICE_COP = 2_147_483_647;
 
 // Limits of the CHECK constraints (keep in sync with the migrations).
 export const MIN_NAME_LENGTH = 2;
@@ -34,7 +34,7 @@ const text = (min: number, max: number, key: string): z.ZodMiniString<string> =>
   z.string(key).check(z.trim(), z.minLength(min, key), z.maxLength(max, key));
 const optionalText = (max: number, key: string): z.ZodMiniNullable<z.ZodMiniString<string>> =>
   z.nullable(z.string(key).check(z.trim(), z.maxLength(max, key)));
-export const httpsUrl = z.nullable(z.string().check(z.regex(/^https:\/\//i, `${V}.imageUrl`)));
+const httpsUrl = z.nullable(z.string().check(z.regex(/^https:\/\//i, `${V}.imageUrl`)));
 
 const registerShape = {
   name: text(MIN_NAME_LENGTH, MAX_NAME_LENGTH, `${V}.name`),

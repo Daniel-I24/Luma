@@ -1,5 +1,5 @@
 /** The business day follows Colombia, like create_order (America/Bogota). */
-export const BUSINESS_TIME_ZONE = 'America/Bogota';
+const BUSINESS_TIME_ZONE = 'America/Bogota';
 
 /** BusinessDay — the calendar day in Bogotá. */
 export class BusinessDay {

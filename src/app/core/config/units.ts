@@ -6,7 +6,6 @@ export const MS_PER_SECOND = 1000;
 export const MS_PER_MINUTE = 60_000;
 export const MS_PER_DAY = 86_400_000;
 export const MINUTES_PER_HOUR = 60;
-export const HOURS_PER_DAY = 24;
 export const MINUTES_PER_DAY = 1440;
 export const DAYS_PER_WEEK = 7;
 export const METERS_PER_KM = 1000;

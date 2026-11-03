@@ -1,5 +1,5 @@
 /** Fraction of the sheet height that closes it when released past it. */
-export const CLOSE_DISTANCE_FRACTION = 0.3;
+const CLOSE_DISTANCE_FRACTION = 0.3;
 /** Downward speed (px/ms) that closes the sheet as a flick… */
 export const FLING_VELOCITY = 0.5;
 /** …once it moved at least this far, so a tap never closes it. */
@@ -10,8 +10,8 @@ export const OVERDRAG_RESISTANCE = 0.25;
 export const DRAG_SLOP_PX = 6;
 
 /** A flicked sheet keeps the finger's speed, within the motion range for screens (ms). */
-export const FLING_MIN_MS = 120;
-export const FLING_MAX_MS = 340;
+const FLING_MIN_MS = 120;
+const FLING_MAX_MS = 340;
 
 /** SheetDragMath — offsets, velocity and the release decision of a dragged sheet. */
 export class SheetDragMath {

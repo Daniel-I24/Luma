@@ -7,7 +7,7 @@ const HH_MM = 5;
 
 /** Days in the order the editor shows them (Monday first; 0 = Sunday). */
 // eslint-disable-next-line @typescript-eslint/no-magic-numbers -- data table: Monday-first week
-export const WEEK_FROM_MONDAY = [1, 2, 3, 4, 5, 6, 0] as const;
+const WEEK_FROM_MONDAY = [1, 2, 3, 4, 5, 6, 0] as const;
 const DEFAULT_OPENS = '08:00';
 const DEFAULT_CLOSES = '18:00';
 

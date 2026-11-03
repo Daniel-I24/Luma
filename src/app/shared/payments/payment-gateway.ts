@@ -20,7 +20,7 @@ export interface PaymentGateway {
 }
 
 /** The customer pays in the store when picking the order up. */
-export class PayAtPickupGateway implements PaymentGateway {
+class PayAtPickupGateway implements PaymentGateway {
   public readonly method = 'pay_at_pickup';
   public readonly labelKey = 'checkout.payment.payAtPickup';
 
@@ -34,7 +34,7 @@ export class PayAtPickupGateway implements PaymentGateway {
  * WompiGateway — asks create-payment for a signed checkout link and opens it
  * in the system browser. Only links to Wompi's checkout are opened.
  */
-export class WompiGateway implements PaymentGateway {
+class WompiGateway implements PaymentGateway {
   public readonly method = 'online';
   public readonly labelKey = 'checkout.payment.online';
 

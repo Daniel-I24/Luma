@@ -72,5 +72,5 @@ export interface OrderAction {
 }
 
 /** Minutes after "ready" before the owner may mark a no-show (no_show_min_minutes). */
-export const NO_SHOW_MINUTES = 15;
+const NO_SHOW_MINUTES = 15;
 const MS_PER_MINUTE = 60_000;

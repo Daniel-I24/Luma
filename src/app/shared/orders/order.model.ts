@@ -1,5 +1,5 @@
 /** Lifecycle of a pick-up order (public.orders.status). */
-export const ORDER_STATUSES = [
+const ORDER_STATUSES = [
   // Online orders until their payment is approved (never shown to the business).
   'awaiting_payment',
   'pending',

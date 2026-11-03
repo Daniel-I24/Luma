@@ -5,7 +5,7 @@ import type { NearbyBusiness } from '../state/nearby-businesses.store';
 export const DISTANCE_OPTIONS = [1, 3, 5, 10] as const;
 export type DistanceOption = (typeof DISTANCE_OPTIONS)[number];
 /** "Calificación de 4 o más". */
-export const MIN_GOOD_RATING = 4;
+const MIN_GOOD_RATING = 4;
 
 export interface MapFilters {
   readonly openNow: boolean;

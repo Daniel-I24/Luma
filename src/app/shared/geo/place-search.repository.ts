@@ -13,7 +13,7 @@ const MAX_PLACES = 8;
 const COLOMBIA = { south: -4.3, north: 13.6, west: -81.8, east: -66.8 } as const;
 
 /** A neighbourhood, address or place found by the geocode Edge Function. */
-export const placeSchema = z.object({
+const placeSchema = z.object({
   label: z.string().check(z.minLength(1), z.maxLength(MAX_PLACE_LABEL)),
   kind: z.enum(['address', 'street', 'neighbourhood', 'city', 'poi']),
   lat: z.number().check(z.gte(COLOMBIA.south), z.lte(COLOMBIA.north)),

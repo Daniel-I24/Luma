@@ -4,7 +4,7 @@ import { LumaBottomSheet, LumaButton, ToastService } from '@design-system';
 import { ReportRepository } from '@shared/business/verification/report.repository';
 import { REPORT_REASONS, type ReportReason } from '@shared/business/verification/verification.model';
 
-export const REPORT_COMMENT_MAX = 300;
+const REPORT_COMMENT_MAX = 300;
 
 /**
  * ReportSheet — "Reportar" button and its bottom sheet: a reason and an

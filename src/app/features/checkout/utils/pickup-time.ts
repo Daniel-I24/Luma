@@ -4,7 +4,7 @@ export type PickupOption = 'now' | 'later' | 'tomorrow';
 
 /** Same window the server enforces in create_order. */
 export const MIN_LEAD_MINUTES = 10;
-export const MAX_AHEAD_DAYS = 7;
+const MAX_AHEAD_DAYS = 7;
 const MINUTE_MS = 60_000;
 
 export interface PickupChoice {

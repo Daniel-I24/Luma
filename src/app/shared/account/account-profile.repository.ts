@@ -57,7 +57,7 @@ export abstract class AccountProfileRepository {
 }
 
 /** SupabaseAccountProfileRepository — profiles through RLS and SECURITY DEFINER functions. */
-export class SupabaseAccountProfileRepository extends AccountProfileRepository {
+class SupabaseAccountProfileRepository extends AccountProfileRepository {
   private readonly db = inject(SupabaseService).client;
 
   /** @inheritdoc */

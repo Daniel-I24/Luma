@@ -23,7 +23,7 @@ export abstract class ReportRepository {
 }
 
 /** SupabaseReportRepository — reports through RLS. */
-export class SupabaseReportRepository extends ReportRepository {
+class SupabaseReportRepository extends ReportRepository {
   private readonly db = inject(SupabaseService).client;
 
   /** @inheritdoc */

@@ -51,7 +51,7 @@ export abstract class VerificationRepository {
 }
 
 /** SupabaseVerificationRepository — legal data and documents through RLS and Storage. */
-export class SupabaseVerificationRepository extends VerificationRepository {
+class SupabaseVerificationRepository extends VerificationRepository {
   private readonly db = inject(SupabaseService).client;
 
   /** @inheritdoc */

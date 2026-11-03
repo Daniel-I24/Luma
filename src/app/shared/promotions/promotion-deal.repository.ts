@@ -67,7 +67,7 @@ export abstract class PromotionDealRepository {
 }
 
 /** SupabasePromotionDealRepository — current deals through RLS. */
-export class SupabasePromotionDealRepository extends PromotionDealRepository {
+class SupabasePromotionDealRepository extends PromotionDealRepository {
   private readonly db = inject(SupabaseService).client;
 
   /** @inheritdoc */

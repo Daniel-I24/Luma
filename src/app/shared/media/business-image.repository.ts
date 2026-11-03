@@ -4,7 +4,7 @@ import type { RepoResult } from '@shared/business/data/business.repository';
 import { ImageEncodeError, ImageReencoder } from './image-encoder';
 import { ImageFiles } from './image-files';
 
-export const BUSINESS_IMAGES_BUCKET = 'business-images';
+const BUSINESS_IMAGES_BUCKET = 'business-images';
 export type BusinessImageKind = 'logo' | 'cover' | 'menu' | 'promotions' | 'gallery';
 
 /** A stored picture: its Storage path (for rows that keep it) and public URL. */

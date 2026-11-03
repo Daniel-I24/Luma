@@ -50,7 +50,7 @@ const LOCK_SCREEN_PRIVATE = 0;
 const text = (value: unknown): string | null => (typeof value === 'string' && value ? value : null);
 
 /** CapacitorPushPlatform — push notifications through FCM on Android. */
-export class CapacitorPushPlatform extends PushPlatform {
+class CapacitorPushPlatform extends PushPlatform {
   /** False until Firebase is configured (PUSH_ENABLED): then push is "unavailable". */
   constructor(private readonly enabled: boolean) {
     super();

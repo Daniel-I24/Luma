@@ -13,7 +13,7 @@ import type { ReviewInput, ReviewWithAuthor } from '@shared/business/models/revi
 
 const STAR_COUNT = 5;
 
-export const MAX_COMMENT_LENGTH = 500;
+const MAX_COMMENT_LENGTH = 500;
 
 /**
  * ReviewForm — write or edit the user's own review: 1–5 stars (native radio

@@ -9,7 +9,7 @@ import type { FeedCard } from '../models/feed-card.model';
 import { FeedCards } from '../utils/feed-cards';
 
 /** Same search radius as the map. */
-export const FEED_RADIUS_KM = 10;
+const FEED_RADIUS_KM = 10;
 /** Businesses whose posts are fetched per page (three `in` queries per page). */
 export const FEED_BATCH_SIZE = 4;
 

@@ -48,7 +48,6 @@ export { LumaSectionHeader } from './section-header/luma-section-header';
 export { LumaSkeleton } from './skeleton/luma-skeleton';
 export type { SkeletonShape } from './skeleton/luma-skeleton';
 
-export { LumaToastHost } from './toast/luma-toast-host';
 export { ToastService } from './toast/toast.service';
 export type { Toast, ToastOptions, ToastTone } from './toast/toast.service';
 

@@ -4,7 +4,7 @@ import { MIN_LEAD_MINUTES } from './pickup-time';
 import { CLOCK_FIELD_DIGITS, MINUTES_PER_HOUR } from '@core/config/units';
 
 /** Pick-up times are offered every 15 minutes. */
-export const SLOT_STEP_MINUTES = 15;
+const SLOT_STEP_MINUTES = 15;
 const MINUTE_MS = 60_000;
 
 const pad = (n: number): string => String(n).padStart(CLOCK_FIELD_DIGITS, '0');

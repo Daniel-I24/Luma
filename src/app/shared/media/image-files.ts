@@ -1,7 +1,7 @@
 /** Types the business-images bucket accepts (allowed_mime_types). */
 export const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'] as const;
 /** Largest picture the app agrees to decode (phones take 4-12 MB photos). */
-export const MAX_INPUT_BYTES = 15_728_640; // 15 MB
+const MAX_INPUT_BYTES = 15_728_640; // 15 MB
 /** Bucket limit (file_size_limit): what is actually uploaded. */
 export const MAX_UPLOAD_BYTES = 2_097_152; // 2 MB
 /** Longest side after resizing. */
