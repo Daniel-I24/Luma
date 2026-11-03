@@ -32,6 +32,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/onboarding/welcome.page').then((m) => m.WelcomePage),
   },
   {
+    // The signed Android APK (announced in /version.json): public.
+    path: 'download',
+    loadComponent: () => import('./features/download/download.page').then((m) => m.DownloadPage),
+  },
+  {
     // Frequent questions and the app version: public.
     path: 'help',
     loadComponent: () => import('./features/help/help.page').then((m) => m.HelpPage),

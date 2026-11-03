@@ -157,6 +157,15 @@ agent's sessions).
 - FASE 3: scripts/verify-backend.mjs (npm run verify:backend; anon key only,
   read-only: tables/columns, RPCs, Edge Functions, buckets of the frozen
   schema; expectations tested against the repository).
+- FASE 3: apk-verify.mjs (apksigner verify --print-certs, refuses the debug
+  certificate, SHA-256 + size to dist/apk-release.json; run after apk:release),
+  apk-demo.mjs (throwaway PKCS12 keystore in a temp folder, release build,
+  verify, deletes keystore and demo APK, restores environment.deploy.ts).
+  Demo run on 2026-10-19: BUILD SUCCESSFUL in 4m 53s, apk-verify ok, 5.7 MB;
+  keystore and APK deleted. Fixed apk.mjs on Windows (.gradlew.bat).
+  /download page (APK from version.json apk {url, sha256, size}); vercel.json:
+  frame-src none, upgrade-insecure-requests, COOP, X-Frame-Options,
+  version.json no-store + CORS for the APK; scripts/vercel-config.test.mjs.
 
 - Block D done: migration 20261021000000 (discounts, trigger, server prices in
   create_order; 23 SQL checks), customer /promotions (sort, filters, states,

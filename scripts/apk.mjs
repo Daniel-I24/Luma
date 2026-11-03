@@ -3,7 +3,8 @@
  * Builds the Android APK: `npm run apk:debug` or `npm run apk:release`.
  *   1. web build with the deploy environment (SUPABASE_URL, SUPABASE_ANON_KEY),
  *   2. `npx cap sync android`,
- *   3. `gradlew assembleDebug` / `assembleRelease`.
+ *   3. `gradlew assembleDebug` / `assembleRelease`,
+ *   4. release only: scripts/apk-verify.mjs (apksigner, SHA-256).
  * Release signing comes only from LUMA_KEYSTORE_PATH, LUMA_KEYSTORE_PASSWORD,
  * LUMA_KEY_ALIAS and LUMA_KEY_PASSWORD (the keystore never goes to git).
  * An invalid JAVA_HOME (or one Gradle cannot run) is replaced by the JBR of
@@ -120,10 +121,13 @@ function main(mode) {
   run('node', ['scripts/generate-env.mjs'], { env });
   run('npx', ['ng', 'build', '--configuration', 'production,deploy'], { env });
   run('npx', ['cap', 'sync', 'android'], { env });
-  const gradlew = process.platform === 'win32' ? 'gradlew.bat' : './gradlew';
+  // Explicit ".\": cmd may not search the current folder (NoDefaultCurrentDirectoryInExePath).
+  const gradlew = process.platform === 'win32' ? '.\\gradlew.bat' : './gradlew';
   run(gradlew, [mode === 'release' ? 'assembleRelease' : 'assembleDebug'], { cwd: 'android', env });
   const apk = mode === 'release' ? 'release/app-release.apk' : 'debug/app-debug.apk';
   process.stdout.write(`APK: android/app/build/outputs/apk/${apk}\n`);
+  // Signature (never the debug certificate) and SHA-256 for version.json.
+  if (mode === 'release') run('node', ['scripts/apk-verify.mjs'], { env });
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {

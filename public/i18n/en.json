@@ -1596,5 +1596,19 @@
     "reload": "Update",
     "download": "Download",
     "later": "Later"
+  },
+  "download": {
+    "title": "Luma for Android",
+    "intro": "Download the signed Luma app for your Android phone. You can also use Luma in the browser.",
+    "button": "Download Luma {{version}} ({{size}} MB)",
+    "steps": {
+      "download": "Download the file on your phone.",
+      "allow": "If Android asks, allow installing apps from your browser (only for this install).",
+      "install": "Open the downloaded file and tap “Install”."
+    },
+    "check": "Check the file (optional)",
+    "checkHint": "The SHA-256 fingerprint of the downloaded file must be exactly this:",
+    "soon": "The Android app will be available very soon. Meanwhile, use Luma in the browser.",
+    "web": "Open Luma in the browser"
   }
 }

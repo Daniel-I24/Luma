@@ -1596,5 +1596,19 @@
     "reload": "Actualizar",
     "download": "Descargar",
     "later": "Más tarde"
+  },
+  "download": {
+    "title": "Luma para Android",
+    "intro": "Descarga la app firmada de Luma para tu teléfono Android. También puedes usar Luma desde el navegador.",
+    "button": "Descargar Luma {{version}} ({{size}} MB)",
+    "steps": {
+      "download": "Descarga el archivo en tu teléfono.",
+      "allow": "Si Android lo pide, permite instalar apps desde tu navegador (solo para esta instalación).",
+      "install": "Abre el archivo descargado y toca «Instalar»."
+    },
+    "check": "Comprobar el archivo (opcional)",
+    "checkHint": "La huella SHA-256 del archivo descargado debe ser exactamente esta:",
+    "soon": "La app para Android estará disponible muy pronto. Mientras tanto, usa Luma desde el navegador.",
+    "web": "Abrir Luma en el navegador"
   }
 }
