@@ -7,6 +7,16 @@ export type PushPermission = 'granted' | 'denied' | 'prompt' | 'unavailable';
 export interface PushAction {
   readonly type: string | null;
   readonly orderId: string | null;
+  readonly businessId: string | null;
+}
+
+/** An Android notification channel; push-dispatch sends to 'orders' or 'promotions'. */
+export interface PushChannel {
+  readonly id: 'orders' | 'promotions';
+  readonly name: string;
+  readonly description: string;
+  /** Android importance: 4 high (heads-up), 3 default. */
+  readonly importance: 3 | 4;
 }
 
 /**
@@ -23,8 +33,13 @@ export abstract class PushPlatform {
   /** Registers with FCM and resolves to the device token. */
   abstract register(): Promise<string>;
   abstract unregister(): Promise<void>;
+  /** Creates (or renames) the Android channels; a no-op elsewhere. */
+  abstract createChannels(channels: readonly PushChannel[]): Promise<void>;
   abstract onAction(listener: (action: PushAction) => void): Promise<void>;
 }
+
+/** Android VISIBILITY_PRIVATE: the lock screen shows that a notice arrived, not its text. */
+const LOCK_SCREEN_PRIVATE = 0;
 
 const text = (value: unknown): string | null => (typeof value === 'string' && value ? value : null);
 
@@ -76,6 +91,12 @@ export class CapacitorPushPlatform extends PushPlatform {
     if (push) await push.unregister();
   }
 
+  async createChannels(channels: readonly PushChannel[]): Promise<void> {
+    const push = await this.plugin();
+    if (!push) return;
+    for (const channel of channels) await push.createChannel({ ...channel, visibility: LOCK_SCREEN_PRIVATE });
+  }
+
   private actionListener: ((action: PushAction) => void) | null = null;
 
   async onAction(listener: (action: PushAction) => void): Promise<void> {
@@ -89,7 +110,7 @@ export class CapacitorPushPlatform extends PushPlatform {
     if (!push || !listener) return;
     await push.addListener('pushNotificationActionPerformed', ({ notification }) => {
       const data = (notification.data ?? {}) as Record<string, unknown>;
-      listener({ type: text(data['type']), orderId: text(data['order_id']) });
+      listener({ type: text(data['type']), orderId: text(data['order_id']), businessId: text(data['business_id']) });
     });
   }
 }

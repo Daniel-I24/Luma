@@ -1,6 +1,6 @@
 import { json } from '../_shared/edge.ts';
-import type { SendResult } from './fcm.ts';
-import { pushData, type PushRow, pushText } from './messages.ts';
+import type { PushMessage, SendResult } from './fcm.ts';
+import { channelFor, pushData, type PushRow, pushText } from './messages.ts';
 
 /** Server-only access (service role): claim_push_batch and remove_device_tokens. */
 export interface PushStore {
@@ -9,7 +9,7 @@ export interface PushStore {
 }
 
 export interface Sender {
-  send(token: string, title: string, body: string, data: Record<string, string>): Promise<SendResult>;
+  send(token: string, message: PushMessage): Promise<SendResult>;
 }
 
 export interface DispatchDeps {
@@ -32,6 +32,15 @@ export function sameSecret(given: string | null, expected: string): boolean {
   return diff === 0;
 }
 
+/** One send: a thrown error (network, OAuth) counts as failed and never stops the batch. */
+async function sendOne(sender: Sender, token: string, message: PushMessage): Promise<SendResult> {
+  try {
+    return await sender.send(token, message);
+  } catch {
+    return 'failed';
+  }
+}
+
 /**
  * Called by the database (pg_net poke, pg_cron fallback), never by the app:
  * claims unsent notifications and sends them. Each notification is claimed
@@ -47,6 +56,7 @@ export function createHandler(deps: DispatchDeps): (req: Request) => Promise<Res
     if (!deps.sender) return json(503, { error: 'push_unavailable' });
 
     let sent = 0;
+    let failed = 0;
     const invalid: string[] = [];
     try {
       for (let batch = 0; batch < MAX_BATCHES; batch++) {
@@ -54,16 +64,18 @@ export function createHandler(deps: DispatchDeps): (req: Request) => Promise<Res
         for (const row of rows) {
           const text = pushText(row);
           if (!text) continue;
+          const message: PushMessage = { ...text, data: pushData(row), channelId: channelFor(row.type) };
           for (const token of row.tokens) {
-            const result = await deps.sender.send(token, text.title, text.body, pushData(row));
+            const result = await sendOne(deps.sender, token, message);
             if (result === 'sent') sent++;
+            if (result === 'failed') failed++;
             if (result === 'invalid_token') invalid.push(token);
           }
         }
         if (rows.length < BATCH) break;
       }
       if (invalid.length) await deps.store.removeTokens(invalid);
-      return json(200, { sent, removed: invalid.length });
+      return json(200, { sent, failed, removed: invalid.length });
     } catch {
       return json(503, { error: 'push_unavailable', sent });
     }

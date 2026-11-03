@@ -1,6 +1,7 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
+import { TranslocoService } from '@jsverse/transloco';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '@core/auth/auth.service';
 import { SIGN_OUT_HOOK_TIMEOUT_MS, SignOutHooks } from '@core/auth/sign-out-hooks';
@@ -16,6 +17,7 @@ describe('PushRegistration', () => {
     requestPermission: vi.fn(),
     register: vi.fn().mockResolvedValue('tok-1'),
     unregister: vi.fn(),
+    createChannels: vi.fn().mockResolvedValue(undefined),
     onAction: vi.fn(async (listener: (action: PushAction) => void) => void (onAction = listener)),
   };
   const tokens = { register: vi.fn().mockResolvedValue(true), unregister: vi.fn().mockResolvedValue(true) };
@@ -29,6 +31,7 @@ describe('PushRegistration', () => {
         { provide: AuthService, useValue: { user } },
         { provide: PushPlatform, useValue: platform },
         { provide: DeviceTokenRepository, useValue: tokens },
+        { provide: TranslocoService, useValue: { translate: (key: string) => key } },
       ],
     });
   });
@@ -47,6 +50,7 @@ describe('PushRegistration', () => {
     TestBed.tick();
     await vi.waitFor(() => expect(tokens.register).toHaveBeenCalledWith('tok-1'));
     expect(platform.requestPermission).not.toHaveBeenCalled();
+    expect(platform.createChannels.mock.calls[0][0].map((c: { id: string }) => c.id)).toEqual(['orders', 'promotions']);
   });
 
   it('enable() asks once from a user action and registers when granted', async () => {
@@ -69,13 +73,13 @@ describe('PushRegistration', () => {
     expect(tokens.unregister).toHaveBeenCalledWith('tok-1');
   });
 
-  it('a tapped order update opens the order; the rest open the list', async () => {
+  it('a tapped notice opens the screen PushRoute picks', async () => {
     platform.permission.mockResolvedValue('denied');
     const push = service();
     await push.init();
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
-    onAction({ type: 'order_status', orderId: 'o1' });
-    onAction({ type: 'promotion', orderId: null });
+    onAction({ type: 'order_status', orderId: 'o1', businessId: 'b1' });
+    onAction({ type: 'promotion', orderId: null, businessId: null });
     expect(navigate.mock.calls).toEqual([[['/orders', 'o1']], [['/notifications']]]);
   });
 });

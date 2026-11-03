@@ -1,6 +1,6 @@
 import { assertEquals } from '@std/assert';
 
-import { FcmClient, type FetchLike, serviceAccountFrom, signedAssertion } from './fcm.ts';
+import { FcmClient, type FetchLike, isDeadToken, serviceAccountFrom, signedAssertion } from './fcm.ts';
 
 const keys = await crypto.subtle.generateKey(
   { name: 'RSASSA-PKCS1-v1_5', modulusLength: 2048, publicExponent: new Uint8Array([1, 0, 1]), hash: 'SHA-256' },
@@ -56,11 +56,27 @@ Deno.test('sends v1 messages, reuses the access token and spots dead tokens', as
   };
   const fcm = new FcmClient(account, fetchFn, () => 1_000_000);
   const results = [];
-  for (const token of ['ok', 'dead', 'busy']) results.push(await fcm.send(token, 'T', 'B', { type: 'order_new' }));
+  const message = { title: 'T', body: 'B', data: { type: 'order_new' }, channelId: 'orders' };
+  for (const token of ['ok', 'dead', 'busy']) results.push(await fcm.send(token, message));
   assertEquals(results, ['sent', 'invalid_token', 'failed']);
   assertEquals(urls.filter((u) => u.startsWith('https://oauth2')).length, 1);
   assertEquals(urls[1], 'https://fcm.googleapis.com/v1/projects/luma-test/messages:send');
   assertEquals(sends[0], {
-    message: { token: 'ok', notification: { title: 'T', body: 'B' }, data: { type: 'order_new' }, android: { priority: 'high' } },
+    message: {
+      token: 'ok', notification: { title: 'T', body: 'B' }, data: { type: 'order_new' },
+      android: { priority: 'high', notification: { channel_id: 'orders' } },
+    },
   });
+});
+
+Deno.test('a token is dropped only when FCM blames the token itself', () => {
+  const invalid = (extra: Record<string, unknown>) => ({ error: { status: 'INVALID_ARGUMENT', ...extra } });
+  assertEquals(isDeadToken(404, null), true);
+  assertEquals(isDeadToken(400, { error: { status: 'NOT_FOUND', details: [{ errorCode: 'UNREGISTERED' }] } }), true);
+  assertEquals(isDeadToken(400, invalid({ message: 'The registration token is not a valid FCM registration token' })), true);
+  assertEquals(isDeadToken(400, invalid({ details: [{ fieldViolations: [{ field: 'message.token' }] }] })), true);
+  assertEquals(isDeadToken(400, invalid({ message: 'Invalid value at message.data[0].value' })), false);
+  assertEquals(isDeadToken(400, invalid({ details: [{ fieldViolations: [{ field: 'message.android.ttl' }] }] })), false);
+  assertEquals(isDeadToken(503, { error: { status: 'UNAVAILABLE' } }), false);
+  assertEquals(isDeadToken(500, null), false);
 });

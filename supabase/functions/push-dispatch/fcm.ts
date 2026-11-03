@@ -10,6 +10,14 @@ export interface ServiceAccount {
 
 export type SendResult = 'sent' | 'invalid_token' | 'failed';
 
+/** What one device receives: visible text, ids for the app, and the Android channel. */
+export interface PushMessage {
+  readonly title: string;
+  readonly body: string;
+  readonly data: Record<string, string>;
+  readonly channelId: string;
+}
+
 const SCOPE = 'https://www.googleapis.com/auth/firebase.messaging';
 const TOKEN_URL = 'https://oauth2.googleapis.com/token';
 
@@ -77,21 +85,48 @@ export class FcmClient {
     return body.access_token;
   }
 
-  async send(token: string, title: string, body: string, data: Record<string, string>): Promise<SendResult> {
+  async send(token: string, message: PushMessage): Promise<SendResult> {
     const res = await this.fetchFn(`https://fcm.googleapis.com/v1/projects/${this.account.projectId}/messages:send`, {
       method: 'POST',
       headers: { authorization: `Bearer ${await this.accessToken()}`, 'content-type': 'application/json' },
       body: JSON.stringify({
-        message: { token, notification: { title, body }, data, android: { priority: 'high' } },
+        message: {
+          token,
+          notification: { title: message.title, body: message.body },
+          data: message.data,
+          android: { priority: 'high', notification: { channel_id: message.channelId } },
+        },
       }),
     });
     if (res.ok) {
       await res.body?.cancel();
       return 'sent';
     }
-    const error = (await res.json().catch(() => null)) as { error?: { status?: string } } | null;
-    // UNREGISTERED (404) or a malformed token (400 INVALID_ARGUMENT): drop it.
-    const status = error?.error?.status;
-    return res.status === 404 || status === 'UNREGISTERED' || status === 'INVALID_ARGUMENT' ? 'invalid_token' : 'failed';
+    const error = (await res.json().catch(() => null)) as FcmErrorBody | null;
+    return isDeadToken(res.status, error) ? 'invalid_token' : 'failed';
   }
+}
+
+/** The parts of an FCM v1 error body used to classify a failed send. */
+export interface FcmErrorBody {
+  readonly error?: {
+    readonly status?: string;
+    readonly message?: string;
+    readonly details?: readonly { readonly errorCode?: string; readonly fieldViolations?: readonly { readonly field?: string }[] }[];
+  };
+}
+
+/**
+ * True only when FCM says the token itself is gone or malformed: 404, or
+ * UNREGISTERED, or INVALID_ARGUMENT that points at message.token. Any other
+ * INVALID_ARGUMENT (a bad payload on our side) must not delete the device.
+ */
+export function isDeadToken(httpStatus: number, body: FcmErrorBody | null): boolean {
+  if (httpStatus === 404) return true;
+  const error = body?.error;
+  const codes = new Set([error?.status, ...(error?.details ?? []).map((d) => d.errorCode)]);
+  if (codes.has('UNREGISTERED')) return true;
+  if (!codes.has('INVALID_ARGUMENT')) return false;
+  const tokenField = (error?.details ?? []).some((d) => (d.fieldViolations ?? []).some((v) => v.field === 'message.token'));
+  return tokenField || /registration token/i.test(error?.message ?? '');
 }

@@ -4,6 +4,7 @@ export interface PushRow {
   readonly type: string;
   readonly status: string | null;
   readonly order_id: string | null;
+  readonly business_id: string | null;
   readonly business_name: string | null;
   readonly tokens: readonly string[];
 }
@@ -60,5 +61,15 @@ export function pushText(row: PushRow): PushText | null {
 export function pushData(row: PushRow): Record<string, string> {
   const data: Record<string, string> = { type: row.type, notification_id: row.notification_id };
   if (row.order_id) data.order_id = row.order_id;
+  if (row.business_id) data.business_id = row.business_id;
   return data;
+}
+
+/** Android channels created by the app (PushChannels): users mute marketing apart from orders. */
+export const CHANNEL_ORDERS = 'orders';
+export const CHANNEL_PROMOTIONS = 'promotions';
+
+/** Promotions go to their own channel; orders, payments and reviews to 'orders'. */
+export function channelFor(type: string): string {
+  return type === 'promotion' ? CHANNEL_PROMOTIONS : CHANNEL_ORDERS;
 }

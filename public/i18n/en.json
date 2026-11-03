@@ -1610,5 +1610,17 @@
     "checkHint": "The SHA-256 fingerprint of the downloaded file must be exactly this:",
     "soon": "The Android app will be available very soon. Meanwhile, use Luma in the browser.",
     "web": "Open Luma in the browser"
+  },
+  "push": {
+    "channels": {
+      "orders": {
+        "name": "Orders and payments",
+        "description": "Updates on your orders, payments and business reviews."
+      },
+      "promotions": {
+        "name": "Promotions",
+        "description": "Promotions from the businesses you saved as favourites."
+      }
+    }
   }
 }

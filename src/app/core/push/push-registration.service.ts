@@ -1,16 +1,18 @@
 import { Injectable, effect, inject, signal, untracked } from '@angular/core';
 import { Router } from '@angular/router';
+import { TranslocoService } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
 import { SignOutHooks } from '@core/auth/sign-out-hooks';
 import { DeviceTokenRepository } from './device-token.repository';
-import { type PushAction, type PushPermission, PushPlatform } from './push-platform';
+import { type PushAction, type PushChannel, type PushPermission, PushPlatform } from './push-platform';
+import { PushRoute } from './push-route';
 
 /**
  * PushRegistration — links this device to the signed-in user for push
  * notifications. Never asks for permission by itself: only enable() does,
  * from a user action (the notification settings). When permission is
  * already granted, each sign-in refreshes the token; signing out removes
- * it first. A tapped notification opens the order or the notification list.
+ * it first. A tapped notification opens the screen PushRoute picks.
  */
 @Injectable({ providedIn: 'root' })
 export class PushRegistration {
@@ -18,6 +20,7 @@ export class PushRegistration {
   private readonly tokens = inject(DeviceTokenRepository);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly transloco = inject(TranslocoService);
 
   private readonly _permission = signal<PushPermission>('prompt');
   private token: string | null = null;
@@ -52,6 +55,7 @@ export class PushRegistration {
   private async refresh(): Promise<void> {
     if (!this.auth.user() || (await this.platform.permission()) !== 'granted') return;
     try {
+      await this.platform.createChannels(this.channels());
       const token = await this.platform.register();
       if (await this.tokens.register(token)) this.token = token;
     } catch {
@@ -65,10 +69,19 @@ export class PushRegistration {
     if (token) await this.tokens.unregister(token);
   }
 
-  /** Customers' order updates open the order; everything else, the notification list. */
   private open(action: PushAction): Promise<boolean> {
-    return action.type === 'order_status' && action.orderId
-      ? this.router.navigate(['/orders', action.orderId])
-      : this.router.navigate(['/notifications']);
+    return this.router.navigate([...PushRoute.of(action)]);
+  }
+
+  /** Channel names are shown in Android settings, so they are translated. */
+  private channels(): PushChannel[] {
+    const t = (key: string): string => this.transloco.translate(key);
+    return [
+      { id: 'orders', name: t('push.channels.orders.name'), description: t('push.channels.orders.description'), importance: 4 },
+      {
+        id: 'promotions', name: t('push.channels.promotions.name'),
+        description: t('push.channels.promotions.description'), importance: 3,
+      },
+    ];
   }
 }

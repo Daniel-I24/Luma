@@ -1610,5 +1610,17 @@
     "checkHint": "La huella SHA-256 del archivo descargado debe ser exactamente esta:",
     "soon": "La app para Android estará disponible muy pronto. Mientras tanto, usa Luma desde el navegador.",
     "web": "Abrir Luma en el navegador"
+  },
+  "push": {
+    "channels": {
+      "orders": {
+        "name": "Pedidos y pagos",
+        "description": "Cambios de tus pedidos, pagos y revisiones de tu negocio."
+      },
+      "promotions": {
+        "name": "Promociones",
+        "description": "Promociones de los negocios que guardaste como favoritos."
+      }
+    }
   }
 }

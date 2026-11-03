@@ -9,10 +9,10 @@ Firebase configured, everything keeps working with the in-app list only.
 
 | Object | Who | Notes |
 | --- | --- | --- |
-| `device_tokens` | RPCs only | `register_device_token(token, platform)`, `unregister_device_token(token)`; at most 10 per user; a token moves to the account that signs in last on that phone; deleted with the account (cascade) |
+| `device_tokens` | RPCs only | `register_device_token(token, platform)` (confirmed email), `unregister_device_token(token)`; at most 10 per user; a token moves to the account that signs in last on that phone; deleted with the account (cascade) |
 | `profiles.notify_orders` | the user | default on (orders and reviews are transactional) |
 | `profiles.notify_promotions` | the user | default **off**: promotions are marketing and need explicit consent (Ley 1581) |
-| `notify_promotion(promotion)` | owner of a public business | once per promotion, 1 per business per day, only while running; recipients: favourites with `notify_promotions`; returns the count |
+| `notify_promotion(promotion)` | owner of a public business | once per promotion, 1 per business per day, only while running; recipients: favourites with `notify_promotions`, at most `promotion_notify_max_recipients` (500, the most recent favourites first); returns the count |
 | `private.push_settings` | SQL editor only | push-dispatch URL and the shared secret |
 | `claim_push_batch`, `remove_device_tokens` | service_role | used by push-dispatch |
 
@@ -30,8 +30,28 @@ Errors of `notify_promotion`: `not_business_owner`, `business_not_public`,
 4. push-dispatch claims up to 5 x 100 rows (each one **at most once**),
    checks consent again, sends a Spanish title/body built on the server
    (only the public business name; never customer names or user text) and
-   data `{ type, notification_id, order_id? }`, and removes tokens FCM
-   reports as `UNREGISTERED` or invalid.
+   data `{ type, notification_id, order_id?, business_id? }`. Each send is
+   isolated: a network or FCM error on one device counts as `failed` and
+   the batch goes on.
+5. A token is deleted only when FCM blames the token itself: HTTP 404,
+   `UNREGISTERED`, or `INVALID_ARGUMENT` whose details point at
+   `message.token` (or whose message says the registration token is not
+   valid). Any other `INVALID_ARGUMENT` is a payload problem on our side and
+   keeps the device.
+
+## Android channels and taps
+
+The app creates two channels when it registers (names translated, lock
+screen shows only that a notice arrived): `orders` (high importance:
+orders, payments, review invitations and business reviews) and
+`promotions` (default importance). push-dispatch sets
+`android.notification.channel_id` by type, so users can mute promotions in
+Android settings without losing order updates.
+
+A tapped notification opens (`PushRoute`): the order for `order_status`,
+`payment` and `review_invite`; the owner panel orders for `order_new` and
+`order_cancelled`; the owner summary for `business_review`; the business
+for `promotion`; the notification list for anything else.
 
 ## Setup (manual, by the owner)
 
@@ -66,8 +86,12 @@ To rotate the secret: set the new value in both places, Edge secret first.
 
 - SQL: `supabase/tests/push_notifications.sql` (tokens, preferences, every
   `notify_promotion` rule, claim at most once, poke with a stubbed pg_net).
+- SQL: `supabase/tests/round1_hardening.sql` (recipient cap, business_id in
+  the claim, confirmed email for devices).
 - Deno: `supabase/functions/push-dispatch` (RS256 assertion verified with a
-  generated key, token reuse, dead tokens, secret check, batches, texts).
+  generated key, token reuse, dead-token rules, secret check, batches, one
+  failing send never stops the rest, channels, texts).
+- App: `push-route.spec.ts`, `push-registration.spec.ts`.
 
 ## Turning it on in the app
 

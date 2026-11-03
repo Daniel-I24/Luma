@@ -2,16 +2,17 @@ import { assertEquals } from '@std/assert';
 
 import type { SendResult } from './fcm.ts';
 import { BATCH, createHandler, sameSecret } from './handler.ts';
-import { cleanName, type PushRow, pushText } from './messages.ts';
+import { channelFor, cleanName, type PushRow, pushText } from './messages.ts';
 
 const SECRET = 's'.repeat(40);
 const row = (n: number, tokens = ['t-ok']): PushRow => ({
-  notification_id: `n${n}`, type: 'order_status', status: 'ready', order_id: `o${n}`, business_name: 'Café Público', tokens,
+  notification_id: `n${n}`, type: 'order_status', status: 'ready', order_id: `o${n}`, business_id: 'b1',
+  business_name: 'Café Público', tokens,
 });
 
-function setup(options: { batches?: PushRow[][]; sender?: boolean; results?: Record<string, SendResult> } = {}) {
+function setup(options: { batches?: PushRow[][]; sender?: boolean; results?: Record<string, SendResult | 'throw'> } = {}) {
   const batches = [...(options.batches ?? [[row(1, ['t-ok', 't-dead'])]])];
-  const sent: [string, string, Record<string, string>][] = [];
+  const sent: [string, string, Record<string, string>, string][] = [];
   const removed: string[][] = [];
   const handler = createHandler({
     secret: SECRET,
@@ -20,9 +21,10 @@ function setup(options: { batches?: PushRow[][]; sender?: boolean; results?: Rec
       removeTokens: (tokens) => Promise.resolve(void removed.push(tokens)),
     },
     sender: options.sender === false ? null : {
-      send: (token, _title, body, data) => {
-        sent.push([token, body, data]);
-        return Promise.resolve(options.results?.[token] ?? (token === 't-dead' ? 'invalid_token' : 'sent'));
+      send: (token, message) => {
+        sent.push([token, message.body, message.data, message.channelId]);
+        const result = options.results?.[token] ?? (token === 't-dead' ? 'invalid_token' : 'sent');
+        return result === 'throw' ? Promise.reject(new Error('network')) : Promise.resolve(result);
       },
     },
   });
@@ -39,8 +41,11 @@ const poke = (secret: string | null = SECRET, method = 'POST') =>
 Deno.test('sends each claimed notification to every token and removes dead tokens', async () => {
   const { handler, sent, removed } = setup();
   const res = await handler(poke());
-  assertEquals([res.status, await res.json()], [200, { sent: 1, removed: 1 }]);
-  assertEquals(sent[0], ['t-ok', 'Tu pedido en Café Público está listo para recoger.', { type: 'order_status', notification_id: 'n1', order_id: 'o1' }]);
+  assertEquals([res.status, await res.json()], [200, { sent: 1, failed: 0, removed: 1 }]);
+  assertEquals(sent[0], [
+    't-ok', 'Tu pedido en Café Público está listo para recoger.',
+    { type: 'order_status', notification_id: 'n1', order_id: 'o1', business_id: 'b1' }, 'orders',
+  ]);
   assertEquals(removed, [['t-dead']]);
 });
 
@@ -74,4 +79,25 @@ Deno.test('texts are Spanish, use only the public business name and skip unknown
   assertEquals(pushText({ ...row(1), type: 'other' }), null);
   assertEquals(cleanName(null), 'Luma');
   assertEquals(cleanName('x'.repeat(60)).length, 40);
+});
+
+Deno.test('a failing send never aborts the batch', async () => {
+  const { handler, sent, removed } = setup({
+    batches: [[row(1, ['t-throw', 't-busy', 't-ok']), row(2, ['t-ok'])]],
+    results: { 't-throw': 'throw', 't-busy': 'failed' },
+  });
+  const res = await handler(poke());
+  assertEquals([res.status, await res.json()], [200, { sent: 2, failed: 2, removed: 0 }]);
+  assertEquals(sent.length, 4);
+  assertEquals(removed, []);
+});
+
+Deno.test('promotions use their own Android channel; orders, payments and reviews use orders', async () => {
+  const promo = { ...row(1), type: 'promotion', order_id: null };
+  const review = { ...row(2), type: 'business_review', status: 'approved', order_id: null };
+  const { handler, sent } = setup({ batches: [[promo, review]] });
+  await handler(poke());
+  assertEquals(sent.map((s) => s[3]), ['promotions', 'orders']);
+  assertEquals(sent[0][2], { type: 'promotion', notification_id: 'n1', business_id: 'b1' });
+  assertEquals([channelFor('payment'), channelFor('review_invite'), channelFor('order_new')], ['orders', 'orders', 'orders']);
 });
