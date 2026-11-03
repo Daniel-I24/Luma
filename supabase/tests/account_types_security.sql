@@ -71,6 +71,8 @@ select tests.expect_true('authenticated', tests.id('own'),
 
 -- -- customer -> business owner, one way --------------------------------------
 select tests.expect_error('anon', null, $$select public.become_business_owner()$$, 'permission denied');
+-- A complete profile is required since 20261030000100_customer_profile.sql.
+select tests.complete_profile(n) from unnest(array['cus', 'own']) n;
 select tests.expect_true('authenticated', tests.id('cus'),
   $$select public.become_business_owner() = 'business_owner'$$, 'a customer becomes a business owner');
 select tests.expect_true('authenticated', tests.id('own'),

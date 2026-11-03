@@ -23,6 +23,7 @@ alter default privileges in schema public grant all on sequences to anon, authen
 alter table auth.users add column if not exists raw_user_meta_data jsonb;
 alter table auth.users add column if not exists email_confirmed_at timestamptz default now();  -- stub: confirmed unless a test sets null
 alter table auth.users add column if not exists created_at timestamptz default now();
+alter table auth.users add column if not exists phone text;
 alter table auth.users add column if not exists phone_confirmed_at timestamptz;  -- stub: phone not verified
 -- The claims of the request, as Supabase's auth.jwt() returns them.
 create or replace function auth.jwt() returns jsonb language sql stable as $$

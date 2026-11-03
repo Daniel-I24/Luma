@@ -1,7 +1,7 @@
 import { assertEquals, assertRejects } from '@std/assert';
 
 import { fakeCleanup } from './fake-cleanup.test-helper.ts';
-import { removeBusinessFiles } from './storage-cleanup.ts';
+import { removeUserFiles } from './storage-cleanup.ts';
 
 Deno.test('removes every picture of every business the user owns, and nothing else', async () => {
   const { client, removed } = fakeCleanup({
@@ -15,7 +15,7 @@ Deno.test('removes every picture of every business the user owns, and nothing el
     },
   });
 
-  assertEquals(await removeBusinessFiles(client, 'ana'), 5);
+  assertEquals(await removeUserFiles(client, 'ana'), 5);
   assertEquals(removed.sort(), [
     'business-images/b1/logo/l.webp',
     'business-images/b1/menu/m1.webp',
@@ -36,7 +36,7 @@ Deno.test('removes the private verification documents too', async () => {
     },
   });
 
-  assertEquals(await removeBusinessFiles(client, 'ana'), 3);
+  assertEquals(await removeUserFiles(client, 'ana'), 3);
   assertEquals(removed.sort(), [
     'verification-docs/b1/facade/f.jpg',
     'verification-docs/b1/other/o.png',
@@ -51,14 +51,14 @@ Deno.test('keeps listing until a large folder is empty', async () => {
     files: { 'business-images/b1/menu': many },
   });
 
-  assertEquals(await removeBusinessFiles(client, 'ana'), 2500);
+  assertEquals(await removeUserFiles(client, 'ana'), 2500);
   assertEquals(removed.length, 2500);
 });
 
 Deno.test('does nothing for users without businesses', async () => {
   const { client, removed } = fakeCleanup();
 
-  assertEquals(await removeBusinessFiles(client, 'nobody'), 0);
+  assertEquals(await removeUserFiles(client, 'nobody'), 0);
   assertEquals(removed, []);
 });
 
@@ -69,5 +69,15 @@ Deno.test('fails when Storage cannot delete, so the account is kept', async () =
     failRemove: true,
   });
 
-  await assertRejects(() => removeBusinessFiles(client, 'ana'));
+  await assertRejects(() => removeUserFiles(client, 'ana'));
+});
+
+Deno.test("removes the user's own avatar and nobody else's", async () => {
+  const { client, removed } = fakeCleanup({
+    businesses: { ana: ['b1'] },
+    files: { 'avatars/ana/avatar': ['a.webp'], 'avatars/bob/avatar': ['b.webp'], 'business-images/b1/logo': ['l.webp'] },
+  });
+
+  assertEquals(await removeUserFiles(client, 'ana'), 2);
+  assertEquals(removed.sort(), ['avatars/ana/avatar/a.webp', 'business-images/b1/logo/l.webp']);
 });

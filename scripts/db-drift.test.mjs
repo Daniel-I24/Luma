@@ -27,7 +27,7 @@ test('delete-account removes every Storage folder the policies allow', () => {
     const kinds = /\{12\}\/\(([a-z|]+)\)\/\[0-9a-f\]/.exec(sql)?.[1];
     if (bucket && kinds) buckets[bucket] = kinds.split('|').sort();
   }
-  assert.deepEqual(Object.keys(buckets).sort(), ['business-images', 'verification-docs']);
+  assert.deepEqual(Object.keys(buckets).sort(), ['avatars', 'business-images', 'verification-docs']);
   assert.deepEqual(listed, buckets);
 });
 

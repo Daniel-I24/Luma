@@ -1,5 +1,5 @@
 import { corsHeaders, isOriginAllowed } from '../_shared/cors.ts';
-import { type CleanupClient, removeBusinessFiles } from './storage-cleanup.ts';
+import { type CleanupClient, removeUserFiles } from './storage-cleanup.ts';
 
 interface CallerUser {
   readonly id: string;
@@ -85,7 +85,7 @@ export function createHandler(deps: HandlerDeps): (req: Request) => Promise<Resp
       const userId = caller.id;
 
       // Files first: once the account is gone, nothing links them to it.
-      await removeBusinessFiles(deps.client, userId);
+      await removeUserFiles(deps.client, userId);
 
       if (!(await deleteAccount(deps.client, userId))) {
         console.error('delete-account: admin deleteUser returned an error');

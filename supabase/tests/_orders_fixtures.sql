@@ -5,6 +5,8 @@ insert into auth.users (id, email) values
   (tests.id('owner'), 'owner@test.local'),
   (tests.id('ana'),   'ana@test.local'),
   (tests.id('bob'),   'bob@test.local');
+-- Complete profiles: create_order and become_business_owner need them.
+select tests.complete_profile(n) from unnest(array['ana', 'bob']) n;
 
 insert into public.businesses (id, owner_id, name, category, latitude, longitude, address, is_active) values
   (tests.id('b1'), tests.id('owner'), 'Test Fritanga', 'Restaurante', 1.21, -77.28, 'Calle 1', true),

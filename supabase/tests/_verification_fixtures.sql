@@ -6,6 +6,8 @@ insert into auth.users (id, email) values
   (tests.id('eve'),   'eve@test.local'),
   (tests.id('cus'),   'cus@test.local'),
   (tests.id('adm'),   'adm@test.local');
+-- Complete profiles: create_order and become_business_owner need them.
+select tests.complete_profile(n) from unnest(array['cus', 'eve', 'owner', 'adm']) n;
 update public.profiles set account_type = 'business_owner' where id in (tests.id('owner'), tests.id('eve'));
 insert into public.admins (user_id) values (tests.id('adm'));
 
