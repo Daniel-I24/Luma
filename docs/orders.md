@@ -17,7 +17,10 @@ Migrations (apply in this order, after the existing ones):
 
 Later migrations redefine `create_order`: only public businesses
 (`20261020000110_create_order_public.sql`) and promotion discounts
-(`20261021000000_promotion_discounts.sql`).
+(`20261021000000_promotion_discounts.sql`). The **single final definition**
+is `20261030000500_create_order_final.sql` (round 2): it adds
+`p_payment_method` and every protection below, and
+`supabase/tests/create_order_final.sql` fails if any of them goes missing.
 
 | Rule | Where |
 | --- | --- |
@@ -28,12 +31,19 @@ Later migrations redefine `create_order`: only public businesses
 | Each line keeps `list_price_cop`, the final `unit_price_cop` and `promotion_id` | `order_items` |
 | Public business (published and approved); 1–20 distinct lines; quantities 1–20; items of that business and available | `create_order` |
 | `pickup_at` NULL (as soon as possible) or 10 min – 7 days ahead | `create_order` |
-| Notes ≤ 200 characters; payment `pay_at_pickup` only | `create_order` + checks |
-| At most 5 pending orders per user (advisory lock per user) | `create_order` |
+| Notes ≤ 200 characters; payment `pay_at_pickup` or `online` (online needs `payments_enabled`, docs/payments.md) | `create_order` + checks |
+| Complete profile (name, +57 mobile, municipality of residence) and, when `require_phone_verification = 1`, a verified phone | `create_order` (`profile_incomplete`, `phone_not_verified`) |
+| Business not paused (`orders_paused_until`, set by the owner for 15, 30, 60 or 120 minutes or until resumed) | `create_order` (`business_paused`), `set_orders_paused` |
+| Trust tier: `restricted` (3 no-shows in 30 days) pays online only, otherwise `account_restricted`; `new` has at most 1 pending pay-at-pickup order and 3 orders a day; `trusted` (2 pick-ups, no strikes) has only the general limits | `create_order`, `customer_trust_tier`, `app_settings.trust_*` |
+| At most 5 pending orders per user, `awaiting_payment` included (advisory lock per user) | `create_order` |
 | Total cap (default 500 000 COP) | `app_settings.order_max_total_cop` |
-| Customer cancels only their own order, only while `pending` | `cancel_order` |
+| Customer cancels only their own order, only while `pending` or `awaiting_payment` | `cancel_order` |
+| Online orders start as `awaiting_payment`: hidden from the business, no owner notification, cancelled after 15 minutes unpaid | `create_order`, `business_orders`, `expire_stale_orders` |
+| A paid order that is cancelled becomes `refund_required` (customer and admins told) | `orders_paid_cancelled` |
 | Business name and address are copied into the order; deleting the business sets `business_id` to NULL and keeps the order | `orders` FK `on delete set null` + `create_order` |
-| Owner transitions: pending→accepted/cancelled, accepted→preparing, preparing→ready, ready→picked_up | `set_order_status` |
+| Owner transitions: pending→accepted/cancelled, accepted→preparing, preparing→ready, ready→picked_up, and cancelling from accepted, preparing or ready | `set_order_status` |
+| Cancelling after accepting needs a reason (`out_of_stock`, `closed`, `no_show`, `other`); `no_show` only from `ready` and 15 minutes after it | `set_order_status(order, status, reason)` |
+| Picked up: the customer gets one `review_invite` | `notify_order_status_changed` |
 
 The functions are `SECURITY DEFINER` with `search_path = ''`, executable only
 by `authenticated` (revoked from `public` and `anon`). Errors are raised with

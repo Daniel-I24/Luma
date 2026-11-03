@@ -48,6 +48,23 @@ create in the same file, noted in the file header).
 | 29 | `20261029000000_push_business_id.sql` | `claim_push_batch` also returns `business_id` (drop + create: new return column; same arguments and grants) | Pending review |
 | 30 | `20261029000100_round1_hardening.sql` | `notify_promotion` capped at `promotion_notify_max_recipients` (500); `handle_new_user` compares jsonb instead of casting; `register_device_token` needs a confirmed email | Pending review |
 | 31 | `20261029000200_rate_limits.sql` | Closed `rate_limit_hits`, `hit_rate_limit(bucket)` with buckets defined in `app_settings` (`menu_scan`: 6 per 10 minutes) | Pending review |
+| 32 | `20261030000000_admin_mfa_audit.sql` | `is_admin()` needs aal2 (TOTP); `admin_access()`; append-only `admin_audit_log`, `log_admin_action`, `admin_recent_audit` | Pending review |
+| 33 | `20261030000010_review_business_audit.sql` | `review_business` unchanged, plus one audit row per decision | Pending review |
+| 34 | `20261030000100_customer_profile.sql` | Residence (department, municipality, DANE code, neighbourhood), avatar columns, `is_profile_complete`, `is_phone_verified`, `phone_check_passed` (`require_phone_verification` 0), `become_business_owner` needs a complete profile | Pending review |
+| 35 | `20261030000110_avatars.sql` | Private `avatars` bucket (2 MB, one per user), Storage policies, `can_view_customer_avatar`, `set_avatar` with consent | Pending review |
+| 36 | `20261030000200_trust_tiers.sql` | `cancel_reason`, `ready_at`, `cancelled_at`; `set_order_status(order, status, reason)` (2-argument version dropped); `customer_strikes` | Pending review |
+| 37 | `20261030000210_trust_status.sql` | `customer_trust_tier`, `my_trust_status`, `admin_strikes`, `admin_clear_strikes` | Pending review |
+| 38 | `20261030000300_payments_schema.sql` | `orders.payment_method` 'online', status 'awaiting_payment', `payment_status`; closed `payments` with an immutability trigger; payment settings (off by default) | Pending review |
+| 39 | `20261030000310_payment_events.sql` | `payment_transition_allowed` (state machine), status guard, append-only `payment_events` | Pending review |
+| 40 | `20261030000320_prepare_payment.sql` | `payment_config`, `prepare_payment` (3 attempts), `my_order_payment`, `record_payment_redirect` | Pending review |
+| 41 | `20261030000330_apply_payment_event.sql` | `mark_refund_required`, `apply_payment_event` (service_role, idempotent), `payments_to_reconcile` | Pending review |
+| 42 | `20261030000340_payment_admin.sql` | Paid and cancelled orders become refund_required; `cancel_order` also while awaiting payment; `admin_payment_issues`, `admin_request_void`, `admin_mark_refund_done` | Pending review |
+| 43 | `20261030000400_business_operations.sql` | `orders_paused_until`, `set_orders_paused`, `business_paused`; owner-chosen `department` and `city_dane_code` | Pending review |
+| 44 | `20261030000500_create_order_final.sql` | The single final `create_order` (5 arguments, 4-argument version dropped) with every protection | Pending review |
+| 45 | `20261030000510_order_lifecycle.sql` | Notifications for paid orders and review invitations, `business_orders` without unpaid orders (payment, reason, avatar columns), `expire_stale_orders` also for unpaid online orders | Pending review |
+| 46 | `20261030000600_business_signals.sql` | `pg_trgm`, `digits_only`, `phone_keys`, `tax_id_taken`, `business_review_flags` | Pending review |
+| 47 | `20261030000610_submit_tax_id.sql` | `submit_business_for_review` refuses `tax_id_in_use` | Pending review |
+| 48 | `20261030000620_owner_sales_daily.sql` | `owner_sales_daily(business, 7 or 30)` | Pending review |
 
 **Database freeze (2026-10-19)**: the list above is final for the launch.
 After the freeze, migrations and functions change only to fix real bugs
@@ -60,6 +77,8 @@ cancellations after accepting, gallery folder and 80-file cap).
 
 ### Before applying: extensions and secrets
 
+- Database > Extensions: `pg_trgm` (required by migration 46; it creates it
+  in the `extensions` schema if it is allowed, otherwise enable it first).
 - Database > Extensions: `pg_cron` and `pg_net` (optional; without them
   stale orders are not expired automatically and push needs the cron/poke).
 - Auth > Email: "Confirm email" on, OTP template with `{{ .Token }}` (see
@@ -130,7 +149,7 @@ alter table public.promotions validate constraint promotions_image_url_https;
 
 ## Security tests
 
-`supabase/tests/*.sql` (410 checks) run as the `anon` and `authenticated`
+`supabase/tests/*.sql` (620 checks) run as the `anon` and `authenticated`
 roles with a JWT `sub` (customers, owners and admins), each file in a
 transaction that is rolled back.
 
@@ -175,6 +194,13 @@ transaction that is rolled back.
 | `policy_helpers.sql` | direct checks of the helpers used by policies |
 | `round1_hardening.sql` | sign-up metadata never raises, devices need a confirmed email, promotion recipient cap, business id in push claims, microsecond `updated_at` in `review_business` |
 | `rate_limits.sql` | `hit_rate_limit`: unknown buckets, own bucket per user, window reset, closed table |
+| `admin_mfa_audit.sql` | admins without aal2 are not admins, `admin_access`, append-only audit log, logged decisions |
+| `customer_profile.sql` | residence rules, completeness, phone check, private avatars and the business access rule |
+| `trust_tiers.sql` | cancel reasons, no-show timing, strikes, tiers, restriction end, admin clear |
+| `create_order_final.sql` | one check per `create_order` protection, pause, trust tiers, online orders, exactly one definition |
+| `payments_flow.sql` | state machine vectors, `prepare_payment`, `apply_payment_event` (mismatch, duplicates, retries, late events), reconcile list |
+| `payments_admin.sql` | immutable attempts, append-only events, expiry, refunds, admin tools with aal1 and aal2, review invitation |
+| `business_signals.sql` | `tax_id_in_use`, review flags, daily sales |
 
 `scripts/db-drift.test.mjs` (`npm run test:scripts`) checks without a
 database: Storage folders vs delete-account, functions in config.toml, and

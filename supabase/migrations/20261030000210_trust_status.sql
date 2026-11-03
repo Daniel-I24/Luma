@@ -1,5 +1,9 @@
 -- -----------------------------------------------------------------------------
 -- Migration: trust_status
+--   0. customer_trust_tier(user) (internal): 'restricted' with
+--      trust_restricted_strikes (3) no-shows in trust_strike_window_days (30);
+--      'trusted' with trust_trusted_min_picked_up (2) pick-ups and no strikes;
+--      'new' otherwise.
 --   1. my_trust_status(): the caller's tier, active strikes, when the
 --      restriction ends, picked-up orders and how many are left to become
 --      trusted (for the "Tu estado" screen).
@@ -9,6 +13,26 @@
 -- Depends on 20261030000200_trust_tiers.sql.
 -- NOT APPLIED YET.
 -- -----------------------------------------------------------------------------
+
+create or replace function public.customer_trust_tier(p_user uuid)
+returns text
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select case
+    when s.strikes >= coalesce((select v.int_value from public.app_settings v where v.key = 'trust_restricted_strikes'), 3)
+      then 'restricted'
+    when s.strikes = 0 and (select count(*) from public.orders o where o.user_id = p_user and o.status = 'picked_up')
+         >= coalesce((select v.int_value from public.app_settings v where v.key = 'trust_trusted_min_picked_up'), 2)
+      then 'trusted'
+    else 'new'
+  end
+  from public.customer_strikes(p_user) s
+$$;
+
+revoke execute on function public.customer_trust_tier(uuid) from public, anon, authenticated;
 
 create or replace function public.my_trust_status()
 returns table (tier text, strikes integer, restricted_until timestamptz,

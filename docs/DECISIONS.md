@@ -240,3 +240,85 @@ alternative that was not taken. The safest, most reversible option wins.
   restructuring.
 - **Alternative**: knip as a devDependency with a CI job (one more
   dependency to audit), or removing the exports twice.
+
+## 2026-10-24 — create_order and set_order_status change their arguments
+
+- **What**: the 4-argument `create_order` and the 2-argument
+  `set_order_status` are dropped and created again with one more argument
+  (`p_payment_method`, `p_reason`), both with defaults, in the same
+  migration, with the same grants.
+- **Why**: the prompt asks for those arguments; Postgres treats a new
+  argument as a new overload, and two overloads with defaults make every
+  old call ambiguous. The defaults keep old calls working.
+- **Alternative**: new function names (`create_order_v2`). Leaves the old,
+  weaker function callable by every client.
+
+## 2026-10-24 — Wompi: what the documentation does and does not say
+
+- **What**: the integrity signature follows the documented order and is
+  pinned by the documented vector (`37c8...3bf5`, reproduced). The event
+  checksum follows the documented algorithm (property values in order,
+  timestamp, events secret, SHA-256), but the example checksum on the events
+  page cannot be reproduced from its own inputs (no order or HMAC variant
+  matches), so the tests use vectors computed from the documented steps and
+  compare hex case-insensitively. Transactions are confirmed with
+  `GET /v1/transactions/{id}` and the private key (the docs say public-key
+  reads now answer 404). No search by reference is documented, so
+  reconciliation needs the transaction id from the redirect.
+- **Why**: implement only what docs.wompi.co states; do not trust an
+  unverifiable example.
+- **Alternative**: query by reference (undocumented, may break silently).
+
+## 2026-10-24 — Refunds are manual; voids only for cards
+
+- **What**: `void-payment` voids card transactions through the API; every
+  other method stays in "Reembolsos pendientes" until the admin refunds it in
+  the Wompi dashboard and marks it done.
+- **Why**: the docs say voids apply to cards only and document the refunds
+  API for the sandbox only.
+- **Alternative**: call `POST /v1/refunds` in production on the strength of
+  the sandbox page.
+
+## 2026-10-24 — A payment approved after its order expired is refunded
+
+- **What**: unpaid online orders are cancelled after 15 minutes; a late
+  approval turns the attempt into `refund_required` instead of reviving the
+  order.
+- **Why**: the business may be closed or out of stock by then, and the
+  customer was already told the order was cancelled.
+- **Alternative**: revive the order. Surprising for both sides.
+
+## 2026-10-24 — Review flags: nearby businesses only of other owners
+
+- **What**: `near_duplicate_location` counts businesses of **another** owner
+  within 50 m.
+- **Why**: one owner with two places in the same food court is normal; a
+  stranger registering a place where one already exists is the fraud signal.
+- **Alternative**: any business within 50 m (noisy for multi-branch owners).
+
+## 2026-10-24 — SQL test helpers default to aal2
+
+- **What**: `tests.become` puts `aal = aal2` in the claims unless a suite
+  calls `tests.use_aal('aal1')`; the stub gains `auth.jwt()`.
+- **Why**: the existing admin suites keep testing what they were written
+  for; the MFA rule has its own checks with aal1 and aal2 in every admin
+  suite of round 2.
+- **Alternative**: rewrite every admin check of round 1.
+
+## 2026-10-24 — Residence is saved after the email code, not in the sign-up metadata
+
+- **What**: `handle_new_user` keeps copying only name, phone and consents;
+  the app writes the residence (column grants) once the account is
+  confirmed. An account without it gets `profile_incomplete` when ordering
+  and the app asks for it.
+- **Why**: every value copied from metadata needs validation inside a
+  trigger that must never fail; the residence has real constraints.
+- **Alternative**: copy it in `handle_new_user` too.
+
+## 2026-10-24 — One avatar object per user, the app deletes the old one first
+
+- **What**: the Storage policy allows an upload only when the user's avatar
+  folder is empty.
+- **Why**: Supabase does not allow deleting Storage objects from SQL, so a
+  replace-in-place cannot be enforced in the database; one object is.
+- **Alternative**: allow two objects for the swap (a stale photo could stay).

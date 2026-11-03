@@ -30,6 +30,20 @@ SQL suites, Deno 2.5.6 in Docker for the functions.
   secret scan, npm audit --omit=dev 0. check:hardcoded-urls comes in
   phase 5. Cleanup: docs/cleanup-report.md (nothing removed).
 
+- FASE 1 done (2026-10-24): 17 new migrations (32-48 in docs/migrations.md):
+  admin MFA (aal2) and append-only audit log; customer residence, complete
+  profile, optional phone check, private avatars (business sees them only
+  while serving, with consent); cancel reasons, no-show strikes and trust
+  tiers; online payments (immutable attempts, append-only events, shared
+  state machine vectors, prepare/apply/refund/admin tools); order pause;
+  the single final create_order (5 arguments, every protection, one test
+  per protection); review invitations; NIT reuse refused, review warning
+  signs, daily sales. SQL helpers: aal claim (aal2 default), complete
+  profile; stubs: auth.jwt(), phone columns, extensions schema. 620 SQL
+  checks, rehearsal 10 checks. Known gap until phase 3: the owner app must
+  send a reason when cancelling after accepting (reason_required), and
+  admins need the TOTP screen (is_admin needs aal2).
+
 ## Done (round 1)
 
 - PARTE 0 — history cleaned (`backup-before-temp-cleanup` and

@@ -19,3 +19,9 @@ Findings kept, with the reason:
 | `@capacitor/android` unused | depcheck | native platform package loaded by the Capacitor CLI |
 | `@std/assert`, `@core/*`, `@shared/*` missing | depcheck | Deno import map (`deno.json`) and TypeScript path aliases |
 | 69 unused exports, 94 unused exported types | knip | mostly constants and types exported for specs; cleaned when phase 6 turns `.util.ts` files into classes (docs/DECISIONS.md) |
+
+## Round 2, phase 1 (2026-10-24)
+
+Removed: nothing. knip reports no unused files or dependencies; the unused
+exports list is unchanged in kind (phase 6). No migration of round 1 was
+touched; redefinitions live in new files.
