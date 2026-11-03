@@ -4,7 +4,8 @@ import { TranslocoTestingModule } from '@jsverse/transloco';
 import { of } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OrderRepository } from '@shared/orders/order.repository';
-import { ORDER_REFRESH_MS, OrderDetailPage } from './order-detail.page';
+import { FakeRealtimeService } from '../../../testing/fake-realtime';
+import { OrderDetailPage } from './order-detail.page';
 import { OrdersPage } from './orders.page';
 
 const business = { id: 'b1', latitude: 1.21, longitude: -77.28 };
@@ -66,6 +67,24 @@ describe('Orders pages', () => {
     expect(link.textContent?.replace(/\s/g, ' ')).toContain('$14.000');
   });
 
+  it('a new status arrives in the list without a skeleton, and "Actualizado hace" is shown', async () => {
+    repo.list.mockResolvedValue({ data: [order('preparing')], errorKey: null });
+    const fixture = TestBed.createComponent(OrdersPage);
+    fixture.detectChanges();
+    await flush();
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.textContent).toContain('realtime.updatedNow');
+    repo.list.mockResolvedValue({ data: [order('ready')], errorKey: null });
+
+    await TestBed.inject(FakeRealtimeService).emit('order_events', [{ order_id: 'o1', user_id: 'u1' }]);
+    fixture.detectChanges();
+
+    expect(repo.list).toHaveBeenCalledTimes(2);
+    expect(el.querySelector('[aria-busy="true"]')).toBeNull();
+    expect(el.querySelector('a')).not.toBeNull();
+  });
+
   async function renderDetail(status: string, deleted = false) {
     repo.getById.mockResolvedValue({ data: order(status, deleted), errorKey: null });
     const fixture = TestBed.createComponent(OrderDetailPage);
@@ -116,14 +135,14 @@ describe('Orders pages', () => {
     expect(cancelButton(await renderDetail('accepted'))).toBeUndefined();
   });
 
-  it(`refreshes every ${ORDER_REFRESH_MS / 1000} s while visible`, async () => {
-    vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval'] });
+  it('a status change of this order on the business phone refreshes it; other orders do not', async () => {
     await renderDetail('preparing');
     repo.getById.mockClear();
+    const realtime = TestBed.inject(FakeRealtimeService);
 
-    vi.advanceTimersByTime(ORDER_REFRESH_MS * 2);
-
-    expect(repo.getById).toHaveBeenCalledTimes(2);
+    await realtime.emit('order_events', [{ order_id: 'another', user_id: 'u1' }]);
+    expect(repo.getById).not.toHaveBeenCalled();
+    await realtime.emit('order_events', [{ order_id: 'o1', user_id: 'u1' }]);
     expect(repo.getById).toHaveBeenCalledWith('o1');
   });
 });

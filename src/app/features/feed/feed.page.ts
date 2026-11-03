@@ -3,6 +3,9 @@ import { Router, RouterLink } from '@angular/router';
 import { TourHelpButton } from '@shared/tutorial/tour-help-button';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaEmptyState, LumaIconButton, LumaSkeleton } from '@design-system';
+import { RealtimeService } from '@core/realtime/realtime.service';
+import { FreshnessNote } from '@shared/ui/freshness-note';
+import { PullToRefreshDirective } from '@shared/ui/pull-to-refresh.directive';
 import { NearViewportDirective } from '@shared/ui/viewport.directives';
 import { FeedCard } from './components/feed-card/feed-card';
 import type { FeedCard as FeedCardModel } from './models/feed-card.model';
@@ -27,6 +30,8 @@ import { FeedStore } from './state/feed.store';
     LumaSkeleton,
     NearViewportDirective,
     FeedCard,
+    FreshnessNote,
+    PullToRefreshDirective,
   ],
   providers: [FeedStore],
   templateUrl: './feed.page.html',
@@ -34,6 +39,8 @@ import { FeedStore } from './state/feed.store';
 })
 export class FeedPage {
   protected readonly store = inject(FeedStore);
+  /** New businesses, promotions and dishes from other phones (docs/realtime.md). */
+  protected readonly live = inject(RealtimeService).watch('catalog_events', () => this.store.refresh());
   private readonly router = inject(Router);
   private readonly scroller = viewChild<ElementRef<HTMLElement>>('scroller');
 

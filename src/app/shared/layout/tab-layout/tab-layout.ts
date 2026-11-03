@@ -7,10 +7,7 @@ import { CartConflictSheet } from '@shared/cart/cart-conflict-sheet/cart-conflic
 import { FavoritesStore } from '@shared/favorites/favorites.store';
 import { OwnerReturnBanner } from '@shared/layout/owner-return-banner/owner-return-banner';
 import { UnreadNotifications } from '@shared/notifications/unread-notifications';
-import { PollWhileVisible } from '@shared/ui/poll-while-visible';
-
-/** How often the unread badge is refreshed while the app is visible. */
-export const UNREAD_REFRESH_MS = 30_000;
+import { RealtimeService } from '@core/realtime/realtime.service';
 
 const MAIN_TABS: readonly TabBarItem[] = [
   { path: '/map', labelKey: 'tabBar.map', icon: 'map' },
@@ -72,6 +69,7 @@ export class TabLayout {
 
   constructor() {
     void this.unread.refresh();
-    PollWhileVisible.pollWhileVisible(() => void this.unread.refresh(), UNREAD_REFRESH_MS);
+    // The unread badge follows new notices as they arrive (docs/realtime.md).
+    inject(RealtimeService).watch('order_events', () => this.unread.refresh(), (event) => !event.order_id);
   }
 }

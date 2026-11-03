@@ -2350,5 +2350,12 @@
       "owner-promotions": "Promotions",
       "owner-business": "My business"
     }
+  },
+  "realtime": {
+    "offline": "Offline: showing saved data",
+    "updating": "Updating…",
+    "updatedNow": "Updated a moment ago",
+    "updatedAgo": "Updated {{minutes}} min ago",
+    "refresh": "Refresh"
   }
 }

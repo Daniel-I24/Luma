@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit, ViewChild, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
@@ -14,6 +13,7 @@ import { MapCameraService } from './services/map-camera.service';
 import { MapMarkerSyncService } from './services/map-marker-sync.service';
 import { MapStylesLoader } from '@shared/map/map-styles.loader';
 import { BusinessSelectionStore } from './state/business-selection.store';
+import { MapLive } from './state/map-live';
 import { NearbyBusinessesStore, type NearbyBusiness } from './state/nearby-businesses.store';
 import { PlaceSearchStore } from './state/place-search.store';
 import { ZoneLabel } from './utils/zone-label';
@@ -24,16 +24,7 @@ import { ResidenceMapCentre } from '@shared/geo/residence-map-centre';
   selector: 'app-map-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    TranslocoModule,
-    LumaButton,
-    LumaEmptyState,
-    BusinessSheetComponent,
-    LocationPrompt,
-    MapControls,
-    MapTopBar,
-    NearbyPanel,
-  ],
+  imports: [TranslocoModule, LumaButton, LumaEmptyState, BusinessSheetComponent, LocationPrompt, MapControls, MapTopBar, NearbyPanel],
   providers: [NearbyBusinessesStore, BusinessSelectionStore, PlaceSearchStore],
   templateUrl: './map.page.html',
   host: { class: 'block h-full' },
@@ -42,6 +33,8 @@ export class MapPage implements OnInit, OnDestroy {
   @ViewChild('mapContainer', { static: true }) public mapContainer!: ElementRef<HTMLDivElement>;
 
   protected readonly store = inject(NearbyBusinessesStore);
+  /** Changes made on other phones (docs/realtime.md). */
+  protected readonly live = MapLive.watch(this.store);
   protected readonly selection = inject(BusinessSelectionStore);
   protected readonly camera = inject(MapCameraService);
   private readonly markerSync = inject(MapMarkerSyncService);

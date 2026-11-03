@@ -3,9 +3,6 @@ import { NativeHaptics } from '@core/native/native-actions';
 import { ToastService } from '@design-system';
 import { BusinessOrderRepository } from '@shared/orders/business-order.repository';
 
-/** How often Luma Negocios checks for new orders while it is visible. */
-export const ORDER_ALERT_POLL_MS = 20_000;
-
 /**
  * OrderAlertsStore — pending orders of the business shown in Luma Negocios,
  * wherever the owner is: the count for the Pedidos tab and, when a new one

@@ -4,7 +4,8 @@ import { TranslocoTestingModule } from '@jsverse/transloco';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { NotificationRepository } from '@shared/notifications/notification.repository';
 import { UnreadNotifications } from '@shared/notifications/unread-notifications';
-import { NOTIFICATIONS_REFRESH_MS, NotificationsPage } from './notifications.page';
+import { FakeRealtimeService } from '../../../testing/fake-realtime';
+import { NotificationsPage } from './notifications.page';
 import { NotificationView } from './utils/notification-view';
 
 const flush = () => new Promise((resolve) => setTimeout(resolve));
@@ -82,14 +83,15 @@ describe('NotificationsPage', () => {
     expect(navigate).toHaveBeenNthCalledWith(2, ['/owner', 'b1', 'orders']);
   });
 
-  it(`refreshes every ${NOTIFICATIONS_REFRESH_MS / 1000} s while visible`, async () => {
-    vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval'] });
+  it('a new notice arrives without refreshing; order events alone do not reload the list', async () => {
     await render();
     repo.list.mockClear();
+    const realtime = TestBed.inject(FakeRealtimeService);
 
-    vi.advanceTimersByTime(NOTIFICATIONS_REFRESH_MS * 2);
-
-    expect(repo.list).toHaveBeenCalledTimes(2);
+    await realtime.emit('order_events', [{ order_id: 'o1', user_id: 'u1' }]);
+    expect(repo.list).not.toHaveBeenCalled();
+    await realtime.emit('order_events', [{ order_id: null, user_id: 'u1' }]);
+    expect(repo.list).toHaveBeenCalledTimes(1);
   });
 
   it('shows the empty state', async () => {

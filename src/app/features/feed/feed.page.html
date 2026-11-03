@@ -36,6 +36,8 @@
       class="h-full snap-y snap-mandatory overflow-y-auto overscroll-contain [scrollbar-width:none] motion-safe:scroll-smooth"
       [attr.aria-label]="t('feed.label')"
       [attr.aria-busy]="store.loadingMore()"
+      appPullToRefresh
+      (pullRefresh)="live.refreshAll()"
       (keydown)="onKeydown($event)"
       (scroll)="onScroll()"
     >
@@ -61,6 +63,11 @@
       }
     </div>
 
+    <app-freshness-note
+      class="absolute top-4 left-4 max-w-1/2 rounded-lg bg-surface-elevated px-2 shadow-md"
+      [updatedAt]="live.updatedAt()"
+      (refresh)="live.refreshAll()"
+    />
     <div class="absolute top-4 right-4 flex flex-col items-end gap-2">
       <a
         routerLink="/promotions"

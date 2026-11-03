@@ -33,6 +33,8 @@ export class FeedStore {
   private readonly _moreFailed = signal(false);
   private readonly _hasMore = signal(false);
   private queue: Business[] = [];
+  /** Businesses already taken from the queue (what a refresh rebuilds). */
+  private consumed = 0;
 
   public readonly cards = this._cards.asReadonly();
   public readonly state = this._state.asReadonly();
@@ -53,9 +55,35 @@ export class FeedStore {
     }
     const km = (b: Business): number => Haversine.haversineKm(lat, lng, b.latitude, b.longitude);
     this.queue = [...nearby.data].sort((a, b) => km(a) - km(b));
+    this.consumed = 0;
     this._hasMore.set(this.queue.length > 0);
     const loaded = await this.loadUntilSomethingNew();
     this._state.set(loaded ? 'ready' : 'error');
+  }
+
+  /**
+   * After a change on another phone: rebuilds, in one go, as many businesses
+   * as are shown and swaps the posts at once (no loading state; cards keep
+   * their ids, so unchanged ones do not move). A failure keeps what is shown.
+   */
+  public async refresh(): Promise<void> {
+    if (this._state() !== 'ready') return this.load();
+    const { lat, lng } = this.geo.coords();
+    const nearby = await this.businessRepo.getNearby(lat, lng, FEED_RADIUS_KM);
+    if (!nearby.data) return;
+    const km = (b: Business): number => Haversine.haversineKm(lat, lng, b.latitude, b.longitude);
+    const sorted = [...nearby.data].sort((a, b) => km(a) - km(b));
+    const shown = sorted.slice(0, Math.max(this.consumed, FEED_BATCH_SIZE));
+    // The same batches as when they were loaded, so the cards keep their order.
+    const batches = Array.from({ length: Math.ceil(shown.length / FEED_BATCH_SIZE) }, (_, i) =>
+      this.cardsOf(shown.slice(i * FEED_BATCH_SIZE, (i + 1) * FEED_BATCH_SIZE)));
+    const parts = await Promise.all(batches);
+    if (parts.some((part) => part === null)) return;
+    const cards = parts.flatMap((part) => part ?? []);
+    this.queue = sorted.slice(shown.length);
+    this.consumed = shown.length;
+    this._hasMore.set(this.queue.length > 0);
+    this._cards.set(cards);
   }
 
   /** Appends the next batch; called when the end of the feed comes near. */
@@ -80,26 +108,32 @@ export class FeedStore {
   /** Fetches the posts of the next businesses; false when a request failed. */
   private async loadNextBatch(): Promise<boolean> {
     const batch = this.queue.slice(0, FEED_BATCH_SIZE);
-    const ids = batch.map((b) => b.id);
+    const cards = await this.cardsOf(batch);
+    if (!cards) return false;
+    this.queue = this.queue.slice(batch.length);
+    this.consumed += batch.length;
+    this._hasMore.set(this.queue.length > 0);
+    this._cards.update((current) => [...current, ...cards]);
+    return true;
+  }
+
+  /** The posts of these businesses; null when a request failed. */
+  private async cardsOf(businesses: readonly Business[]): Promise<FeedCard[] | null> {
+    const ids = businesses.map((b) => b.id);
     const [hours, promotions, menu] = await Promise.all([
       this.businessRepo.getHoursFor(ids),
       this.highlights.getActivePromotions(ids),
       this.menuRepo.getAvailableFor(ids),
     ]);
-    if (!promotions.data || !menu.data) return false;
-
-    const cards = FeedCards.buildFeedCards({
-      businesses: batch,
+    if (!promotions.data || !menu.data) return null;
+    return FeedCards.buildFeedCards({
+      businesses: [...businesses],
       // Without hours every business shows as closed rather than failing the page.
       hours: hours.data ?? [],
       promotions: promotions.data,
       menuItems: menu.data,
       distanceKm: (b) => this.distanceKm(b),
     });
-    this.queue = this.queue.slice(batch.length);
-    this._hasMore.set(this.queue.length > 0);
-    this._cards.update((current) => [...current, ...cards]);
-    return true;
   }
 
   private distanceKm(business: Business): number | null {

@@ -3,7 +3,7 @@
 | Phase | State | Commit |
 | --- | --- | --- |
 | 1. Fallos pendientes (1.1–1.6) | Done | see git log "round9 phase 1" |
-| 2. Tiempo real | Pending | |
+| 2. Tiempo real | Done | see git log "round9 phase 2" |
 | 3. Todo funciona de punta a punta | Pending | |
 | 4. Dependencias | Pending | |
 | 5. Calidad, seguridad, rendimiento y optimización | Pending | |

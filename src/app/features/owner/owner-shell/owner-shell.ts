@@ -7,8 +7,8 @@ import { LumaIcon, LumaTabBar, type TabBarItem } from '@design-system';
 import { OWNER_SECTIONS, type OwnerSection, ownerPaths } from '@shared/account/account-paths';
 import { TourHelpButton } from '@shared/tutorial/tour-help-button';
 import { TourRoutes } from '@shared/tutorial/tour-registry';
-import { PollWhileVisible } from '@shared/ui/poll-while-visible';
-import { ORDER_ALERT_POLL_MS, OrderAlertsStore } from '../state/order-alerts.store';
+import { RealtimeService } from '@core/realtime/realtime.service';
+import { OrderAlertsStore } from '../state/order-alerts.store';
 import { OwnerContextStore } from '../state/owner-context.store';
 
 const TAB_ICONS = {
@@ -86,7 +86,9 @@ export class OwnerShell {
           void this.alerts.watch(id);
         });
     });
-    PollWhileVisible.pollWhileVisible(() => void this.alerts.refresh(), ORDER_ALERT_POLL_MS);
+    // New orders of the business shown, as customers place them (docs/realtime.md).
+    inject(RealtimeService).watch('order_events', () => this.alerts.refresh(),
+      (event) => !!event.order_id && event.business_id === this.location()?.id);
   }
 
   /** Same tab, other business. */

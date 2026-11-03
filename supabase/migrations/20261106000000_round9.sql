@@ -8,6 +8,16 @@
 --      is_active (the owner's choice stays).
 --   2. The only visible rule is max_businesses_per_owner (3). The daily
 --      creation limit becomes an internal guard of 10 a day.
+--   3. Realtime without rows: two event tables with ids and a time only.
+--      catalog_events (kind, business_id, at): readable by anyone, written
+--      by triggers when a public business, its hours, menu or promotions
+--      change (or a business becomes public / stops being public).
+--      order_events (order_id, user_id, business_id, at): the order's
+--      customer and the business owner read it (RLS); written by triggers
+--      of orders, and of notifications with order_id null ("your inbox
+--      changed"). Both pruned after a day. The supabase_realtime
+--      publication carries exactly these two tables: no private column
+--      ever leaves through Realtime; the app re-reads with normal queries.
 -- NOT APPLIED YET. SQL comments in ASCII.
 -- -----------------------------------------------------------------------------
 
@@ -86,5 +96,170 @@ grant execute on function public.review_business(uuid, text, text, timestamptz) 
 -- 2. Businesses per owner: 3 is the rule, 10 creations a day an internal guard ------------
 update public.app_settings set int_value = 10
 where key = 'rate_business_create_max' and int_value = 3;
+
+-- 3. Realtime event tables ---------------------------------------------------------------
+create table if not exists public.catalog_events (
+  id          bigint generated always as identity primary key,
+  kind        text        not null constraint catalog_events_kind check (kind in ('business', 'hours', 'menu', 'promotion')),
+  business_id uuid        not null,
+  at          timestamptz not null default now()
+);
+create index if not exists catalog_events_at on public.catalog_events (at);
+alter table public.catalog_events enable row level security;
+revoke all on public.catalog_events from public, anon, authenticated;
+grant select on public.catalog_events to anon, authenticated;
+drop policy if exists catalog_events_read on public.catalog_events;
+create policy catalog_events_read on public.catalog_events for select to anon, authenticated using (true);
+
+create table if not exists public.order_events (
+  id          bigint generated always as identity primary key,
+  order_id    uuid,
+  user_id     uuid,
+  business_id uuid,
+  at          timestamptz not null default now()
+);
+create index if not exists order_events_at on public.order_events (at);
+create index if not exists order_events_user on public.order_events (user_id);
+create index if not exists order_events_business on public.order_events (business_id);
+alter table public.order_events enable row level security;
+revoke all on public.order_events from public, anon, authenticated;
+grant select on public.order_events to authenticated;
+drop policy if exists order_events_read on public.order_events;
+create policy order_events_read on public.order_events for select to authenticated using (
+  user_id = (select auth.uid())
+  or (business_id is not null and exists (
+    select 1 from public.businesses b where b.id = business_id and b.owner_id = (select auth.uid())))
+);
+
+-- Public as is_business_public decides, from the columns of a row (old or new).
+create or replace function private.is_visible(p_active boolean, p_status text)
+returns boolean
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select coalesce(p_active, false) and (p_status = 'approved' or (p_status = 'pending'
+    and coalesce((select s.int_value from public.app_settings s where s.key = 'show_pending_businesses'), 0) = 1))
+$$;
+revoke execute on function private.is_visible(boolean, text) from public, anon, authenticated;
+
+create or replace function private.businesses_catalog_event()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_before boolean := tg_op <> 'INSERT' and private.is_visible(old.is_active, old.verification_status);
+  v_after boolean := tg_op <> 'DELETE' and private.is_visible(new.is_active, new.verification_status);
+begin
+  -- Drafts and hidden businesses never make events; an edit that only
+  -- touches updated_at is no change.
+  if (v_before or v_after) and (tg_op <> 'UPDATE'
+      or (to_jsonb(old) - 'updated_at') is distinct from (to_jsonb(new) - 'updated_at')) then
+    insert into public.catalog_events (kind, business_id)
+    values ('business', case when tg_op = 'DELETE' then old.id else new.id end);
+  end if;
+  return null;
+end;
+$$;
+revoke execute on function private.businesses_catalog_event() from public, anon, authenticated;
+drop trigger if exists businesses_catalog_event on public.businesses;
+create trigger businesses_catalog_event after insert or update or delete on public.businesses
+  for each row execute procedure private.businesses_catalog_event();
+
+-- Hours, menu and promotions of a public business (tg_argv[0] is the kind).
+create or replace function private.child_catalog_event()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_business uuid := case when tg_op = 'DELETE' then old.business_id else new.business_id end;
+begin
+  if public.is_business_public(v_business) then
+    insert into public.catalog_events (kind, business_id) values (tg_argv[0], v_business);
+  end if;
+  return null;
+end;
+$$;
+revoke execute on function private.child_catalog_event() from public, anon, authenticated;
+drop trigger if exists business_hours_catalog_event on public.business_hours;
+create trigger business_hours_catalog_event after insert or update or delete on public.business_hours
+  for each row execute procedure private.child_catalog_event('hours');
+drop trigger if exists menu_items_catalog_event on public.menu_items;
+create trigger menu_items_catalog_event after insert or update or delete on public.menu_items
+  for each row execute procedure private.child_catalog_event('menu');
+drop trigger if exists promotions_catalog_event on public.promotions;
+create trigger promotions_catalog_event after insert or update or delete on public.promotions
+  for each row execute procedure private.child_catalog_event('promotion');
+
+create or replace function private.orders_order_event()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  insert into public.order_events (order_id, user_id, business_id) values (new.id, new.user_id, new.business_id);
+  return null;
+end;
+$$;
+revoke execute on function private.orders_order_event() from public, anon, authenticated;
+drop trigger if exists orders_order_event on public.orders;
+create trigger orders_order_event after insert or update on public.orders
+  for each row execute procedure private.orders_order_event();
+
+create or replace function private.notifications_order_event()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  insert into public.order_events (order_id, user_id, business_id) values (null, new.user_id, null);
+  return null;
+end;
+$$;
+revoke execute on function private.notifications_order_event() from public, anon, authenticated;
+drop trigger if exists notifications_order_event on public.notifications;
+create trigger notifications_order_event after insert or update of read_at on public.notifications
+  for each row execute procedure private.notifications_order_event();
+
+-- Events older than a day are of no use to anyone.
+create or replace function private.prune_realtime_events()
+returns void
+language sql
+security definer
+set search_path = ''
+as $$
+  delete from public.catalog_events where at < now() - interval '1 day';
+  delete from public.order_events where at < now() - interval '1 day';
+$$;
+revoke execute on function private.prune_realtime_events() from public, anon, authenticated;
+
+do $$
+begin
+  if exists (select 1 from pg_extension where extname = 'pg_cron') then
+    perform cron.unschedule(jobid) from cron.job where jobname = 'luma-prune-realtime-events';
+    perform cron.schedule('luma-prune-realtime-events', '17 * * * *', 'select private.prune_realtime_events()');
+  end if;
+end;
+$$;
+
+-- The publication carries exactly the two event tables.
+do $$
+begin
+  if exists (select 1 from pg_publication where pubname = 'supabase_realtime' and puballtables) then
+    drop publication supabase_realtime;
+  end if;
+  if not exists (select 1 from pg_publication where pubname = 'supabase_realtime') then
+    create publication supabase_realtime;
+  end if;
+end;
+$$;
+alter publication supabase_realtime set table public.catalog_events, public.order_events;
 
 notify pgrst, 'reload schema';

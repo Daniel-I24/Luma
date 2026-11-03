@@ -79,6 +79,20 @@ export class BusinessProfileStore {
     }
   }
 
+  /**
+   * After a change on another phone (name, hours, pause, menu, prices,
+   * sold out, promotions): re-reads it without a loading state; a part that
+   * fails keeps what is shown, and a business no longer public is "notFound".
+   */
+  public async refresh(): Promise<void> {
+    const current = this._business();
+    if (!current || this._state() !== 'ready') return;
+    const result = await this.businesses.getById(current.id);
+    if (result.errorKey) return;
+    if (!result.data) return this._state.set('notFound');
+    await this.loadDetails(result.data, true);
+  }
+
   /** Re-reads the rating after the user wrote, edited or deleted a review. */
   public async refreshRating(): Promise<void> {
     const business = this._business();
@@ -87,7 +101,7 @@ export class BusinessProfileStore {
     if (ratings.data) this._rating.set(ratings.data.get(business.id) ?? null);
   }
 
-  private async loadDetails(business: Business): Promise<void> {
+  private async loadDetails(business: Business, keepOnFailure = false): Promise<void> {
     const [hours, ratings, promotions, menu] = await Promise.all([
       this.businesses.getHours(business.id),
       this.highlights.getRatings([business.id]),
@@ -95,10 +109,16 @@ export class BusinessProfileStore {
       this.menuRepo.getMenu(business.id),
     ]);
     this._business.set(business);
-    this._hours.set(hours.data ?? []);
-    this._rating.set(ratings.data?.get(business.id) ?? null);
-    this._ratingsLoaded.set(ratings.data !== null);
-    this._promotions.set(promotions.data?.map((entry) => entry.deal) ?? []);
-    this._menu.set(menu.data);
+    // A refresh keeps the parts that failed to load again.
+    const take = (data: unknown): boolean => !keepOnFailure || data !== null;
+    if (take(hours.data)) this._hours.set(hours.data ?? []);
+    if (take(ratings.data)) this.setRating(business.id, ratings.data);
+    if (take(promotions.data)) this._promotions.set(promotions.data?.map((entry) => entry.deal) ?? []);
+    if (take(menu.data)) this._menu.set(menu.data);
+  }
+
+  private setRating(id: string, ratings: ReadonlyMap<string, BusinessRating> | null): void {
+    this._rating.set(ratings?.get(id) ?? null);
+    this._ratingsLoaded.set(ratings !== null);
   }
 }

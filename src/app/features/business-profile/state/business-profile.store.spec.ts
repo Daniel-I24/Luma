@@ -100,4 +100,22 @@ describe('BusinessProfileStore', () => {
     expect(store.state()).toBe('ready');
     expect(store.menu()).toBeNull();
   });
+
+  it('refresh: a change on another phone updates it without a loading state; a part that fails is kept', async () => {
+    await store.load(ID);
+    menu.getMenu.mockResolvedValue({ data: [{ id: 'm1' }, { id: 'm2' }], errorKey: null });
+    deals.listForBusiness.mockResolvedValue({ data: null, errorKey: 'x' });
+    const pending = store.refresh();
+    expect(store.state()).toBe('ready');
+    await pending;
+    expect(store.menu()).toHaveLength(2);
+    expect(store.promotions()).toHaveLength(1);
+  });
+
+  it('refresh: a business that stopped being public is "notFound"', async () => {
+    await store.load(ID);
+    businesses.getById.mockResolvedValue({ data: null, errorKey: null });
+    await store.refresh();
+    expect(store.state()).toBe('notFound');
+  });
 });

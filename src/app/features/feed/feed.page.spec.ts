@@ -4,6 +4,7 @@ import { Router, provideRouter } from '@angular/router';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FavoritesStore } from '@shared/favorites/favorites.store';
+import { FakeRealtimeService } from '../../../testing/fake-realtime';
 import { FeedPage } from './feed.page';
 import type { FeedCard } from './models/feed-card.model';
 import { FeedStore, type FeedState } from './state/feed.store';
@@ -38,6 +39,7 @@ describe('FeedPage', () => {
     empty: computed(() => state() === 'ready' && cards().length === 0),
     load: vi.fn(),
     loadMore: vi.fn(),
+    refresh: vi.fn(),
   };
 
   beforeEach(() => {
@@ -113,5 +115,14 @@ describe('FeedPage', () => {
     fixture.detectChanges();
     expect(el.querySelector('[role="feed"]')).toBeNull();
     expect(el.querySelector('app-luma-empty-state')).not.toBeNull();
+  });
+
+  it('a catalog change on another phone refreshes the feed; "Actualizar" does the same', async () => {
+    const { el } = render();
+    await TestBed.inject(FakeRealtimeService).emit('catalog_events', [{ kind: 'promotion', business_id: 'b9' }]);
+    expect(store.refresh).toHaveBeenCalledTimes(1);
+    const refresh = Array.from(el.querySelectorAll('button')).find((b) => b.textContent?.includes('realtime.refresh'));
+    refresh!.click();
+    expect(store.refresh).toHaveBeenCalledTimes(2);
   });
 });

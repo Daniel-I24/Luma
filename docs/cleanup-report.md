@@ -175,3 +175,12 @@ left pointing at it) and the full Definition of Done stayed green.
   other use.
 - `scripts/setup-push.ps1` lost its own copy of the push steps: it calls
   option 2 of `scripts/luma.ps1` (`scripts/luma/push.ps1`).
+
+## Round 9 — phase 2 (2026-11-03)
+
+- Removed the polling constants `ORDER_REFRESH_MS`, `BOARD_REFRESH_MS`,
+  `NOTIFICATIONS_REFRESH_MS`, `UNREAD_REFRESH_MS` and `ORDER_ALERT_POLL_MS`
+  and their `PollWhileVisible` calls: Realtime replaces them (its fallback
+  polls only while the channel is down). `PollWhileVisible` stays (checkout
+  clock, FreshnessNote).
+

@@ -12,23 +12,20 @@ import { Haversine } from '@shared/geo/distance';
 import { OrderEstimates } from '@shared/orders/order-estimates';
 import { OrderStatusBadge } from '@shared/orders/order-status-badge';
 import type { OrderWithItems } from '@shared/orders/order.model';
-import { PollWhileVisible } from '@shared/ui/poll-while-visible';
 import { AppEvents } from '@core/native/app-events';
+import { RealtimeService } from '@core/realtime/realtime.service';
 import { OrderPayment } from './components/order-payment/order-payment';
 import { ReorderService } from './services/reorder.service';
 import { OrderTimeline } from './components/order-timeline/order-timeline';
 import { OrderDetailStore } from './state/order-detail.store';
 import { OrderDetailView } from './utils/order-detail-view';
 
-/** Status refresh period while the screen is visible. */
-export const ORDER_REFRESH_MS = 15_000;
-
 /**
  * OrderDetailPage — /orders/:id: status timeline, estimated time, address
  * with the route drawn in the app (RouteMap), lines and total, the online payment, and "Cancelar"
  * while pending or waiting for the payment. Re-reads the server when the
- * app comes back (e.g. from Wompi's checkout). Polls
- * every 15 s only while the screen is visible.
+ * app comes back (e.g. from Wompi's checkout). Status changes arrive by
+ * Realtime (order_events), with a 30 s poll only while the channel is down.
  */
 @Component({
   selector: 'app-order-detail-page',
@@ -88,7 +85,8 @@ export class OrderDetailPage {
       const id = this.id();
       untracked(() => void this.store.load(id));
     });
-    PollWhileVisible.pollWhileVisible(() => void this.store.refresh(), ORDER_REFRESH_MS);
+    // Status changes made by the business, as they happen (docs/realtime.md).
+    inject(RealtimeService).watch('order_events', () => this.store.refresh(), (event) => event.order_id === this.id());
     // Back from the payment page: the server, not the redirect, says how it went.
     const events = inject(AppEvents);
     let seen = events.resumes();

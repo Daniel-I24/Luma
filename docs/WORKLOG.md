@@ -186,6 +186,15 @@ Phase 1 (fallos pendientes):
 - Legal pages on GitHub Pages (`legal-pages.yml`, docs/pages-setup.md);
   docs/release.md lists every build variable.
 
+Phase 2 (tiempo real, docs/realtime.md):
+- Migration 56: `catalog_events`, `order_events` (ids only), triggers,
+  RLS, pruning, publication with exactly those tables;
+  supabase/tests/realtime_events.sql.
+- `RealtimeService` (batches of 500 ms, reconnection with backoff, 30 s
+  fallback poll, foreground and network refresh), `FreshnessNote`,
+  `appPullToRefresh`; map, Descubrir, ficha, pedidos (cliente y dueño),
+  alertas y avisos refresh without flicker.
+
 ## Round 8 (2026-11-02)
 
 Phase 1 (fallos y legal público):

@@ -51,6 +51,7 @@ export class NearbyBusinessesStore {
   private readonly _loading = signal(false);
   private readonly _loaded = signal(false);
   private readonly _errorKey = signal<string | null>(null);
+  private last: { readonly lat: number; readonly lng: number } | null = null;
 
   public readonly query = signal('');
   public readonly filters = signal<MapFilters>(NO_FILTERS);
@@ -72,15 +73,22 @@ export class NearbyBusinessesStore {
     () => this._loaded() && !this._loading() && !this._errorKey() && this.items().length === 0,
   );
 
-  /** Loads active businesses around a point, then their hours, ratings and promotions. */
-  public async load(lat: number, lng: number): Promise<void> {
-    this._loading.set(true);
-    this._errorKey.set(null);
+  /**
+   * Loads active businesses around a point, then their hours, ratings and
+   * promotions. `silent` (a change on another phone): no loading state, and a
+   * failure keeps what is shown.
+   */
+  public async load(lat: number, lng: number, silent = false): Promise<void> {
+    this.last = { lat, lng };
+    if (!silent) {
+      this._loading.set(true);
+      this._errorKey.set(null);
+    }
     const done = this.pendingTasks.add();
     try {
       const result = await this.repo.getNearby(lat, lng, NEARBY_RADIUS_KM);
       if (result.errorKey || !result.data) {
-        this._errorKey.set(result.errorKey ?? 'map.errorLoading');
+        if (!silent) this._errorKey.set(result.errorKey ?? 'map.errorLoading');
         return;
       }
       const ids = result.data.map((b) => b.id);
@@ -98,6 +106,13 @@ export class NearbyBusinessesStore {
       this._loading.set(false);
       done();
     }
+  }
+
+  /** Re-reads the same area after changes elsewhere; their hours are read again. */
+  public async refresh(changedIds: readonly string[] = []): Promise<void> {
+    if (!this.last) return;
+    this.hoursCache.forget(changedIds);
+    await this.load(this.last.lat, this.last.lng, true);
   }
 
   /** Removes every map filter. */

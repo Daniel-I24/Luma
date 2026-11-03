@@ -903,3 +903,23 @@ alternative that was not taken. The safest, most reversible option wins.
   expiry date is recommended.
 - **Sandbox payments stay off**: payments-settings.sql leaves the
   payments_enabled line commented out.
+
+## 2026-11-03 — Round 9, phase 2: Realtime with ids only
+
+- **Two event tables, no rows**: `catalog_events` and `order_events` carry
+  ids and a time; the app re-reads with its RLS queries. The notification
+  list uses `order_events` with `order_id` null instead of a third table
+  (the request asked for two).
+- **The publication is set, not added to**: `alter publication
+  supabase_realtime set table ...` guarantees that nothing else is
+  published; a `FOR ALL TABLES` publication would be recreated.
+- **Polling replaced, not doubled**: the 15–30 s polls of orders, the
+  order board, alerts and notifications became Realtime subscriptions,
+  whose own fallback polls every 30 s only while the channel is down.
+- **Tests never open a socket**: `src/test-providers.ts` (angular.json
+  `providersFile`) gives every spec `FakeRealtimeService`; only the
+  Realtime spec uses the real service with a simulated channel.
+- **Bundle**: raw initial size unchanged (670.15 kB, the reference); the
+  transfer estimate grew 0.6 kB because `ConnectivityService` is now its own
+  shared chunk (more lazy screens import it). Revisited in phase 5.
+

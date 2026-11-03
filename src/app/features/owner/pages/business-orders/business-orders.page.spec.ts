@@ -5,7 +5,8 @@ import { of } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
 import { BusinessOrderRepository } from '@shared/orders/business-order.repository';
-import { BOARD_REFRESH_MS, BusinessOrdersPage } from './business-orders.page';
+import { FakeRealtimeService } from '../../../../../testing/fake-realtime';
+import { BusinessOrdersPage } from './business-orders.page';
 
 const flush = () => new Promise((resolve) => setTimeout(resolve));
 const order = (id: string, status: string, extra: object = {}) => ({
@@ -161,13 +162,14 @@ describe('BusinessOrdersPage', () => {
     );
   });
 
-  it(`refreshes every ${BOARD_REFRESH_MS / 1000} s while visible`, async () => {
-    vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval'] });
+  it('a new order of this business arrives without refreshing; orders of other businesses do not reload it', async () => {
     await render();
     repo.list.mockClear();
+    const realtime = TestBed.inject(FakeRealtimeService);
 
-    vi.advanceTimersByTime(BOARD_REFRESH_MS * 2);
-
-    expect(repo.list).toHaveBeenCalledTimes(2);
+    await realtime.emit('order_events', [{ order_id: 'x', business_id: 'other' }]);
+    expect(repo.list).not.toHaveBeenCalled();
+    await realtime.emit('order_events', [{ order_id: 'o9', business_id: 'b1' }]);
+    expect(repo.list).toHaveBeenCalledTimes(1);
   });
 });

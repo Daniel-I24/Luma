@@ -9,6 +9,9 @@ import { DateFormat } from '@shared/format/date-format';
 import { OrderStatusBadge } from '@shared/orders/order-status-badge';
 import type { Order } from '@shared/orders/order.model';
 import { OrderRepository } from '@shared/orders/order.repository';
+import { RealtimeService } from '@core/realtime/realtime.service';
+import { FreshnessNote } from '@shared/ui/freshness-note';
+import { PullToRefreshDirective } from '@shared/ui/pull-to-refresh.directive';
 
 type ListState = 'loading' | 'ready' | 'error';
 
@@ -26,6 +29,8 @@ type ListState = 'loading' | 'ready' | 'error';
     LumaSkeleton,
     CopCurrencyPipe,
     OrderStatusBadge,
+    FreshnessNote,
+    PullToRefreshDirective,
   ],
   templateUrl: './orders.page.html',
   host: { class: 'block' },
@@ -40,6 +45,8 @@ export class OrdersPage {
 
   protected readonly state = signal<ListState>('loading');
   protected readonly orders = signal<readonly Order[]>([]);
+  /** New statuses of the user's orders, as the business changes them (docs/realtime.md). */
+  protected readonly live = inject(RealtimeService).watch('order_events', () => this.refresh(), (event) => !!event.order_id);
 
   constructor() {
     void this.load();
@@ -50,6 +57,13 @@ export class OrdersPage {
     const result = await this.repo.list();
     this.orders.set(result.data ?? []);
     this.state.set(result.data ? 'ready' : 'error');
+  }
+
+  /** Re-reads the list without a loading state; a failure keeps what is shown. */
+  protected async refresh(): Promise<void> {
+    if (this.state() !== 'ready') return this.load();
+    const result = await this.repo.list();
+    if (result.data) this.orders.set(result.data);
   }
 
   protected when(order: Order): string {

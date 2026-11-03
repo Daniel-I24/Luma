@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RealtimeService } from '@core/realtime/realtime.service';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { map } from 'rxjs';
 import {
@@ -59,6 +60,9 @@ export const PROFILE_TABS: readonly ProfileTab[] = ['menu', 'promos', 'reviews',
 })
 export class BusinessProfilePage {
   protected readonly store = inject(BusinessProfileStore);
+  /** Changes of this business on other phones (docs/realtime.md). */
+  protected readonly live = inject(RealtimeService).watch('catalog_events', () => this.store.refresh(),
+    (event) => event.business_id === this.store.business()?.id);
   private readonly reviews = inject(ReviewsStore);
   private readonly auth = inject(AuthService);
   /** Owners cannot review their own business (also enforced by RLS). */

@@ -5,12 +5,9 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LumaButton, LumaEmptyState, LumaIcon, LumaIconButton, LumaSkeleton } from '@design-system';
 import { DateFormat } from '@shared/format/date-format';
 import type { AppNotification } from '@shared/notifications/notification.repository';
-import { PollWhileVisible } from '@shared/ui/poll-while-visible';
+import { RealtimeService } from '@core/realtime/realtime.service';
 import { NotificationsStore } from './state/notifications.store';
 import { NotificationView } from './utils/notification-view';
-
-/** Refresh period while the screen is visible. */
-export const NOTIFICATIONS_REFRESH_MS = 30_000;
 
 /**
  * NotificationsPage — /notifications (from Profile): order notifications,
@@ -36,7 +33,8 @@ export class NotificationsPage {
 
   constructor() {
     void this.store.load();
-    PollWhileVisible.pollWhileVisible(() => void this.store.refresh(), NOTIFICATIONS_REFRESH_MS);
+    // A new notice (order_events with no order: "your inbox changed"), as it arrives.
+    inject(RealtimeService).watch('order_events', () => this.store.refresh(), (event) => !event.order_id);
   }
 
   protected when(notification: AppNotification): string {

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NativeHaptics } from '@core/native/native-actions';
+import { RealtimeService } from '@core/realtime/realtime.service';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import {
   TabIds,
@@ -12,7 +13,6 @@ import {
   ToastService,
 } from '@design-system';
 import type { BusinessOrder, CancelReason } from '@shared/orders/business-order.repository';
-import { PollWhileVisible } from '@shared/ui/poll-while-visible';
 import { OwnerOrderCard } from '../../components/owner-order-card/owner-order-card';
 import { PanelHeader } from '../../components/panel-header/panel-header';
 import { PanelStateView } from '../../components/panel-state/panel-state';
@@ -23,9 +23,6 @@ import { RouteBusinessId } from '../../utils/route-business-id';
 
 /** Reasons the owner can pick when cancelling after accepting ("No llegó" has its own button). */
 const CANCEL_REASONS = ['out_of_stock', 'closed', 'other'] as const;
-
-/** Refresh period while the screen is visible. */
-export const BOARD_REFRESH_MS = 15_000;
 
 /** BusinessOrdersPage — /owner/:id/orders: new, in preparation, ready and history. */
 @Component({
@@ -79,9 +76,9 @@ export class BusinessOrdersPage {
   });
   protected readonly visible = computed(() => OrderBoard.ordersOfTab(this.board.orders(), this.tab()));
 
-  constructor() {
-    PollWhileVisible.pollWhileVisible(() => void this.board.refresh(), BOARD_REFRESH_MS);
-  }
+  /** New orders and cancellations of this business, as they happen (docs/realtime.md). */
+  protected readonly live = inject(RealtimeService).watch('order_events', () => this.board.refresh(),
+    (event) => !!event.order_id && event.business_id === this.id());
 
   protected async load(id = this.id()): Promise<void> {
     await Promise.all([this.panel.load(id), this.board.load(id)]);

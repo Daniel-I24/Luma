@@ -26,6 +26,11 @@ export class BusinessHoursCacheService {
     return this.cache;
   }
 
+  /** Drops the hours of these businesses (they changed): the next prefetch reads them. */
+  public forget(businessIds: readonly string[]): void {
+    for (const id of businessIds) this.cache.delete(id);
+  }
+
   /**
    * Loads hours for ids not yet cached, in parallel.
    * Failed fetches are stored as [] so the same id is not retried forever.

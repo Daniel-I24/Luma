@@ -2350,5 +2350,12 @@
       "owner-promotions": "Promociones",
       "owner-business": "Mi negocio"
     }
+  },
+  "realtime": {
+    "offline": "Sin conexión: mostrando datos guardados",
+    "updating": "Actualizando…",
+    "updatedNow": "Actualizado hace un momento",
+    "updatedAgo": "Actualizado hace {{minutes}} min",
+    "refresh": "Actualizar"
   }
 }

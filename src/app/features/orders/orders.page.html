@@ -1,11 +1,16 @@
 <div
   *transloco="let t"
   class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6"
+  appPullToRefresh
+  (pullRefresh)="live.refreshAll()"
 >
   <header class="flex items-center justify-between gap-2">
     <h1 class="m-0 text-h3 text-fg">{{ t('orders.title') }}</h1>
     <app-tour-help-button id="orders" />
   </header>
+  @if (state() === 'ready') {
+  <app-freshness-note [updatedAt]="live.updatedAt()" (refresh)="live.refreshAll()" />
+  }
 
   @switch (state()) { @case ('loading') {
   <div class="flex flex-col gap-3" aria-busy="true">
