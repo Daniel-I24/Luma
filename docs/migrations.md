@@ -73,6 +73,7 @@ needs a drop and a create in the same file, noted in the file header).
 | 53 | `20261103000000_round6.sql` | Round 6: `contact_verifier_config` (strategy per kind, flags off), `verify_contact_from_whatsapp` (service_role; ids and sender hash in `private`), `start_website_check` / `complete_website_check`, `private.mark_contact_verified`; depends on 52 | Applied |
 | 54 | `20261104000000_round7.sql` | Round 7: daily limit of business creations (`business_create`); validation functions in `private` and CHECK constraints NOT VALID (docs/validation-matrix.md, docs/data-quality.sql); discount 1-90; `handle_new_user` cleans the name; order notes cleaned; phones compared in +57; `contact_verifications` without `verified_by` for owners; request limit per kind | Applied |
 | 55 | `20261105000000_round8.sql` | Round 8: `send_test_notification` for admins only; `show_pending_businesses` (0) in `is_business_public`; `orders_online_needs_approval` (pick-up only while in review) | Pending review |
+| 56 | `20261106000000_round9.sql` | Round 9: `review_business` publishes on approval from review when there is an open day and an available product (`private.meets_publish_requirements`); `rate_business_create_max` 3 → 10 (internal guard) | Pending review |
 
 **Database freeze (2026-10-19)**: the list above is final for the launch.
 After the freeze, migrations and functions change only to fix real bugs
@@ -223,6 +224,7 @@ transaction that is rolled back.
 | `round6.sql` | automatic contact verification: WhatsApp inbound, website file, strategy per kind, Instagram/Facebook in the admin queue |
 | `round7.sql` | businesses per owner, validation vectors shared with the app, CHECK constraints |
 | `round8.sql` | migration 55: test notification for admins only, `show_pending_businesses` visibility, pick-up only while in review |
+| `round9.sql` | migration 56: approval publishes when ready, approved but hidden without a product, owner pause kept after a re-approval, `show_pending_businesses` states through the API roles, guard of 10 creations a day |
 
 `scripts/db-drift.test.mjs` (`npm run test:scripts`) checks without a
 database: Storage folders vs delete-account, functions in config.toml, and
@@ -231,4 +233,4 @@ function in each pending migration.
 
 Files starting with `_` (`_helpers.sql` and the `_*_fixtures.sql`) are
 shared fixtures loaded by the suites, not suites. Round 8 phase 4 changed
-no SQL: migration 55 is still the only pending one.
+no SQL: migration 55 is still the only pending one. Round 9 adds 56.

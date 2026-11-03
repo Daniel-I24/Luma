@@ -17,6 +17,59 @@ One version number for the web and the APK: `package.json` "version"
 - [ ] Push to `main`; Vercel builds it. Web users get the "Hay una versión
       nueva" banner and "Actualizar" reloads.
 
+## Build variables (all of them)
+
+Read by `npm run build:prod` (web) and `npm run apk:debug|release`
+(scripts/apk.mjs, scripts/build-flags.mjs, scripts/generate-env.mjs). None of
+them is written to the repository; an invalid value stops the build instead
+of shipping a wrong one.
+
+| Variable | Needed | Values | Default | What it does |
+| --- | --- | --- | --- | --- |
+| `SUPABASE_URL` | yes | `https://<ref>.supabase.co` | — | The project the app talks to (written to the gitignored `environment.deploy.ts`) |
+| `SUPABASE_ANON_KEY` | yes | the public anon / publishable key | — | Client key; never `service_role` or a `sb_secret_` key |
+| `AI_MODE` | no | `rules`, `remote` | `rules` | `remote` turns on Luma IA through the Edge Functions (docs/ai.md) |
+| `PUSH_ENABLED` | no | `1`, `0` | on when `android/app/google-services.json` exists | Push notifications in the APK; `1` without the file fails (docs/push-setup.md) |
+| `SUPPORT_WHATSAPP` | no | `57` + 10 digits, e.g. `573001234567` | empty | Luma's WhatsApp for the contact verification steps |
+| `LEGAL_CONTACT_EMAIL` | no | an e-mail | empty ("por definir") | Contact e-mail of the legal texts and public pages |
+| `LUMA_KEYSTORE_PATH` | release | path to the `.jks` | — | Release signing (never in git) |
+| `LUMA_KEYSTORE_PASSWORD` | release | text | — | Keystore password |
+| `LUMA_KEY_ALIAS` | release | text | — | Key alias |
+| `LUMA_KEY_PASSWORD` | release | text | — | Key password |
+| `JAVA_HOME` | no | a JDK 17 to 24 folder | detected (Android Studio JBR) | JDK for Gradle |
+
+### Examples
+
+PowerShell, one variable per line (short lines paste safely):
+
+```powershell
+$env:SUPABASE_URL = "https://<ref>.supabase.co"
+$env:SUPABASE_ANON_KEY = "<anon key>"
+$env:AI_MODE = "remote"
+$env:SUPPORT_WHATSAPP = "573001234567"
+$env:LEGAL_CONTACT_EMAIL = "hola@ejemplo.com"
+npm run apk:debug
+```
+
+Or put them in `%USERPROFILE%\luma-secrets\app.env` (one `NAME=value` per
+line) and use option 6 of `scripts\luma.ps1`, which builds (signed when the
+four `LUMA_KEY*` are there) and installs on the phone:
+
+```
+SUPABASE_URL=https://<ref>.supabase.co
+SUPABASE_ANON_KEY=<anon key>
+AI_MODE=remote
+SUPPORT_WHATSAPP=573001234567
+LEGAL_CONTACT_EMAIL=hola@ejemplo.com
+LUMA_KEYSTORE_PATH=C:\keys\luma-release.jks
+LUMA_KEYSTORE_PASSWORD=...
+LUMA_KEY_ALIAS=luma
+LUMA_KEY_PASSWORD=...
+```
+
+The web build (Vercel or local) takes the same variables except the
+signing ones: `npm run build:prod`.
+
 ## 3. APK
 
 Your keystore never enters the repository or CI ([android.md](android.md)).

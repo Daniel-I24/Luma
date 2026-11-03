@@ -5,7 +5,7 @@ export const DEFAULT_TIMEOUT_MS = 10_000;
 const UNAVAILABLE_RETRIES = 2;
 const TIMEOUT_RETRIES = 1;
 /** First wait before a retry; it doubles each time, plus up to half of it at random. */
-export const RETRY_BASE_DELAY_MS = 500;
+const RETRY_BASE_DELAY_MS = 500;
 const UNAVAILABLE_STATUSES = new Set([500, 502, 503, 504, 529]);
 
 export class LlmFailure extends Error {

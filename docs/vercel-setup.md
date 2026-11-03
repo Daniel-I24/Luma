@@ -1,7 +1,8 @@
 # Vercel: la web y las páginas legales públicas
 
 La web de Luma (la misma app del APK) y sus páginas legales públicas se
-publican en Vercel desde este repositorio. Paso a paso:
+pueden publicar en Vercel desde este repositorio. Es opcional: para las
+páginas legales basta GitHub Pages (docs/pages-setup.md). Paso a paso:
 
 ## 1. Crear el proyecto
 

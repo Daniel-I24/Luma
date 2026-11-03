@@ -7,18 +7,20 @@ Configuración → Básica de la app:
 | Campo de Meta | Valor para Luma |
 | --- | --- |
 | Nombre visible | Luma |
-| Correo de contacto de la app | el mismo de `LEGAL_CONTACT_EMAIL` (docs/vercel-setup.md) |
-| URL de la política de privacidad | `https://<tu-dominio>/privacidad` |
-| URL de las condiciones del servicio | `https://<tu-dominio>/terminos` |
-| URL de instrucciones para la eliminación de datos | `https://<tu-dominio>/eliminacion-datos` (explica Perfil → Eliminar cuenta y el correo de contacto) |
+| Correo de contacto de la app | el mismo de `LEGAL_CONTACT_EMAIL` (docs/pages-setup.md) |
+| URL de la política de privacidad | `https://daniel-i24.github.io/Luma/privacidad.html` |
+| URL de las condiciones del servicio | `https://daniel-i24.github.io/Luma/terminos.html` |
+| URL de instrucciones para la eliminación de datos | `https://daniel-i24.github.io/Luma/eliminacion-datos.html` (explica Perfil → Eliminar cuenta y el correo de contacto) |
 | Icono de la app (1024 × 1024) | `docs/brand/store/app-icon-1024.png` |
 | Categoría | "Comida y bebida" (Food & Drink) |
 | Uso de la app | Negocios (verificación de contactos de los negocios en Luma) |
 
 Pasos:
 
-1. Publica la web en Vercel y abre las tres URL sin iniciar sesión: deben
-   verse (no la app).
+1. Publica las páginas en GitHub Pages (docs/pages-setup.md) y abre las tres
+   URL sin iniciar sesión: deben verse. Con Vercel (docs/vercel-setup.md)
+   valen también `https://<tu-dominio>/privacidad`, `/terminos` y
+   `/eliminacion-datos`.
 2. Rellena los campos de la tabla y guarda.
 3. Arriba del panel cambia "Desarrollo" a **"En vivo"**. Si Meta marca un
    campo, corrígelo con los valores de la tabla.

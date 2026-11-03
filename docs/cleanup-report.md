@@ -166,3 +166,12 @@ left pointing at it) and the full Definition of Done stayed green.
   `secure-compare.ts` copy.
 - Deleted the abstract classes with a single implementation (eight; the
   implementation kept the abstract class's name).
+
+## Round 9 — phase 1 (2026-11-03)
+
+- Removed the keys `businessPanel.dashboard.publish` (replaced by
+  `owner.publish.publishNow`) and `owner.menuScan.errors.providerBusy`
+  (split into `providerQuota` and `providerSaturated`); git grep found no
+  other use.
+- `scripts/setup-push.ps1` lost its own copy of the push steps: it calls
+  option 2 of `scripts/luma.ps1` (`scripts/luma/push.ps1`).

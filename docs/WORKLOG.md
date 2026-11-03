@@ -171,6 +171,21 @@ SQL suites, Deno 2.5.6 in Docker for the functions.
   Deno tests, type check and lint of the functions, every check, secret
   scan, audit 0, knip (no unused files or dependencies).
 
+## Round 9 (2026-11-03)
+
+Phase 1 (fallos pendientes):
+- Migration 56 `20261106000000_round9` (pending review): approving a ready
+  business publishes it; daily creation guard 10 (only "3 por cuenta" is
+  shown). supabase/tests/round9.sql. Summary: "Tu negocio está aprobado pero
+  aún no se ve" + what is missing + "Publicar ahora".
+- LLM gateway: 2 retries with backoff and jitter for 5xx/"overloaded",
+  `LLM_FALLBACK_MODEL`, reason `provider_unavailable`; menu scan has
+  separate messages (saturated + Reintentar, quota, key, model).
+- `scripts\luma.ps1` (7 options, docs/luma-setup.md), setup-push.ps1 on
+  npx/--use-api/USERPROFILE, `npm run doctor` (Management API).
+- Legal pages on GitHub Pages (`legal-pages.yml`, docs/pages-setup.md);
+  docs/release.md lists every build variable.
+
 ## Round 8 (2026-11-02)
 
 Phase 1 (fallos y legal público):

@@ -67,7 +67,7 @@ function create(name: string, options: ProviderOptions): LlmProvider | null {
 }
 
 /** Asks the fallback model only when the main one failed in a way it can get around. */
-export function withFallback(primary: LlmProvider, fallback: LlmProvider): LlmProvider {
+function withFallback(primary: LlmProvider, fallback: LlmProvider): LlmProvider {
   return {
     name: primary.name,
     async generateJson<T>(request: LlmRequest, validate: LlmValidator<T>): Promise<LlmResult<T>> {

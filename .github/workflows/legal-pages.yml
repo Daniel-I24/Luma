@@ -1,0 +1,48 @@
+# Publishes ONLY public/legal (terms, privacy, refunds, data deletion) on
+# GitHub Pages, for the Meta and Play Store forms (docs/pages-setup.md).
+# Actions pinned by commit SHA; the deploy job alone may write to Pages.
+name: Legal pages
+
+on:
+  push:
+    branches: [main]
+    paths: ['public/legal/**', 'public/i18n/**', 'scripts/build-legal.mjs', '.github/workflows/legal-pages.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: legal-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # The texts of the app with the contact e-mail of the repository variable
+      # (Settings -> Secrets and variables -> Actions -> Variables). Node only.
+      - name: Build the legal pages
+        env:
+          LEGAL_CONTACT_EMAIL: ${{ vars.LEGAL_CONTACT_EMAIL }}
+        run: node scripts/build-legal.mjs
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: public/legal
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

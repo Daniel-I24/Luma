@@ -11,7 +11,7 @@ const missing = (item, next) => ({ state: 'FALTA', item, next });
 const off = (item, next) => ({ state: 'APAGADO', item, next });
 
 /** Local migrations that the project has not applied yet. */
-export async function checkMigrations(ctx) {
+async function checkMigrations(ctx) {
   const applied = new Set((await ctx.api('/database/migrations')).map((m) => String(m.version)));
   const pending = ctx.localMigrations.filter((version) => !applied.has(version));
   if (!pending.length) return [ok(`Migraciones: las ${ctx.localMigrations.length} están aplicadas`)];
@@ -20,7 +20,7 @@ export async function checkMigrations(ctx) {
 }
 
 /** The app_settings flags, as they are. */
-export async function checkFlags(ctx) {
+async function checkFlags(ctx) {
   const list = FLAGS.map((key) => `'${key}'`).join(', ');
   const rows = await ctx.api('/database/query', {
     method: 'POST',
@@ -32,7 +32,7 @@ export async function checkFlags(ctx) {
 }
 
 /** Secret names and deployed functions of each feature. */
-export async function checkFeatures(ctx) {
+async function checkFeatures(ctx) {
   const secrets = new Set((await ctx.api('/secrets')).map((s) => s.name));
   const functions = new Set((await ctx.api('/functions')).map((f) => f.slug));
   const lines = [];
@@ -54,7 +54,7 @@ export async function checkFeatures(ctx) {
 }
 
 /** Meta's challenge against the deployed whatsapp-webhook, with the token of whatsapp.env. */
-export async function checkWhatsappChallenge(ctx) {
+async function checkWhatsappChallenge(ctx) {
   const token = ctx.secretFile('whatsapp.env').WHATSAPP_VERIFY_TOKEN;
   if (!token) return [off('Reto del webhook de WhatsApp: no hay whatsapp.env', 'Ejecuta scripts\\luma.ps1, opción 5.')];
   const challenge = String(ctx.random());
@@ -67,7 +67,7 @@ export async function checkWhatsappChallenge(ctx) {
 }
 
 /** The Gemini key and models of ai.env, asked to Google (never printed). */
-export async function checkGeminiKey(ctx) {
+async function checkGeminiKey(ctx) {
   const ai = ctx.secretFile('ai.env');
   if (!ai.LLM_API_KEY) return [off('Clave de Gemini: no hay ai.env', 'Ejecuta scripts\\luma.ps1, opción 1.')];
   const lines = [];
@@ -88,7 +88,7 @@ export async function checkGeminiKey(ctx) {
 }
 
 /** Push and payments as a whole: the database part only the SQL editor can show. */
-export function checkLocalSetup(ctx) {
+function checkLocalSetup(ctx) {
   const lines = [];
   lines.push(ctx.exists('push-settings.sql') ? ok('Push: push-settings.sql generado (pégalo una vez en el SQL Editor)')
     : off('Push: falta push-settings.sql', 'Ejecuta scripts\\luma.ps1, opción 2.'));
