@@ -59,7 +59,7 @@ export class MenuScanRepository {
         method: 'POST',
         body: { business_id: businessId, images },
       });
-      if (error) return { items: null, errorKey: this.errorKey(error) };
+      if (error) return { items: null, errorKey: await this.errorKey(error) };
       const parsed = draftSchema.safeParse(data);
       return parsed.success
         ? { items: parsed.data.items, errorKey: null }
@@ -69,15 +69,24 @@ export class MenuScanRepository {
     }
   }
 
-  private errorKey(error: unknown): string {
+  private async errorKey(error: unknown): Promise<string> {
     if (error instanceof FunctionsFetchError) return networkErrorKey(this.online());
     if (error instanceof FunctionsHttpError && error.context instanceof Response) {
       const status = error.context.status;
-      if (status === 429) return 'owner.menuScan.quota';
+      if (status === 429) return (await this.errorCode(error.context)) === 'rate_limited'
+        ? 'owner.menuScan.rateLimited'
+        : 'owner.menuScan.quota';
       if (status === 400) return 'owner.menuScan.tooBig';
       if (status === 401) return 'auth.errors.sessionExpired';
       if (status === 403) return 'businessPanel.errors.forbidden';
     }
     return 'owner.menuScan.unavailable';
+  }
+
+  /** The function's { error } code, or null when the body is not that shape. */
+  private async errorCode(response: Response): Promise<string | null> {
+    const body: unknown = await response.json().catch(() => null);
+    const code = typeof body === 'object' && body !== null ? (body as Record<string, unknown>)['error'] : null;
+    return typeof code === 'string' ? code : null;
   }
 }

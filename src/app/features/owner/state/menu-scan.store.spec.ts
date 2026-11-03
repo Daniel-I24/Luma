@@ -94,6 +94,10 @@ describe('MenuScanRepository', () => {
     // No files: nothing to re-encode, only the request path is exercised.
     invoke.mockResolvedValueOnce({ data: null, error: new FunctionsHttpError(new Response('{}', { status: 429 })) });
     expect((await repo.scan('b', [])).errorKey).toBe('owner.menuScan.quota');
+    invoke.mockResolvedValueOnce({
+      data: null, error: new FunctionsHttpError(new Response('{"error":"rate_limited"}', { status: 429 })),
+    });
+    expect((await repo.scan('b', [])).errorKey).toBe('owner.menuScan.rateLimited');
     invoke.mockResolvedValueOnce({ data: null, error: new FunctionsHttpError(new Response('{}', { status: 400 })) });
     expect((await repo.scan('b', [])).errorKey).toBe('owner.menuScan.tooBig');
     invoke.mockResolvedValueOnce({ data: { items: [{ name: 'Tinto', description: null, price_cop: 2000, section: null }] }, error: null });

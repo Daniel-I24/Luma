@@ -24,6 +24,10 @@ async function authenticate(token: string): Promise<OwnerApi | null> {
       const { data: owns, error: rpcError } = await db.rpc('owns_business', { p_business_id: businessId });
       return !rpcError && owns === true;
     },
+    withinRateLimit: async () => {
+      const { data: allowed, error: rpcError } = await db.rpc('hit_rate_limit', { p_bucket: 'menu_scan' });
+      return !rpcError && allowed === true;
+    },
     consumeQuota: async (businessId) => {
       const { data: allowed, error: rpcError } = await db.rpc('consume_menu_scan_quota', {
         p_business_id: businessId,

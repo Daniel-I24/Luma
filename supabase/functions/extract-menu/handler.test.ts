@@ -13,9 +13,10 @@ const PNG = b64([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0]);
 const WEBP = btoa('RIFF\u0000\u0000\u0000\u0000WEBPVP8 ');
 const GIF = btoa('GIF89a......');
 
-function setup(options: { answer?: unknown; quota?: boolean; llm?: boolean } = {}) {
+function setup(options: { answer?: unknown; quota?: boolean; llm?: boolean; rate?: boolean } = {}) {
   const requests: LlmRequest[] = [];
   const spent: string[] = [];
+  const steps: string[] = [];
   const llm: LlmProvider = {
     name: 'fake',
     generateJson: <T>(request: LlmRequest, validate: LlmValidator<T>): Promise<LlmResult<T>> => {
@@ -25,15 +26,16 @@ function setup(options: { answer?: unknown; quota?: boolean; llm?: boolean } = {
     },
   };
   const owner: OwnerApi = {
-    ownsBusiness: (id) => Promise.resolve(id === BIZ),
+    ownsBusiness: (id) => Promise.resolve(void steps.push('owns')).then(() => id === BIZ),
+    withinRateLimit: () => Promise.resolve(void steps.push('rate')).then(() => options.rate ?? true),
     consumeQuota: (id) => Promise.resolve(void spent.push(id)).then(() => options.quota ?? true),
   };
   const handler = createHandler({
     allowedOrigins: [ORIGIN],
-    authenticate: (token) => Promise.resolve(token === 'good' ? owner : null),
+    authenticate: (token) => Promise.resolve(void steps.push('auth')).then(() => (token === 'good' ? owner : null)),
     llm: options.llm === false ? null : llm,
   });
-  return { handler, requests, spent };
+  return { handler, requests, spent, steps };
 }
 
 const post = (body: unknown, token = 'good', headers: Record<string, string> = {}) =>
@@ -84,4 +86,27 @@ Deno.test('quota exceeded is 429; missing secrets or a bad answer are 503', asyn
   assertEquals((await noLlm.handler(post(body))).status, 503);
   assertEquals(noLlm.spent.length, 0);
   assertEquals((await setup({ answer: { menu: 'free text' } }).handler(post(body))).status, 503);
+});
+
+Deno.test('ownership and the rate limit are checked before any image is decoded', async () => {
+  // Valid base64 that is not an image: rejected only after the cheap checks.
+  const notImage = btoa('just text, not an image');
+  const forbidden = setup();
+  assertEquals((await forbidden.handler(post({ business_id: OTHER, images: [notImage] }))).status, 403);
+  assertEquals(forbidden.steps, ['auth', 'owns']);
+  const limited = setup({ rate: false });
+  const res = await limited.handler(post({ business_id: BIZ, images: [JPEG] }));
+  assertEquals([res.status, await res.json()], [429, { error: 'rate_limited' }]);
+  assertEquals([limited.steps, limited.spent.length], [['auth', 'owns', 'rate'], 0]);
+  const decoded = setup();
+  assertEquals((await decoded.handler(post({ business_id: BIZ, images: [notImage] }))).status, 400);
+  assertEquals([decoded.steps, decoded.spent.length], [['auth', 'owns', 'rate'], 0]);
+});
+
+Deno.test('malformed JSON or a wrong shape is 400 before the session is looked up', async () => {
+  const { handler, steps } = setup();
+  assertEquals((await handler(post('{"business_id": '))).status, 400);
+  assertEquals((await handler(post({ business_id: BIZ, images: [42] }))).status, 400);
+  assertEquals((await handler(post({ business_id: BIZ, images: ['A'.repeat(MAX_IMAGE_BYTES * 2)] }))).status, 400);
+  assertEquals(steps, []);
 });

@@ -61,6 +61,10 @@ app ──JWT──▶ recommend / suggest-promotions (Edge Functions)
   a draft can fill its menu). Body: `{ business_id, images: [base64] }`, 1
   to 4 photos, 8 MB per request (rejected by `Content-Length` before
   reading), 2 MB per decoded image, JPEG/PNG/WebP checked by magic bytes.
+  Order of checks, cheapest first: bounded body, JSON shape (no decoding),
+  session, ownership, rate limit `hit_rate_limit('menu_scan')`
+  (`rate_menu_scan_max` 6 requests per `rate_menu_scan_window_seconds`
+  600, answered `429 rate_limited`), and only then the images are decoded.
   Only the photos reach the model (no business or owner data). Answer: a
   draft `{ items: [{ name, description, price_cop, section }] }` (at most
   200, plain text cut to the `menu_items` limits, prices such as "$12.500"

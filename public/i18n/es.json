@@ -1453,7 +1453,8 @@
       "nothingFound": "No encontramos productos en las fotos. Prueba con fotos más nítidas y bien iluminadas.",
       "quota": "Ya usaste los escaneos de hoy para este negocio. Vuelve mañana o agrega los productos a mano.",
       "tooBig": "Las fotos no se pudieron enviar (máximo 4, de 2 MB cada una). Intenta con menos fotos.",
-      "unavailable": "Luma IA no pudo leer el menú ahora. Intenta más tarde o agrega los productos a mano."
+      "unavailable": "Luma IA no pudo leer el menú ahora. Intenta más tarde o agrega los productos a mano.",
+      "rateLimited": "Enviaste muchos escaneos seguidos. Espera unos minutos e inténtalo de nuevo."
     },
     "orderAlerts": {
       "new": "Tienes {{count}} pedido(s) nuevo(s). Revísalos en Pedidos."

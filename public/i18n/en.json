@@ -1453,7 +1453,8 @@
       "nothingFound": "We couldn't find products in the photos. Try sharper, well-lit photos.",
       "quota": "You've used today's scans for this business. Come back tomorrow or add the products by hand.",
       "tooBig": "The photos couldn't be sent (4 at most, 2 MB each). Try fewer photos.",
-      "unavailable": "Luma IA couldn't read the menu right now. Try later or add the products by hand."
+      "unavailable": "Luma IA couldn't read the menu right now. Try later or add the products by hand.",
+      "rateLimited": "You sent many scans in a row. Wait a few minutes and try again."
     },
     "orderAlerts": {
       "new": "You have {{count}} new order(s). Check them in Orders."
