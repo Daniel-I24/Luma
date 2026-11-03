@@ -64,6 +64,13 @@ create function tests.avatar(p_name text) returns text language sql immutable
 as $$ select tests.id(p_name)::text || '/avatar/' || tests.id('file-' || p_name)::text || '.webp' $$;
 grant execute on function tests.avatar(text) to authenticated;
 
+select tests.expect_true('authenticated', tests.id('cus'), $$
+  select public.avatar_owner(tests.avatar('cus')) = tests.id('cus')
+     and public.avatar_owner('../' || tests.avatar('cus')) is null
+     and public.avatar_owner(tests.id('cus')::text || '/gallery/' || tests.id('f')::text || '.webp') is null
+     and public.avatar_object_count() = 0
+     and not public.can_view_customer_avatar(tests.avatar('cus'))$$,
+  'avatar path helpers: only {user}/avatar/{uuid}.{ext}');
 select tests.expect_error('authenticated', tests.id('unc'),
   $$insert into storage.objects (bucket_id, name) values ('avatars', tests.avatar('unc'))$$, 'row-level security');
 select tests.expect_error('authenticated', tests.id('cus'),
