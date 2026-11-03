@@ -5,10 +5,11 @@
     [placeholder]="t('placeholders.promoTitle')"
     [label]="t('businessPanel.promotions.promoTitle')"
     [required]="true"
-    [maxLength]="80"
+    [maxLength]="rules.title.maxLength"
     [errorMessage]="errors()['title'] ? t(errors()['title']) : undefined"
     [value]="draft().title"
     (valueChange)="set('title', $event)"
+    (blurred)="check('title', draft().title)"
   />
   <app-luma-input
     inputId="promo-starts"
@@ -39,14 +40,19 @@
       maxlength="300"
       class="w-full resize-y rounded-md border border-border bg-surface p-3 text-body text-fg focus-visible:outline-2 focus-visible:outline-border-focus"
       [attr.aria-invalid]="errors()['description'] ? 'true' : null"
-      [attr.aria-describedby]="errors()['description'] ? 'promo-description-error' : null"
+      [attr.aria-describedby]="errors()['description'] ? 'promo-description-error' : 'promo-description-count'"
       [value]="draft().description"
       (input)="onDescription($event)"
+      (blur)="check('description', draft().description)"
     ></textarea>
     @if (errors()['description']; as key) {
     <span id="promo-description-error" class="text-caption text-danger-fg" role="alert"
       >{{ t(key) }}</span
     >
+    } @else {
+    <span id="promo-description-count" class="text-right text-caption text-fg-subtle">{{
+      t('businessPanel.form.counter', { count: draft().description.length, max: 300 })
+    }}</span>
     }
   </div>
   <app-discount-fields

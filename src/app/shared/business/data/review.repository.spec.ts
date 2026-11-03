@@ -101,7 +101,7 @@ describe('ReviewRepository', () => {
       'reviews.validation.ratingRange',
     );
     expect((await repo.update('r1', { rating: 3, comment: 'a'.repeat(501) })).errorKey).toBe(
-      'reviews.validation.commentTooLong',
+      'validation.freeText',
     );
     expect(queries).toHaveLength(0);
   });

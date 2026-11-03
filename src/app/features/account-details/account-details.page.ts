@@ -33,7 +33,7 @@ export class AccountDetailsPage {
   private readonly toast = inject(ToastService);
   protected readonly loaded = signal(false);
   /** The mobile as typed, when valid (what the SMS code would be sent to). */
-  protected readonly mobile = computed(() => Phone.parse(this.form.phone()));
+  protected readonly mobile = computed(() => Phone.parse(this.form.phone.value()));
 
   constructor() {
     void this.form.load().then(() => this.loaded.set(true));

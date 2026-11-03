@@ -106,12 +106,13 @@ as $$ select md5('luma-test-' || p_name)::uuid $$;
 grant execute on function tests.id(text) to anon, authenticated;
 
 -- Gives a test user what is_profile_complete() needs (name, mobile, residence).
+-- The name follows the person-name rule (letters only: digits become letters).
 create function tests.complete_profile(p_name text)
 returns void
 language sql
 as $$
   update public.profiles
-  set full_name = 'Cliente ' || p_name, phone = '+573001112233',
+  set full_name = 'Cliente ' || translate(p_name, '0123456789_', 'abcdefghij '), phone = '+573001112233',
       residence_department = 'Nariño', residence_city = 'Pasto', residence_dane_code = '52001'
   where id = tests.id(p_name)
 $$;

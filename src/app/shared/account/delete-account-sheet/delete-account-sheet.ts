@@ -1,4 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import { AuthRules } from '@core/validation/auth-rules';
+import { ValidatedField } from '@core/validation/validated-field';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AccountReauthService } from '@core/auth/account-reauth.service';
 import { AuthService } from '@core/auth/auth.service';
@@ -34,6 +36,7 @@ export class DeleteAccountSheet {
   protected readonly codeLength = CODE_LENGTH;
   protected readonly step = signal<Step>('consequences');
   protected readonly code = signal('');
+  protected readonly codeField = new ValidatedField(AuthRules.code, { value: this.code });
   protected readonly busy = signal(false);
   protected readonly errorKey = signal<string | null>(null);
   protected readonly email = computed(() => this.auth.user()?.email ?? '');

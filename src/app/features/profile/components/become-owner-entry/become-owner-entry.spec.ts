@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Router, provideRouter } from '@angular/router';
+import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { SessionProfileStore } from '@shared/account/session-profile.store';
@@ -63,5 +63,23 @@ describe('BecomeOwnerEntry', () => {
       );
     });
     expect(navigate).not.toHaveBeenCalled();
+  });
+
+  it('a customer sent from Luma Negocios (?invite=business) sees the invitation open', async () => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [BecomeOwnerEntry, TranslocoTestingModule.forRoot({ langs: { es: {} }, translocoConfig: { availableLangs: ['es'], defaultLang: 'es' } })],
+      providers: [
+        provideRouter([]),
+        { provide: SessionProfileStore, useValue: session },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: convertToParamMap({ invite: 'business' }) } } },
+      ],
+    });
+    const fixture = TestBed.createComponent(BecomeOwnerEntry);
+    document.body.appendChild(fixture.nativeElement);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(document.body.textContent).toContain('profile.becomeOwner.sheetTitle');
+    fixture.destroy();
   });
 });

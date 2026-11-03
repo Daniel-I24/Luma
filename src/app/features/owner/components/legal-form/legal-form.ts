@@ -1,12 +1,17 @@
 import { ChangeDetectionStrategy, Component, effect, inject, signal, untracked } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaInput, ToastService } from '@design-system';
-import { Nit } from '@shared/business/domain/nit';
+import { FieldRules } from '@core/validation/field-rule';
+import { NumberRules } from '@core/validation/number-rules';
+import { TextRules } from '@core/validation/text-rules';
 import { DraftNotice } from '@shared/forms/draft-notice/draft-notice';
 import { FormDraftStore } from '@shared/forms/form-draft.store';
 import { PanelBusinessStore } from '../../state/panel-business.store';
 import { VerificationStore } from '../../state/verification.store';
-import { MIN_NAME_LENGTH } from '@shared/business/data/business-write.schemas';
+
+/** The three fields and their rules (the same as business_legal in the database). */
+const RULES = { taxId: NumberRules.nit, legalName: TextRules.legalName, legalRep: TextRules.legalRepName } as const;
+type LegalField = keyof typeof RULES;
 
 /** LegalForm — NIT (with check digit), legal name and legal representative; kept as a device draft until saved. */
 @Component({
@@ -23,8 +28,10 @@ export class LegalForm {
   protected readonly taxId = signal('');
   protected readonly legalName = signal('');
   protected readonly legalRep = signal('');
-  protected readonly nitError = signal(false);
-  protected readonly textError = signal(false);
+  private readonly values = { taxId: this.taxId, legalName: this.legalName, legalRep: this.legalRep } as const;
+  protected readonly rules = RULES;
+  /** Message key per field, shown after leaving it or on save. */
+  protected readonly errors = signal<Partial<Record<LegalField, string>>>({});
   private readonly panel = inject(PanelBusinessStore);
   protected readonly autosave = inject(FormDraftStore).attachTo(
     () => ({ taxId: this.taxId(), legalName: this.legalName(), legalRep: this.legalRep() }),
@@ -55,12 +62,32 @@ export class LegalForm {
     return this.autosave.dirty();
   }
 
+  protected edit(field: LegalField, value: string): void {
+    this.values[field].set(value);
+    this.setError(field, null);
+  }
+
+  /** On leaving a field (empty waits for the save) and, required, on save. */
+  protected check(field: LegalField, required = false): void {
+    const value = this.values[field]();
+    if (required || value.trim()) this.setError(field, FieldRules.checkRequired(RULES[field], value));
+  }
+
+  private setError(field: LegalField, key: string | null): void {
+    this.errors.update((errors) => {
+      const next = { ...errors };
+      if (key) next[field] = key;
+      else delete next[field];
+      return next;
+    });
+  }
+
   protected async save(event: Event): Promise<void> {
     event.preventDefault();
-    this.nitError.set(!Nit.parse(this.taxId()));
-    this.textError.set(this.legalName().trim().length < MIN_NAME_LENGTH || this.legalRep().trim().length < MIN_NAME_LENGTH);
-    if (this.nitError() || this.textError()) return;
-    if (await this.store.saveLegal(this.taxId(), this.legalName(), this.legalRep())) {
+    for (const field of Object.keys(RULES) as LegalField[]) this.check(field, true);
+    if (Object.keys(this.errors()).length) return;
+    const [taxId, legalName, legalRep] = [RULES.taxId.normalize(this.taxId()), RULES.legalName.normalize(this.legalName()), RULES.legalRep.normalize(this.legalRep())];
+    if (await this.store.saveLegal(taxId, legalName, legalRep)) {
       this.autosave.saved();
       this.toast.show({ messageKey: 'owner.verificationPage.legalSaved', tone: 'success' });
     }

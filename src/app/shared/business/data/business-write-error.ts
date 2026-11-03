@@ -3,6 +3,7 @@ const MESSAGE_KEYS: Readonly<Record<string, string>> = {
   publish_requirements_missing: 'businessPanel.errors.publishRequirements',
   not_business_owner: 'businessPanel.errors.notBusinessOwner',
   business_limit_reached: 'businessPanel.errors.businessLimit',
+  business_daily_limit: 'businessPanel.errors.businessDailyLimit',
   promotion_limit: 'businessPanel.errors.promotionLimit',
   promotion_item_mismatch: 'businessPanel.errors.promotionItemMismatch',
   business_under_review: 'businessPanel.errors.underReview',

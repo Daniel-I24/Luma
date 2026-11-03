@@ -185,9 +185,6 @@
       },
       "validation": {
         "accountType": "Elige cómo usarás Luma.",
-        "fullName": "Escribe tu nombre completo (2 a 80 caracteres).",
-        "phone": "Escribe un celular colombiano válido, por ejemplo 300 123 4567.",
-        "phoneRequired": "Las cuentas de negocio necesitan un celular.",
         "passwordCommon": "Esa contraseña es muy común. Elige otra.",
         "terms": "Debes aceptar los términos para continuar.",
         "privacy": "Debes autorizar el tratamiento de datos para continuar.",
@@ -274,9 +271,6 @@
       "hint": "Se muestra junto a tus reseñas. {{count}}/{{max}}",
       "save": "Guardar nombre",
       "saved": "Nombre visible guardado"
-    },
-    "validation": {
-      "displayNameTooLong": "El nombre puede tener hasta 40 caracteres."
     },
     "activity": "Tu actividad",
     "favorites": "Mis favoritos",
@@ -577,8 +571,7 @@
   },
   "reviews": {
     "validation": {
-      "ratingRange": "Elige entre 1 y 5 estrellas.",
-      "commentTooLong": "El comentario puede tener hasta 500 caracteres."
+      "ratingRange": "Elige entre 1 y 5 estrellas."
     },
     "saved": "Tu reseña quedó publicada",
     "deleted": "Borraste tu reseña",
@@ -879,7 +872,7 @@
       "name": "Nombre",
       "description": "Descripción (opcional)",
       "price": "Precio (COP)",
-      "priceHint": "Pesos enteros, sin decimales.",
+      "priceHint": "Pesos enteros, sin decimales: de $100 a $10.000.000.",
       "section": "Sección (opcional)",
       "sectionPlaceholder": "Ej.: Bebidas",
       "isAvailable": "Disponible para pedir",
@@ -926,32 +919,14 @@
       "ended": "Promoción terminada"
     },
     "validation": {
-      "name": "Escribe un nombre de 2 a 80 caracteres.",
       "category": "Elige una categoría.",
-      "phone": "Escribe un teléfono válido: de 7 a 20 dígitos, puede empezar con +.",
-      "address": "Escribe una dirección de 5 a 200 caracteres.",
       "location": "Elige la ubicación en el mapa.",
-      "description": "Máximo 300 caracteres.",
       "prepMinutes": "Escribe un número entero entre 5 y 180.",
       "time": "Escribe una hora válida.",
       "sameTimes": "La hora de cierre debe ser distinta de la de apertura.",
-      "itemName": "Escribe un nombre de 1 a 80 caracteres.",
-      "price": "Escribe un precio en pesos enteros, sin decimales.",
-      "section": "Máximo 40 caracteres.",
       "sortOrder": "Escribe un número entero entre 0 y 9999.",
-      "promoTitle": "Escribe un título de 3 a 80 caracteres.",
-      "date": "Elige una fecha y hora.",
-      "datesOrder": "La fecha de fin debe ser posterior a la de inicio.",
-      "endsInPast": "La fecha de fin debe estar en el futuro.",
       "imageUrl": "La imagen debe ser una dirección https.",
-      "discount": "El descuento debe ser un número entero entre 5 y 90.",
       "discountNeedsItem": "Elige el producto al que se aplica el descuento.",
-      "contact": {
-        "whatsapp": "Escribe un celular colombiano de 10 dígitos que empiece por 3.",
-        "instagram": "Usa solo letras minúsculas, números, puntos y guiones bajos (hasta 30).",
-        "facebook": "Escribe el nombre de la página tal como aparece en facebook.com/…",
-        "website": "La dirección debe empezar por https:// (máximo 200 caracteres)."
-      },
       "municipality": "Elige el departamento y el municipio del negocio."
     },
     "errors": {
@@ -970,7 +945,8 @@
       "underReview": "Tu negocio está en revisión: el nombre, la dirección y la ubicación no se pueden cambiar hasta que el equipo termine.",
       "galleryLimit": "Ya tienes 8 fotos. Elimina una para agregar otra.",
       "menuLimit": "Tu menú llegó al máximo de 200 productos.",
-      "taxIdInUse": "Este NIT ya pertenece a un negocio aprobado de otra cuenta. Escríbenos si es tuyo."
+      "taxIdInUse": "Este NIT ya pertenece a un negocio aprobado de otra cuenta. Escríbenos si es tuyo.",
+      "businessDailyLimit": "Ya creaste 3 negocios hoy. Podrás crear otro mañana."
     },
     "images": {
       "logo": "Logo",
@@ -1314,9 +1290,6 @@
     }
   },
   "reports": {
-    "validation": {
-      "comment": "Máximo 300 caracteres."
-    },
     "errors": {
       "alreadyReported": "Ya recibimos tu reporte sobre este negocio. Lo estamos revisando.",
       "failed": "No se pudo enviar el reporte. Intenta de nuevo."
@@ -1515,7 +1488,7 @@
     "switchLabel": "Negocio que estás viendo",
     "addBusiness": "Añadir otro negocio",
     "addBusinessShort": "Añadir",
-    "limitReached": "Llegaste al máximo de {{max}} negocios por cuenta. Para añadir otro, despublica y cierra uno desde Mi negocio o escríbenos.",
+    "limitReached": "Llegaste al máximo de {{max}} negocios por cuenta (cuentan todos, publicados o no). Para añadir otro, elimina uno desde Mi negocio o escríbenos.",
     "backFromCustomerView": "Estás viendo Luma como cliente · Volver a Luma Negocios",
     "tabs": {
       "label": "Secciones de Luma Negocios",
@@ -1635,7 +1608,7 @@
       "item": "Producto",
       "noItem": "Sin descuento: solo anuncio",
       "percent": "Porcentaje de descuento",
-      "percentHint": "Entre 5 y 90 %.",
+      "percentHint": "Entre 1 y 90 %.",
       "preview": "Los clientes verán {{final}} (antes {{list}}).",
       "previewEmpty": "Escribe un porcentaje para ver el precio final.",
       "margin": "Revisa tu margen antes de publicar. El precio final lo calcula Luma al confirmar cada pedido.",
@@ -1688,7 +1661,6 @@
       "name": "Nombre",
       "price": "Precio (COP)",
       "section": "Sección",
-      "priceNeeded": "Escribe el precio para poder agregarlo.",
       "add": "Agregar al menú ({{count}})",
       "discard": "Descartar y empezar de nuevo",
       "done": "Listo: agregamos {{count}} productos a tu menú.",
@@ -1997,8 +1969,6 @@
     "saved": "Tus datos quedaron guardados.",
     "completeAction": "Completar mis datos",
     "errors": {
-      "name": "Escribe tu nombre completo (de 3 a 80 caracteres).",
-      "phone": "Escribe un celular colombiano válido, por ejemplo 300 123 4567.",
       "residence": "Elige tu departamento y municipio."
     }
   },
@@ -2262,7 +2232,7 @@
       "websiteAuto": "Publica un archivo de texto en {{url}} con una línea que diga exactamente {{code}} y toca \"Comprobar ahora\"."
     },
     "errors": {
-      "tooMany": "Ya pediste 3 verificaciones hoy para este negocio. Intenta mañana.",
+      "tooMany": "Ya pediste 3 códigos hoy para este contacto. Intenta mañana (cada código nuevo reemplaza al anterior).",
       "missing": "Guarda primero ese contacto.",
       "changed": "El dueño cambió ese contacto después de pedir la verificación: no se puede verificar.",
       "notPending": "Esa solicitud ya se revisó.",
@@ -2290,16 +2260,23 @@
   "route": {
     "title": "Cómo llegar",
     "mode": "Cómo vas",
-    "walk": "Caminando",
-    "drive": "En carro",
+    "modes": {
+      "walk": "A pie",
+      "bike": "Bicicleta",
+      "moto": "Moto",
+      "drive": "Carro"
+    },
     "mapLabel": "Mapa con la ruta hasta {{name}}",
     "summary": {
-      "walk": "{{km}} km · unos {{minutes}} min caminando",
+      "walk": "{{km}} km · unos {{minutes}} min a pie",
+      "bike": "{{km}} km · unos {{minutes}} min en bicicleta",
+      "moto": "{{km}} km · unos {{minutes}} min en moto",
       "drive": "{{km}} km · unos {{minutes}} min en carro"
     },
     "estimate": "Estimado en línea recta: las calles pueden alargarlo.",
     "locate": "Usar mi ubicación para ver la ruta",
-    "googleMaps": "Abrir en Google Maps"
+    "googleMaps": "Abrir en Google Maps",
+    "approximate": "Tiempo aproximado: en moto usamos la ruta del carro con un tiempo ajustado."
   },
   "placeholders": {
     "fullName": "Ej.: Ana María Pérez",
@@ -2319,5 +2296,32 @@
     "minDiscountHint": "Muestra solo descuentos desde ese porcentaje.",
     "reviewNote": "Ej.: Falta la foto de la fachada con el aviso",
     "reportComment": "Ej.: El negocio ya no está en esta dirección"
+  },
+  "validation": {
+    "required": "Este campo es obligatorio.",
+    "personName": "Escribe el nombre solo con letras (de 2 a 60). Puedes usar espacios, apóstrofo ('), guion (-) y punto. Sin números ni emojis.",
+    "businessName": "Usa de 2 a 60 caracteres: letras, números, espacios y & ' - . , ( ). Debe tener al menos una letra y sin emojis.",
+    "legalName": "Escribe la razón social como aparece en el RUT: letras, números, espacios y & ' - . , ( ), hasta 150.",
+    "legalRepName": "Escribe el nombre del representante solo con letras (de 2 a 120). Puedes usar espacios, apóstrofo, guion y punto.",
+    "displayName": "Usa de 2 a 40 caracteres, con al menos una letra.",
+    "productName": "Escribe el nombre del producto, hasta 80 caracteres.",
+    "promotionTitle": "Escribe un título de 3 a 80 caracteres, con al menos una letra.",
+    "shortText": "Revisa este texto: es muy largo o no tiene letras ni números.",
+    "address": "Escribe la dirección con la calle y el número (de 5 a 120 caracteres), por ejemplo «Calle 18 # 25-30».",
+    "search": "La búsqueda puede tener hasta 80 caracteres.",
+    "freeText": "El texto es demasiado largo.",
+    "email": "Escribe un correo válido, por ejemplo nombre@correo.com.",
+    "mobilePhone": "Escribe un celular colombiano de 10 dígitos que empiece por 3, por ejemplo 300 123 4567.",
+    "phone": "Escribe un celular (300 123 4567) o un fijo con indicativo (601 234 5678).",
+    "instagram": "Escribe tu usuario de Instagram: letras, números, punto y guion bajo, hasta 30.",
+    "facebook": "Escribe el nombre de tu página de Facebook (lo que va después de facebook.com/).",
+    "website": "La dirección debe empezar por https:// y ser un dominio público, por ejemplo https://minegocio.co. Sin https:// no se puede verificar.",
+    "price": "Escribe un precio entre $100 y $10.000.000, sin decimales.",
+    "discount": "El descuento va de 1 % a 90 %.",
+    "nit": "Revisa el NIT y su dígito de verificación, por ejemplo 800.197.268-4.",
+    "date": "Revisa la fecha.",
+    "datesOrder": "La fecha de fin debe ser posterior a la de inicio.",
+    "datesTooLong": "Una promoción puede durar hasta un año.",
+    "datesPast": "La fecha de fin ya pasó."
   }
 }

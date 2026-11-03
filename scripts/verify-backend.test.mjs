@@ -88,14 +88,15 @@ test('reports each problem and never prints the key', async () => {
     'FAIL table device_tokens (token): missing table',
     'FAIL rpc export_my_data: callable by anon',
     'FAIL rpc sync_verified_phone [migration 50]: missing',
+    // Migrations 52 and 53 are applied: their RPCs are expected now.
+    'FAIL rpc send_test_notification: missing',
+    'FAIL rpc start_website_check: missing',
     'FAIL function geocode: not deployed (expected)',
     'FAIL function push-dispatch: deployed but failing (503)',
     'FAIL bucket business-images (public): not serving b1/... (400)',
     'FAIL bucket avatars (private): readable by anon',
   ]);
   assert.ok(lines.some((l) => l.ok && l.line === 'ok   function recommend: not deployed (not expected yet)'));
-  assert.ok(lines.some((l) => l.ok && l.line === 'ok   rpc send_test_notification [migration 52]: missing'));
-  assert.ok(lines.some((l) => l.ok && l.line === 'ok   rpc start_website_check [migration 53]: missing'));
   assert.ok(lines.some((l) => l.ok && l.line === 'ok   function whatsapp-webhook: not deployed (not expected yet)'));
   assert.equal(lines.some((l) => l.line.includes('anon-key-123')), false);
 });

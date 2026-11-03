@@ -102,3 +102,21 @@ tooling read through config files).
 - Nothing deleted. The website code path `/luma-verificacion.txt` (round 5,
   only in texts and the admin link) is now `/.well-known/luma-verification.txt`
   through `ContactVerifiers.fileUrl`.
+
+## Round 7 (2026-10-31)
+
+- `src/app/shared/business/domain/nit.ts` (and its spec) moved to
+  `src/app/core/validation/nit.ts`: the NIT rule belongs with the other
+  rules (all imports updated).
+- Removed, replaced by core/validation: the phone pattern and the 5-90 %
+  discount constants of `business-write.schemas.ts`, the website, Instagram
+  and Facebook patterns of `business-contact.ts`, the name length checks of
+  the sign-up, Mis datos and the legal form.
+- Removed 25 translation keys no code uses any more (old per-form messages:
+  `auth.signup.validation.fullName|phone|phoneRequired`,
+  `accountDetails.errors.name|phone`, `businessPanel.validation.name|phone|
+  address|description|itemName|price|section|promoTitle|discount|date|
+  datesOrder|endsInPast|contact.*`, `reviews.validation.commentTooLong`,
+  `reports.validation.comment`, `profile.validation.displayNameTooLong`,
+  `owner.menuScan.priceNeeded`), checked with git grep before removing.
+- `route.walk` and `route.drive` replaced by `route.modes.*`.

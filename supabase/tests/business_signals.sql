@@ -16,7 +16,7 @@ insert into public.business_verification_docs (business_id, kind, storage_path) 
   (tests.id('v1'), 'rut', tests.doc_path('rut')), (tests.id('v1'), 'facade', tests.doc_path('facade', 'jpg'));
 insert into public.businesses (id, owner_id, name, category, latitude, longitude, address, phone, is_active) values
   (tests.id('e1'), tests.id('eve'), 'Fritanga Nuevas', 'Restaurante', 1.2101, -77.2801, 'Calle 18 # 25-32',
-   '300 111 2233', true);
+   '+573001112233', true);
 insert into public.business_legal (business_id, tax_id, legal_name, legal_rep_name)
 values (tests.id('e1'), '800197268-4', 'Otra SAS', 'Eva Ruiz');
 
@@ -49,7 +49,7 @@ select tests.expect_true('authenticated', tests.id('adm'), $$
      and owner_account_age_days = 0 and owner_business_count = 2
   from public.business_review_flags(tests.id('v1'))$$,
   'same NIT, same phone, 15 m away, similar name: every sign is raised');
-update public.businesses set phone = '+57 311 000 0000', latitude = 1.25, name = 'Panadería Lejana' where id = tests.id('e1');
+update public.businesses set phone = '+573110000000', latitude = 1.25, name = 'Panadería Lejana' where id = tests.id('e1');
 update public.business_legal set tax_id = '890900608-9' where business_id = tests.id('e1');
 select tests.expect_true('authenticated', tests.id('adm'), $$
   select not duplicate_tax_id and not duplicate_phone and not near_duplicate_location and not similar_name

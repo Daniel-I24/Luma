@@ -6,11 +6,12 @@ import {
 import { TranslocoModule } from '@jsverse/transloco';
 import * as maplibregl from 'maplibre-gl';
 import { ExternalUrls } from '@core/config/external-urls';
-import { LumaChip, LumaIcon } from '@design-system';
+import { LumaIcon } from '@design-system';
 import { GeolocationService } from '@shared/geo/geolocation.service';
 import { BaseMap } from '@shared/map/map-base';
 import { MapStylesLoader } from '@shared/map/map-styles.loader';
-import { type LatLng, RouteRepository, type TravelMode, type TravelRoute } from '../route.repository';
+import { type LatLng, RouteRepository, type TravelRoute } from '../route.repository';
+import { TRAVEL_MODES, type TravelMode, TravelModePreference } from '../travel-modes';
 
 const SOURCE = 'luma-route';
 const ZOOM = 15;
@@ -21,8 +22,8 @@ const FIT_PADDING = 48;
 
 /**
  * RouteMap — "Cómo llegar" inside the app: the route drawn on Luma's own
- * map from the customer to the business, with distance and time (walking or
- * by car). Without the customer's location it asks for it; without a
+ * map from the customer to the business, with distance and time on foot, by
+ * bike, motorcycle or car (icon buttons; the last mode is remembered). Without the customer's location it asks for it; without a
  * routing key the line is straight and the time estimated. "Abrir en Google
  * Maps" stays as a secondary way.
  */
@@ -30,7 +31,7 @@ const FIT_PADDING = 48;
   selector: 'app-route-map',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaChip, LumaIcon],
+  imports: [TranslocoModule, LumaIcon],
   templateUrl: './route-map.html',
 })
 export class RouteMap {
@@ -38,6 +39,7 @@ export class RouteMap {
   private readonly routes = inject(RouteRepository);
   private readonly styles = inject(MapStylesLoader);
   private readonly document = inject(DOCUMENT);
+  private readonly preference = inject(TravelModePreference);
   private readonly container = viewChild<ElementRef<HTMLElement>>('map');
 
   public readonly lat = input.required<number>();
@@ -47,7 +49,8 @@ export class RouteMap {
   });
   public readonly name = input.required<string>();
 
-  protected readonly mode = signal<TravelMode>('walk');
+  protected readonly modes = TRAVEL_MODES;
+  protected readonly mode = signal<TravelMode>(this.preference.read());
   protected readonly route = signal<TravelRoute | null>(null);
   protected readonly failed = signal(false);
   protected readonly located = this.geo.hasRealLocation;
@@ -67,6 +70,11 @@ export class RouteMap {
       if (from) untracked(() => void this.load(from, to, mode));
     });
     inject(DestroyRef).onDestroy(() => this.map?.remove());
+  }
+
+  protected choose(mode: TravelMode): void {
+    this.mode.set(mode);
+    this.preference.write(mode);
   }
 
   protected locate(): void {

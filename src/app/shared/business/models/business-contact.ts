@@ -1,5 +1,7 @@
 import { Phone } from '@shared/account/phone';
 import { ExternalUrls } from '@core/config/external-urls';
+import { ContactRules } from '@core/validation/contact-rules';
+import type { FieldRule } from '@core/validation/field-rule';
 
 /** The public contact of a business, as stored (mirrors the business_showcase CHECKs). */
 export interface BusinessContact {
@@ -12,52 +14,34 @@ export interface BusinessContact {
 export type ContactField = keyof BusinessContact;
 export type ContactErrors = Partial<Record<ContactField, string>>;
 
-const V = 'businessPanel.validation.contact';
-const INSTAGRAM = /^[a-z0-9._]{1,30}$/;
-const FACEBOOK = /^[A-Za-z0-9.-]{2,80}$/;
-const WEBSITE = /^https:\/\/[^\s/$.?#][^\s]*$/i;
-
-const MAX_WEBSITE_LENGTH = 200;
 const CONTACT_FIELDS: readonly ContactField[] = ['whatsapp', 'instagram', 'facebook', 'website'];
 
-const blank = (value: string): boolean => value.trim() === '';
-const orNull = (value: string): string | null => (value === '' ? null : value);
-
-/** How each channel is cleaned up and checked (inputs are never blank here). */
-const CHANNELS: Readonly<Record<ContactField, { normalize(raw: string): string | null; valid(value: string): boolean }>> = {
-  whatsapp: { normalize: (raw) => Phone.parse(raw)?.e164 ?? null, valid: () => true },
-  instagram: {
-    normalize: (raw) =>
-      orNull(
-        raw.trim().replace(/^@/, '').replace(/^(https?:\/\/)?(www\.)?instagram\.com\//i, '').replace(/\/.*$/, '').toLowerCase(),
-      ),
-    valid: (value) => INSTAGRAM.test(value),
-  },
-  facebook: {
-    normalize: (raw) => orNull(raw.trim().replace(/^(https?:\/\/)?(www\.|m\.)?facebook\.com\//i, '').replace(/[/?].*$/, '')),
-    valid: (value) => FACEBOOK.test(value),
-  },
-  website: {
-    normalize: (raw) => orNull(raw.trim()),
-    valid: (value) => WEBSITE.test(value) && value.length <= MAX_WEBSITE_LENGTH,
-  },
+/** How each channel is cleaned up and checked: the rules of core/validation, the same as the database. */
+export const CONTACT_RULES: Readonly<Record<ContactField, FieldRule>> = {
+  whatsapp: ContactRules.mobilePhone,
+  instagram: ContactRules.instagram,
+  facebook: ContactRules.facebook,
+  website: ContactRules.website,
 };
+
+const valid = (field: ContactField, value: string | null | undefined): value is string =>
+  !!value && CONTACT_RULES[field].spec.isSatisfiedBy(value);
 
 /** BusinessContacts — parses, drafts and links the contact channels of a business. */
 export class BusinessContacts {
   /**
    * What the owner types, made storable: WhatsApp as a Colombian mobile in
    * E.164, Instagram without "@" or the instagram.com prefix, Facebook page
-   * name without facebook.com, websites https only. Empty fields are null.
+   * name without facebook.com, websites https on a public domain. Empty
+   * fields are null.
    */
   public static parseContact(input: Record<ContactField, string>): { value: BusinessContact; errors: ContactErrors } {
     const value = {} as Record<ContactField, string | null>;
     const errors: ContactErrors = {};
     for (const field of CONTACT_FIELDS) {
-      const raw = input[field];
-      const parsed = blank(raw) ? null : CHANNELS[field].normalize(raw);
-      value[field] = parsed;
-      if (!blank(raw) && (parsed === null || !CHANNELS[field].valid(parsed))) errors[field] = `${V}.${field}`;
+      const parsed = CONTACT_RULES[field].normalize(input[field]);
+      value[field] = parsed === '' ? null : parsed;
+      if (parsed !== '' && !valid(field, parsed)) errors[field] = CONTACT_RULES[field].messageKey;
     }
     return { value, errors };
   }
@@ -77,13 +61,13 @@ export class BusinessContacts {
     const links: ContactLink[] = [];
     const phone = Phone.parse(contact.whatsapp);
     if (phone) links.push({ field: 'whatsapp', href: ExternalUrls.whatsapp(phone.e164.slice(1)), text: phone.display });
-    if (contact.instagram && INSTAGRAM.test(contact.instagram)) {
+    if (valid('instagram', contact.instagram)) {
       links.push({ field: 'instagram', href: ExternalUrls.instagram(contact.instagram), text: `@${contact.instagram}` });
     }
-    if (contact.facebook && FACEBOOK.test(contact.facebook)) {
+    if (valid('facebook', contact.facebook)) {
       links.push({ field: 'facebook', href: ExternalUrls.facebook(contact.facebook), text: contact.facebook });
     }
-    if (contact.website && WEBSITE.test(contact.website)) {
+    if (valid('website', contact.website)) {
       links.push({ field: 'website', href: contact.website, text: contact.website.replace(/^https:\/\//i, '').replace(/\/$/, '') });
     }
     return links;

@@ -51,10 +51,15 @@
               [id]="'caption-' + photo.id"
               [placeholder]="t('placeholders.caption')"
               [attr.maxlength]="maxCaption"
+              [attr.aria-invalid]="captionErrors()[photo.id] ? 'true' : null"
+              [attr.aria-describedby]="captionErrors()[photo.id] ? 'caption-error-' + photo.id : null"
               [value]="photo.caption ?? ''"
               [disabled]="gallery.busy()"
               (change)="onCaption(photo, $event)"
             />
+            @if (captionErrors()[photo.id]; as key) {
+            <p [id]="'caption-error-' + photo.id" class="m-0 text-caption text-danger-fg" role="alert">{{ t(key) }}</p>
+            }
             <div class="flex items-center gap-1">
               <app-luma-icon-button icon="chevron-up" variant="ghost" [label]="t('businessPanel.gallery.earlier')" [disabled]="first || gallery.busy()" (clicked)="gallery.move(photo, -1)" />
               <app-luma-icon-button icon="chevron-down" variant="ghost" [label]="t('businessPanel.gallery.later')" [disabled]="last || gallery.busy()" (clicked)="gallery.move(photo, 1)" />

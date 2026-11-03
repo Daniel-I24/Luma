@@ -1,5 +1,6 @@
 import { OPENROUTESERVICE_DIRECTIONS_URL } from '../_shared/config/provider-urls.ts';
 import type { Route, RouteInput } from './model.ts';
+import { profileFor } from './profiles.ts';
 
 /** Injectable fetch, so tests never reach the network. */
 export type FetchLike = (input: string, init: RequestInit) => Promise<Response>;
@@ -14,7 +15,6 @@ class RouteFailure extends Error {}
 
 const ROUTE_TIMEOUT_MS = 6_000;
 const ORS_URL = OPENROUTESERVICE_DIRECTIONS_URL;
-const ORS_PROFILE = { walk: 'foot-walking', drive: 'driving-car' } as const;
 const MAX_POINTS = 2_000;
 
 /**
@@ -32,7 +32,8 @@ class OpenRouteService implements RoutingProvider {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), ROUTE_TIMEOUT_MS);
     try {
-      const response = await this.fetchFn(`${ORS_URL}/${ORS_PROFILE[input.mode]}/geojson`, {
+      const profile = profileFor(input.mode);
+      const response = await this.fetchFn(`${ORS_URL}/${profile.ors}/geojson`, {
         method: 'POST',
         headers: { Authorization: this.apiKey, 'Content-Type': 'application/json', Accept: 'application/geo+json' },
         body: JSON.stringify({ coordinates: [[input.from.lng, input.from.lat], [input.to.lng, input.to.lat]] }),
@@ -42,7 +43,9 @@ class OpenRouteService implements RoutingProvider {
         await response.body?.cancel();
         throw new RouteFailure(`http_${response.status}`);
       }
-      return parseOrs(await response.json());
+      const route = parseOrs(await response.json());
+      if (!profile.approximate) return route;
+      return { ...route, durationS: Math.round(route.durationS * profile.timeFactor), approximate: true };
     } catch (error) {
       throw error instanceof RouteFailure ? error : new RouteFailure('network');
     } finally {

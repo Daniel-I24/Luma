@@ -2,7 +2,8 @@ import { ChangeDetectionStrategy, Component, effect, inject, signal, untracked }
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaInput, ToastService } from '@design-system';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
-import { type ContactErrors, type ContactField, BusinessContacts } from '@shared/business/models/business-contact';
+import { FieldRules } from '@core/validation/field-rule';
+import { CONTACT_RULES, type ContactErrors, type ContactField, BusinessContacts } from '@shared/business/models/business-contact';
 import { ContactVerificationCard } from '../../components/contact-verification/contact-verification';
 import { PanelHeader } from '../../components/panel-header/panel-header';
 import { PanelStateView } from '../../components/panel-state/panel-state';
@@ -54,9 +55,11 @@ const FIELDS: readonly FieldSpec[] = [
               [autocomplete]="spec.autocomplete"
               [label]="t('businessPanel.contact.' + spec.field)"
               [placeholder]="t('businessPanel.contact.' + spec.field + 'Placeholder')"
+              [maxLength]="rules[spec.field].maxLength"
               [errorMessage]="errors()[spec.field] ? t(errors()[spec.field]!) : undefined"
               [value]="draft()[spec.field]"
               (valueChange)="onInput(spec.field, $event)"
+              (blurred)="check(spec.field)"
             />
           }
           @if (errorKey(); as key) {
@@ -80,6 +83,7 @@ export class BusinessContactPage {
   private readonly toast = inject(ToastService);
   protected readonly id = RouteBusinessId.routeBusinessId();
   protected readonly fields = FIELDS;
+  protected readonly rules = CONTACT_RULES;
 
   protected readonly draft = signal(BusinessContacts.contactDraft({}));
   protected readonly errors = signal<ContactErrors>({});
@@ -106,6 +110,13 @@ export class BusinessContactPage {
       delete rest[field];
       return rest;
     });
+  }
+
+  /** Leaving a field shows its error at once. */
+  protected check(field: ContactField): void {
+    const raw = this.draft()[field];
+    const key = raw.trim() ? FieldRules.check(CONTACT_RULES[field], raw) : null;
+    if (key) this.errors.update((errors) => ({ ...errors, [field]: key }));
   }
 
   protected async save(event: Event): Promise<void> {

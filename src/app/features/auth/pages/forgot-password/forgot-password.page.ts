@@ -1,4 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { AuthRules } from '@core/validation/auth-rules';
+import { ContactRules } from '@core/validation/contact-rules';
+import { ValidatedField } from '@core/validation/validated-field';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthCodeService } from '@core/auth/auth-code.service';
@@ -33,6 +36,9 @@ export class ForgotPasswordPage {
   protected readonly password = signal('');
   protected readonly showPassword = signal(false);
   protected readonly codeLength = CODE_LENGTH;
+  protected readonly emailField = new ValidatedField(ContactRules.email, { value: this.email });
+  protected readonly codeField = new ValidatedField(AuthRules.code, { value: this.code });
+  protected readonly passwordField = new ValidatedField(AuthRules.newPassword, { value: this.password });
   protected readonly submission = new AuthFormSubmission();
 
   protected onCode(value: string): void {
@@ -42,7 +48,7 @@ export class ForgotPasswordPage {
   protected requestCode(event: Event): Promise<void> {
     event.preventDefault();
     return this.submission.run(
-      { invalid: this.email().trim() === '' },
+      { invalid: !this.emailField.validate() },
       () => this.codes.requestRecoveryCode(this.email()),
       () => this.step.set('code'),
     );
@@ -51,7 +57,7 @@ export class ForgotPasswordPage {
   protected recover(event: Event): Promise<void> {
     event.preventDefault();
     return this.submission.run(
-      { invalid: this.code().length !== CODE_LENGTH },
+      { invalid: ![this.codeField.validate(), this.passwordField.validate()].every(Boolean) },
       () => this.codes.recoverPassword(this.email(), this.code(), this.password()),
       () => this.goHome(),
     );

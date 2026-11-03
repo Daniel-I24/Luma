@@ -1,3 +1,6 @@
+import { TextNormalizer } from '@core/validation/text-normalizer';
+import { TextRules } from '@core/validation/text-rules';
+
 /** Where a customer lives: department and municipality (DANE), optional neighbourhood. */
 export class Residence {
   private static readonly DANE_CODE = /^[0-9]{5}$/;
@@ -32,13 +35,14 @@ export class Residence {
     const dept = Residence.clean(department);
     const town = Residence.clean(city);
     if (!dept || !town || !Residence.DANE_CODE.test(daneCode ?? '')) return null;
-    const area = Residence.clean(neighborhood)?.slice(0, Residence.NEIGHBORHOOD_MAX) ?? null;
-    return new Residence(dept, town, daneCode as string, area);
+    // profiles_neighborhood_rule: an area that breaks it is not stored (the picker says why).
+    const area = TextRules.neighborhood.normalize(neighborhood ?? '').slice(0, Residence.NEIGHBORHOOD_MAX);
+    return new Residence(dept, town, daneCode as string, TextRules.neighborhood.spec.isSatisfiedBy(area) ? area : null);
   }
 
-  /** Trimmed text, or null when empty. */
+  /** Cleaned text, or null when empty. */
   private static clean(value: string | null | undefined): string | null {
-    return value?.trim() || null;
+    return TextNormalizer.line(value ?? '') || null;
   }
 
   /** The profile columns (public.profiles.residence_*). */

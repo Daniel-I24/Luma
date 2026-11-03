@@ -700,3 +700,71 @@ alternative that was not taken. The safest, most reversible option wins.
   sign-out; "Información técnica" shows the masked e-mail and short user id.
 - **Why**: enough to see if the business list arrives with another owner's
   rows or with the wrong filter, without personal data or a server log.
+
+## 2026-10-31 — Round 7: travel modes with a moto that borrows the car
+
+- **What**: "Cómo llegar" offers a pie, bicicleta, moto and carro as icon
+  buttons (aria-label and tooltip; the chosen one shows its name). ORS
+  profiles foot-walking, cycling-regular and driving-car; the moto uses
+  driving-car with 0.8 of its time and says "Tiempo aproximado". Without a
+  key: straight line at 4.8, 15, 30 and 25 km/h (docs/route.md). The last mode
+  is remembered on the device (`luma.route.mode`). Lucide 0.468 has no
+  motorcycle: `moto` is Luma's own drawing on the same grid and stroke.
+- **Why**: ORS has no motorcycle profile; the car route is the closest and the
+  label keeps the estimate honest. A deployed `route` function from before
+  answers 400 to the new modes and the app falls back to its straight line.
+
+## 2026-10-31 — Business limit: the trigger already counted every state
+
+- **What**: `businesses_owner_limits` (migration of round 2) already counted
+  all the owner's businesses under a per-owner advisory lock; migration 54
+  keeps that and adds a daily limit of creations (`hit_rate_limit
+  'business_create'`, 3 a day, `rate_business_create_*`), so deleting and
+  creating again does not get around it. Owners above 3 keep their businesses
+  and cannot add more. The app keeps 3 as a constant (`MAX_OWNED_BUSINESSES`);
+  the database value is the authority.
+- **Why**: the safest change is the smallest one; concurrency is covered by
+  the lock (the SQL suite checks the lock is taken; the harness has a single
+  session, so two real simultaneous inserts are not run).
+
+## 2026-10-31 — /owner checks the account on every child route
+
+- **What**: `ownerChildGuard` (canActivateChild) runs the same check as
+  `ownerGuard` on every move inside /owner; a customer goes to
+  `/profile?invite=business`, where the "Registra tu negocio" sheet opens.
+- **Why**: Angular does not run a parent's canActivate between its children,
+  so a customer who signed in on a device left inside the panel could move
+  to another business URL (reproduced by `owner-guard.spec.ts`). RLS already
+  kept other owners' unpublished data out; the guard keeps the panel out.
+
+## 2026-10-31 — Validation rules shared by app and database
+
+- **What**: `core/validation` (Specification pattern) holds every rule; the
+  same rules are SQL functions in `private` with CHECK constraints NOT VALID
+  (docs/validation-matrix.md, docs/data-quality.sql). Shared vectors run in
+  both test suites. The rule functions are SECURITY DEFINER only so that they
+  can call each other without giving clients USAGE on `private`; they read no
+  table. Letters use `collate "und-x-icu"` (under "C" Postgres sees only ASCII
+  letters).
+- **Choices**: the business-name list is `& ' - . , ( )` (the ";" of the
+  prompt read as punctuation). Invisible characters (zero-width, direction
+  marks, controls) are removed when saving, not refused: the user cannot see
+  them. Discounts go 1-90 % (was 5-90). Business names 60 (was 80) and
+  addresses 120 (was 200) for new and edited rows. The legal representative
+  follows the person-name rule with 120 characters. A display name needs 2
+  characters. Order notes are cleaned by the server (they come through
+  create_order). The same phone saved in the +57 form keeps its verification.
+- **Why**: one rule, two enforcers; NOT VALID so old rows never block the
+  migration; reversible by dropping the constraints.
+
+## 2026-10-31 — Review of migrations 52 and 53, fixed in 54
+
+- **What**: owners read `contact_verifications` without `verified_by`
+  (column grant); the daily request limit (3) counts per kind and business
+  and a new request voids the pending ones of its kind; verify-website reads
+  IPv6 as 16 bytes and refuses everything outside 2000::/3 plus any embedded
+  private IPv4 (::ffff:0:0/96, ::/96, 64:ff9b::/96, 2002::/16), documentation
+  and Teredo; without `Deno.resolveDns` (or when it is not supported) it asks
+  Cloudflare's DNS over HTTPS (JSON, A and AAAA, 3 s); a website must be typed
+  with https:// (the app no longer completes it). verify-backend treats 52 and
+  53 as applied.

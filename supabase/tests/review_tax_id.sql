@@ -13,8 +13,8 @@ begin;
 select tests.use_aal('aal2');
 
 insert into public.businesses (id, owner_id, name, category, latitude, longitude, address, phone, is_active) values
-  (tests.id('e1'), tests.id('eve'), 'Panadería Eva', 'Panadería', 1.30, -77.30, 'Carrera 5 # 1-2', '+57 311 222 3344', true),
-  (tests.id('o2'), tests.id('owner'), 'Segunda Sede', 'Restaurante', 1.31, -77.31, 'Carrera 6 # 1-2', '+57 312 222 3344', true);
+  (tests.id('e1'), tests.id('eve'), 'Panadería Eva', 'Panadería', 1.30, -77.30, 'Carrera 5 # 1-2', '+573112223344', true),
+  (tests.id('o2'), tests.id('owner'), 'Segunda Sede', 'Restaurante', 1.31, -77.31, 'Carrera 6 # 1-2', '+573122223344', true);
 insert into public.business_legal (business_id, tax_id, legal_name, legal_rep_name) values
   (tests.id('v1'), '800197268-4', 'Fritanga SAS', 'Ana Pérez'),
   (tests.id('e1'), '800197268-4', 'Otra SAS', 'Eva Ruiz'),

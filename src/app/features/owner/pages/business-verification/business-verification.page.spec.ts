@@ -72,7 +72,7 @@ describe('BusinessVerificationPage', () => {
 
     form.dispatchEvent(new Event('submit', { cancelable: true }));
     fixture.detectChanges();
-    expect(el.textContent).toContain('verification.validation.nit');
+    expect(el.textContent).toContain('validation.nit');
     expect(repo.saveLegal).not.toHaveBeenCalled();
 
     type('legal-tax-id', '800.197.268-4');
@@ -80,7 +80,7 @@ describe('BusinessVerificationPage', () => {
     await vi.waitFor(() =>
       expect(repo.saveLegal).toHaveBeenCalledWith(
         'b1',
-        '800.197.268-4',
+        '800197268-4',
         'Fritanga SAS',
         'Ana Pérez',
       ),

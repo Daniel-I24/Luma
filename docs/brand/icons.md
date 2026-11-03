@@ -56,6 +56,10 @@ data in the same style and add a row below.
 | `eye-off` | `eye-off` |
 | `calendar` | `calendar` |
 | `luma-ai` | (Luma's own mark) |
+| `walk` | `footprints` |
+| `bike` | `bike` |
+| `car` | `car` |
+| `moto` | none: Luma's own drawing (Lucide 0.468 has no motorcycle), same grid and stroke |
 
 ## Licence (ISC)
 

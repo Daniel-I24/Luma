@@ -4,7 +4,7 @@ import { LumaInput } from '@design-system';
 import type { MenuItem } from '@shared/business/models/menu.model';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
 import { PromotionPricing } from '@shared/promotions/promotion-deal';
-import { MAX_DISCOUNT_PERCENT, MIN_DISCOUNT_PERCENT } from '@shared/business/data/business-write.schemas';
+import { NumberSpecs } from '@core/validation/number-rules';
 
 /**
  * DiscountFields — optional product of the promotion and its percent off,
@@ -31,7 +31,7 @@ export class DiscountFields {
   protected readonly preview = computed(() => {
     const item = this.item();
     const percent = Number(this.percent());
-    if (!item || !Number.isInteger(percent) || percent < MIN_DISCOUNT_PERCENT || percent > MAX_DISCOUNT_PERCENT) return null;
+    if (!item || !NumberSpecs.discount.isSatisfiedBy(percent)) return null;
     return { list: item.price_cop, final: PromotionPricing.promotionPrice(item.price_cop, percent) };
   });
 

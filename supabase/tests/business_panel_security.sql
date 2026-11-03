@@ -28,7 +28,7 @@ select tests.expect_true('anon', null,
 select tests.exec_as('authenticated', tests.id('owner'), $$
   insert into public.businesses (owner_id, name, category, latitude, longitude, address, phone, is_active)
   values (tests.id('owner'), 'Mi Fritanga', 'Restaurante', 1.2136, -77.2811,
-          'Calle 18 # 25-30', '+57 300 111 2233', true)$$);
+          'Calle 18 # 25-30', '+573001112233', true)$$);
 -- Fixed id for the rest of the file (as the superuser; clients cannot choose ids).
 update public.businesses set id = tests.id('mine') where name = 'Mi Fritanga';
 select tests.expect_true('authenticated', tests.id('owner'),

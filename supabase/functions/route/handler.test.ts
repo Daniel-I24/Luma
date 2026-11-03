@@ -3,6 +3,7 @@ import { assertEquals, assertThrows } from '@std/assert';
 import { CACHE_TTL_SECONDS, createHandler } from './handler.ts';
 import { DETOUR_FACTOR, haversineM, parseInput, type Route, type RouteInput, straightRoute } from './model.ts';
 import { parseOrs, routerFromEnv, type RoutingProvider } from './providers.ts';
+import { profileFor, TRAVEL_MODES } from './profiles.ts';
 
 const ORIGIN = 'http://localhost:4200';
 const FROM = { lat: 1.2136, lng: -77.2811 };
@@ -103,4 +104,33 @@ Deno.test('OpenRouteService: GeoJSON summary and line, the key only in a header 
 
 Deno.test('OpenRouteService: an unexpected shape is a failure, not a broken route', () => {
   assertThrows(() => parseOrs({ features: [{ geometry: { coordinates: [[1]] } }] }));
+});
+
+Deno.test('profile selector: walk, bike and car have their own profile; the moto uses the car with an approximate time', () => {
+  assertEquals(TRAVEL_MODES.map((mode) => profileFor(mode).ors), ['foot-walking', 'cycling-regular', 'driving-car', 'driving-car']);
+  assertEquals(TRAVEL_MODES.filter((mode) => profileFor(mode).approximate), ['moto']);
+  assertEquals(parseInput({ from: FROM, to: TO, mode: 'plane' }), null);
+});
+
+Deno.test('every mode reaches OpenRouteService with its profile; the moto time is adjusted and marked', async () => {
+  const urls: string[] = [];
+  const fetchFn = (url: string) => {
+    urls.push(url);
+    return Promise.resolve(Response.json({
+      features: [{ geometry: { coordinates: [[-77.2811, 1.2136], [-77.2795, 1.215]] }, properties: { summary: { distance: 1000, duration: 100 } } }],
+    }));
+  };
+  const router = routerFromEnv((name) => (name === 'ROUTE_API_KEY' ? 'k' : undefined), fetchFn)!;
+  const routes = [];
+  for (const mode of TRAVEL_MODES) routes.push(await router.route(parseInput({ from: FROM, to: TO, mode })!));
+  assertEquals(urls.map((url) => url.split('/').at(-2)), ['foot-walking', 'cycling-regular', 'driving-car', 'driving-car']);
+  assertEquals(routes.map((route) => [route.durationS, route.approximate ?? false]), [[100, false], [100, false], [80, true], [100, false]]);
+});
+
+Deno.test('straight-line estimate per mode with its documented speed', () => {
+  for (const [mode, kmh] of [['walk', 4.8], ['bike', 15], ['moto', 30], ['drive', 25]] as const) {
+    const route = straightRoute(parseInput({ from: FROM, to: TO, mode })!);
+    assertEquals(route.durationS, Math.round(route.distanceM / (kmh / 3.6)));
+    assertEquals(route.approximate ?? false, mode === 'moto');
+  }
 });

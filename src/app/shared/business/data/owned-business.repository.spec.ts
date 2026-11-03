@@ -66,13 +66,14 @@ describe('OwnedBusinessRepository', () => {
     for (const query of queries) expect(query.calls).toContainEqual(['eq', ['owner_id', 'u1']]);
   });
 
-  it('creates an unpublished business for the user, trimmed', async () => {
+  it('creates an unpublished business for the user, cleaned (name trimmed, phone as +57)', async () => {
     const { repo, queries } = setup({ businesses: ok({ id: 'new-id' }) });
 
     expect(await repo.create(draft)).toEqual({ data: 'new-id', errorKey: null });
     expect(queries[0].call('insert')?.[0]).toEqual({
       ...draft,
       name: 'Fritanga Don Segundo',
+      phone: '+573001112233',
       owner_id: 'u1',
       is_active: false,
     });
@@ -98,6 +99,17 @@ describe('OwnedBusinessRepository', () => {
     expect((await repo.setPublished('b1', true)).errorKey).toBe(
       'businessPanel.errors.publishRequirements',
     );
+  });
+
+  it('the business limits of the database come back translated (3 per account, 3 new a day)', async () => {
+    for (const [message, key] of [
+      ['business_limit_reached', 'businessPanel.errors.businessLimit'],
+      ['business_daily_limit', 'businessPanel.errors.businessDailyLimit'],
+    ]) {
+      const { repo } = setup({ businesses: { data: null, error: { code: 'P0001', message } } });
+      expect((await repo.create(draft)).errorKey).toBe(key);
+      TestBed.resetTestingModule();
+    }
   });
 
   it('never exposes raw database messages', async () => {

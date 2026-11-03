@@ -11,7 +11,7 @@ column grants and `SECURITY DEFINER` functions).
 | See public businesses, menus, hours, promotions, reviews | yes | yes | yes | yes |
 | See businesses that are not public (draft, pending, rejected, suspended) | no | no | own only | all |
 | Favourites, reviews, orders | no | own | own (as a customer) | own |
-| Create businesses | no | no (`become_business_owner` first) | up to 3 | as owner only |
+| Create businesses | no | no (`become_business_owner` first) | up to 3 (any state), 3 new a day | as owner only |
 | Edit business data, hours, menu, promotions, images | no | no | own businesses | no |
 | Publish / pause | no | no | own, once approved | no |
 | Legal data and verification documents | no | no | own; edit only in draft or rejected | read all |

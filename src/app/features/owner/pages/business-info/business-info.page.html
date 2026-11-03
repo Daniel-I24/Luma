@@ -29,6 +29,7 @@
           [attr.aria-describedby]="idPrefix + '-description-help'"
           [value]="description()"
           (input)="onDescription($event)"
+          (blur)="checkDescription()"
         ></textarea>
         <p
           [id]="idPrefix + '-description-help'"
@@ -44,7 +45,9 @@
       <app-luma-input
         [inputId]="idPrefix + '-prep'"
         [placeholder]="t('placeholders.prepMinutes')"
-        type="number"
+        inputMode="numeric"
+        [digitsOnly]="true"
+        [maxLength]="3"
         [label]="t('businessPanel.form.prepMinutes')"
         [hint]="t('businessPanel.form.prepHint')"
         [required]="true"

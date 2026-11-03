@@ -56,14 +56,14 @@ export const EXPECTED = {
     // Migration 50 (phone verification): required.
     verified_auth_phone: {},
     sync_verified_phone: {},
-    // Migration 52 (round 5): reported apart while it is not applied.
+    // Migration 52 (round 5).
     request_contact_verification: { p_business_id: 'uuid', p_kind: 'text' },
     admin_pending_contact_verifications: {},
     admin_verify_contact: { p_verification_id: 'uuid', p_decision: 'text' },
     business_trust_summary: { p_business_id: 'uuid' },
     request_legal_correction: { p_business_id: 'uuid' },
     send_test_notification: {},
-    // Migration 53 (round 6): reported apart while it is not applied.
+    // Migration 53 (round 6).
     contact_verifier_config: {},
     start_website_check: { p_business_id: 'uuid' },
     verify_contact_from_whatsapp: { p_message_id: 'text', p_sender_hash: 'text', p_sender: 'text', p_code: 'text' },
@@ -72,11 +72,8 @@ export const EXPECTED = {
   /** RPCs that come from migration 50; reported as such. */
   migration50: ['verified_auth_phone', 'sync_verified_phone'],
   /** RPCs of migrations in review: "missing" is expected until each is applied (not a failure). */
-  pending: {
-    52: ['request_contact_verification', 'admin_pending_contact_verifications', 'admin_verify_contact',
-      'business_trust_summary', 'request_legal_correction', 'send_test_notification'],
-    53: ['contact_verifier_config', 'start_website_check', 'verify_contact_from_whatsapp', 'complete_website_check'],
-  },
+  // Migrations 52 and 53 are applied (round 7); 54 adds no RPC. Add a migration here while it is reviewed.
+  pending: {},
   functions: ['delete-account', 'recommend', 'suggest-promotions', 'extract-menu', 'geocode', 'push-dispatch',
     'create-payment', 'wompi-webhook', 'reconcile-payments', 'void-payment', 'route', 'verify-website',
     'whatsapp-webhook'],

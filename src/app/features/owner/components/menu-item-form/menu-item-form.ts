@@ -1,9 +1,11 @@
 import { DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal, untracked } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
+import { NumberRules } from '@core/validation/number-rules';
+import { TextRules } from '@core/validation/text-rules';
 import { LumaButton, LumaInput } from '@design-system';
 import { ImageField } from '../image-field/image-field';
-import { type MenuItemInput, menuItemSchema } from '@shared/business/data/business-write.schemas';
+import { MAX_DESCRIPTION_LENGTH, type MenuItemInput, menuItemSchema } from '@shared/business/data/business-write.schemas';
 import type { MenuItem } from '@shared/business/models/menu.model';
 import { DraftNotice } from '@shared/forms/draft-notice/draft-notice';
 import { FormDraftStore } from '@shared/forms/form-draft.store';
@@ -15,6 +17,14 @@ const FIELD_ORDER = [
   ['section', 'menu-item-section'],
   ['description', 'menu-item-description'],
 ] as const;
+
+/** Checked when the owner leaves each field (the same rules as on save and in the database). */
+const RULES = {
+  name: TextRules.productName,
+  price_cop: NumberRules.price,
+  section: TextRules.menuSection,
+  description: TextRules.freeText(MAX_DESCRIPTION_LENGTH),
+} as const;
 
 /** Draft field -> validated field, to clear its error on edit. */
 const DRAFT_FIELD: Record<string, string> = { price: 'price_cop' };
@@ -73,6 +83,7 @@ export class MenuItemForm {
   public readonly submitted = output<MenuItemInput>();
   public readonly cancelled = output<void>();
 
+  protected readonly rules = RULES;
   protected readonly draft = signal<ItemDraft>(draftOf(null));
   protected readonly errors = signal<FieldErrors>({});
   protected readonly autosave = inject(FormDraftStore).attach(this.draft);
@@ -105,6 +116,10 @@ export class MenuItemForm {
 
   protected onAvailable(event: Event): void {
     this.set('available', (event.target as HTMLInputElement).checked);
+  }
+
+  protected check(field: keyof typeof RULES, raw: string): void {
+    FormErrors.blur(this.errors, field, RULES[field], raw);
   }
 
   protected onDescription(event: Event): void {

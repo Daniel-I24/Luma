@@ -5,6 +5,8 @@
       [inputId]="idPrefix() + '-address-search'"
       [label]="t('owner.wizard.addressSearch')"
       [placeholder]="t('owner.wizard.addressPlaceholder')"
+      [maxLength]="80"
+      autocomplete="street-address"
       [value]="query()"
       (valueChange)="query.set($event)"
     />

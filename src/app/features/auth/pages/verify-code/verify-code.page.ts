@@ -1,4 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ContactRules } from '@core/validation/contact-rules';
+import { ValidatedField } from '@core/validation/validated-field';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthCodeService } from '@core/auth/auth-code.service';
@@ -36,6 +38,7 @@ export class VerifyCodePage {
   protected readonly knownEmail = this.pending.email;
   protected readonly email = signal(this.pending.email() ?? '');
   protected readonly code = signal('');
+  protected readonly emailField = new ValidatedField(ContactRules.email, { value: this.email });
   protected readonly submission = new AuthFormSubmission();
   protected readonly resend = new AuthFormSubmission();
   protected readonly resent = signal(false);
@@ -55,7 +58,7 @@ export class VerifyCodePage {
 
   protected verify(): Promise<void> {
     return this.submission.run(
-      { invalid: !this.complete() || this.email().trim() === '' },
+      { invalid: !this.complete() || !this.emailField.validate() },
       () => this.codes.confirmSignup(this.email(), this.code()),
       async () => {
         this.pending.clear();

@@ -17,21 +17,21 @@ describe('validateStep', () => {
   it('requires the mobile of every account (it verifies the account and stops fake orders)', () => {
     expect(
       SignupValidation.validateStep('personal', draft({ accountType: 'customer', fullName: 'Ana Pérez' })),
-    ).toEqual({ phone: 'auth.signup.validation.phoneRequired' });
+    ).toEqual({ phone: 'validation.required' });
     expect(
       SignupValidation.validateStep('personal', draft({ accountType: 'business_owner', fullName: 'Ana Pérez' })),
-    ).toEqual({ phone: 'auth.signup.validation.phoneRequired' });
+    ).toEqual({ phone: 'validation.required' });
   });
 
-  it('accepts only Colombian mobiles and names of 2 to 80 characters', () => {
+  it('accepts only Colombian mobiles and person names (letters, 2 to 60)', () => {
     expect(
       SignupValidation.validateStep(
         'personal',
         draft({ accountType: 'customer', fullName: ' A ', phone: '601 234 5678' }),
       ),
     ).toEqual({
-      fullName: 'auth.signup.validation.fullName',
-      phone: 'auth.signup.validation.phone',
+      fullName: 'validation.personName',
+      phone: 'validation.mobilePhone',
     });
     expect(
       SignupValidation.validateStep(
@@ -39,7 +39,8 @@ describe('validateStep', () => {
         draft({ accountType: 'business_owner', fullName: 'Ana', phone: '+57 300 123 4567' }),
       ),
     ).toEqual({});
-    expect(SignupValidation.validateStep('personal', draft({ fullName: 'a'.repeat(81) })).fullName).toBeDefined();
+    expect(SignupValidation.validateStep('personal', draft({ fullName: 'a'.repeat(61) })).fullName).toBeDefined();
+    expect(SignupValidation.validateStep('personal', draft({ fullName: 'Ana 3' })).fullName).toBe('validation.personName');
   });
 
   it('checks the email, the password rule and the common-password list', () => {

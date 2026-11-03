@@ -1,46 +1,42 @@
 import * as z from 'zod/mini';
+import { ContactRules } from '@core/validation/contact-rules';
+import { DISCOUNT_MAX, DISCOUNT_MIN, PRICE_MAX_COP, PRICE_MIN_COP, PROMOTION_MAX_DAYS } from '@core/validation/number-rules';
+import { TextRules } from '@core/validation/text-rules';
+import { ZodRules } from '@core/validation/zod-rules';
 import { BUSINESS_CATEGORY_VALUES } from './business-categories';
 
 /**
- * Validation of what the business panel writes. Every limit mirrors a CHECK
- * constraint (supabase/migrations/*business*), so invalid data never reaches
- * the database; messages are translation keys.
+ * Validation of what the business panel writes. Names, phones, addresses
+ * and texts use the rules of core/validation, the same the database checks
+ * (20261104000000_round7.sql); every other limit mirrors a CHECK constraint
+ * (supabase/migrations/*business*). Messages are translation keys.
  */
 const V = 'businessPanel.validation';
-const PHONE_PATTERN = /^\+?[0-9][0-9 ]{6,19}$/;
 const TIME_PATTERN = /^([01]\d|2[0-3]):[0-5]\d$/;
-const MAX_PRICE_COP = 2_147_483_647;
+const MS_PER_DAY = 86_400_000;
 
 // Limits of the CHECK constraints (keep in sync with the migrations).
 export const MIN_NAME_LENGTH = 2;
-const MAX_NAME_LENGTH = 80;
 export const MIN_ADDRESS_LENGTH = 5;
-const MAX_ADDRESS_LENGTH = 200;
 const MAX_LATITUDE = 90;
 const MAX_LONGITUDE = 180;
 const MAX_DEPARTMENT_LENGTH = 60;
-const MAX_DESCRIPTION_LENGTH = 300;
+export const MAX_DESCRIPTION_LENGTH = 300;
 const MIN_PREP_MINUTES = 5;
 const MAX_PREP_MINUTES = 180;
 const LAST_WEEKDAY = 6; // Saturday; Sunday is 0
-const MAX_SECTION_LENGTH = 40;
 export const MAX_SORT_ORDER = 9999;
-const MIN_PROMOTION_TITLE = 3;
 export const MAX_PROMOTION_TITLE = 80;
-export const MIN_DISCOUNT_PERCENT = 5;
-export const MAX_DISCOUNT_PERCENT = 90;
 
 const text = (min: number, max: number, key: string): z.ZodMiniString<string> =>
   z.string(key).check(z.trim(), z.minLength(min, key), z.maxLength(max, key));
-const optionalText = (max: number, key: string): z.ZodMiniNullable<z.ZodMiniString<string>> =>
-  z.nullable(z.string(key).check(z.trim(), z.maxLength(max, key)));
 const httpsUrl = z.nullable(z.string().check(z.regex(/^https:\/\//i, `${V}.imageUrl`)));
 
 const registerShape = {
-  name: text(MIN_NAME_LENGTH, MAX_NAME_LENGTH, `${V}.name`),
+  name: ZodRules.text(TextRules.businessName),
   category: z.enum(BUSINESS_CATEGORY_VALUES, `${V}.category`),
-  phone: z.nullable(z.string(`${V}.phone`).check(z.trim(), z.regex(PHONE_PATTERN, `${V}.phone`))),
-  address: text(MIN_ADDRESS_LENGTH, MAX_ADDRESS_LENGTH, `${V}.address`),
+  phone: ZodRules.optionalText(ContactRules.phone),
+  address: ZodRules.text(TextRules.address),
   latitude: z
     .number(`${V}.location`)
     .check(z.gte(-MAX_LATITUDE, `${V}.location`), z.lte(MAX_LATITUDE, `${V}.location`)),
@@ -59,7 +55,7 @@ export type NewBusinessInput = z.infer<typeof newBusinessSchema>;
 /** Information form (/owner/:id/business/info). */
 export const businessInfoSchema = z.object({
   ...registerShape,
-  description: optionalText(MAX_DESCRIPTION_LENGTH, `${V}.description`),
+  description: ZodRules.optionalText(TextRules.freeText(MAX_DESCRIPTION_LENGTH)),
   prep_minutes: z
     .int(`${V}.prepMinutes`)
     .check(z.minimum(MIN_PREP_MINUTES, `${V}.prepMinutes`), z.maximum(MAX_PREP_MINUTES, `${V}.prepMinutes`)),
@@ -89,12 +85,12 @@ export const dayHoursSchema = z
 export type DayHoursInput = z.infer<typeof dayHoursSchema>;
 
 export const menuItemSchema = z.object({
-  name: text(1, MAX_NAME_LENGTH, `${V}.itemName`),
-  description: optionalText(MAX_DESCRIPTION_LENGTH, `${V}.description`),
+  name: ZodRules.text(TextRules.productName),
+  description: ZodRules.optionalText(TextRules.freeText(MAX_DESCRIPTION_LENGTH)),
   price_cop: z
-    .int(`${V}.price`)
-    .check(z.minimum(0, `${V}.price`), z.maximum(MAX_PRICE_COP, `${V}.price`)),
-  section: optionalText(MAX_SECTION_LENGTH, `${V}.section`),
+    .int('validation.price')
+    .check(z.minimum(PRICE_MIN_COP, 'validation.price'), z.maximum(PRICE_MAX_COP, 'validation.price')),
+  section: ZodRules.optionalText(TextRules.menuSection),
   sort_order: z
     .int(`${V}.sortOrder`)
     .check(z.minimum(0, `${V}.sortOrder`), z.maximum(MAX_SORT_ORDER, `${V}.sortOrder`)),
@@ -105,19 +101,24 @@ export type MenuItemInput = z.infer<typeof menuItemSchema>;
 
 export const promotionSchema = z
   .object({
-    title: text(MIN_PROMOTION_TITLE, MAX_PROMOTION_TITLE, `${V}.promoTitle`),
-    description: optionalText(MAX_DESCRIPTION_LENGTH, `${V}.description`),
-    starts_at: z.iso.datetime({ offset: true, message: `${V}.date` }),
-    ends_at: z.iso.datetime({ offset: true, message: `${V}.date` }),
+    title: ZodRules.text(TextRules.promotionTitle),
+    description: ZodRules.optionalText(TextRules.freeText(MAX_DESCRIPTION_LENGTH)),
+    starts_at: z.iso.datetime({ offset: true, message: 'validation.date' }),
+    ends_at: z.iso.datetime({ offset: true, message: 'validation.date' }),
     image_url: httpsUrl,
     menu_item_id: z.nullable(z.string()),
     discount_percent: z.nullable(
-      z.int(`${V}.discount`).check(z.minimum(MIN_DISCOUNT_PERCENT, `${V}.discount`), z.maximum(MAX_DISCOUNT_PERCENT, `${V}.discount`)),
+      z.int('validation.discount').check(z.minimum(DISCOUNT_MIN, 'validation.discount'), z.maximum(DISCOUNT_MAX, 'validation.discount')),
     ),
   })
   .check(
     z.refine((promo) => Date.parse(promo.ends_at) > Date.parse(promo.starts_at), {
-      message: `${V}.datesOrder`,
+      message: 'validation.datesOrder',
+      path: ['ends_at'],
+    }),
+    // Mirrors promotions_period_length.
+    z.refine((promo) => Date.parse(promo.ends_at) - Date.parse(promo.starts_at) <= PROMOTION_MAX_DAYS * MS_PER_DAY, {
+      message: 'validation.datesTooLong',
       path: ['ends_at'],
     }),
     // Mirrors promotions_discount_needs_item.

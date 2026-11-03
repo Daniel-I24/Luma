@@ -18,32 +18,54 @@ describe('AccountDetailsStore', () => {
     TestBed.configureTestingModule({ providers: [AccountDetailsStore, { provide: SessionProfileStore, useValue: session }] });
   });
 
-  it('fills the form with the current profile', async () => {
+  it('fills the form with the current profile, without showing errors', async () => {
     session.profile.mockReturnValue({ fullName: 'Ana Pérez', phone: Phone.parse('3001234567'), residence: pasto });
     const store = TestBed.inject(AccountDetailsStore);
     await store.load();
-    expect([store.fullName(), store.phone(), store.residence()]).toEqual(['Ana Pérez', '+57 300 123 4567', pasto]);
+    expect([store.name.value(), store.phone.value(), store.residence()]).toEqual(['Ana Pérez', '+57 300 123 4567', pasto]);
+    expect([store.name.error(), store.phone.error()]).toEqual([null, null]);
   });
 
-  it('checks name, mobile and residence before calling the server', async () => {
+  it('a name with numbers (the reported bug) or emojis is refused under the field, never sent', async () => {
     const store = TestBed.inject(AccountDetailsStore);
-    store.fullName.set('An');
+    store.phone.input('300 123 4567');
+    store.residence.set(pasto);
+    for (const name of ['Ana 3', 'R2D2', 'Ana 😀', 'A']) {
+      store.name.input(name);
+      expect(await store.save()).toBe(false);
+      expect(store.name.error()).toBe('validation.personName');
+    }
+    expect(session.saveDetails).not.toHaveBeenCalled();
+  });
+
+  it('checks each field: empty, landline, residence', async () => {
+    const store = TestBed.inject(AccountDetailsStore);
     expect(await store.save()).toBe(false);
-    expect(store.errorKey()).toBe('accountDetails.errors.name');
-    store.fullName.set('Ana Pérez');
-    store.phone.set('12345');
+    expect([store.name.error(), store.phone.error()]).toEqual(['validation.required', 'validation.required']);
+    store.name.input('María José');
+    store.phone.input('601 234 5678');
     expect(await store.save()).toBe(false);
-    expect(store.errorKey()).toBe('accountDetails.errors.phone');
-    store.phone.set('300 123 4567');
+    expect([store.name.error(), store.phone.error()]).toEqual([null, 'validation.mobilePhone']);
+    store.phone.input('300 123 4567');
     expect(await store.save()).toBe(false);
     expect(store.errorKey()).toBe('accountDetails.errors.residence');
     expect(session.saveDetails).not.toHaveBeenCalled();
   });
 
-  it('saves a complete form and reports a server refusal', async () => {
+  it('shows an error only after leaving the field', () => {
     const store = TestBed.inject(AccountDetailsStore);
-    store.fullName.set('  Ana Pérez ');
-    store.phone.set('300 123 4567');
+    store.name.input('Ana 3');
+    expect(store.name.error()).toBeNull();
+    store.name.blur();
+    expect(store.name.error()).toBe('validation.personName');
+    store.name.input("Ana O'Connor");
+    expect(store.name.error()).toBeNull();
+  });
+
+  it('saves the cleaned values and reports a server refusal', async () => {
+    const store = TestBed.inject(AccountDetailsStore);
+    store.name.input('  Ana   Pérez ');
+    store.phone.input('300 123 4567');
     store.residence.set(pasto);
     session.saveDetails.mockResolvedValueOnce(null).mockResolvedValueOnce('profile.errors.save');
     expect(await store.save()).toBe(true);

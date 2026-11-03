@@ -41,7 +41,7 @@ describe('ProfileRepository', () => {
     const { repo, queries } = setup();
 
     expect((await repo.updateDisplayName('u1', 'a'.repeat(41))).errorKey).toBe(
-      'profile.validation.displayNameTooLong',
+      'validation.displayName',
     );
     expect(queries).toHaveLength(0);
   });

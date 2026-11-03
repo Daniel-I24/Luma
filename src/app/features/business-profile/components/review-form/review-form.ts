@@ -8,12 +8,14 @@ import {
   signal,
 } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
+import { FieldRules } from '@core/validation/field-rule';
 import { LumaButton, LumaIcon } from '@design-system';
 import type { ReviewInput, ReviewWithAuthor } from '@shared/business/models/review.model';
+import { REVIEW_COMMENT_RULE } from '@shared/business/data/review.schema';
 
 const STAR_COUNT = 5;
 
-const MAX_COMMENT_LENGTH = 500;
+const MAX_COMMENT_LENGTH = REVIEW_COMMENT_RULE.maxLength;
 
 /**
  * ReviewForm — write or edit the user's own review: 1–5 stars (native radio
@@ -43,6 +45,7 @@ export class ReviewForm {
   protected readonly comment = linkedSignal(() => this.existing()?.comment ?? '');
   protected readonly confirmingDelete = signal(false);
   protected readonly remaining = computed(() => this.maxLength - this.comment().length);
+  protected readonly commentError = computed(() => (this.comment().trim() ? FieldRules.check(REVIEW_COMMENT_RULE, this.comment()) : null));
   protected readonly canSubmit = computed(() => this.rating() >= 1 && !this.saving());
 
   protected onComment(event: Event): void {
@@ -51,8 +54,8 @@ export class ReviewForm {
 
   protected submit(event: Event): void {
     event.preventDefault();
-    if (!this.canSubmit()) return;
-    this.submitted.emit({ rating: this.rating(), comment: this.comment() });
+    if (!this.canSubmit() || this.commentError()) return;
+    this.submitted.emit({ rating: this.rating(), comment: REVIEW_COMMENT_RULE.normalize(this.comment()) });
   }
 
   protected confirmDelete(): void {

@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, computed, input, model, output } from '@angular/core';
 import { RADIX_36 } from '@core/config/units';
 
 /** Six random characters after "0.". */
@@ -14,11 +13,13 @@ export type InputType =
  *
  * Uses two-way binding via model() for value.
  * Supports label, hint, error state, and leading/trailing icons via slots.
+ * `blurred` lets forms show a field's error once the user leaves it;
+ * `digitsOnly` keeps only digits (prices, codes) and `counter` shows the
+ * characters used against maxLength. Text fields never drop keys.
  */
 @Component({
   selector: 'app-luma-input',
   standalone: true,
-  imports: [FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './luma-input.html',
   styleUrl: './luma-input.css',
@@ -39,8 +40,24 @@ export class LumaInput {
   /** e.g. 'one-time-code', 'email', 'new-password', 'current-password'. */
   public readonly autocomplete = input<string | null>(null);
 
+  /** Numeric fields: anything that is not a digit is filtered out as it is typed. */
+  public readonly digitsOnly = input(false);
+  /** Shows "used / maxLength" under the field. */
+  public readonly counter = input(false);
+
   /** Two-way bindable value. */
   public readonly value = model<string>('');
+  /** The user left the field. */
+  public readonly blurred = output<void>();
+
+  protected readonly used = computed(() => Array.from(this.value()).length);
+
+  protected onInput(field: HTMLInputElement): void {
+    const typed = field.value;
+    const value = this.digitsOnly() ? typed.replace(/\D/g, '') : typed;
+    if (value !== typed) field.value = value;
+    this.value.set(value);
+  }
 
   protected get hasError(): boolean {
     return !!this.errorMessage();

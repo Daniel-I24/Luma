@@ -1,0 +1,306 @@
+{
+ "_comment": "Shared by src/app/core/validation/validation-vectors.spec.ts and supabase/tests/round7.sql (psql variable validation_vectors). Values are what would be stored; normalize lists raw input and the cleaned value.",
+ "personName": {
+  "valid": [
+   "Mar\u00eda Jos\u00e9",
+   "O'Connor",
+   "Ana-Luc\u00eda",
+   "Jos\u00e9 \u00d1\u00e1\u00f1ez",
+   "\u0141ukasz",
+   "\u0395\u03bb\u03ad\u03bd\u03b7",
+   "\u0414\u043c\u0438\u0442\u0440\u0438\u0439",
+   "J. R. P\u00e9rez",
+   "O\u2019Neill",
+   "Zo\u00eb",
+   "Lu"
+  ],
+  "invalid": [
+   "Ana3",
+   "J",
+   "\ud83d\ude00 Ana",
+   "Ana \ud83d\ude00",
+   "-Ana",
+   "1234",
+   "Mar\u00eda  Jos\u00e9",
+   " Ana",
+   "Ana ",
+   "Ana\u200bMar\u00eda",
+   "Ana\u202eMar\u00eda",
+   "Ana_Mar\u00eda",
+   "ana@x",
+   "Jose\u0301",
+   "Ana aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "",
+   "A.",
+   "Ana\u0007"
+  ]
+ },
+ "businessName": {
+  "valid": [
+   "Caf\u00e9 Rico",
+   "D&D Pizzer\u00eda",
+   "Panader\u00eda 24 Horas",
+   "La Esquina (Centro)",
+   "Hermanos P\u00e9rez, S.A.S.",
+   "El 7",
+   "Tienda Do\u00f1a Rosa",
+   "L'Atelier",
+   "Bar O\u2019Brien"
+  ],
+  "invalid": [
+   "123",
+   "\ud83d\ude00 Caf\u00e9",
+   "Caf\u00e9\u200b",
+   "A",
+   "Bar #1",
+   "Caf\u00e9\u0007",
+   "Caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "Caf\u00e9  Rico",
+   "Tienda;",
+   "Taco\u202eBar",
+   " Caf\u00e9",
+   "Caf\u00e9\u2764"
+  ]
+ },
+ "address": {
+  "valid": [
+   "Calle 18 # 25-30",
+   "Cra. 27 No. 15-40, Apto 301",
+   "Km 5 v\u00eda al mar",
+   "Avenida Boyac\u00e1 12-40 (Local 2)",
+   "Mz 4 Casa 12 Barrio Las Flores",
+   "Cl 10 N\u00ba 5-20"
+  ],
+  "invalid": [
+   "Calle sin n\u00famero",
+   "12345",
+   "Cl 1",
+   "Calle 18 # 25-30 \ud83d\ude00",
+   "Calle 18\u200b # 25",
+   "Calle 1 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "Calle 18  # 25",
+   "Calle 18 # 25;",
+   ""
+  ]
+ },
+ "phone": {
+  "valid": [
+   "+573001234567",
+   "+576012345678",
+   "+576048765432",
+   "+573209998877"
+  ],
+  "invalid": [
+   "3001234567",
+   "+57 300 123 4567",
+   "+576001234567",
+   "+576912345678",
+   "+575012345678",
+   "+57300123456",
+   "+13001234567",
+   "+5730012345678",
+   ""
+  ]
+ },
+ "mobilePhone": {
+  "valid": [
+   "+573001234567",
+   "+573209998877"
+  ],
+  "invalid": [
+   "+576012345678",
+   "3001234567",
+   "+5730012345",
+   ""
+  ]
+ },
+ "phoneInput": [
+  {
+   "input": "300 123 4567",
+   "e164": "+573001234567"
+  },
+  {
+   "input": "(601) 234 5678",
+   "e164": "+576012345678"
+  },
+  {
+   "input": "+57 300-123-4567",
+   "e164": "+573001234567"
+  },
+  {
+   "input": "573001234567",
+   "e164": "+573001234567"
+  },
+  {
+   "input": "604 876 5432",
+   "e164": "+576048765432"
+  },
+  {
+   "input": "601 234 567",
+   "e164": null
+  },
+  {
+   "input": "12345",
+   "e164": null
+  },
+  {
+   "input": "5012345678",
+   "e164": null
+  }
+ ],
+ "instagram": {
+  "valid": [
+   "cafe.publico",
+   "luma_app",
+   "a",
+   "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+   "cafe_2024"
+  ],
+  "invalid": [
+   "Cafe",
+   "@cafe",
+   "cafe-publico",
+   "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+   "",
+   "caf\u00e9",
+   "cafe publico"
+  ]
+ },
+ "website": {
+  "valid": [
+   "https://cafe.co",
+   "https://www.cafe.com.co/menu?x=1",
+   "https://xn--caf-dma.co",
+   "https://cafe.co:443/a",
+   "https://sub.domain.travel/#top"
+  ],
+  "invalid": [
+   "http://cafe.co",
+   "https://user@cafe.co",
+   "https://user:pw@cafe.co",
+   "https://192.168.1.10",
+   "https://10.0.0.1/x",
+   "https://localhost",
+   "https://[::1]/",
+   "https://cafe.local",
+   "https://cafe.co:8080",
+   "https://cafe",
+   "ftp://cafe.co",
+   "https://-cafe.co",
+   "https://cafe.co/ a",
+   "https://router.internal/",
+   "https://169.254.169.254/latest",
+   "",
+   "https://CAFE.CO",
+   "cafe.co",
+   "www.cafe.co/menu"
+  ]
+ },
+ "nit": {
+  "valid": [
+   "800197268-4",
+   "899999068-1",
+   "890903938-8",
+   "860034313-7"
+  ],
+  "invalid": [
+   "800197268-5",
+   "800.197.268-4",
+   "8001972684",
+   "12345-1",
+   "",
+   "abc"
+  ]
+ },
+ "price": {
+  "valid": [
+   100,
+   12500,
+   10000000
+  ],
+  "invalid": [
+   0,
+   99,
+   10000001,
+   -5,
+   12.5
+  ]
+ },
+ "discount": {
+  "valid": [
+   1,
+   50,
+   90
+  ],
+  "invalid": [
+   0,
+   91,
+   5.5,
+   -1
+  ]
+ },
+ "freeText300": {
+  "valid": [
+   "Hola",
+   "L\u00ednea 1\nL\u00ednea 2",
+   "P\u00e1rrafo\n\nOtro",
+   "Sin cebolla, por favor \ud83d\ude42",
+   "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  ],
+  "invalid": [
+   "",
+   " Hola",
+   "Hola  mundo",
+   "a\n\n\nb",
+   "Hola\u200b",
+   "Hola\u0007",
+   "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "Hola \nmundo",
+   "Jose\u0301",
+   "Hola\tmundo",
+   "Hola\r\nmundo"
+  ]
+ },
+ "normalize": [
+  {
+   "input": "  Mar\u00eda   Jos\u00e9  ",
+   "line": "Mar\u00eda Jos\u00e9",
+   "lines": "Mar\u00eda Jos\u00e9"
+  },
+  {
+   "input": "Ana\u200bMar\u00eda",
+   "line": "AnaMar\u00eda",
+   "lines": "AnaMar\u00eda"
+  },
+  {
+   "input": "Jose\u0301",
+   "line": "Jos\u00e9",
+   "lines": "Jos\u00e9"
+  },
+  {
+   "input": "a\r\n\r\n\r\nb  c",
+   "line": "a b c",
+   "lines": "a\n\nb c"
+  },
+  {
+   "input": "x\u00a0y\tz",
+   "line": "x y z",
+   "lines": "x y z"
+  },
+  {
+   "input": "\u202eabc\u202c",
+   "line": "abc",
+   "lines": "abc"
+  },
+  {
+   "input": "a \n b",
+   "line": "a b",
+   "lines": "a\nb"
+  },
+  {
+   "input": "\ufeffHola\u0001",
+   "line": "Hola",
+   "lines": "Hola"
+  }
+ ]
+}

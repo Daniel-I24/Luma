@@ -69,8 +69,9 @@ needs a drop and a create in the same file, noted in the file header).
 | 49 | `20261030000700_payment_service.sql` | `payment_event_seen`, `payment_attempt`, `admin_note_reconcile`, `private.payments_cron` and the reconciliation cron (only when pg_cron exists) | Applied |
 | 50 | `20261031000000_phone_verification.sql` | Round 3: `submit_business_for_review` also checks `phone_check_passed`; `profiles_phone_guard` (phone changes only to the confirmed number while required); `verified_auth_phone`, `sync_verified_phone` | Applied |
 | 51 | `20261101000000_round4_hardening.sql` | Round 4: one payment attempt at a time (`attempt_in_progress`), duplicate charge → `refund_required` (`private.flag_payment_refund`, `duplicate_charge` / `refund_pending_admin`), lock order then payment, reconcile attempts without id, void only for refunds, `payments` closed to service_role, `business_order_items` without unpaid orders, NIT blocks only against approved businesses (also on approval), trigger functions not executable by anon | Applied |
-| 52 | `20261102000000_round5.sql` | Round 5: `create_order` refuses `own_business`; contact verification (`contact_verifications`, `<kind>_verified_at`, `request_contact_verification`, `admin_pending_contact_verifications`, `admin_verify_contact`, audit `verify_contact`); `business_trust_summary`; `request_legal_correction`; notification types `contact_verification` and `test`, `send_test_notification`; rate limits `push_test` and `route` | Pending review |
-| 53 | `20261103000000_round6.sql` | Round 6: `contact_verifier_config` (strategy per kind, flags off), `verify_contact_from_whatsapp` (service_role; ids and sender hash in `private`), `start_website_check` / `complete_website_check`, `private.mark_contact_verified`; depends on 52 | Pending review |
+| 52 | `20261102000000_round5.sql` | Round 5: `create_order` refuses `own_business`; contact verification (`contact_verifications`, `<kind>_verified_at`, `request_contact_verification`, `admin_pending_contact_verifications`, `admin_verify_contact`, audit `verify_contact`); `business_trust_summary`; `request_legal_correction`; notification types `contact_verification` and `test`, `send_test_notification`; rate limits `push_test` and `route` | Applied |
+| 53 | `20261103000000_round6.sql` | Round 6: `contact_verifier_config` (strategy per kind, flags off), `verify_contact_from_whatsapp` (service_role; ids and sender hash in `private`), `start_website_check` / `complete_website_check`, `private.mark_contact_verified`; depends on 52 | Applied |
+| 54 | `20261104000000_round7.sql` | Round 7: daily limit of business creations (`business_create`); validation functions in `private` and CHECK constraints NOT VALID (docs/validation-matrix.md, docs/data-quality.sql); discount 1-90; `handle_new_user` cleans the name; order notes cleaned; phones compared in +57; `contact_verifications` without `verified_by` for owners; request limit per kind | Pending review |
 
 **Database freeze (2026-10-19)**: the list above is final for the launch.
 After the freeze, migrations and functions change only to fix real bugs
@@ -137,6 +138,8 @@ where char_length(btrim(title)) not between 3 and 80 or ends_at <= starts_at
    or (image_url is not null and image_url !~* '^https://');
 select id from public.business_hours where not is_closed and opens_at = closes_at;
 ```
+
+Round 7 adds its own list of rows and VALIDATE statements: `docs/data-quality.sql`.
 
 Fix them, then validate:
 

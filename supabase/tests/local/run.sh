@@ -25,9 +25,11 @@ echo "migrations: ok"
 CASES=$(cat supabase/tests/fixtures/opening_hours_cases.json)
 # Payment state machine vectors shared with the TypeScript tests (payment_state_machine.sql).
 PAYMENT_VECTORS=$(cat supabase/tests/fixtures/payment_transitions.json)
+# Validation rules shared with the app (round7.sql, src/app/core/validation).
+VALIDATION_VECTORS=$(cat supabase/tests/fixtures/validation_vectors.json)
 total=0
 for test in "$@"; do
-  output=$(run -d "$DB" -v cases="$CASES" -v payment_vectors="$PAYMENT_VECTORS" -f "$test" 2>&1) || { echo "FAIL $test"; echo "$output" | grep -E 'ERROR|FAIL' | head -5; exit 1; }
+  output=$(run -d "$DB" -v cases="$CASES" -v payment_vectors="$PAYMENT_VECTORS" -v validation_vectors="$VALIDATION_VECTORS" -f "$test" 2>&1) || { echo "FAIL $test"; echo "$output" | grep -E 'ERROR|FAIL' | head -5; exit 1; }
   checks=$(echo "$output" | grep -c 'NOTICE:  ok' || true)
   total=$((total + checks))
   echo "pass $test: $checks checks"

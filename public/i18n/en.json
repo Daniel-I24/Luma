@@ -185,9 +185,6 @@
       },
       "validation": {
         "accountType": "Choose how you will use Luma.",
-        "fullName": "Enter your full name (2 to 80 characters).",
-        "phone": "Enter a valid Colombian mobile, for example 300 123 4567.",
-        "phoneRequired": "Business accounts need a mobile number.",
         "passwordCommon": "That password is too common. Choose another one.",
         "terms": "You must accept the terms to continue.",
         "privacy": "You must authorise data processing to continue.",
@@ -274,9 +271,6 @@
       "hint": "Shown next to your reviews. {{count}}/{{max}}",
       "save": "Save name",
       "saved": "Display name saved"
-    },
-    "validation": {
-      "displayNameTooLong": "The name can be up to 40 characters long."
     },
     "activity": "Your activity",
     "favorites": "My favourites",
@@ -577,8 +571,7 @@
   },
   "reviews": {
     "validation": {
-      "ratingRange": "Choose between 1 and 5 stars.",
-      "commentTooLong": "The comment can be up to 500 characters long."
+      "ratingRange": "Choose between 1 and 5 stars."
     },
     "saved": "Your review is published",
     "deleted": "You deleted your review",
@@ -879,7 +872,7 @@
       "name": "Name",
       "description": "Description (optional)",
       "price": "Price (COP)",
-      "priceHint": "Whole pesos, no decimals.",
+      "priceHint": "Whole pesos, no decimals: $100 to $10,000,000.",
       "section": "Section (optional)",
       "sectionPlaceholder": "E.g. Drinks",
       "isAvailable": "Available to order",
@@ -926,32 +919,14 @@
       "ended": "Promotion ended"
     },
     "validation": {
-      "name": "Enter a name of 2 to 80 characters.",
       "category": "Choose a category.",
-      "phone": "Enter a valid phone: 7 to 20 digits, may start with +.",
-      "address": "Enter an address of 5 to 200 characters.",
       "location": "Choose the location on the map.",
-      "description": "300 characters at most.",
       "prepMinutes": "Enter a whole number between 5 and 180.",
       "time": "Enter a valid time.",
       "sameTimes": "The closing time must differ from the opening time.",
-      "itemName": "Enter a name of 1 to 80 characters.",
-      "price": "Enter a price in whole pesos, no decimals.",
-      "section": "40 characters at most.",
       "sortOrder": "Enter a whole number between 0 and 9999.",
-      "promoTitle": "Enter a title of 3 to 80 characters.",
-      "date": "Choose a date and time.",
-      "datesOrder": "The end date must be after the start date.",
-      "endsInPast": "The end date must be in the future.",
       "imageUrl": "The image must be an https address.",
-      "discount": "The discount must be a whole number between 5 and 90.",
       "discountNeedsItem": "Choose the product the discount applies to.",
-      "contact": {
-        "whatsapp": "Enter a 10-digit Colombian mobile that starts with 3.",
-        "instagram": "Use only lowercase letters, numbers, dots and underscores (up to 30).",
-        "facebook": "Enter the page name as it appears in facebook.com/…",
-        "website": "The address must start with https:// (200 characters at most)."
-      },
       "municipality": "Choose the department and municipality of the business."
     },
     "errors": {
@@ -970,7 +945,8 @@
       "underReview": "Your business is under review: the name, address and location cannot change until the team finishes.",
       "galleryLimit": "You already have 8 photos. Delete one to add another.",
       "menuLimit": "Your menu reached the maximum of 200 products.",
-      "taxIdInUse": "This NIT already belongs to an approved business of another account. Write to us if it is yours."
+      "taxIdInUse": "This NIT already belongs to an approved business of another account. Write to us if it is yours.",
+      "businessDailyLimit": "You already created 3 businesses today. You can create another tomorrow."
     },
     "images": {
       "logo": "Logo",
@@ -1314,9 +1290,6 @@
     }
   },
   "reports": {
-    "validation": {
-      "comment": "300 characters at most."
-    },
     "errors": {
       "alreadyReported": "We already received your report about this business. We are reviewing it.",
       "failed": "The report could not be sent. Try again."
@@ -1515,7 +1488,7 @@
     "switchLabel": "Business you are viewing",
     "addBusiness": "Add another business",
     "addBusinessShort": "Add",
-    "limitReached": "You reached the limit of {{max}} businesses per account. To add another, unpublish and close one from My business or contact us.",
+    "limitReached": "You reached the limit of {{max}} businesses per account (all of them count, published or not). To add another, delete one from My business or write to us.",
     "backFromCustomerView": "You are viewing Luma as a customer · Back to Luma Business",
     "tabs": {
       "label": "Luma Business sections",
@@ -1635,7 +1608,7 @@
       "item": "Product",
       "noItem": "No discount: announcement only",
       "percent": "Percent off",
-      "percentHint": "Between 5 and 90 %.",
+      "percentHint": "Between 1 and 90 %.",
       "preview": "Customers will see {{final}} (was {{list}}).",
       "previewEmpty": "Enter a percentage to see the final price.",
       "margin": "Check your margin before publishing. Luma computes the final price when each order is confirmed.",
@@ -1688,7 +1661,6 @@
       "name": "Name",
       "price": "Price (COP)",
       "section": "Section",
-      "priceNeeded": "Enter the price to be able to add it.",
       "add": "Add to menu ({{count}})",
       "discard": "Discard and start again",
       "done": "Done: we added {{count}} products to your menu.",
@@ -1997,8 +1969,6 @@
     "saved": "Your details were saved.",
     "completeAction": "Complete my details",
     "errors": {
-      "name": "Type your full name (3 to 80 characters).",
-      "phone": "Type a valid Colombian mobile, for example 300 123 4567.",
       "residence": "Choose your department and municipality."
     }
   },
@@ -2262,7 +2232,7 @@
       "websiteAuto": "Publish a text file at {{url}} with one line saying exactly {{code}} and tap \"Check now\"."
     },
     "errors": {
-      "tooMany": "You already asked for 3 verifications today for this business. Try tomorrow.",
+      "tooMany": "You already asked for 3 codes today for this contact. Try tomorrow (each new code replaces the previous one).",
       "missing": "Save that contact first.",
       "changed": "The owner changed that contact after asking for the verification: it cannot be verified.",
       "notPending": "That request was already reviewed.",
@@ -2290,16 +2260,23 @@
   "route": {
     "title": "How to get there",
     "mode": "How you go",
-    "walk": "Walking",
-    "drive": "By car",
+    "modes": {
+      "walk": "On foot",
+      "bike": "Bicycle",
+      "moto": "Motorcycle",
+      "drive": "Car"
+    },
     "mapLabel": "Map with the route to {{name}}",
     "summary": {
-      "walk": "{{km}} km · about {{minutes}} min walking",
+      "walk": "{{km}} km · about {{minutes}} min on foot",
+      "bike": "{{km}} km · about {{minutes}} min by bike",
+      "moto": "{{km}} km · about {{minutes}} min by motorcycle",
       "drive": "{{km}} km · about {{minutes}} min by car"
     },
     "estimate": "Straight-line estimate: streets may make it longer.",
     "locate": "Use my location to see the route",
-    "googleMaps": "Open in Google Maps"
+    "googleMaps": "Open in Google Maps",
+    "approximate": "Approximate time: by motorcycle we use the car route with an adjusted time."
   },
   "placeholders": {
     "fullName": "E.g.: Ana María Pérez",
@@ -2319,5 +2296,32 @@
     "minDiscountHint": "Shows only discounts from that percentage.",
     "reviewNote": "E.g.: The photo of the front with the sign is missing",
     "reportComment": "E.g.: The business is no longer at this address"
+  },
+  "validation": {
+    "required": "This field is required.",
+    "personName": "Write the name with letters only (2 to 60). Spaces, apostrophes ('), hyphens (-) and dots are fine. No numbers or emojis.",
+    "businessName": "Use 2 to 60 characters: letters, numbers, spaces and & ' - . , ( ). At least one letter and no emojis.",
+    "legalName": "Write the legal name as it appears on the RUT: letters, numbers, spaces and & ' - . , ( ), up to 150.",
+    "legalRepName": "Write the representative's name with letters only (2 to 120). Spaces, apostrophes, hyphens and dots are fine.",
+    "displayName": "Use 2 to 40 characters with at least one letter.",
+    "productName": "Write the product name, up to 80 characters.",
+    "promotionTitle": "Write a title of 3 to 80 characters with at least one letter.",
+    "shortText": "Check this text: it is too long or has no letters or numbers.",
+    "address": "Write the address with the street and the number (5 to 120 characters), for example \"Calle 18 # 25-30\".",
+    "search": "A search can have up to 80 characters.",
+    "freeText": "The text is too long.",
+    "email": "Write a valid email, for example name@mail.com.",
+    "mobilePhone": "Write a 10-digit Colombian mobile starting with 3, for example 300 123 4567.",
+    "phone": "Write a mobile (300 123 4567) or a landline with its area code (601 234 5678).",
+    "instagram": "Write your Instagram username: letters, numbers, dots and underscores, up to 30.",
+    "facebook": "Write the name of your Facebook page (what comes after facebook.com/).",
+    "website": "The address must start with https:// and be a public domain, for example https://mybusiness.co. Without https:// it cannot be verified.",
+    "price": "Write a price between $100 and $10,000,000, without decimals.",
+    "discount": "The discount goes from 1% to 90%.",
+    "nit": "Check the NIT and its check digit, for example 800.197.268-4.",
+    "date": "Check the date.",
+    "datesOrder": "The end date must be after the start date.",
+    "datesTooLong": "A promotion can last up to a year.",
+    "datesPast": "The end date has already passed."
   }
 }

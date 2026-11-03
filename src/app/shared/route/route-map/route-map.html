@@ -1,9 +1,28 @@
 <section *transloco="let t" class="flex flex-col gap-2" aria-labelledby="route-title">
   <h3 id="route-title" class="m-0 text-title text-fg">{{ t('route.title') }}</h3>
   @if (located()) {
-  <div class="flex gap-2" role="group" [attr.aria-label]="t('route.mode')">
-    <app-luma-chip [toggleable]="false" [selected]="mode() === 'walk'" (selectedChange)="mode.set('walk')">{{ t('route.walk') }}</app-luma-chip>
-    <app-luma-chip [toggleable]="false" [selected]="mode() === 'drive'" (selectedChange)="mode.set('drive')">{{ t('route.drive') }}</app-luma-chip>
+  <div class="flex flex-wrap gap-2" role="group" [attr.aria-label]="t('route.mode')">
+    @for (m of modes; track m.mode) {
+    <button
+      type="button"
+      class="pressable inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-full border px-3 text-body focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+      [class.border-primary]="mode() === m.mode"
+      [class.bg-primary]="mode() === m.mode"
+      [class.text-primary-fg]="mode() === m.mode"
+      [class.font-semibold]="mode() === m.mode"
+      [class.border-border]="mode() !== m.mode"
+      [class.text-fg]="mode() !== m.mode"
+      [attr.aria-label]="t('route.modes.' + m.mode)"
+      [attr.title]="t('route.modes.' + m.mode)"
+      [attr.aria-pressed]="mode() === m.mode"
+      (click)="choose(m.mode)"
+    >
+      <app-luma-icon [name]="m.icon" size="md" />
+      @if (mode() === m.mode) {
+      <span aria-hidden="true">{{ t('route.modes.' + m.mode) }}</span>
+      }
+    </button>
+    }
   </div>
   <div
     #map
@@ -14,7 +33,9 @@
   @if (route(); as r) {
   <p class="m-0 text-body text-fg" aria-live="polite">
     {{ t('route.summary.' + mode(), { km: km(), minutes: minutes() }) }}
-    @if (r.source === 'straight') {
+    @if (r.approximate) {
+    <span class="block text-caption text-fg-muted">{{ t('route.approximate') }}</span>
+    } @if (r.source === 'straight') {
     <span class="block text-caption text-fg-muted">{{ t('route.estimate') }}</span>
     }
   </p>

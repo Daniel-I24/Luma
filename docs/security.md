@@ -92,6 +92,18 @@ event bodies.
   residual DNS rebinding risk in docs/whatsapp-setup.md.
 - Both are inert until their flags are on and their secrets set.
 
+## Validation and limits (round 7)
+
+- Every written text field has a rule in `src/app/core/validation` and the
+  same rule as a SQL function in `private` behind a CHECK constraint
+  (docs/validation-matrix.md); invisible and direction characters never get
+  stored.
+- verify-website: IPv6 read as bytes (only 2000::/3, embedded IPv4 checked),
+  DNS over HTTPS fallback (`CLOUDFLARE_DOH_URL`).
+- Owners do not read `contact_verifications.verified_by`.
+- /owner: `ownerGuard` and `ownerChildGuard`; 3 businesses per owner, 3
+  creations a day.
+
 ## Related documents
 
 - [Threat model](threat-model.md)

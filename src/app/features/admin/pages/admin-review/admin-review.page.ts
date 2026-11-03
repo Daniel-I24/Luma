@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaEmptyState, LumaIconButton, LumaSkeleton } from '@design-system';
-import { Nit } from '@shared/business/domain/nit';
+import { Nit } from '@core/validation/nit';
 import type {
   ReviewDecision,
   VerificationDoc,

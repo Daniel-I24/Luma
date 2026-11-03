@@ -112,6 +112,9 @@ Para apagarlas, pon `0`: esos contactos vuelven a la cola del administrador.
 
 ## verify-website: riesgo residual
 
+El sitio web debe guardarse con `https://` (la app ya no lo añade sola): sin
+https la función lo trata como bloqueado.
+
 La función solo descarga `https://<dominio>:443/.well-known/luma-verification.txt`,
 resuelve el DNS y rechaza IPs privadas, de loopback, link-local y de
 metadatos (también tras cada redirección, máximo 2 y al mismo dominio), con
@@ -120,3 +123,11 @@ riesgo de **DNS rebinding**: el dominio podría responder con una IP pública
 al resolverlo y con otra privada en la conexión real, que hace el propio
 `fetch`. Lo limitan el tiempo corto, que solo se lee un archivo de texto de
 4 KB y que la respuesta nunca se muestra (solo "coincide" o "no coincide").
+
+Desde la ronda 7, las direcciones IPv6 se leen como sus 16 bytes: solo se
+aceptan direcciones globales (2000::/3) y cualquier IPv4 escondida dentro de
+una IPv6 (::ffff:7f00:1, ::7f00:1, 64:ff9b::…, 2002::/16) pasa por la misma
+lista de bloqueo. Si el servidor de funciones no trae `Deno.resolveDns`, la
+función pregunta al DNS sobre HTTPS de Cloudflare
+(`cloudflare-dns.com/dns-query`, solo registros A y AAAA, 3 segundos); ese
+servicio ve el dominio consultado, nada más.

@@ -24,6 +24,9 @@ export const MAPTILER_BASE_URL = 'https://api.maptiler.com';
 export const NOMINATIM_BASE_URL = 'https://nominatim.openstreetmap.org';
 export const LOCATIONIQ_BASE_URL = 'https://us1.locationiq.com/v1';
 
+/** DNS over HTTPS (JSON API), the fallback resolver of verify-website (developers.cloudflare.com, 1.1.1.1 DoH JSON). */
+export const CLOUDFLARE_DOH_URL = 'https://cloudflare-dns.com/dns-query';
+
 /** Routing (docs/route.md): OpenRouteService Directions V2; HeiGIT docs checked 2026-10-28. */
 export const OPENROUTESERVICE_DIRECTIONS_URL = 'https://api.openrouteservice.org/v2/directions';
 

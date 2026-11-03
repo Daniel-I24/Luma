@@ -23,7 +23,7 @@
         <h2 id="paste-title" class="m-0 text-title text-fg">{{ t('owner.menuScan.pasteTitle') }}</h2>
         <p id="paste-help" class="m-0 text-body-sm text-fg-muted">{{ t('owner.menuScan.pasteHelp') }}</p>
         <label class="sr-only" for="scan-paste">{{ t('owner.menuScan.pasteTitle') }}</label>
-        <textarea id="scan-paste" rows="8" aria-describedby="paste-help"
+        <textarea id="scan-paste" rows="8" maxlength="8000" aria-describedby="paste-help"
           class="w-full resize-y rounded-md border border-border bg-surface p-3 text-body text-fg placeholder:text-fg-subtle focus-visible:outline-2 focus-visible:outline-border-focus"
           [placeholder]="t('owner.menuScan.pastePlaceholder')" [value]="pasted()" (input)="onPaste($event)"></textarea>
         <app-luma-button variant="secondary" [fullWidth]="true" [disabled]="!pasted().trim()" (clicked)="scan.fromText(pasted())">
@@ -55,9 +55,14 @@
               {{ t('owner.menuScan.keep') }}
             </label>
             <label class="text-caption text-fg-muted" [for]="'scan-name-' + item.key">{{ t('owner.menuScan.name') }}</label>
-            <input [id]="'scan-name-' + item.key" maxlength="80" [value]="item.name"
-              class="min-h-11 rounded-md border border-border bg-surface px-3 text-body text-fg focus-visible:outline-2 focus-visible:outline-border-focus"
+            <input [id]="'scan-name-' + item.key" [attr.maxlength]="nameMax" [value]="item.name"
+              class="min-h-11 rounded-md border bg-surface px-3 text-body text-fg focus-visible:outline-2 focus-visible:outline-border-focus"
+              [class.border-danger]="!!nameError(item)" [class.border-border]="!nameError(item)"
+              [attr.aria-invalid]="nameError(item) ? 'true' : null"
               (change)="scan.edit(item.key, { name: text($event) })" />
+            @if (nameError(item); as key) {
+              <p class="m-0 text-caption text-danger-fg">{{ t(key) }}</p>
+            }
             <div class="flex gap-2">
               <div class="flex flex-1 flex-col gap-1">
                 <label class="text-caption text-fg-muted" [for]="'scan-price-' + item.key">{{ t('owner.menuScan.price') }}</label>
@@ -69,18 +74,23 @@
               </div>
               <div class="flex flex-1 flex-col gap-1">
                 <label class="text-caption text-fg-muted" [for]="'scan-section-' + item.key">{{ t('owner.menuScan.section') }}</label>
-                <input [id]="'scan-section-' + item.key" maxlength="40" [value]="item.section"
-                  class="min-h-11 rounded-md border border-border bg-surface px-3 text-body text-fg focus-visible:outline-2 focus-visible:outline-border-focus"
+                <input [id]="'scan-section-' + item.key" [attr.maxlength]="sectionMax" [value]="item.section"
+                  class="min-h-11 rounded-md border bg-surface px-3 text-body text-fg focus-visible:outline-2 focus-visible:outline-border-focus"
+                  [class.border-danger]="!!sectionError(item)" [class.border-border]="!sectionError(item)"
+                  [attr.aria-invalid]="sectionError(item) ? 'true' : null"
                   (change)="scan.edit(item.key, { section: text($event) })" />
+                @if (sectionError(item); as key) {
+                  <p class="m-0 text-caption text-danger-fg">{{ t(key) }}</p>
+                }
               </div>
             </div>
             @if (priceMissing(item)) {
-              <p class="m-0 text-caption text-danger-fg">{{ t('owner.menuScan.priceNeeded') }}</p>
+              <p class="m-0 text-caption text-danger-fg">{{ t('validation.price') }}</p>
             }
           </li>
         }
       </ul>
-      <app-luma-button size="lg" [fullWidth]="true" [disabled]="scan.phase() === 'saving' || scan.chosen().length === 0"
+      <app-luma-button size="lg" [fullWidth]="true" [disabled]="scan.phase() === 'saving' || scan.chosen().length === 0 || invalid()"
         (clicked)="scan.save(id())">{{
         t(scan.phase() === 'saving' ? 'businessPanel.form.saving' : 'owner.menuScan.add', { count: scan.chosen().length })
       }}</app-luma-button>

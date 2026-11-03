@@ -1,4 +1,5 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
+import { NumberRules } from '@core/validation/number-rules';
 import { MenuRepository } from '@shared/business/data/menu.repository';
 import { MenuWriteRepository } from '@shared/business/data/menu-write.repository';
 import { type DraftItem, MenuScanRepository } from '../services/menu-scan.repository';
@@ -29,10 +30,10 @@ const toReview = (item: DraftItem, key: number): ReviewItem => ({
 
 /** ScanPrices — reads prices from scanned menu text. */
 export class ScanPrices {
-  /** A whole, positive price in COP from what the owner typed ("12.500" → 12500). */
+  /** A whole price in COP from what the owner typed ("$ 12.500" → 12500), within menu_items_price_range. */
   public static priceOf(text: string): number | null {
-    const digits = text.replace(/[.\s$]/g, '');
-    return /^\d{1,9}$/.test(digits) && Number(digits) > 0 ? Number(digits) : null;
+    const digits = NumberRules.price.normalize(text);
+    return NumberRules.price.spec.isSatisfiedBy(digits) ? Number(digits) : null;
   }
 }
 

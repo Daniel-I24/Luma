@@ -1,3 +1,4 @@
+import { Phone } from '@shared/account/phone';
 import type { Business } from '@shared/business/models/business.model';
 import type { GeoCoords } from '@shared/geo/geolocation.service';
 import type { Residence } from '@shared/geo/residence';
@@ -32,7 +33,7 @@ export class BusinessDrafts {
     return {
       name: business.name,
       category: business.category,
-      phone: business.phone ?? '',
+      phone: business.phone ? (Phone.parse(business.phone)?.display ?? business.phone) : '',
       address: business.address,
       location: { lat: business.latitude, lng: business.longitude },
       municipality: null,

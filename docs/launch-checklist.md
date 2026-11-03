@@ -112,3 +112,11 @@ values; never paste the service_role key anywhere in the app.
   verify-backend reports its RPCs as "[migration 53]: missing" without failing.
 - Automatic contact verification: docs/whatsapp-setup.md (Meta app, webhook,
   secrets, `SUPPORT_WHATSAPP`, then the two flags).
+
+## Round 7 additions
+
+- Migration 54 (`20261104000000_round7.sql`) after 52 and 53 (applied).
+- Run `docs/data-quality.sql` (read only), fix what it lists, then the
+  VALIDATE statements at its end.
+- Redeploy `route` (new modes) and `verify-website` (IPv6 and DNS over
+  HTTPS); until then the app estimates routes in a straight line.

@@ -171,6 +171,23 @@ SQL suites, Deno 2.5.6 in Docker for the functions.
   Deno tests, type check and lint of the functions, every check, secret
   scan, audit 0, knip (no unused files or dependencies).
 
+## Round 7 (2026-10-31)
+
+- Migration 54 `20261104000000_round7` (pending review; 52 and 53 applied):
+  daily limit of business creations, validation functions and CHECK
+  constraints NOT VALID, discount 1-90, cleaned sign-up names and order
+  notes, phones compared in +57, `verified_by` hidden from owners, contact
+  requests limited per kind; supabase/tests/round7.sql (41 checks) and the
+  shared vectors.
+- Cómo llegar with a pie / bicicleta / moto / carro (ORS profiles, moto
+  approximate, remembered mode); route function profiles.
+- /owner guarded on every child route; customers get the invitation.
+- core/validation (Specification), every form with errors on blur and on
+  submit, numeric fields with digits only, `check:validation` in CI,
+  docs/validation-matrix.md and docs/data-quality.sql.
+- verify-website: IPv6 as bytes, DNS over HTTPS fallback; websites need
+  https://.
+
 ## Round 6 (2026-10-29)
 
 - Migration 53 `20261103000000_round6` (pending review, depends on 52):

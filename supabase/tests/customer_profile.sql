@@ -22,7 +22,8 @@ select tests.expect_error('authenticated', tests.id('new'), $$update public.prof
   'profiles_residence_dane_code_shape');
 select tests.expect_error('authenticated', tests.id('new'),
   $$update public.profiles set residence_neighborhood = repeat('x', 61) where id = tests.id('new')$$,
-  'profiles_residence_neighborhood_length');
+  -- profiles_residence_neighborhood_length or profiles_neighborhood_rule (round 7): both reject it.
+  'neighborhood');
 select tests.exec_as('authenticated', tests.id('new'), $$update public.profiles
   set residence_dane_code = '52001', residence_city = 'Pasto', residence_department = 'Nariño',
       residence_neighborhood = 'Las Cuadras', full_name = 'Ana Pérez', phone = '+573001234567'

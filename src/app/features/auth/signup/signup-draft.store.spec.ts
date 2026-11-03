@@ -19,10 +19,7 @@ describe('SignupDraftStore', () => {
     expect(store.next()).toBeNull();
     expect(store.step()).toBe('personal');
     expect(store.next()).toBe('fullName');
-    expect(store.errors()).toEqual({
-      fullName: 'auth.signup.validation.fullName',
-      phone: 'auth.signup.validation.phoneRequired',
-    });
+    expect(store.errors()).toEqual({ fullName: 'validation.required', phone: 'validation.required' });
   });
 
   it('re-checks a field with an error as it is edited', () => {

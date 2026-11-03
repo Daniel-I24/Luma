@@ -40,6 +40,19 @@ export class SignupDraftStore {
     });
   }
 
+  /** The user left a field: show its error now (an empty field waits for "Continuar"). */
+  public touch(field: SignupField): void {
+    const value = this._draft()[field];
+    if (typeof value === 'string' && value.trim() === '') return;
+    const error = SignupValidation.validateField(field, this._draft());
+    this._errors.update((errors) => {
+      const next = { ...errors };
+      if (error) next[field] = error;
+      else delete next[field];
+      return next;
+    });
+  }
+
   /** Validates the current step; moves on when valid. Returns the first invalid field. */
   public next(): SignupField | null {
     const errors = SignupValidation.validateStep(this.step(), this._draft());

@@ -88,6 +88,7 @@
       rows="3"
       class="w-full resize-y rounded-md border border-border bg-surface p-3 text-body text-fg placeholder:text-fg-subtle focus-visible:border-primary focus-visible:outline-2 focus-visible:outline-border-focus"
       aria-describedby="checkout-notes-count"
+      [attr.aria-invalid]="store.notesTooLong() ? 'true' : null"
       [attr.maxlength]="notesMax"
       [placeholder]="t('checkout.notes.placeholder')"
       [value]="store.notes()"

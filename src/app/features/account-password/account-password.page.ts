@@ -1,5 +1,7 @@
 import { Location } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { AuthRules } from '@core/validation/auth-rules';
+import { ValidatedField } from '@core/validation/validated-field';
 import { TranslocoModule } from '@jsverse/transloco';
 import { PasswordChangeService } from '@core/auth/password-change.service';
 import { LumaButton, LumaInput, ToastService } from '@design-system';
@@ -25,15 +27,18 @@ import { LumaButton, LumaInput, ToastService } from '@design-system';
       <form class="flex flex-col gap-4" novalidate (submit)="save($event)">
         @if (!codeSent()) {
           <app-luma-input inputId="password-current" type="password" autocomplete="current-password"
-            [label]="t('account.password.current')" [required]="true" [value]="current()" (valueChange)="current.set($event)" />
+            [label]="t('account.password.current')" [required]="true" [value]="current()" (valueChange)="current.set($event)"
+            (blurred)="fields.current.blur()" [errorMessage]="fields.current.error() ? t(fields.current.error()!) : undefined" />
           <app-luma-input inputId="password-next" type="password" autocomplete="new-password"
             [label]="t('account.password.next')" [hint]="t('account.password.rules')" [required]="true"
-            [value]="next()" (valueChange)="next.set($event)" />
+            [value]="next()" (valueChange)="next.set($event)"
+            (blurred)="fields.next.blur()" [errorMessage]="fields.next.error() ? t(fields.next.error()!) : undefined" />
         } @else {
           <p class="m-0 text-body-sm text-fg-muted" role="status">{{ t('account.password.codeSent') }}</p>
-          <app-luma-input inputId="password-code" inputMode="numeric" autocomplete="one-time-code"
-          [placeholder]="t('placeholders.code')"
-            [label]="t('account.password.code')" [required]="true" [value]="code()" (valueChange)="code.set($event)" />
+          <app-luma-input inputId="password-code" inputMode="numeric" autocomplete="one-time-code" [digitsOnly]="true"
+            [placeholder]="t('placeholders.code')" [maxLength]="fields.code.rule.maxLength"
+            [label]="t('account.password.code')" [required]="true" [value]="code()" (valueChange)="code.set($event)"
+            (blurred)="fields.code.blur()" [errorMessage]="fields.code.error() ? t(fields.code.error()!) : undefined" />
         }
         @if (errorKey(); as key) {
           <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
@@ -56,10 +61,17 @@ export class AccountPasswordPage {
   protected readonly code = signal('');
   protected readonly codeSent = signal(false);
   protected readonly errorKey = signal<string | null>(null);
+  protected readonly fields = {
+    current: new ValidatedField(AuthRules.currentPassword, { value: this.current }),
+    next: new ValidatedField(AuthRules.newPassword, { value: this.next }),
+    code: new ValidatedField(AuthRules.code, { value: this.code }),
+  } as const;
 
   protected async save(event: Event): Promise<void> {
     event.preventDefault();
     if (this.passwords.busy()) return;
+    const step = this.codeSent() ? [this.fields.code] : [this.fields.current, this.fields.next];
+    if (!step.map((field) => field.validate()).every(Boolean)) return;
     this.errorKey.set(null);
     const result = this.codeSent()
       ? await this.passwords.confirm(this.next(), this.code())

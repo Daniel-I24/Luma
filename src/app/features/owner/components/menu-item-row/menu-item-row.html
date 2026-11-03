@@ -33,7 +33,10 @@
       <input
         [id]="'menu-name-' + item().id"
         class="min-h-11 w-full rounded-md border border-transparent bg-transparent px-2 text-body font-medium text-fg hover:border-border focus-visible:border-border focus-visible:outline-2 focus-visible:outline-border-focus"
-        maxlength="80"
+        [attr.maxlength]="nameMax"
+        [class.border-danger]="!!nameError()"
+        [attr.aria-invalid]="nameError() ? 'true' : null"
+        [attr.aria-describedby]="nameError() ? 'menu-name-error-' + item().id : null"
         [placeholder]="t('businessPanel.menu.namePlaceholder')"
         [value]="item().name"
         [disabled]="busy()"
@@ -56,8 +59,10 @@
       <span class="sr-only">{{ item().price_cop | cop }}</span>
     </div>
   </div>
-  @if (priceError()) {
-  <p [id]="'menu-price-error-' + item().id" class="m-0 text-caption text-danger-fg">{{ t('owner.menuScan.priceNeeded') }}</p>
+  @if (nameError(); as key) {
+  <p [id]="'menu-name-error-' + item().id" class="m-0 text-caption text-danger-fg" role="alert">{{ t(key) }}</p>
+  } @if (priceError()) {
+  <p [id]="'menu-price-error-' + item().id" class="m-0 text-caption text-danger-fg">{{ t('validation.price') }}</p>
   }
   <div class="flex flex-wrap items-center gap-1">
     <button

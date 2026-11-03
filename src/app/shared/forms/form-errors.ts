@@ -1,3 +1,6 @@
+import type { WritableSignal } from '@angular/core';
+import { type FieldRule, FieldRules } from '@core/validation/field-rule';
+
 /** Translation key of the first error of each top-level field. */
 export type FieldErrors = Readonly<Record<string, string>>;
 
@@ -31,6 +34,15 @@ export class FormErrors {
     if (!first) return null;
     document.getElementById(first[1])?.focus();
     return first[1];
+  }
+
+  /**
+   * The user left a field: its error shows at once (an empty field waits for
+   * the submit, which knows whether it is required).
+   */
+  public static blur(errors: WritableSignal<FieldErrors>, field: string, rule: FieldRule, raw: string): void {
+    const key = raw.trim() ? FieldRules.check(rule, raw) : null;
+    if (key) errors.update((current) => ({ ...current, [field]: key }));
   }
 
   /** The same errors without the given fields (e.g. once the user edits them). */

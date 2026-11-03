@@ -1,6 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { NativeHaptics } from '@core/native/native-haptics';
+import { TextNormalizer } from '@core/validation/text-normalizer';
 import { SessionProfileStore } from '@shared/account/session-profile.store';
 import { BusinessRepository } from '@shared/business/data/business.repository';
 import { CartStore } from '@shared/cart/cart.store';
@@ -100,7 +101,7 @@ export class CheckoutStore {
       businessId,
       items: this.cart.items().map((item) => ({ menuItemId: item.menuItemId, quantity: item.quantity })),
       pickupAt: this.schedule.choice().pickupAt,
-      notes: this.notes().trim() || null,
+      notes: TextNormalizer.lines(this.notes()) || null,
       paymentMethod: method,
     });
     if (!result.data) {

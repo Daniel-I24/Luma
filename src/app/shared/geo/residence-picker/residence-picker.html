@@ -34,6 +34,7 @@
     [label]="t('residence.city')"
     [placeholder]="t('residence.cityPlaceholder')"
     [required]="true"
+    [maxLength]="80"
     [value]="query()"
     (valueChange)="query.set($event)"
   />
@@ -57,6 +58,8 @@
     [maxLength]="neighborhoodMax"
     [value]="neighborhood()"
     (valueChange)="setNeighborhood($event)"
+    (blurred)="checkNeighborhood()"
+    [errorMessage]="neighborhoodError() ? t(neighborhoodError()!) : undefined"
   />
   } } }
 </fieldset>

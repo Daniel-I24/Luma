@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, model, signal } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
+import { FieldRules } from '@core/validation/field-rule';
+import { TextRules } from '@core/validation/text-rules';
 import { LumaButton, LumaInput, LumaSelect, LumaSkeleton } from '@design-system';
 import { Residence } from '../residence';
 import { type Municipality, ResidenceCatalog } from '../residence-catalog';
@@ -32,6 +34,7 @@ export class ResidencePicker {
   protected readonly municipality = signal<Municipality | null>(null);
   protected readonly neighborhood = signal('');
   protected readonly neighborhoodMax = Residence.NEIGHBORHOOD_MAX;
+  protected readonly neighborhoodError = signal<string | null>(null);
 
   protected readonly departmentOptions = computed(() =>
     this.state() === 'ready' ? this.catalog.departments().map((d) => ({ value: d.code, label: d.name })) : [],
@@ -75,8 +78,14 @@ export class ResidencePicker {
     this.emit();
   }
 
+  protected checkNeighborhood(): void {
+    const text = this.neighborhood();
+    this.neighborhoodError.set(text.trim() ? FieldRules.check(TextRules.neighborhood, text) : null);
+  }
+
   protected setNeighborhood(text: string): void {
     this.neighborhood.set(text);
+    this.neighborhoodError.set(null);
     this.emit();
   }
 

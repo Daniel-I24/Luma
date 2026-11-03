@@ -36,6 +36,8 @@ jobs:
       - run: npm run lint
       - name: Every button and link has an action
         run: npm run check:interactive
+      - name: Every form field has a validator
+        run: npm run check:validation
       - name: No URL outside the config modules
         run: npm run check:hardcoded-urls
       - name: Destructive actions use the danger button

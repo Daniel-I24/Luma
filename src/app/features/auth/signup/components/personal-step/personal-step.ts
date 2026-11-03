@@ -21,6 +21,7 @@ import { MAX_FULL_NAME } from '../../signup-validation';
         [maxLength]="maxName"
         [value]="store.draft().fullName"
         (valueChange)="store.update('fullName', $event)"
+        (blurred)="store.touch('fullName')"
         [errorMessage]="store.errors().fullName ? t(store.errors().fullName!) : undefined"
       />
       <app-luma-input
@@ -35,6 +36,7 @@ import { MAX_FULL_NAME } from '../../signup-validation';
         [maxLength]="16"
         [value]="store.draft().phone"
         (valueChange)="store.update('phone', $event)"
+        (blurred)="store.touch('phone')"
         [errorMessage]="store.errors().phone ? t(store.errors().phone!) : undefined"
       />
       <p class="m-0 text-body-sm text-fg-muted">{{ t('auth.signup.personal.privacy') }}</p>

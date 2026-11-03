@@ -37,6 +37,7 @@
     rows="4"
     class="w-full resize-y rounded-md border border-border bg-surface p-3 text-body text-fg placeholder:text-fg-subtle focus-visible:border-primary focus-visible:outline-2 focus-visible:outline-border-focus"
     aria-describedby="review-comment-count"
+    [attr.aria-invalid]="commentError() ? 'true' : null"
     [attr.maxlength]="maxLength"
     [placeholder]="t('reviews.form.commentPlaceholder')"
     [value]="comment()"
@@ -47,7 +48,7 @@
     class="m-0 text-right text-caption text-fg-subtle"
     aria-live="polite"
   >
-    {{ t('reviews.form.counter', { count: comment().length, max: maxLength }) }}
+    @if (commentError(); as key) { {{ t(key) }} } @else { {{ t('reviews.form.counter', { count: comment().length, max: maxLength }) }} }
   </p>
 
   @if (errorKey(); as key) {

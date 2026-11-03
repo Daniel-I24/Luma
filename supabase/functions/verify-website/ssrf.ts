@@ -1,4 +1,6 @@
-/** Resolves a host name to its addresses (Deno.resolveDns in production, a fake in tests). */
+import { isBlockedAddress, isIpv4Literal } from './ip-address.ts';
+
+/** Resolves a host name to its addresses (resolver.ts in production, a fake in tests). */
 export type Resolver = (host: string) => Promise<string[]>;
 /** fetch without following redirects (redirect: 'manual'). */
 export type FetchLike = (url: string, init: RequestInit) => Promise<Response>;
@@ -11,33 +13,6 @@ const FILE_PATH = '/.well-known/luma-verification.txt';
 const TIMEOUT_MS = 5_000;
 export const MAX_BYTES = 4_096;
 const MAX_REDIRECTS = 2;
-const IPV4 = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
-
-/** Private, loopback, link-local, metadata, CGNAT, multicast and reserved IPv4 ranges. */
-function blockedV4(ip: string): boolean {
-  const m = ip.match(IPV4);
-  if (!m) return true;
-  const [a, b] = [Number(m[1]), Number(m[2])];
-  if ([m[1], m[2], m[3], m[4]].some((part) => Number(part) > 255)) return true;
-  return a === 0 || a === 10 || a === 127 || a >= 224 || (a === 169 && b === 254) || (a === 172 && b >= 16 && b <= 31) ||
-    (a === 192 && b === 168) || (a === 100 && b >= 64 && b <= 127) || (a === 192 && b === 0) || (a === 198 && (b === 18 || b === 19));
-}
-
-/** Loopback, unspecified, unique-local, link-local, multicast, IPv4-mapped and NAT64 IPv6 addresses. */
-function blockedV6(ip: string): boolean {
-  const lower = ip.toLowerCase().replace(/^\[|\]$/g, '');
-  const mapped = lower.match(/^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/);
-  if (mapped) return blockedV4(mapped[1]);
-  if (lower === '::' || lower === '::1') return true;
-  return /^(?:f[cd]|fe[89ab]|ff)/.test(lower) || lower.startsWith('64:ff9b:') || lower.startsWith('100::') ||
-    lower.startsWith('2001:db8:') || !lower.includes(':');
-}
-
-/** True when no request may go to this address (metadata 169.254.169.254 included). */
-export function isBlockedAddress(ip: string): boolean {
-  return IPV4.test(ip) ? blockedV4(ip) : blockedV6(ip);
-}
-
 /** The https URL of the verification file of a website, or null (http, other port, credentials, IP or odd host). */
 export function verificationUrl(website: string): URL | null {
   let url: URL;
@@ -48,7 +23,7 @@ export function verificationUrl(website: string): URL | null {
   }
   const host = url.hostname;
   if (url.protocol !== 'https:' || (url.port && url.port !== '443') || url.username || url.password) return null;
-  if (!host.includes('.') || IPV4.test(host) || host.startsWith('[') || host === 'localhost' || host.endsWith('.local')) return null;
+  if (!host.includes('.') || isIpv4Literal(host) || host.startsWith('[') || host === 'localhost' || host.endsWith('.local')) return null;
   return new URL(FILE_PATH, url.origin);
 }
 

@@ -66,7 +66,7 @@ describe('PromotionForm with a discount', () => {
     expect(submitted[0]).toMatchObject({ menu_item_id: 'm1', discount_percent: 15 });
   });
 
-  it('rejects percents outside 5-90 and sends no discount without a product', () => {
+  it('rejects percents outside 1-90 and sends no discount without a product', () => {
     const { el, type, choose, submit, submitted } = render();
     type('promo-title', 'Empanada feliz');
     choose('m1');
@@ -74,7 +74,7 @@ describe('PromotionForm with a discount', () => {
     submit();
 
     expect(submitted).toEqual([]);
-    expect(el.textContent).toContain('businessPanel.validation.discount');
+    expect(el.textContent).toContain('validation.discount');
 
     choose('');
     submit();

@@ -1,3 +1,5 @@
+import { TextNormalizer } from '@core/validation/text-normalizer';
+
 /**
  * What the stepped sign-up sends with the account (auth user metadata).
  * public.handle_new_user reads these keys, validates them again and never
@@ -22,7 +24,7 @@ export class SignUpMetadata {
   public static signUpMetadata(profile: SignUpProfile): Record<string, string | boolean | null> {
     return {
       account_type: profile.accountType,
-      full_name: profile.fullName.trim(),
+      full_name: TextNormalizer.line(profile.fullName),
       phone: profile.phone,
       accepted_terms: profile.acceptedTerms,
       accepted_privacy: profile.acceptedPrivacy,

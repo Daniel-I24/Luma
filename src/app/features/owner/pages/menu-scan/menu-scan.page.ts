@@ -1,7 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AI_MODE } from '@core/config/ai-mode';
+import { FieldRules } from '@core/validation/field-rule';
+import { TextRules } from '@core/validation/text-rules';
 import { LumaButton, LumaSkeleton } from '@design-system';
 import { ACCEPTED_IMAGE_TYPES } from '@shared/media/image-files';
 import { PanelHeader } from '../../components/panel-header/panel-header';
@@ -32,6 +34,12 @@ export class MenuScanPage {
   /** Reading photos needs the extract-menu function (Luma IA remote). */
   protected readonly aiAvailable = inject(AI_MODE) === 'remote';
   protected readonly pasted = signal('');
+  protected readonly nameMax = TextRules.productName.maxLength;
+  protected readonly sectionMax = TextRules.menuSection.maxLength;
+  /** A chosen product that would not pass the menu rules blocks "Agregar al menú". */
+  protected readonly invalid = computed(() =>
+    this.scan.chosen().some((item) => this.nameError(item) || this.sectionError(item) || this.priceMissing(item)),
+  );
 
   protected async onFiles(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
@@ -50,6 +58,14 @@ export class MenuScanPage {
 
   protected toggle(item: ReviewItem, event: Event): void {
     this.scan.edit(item.key, { selected: (event.target as HTMLInputElement).checked });
+  }
+
+  protected nameError(item: ReviewItem): string | null {
+    return item.selected ? FieldRules.checkRequired(TextRules.productName, item.name) : null;
+  }
+
+  protected sectionError(item: ReviewItem): string | null {
+    return item.selected && item.section.trim() ? FieldRules.check(TextRules.menuSection, item.section) : null;
   }
 
   protected priceMissing(item: ReviewItem): boolean {

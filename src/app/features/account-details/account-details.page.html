@@ -11,8 +11,11 @@
       autocomplete="name"
       [label]="t('accountDetails.fullName')"
       [required]="true"
-      [value]="form.fullName()"
-      (valueChange)="form.fullName.set($event)"
+      [maxLength]="form.name.rule.maxLength"
+      [value]="form.name.value()"
+      (valueChange)="form.name.input($event)"
+      (blurred)="form.name.blur()"
+      [errorMessage]="form.name.error() ? t(form.name.error()!) : undefined"
     />
     <app-luma-input
       inputId="details-phone"
@@ -23,8 +26,11 @@
       [label]="t('accountDetails.phone')"
       [hint]="t('accountDetails.phonePurpose')"
       [required]="true"
-      [value]="form.phone()"
-      (valueChange)="form.phone.set($event)"
+      [maxLength]="form.phone.rule.maxLength"
+      [value]="form.phone.value()"
+      (valueChange)="form.phone.input($event)"
+      (blurred)="form.phone.blur()"
+      [errorMessage]="form.phone.error() ? t(form.phone.error()!) : undefined"
     />
     @if (loaded()) {
     <app-residence-picker [(value)]="form.residence" />

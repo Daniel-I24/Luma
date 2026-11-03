@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, effect, inject, signal, untracked } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
+import { FieldRules } from '@core/validation/field-rule';
+import { TextRules } from '@core/validation/text-rules';
 import { LumaButton, LumaIconButton, LumaImage, LumaSkeleton } from '@design-system';
 import { type BusinessPhoto, MAX_CAPTION, MAX_PHOTOS } from '@shared/business/data/business-photo.repository';
 import { ACCEPTED_IMAGE_TYPES } from '@shared/media/image-files';
@@ -29,6 +31,8 @@ export class BusinessGalleryPage {
   protected readonly maxCaption = MAX_CAPTION;
   /** Photo waiting for the second tap that confirms its deletion. */
   protected readonly confirming = signal<string | null>(null);
+  /** Why a typed caption was not saved, per photo. */
+  protected readonly captionErrors = signal<Readonly<Record<string, string | null>>>({});
 
   constructor() {
     effect(() => {
@@ -44,8 +48,11 @@ export class BusinessGalleryPage {
     if (files.length) await this.gallery.add(files);
   }
 
-  protected onCaption(photo: BusinessPhoto, event: Event): Promise<void> {
-    return this.gallery.caption(photo, (event.target as HTMLInputElement).value);
+  protected async onCaption(photo: BusinessPhoto, event: Event): Promise<void> {
+    const typed = (event.target as HTMLInputElement).value;
+    const key = typed.trim() ? FieldRules.check(TextRules.photoCaption, typed) : null;
+    this.captionErrors.update((errors) => ({ ...errors, [photo.id]: key }));
+    if (!key) await this.gallery.caption(photo, TextRules.photoCaption.normalize(typed));
   }
 
   protected async remove(photo: BusinessPhoto): Promise<void> {

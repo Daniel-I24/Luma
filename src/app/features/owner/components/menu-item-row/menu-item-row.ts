@@ -1,6 +1,8 @@
 import { DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
+import { FieldRules } from '@core/validation/field-rule';
+import { TextRules } from '@core/validation/text-rules';
 import { LumaIcon, LumaIconButton, LumaImage } from '@design-system';
 import type { MenuItem } from '@shared/business/models/menu.model';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
@@ -8,8 +10,6 @@ import { ScanPrices } from '../../state/menu-scan.store';
 
 /** A name or price typed in the row, already checked. */
 export type InlineChange = Partial<Pick<MenuItem, 'name' | 'price_cop'>>;
-
-const MIN_NAME = 2;
 
 /**
  * MenuItemRow — one product of the owner's menu, editable in place: name and
@@ -47,16 +47,16 @@ export class MenuItemRow {
   public readonly dropOn = output<string>();
 
   protected readonly priceError = signal(false);
+  /** Why the typed name was not saved (it stays in the field to be fixed). */
+  protected readonly nameError = signal<string | null>(null);
+  protected readonly nameMax = TextRules.productName.maxLength;
   protected readonly dragging = signal(false);
 
   protected onName(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const name = input.value.trim();
-    if (name.length < MIN_NAME) {
-      input.value = this.item().name;
-      return;
-    }
-    if (name !== this.item().name) this.changed.emit({ name });
+    const typed = (event.target as HTMLInputElement).value;
+    this.nameError.set(FieldRules.checkRequired(TextRules.productName, typed));
+    const name = TextRules.productName.normalize(typed);
+    if (!this.nameError() && name !== this.item().name) this.changed.emit({ name });
   }
 
   protected onPrice(event: Event): void {

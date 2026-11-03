@@ -10,6 +10,7 @@
   <div [class]="wrapperClasses">
     <ng-content select="[slot=leading]" />
     <input
+      #field
       [id]="inputId()"
       class="luma-input__field"
       [type]="type()"
@@ -21,7 +22,9 @@
       [attr.autocomplete]="autocomplete()"
       [attr.aria-invalid]="hasError ? 'true' : null"
       [attr.aria-describedby]="hasError ? inputId() + '-error' : hint() ? inputId() + '-hint' : null"
-      [(ngModel)]="value"
+      [value]="value()"
+      (input)="onInput(field)"
+      (blur)="blurred.emit()"
     />
     <ng-content select="[slot=trailing]" />
   </div>
@@ -32,5 +35,7 @@
   </span>
   } @else if (hint()) {
   <span [id]="inputId() + '-hint'" class="luma-input__hint"> {{ hint() }} </span>
+  } @if (counter() && maxLength(); as max) {
+  <span class="luma-input__hint luma-input__counter">{{ used() }} / {{ max }}</span>
   }
 </div>

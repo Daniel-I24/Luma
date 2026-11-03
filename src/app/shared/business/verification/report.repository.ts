@@ -1,14 +1,18 @@
 import { Injectable, inject } from '@angular/core';
 import * as z from 'zod/mini';
 import { SupabaseService } from '@core/supabase/supabase.service';
+import { TextRules } from '@core/validation/text-rules';
+import { ZodRules } from '@core/validation/zod-rules';
 import type { RepoResult } from '../data/business.repository';
 import { REPORT_REASONS, type ReportReason } from './verification.model';
 
+/** reports_comment_rule: clean text of at most 300 characters. */
 const MAX_REPORT_COMMENT = 300;
+export const REPORT_COMMENT_RULE = TextRules.freeText(MAX_REPORT_COMMENT);
 
 const reportSchema = z.object({
   reason: z.enum(REPORT_REASONS),
-  comment: z.nullable(z.string().check(z.trim(), z.maxLength(MAX_REPORT_COMMENT, 'reports.validation.comment'))),
+  comment: ZodRules.optionalText(REPORT_COMMENT_RULE),
 });
 
 /** Contract: a user's reports about a business (Supabase is one implementation). */
@@ -32,7 +36,7 @@ class SupabaseReportRepository extends ReportRepository {
     reason: ReportReason,
     comment: string | null,
   ): Promise<RepoResult<true>> {
-    const parsed = reportSchema.safeParse({ reason, comment: comment?.trim() || null });
+    const parsed = reportSchema.safeParse({ reason, comment });
     if (!parsed.success) return { data: null, errorKey: parsed.error.issues[0].message };
     const { error } = await this.db
       .from('reports')

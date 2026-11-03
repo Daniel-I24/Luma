@@ -1,6 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, effect, inject, signal, untracked } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
+import { TextRules } from '@core/validation/text-rules';
 import { LumaButton, LumaInput, ToastService } from '@design-system';
 import { type BusinessInfoInput, businessInfoSchema } from '@shared/business/data/business-write.schemas';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
@@ -21,6 +22,7 @@ import { SetupReturn } from '../../components/setup-return/setup-return';
 
 const ID_PREFIX = 'info';
 export const DESCRIPTION_MAX = 300;
+const DESCRIPTION_RULE = TextRules.freeText(DESCRIPTION_MAX);
 
 /** BusinessInfoPage — /owner/:id/business/info: basics, description and preparation time. */
 @Component({
@@ -89,6 +91,10 @@ export class BusinessInfoPage implements HasUnsavedChanges {
     this.errors.update((errors) => FormErrors.withoutErrors(errors, 'description'));
   }
 
+  protected checkDescription(): void {
+    FormErrors.blur(this.errors, 'description', DESCRIPTION_RULE, this.description());
+  }
+
   protected onPrepMinutes(value: string): void {
     this.prepMinutes.set(value);
     this.errors.update((errors) => FormErrors.withoutErrors(errors, 'prep_minutes'));
@@ -129,16 +135,11 @@ export class BusinessInfoPage implements HasUnsavedChanges {
     this.saving.set(true);
     const result = await this.repo.updateInfo(this.id(), input);
     this.saving.set(false);
-    if (result.errorKey) {
-      this.errorKey.set(result.errorKey);
-      return;
-    }
+    this.errorKey.set(result.errorKey);
+    if (result.errorKey) return;
     this.autosave.saved();
     if (reReview) await this.load();
     else this.panel.patch(input);
-    this.toast.show({
-      messageKey: reReview ? 'owner.reReview.saved' : 'businessPanel.form.saved',
-      tone: 'success',
-    });
+    this.toast.show({ messageKey: reReview ? 'owner.reReview.saved' : 'businessPanel.form.saved', tone: 'success' });
   }
 }

@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { AuthService } from '@core/auth/auth.service';
 import { AvatarRepository } from '@shared/account/avatar.repository';
+import { TextRules } from '@core/validation/text-rules';
 import { Phone } from '@shared/account/phone';
 import { SessionProfileStore } from '@shared/account/session-profile.store';
 import type { Residence } from '@shared/geo/residence';
@@ -42,7 +43,7 @@ export class SignupCompletion {
     const errors: string[] = [];
     const phone = Phone.parse(details.phone);
     if (details.residence && phone) {
-      const error = await this.session.saveDetails({ fullName: details.fullName.trim(), phone, residence: details.residence });
+      const error = await this.session.saveDetails({ fullName: TextRules.personName.normalize(details.fullName), phone, residence: details.residence });
       if (error) errors.push(error);
     }
     if (details.avatar) {

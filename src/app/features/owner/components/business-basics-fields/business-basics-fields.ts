@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, model, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
+import { ContactRules } from '@core/validation/contact-rules';
+import { TextRules } from '@core/validation/text-rules';
 import { LumaInput, LumaSelect, type SelectOption } from '@design-system';
 import { BUSINESS_CATEGORIES } from '@shared/business/data/business-categories';
 import { type FieldErrors, FormErrors } from '@shared/forms/form-errors';
@@ -15,6 +17,8 @@ import { LocationPicker } from '../location-picker/location-picker';
 
 /** A pin this far from the searched address deserves a second look. */
 const FAR_FROM_ADDRESS_KM = 0.3;
+/** The text fields checked when the owner leaves them (the same rules as on save and in the database). */
+const RULES = { name: TextRules.businessName, phone: ContactRules.phone, address: TextRules.address } as const;
 
 /**
  * BusinessBasicsFields — name, category, phone, address, department and
@@ -38,6 +42,8 @@ export class BusinessBasicsFields {
   public readonly errors = model<FieldErrors>({});
   /** Prefix of the field ids (focus on the first error). */
   public readonly idPrefix = input.required<string>();
+
+  protected readonly rules = RULES;
 
   protected readonly categories = computed<SelectOption[]>(() => {
     this.lang();
@@ -75,6 +81,10 @@ export class BusinessBasicsFields {
 
   protected setMunicipality(municipality: Residence | null): void {
     this.draft.update((draft) => ({ ...draft, municipality, cityDaneCode: municipality?.daneCode ?? draft.cityDaneCode }));
+  }
+
+  protected check(field: keyof typeof RULES): void {
+    FormErrors.blur(this.errors, field, RULES[field], this.draft()[field]);
   }
 
   protected error(field: string): string | undefined {

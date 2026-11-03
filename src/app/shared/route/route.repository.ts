@@ -3,13 +3,12 @@ import * as z from 'zod/mini';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import { METERS_PER_KM } from '@core/config/units';
 import { Haversine } from '@shared/geo/haversine';
+import { type TravelMode, TravelModePreference } from './travel-modes';
 
 export interface LatLng {
   readonly lat: number;
   readonly lng: number;
 }
-
-export type TravelMode = 'walk' | 'drive';
 
 /** The way to draw: [lng, lat] pairs, meters, seconds and where it came from. */
 export interface TravelRoute {
@@ -18,14 +17,13 @@ export interface TravelRoute {
   readonly durationS: number;
   /** 'straight': a line between both points with an estimated time (no routing provider). */
   readonly source: string;
+  /** The time adjusts another profile (the moto uses the car's): "tiempo aproximado". */
+  readonly approximate?: boolean;
 }
 
 // Same estimate as the route function (supabase/functions/route/model.ts).
 const SECONDS_PER_HOUR = 3600;
 const KMH_TO_MS = METERS_PER_KM / SECONDS_PER_HOUR;
-const WALK_KMH = 4.8;
-const DRIVE_KMH = 25;
-const SPEED_MS: Readonly<Record<TravelMode, number>> = { walk: WALK_KMH * KMH_TO_MS, drive: DRIVE_KMH * KMH_TO_MS };
 const DETOUR_FACTOR = 1.3;
 /** A line needs both ends. */
 const MIN_POINTS = 2;
@@ -35,6 +33,7 @@ const routeSchema = z.object({
   distanceM: z.number().check(z.minimum(0)),
   durationS: z.number().check(z.minimum(0)),
   source: z.string(),
+  approximate: z.optional(z.boolean()),
 });
 
 /**
@@ -59,14 +58,16 @@ export class RouteRepository {
     return RouteRepository.straight(from, to, mode);
   }
 
-  /** A straight line, its distance times a detour factor and the time at an average speed. */
+  /** A straight line, its distance times a detour factor and the time at the average speed of the mode. */
   public static straight(from: LatLng, to: LatLng, mode: TravelMode): TravelRoute {
     const distanceM = Math.round(Haversine.haversineKm(from.lat, from.lng, to.lat, to.lng) * METERS_PER_KM * DETOUR_FACTOR);
+    const info = TravelModePreference.info(mode);
     return {
       line: [[from.lng, from.lat], [to.lng, to.lat]],
       distanceM,
-      durationS: Math.round(distanceM / SPEED_MS[mode]),
+      durationS: Math.round(distanceM / (info.straightKmh * KMH_TO_MS)),
       source: 'straight',
+      ...(info.approximate ? { approximate: true } : {}),
     };
   }
 }

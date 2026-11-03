@@ -11,7 +11,7 @@ begin;
 \ir _verification_fixtures.sql
 select tests.use_aal('aal2');
 
-update public.businesses set phone = '+57 300 111 2233', whatsapp = '+573004445566', instagram = 'cafe.publico',
+update public.businesses set phone = '+573001112233', whatsapp = '+573004445566', instagram = 'cafe.publico',
   website = 'https://cafe.example.co' where id = tests.id('pub');
 create table tests.codes (kind text, code text);
 grant all on tests.codes to authenticated, service_role;

@@ -12,7 +12,7 @@ update public.profiles set account_type = 'business_owner' where id in (tests.id
 insert into public.admins (user_id) values (tests.id('adm'));
 
 insert into public.businesses (id, owner_id, name, category, latitude, longitude, address, phone, is_active) values
-  (tests.id('v1'),  tests.id('owner'), 'Fritanga Nueva', 'Restaurante', 1.21, -77.28, 'Calle 18 # 25-30', '+57 300 111 2233', true),
+  (tests.id('v1'),  tests.id('owner'), 'Fritanga Nueva', 'Restaurante', 1.21, -77.28, 'Calle 18 # 25-30', '+573001112233', true),
   (tests.id('pub'), tests.id('owner'), 'Café Público',   'Cafetería',   1.21, -77.28, 'Calle 19 # 20-10', null, true);
 update public.businesses set verification_status = 'approved' where id = tests.id('pub');
 insert into public.business_hours (business_id, day_of_week, opens_at, closes_at)

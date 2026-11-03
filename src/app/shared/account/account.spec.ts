@@ -4,6 +4,7 @@ import { Router, UrlTree, provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '@core/auth/auth.service';
 import { accountHomeGuard, ownerGuard } from './account.guards';
+import { OWNER_INVITE_PATH } from './account-homes';
 import { AccountProfileRepository } from './account-profile.repository';
 import { AccountType } from './account-type';
 import { Phone } from './phone';
@@ -64,7 +65,7 @@ describe('SessionProfileStore and guards', () => {
       boolean | UrlTree
     >;
 
-  it('exposes the account type and lands customers on the map', async () => {
+  it('exposes the account type, lands customers on the map and keeps them out of the panel', async () => {
     repo.getMine.mockResolvedValue(profile('customer'));
     const store = TestBed.inject(SessionProfileStore);
     TestBed.tick();
@@ -72,7 +73,7 @@ describe('SessionProfileStore and guards', () => {
     expect(await store.homePath()).toBe('/map');
     expect(store.isBusinessOwner()).toBe(false);
     const redirect = await run(ownerGuard);
-    expect(TestBed.inject(Router).serializeUrl(redirect as UrlTree)).toBe('/map');
+    expect(TestBed.inject(Router).serializeUrl(redirect as UrlTree)).toBe(OWNER_INVITE_PATH);
   });
 
   it('lets business owners into the panel and lands them there', async () => {

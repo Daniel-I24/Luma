@@ -52,6 +52,9 @@ design).
 | T24 | Routing key leaked or abused | Key only in the Edge Function (Authorization header, never a URL), JWT, 60 calls a day per user, cache | Deno `route/handler.test.ts` |
 | T25 | Forged WhatsApp webhook verifies someone's phone | HMAC of the raw body before parsing, constant-time compare, service_role-only function, the sender must equal the request's value, codes expire in 24 h, idempotent ids, 10 attempts a day per sender hash | Deno `whatsapp-webhook/handler.test.ts`; SQL `round6.sql` |
 | T26 | SSRF through verify-website | https/443 only, DNS checked against private/loopback/link-local/metadata ranges, again after each of at most 2 same-host redirections, 5 s, 4 KB, no user headers; residual DNS rebinding | Deno `verify-website/handler.test.ts` |
+| T27 | SSRF through IPv6 spellings (::ffff:7f00:1, ::7f00:1, 2002::/16) or a runtime without DNS | IPv6 parsed to 16 bytes, only 2000::/3, embedded IPv4 checked against the private list; DNS over HTTPS when Deno.resolveDns is missing | Deno `verify-website/handler.test.ts` |
+| T28 | A customer inside Luma Negocios, or an owner over the business limit | `ownerGuard` + `ownerChildGuard`; RLS by owner; per-owner advisory lock, 3 businesses, 3 creations a day | `owner-guard.spec.ts`; SQL `round7.sql` |
+| T29 | Invalid or invisible characters stored through the API | rules as SQL functions and CHECK constraints (NOT VALID, then VALIDATE) | SQL `round7.sql` (shared vectors) |
 
 ## Residual risks
 

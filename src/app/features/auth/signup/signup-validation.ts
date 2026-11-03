@@ -1,26 +1,21 @@
 import { emailSchema, newPasswordSchema } from '@core/auth/auth.schemas';
-import { Phone } from '@shared/account/phone';
+import { ContactRules } from '@core/validation/contact-rules';
+import { FieldRules } from '@core/validation/field-rule';
+import { PERSON_NAME_MAX, TextRules } from '@core/validation/text-rules';
 import { CommonPasswords } from './common-passwords';
 import { STEP_FIELDS, type SignupDraft, type SignupErrors, type SignupStep } from './signup-draft';
 
 const V = 'auth.signup.validation';
-/** Mirrors profiles.full_name (at most 80) and is_profile_complete (at least 3). */
-export const MAX_FULL_NAME = 80;
-const MIN_FULL_NAME = 3;
+/** profiles_full_name_rule (core/validation, at most 60). */
+export const MAX_FULL_NAME = PERSON_NAME_MAX;
 
 type Rule = (draft: SignupDraft) => string | null;
 
 const RULES: Readonly<Record<keyof SignupDraft, Rule>> = {
   accountType: (d) => (d.accountType ? null : `${V}.accountType`),
-  fullName: (d) => {
-    const name = d.fullName.trim();
-    return name.length >= MIN_FULL_NAME && name.length <= MAX_FULL_NAME ? null : `${V}.fullName`;
-  },
+  fullName: (d) => FieldRules.checkRequired(TextRules.personName, d.fullName),
   // Required for everyone (is_profile_complete): it verifies the account and stops fake orders.
-  phone: (d) => {
-    if (!d.phone.trim()) return `${V}.phoneRequired`;
-    return Phone.parse(d.phone) ? null : `${V}.phone`;
-  },
+  phone: (d) => FieldRules.checkRequired(ContactRules.mobilePhone, d.phone),
   residence: (d) => (d.residence ? null : `${V}.residence`),
   avatar: () => null,
   // The photo is optional; when there is one, its consent is required.

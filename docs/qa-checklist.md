@@ -110,3 +110,34 @@ and `npm run check:interactive`.
 - Mi negocio → Ayuda → "Información técnica": masked e-mail, short user id,
   businesses in the panel and each read (table, filter, rows); "Copiar
   información" copies the same text; nothing personal appears.
+
+## Round 7 (2026-10-31)
+
+- Cómo llegar: four icon buttons (a pie, bicicleta, moto, carro); each one
+  says its name to a screen reader and on hover; the chosen one shows it.
+  Moto shows "Tiempo aproximado". Reload: the last mode stays chosen.
+- Luma Negocios: "N de 3 negocios"; with 3, "Añadir" is disabled with the
+  reason. A fourth business (also through the API) says "Llegaste al
+  máximo…"; deleting one and creating again on the same day after 3
+  creations says "Ya creaste 3 negocios hoy".
+- A customer account opening /owner/<id> lands on Perfil with "Registra tu
+  negocio" open; signing out of an owner and in as a customer on the same
+  device never shows the panel.
+- Mis datos: "Ana 3", "R2D2", an emoji or a single letter show the message
+  under Nombre after leaving the field and on Guardar; "María José",
+  "O'Connor" and "Ana-Lucía" save. A landline in Celular is refused.
+- Business: a name with "#" or an emoji, an address without a number, a
+  phone of 9 digits, a website without https:// (or http://, or an IP) show
+  their message under the field. "(601) 234 5678" saves as a landline.
+- Prices: the field keeps only digits; 50 and 10 000 001 are refused.
+  Discounts 1 and 90 are fine, 0 and 91 are not. A promotion of more than a
+  year is refused.
+- Legal data: a wrong NIT check digit, "Ana 3" as representative.
+- Pasting text with invisible characters (zero-width, direction marks) or
+  double spaces saves it clean; nothing technical ever shows.
+- Contact verification: a fourth Instagram code in a day is refused while
+  the website can still ask for one; each new code replaces the pending one.
+- `npm run check:validation` passes; adding an `<input>` without a validator
+  makes it fail.
+- After migration 54: `docs/data-quality.sql` lists nothing (or the rows to
+  fix) before VALIDATE.

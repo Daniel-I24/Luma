@@ -7,6 +7,8 @@ import {
   signal,
 } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
+import { FieldRules } from '@core/validation/field-rule';
+import { TextRules } from '@core/validation/text-rules';
 import { AuthService } from '@core/auth/auth.service';
 import { LumaButton, LumaInput } from '@design-system';
 import { ToastService } from '@design-system/toast/toast.service';
@@ -44,6 +46,15 @@ export class DisplayNameField implements OnInit {
     this.errorKey.set(result.errorKey);
     this.value.set(result.data ?? '');
     this.saved.set(result.data ?? '');
+  }
+
+  protected edit(value: string): void {
+    this.value.set(value);
+    this.errorKey.set(null);
+  }
+
+  protected check(): void {
+    this.errorKey.set(this.value().trim() ? FieldRules.check(TextRules.displayName, this.value()) : null);
   }
 
   protected async save(event: Event): Promise<void> {

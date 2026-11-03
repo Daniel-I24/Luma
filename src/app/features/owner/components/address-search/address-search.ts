@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
+import { TextRules } from '@core/validation/text-rules';
 import { LumaButton, LumaInput } from '@design-system';
 import { ExternalUrls } from '@core/config/external-urls';
 import type { GeoCoords } from '@shared/geo/geolocation.service';
@@ -35,7 +36,7 @@ export class AddressSearch {
   protected readonly locationIqUrl = ExternalUrls.LOCATIONIQ;
 
   protected async search(): Promise<void> {
-    const q = this.query().trim();
+    const q = TextRules.search.normalize(this.query());
     if (q.length < MIN_QUERY || this.busy()) return;
     this.busy.set(true);
     this.errorKey.set(null);

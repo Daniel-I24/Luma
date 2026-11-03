@@ -33,10 +33,10 @@ select tests.expect_error('authenticated', tests.id('owner'), $$
   values (tests.id('pub'), 'Sin item', now(), now() + interval '1 day', 20)$$, 'promotions_discount_needs_item');
 select tests.expect_error('authenticated', tests.id('owner'), $$
   insert into public.promotions (business_id, title, starts_at, ends_at, menu_item_id, discount_percent)
-  values (tests.id('pub'), 'Demasiado', now(), now() + interval '1 day', tests.id('jugo'), 95)$$, 'promotions_discount_range');
+  values (tests.id('pub'), 'Demasiado', now(), now() + interval '1 day', tests.id('jugo'), 95)$$, 'promotions_discount_percent_range');
 select tests.expect_error('authenticated', tests.id('owner'), $$
   insert into public.promotions (business_id, title, starts_at, ends_at, menu_item_id, discount_percent)
-  values (tests.id('pub'), 'Muy poco', now(), now() + interval '1 day', tests.id('jugo'), 4)$$, 'promotions_discount_range');
+  values (tests.id('pub'), 'Muy poco', now(), now() + interval '1 day', tests.id('jugo'), 0)$$, 'promotions_discount_percent_range');
 select tests.expect_error('authenticated', tests.id('owner'), $$
   insert into public.promotions (business_id, title, starts_at, ends_at, menu_item_id, discount_percent)
   values (tests.id('pub'), 'Ajeno', now(), now() + interval '1 day', tests.id('eve-item'), 20)$$, 'promotion_item_mismatch');

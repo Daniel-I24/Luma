@@ -34,6 +34,8 @@ select tests.expect_error('authenticated', tests.id('owner'),
   $$select public.request_contact_verification(tests.id('pub'), 'email')$$, 'invalid_contact_kind');
 select tests.expect_error('authenticated', tests.id('owner'),
   $$select public.request_contact_verification(tests.id('pub'), 'phone')$$, 'contact_missing');
+-- Three a day per kind and business (round 7: per kind, not in total).
+select tests.exec_as('authenticated', tests.id('owner'), $$select public.request_contact_verification(tests.id('pub'), 'instagram')$$);
 select tests.exec_as('authenticated', tests.id('owner'), $$select public.request_contact_verification(tests.id('pub'), 'instagram')$$);
 select tests.exec_as('authenticated', tests.id('owner'), $$select public.request_contact_verification(tests.id('pub'), 'instagram')$$);
 select tests.expect_error('authenticated', tests.id('owner'),
@@ -43,7 +45,7 @@ select tests.expect_error('authenticated', tests.id('owner'),
 select tests.expect_true('authenticated', tests.id('cus'),
   $$select count(*) = 0 from public.contact_verifications$$, 'customers never read the codes');
 select tests.expect_true('authenticated', tests.id('owner'),
-  $$select count(*) = 3 from public.contact_verifications where business_id = tests.id('pub')$$,
+  $$select count(*) = 4 from public.contact_verifications where business_id = tests.id('pub')$$,
   'the owner reads the requests of their business with their steps');
 select tests.expect_error('authenticated', tests.id('owner'),
   $$select * from public.admin_pending_contact_verifications()$$, 'not_admin');
@@ -56,9 +58,9 @@ select tests.expect_error('authenticated', tests.id('adm'),
   'not_admin');
 select tests.use_aal('aal2');
 select tests.expect_true('authenticated', tests.id('adm'), $$
-  select count(*) = 3 and bool_and(code ~ '^LUMA-' and value is not null and business_name = 'Café Público')
+  select count(*) = 2 and bool_and(code ~ '^LUMA-' and value is not null and business_name = 'Café Público')
   from public.admin_pending_contact_verifications()$$,
-  'the admin queue shows value, code and business');
+  'the admin queue shows value, code and business (one pending request per kind since round 7)');
 select tests.exec_as('authenticated', tests.id('adm'),
   $$select public.admin_verify_contact((select id from tests.requests where kind = 'whatsapp'), 'verified')$$);
 select tests.expect_true('postgres', null, $$
@@ -73,7 +75,7 @@ select tests.expect_error('authenticated', tests.id('adm'),
   'verification_not_pending');
 update public.businesses set instagram = 'cafe.publico.co' where id = tests.id('pub');
 select tests.expect_true('postgres', null, $$
-  select (select count(*) from public.contact_verifications where kind = 'instagram' and status = 'rejected') = 2$$,
+  select (select count(*) from public.contact_verifications where kind = 'instagram' and status = 'rejected') = 3$$,
   'changing a value voids its pending requests');
 update public.businesses set whatsapp = '+573009998877' where id = tests.id('pub');
 select tests.expect_true('postgres', null,

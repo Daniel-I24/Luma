@@ -118,8 +118,7 @@ describe('RegisterPage (stepped sign-up)', () => {
     await submit();
 
     expect(document.activeElement?.id).toBe('signup-fullName');
-    expect(el.textContent).toContain('auth.signup.validation.fullName');
-    expect(el.textContent).toContain('auth.signup.validation.phoneRequired');
+    expect(el.textContent).toContain('validation.required');
     expect(auth.signUp).not.toHaveBeenCalled();
   });
 

@@ -1,4 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
+import { AuthRules } from '@core/validation/auth-rules';
+import { ValidatedField } from '@core/validation/validated-field';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaInput } from '@design-system';
 import { PHONE_VERIFICATION_ENABLED } from '@core/config/features';
@@ -21,9 +23,10 @@ import { PhoneVerificationService } from '../phone-verification.service';
         @if (done()) {
           <p class="m-0 text-body text-success-fg" role="status">{{ t('phoneVerification.done') }}</p>
         } @else if (sent()) {
-          <app-luma-input inputId="phone-code" inputMode="numeric" [label]="t('phoneVerification.code')"
-          [placeholder]="t('placeholders.code')"
-            [value]="code()" (valueChange)="code.set($event)" />
+          <app-luma-input inputId="phone-code" inputMode="numeric" autocomplete="one-time-code" [digitsOnly]="true"
+            [label]="t('phoneVerification.code')" [placeholder]="t('placeholders.code')" [maxLength]="codeField.rule.maxLength"
+            [value]="code()" (valueChange)="code.set($event)"
+            (blurred)="codeField.blur()" [errorMessage]="codeField.error() ? t(codeField.error()!) : undefined" />
           <app-luma-button [loading]="busy()" (clicked)="confirm(mobile)">{{ t('phoneVerification.confirm') }}</app-luma-button>
         } @else {
           <p class="m-0 text-body-sm text-fg-muted">{{ t('phoneVerification.intro') }}</p>
@@ -44,6 +47,7 @@ export class PhoneVerification {
   public readonly phone = input<Phone | null>(null);
 
   protected readonly code = signal('');
+  protected readonly codeField = new ValidatedField(AuthRules.code, { value: this.code });
   protected readonly sent = signal(false);
   protected readonly done = signal(false);
   protected readonly busy = signal(false);

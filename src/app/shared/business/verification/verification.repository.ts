@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import * as z from 'zod/mini';
 import { SupabaseService } from '@core/supabase/supabase.service';
-import { Nit } from '../domain/nit';
+import { Nit } from '@core/validation/nit';
+import { TextRules } from '@core/validation/text-rules';
 import type { RepoResult } from '../data/business.repository';
 import { BusinessWriteErrors } from '../data/business-write-error';
 import {
@@ -73,8 +74,8 @@ class SupabaseVerificationRepository extends VerificationRepository {
     if (!nit) return { data: null, errorKey: 'verification.validation.nit' };
     const values = {
       tax_id: nit.value,
-      legal_name: legalName.trim(),
-      legal_rep_name: legalRep.trim(),
+      legal_name: TextRules.legalName.normalize(legalName),
+      legal_rep_name: TextRules.legalRepName.normalize(legalRep),
     };
     const existing = await this.getLegal(businessId);
     if (existing.errorKey) return { data: null, errorKey: existing.errorKey };

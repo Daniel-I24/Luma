@@ -22,8 +22,9 @@
   <app-luma-input
     inputId="promo-percent"
     [placeholder]="t('placeholders.percent')"
-    type="number"
     inputMode="numeric"
+    [digitsOnly]="true"
+    [maxLength]="2"
     [label]="t('owner.discount.percent')"
     [hint]="t('owner.discount.percentHint')"
     [errorMessage]="percentError()"

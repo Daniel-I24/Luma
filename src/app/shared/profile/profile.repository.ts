@@ -1,18 +1,14 @@
 import { Injectable, inject } from '@angular/core';
-import * as z from 'zod/mini';
 import { SupabaseService } from '@core/supabase/supabase.service';
+import { TextRules } from '@core/validation/text-rules';
+import { ZodRules } from '@core/validation/zod-rules';
 import type { RepoResult } from '@shared/business/data/business.repository';
 
-/** Mirrors the CHECK constraint of profiles.display_name. */
-export const MAX_DISPLAY_NAME_LENGTH = 40;
+/** profiles_display_name_rule: 2 to 40 clean characters with a letter. */
+export const MAX_DISPLAY_NAME_LENGTH = TextRules.displayName.maxLength;
 
-/** Trimmed display name; empty means "no public name" (null). */
-const displayNameSchema = z.pipe(
-  z
-    .string()
-    .check(z.trim(), z.maxLength(MAX_DISPLAY_NAME_LENGTH, 'profile.validation.displayNameTooLong')),
-  z.transform((name) => (name ? name : null)),
-);
+/** Cleaned display name; empty means "no public name" (null). */
+const displayNameSchema = ZodRules.optionalText(TextRules.displayName);
 
 /**
  * ProfileRepository — the signed-in user's public display name (shown next

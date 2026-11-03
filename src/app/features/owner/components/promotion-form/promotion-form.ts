@@ -10,10 +10,12 @@ import {
   untracked,
 } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
+import { DateRules } from '@core/validation/number-rules';
+import { TextRules } from '@core/validation/text-rules';
 import { LumaButton, LumaInput } from '@design-system';
 import { DiscountFields } from '../discount-fields/discount-fields';
 import { ImageField } from '../image-field/image-field';
-import { type PromotionInput, promotionSchema } from '@shared/business/data/business-write.schemas';
+import { MAX_DESCRIPTION_LENGTH, type PromotionInput, promotionSchema } from '@shared/business/data/business-write.schemas';
 import type { Promotion } from '@shared/business/models/business.model';
 import type { MenuItem } from '@shared/business/models/menu.model';
 import { DraftNotice } from '@shared/forms/draft-notice/draft-notice';
@@ -39,6 +41,9 @@ const DRAFT_FIELD: Record<string, string> = {
   discount: 'discount_percent',
 };
 
+/** Checked when the owner leaves each field (the same rules as on save and in the database). */
+const RULES = { title: TextRules.promotionTitle, description: TextRules.freeText(MAX_DESCRIPTION_LENGTH) } as const;
+
 /**
  * PromotionForm — create or edit a promotion; the end must be after the start
  * and in the future. What is typed is kept as a device draft until saved.
@@ -62,6 +67,7 @@ export class PromotionForm {
   public readonly submitted = output<PromotionInput>();
   public readonly cancelled = output<void>();
 
+  protected readonly rules = RULES;
   protected readonly draft = signal<PromoDraft>(PromotionDrafts.draftOf(null, new Date(), null));
   protected readonly errors = signal<FieldErrors>({});
   protected readonly autosave = inject(FormDraftStore).attach(this.draft);
@@ -94,6 +100,10 @@ export class PromotionForm {
     this.errors.update((errors) => FormErrors.withoutErrors(errors, DRAFT_FIELD[field] ?? field));
   }
 
+  protected check(field: keyof typeof RULES, raw: string): void {
+    FormErrors.blur(this.errors, field, RULES[field], raw);
+  }
+
   protected onDescription(event: Event): void {
     this.set('description', (event.target as HTMLTextAreaElement).value);
   }
@@ -111,9 +121,8 @@ export class PromotionForm {
       discount_percent: draft.discount.trim() ? Number(draft.discount) : null,
     });
     const errors = parsed.success ? {} : { ...FormErrors.fieldErrors(parsed.error.issues) };
-    if (parsed.success && Date.parse(parsed.data.ends_at) <= Date.now()) {
-      Object.assign(errors, { ends_at: 'businessPanel.validation.endsInPast' });
-    }
+    const period = parsed.success ? DateRules.period(parsed.data.starts_at, parsed.data.ends_at, Date.now(), true) : null;
+    if (period) Object.assign(errors, { ends_at: period });
     this.errors.set(errors);
     if (!parsed.success || Object.keys(errors).length) {
       FormErrors.focusFirstError(this.document, FIELD_ORDER, errors);

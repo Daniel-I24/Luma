@@ -71,6 +71,10 @@
   color: var(--color-fg-muted);
 }
 
+.luma-input__counter {
+  align-self: flex-end;
+}
+
 .luma-input__error {
   font-size: var(--text-label);
   color: var(--color-danger);

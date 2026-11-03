@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaBottomSheet, LumaButton, LumaIcon } from '@design-system';
 import { ownerPaths } from '@shared/account/owner-paths';
@@ -8,7 +8,8 @@ import { SessionProfileStore } from '@shared/account/session-profile.store';
 /**
  * BecomeOwnerEntry — "¿Tienes un negocio? Regístralo" for customers: after a
  * confirmation sheet the account becomes a business owner
- * (become_business_owner) and opens the business registration.
+ * (become_business_owner) and opens the business registration. A customer
+ * sent here from Luma Negocios (?invite=business) sees the sheet at once.
  */
 @Component({
   selector: 'app-become-owner-entry',
@@ -21,7 +22,7 @@ export class BecomeOwnerEntry {
   private readonly session = inject(SessionProfileStore);
   private readonly router = inject(Router);
 
-  protected readonly open = signal(false);
+  protected readonly open = signal(inject(ActivatedRoute).snapshot.queryParamMap.get('invite') === 'business');
   protected readonly saving = signal(false);
   protected readonly errorKey = signal<string | null>(null);
 

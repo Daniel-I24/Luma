@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 
 import { allowedOriginsFrom } from '../_shared/cors.ts';
 import { type CallerApi, createHandler } from './handler.ts';
+import { runtimeResolver } from './resolver.ts';
 
 const url = Deno.env.get('SUPABASE_URL');
 const anonKey = Deno.env.get('SUPABASE_ANON_KEY');
@@ -25,13 +26,9 @@ async function authenticate(token: string): Promise<CallerApi | null> {
   };
 }
 
-/** A and AAAA records; an unknown host resolves to nothing (refused). */
-async function resolve(host: string): Promise<string[]> {
-  const lists = await Promise.all(
-    (['A', 'AAAA'] as const).map((type) => Deno.resolveDns(host, type).catch(() => [] as string[])),
-  );
-  return lists.flat();
-}
+// Deno.resolveDns when the runtime has it, DNS over HTTPS otherwise (resolver.ts).
+const native = typeof Deno.resolveDns === 'function' ? (host: string, type: 'A' | 'AAAA') => Deno.resolveDns(host, type) : undefined;
+const resolve = runtimeResolver(native, (target, init) => fetch(target, init));
 
 Deno.serve(
   createHandler({

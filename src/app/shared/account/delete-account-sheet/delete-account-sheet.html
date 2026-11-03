@@ -21,7 +21,10 @@
       inputMode="numeric"
       autocomplete="one-time-code"
       [maxLength]="codeLength"
+      [digitsOnly]="true"
       [(value)]="code"
+      (blurred)="codeField.blur()"
+      [errorMessage]="codeField.error() ? t(codeField.error()!) : undefined"
     />
     }
     @if (errorKey()) {
