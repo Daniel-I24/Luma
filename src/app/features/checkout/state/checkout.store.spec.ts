@@ -7,7 +7,8 @@ import { BusinessRepository } from '@shared/business/data/business.repository';
 import type { BusinessHours } from '@shared/business/models/business.model';
 import { CartStore } from '@shared/cart/cart.store';
 import { OrderRepository } from '@shared/orders/order.repository';
-import { PAYMENT_GATEWAY } from '@shared/payments/payment-gateway';
+import { PaymentGatewayFactory } from '@shared/payments/payment-gateway';
+import { PaymentRepository } from '@shared/payments/payment.repository';
 import { CheckoutStore } from './checkout.store';
 import { PickupScheduleStore } from './pickup-schedule.store';
 import { useFixedClock } from '../../../../testing/fixed-clock';
@@ -32,6 +33,9 @@ describe('CheckoutStore', () => {
     labelKey: 'checkout.payment.payAtPickup',
     start: vi.fn().mockResolvedValue({ kind: 'pay_at_pickup' }),
   };
+  const online = { labelKey: 'checkout.payment.online', start: vi.fn().mockResolvedValue({ kind: 'redirected' }) };
+  const gateways = { for: vi.fn((method: string) => (method === 'online' ? online : payments)) };
+  const config = { config: vi.fn().mockResolvedValue({ enabled: false, sandbox: false }) };
 
   beforeEach(async () => {
     localStorage.clear();
@@ -45,7 +49,8 @@ describe('CheckoutStore', () => {
         { provide: BusinessRepository, useValue: businesses },
         { provide: AuthService, useValue: { user: signal({ id: 'u1' }) } },
         { provide: OrderRepository, useValue: orders },
-        { provide: PAYMENT_GATEWAY, useValue: payments },
+        { provide: PaymentGatewayFactory, useValue: gateways },
+        { provide: PaymentRepository, useValue: config },
       ],
     });
     cart = TestBed.inject(CartStore);
@@ -82,6 +87,7 @@ describe('CheckoutStore', () => {
       items: [{ menuItemId: 'm1', quantity: 2 }],
       pickupAt: null,
       notes: 'Sin azúcar',
+      paymentMethod: 'pay_at_pickup',
     });
     expect(cart.isEmpty()).toBe(true);
     expect(payments.start).toHaveBeenCalledWith('o1');
@@ -122,5 +128,27 @@ describe('CheckoutStore', () => {
     const { pickupAt } = orders.create.mock.calls[0][0] as { pickupAt: string };
     const at = new Date(pickupAt);
     expect([at.getDate(), at.getHours(), at.getMinutes()]).toEqual([15, 8, 30]);
+  });
+
+  it('offers online payment only when the server enables it, and then pays online', async () => {
+    orders.create.mockResolvedValue({ data: 'o3', errorKey: null });
+    store.method.set('online');
+    await store.confirm();
+    expect(orders.create.mock.calls[0][0].paymentMethod).toBe('pay_at_pickup');
+    expect(store.onlineAvailable()).toBe(false);
+  });
+
+  it('online orders open the Wompi checkout, then the order', async () => {
+    config.config.mockResolvedValue({ enabled: true, sandbox: true });
+    const fresh = TestBed.runInInjectionContext(() => new CheckoutStore());
+    await Promise.resolve();
+    await Promise.resolve();
+    expect([fresh.onlineAvailable(), fresh.sandbox()]).toEqual([true, true]);
+    orders.create.mockResolvedValue({ data: 'o4', errorKey: null });
+    fresh.method.set('online');
+    await fresh.confirm();
+    expect(orders.create.mock.calls[0][0].paymentMethod).toBe('online');
+    expect(online.start).toHaveBeenCalledWith('o4');
+    expect(navigate).toHaveBeenCalledWith(['/orders', 'o4']);
   });
 });

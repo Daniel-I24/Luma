@@ -202,4 +202,28 @@ going live; not legal advice):
   API answers, the 49 shared vectors, log redaction), `create-payment`,
   `wompi-webhook` (huge body, malformed JSON, identical rejections, logs
   without secrets or personal data), `reconcile-payments`, `void-payment`.
-- App: phase 3.
+- App: `payments.spec.ts` (gateways, only Wompi links open, return-link
+  parsing and handling), `order-payment.store.spec.ts`,
+  `checkout.store.spec.ts` (online only when enabled).
+
+## In the app
+
+- `PaymentRepository` (`shared/payments`): `payment_config`,
+  `my_order_payment`, `create-payment`, `record_payment_redirect`.
+- `PaymentGatewayFactory` (Strategy and Factory): `PayAtPickupGateway` and
+  `WompiGateway`, which opens the checkout with `ExternalBrowser`
+  (`@capacitor/browser`, system browser) and only for URLs that start with
+  `ExternalUrls.WOMPI_CHECKOUT`.
+- Checkout: "¿Cómo pagas?" with "Pagar al recoger" and, only when
+  `payment_config.enabled`, "Pagar en línea"; in the sandbox the banner
+  "Modo de pruebas: no se cobra dinero real" with the test card and Nequi.
+- Order screen: `OrderPayment` shows the server's status, attempts left,
+  "Pagar" / "Reintentar pago" (3 attempts, 15 minutes) and "Cancelar pedido";
+  it re-reads the order when the app returns to the foreground
+  (`AppEvents.resumes`). The list shows "Completar pago".
+- `luma://payments/return?order=<id>&id=<transaction>` is registered in
+  `AndroidManifest.xml`; `PaymentReturn` stores the transaction id and opens
+  the order. Nothing is approved by the link.
+- Owners see "Pagado en línea" on the order card and never mark a payment.
+- Legal drafts: `/legal/refunds` (payments and refunds policy) and Wompi as
+  processor in the privacy draft.

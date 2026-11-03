@@ -7,7 +7,8 @@ import type { NewOrder, Order, OrderWithItems } from './order.model';
 
 const ORDER_COLUMNS =
   'id, business_id, business_name, business_address, status, pickup_at, total_cop, notes, ' +
-  'payment_method, created_at, updated_at, business:businesses(id, latitude, longitude, prep_minutes)';
+  'payment_method, payment_status, cancel_reason, created_at, updated_at, ' +
+  'business:businesses(id, latitude, longitude, prep_minutes)';
 
 /** create_order returns the new order id. */
 const orderIdSchema = z.uuid();
@@ -21,7 +22,7 @@ const orderIdSchema = z.uuid();
 export class OrderRepository {
   private readonly db = inject(SupabaseService).client;
 
-  /** Creates a pending order; resolves to its id. Only ids and quantities are sent. */
+  /** Creates the order (pending, or awaiting_payment when online); resolves to its id. Only ids and quantities are sent. */
   async create(order: NewOrder): Promise<RepoResult<string>> {
     const { data, error } = await this.db.rpc('create_order', {
       p_business_id: order.businessId,
@@ -31,6 +32,7 @@ export class OrderRepository {
       })),
       p_pickup_at: order.pickupAt,
       p_notes: order.notes,
+      p_payment_method: order.paymentMethod ?? 'pay_at_pickup',
     });
     if (error)
       return { data: null, errorKey: mapOrderError(error.message, 'orders.errors.createFailed') };

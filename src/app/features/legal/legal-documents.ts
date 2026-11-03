@@ -28,10 +28,11 @@ export const LEGAL_DOCUMENTS = {
     'minors',
     'changes',
   ],
+  refunds: ['scope', 'processor', 'cancellations', 'refunds', 'timing', 'pickup', 'contact'],
 } as const;
 
 export type LegalDocument = keyof typeof LEGAL_DOCUMENTS;
 
 export function isLegalDocument(value: unknown): value is LegalDocument {
-  return value === 'terms' || value === 'privacy';
+  return value === 'terms' || value === 'privacy' || value === 'refunds';
 }

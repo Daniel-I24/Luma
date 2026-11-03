@@ -43,6 +43,9 @@
     </p>
     }
   </section>
+  @if (order.payment_method === 'online') {
+  <app-order-payment [order]="order" />
+  }
 
   <section class="flex flex-col gap-2 rounded-xl border border-border-subtle bg-surface p-4">
     <p class="m-0 flex items-center gap-2 text-body text-fg-muted">
@@ -87,7 +90,7 @@
 
   @if (store.errorKey(); as key) {
   <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
-  } @if (order.status === 'pending') {
+  } @if (order.status === 'pending' || order.status === 'awaiting_payment') {
   <app-luma-button variant="danger-outline" [fullWidth]="true" [disabled]="store.cancelling()" (clicked)="confirmOpen.set(true)">{{
     t('orders.detail.cancel')
   }}</app-luma-button>

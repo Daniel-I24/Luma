@@ -11,10 +11,12 @@ import { provideRouter, withViewTransitions } from '@angular/router';
 import { provideTransloco } from '@jsverse/transloco';
 import { LanguageService } from '@core/i18n/language.service';
 import { ConnectivityService } from '@core/network/connectivity.service';
+import { AppEvents } from '@core/native/app-events';
 import { NativeShell } from '@core/native/native-shell';
 import { PushRegistration } from '@core/push/push-registration.service';
 import { UpdateCheck } from '@core/update/update-check.service';
 import { AppErrorHandler } from '@shared/errors/app-error-handler';
+import { PaymentReturn } from '@shared/payments/payment-return';
 import { onRouteTransitionCreated } from '@core/navigation/route-transition';
 import { routes } from './app.routes';
 import { TranslocoHttpLoader } from './transloco-loader';
@@ -55,6 +57,11 @@ export const appConfig: ApplicationConfig = {
         .catch(() => undefined);
       // Push: never asks for permission here, only refreshes a granted token.
       inject(PushRegistration)
+        .init()
+        .catch(() => undefined);
+      // Resume and luma:// links (Wompi's return after paying).
+      inject(PaymentReturn).init();
+      inject(AppEvents)
         .init()
         .catch(() => undefined);
       // Newer version on the site? Never delays or blocks the start.

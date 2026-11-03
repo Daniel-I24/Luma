@@ -76,4 +76,6 @@ export interface NewOrder {
   /** ISO time, or null for as soon as possible. */
   pickupAt: string | null;
   notes: string | null;
+  /** Defaults to paying at pick-up; 'online' starts in awaiting_payment. */
+  paymentMethod?: 'pay_at_pickup' | 'online';
 }

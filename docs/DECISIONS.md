@@ -322,3 +322,25 @@ alternative that was not taken. The safest, most reversible option wins.
 - **Why**: Supabase does not allow deleting Storage objects from SQL, so a
   replace-in-place cannot be enforced in the database; one object is.
 - **Alternative**: allow two objects for the swap (a stale photo could stay).
+
+## 2026-10-26 — @capacitor/browser 8.0.5 for the Wompi checkout
+
+- **What**: new dependency `@capacitor/browser` 8.0.5 (official Capacitor
+  plugin, same major as `@capacitor/core`, published 2026-10-02, exact
+  version, `npm audit --omit=dev` clean). `ExternalBrowser` opens only links
+  that start with Wompi's checkout URL.
+- **Why**: the prompt requires the hosted checkout by redirection; opening it
+  in the system browser (Custom Tab) keeps the payment page out of the
+  app's WebView, so no Luma script can ever read it.
+- **Alternative**: an in-app WebView or `window.open` (the checkout would run
+  inside the app's process), or Wompi's widget script (forbidden).
+
+## 2026-10-26 — No Money class in the app
+
+- **What**: `Money` (integer cents) lives in the Edge Functions
+  (`_shared/payments/money.ts`), where amounts are signed and compared. The
+  app never computes, sends or compares an amount: it shows
+  `orders.total_cop` with the COP pipe.
+- **Why**: an unused value object in the app would be dead code; the rule
+  "every amount comes from the server" makes it unnecessary.
+- **Alternative**: a mirrored app class used only for display.

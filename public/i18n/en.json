@@ -694,7 +694,12 @@
     },
     "payment": {
       "payAtPickup": "Pay at pick-up",
-      "hint": "You pay at the counter when you pick up your order."
+      "hint": "You pay at the counter when you pick up your order.",
+      "title": "How do you pay?",
+      "online": "Pay online",
+      "onlineHint": "You pay on Wompi's secure page (card, PSE or Nequi). Luma never sees your payment details.",
+      "sandbox": "Test mode: no real money is charged. Use card 4242 4242 4242 4242 or Nequi 3991111111.",
+      "refundPolicy": "Payments and refunds policy"
     },
     "totalNote": "The restaurant confirms the final price when it receives the order.",
     "confirm": "Confirm order",
@@ -705,7 +710,8 @@
       "tooFar": "You can schedule up to 7 days ahead.",
       "closedNow": "The business is closed right now. Choose a pick-up time.",
       "outsideHours": "Choose a time within the business hours."
-    }
+    },
+    "pay": "Pay"
   },
   "favoritesPage": {
     "title": "My favourites",
@@ -1249,7 +1255,7 @@
         },
         "data": {
           "title": "What data we process",
-          "body": "Email and password (encrypted), full name, mobile number (required for businesses, optional for customers), your orders, favourites and reviews. We never ask for your address: orders are picked up in store. Luma never receives card data."
+          "body": "Email and password (encrypted), full name, mobile number, department and municipality of residence (the neighbourhood is optional), your orders, favourites and reviews and, only if you upload it and agree, a profile photo. We never ask for your address: orders are picked up in store. Luma never receives card, PSE or Nequi data."
         },
         "purposes": {
           "title": "What we use it for",
@@ -1261,7 +1267,7 @@
         },
         "sharing": {
           "title": "Who it is shared with",
-          "body": "The business you order from sees your order and your display name, never your email, phone or id. We use infrastructure providers (hosting and database) that process data on our behalf."
+          "body": "The business you order from sees your order and the name you show, never your email, phone or identifier. Only the business preparing your order sees your profile photo, and only if you turn that option on. Online payments are processed by Wompi (Bancolombia), which receives your payment details directly on its page; Luma only receives the result. We use infrastructure providers (hosting and database) that process data on our behalf."
         },
         "rights": {
           "title": "Your rights",
@@ -1286,6 +1292,39 @@
         "changes": {
           "title": "Changes to this policy",
           "body": "We will tell you in the app before an important change takes effect."
+        }
+      }
+    },
+    "refunds": {
+      "title": "Payments and refunds policy",
+      "sections": {
+        "scope": {
+          "title": "Scope",
+          "body": "This policy applies to orders paid online in Luma. Orders with \"Pay at pick-up\" are paid directly in the store."
+        },
+        "processor": {
+          "title": "Who processes your payment",
+          "body": "Online payments are processed by Wompi, from Bancolombia. You type your card, PSE or Nequi details on Wompi's page, never in Luma. Luma only receives the reference, status and amount of the payment."
+        },
+        "cancellations": {
+          "title": "Cancellations",
+          "body": "You can cancel an order while the business has not accepted it. If you do not complete the payment within 15 minutes, the order is cancelled automatically. The business can cancel an accepted order giving the reason."
+        },
+        "refunds": {
+          "title": "When we refund you",
+          "body": "If you paid and the order is cancelled (by you before it is accepted, by the business, or because the payment arrived late), we refund the full amount to the same payment method. If you do not pick up a ready order, the business can mark it as not picked up and that order is not refunded."
+        },
+        "timing": {
+          "title": "Timing",
+          "body": "Card payments are usually voided the same day. Other methods are refunded from the Wompi dashboard and the time depends on your bank. [Maximum times to be agreed with the payment processor.]"
+        },
+        "pickup": {
+          "title": "Pay at pick-up",
+          "body": "If you choose to pay at pick-up, any refund is handled directly by the business."
+        },
+        "contact": {
+          "title": "Contact",
+          "body": "For any claim about a payment write to [support email to be defined] with your order number. This policy will be reviewed with legal advice before launch (Ley 1480 de 2011, Colombian consumer statute)."
         }
       }
     }
@@ -1699,5 +1738,35 @@
     "neighborhood": "Neighbourhood (optional)",
     "neighborhoodHint": "Up to 60 characters.",
     "loadFailed": "Could not load the list of municipalities."
+  },
+  "payments": {
+    "title": "Online payment",
+    "pay": "Pay",
+    "retry": "Retry payment",
+    "opening": "Opening the payment...",
+    "complete": "Complete payment",
+    "attemptsLeft": "You have {{count}} attempts left to pay before the order is cancelled.",
+    "noMoreAttempts": "This order can no longer be paid. Cancel it and place a new one.",
+    "refundInfo": "Your order was cancelled after you paid. We will refund the money to the same payment method.",
+    "status": {
+      "none": "Waiting for your payment",
+      "pending": "Payment in progress",
+      "approved": "Paid online",
+      "declined": "Payment declined",
+      "error": "The payment was not completed",
+      "voided": "Payment voided",
+      "refund_required": "Refund in progress",
+      "refunded": "Refunded"
+    },
+    "errors": {
+      "loadFailed": "Could not read the payment status.",
+      "unavailable": "Online payment is not available right now. Try again in a moment.",
+      "tooManyAttempts": "You already used the 3 payment attempts of this order.",
+      "expired": "The time to pay this order is over.",
+      "alreadyPaid": "This order is already paid.",
+      "notPayable": "This order no longer waits for a payment.",
+      "rateLimited": "You made many attempts in a row. Wait a few minutes.",
+      "browser": "Could not open the payment page."
+    }
   }
 }

@@ -27,6 +27,8 @@ import { estimateReadyAt, estimateTravelMinutes } from '@shared/orders/order-est
 import { OrderStatusBadge } from '@shared/orders/order-status-badge';
 import type { OrderBusiness } from '@shared/orders/order.model';
 import { pollWhileVisible } from '@shared/ui/poll-while-visible';
+import { AppEvents } from '@core/native/app-events';
+import { OrderPayment } from './components/order-payment/order-payment';
 import { OrderTimeline } from './components/order-timeline/order-timeline';
 import { OrderDetailStore } from './state/order-detail.store';
 import { directionsUrl, showsEstimate } from './utils/order-detail.util';
@@ -36,7 +38,9 @@ export const ORDER_REFRESH_MS = 15_000;
 
 /**
  * OrderDetailPage — /orders/:id: status timeline, estimated time, address
- * with directions, lines and total, and "Cancelar" while pending. Polls
+ * with directions, lines and total, the online payment, and "Cancelar"
+ * while pending or waiting for the payment. Re-reads the server when the
+ * app comes back (e.g. from Wompi's checkout). Polls
  * every 15 s only while the screen is visible.
  */
 @Component({
@@ -54,6 +58,7 @@ export const ORDER_REFRESH_MS = 15_000;
     CopCurrencyPipe,
     OrderStatusBadge,
     OrderTimeline,
+    OrderPayment,
   ],
   providers: [OrderDetailStore],
   templateUrl: './order-detail.page.html',
@@ -95,6 +100,15 @@ export class OrderDetailPage {
       untracked(() => void this.store.load(id));
     });
     pollWhileVisible(() => void this.store.refresh(), ORDER_REFRESH_MS);
+    // Back from the payment page: the server, not the redirect, says how it went.
+    const events = inject(AppEvents);
+    let seen = events.resumes();
+    effect(() => {
+      const resumes = events.resumes();
+      if (resumes === seen) return;
+      seen = resumes;
+      untracked(() => void this.store.refresh());
+    });
   }
 
   protected reload(): void {

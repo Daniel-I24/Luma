@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import {
   LumaButton,
@@ -29,6 +29,7 @@ import type { PickupOption } from './utils/pickup-time.util';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     TranslocoModule,
+    RouterLink,
     LumaButton,
     LumaChip,
     LumaEmptyState,
@@ -49,6 +50,7 @@ export class CheckoutPage {
   private readonly router = inject(Router);
 
   protected readonly options: readonly PickupOption[] = ['now', 'later', 'tomorrow'];
+  protected readonly paymentMethods = ['pay_at_pickup', 'online'] as const;
   /** create_order answered profile_incomplete: offer "Completar perfil". */
   protected readonly profileIncompleteKey = PROFILE_INCOMPLETE_KEY;
 

@@ -694,7 +694,12 @@
     },
     "payment": {
       "payAtPickup": "Pagar al recoger",
-      "hint": "Pagas en el local cuando recojas tu pedido."
+      "hint": "Pagas en el local cuando recojas tu pedido.",
+      "title": "¿Cómo pagas?",
+      "online": "Pagar en línea",
+      "onlineHint": "Pagas en la página segura de Wompi (tarjeta, PSE o Nequi). Luma nunca ve los datos de tu pago.",
+      "sandbox": "Modo de pruebas: no se cobra dinero real. Usa la tarjeta 4242 4242 4242 4242 o el Nequi 3991111111.",
+      "refundPolicy": "Política de pagos y reembolsos"
     },
     "totalNote": "El restaurante confirma el precio final al recibir el pedido.",
     "confirm": "Confirmar pedido",
@@ -705,7 +710,8 @@
       "tooFar": "Solo puedes programar hasta 7 días antes.",
       "closedNow": "El negocio está cerrado ahora. Elige una hora de recogida.",
       "outsideHours": "Elige una hora dentro del horario del negocio."
-    }
+    },
+    "pay": "Pagar"
   },
   "favoritesPage": {
     "title": "Mis favoritos",
@@ -1249,7 +1255,7 @@
         },
         "data": {
           "title": "Qué datos tratamos",
-          "body": "Correo y contraseña (cifrada), nombre completo, celular (obligatorio para negocios, opcional para clientes), tus pedidos, favoritos y reseñas. No pedimos tu dirección: los pedidos se recogen en el local. Luma no recibe datos de tarjetas."
+          "body": "Correo y contraseña (cifrada), nombre completo, celular, departamento y municipio de residencia (el barrio es opcional), tus pedidos, favoritos y reseñas, y, solo si tú la subes y aceptas, una foto de perfil. No pedimos tu dirección: los pedidos se recogen en el local. Luma no recibe datos de tarjetas, PSE ni Nequi."
         },
         "purposes": {
           "title": "Para qué los usamos",
@@ -1261,7 +1267,7 @@
         },
         "sharing": {
           "title": "Con quién se comparten",
-          "body": "El negocio al que pides ve tu pedido y el nombre que muestras, nunca tu correo, teléfono ni identificador. Usamos proveedores de infraestructura (alojamiento y base de datos) que tratan los datos por encargo nuestro."
+          "body": "El negocio al que pides ve tu pedido y el nombre que muestras, nunca tu correo, teléfono ni identificador. Tu foto de perfil solo la ve el negocio que está preparando tu pedido, y solo si activas esa opción. Los pagos en línea los procesa Wompi (Bancolombia), que recibe tus datos de pago directamente en su página; Luma solo recibe el resultado del pago. Usamos proveedores de infraestructura (alojamiento y base de datos) que tratan los datos por encargo nuestro."
         },
         "rights": {
           "title": "Tus derechos",
@@ -1286,6 +1292,39 @@
         "changes": {
           "title": "Cambios a esta política",
           "body": "Te avisaremos en la app antes de que un cambio importante entre en vigor."
+        }
+      }
+    },
+    "refunds": {
+      "title": "Política de pagos y reembolsos",
+      "sections": {
+        "scope": {
+          "title": "Alcance",
+          "body": "Esta política aplica a los pedidos pagados en línea en Luma. Los pedidos con «Pagar al recoger» se pagan directamente en el local."
+        },
+        "processor": {
+          "title": "Quién procesa tu pago",
+          "body": "Los pagos en línea los procesa Wompi, de Bancolombia. Escribes los datos de tu tarjeta, PSE o Nequi en la página de Wompi, nunca en Luma. Luma recibe solo la referencia, el estado y el valor del pago."
+        },
+        "cancellations": {
+          "title": "Cancelaciones",
+          "body": "Puedes cancelar un pedido mientras el negocio no lo haya aceptado. Si no completas el pago en 15 minutos, el pedido se cancela solo. El negocio puede cancelar un pedido aceptado indicando el motivo."
+        },
+        "refunds": {
+          "title": "Cuándo te devolvemos el dinero",
+          "body": "Si pagaste y el pedido se cancela (por ti antes de que lo acepten, por el negocio o porque el pago llegó tarde), te devolvemos el valor completo al mismo medio de pago. Si no recoges un pedido listo, el negocio puede marcarlo como no recogido y ese pedido no se reembolsa."
+        },
+        "timing": {
+          "title": "Tiempos",
+          "body": "Los pagos con tarjeta se anulan normalmente el mismo día. Los demás medios se reembolsan desde el panel de Wompi y el tiempo depende de tu banco. [Plazos máximos por definir con el procesador de pagos.]"
+        },
+        "pickup": {
+          "title": "Pagar al recoger",
+          "body": "Si eliges pagar al recoger, cualquier devolución la gestiona directamente el negocio."
+        },
+        "contact": {
+          "title": "Contacto",
+          "body": "Para cualquier reclamo sobre un pago escribe a [correo de soporte por definir] con el número de tu pedido. Esta política se revisará con asesoría legal antes del lanzamiento (Ley 1480 de 2011, Estatuto del Consumidor)."
         }
       }
     }
@@ -1699,5 +1738,35 @@
     "neighborhood": "Barrio (opcional)",
     "neighborhoodHint": "Hasta 60 caracteres.",
     "loadFailed": "No se pudo cargar la lista de municipios."
+  },
+  "payments": {
+    "title": "Pago en línea",
+    "pay": "Pagar",
+    "retry": "Reintentar pago",
+    "opening": "Abriendo el pago...",
+    "complete": "Completar pago",
+    "attemptsLeft": "Te quedan {{count}} intentos para pagar antes de que el pedido se cancele.",
+    "noMoreAttempts": "Ya no se puede pagar este pedido. Cancélalo y haz uno nuevo.",
+    "refundInfo": "Tu pedido se canceló después de pagar. Te devolveremos el dinero al mismo medio de pago.",
+    "status": {
+      "none": "Esperando tu pago",
+      "pending": "Pago en proceso",
+      "approved": "Pagado en línea",
+      "declined": "Pago rechazado",
+      "error": "El pago no se completó",
+      "voided": "Pago anulado",
+      "refund_required": "Reembolso en proceso",
+      "refunded": "Reembolsado"
+    },
+    "errors": {
+      "loadFailed": "No se pudo leer el estado del pago.",
+      "unavailable": "El pago en línea no está disponible ahora. Intenta de nuevo en un momento.",
+      "tooManyAttempts": "Ya usaste los 3 intentos de pago de este pedido.",
+      "expired": "Se acabó el tiempo para pagar este pedido.",
+      "alreadyPaid": "Este pedido ya está pagado.",
+      "notPayable": "Este pedido ya no espera un pago.",
+      "rateLimited": "Hiciste muchos intentos seguidos. Espera unos minutos.",
+      "browser": "No se pudo abrir la página de pago."
+    }
   }
 }

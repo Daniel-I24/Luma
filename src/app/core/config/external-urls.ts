@@ -8,6 +8,8 @@ export class ExternalUrls {
   public static readonly MAP_STYLE = 'https://tiles.openfreemap.org/styles/liberty';
   /** Colombian business registry, opened by the review team. */
   public static readonly RUES = 'https://www.rues.org.co/';
+  /** Wompi's hosted checkout: the only payment page the app ever opens. */
+  public static readonly WOMPI_CHECKOUT = 'https://checkout.wompi.co/p/';
   /** SVG namespace for markers built with createElementNS. */
   public static readonly SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 

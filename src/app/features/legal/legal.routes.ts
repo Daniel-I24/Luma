@@ -6,5 +6,6 @@ const page = () => import('./legal-document.page').then((m) => m.LegalDocumentPa
 export const legalRoutes: Routes = [
   { path: 'terms', data: { document: 'terms' }, loadComponent: page },
   { path: 'privacy', data: { document: 'privacy' }, loadComponent: page },
+  { path: 'refunds', data: { document: 'refunds' }, loadComponent: page },
   { path: '', redirectTo: 'terms', pathMatch: 'full' },
 ];

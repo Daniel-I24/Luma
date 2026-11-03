@@ -42,6 +42,9 @@
           <span>{{ when(order) }}</span>
           <span class="text-title text-fg">{{ order.total_cop | cop }}</span>
         </span>
+        @if (order.status === 'awaiting_payment') {
+        <span class="self-start rounded-full bg-warning-bg px-3 py-1 text-label text-warning-fg">{{ t('payments.complete') }}</span>
+        }
       </a>
     </li>
     }

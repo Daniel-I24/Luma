@@ -33,6 +33,7 @@ describe('OrderRepository', () => {
           p_items: [{ menu_item_id: 'm1', quantity: 2 }],
           p_pickup_at: null,
           p_notes: 'Sin cebolla',
+          p_payment_method: 'pay_at_pickup',
         },
       ],
     ]);
