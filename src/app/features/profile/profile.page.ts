@@ -13,6 +13,7 @@ import { BusinessEntry } from './components/business-entry/business-entry';
 import { NotificationsEntry } from './components/notifications-entry/notifications-entry';
 import { NotificationSettings } from '@shared/notifications/notification-settings/notification-settings';
 import { DisplayNameField } from './components/display-name-field/display-name-field';
+import { TrustStatusCard } from './components/trust-status-card/trust-status-card';
 
 /**
  * ProfilePage — /profile (protected by authGuard)
@@ -25,6 +26,7 @@ import { DisplayNameField } from './components/display-name-field/display-name-f
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     TranslocoModule,
+    TrustStatusCard,
     LumaAvatar,
     LumaIcon,
     RouterLink,

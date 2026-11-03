@@ -1768,5 +1768,21 @@
       "rateLimited": "You made many attempts in a row. Wait a few minutes.",
       "browser": "Could not open the payment page."
     }
+  },
+  "trust": {
+    "section": "Your status",
+    "tier": {
+      "new": "New account",
+      "trusted": "Trusted customer",
+      "restricted": "Limited account"
+    },
+    "explain": {
+      "new": "While your account is new you can have one pay-at-pick-up order at a time and up to 3 orders a day.",
+      "trusted": "You pick up your orders: you can order without special limits.",
+      "restricted": "Several orders were not picked up. For now you can only pay online."
+    },
+    "strikes": "Orders not picked up in the last 30 days: {{count}}.",
+    "until": "The limit ends on {{date}}.",
+    "improve": "Pick up {{count}} more order(s) to become a trusted customer."
   }
 }

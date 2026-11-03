@@ -1768,5 +1768,21 @@
       "rateLimited": "Hiciste muchos intentos seguidos. Espera unos minutos.",
       "browser": "No se pudo abrir la página de pago."
     }
+  },
+  "trust": {
+    "section": "Tu estado",
+    "tier": {
+      "new": "Cuenta nueva",
+      "trusted": "Cliente confiable",
+      "restricted": "Cuenta limitada"
+    },
+    "explain": {
+      "new": "Mientras tu cuenta es nueva puedes tener un pedido para pagar al recoger a la vez y hasta 3 pedidos al día.",
+      "trusted": "Recoges tus pedidos: puedes pedir sin límites especiales.",
+      "restricted": "Varios pedidos no se recogieron. Por ahora solo puedes pagar en línea."
+    },
+    "strikes": "Pedidos sin recoger en los últimos 30 días: {{count}}.",
+    "until": "La limitación termina el {{date}}.",
+    "improve": "Recoge {{count}} pedido(s) más para ser cliente confiable."
   }
 }

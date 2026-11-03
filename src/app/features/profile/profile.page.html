@@ -44,7 +44,9 @@
       </a>
     </section>
 
-    @if (isBusinessOwner()) {
+    @if (!isBusinessOwner()) {
+    <app-trust-status-card />
+    } @if (isBusinessOwner()) {
     <section aria-labelledby="business-heading">
       <h2
         id="business-heading"
