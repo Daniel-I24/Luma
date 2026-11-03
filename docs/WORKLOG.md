@@ -105,7 +105,9 @@ agent's sessions).
   SQL checks, rehearsal 10 checks, 87 Deno tests. From here on, supabase/
   changes only for real bugs, each listed below; other ideas in
   docs/db-followups.md.
-  Post-freeze supabase/ changes: none yet.
+  Post-freeze supabase/ changes (no migration or function code):
+  - supabase/functions/push-dispatch/fcm.test.ts: test key marker assembled so
+    the secret scan stays strict (test only).
 - FASE 2.1 auth: unconfirmed emails never get a session (sign-in, restore,
   auth events); unreadable profile -> /account-error (Reintentar / Cerrar
   sesion) via accountReadyGuard on the tab layout and welcome, ownerGuard and
@@ -171,6 +173,10 @@ agent's sessions).
   environment.ts); check:interactive; database job (postgres:17 service, SQL
   suites + rehearsal); functions job (deno 2.5.6 image, tests + type check);
   keepalive.yml (twice a week, anon read of one row, skips without secrets).
+- FASE 3 docs: launch-checklist.md (every manual step in order), qa-checklist.md
+  (phone findings 1-5 and every screen), runbook.md (symptoms, checks, fixes,
+  rollback), release.md (version bump, apk:release, publish, version.json);
+  deploy.md lists the six functions and their fallbacks.
 
 - Block D done: migration 20261021000000 (discounts, trigger, server prices in
   create_order; 23 SQL checks), customer /promotions (sort, filters, states,

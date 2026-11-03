@@ -41,12 +41,18 @@ redirect URL is needed for these flows.
 
 ## Edge Functions
 
-Three functions, all POST with a JWT and the same CORS allow list:
-`delete-account` (account erasure, recent sign-in required), `recommend` and
-`suggest-promotions` (Luma IA, optional: the app runs on rules until
-`AI_MODE` is `remote`, see [ai.md](ai.md)). Shared code lives in
-`supabase/functions/_shared`.
+Six functions; shared code lives in `supabase/functions/_shared`. All of
+them work without their optional secrets: they answer `ai_unavailable`,
+`geocode_unavailable` or `push_unavailable` and the app falls back.
 
+| Function | Called by | JWT | Needs | Without it |
+| --- | --- | --- | --- | --- |
+| `delete-account` | app (Profile) | yes | service role (automatic) | account deletion fails |
+| `recommend` | app, AI_MODE remote | yes | `LLM_*` secrets | app uses its rules |
+| `suggest-promotions` | app, AI_MODE remote | yes | `LLM_*` secrets | answers the rules (200) |
+| `extract-menu` | app, AI_MODE remote | yes | `LLM_*` (+ `LLM_VISION_MODEL`) | scan unavailable; manual menu |
+| `geocode` | app (map search) | yes | `GEOCODE_PROVIDER` (+ key/contact) | businesses-only search |
+| `push-dispatch` | the database (pg_net, pg_cron) | **no** (shared secret) | `FCM_SERVICE_ACCOUNT`, `PUSH_DISPATCH_SECRET` | in-app notifications only |
 
 `ALLOWED_ORIGINS` is a comma-separated list of browser origins, matched
 exactly (no wildcards; empty entries are ignored). The legacy single
@@ -62,11 +68,16 @@ default.
 ```sh
 supabase secrets set ALLOWED_ORIGINS=https://localhost,https://<vercel-domain>
 supabase functions deploy delete-account
-# Luma IA (optional): secrets first, then
-supabase secrets set LLM_PROVIDER=gemini LLM_MODEL=<model-id> LLM_API_KEY=<key>
+supabase functions deploy geocode          # docs/geocode.md for its secrets
+# Luma IA (optional, docs/ai.md): secrets first, then
 supabase functions deploy recommend
 supabase functions deploy suggest-promotions
+supabase functions deploy extract-menu
+# Push (optional, docs/push.md):
+supabase functions deploy push-dispatch --no-verify-jwt
 ```
+
+Then check everything with `npm run verify:backend` (anon key only).
 
 Vercel preview URLs are not covered (no wildcards); add a preview origin
 explicitly if you need to test these functions there.
