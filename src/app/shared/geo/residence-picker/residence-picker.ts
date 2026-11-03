@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, model, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, model, signal } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaInput, LumaSelect, LumaSkeleton } from '@design-system';
 import { Residence } from '../residence';
@@ -20,6 +20,11 @@ export class ResidencePicker {
   private readonly catalog = inject(ResidenceCatalog);
 
   public readonly value = model<Residence | null>(null);
+  /** Municipality to start from when there is no value yet (a business's city_dane_code). */
+  public readonly initialCode = input<string | null>(null);
+  public readonly legendKey = input('residence.legend');
+  public readonly purposeKey = input('residence.purpose');
+  public readonly showNeighborhood = input(true);
 
   protected readonly state = signal<'loading' | 'ready' | 'error'>('loading');
   protected readonly departmentCode = signal('');
@@ -44,10 +49,12 @@ export class ResidencePicker {
     const ok = await this.catalog.load();
     this.state.set(ok ? 'ready' : 'error');
     const current = this.value();
-    if (ok && current) {
-      this.departmentCode.set(current.departmentCode);
-      this.municipality.set(this.catalog.municipality(current.daneCode));
-      this.neighborhood.set(current.neighborhood ?? '');
+    const code = current?.daneCode ?? this.initialCode();
+    if (ok && code) {
+      this.departmentCode.set(code.slice(0, 2));
+      this.municipality.set(this.catalog.municipality(code));
+      this.neighborhood.set(current?.neighborhood ?? '');
+      if (!current) this.emit();
     }
   }
 

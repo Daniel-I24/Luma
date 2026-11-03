@@ -25,6 +25,7 @@ import { PanelStateView } from '../../components/panel-state/panel-state';
 import { MenuPanelStore } from '../../state/menu-panel.store';
 import { PanelBusinessStore } from '../../state/panel-business.store';
 import { routeBusinessId } from '../../utils/route-business-id';
+import { SetupReturn } from '../../components/setup-return/setup-return';
 
 /** BusinessMenuPage — /owner/:id/menu: products by section, availability, edit and delete. */
 @Component({
@@ -32,6 +33,7 @@ import { routeBusinessId } from '../../utils/route-business-id';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    SetupReturn,
     TranslocoModule,
     RouterLink,
     LumaBottomSheet,

@@ -7,6 +7,7 @@
     [subtitle]="t('businessPanel.hours.hint')"
     [backLink]="['/owner', id(), 'business']"
   />
+  <app-setup-return />
   <app-panel-state [state]="panel.state()" (retry)="load()">
     <form class="flex flex-col gap-3" novalidate (submit)="save($event)">
       @for (day of week(); track day.day_of_week) {

@@ -1,0 +1,46 @@
+<div *transloco="let t" class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6">
+  <app-panel-header [heading]="t('owner.wizard.title')" [backLink]="summaryLink()" />
+  <app-panel-state [state]="panel.state()" (retry)="load()">
+    <div class="flex flex-col gap-1">
+      <p class="m-0 text-body-sm text-fg-muted">{{ t('owner.wizard.progress', { percent: percent() }) }}</p>
+      <div class="h-2 overflow-hidden rounded-full bg-canvas-muted" role="progressbar" [attr.aria-valuenow]="percent()" aria-valuemin="0" aria-valuemax="100" [attr.aria-label]="t('owner.wizard.title')">
+        <div class="h-full rounded-full bg-primary transition-[width] duration-normal" [style.width.%]="percent()"></div>
+      </div>
+    </div>
+
+    <ol class="m-0 mt-4 flex list-none flex-col gap-2 p-0">
+      @for (step of steps; track step.id; let i = $index) {
+      <li>
+        <a
+          class="pressable flex min-h-14 items-center gap-3 rounded-xl border bg-surface px-4 text-fg no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+          [class.border-border-focus]="current()?.id === step.id"
+          [class.border-border-subtle]="current()?.id !== step.id"
+          [routerLink]="step.link(id())"
+          [queryParams]="setupQuery"
+        >
+          <span class="inline-flex size-8 shrink-0 items-center justify-center rounded-full text-label"
+            [class]="status(i) === 'done' ? 'bg-success-bg text-success-fg' : 'bg-canvas-muted text-fg-muted'">{{ i + 1 }}</span>
+          <span class="flex min-w-0 flex-1 flex-col">
+            <span class="text-body font-medium">{{ t('owner.wizard.steps.' + step.id) }}</span>
+            <span class="text-caption text-fg-subtle">{{ t('owner.wizard.status.' + status(i)) }}</span>
+          </span>
+        </a>
+      </li>
+      }
+    </ol>
+
+    <section class="mt-4 flex flex-col gap-2 rounded-xl border border-border-subtle bg-surface p-4" aria-labelledby="wizard-review">
+      <h2 id="wizard-review" class="m-0 text-title text-fg">{{ t('owner.wizard.reviewTitle') }}</h2>
+      @if (current(); as step) {
+      <p class="m-0 text-body-sm text-fg-muted">{{ t('owner.wizard.next', { step: t('owner.wizard.steps.' + step.id) }) }}</p>
+      <a class="text-body font-medium text-fg-accent" [routerLink]="step.link(id())" [queryParams]="setupQuery">{{ t('owner.wizard.continue') }}</a>
+      } @else {
+      <p class="m-0 text-body-sm text-fg-muted">{{ t('owner.wizard.ready') }}</p>
+      @if (verification.errorKey(); as key) {
+      <p class="m-0 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
+      }
+      <app-luma-button variant="primary" [fullWidth]="true" [disabled]="verification.busy()" (clicked)="submit()">{{ t('owner.verification.submit') }}</app-luma-button>
+      }
+    </section>
+  </app-panel-state>
+</div>

@@ -36,6 +36,8 @@ export interface Business {
   updated_at: string;
   /** No new orders until then ('infinity': until resumed); see BusinessPause. */
   orders_paused_until?: string | null;
+  /** Department chosen by the owner. */
+  department?: string | null;
   /** DANE municipality code chosen by the owner (five digits). */
   city_dane_code?: string | null;
   /** Public contact (migration business_showcase; absent before it is applied). */

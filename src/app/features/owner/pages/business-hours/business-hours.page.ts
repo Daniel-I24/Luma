@@ -18,13 +18,15 @@ import { PanelStateView } from '../../components/panel-state/panel-state';
 import { PanelBusinessStore } from '../../state/panel-business.store';
 import { routeBusinessId } from '../../utils/route-business-id';
 import { type DayDraft, crossesMidnight, weekDraft } from '../../utils/week-draft.util';
+import { SetupReturn } from '../../components/setup-return/setup-return';
 
 /** BusinessHoursPage — /owner/:id/business/hours: 7 days, open or closed, one row per day. */
 @Component({
   selector: 'app-business-hours-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaInput, PanelHeader, PanelStateView],
+  imports: [
+    SetupReturn,TranslocoModule, LumaButton, LumaInput, PanelHeader, PanelStateView],
   providers: [PanelBusinessStore],
   templateUrl: './business-hours.page.html',
   host: { class: 'block' },

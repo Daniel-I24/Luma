@@ -1,5 +1,6 @@
 import type { Business } from '@shared/business/models/business.model';
 import type { GeoCoords } from '@shared/geo/geolocation.service';
+import type { Residence } from '@shared/geo/residence';
 
 /** What the business forms edit; strings as typed, location null until chosen. */
 export interface BusinessDraft {
@@ -8,6 +9,10 @@ export interface BusinessDraft {
   phone: string;
   address: string;
   location: GeoCoords | null;
+  /** Department and municipality (DANE); the city name is not stored, only its code. */
+  municipality: Residence | null;
+  /** The stored municipality code, until the picker turns it into `municipality`. */
+  cityDaneCode: string | null;
 }
 
 export const EMPTY_DRAFT: BusinessDraft = {
@@ -16,6 +21,8 @@ export const EMPTY_DRAFT: BusinessDraft = {
   phone: '',
   address: '',
   location: null,
+  municipality: null,
+  cityDaneCode: null,
 };
 
 export function draftFrom(business: Business): BusinessDraft {
@@ -25,6 +32,8 @@ export function draftFrom(business: Business): BusinessDraft {
     phone: business.phone ?? '',
     address: business.address,
     location: { lat: business.latitude, lng: business.longitude },
+    municipality: null,
+    cityDaneCode: business.city_dane_code ?? null,
   };
 }
 
@@ -37,6 +46,8 @@ export function draftValues(draft: BusinessDraft): Record<string, unknown> {
     address: draft.address,
     latitude: draft.location?.lat,
     longitude: draft.location?.lng,
+    department: draft.municipality?.department ?? null,
+    city_dane_code: draft.municipality?.daneCode ?? draft.cityDaneCode,
   };
 }
 

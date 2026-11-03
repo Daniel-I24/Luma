@@ -1,39 +1,20 @@
 import { DOCUMENT } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  inject,
-  signal,
-  untracked,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, signal, untracked } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaInput, ToastService } from '@design-system';
-import {
-  type BusinessInfoInput,
-  businessInfoSchema,
-} from '@shared/business/data/business-write.schemas';
+import { type BusinessInfoInput, businessInfoSchema } from '@shared/business/data/business-write.schemas';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
-import {
-  type FieldErrors,
-  fieldErrors,
-  focusFirstError,
-  withoutErrors,
-} from '@shared/forms/form-errors';
+import { type FieldErrors, fieldErrors, focusFirstError, withoutErrors } from '@shared/forms/form-errors';
 import { BusinessBasicsFields } from '../../components/business-basics-fields/business-basics-fields';
 import { BusinessImages } from '../../components/business-images/business-images';
 import { PanelHeader } from '../../components/panel-header/panel-header';
 import { PanelStateView } from '../../components/panel-state/panel-state';
 import { ReReviewSheet } from '../../components/re-review-sheet/re-review-sheet';
 import { PanelBusinessStore } from '../../state/panel-business.store';
-import {
-  EMPTY_DRAFT,
-  draftFrom,
-  draftValues,
-  infoFieldOrder,
-} from '../../utils/business-draft.util';
+import { EMPTY_DRAFT, draftFrom, draftValues, infoFieldOrder } from '../../utils/business-draft.util';
 import { changesNeedReReview } from '../../utils/re-review.util';
 import { routeBusinessId } from '../../utils/route-business-id';
+import { SetupReturn } from '../../components/setup-return/setup-return';
 
 const ID_PREFIX = 'info';
 export const DESCRIPTION_MAX = 300;
@@ -44,6 +25,7 @@ export const DESCRIPTION_MAX = 300;
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    SetupReturn,
     TranslocoModule,
     LumaButton,
     LumaInput,

@@ -26,6 +26,11 @@ export const ownerRoutes: Routes = [
         children: [
           { path: '', pathMatch: 'full', redirectTo: 'summary' },
           {
+            path: 'setup',
+            loadComponent: () =>
+              import('./pages/business-setup/business-setup.page').then((m) => m.BusinessSetupPage),
+          },
+          {
             path: 'summary',
             loadComponent: () =>
               import('./pages/owner-summary/owner-summary.page').then((m) => m.OwnerSummaryPage),

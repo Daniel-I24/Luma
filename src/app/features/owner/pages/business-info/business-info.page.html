@@ -6,6 +6,7 @@
     [heading]="t('businessPanel.info.title')"
     [backLink]="['/owner', id(), 'business']"
   />
+  <app-setup-return />
   <app-panel-state [state]="panel.state()" (retry)="load()">
     <app-business-images />
     <form class="mt-5 flex flex-col gap-5" novalidate (submit)="save($event)">

@@ -28,6 +28,9 @@ const registerShape = {
   longitude: z
     .number(`${V}.location`)
     .check(z.gte(-180, `${V}.location`), z.lte(180, `${V}.location`)),
+  // Chosen in the location step (businesses.department, city_dane_code).
+  department: z.optional(z.nullable(text(2, 60, `${V}.municipality`))),
+  city_dane_code: z.optional(z.nullable(z.string(`${V}.municipality`).check(z.regex(/^[0-9]{5}$/, `${V}.municipality`)))),
 };
 
 /** Registration form (/business/new). */

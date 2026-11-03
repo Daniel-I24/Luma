@@ -917,7 +917,8 @@
         "instagram": "Use only lowercase letters, numbers, dots and underscores (up to 30).",
         "facebook": "Enter the page name as it appears in facebook.com/…",
         "website": "The address must start with https:// (200 characters at most)."
-      }
+      },
+      "municipality": "Choose the department and municipality of the business."
     },
     "errors": {
       "loadFailed": "Your business information could not be loaded.",
@@ -1662,6 +1663,34 @@
       "errors": {
         "loadFailed": "Could not load the sales summary."
       }
+    },
+    "wizard": {
+      "title": "Register your business",
+      "progress": "You are {{percent}} % there. You can leave and come back: everything is saved.",
+      "steps": {
+        "basics": "Basic details",
+        "location": "Location on the map",
+        "hours": "Opening hours",
+        "contact": "Contact and social media",
+        "legal": "Legal data and documents (RUT and facade)",
+        "menu": "Menu (by hand or scanning it with AI)"
+      },
+      "status": {
+        "done": "Done",
+        "todo": "To complete",
+        "optional": "Optional"
+      },
+      "reviewTitle": "Final review",
+      "next": "Next: {{step}}.",
+      "continue": "Continue",
+      "ready": "All set. Check the details and send your business for review: we will tell you when it is approved.",
+      "back": "Back to the wizard",
+      "addressSearch": "Search the address",
+      "addressPlaceholder": "Calle 18 # 25-30, Pasto",
+      "search": "Search",
+      "farFromAddress": "The pin is far from the address you searched. Check that it is on the entrance of the business.",
+      "municipalityLegend": "Department and municipality",
+      "municipalityPurpose": "Where the business is, according to DANE. It helps us show it to customers nearby."
     }
   },
   "promotions": {

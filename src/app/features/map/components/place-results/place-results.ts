@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 import { TranslocoModule } from '@jsverse/transloco';
 import { type IconName, LumaIcon, LumaSkeleton } from '@design-system';
 import { ExternalUrls } from '@core/config/external-urls';
-import type { Place, PlaceAttribution } from '../../services/place-search.repository';
+import type { Place, PlaceAttribution } from '@shared/geo/place-search.repository';
 
 const KIND_ICON: Record<Place['kind'], IconName> = {
   address: 'pin',

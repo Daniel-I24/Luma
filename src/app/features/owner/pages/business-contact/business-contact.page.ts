@@ -12,6 +12,7 @@ import { PanelHeader } from '../../components/panel-header/panel-header';
 import { PanelStateView } from '../../components/panel-state/panel-state';
 import { PanelBusinessStore } from '../../state/panel-business.store';
 import { routeBusinessId } from '../../utils/route-business-id';
+import { SetupReturn } from '../../components/setup-return/setup-return';
 
 interface FieldSpec {
   readonly field: ContactField;
@@ -36,7 +37,8 @@ const FIELDS: readonly FieldSpec[] = [
   selector: 'app-business-contact-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaInput, PanelHeader, PanelStateView],
+  imports: [
+    SetupReturn,TranslocoModule, LumaButton, LumaInput, PanelHeader, PanelStateView],
   providers: [PanelBusinessStore],
   template: `
     <div
@@ -44,6 +46,7 @@ const FIELDS: readonly FieldSpec[] = [
       class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6"
     >
       <app-panel-header [heading]="t('businessPanel.contact.title')" [backLink]="['/owner', id(), 'business']" />
+      <app-setup-return />
       <app-panel-state [state]="panel.state()" (retry)="load()">
         <p class="m-0 text-body-sm text-fg-muted">{{ t('businessPanel.contact.intro') }}</p>
         <form class="mt-4 flex flex-col gap-5" novalidate (submit)="save($event)">

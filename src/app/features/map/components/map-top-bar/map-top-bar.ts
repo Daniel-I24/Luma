@@ -3,7 +3,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { LumaIcon, LumaSearchInput } from '@design-system';
 import { GeolocationService } from '@shared/geo/geolocation.service';
 import { MapCameraService } from '../../services/map-camera.service';
-import type { Place } from '../../services/place-search.repository';
+import type { Place } from '@shared/geo/place-search.repository';
 import { PlaceSearchStore } from '../../state/place-search.store';
 import { MapFilterBar } from '../map-filter-bar/map-filter-bar';
 import { PlaceResults } from '../place-results/place-results';

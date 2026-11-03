@@ -4,6 +4,7 @@ import { TranslocoTestingModule } from '@jsverse/transloco';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
 import { RegisterBusinessPage } from './register-business.page';
+import { ResidenceCatalog } from '@shared/geo/residence-catalog';
 
 // Only effective because spec files run isolated (angular.json "isolate"):
 // otherwise a spec that loaded the real MapLibre first would leak it here.
@@ -50,7 +51,11 @@ describe('RegisterBusinessPage', () => {
           translocoConfig: { availableLangs: ['es'], defaultLang: 'es' },
         }),
       ],
-      providers: [provideRouter([]), { provide: OwnedBusinessRepository, useValue: repo }],
+      providers: [
+        provideRouter([]),
+        { provide: OwnedBusinessRepository, useValue: repo },
+        { provide: ResidenceCatalog, useValue: { load: () => Promise.resolve(true), departments: () => [], search: () => [], municipality: () => null } },
+      ],
     });
   });
 
@@ -118,7 +123,7 @@ describe('RegisterBusinessPage', () => {
 
     await submit();
 
-    await settled(() => expect(navigate).toHaveBeenCalledWith(['/owner', 'new-id', 'summary']));
+    await settled(() => expect(navigate).toHaveBeenCalledWith(['/owner', 'new-id', 'setup']));
     expect(repo.create).toHaveBeenCalledWith({
       name: 'Fritanga Don Segundo',
       category: 'Restaurante',
@@ -126,6 +131,8 @@ describe('RegisterBusinessPage', () => {
       address: 'Calle 18 # 25-30',
       latitude: 1.2136,
       longitude: -77.2811,
+      department: null,
+      city_dane_code: null,
     });
   });
 

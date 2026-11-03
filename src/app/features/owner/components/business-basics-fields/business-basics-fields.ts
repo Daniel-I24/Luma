@@ -1,19 +1,30 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, model, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LumaInput, LumaSelect, type SelectOption } from '@design-system';
 import { BUSINESS_CATEGORIES } from '@shared/business/data/business-categories';
 import { type FieldErrors, withoutErrors } from '@shared/forms/form-errors';
-import type { GeoCoords } from '@shared/geo/geolocation.service';
+import { type GeoCoords, PASTO_CENTRE } from '@shared/geo/geolocation.service';
+import { haversineKm } from '@shared/geo/haversine.util';
+import type { Place } from '@shared/geo/place-search.repository';
+import type { Residence } from '@shared/geo/residence';
+import { ResidencePicker } from '@shared/geo/residence-picker/residence-picker';
+import { AddressSearch } from '../address-search/address-search';
 import type { BusinessDraft } from '../../utils/business-draft.util';
 import { LocationPicker } from '../location-picker/location-picker';
 
-/** BusinessBasicsFields — name, category, phone, address and location of a business. */
+/** A pin this far from the searched address deserves a second look. */
+const FAR_FROM_ADDRESS_KM = 0.3;
+
+/**
+ * BusinessBasicsFields — name, category, phone, address, department and
+ * municipality, and the location: search the address, then drag the pin.
+ */
 @Component({
   selector: 'app-business-basics-fields',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaInput, LumaSelect, LocationPicker],
+  imports: [TranslocoModule, LumaInput, LumaSelect, LocationPicker, AddressSearch, ResidencePicker],
   templateUrl: './business-basics-fields.html',
 })
 export class BusinessBasicsFields {
@@ -42,8 +53,28 @@ export class BusinessBasicsFields {
     this.errors.update((errors) => withoutErrors(errors, ...fields));
   }
 
+  /** Where the address search put the pin; null until the owner searches. */
+  protected readonly searched = signal<GeoCoords | null>(null);
+  protected readonly near = computed(() => this.draft().location ?? PASTO_CENTRE);
+  /** The pin was dragged far from the address that was searched. */
+  protected readonly farFromAddress = computed(() => {
+    const from = this.searched();
+    const to = this.draft().location;
+    return !!from && !!to && haversineKm(from.lat, from.lng, to.lat, to.lng) > FAR_FROM_ADDRESS_KM;
+  });
+
   protected setLocation(location: GeoCoords | null): void {
     this.set('location', location);
+  }
+
+  protected onAddress(place: Place): void {
+    const point = { lat: place.lat, lng: place.lng };
+    this.searched.set(point);
+    this.setLocation(point);
+  }
+
+  protected setMunicipality(municipality: Residence | null): void {
+    this.draft.update((draft) => ({ ...draft, municipality, cityDaneCode: municipality?.daneCode ?? draft.cityDaneCode }));
   }
 
   protected error(field: string): string | undefined {

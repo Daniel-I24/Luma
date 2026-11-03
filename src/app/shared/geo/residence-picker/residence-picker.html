@@ -1,6 +1,6 @@
 <fieldset *transloco="let t" class="m-0 flex min-w-0 flex-col gap-3 border-0 p-0">
-  <legend class="mb-1 p-0 text-title text-fg">{{ t('residence.legend') }}</legend>
-  <p class="m-0 text-body-sm text-fg-muted">{{ t('residence.purpose') }}</p>
+  <legend class="mb-1 p-0 text-title text-fg">{{ t(legendKey()) }}</legend>
+  <p class="m-0 text-body-sm text-fg-muted">{{ t(purposeKey()) }}</p>
 
   @switch (state()) { @case ('loading') {
   <app-luma-skeleton shape="rect" class="block h-24" />
@@ -45,6 +45,7 @@
   </ul>
   } }
 
+  @if (showNeighborhood()) {
   <app-luma-input
     inputId="residence-neighborhood"
     [label]="t('residence.neighborhood')"
@@ -53,5 +54,5 @@
     [value]="neighborhood()"
     (valueChange)="setNeighborhood($event)"
   />
-  } }
+  } } }
 </fieldset>

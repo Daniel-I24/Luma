@@ -4,7 +4,7 @@ import { FunctionsFetchError, FunctionsHttpError } from '@supabase/supabase-js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ConnectivityService } from '@core/network/connectivity.service';
 import { SupabaseService } from '@core/supabase/supabase.service';
-import { GeocodePlaceSearchRepository, PlaceSearchRepository } from '../services/place-search.repository';
+import { GeocodePlaceSearchRepository, PlaceSearchRepository } from '@shared/geo/place-search.repository';
 import { PlaceSearchStore } from './place-search.store';
 
 const CENTRO = { label: 'Centro, Pasto', kind: 'neighbourhood', lat: 1.214, lng: -77.281 };

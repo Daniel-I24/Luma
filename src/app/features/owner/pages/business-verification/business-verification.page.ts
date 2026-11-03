@@ -15,6 +15,7 @@ import { PanelStateView } from '../../components/panel-state/panel-state';
 import { PanelBusinessStore } from '../../state/panel-business.store';
 import { VerificationStore } from '../../state/verification.store';
 import { routeBusinessId } from '../../utils/route-business-id';
+import { SetupReturn } from '../../components/setup-return/setup-return';
 
 /**
  * BusinessVerificationPage — /owner/:id/business/verification: legal data
@@ -25,12 +26,14 @@ import { routeBusinessId } from '../../utils/route-business-id';
   selector: 'app-business-verification-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, DocList, LegalForm, PanelHeader, PanelStateView],
+  imports: [
+    SetupReturn,TranslocoModule, DocList, LegalForm, PanelHeader, PanelStateView],
   providers: [PanelBusinessStore, VerificationStore],
   template: `
     <div *transloco="let t" class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-4 pb-6">
       <app-panel-state [state]="panel.state()" (retry)="load()">
         <app-panel-header [heading]="t('owner.verificationPage.title')" [backLink]="backLink()" />
+      <app-setup-return />
         @if (!verification.editable()) {
           <p class="m-0 rounded-md bg-info-bg p-3 text-body-sm text-info-fg" role="status">
             {{ t('owner.verificationPage.locked') }}

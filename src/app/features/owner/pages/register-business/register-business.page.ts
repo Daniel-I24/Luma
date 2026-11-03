@@ -62,6 +62,7 @@ export class RegisterBusinessPage {
     }
     this.toast.show({ messageKey: 'businessPanel.register.created', tone: 'success' });
     await this.context.load();
-    await this.router.navigate(ownerPaths.section(result.data, 'summary'));
+    // The wizard takes the owner through the rest (location, hours, legal data, menu).
+    await this.router.navigate(['/owner', result.data, 'setup']);
   }
 }
