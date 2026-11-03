@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { networkErrorKey } from '@core/auth/auth-error';
 import { ConnectivityService } from '@core/network/connectivity.service';
 import { SupabaseService } from '@core/supabase/supabase.service';
-import { ImageEncodeError, reencodeImage } from '@shared/media/image-encoder';
+import { IMAGE_ENCODER, ImageEncodeError } from '@shared/media/image-encoder';
 import { checkImageFile } from '@shared/media/image-file.util';
 
 /** At most 4 photos per scan (the function's limit). */
@@ -41,6 +41,7 @@ async function toBase64(blob: Blob): Promise<string> {
 export class MenuScanRepository {
   private readonly db = inject(SupabaseService).client;
   private readonly online = inject(ConnectivityService).online;
+  private readonly encode = inject(IMAGE_ENCODER);
 
   async scan(businessId: string, files: readonly File[]): Promise<ScanResult> {
     const images: string[] = [];
@@ -48,7 +49,7 @@ export class MenuScanRepository {
       const invalid = checkImageFile(file);
       if (invalid) return { items: null, errorKey: invalid };
       try {
-        images.push(await toBase64((await reencodeImage(file, SCAN_SIDE)).blob));
+        images.push(await toBase64((await this.encode(file, SCAN_SIDE)).blob));
       } catch (error) {
         return { items: null, errorKey: error instanceof ImageEncodeError ? error.errorKey : 'media.errors.decode' };
       }

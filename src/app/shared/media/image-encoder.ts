@@ -1,3 +1,4 @@
+import { InjectionToken } from '@angular/core';
 import { MAX_IMAGE_SIDE, MAX_UPLOAD_BYTES, fitWithin } from './image-file.util';
 
 export interface EncodedImage {
@@ -58,3 +59,9 @@ export async function reencodeImage(file: Blob, maxSide = MAX_IMAGE_SIDE): Promi
   }
   throw new ImageEncodeError('media.errors.size');
 }
+
+/** The encoder, injectable so tests without a canvas can replace it. */
+export const IMAGE_ENCODER = new InjectionToken<typeof reencodeImage>('IMAGE_ENCODER', {
+  providedIn: 'root',
+  factory: () => reencodeImage,
+});

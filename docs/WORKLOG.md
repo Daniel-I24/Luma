@@ -137,6 +137,11 @@ agent's sessions).
   vs declared routes) with tests; src/testing/click-all.ts clicks every
   control of a rendered component and reports handler errors (used on the
   account error screen, notification settings and place results).
+- FASE 2.10 journeys (src/testing/journeys): sign-up -> refused while
+  unconfirmed -> code -> profile error -> Reintentar -> /owner; owner scans a
+  menu, fixes a price, saves after the current menu and tells followers;
+  customer finds a neighbourhood. Real services, fake Supabase client;
+  IMAGE_ENCODER token so tests can replace the canvas encoder.
 
 - Block D done: migration 20261021000000 (discounts, trigger, server prices in
   create_order; 23 SQL checks), customer /promotions (sort, filters, states,
