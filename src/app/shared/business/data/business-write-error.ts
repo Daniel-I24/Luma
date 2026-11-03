@@ -7,6 +7,7 @@ const MESSAGE_KEYS: Readonly<Record<string, string>> = {
   promotion_item_mismatch: 'businessPanel.errors.promotionItemMismatch',
   business_under_review: 'businessPanel.errors.underReview',
   email_not_confirmed: 'errors.emailNotConfirmed',
+  phone_not_verified: 'errors.phoneNotVerified',
   gallery_limit: 'businessPanel.errors.galleryLimit',
   menu_limit: 'businessPanel.errors.menuLimit',
   already_notified: 'businessPanel.notify.already',

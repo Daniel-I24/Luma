@@ -88,7 +88,10 @@ class SupabaseAccountProfileRepository extends AccountProfileRepository {
   /** Turns a customer account into a business-owner account. */
   public async becomeBusinessOwner(): Promise<RepoResult<AccountType>> {
     const { data, error } = await this.db.rpc('become_business_owner');
-    if (error) return { data: null, errorKey: 'profile.errors.becomeOwner' };
+    if (error) {
+      const key = error.message === 'phone_not_verified' ? 'errors.phoneNotVerified' : 'profile.errors.becomeOwner';
+      return { data: null, errorKey: key };
+    }
     return { data: AccountType.parse(data), errorKey: null };
   }
 

@@ -456,3 +456,25 @@ alternative that was not taken. The safest, most reversible option wins.
   and the Definition of Done forbids new ones, so nothing is lost.
 - **Alternative**: keep every rule as an error (stricter, but a single
   long function would block CI).
+
+## 2026-10-28 — Phone verification flag outside the environment files
+
+- **What**: the app flag is `PHONE_VERIFICATION_ENABLED` (InjectionToken,
+  `false`) in `src/app/core/config/features.ts`, not
+  `environment.features.phoneVerification`.
+- **Why**: round 3 forbids reading or touching `src/environments/`; a
+  token keeps the default off, is replaceable in tests and needs no
+  environment change.
+- **Alternative**: a `features` block in every environment file (requires
+  editing the forbidden files).
+
+## 2026-10-28 — Migration 50 keeps phone changes behind the verification flow
+
+- **What**: `20261031000000_phone_verification` adds the phone check to
+  `submit_business_for_review` (same signature and grants), the trigger
+  `profiles_phone_guard` and `sync_verified_phone()`. SQL without a user
+  (dashboard, service role) is not restricted.
+- **Why**: with the requirement on, a user could otherwise verify one
+  number and then type another; with it off nothing changes.
+- **Alternative**: a separate `verified_phone` column (more migration
+  work, two sources of truth).

@@ -1741,7 +1741,8 @@
     "offlineBanner": "Offline: some features are unavailable.",
     "placeholderConfig": "Development mode: environment.ts has template values (placeholder.supabase.co). The app cannot reach Supabase.",
     "unexpected": "Something went wrong. You can keep using the app; if it happens again, reload it.",
-    "emailNotConfirmed": "Confirm your email with the code we sent you to continue."
+    "emailNotConfirmed": "Confirm your email with the code we sent you to continue.",
+    "phoneNotVerified": "Verify your mobile number to continue."
   },
   "notFound": {
     "title": "We could not find this page",
@@ -1942,5 +1943,16 @@
     "title": "Profile photo",
     "alt": "Your profile photo",
     "share": "Show my photo to the business while it prepares my order, so it recognises me at pick-up."
+  },
+  "phoneVerification": {
+    "title": "Verify mobile",
+    "intro": "We will text a code to your mobile.",
+    "send": "Send code",
+    "code": "6-digit code",
+    "confirm": "Verify",
+    "done": "Your mobile is verified.",
+    "errors": {
+      "sendFailed": "We could not send the code. Try again later."
+    }
   }
 }

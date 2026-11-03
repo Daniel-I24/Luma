@@ -35,5 +35,6 @@
     }}</app-luma-button>
     <app-luma-button variant="ghost" [fullWidth]="true" (clicked)="back()">{{ t('common.back') }}</app-luma-button>
   </form>
+  <app-phone-verification [phone]="mobile()" />
   <app-avatar-settings />
 </main>

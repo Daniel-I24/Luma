@@ -138,7 +138,7 @@ class SupabaseVerificationRepository extends VerificationRepository {
     const { data, error } = await this.db.rpc('submit_business_for_review', {
       p_business_id: businessId,
     });
-    if (error) return { data: null, errorKey: 'verification.errors.submitFailed' };
+    if (error) return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, 'verification.errors.submitFailed') };
     const parsed = submitSchema.safeParse(data);
     return parsed.success
       ? { data: parsed.data, errorKey: null }

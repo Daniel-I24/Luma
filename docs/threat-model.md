@@ -36,6 +36,7 @@ design).
 | T8 | Information disclosure: raw backend errors in the UI | Errors mapped to translation keys | repository specs |
 | T9 | Denial of service / cost: spamming menu scans, payments, LLM | `hit_rate_limit` buckets, LLM quotas and cache, image size bounds before decoding | `rate_limits.sql`, `extract-menu` tests |
 | T10 | Fraud: fake orders from new accounts, no-shows | Phone required, trust tiers limit open orders, strikes after "No llegó", profile completeness | `trust_tiers.sql` |
+| T17 | Fraud: a mobile that is not the user's (fake orders, fake businesses) | Optional SMS verification: `require_phone_verification` blocks orders, becoming an owner and review submission; `profiles.phone` only changes to the confirmed number; off by default (no SMS cost), demo with Supabase test numbers (docs/phone-verification.md) | `phone_verification.sql`, `phone-verification.spec.ts` |
 | T11 | Fraud: duplicate or impersonating businesses | Review flags (tax id taken, phone keys, similar name near), admin approval | `business_signals.sql` |
 | T12 | Elevation: stolen admin password | TOTP MFA, `is_admin()` false below aal2 | `admin_mfa_audit.sql` |
 | T13 | Elevation: function search_path hijack | `SECURITY DEFINER` with `set search_path = ''`/fixed | migration review, `verify-backend` |
@@ -44,6 +45,9 @@ design).
 | T16 | Push notification spoofing or leaks | Only `push-dispatch` sends (secret); texts carry no personal data | `push-dispatch` tests |
 
 ## Residual risks
+
+- Phone verification is off by default: until it is on, the mobile is
+  unverified (only its format is checked).
 
 - History contains the Supabase project reference (no keys); see
   docs/security-findings.md.

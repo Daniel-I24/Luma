@@ -41,6 +41,7 @@ export const EXPECTED = {
     'export_my_data', 'expire_stale_orders', 'claim_push_batch', 'admin_access', 'is_profile_complete', 'set_avatar',
     'my_trust_status', 'payment_config', 'prepare_payment', 'my_order_payment', 'record_payment_redirect',
     'set_orders_paused', 'owner_sales_daily', 'business_review_flags', 'admin_payment_issues', 'hit_rate_limit',
+    'is_phone_verified', 'phone_check_passed', 'sync_verified_phone',
   ],
   functions: ['delete-account', 'recommend', 'suggest-promotions', 'extract-menu', 'geocode', 'push-dispatch',
     'create-payment', 'wompi-webhook', 'reconcile-payments', 'void-payment'],
