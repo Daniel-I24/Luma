@@ -100,6 +100,12 @@ agent's sessions).
   (tests/local/rehearsal.sh) which found a real bug: business_verification
   updated legacy rows and NOT VALID checks would reject dirty ones; fixed with
   column defaults. validate-report.sql. 405 SQL checks.
+  1.9 export_my_data (own data only, 3 a day).
+- DB-FREEZE 2026-10-19 (commit "chore: database freeze"): 28 migrations, 410
+  SQL checks, rehearsal 10 checks, 87 Deno tests. From here on, supabase/
+  changes only for real bugs, each listed below; other ideas in
+  docs/db-followups.md.
+  Post-freeze supabase/ changes: none yet.
 
 - Block D done: migration 20261021000000 (discounts, trigger, server prices in
   create_order; 23 SQL checks), customer /promotions (sort, filters, states,

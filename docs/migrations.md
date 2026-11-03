@@ -26,11 +26,42 @@ category names (`Cafetería`), and the Supabase SQL editor and CLI are UTF-8.
 | 18 | `20261020000310_reports_admin.sql` | Admin list of open reports | Pending review |
 | 19 | `20261020000400_verification_storage.sql` | Private `verification-docs` bucket and its Storage policies | Pending review |
 | 20 | `20261021000000_promotion_discounts.sql` | Promotion discounts on one item (5-90 %, same business, max 5 active), list/final price and promotion on order lines, `create_order` prices with the best current discount | Pending review |
-| 21 | `20261022000000_ai_gateway.sql` | Luma IA: closed `ai_usage`/`ai_cache`, `consume_ai_quota`, cache functions (service_role only), `ai_recommend_candidates`, `owner_sales_summary` | Pending review |
+| 21 | `20261022000000_ai_gateway.sql` | Luma IA: closed `ai_usage`/`ai_cache`, `consume_ai_quota`, cache functions (service_role only; 24 h, 7 days for `geocode:`), `ai_recommend_candidates`, `owner_sales_summary` | Pending review |
+| 22 | `20261023000000_order_safeguards.sql` | Hourly order caps, `expire_stale_orders` (pg_cron every 5 min when enabled) | Pending review |
+| 23 | `20261024000000_business_showcase.sql` | Contact columns (WhatsApp, Instagram, Facebook, web), `business_photos` (8), menu cap 200 | Pending review |
+| 24 | `20261025000000_menu_scan_quota.sql` | `consume_menu_scan_quota` (extract-menu, 5 a day per business) | Pending review |
+| 25 | `20261026000000_geocode_quota.sql` | `consume_geocode_quota` (200 a day per user, 5000 global) | Pending review |
+| 26 | `20261027000000_push_notifications.sql` | `device_tokens` + RPCs, notify preferences, `promotion` notifications, `notify_promotion` | Pending review |
+| 27 | `20261027000100_push_dispatch.sql` | `private.push_settings`, pg_net poke trigger, pg_cron fallback, `claim_push_batch`, `remove_device_tokens` | Pending review |
+| 28 | `20261028000000_export_my_data.sql` | `export_my_data` (habeas data, 3 a day) | Pending review |
 
-A clean install was checked on 2026-10-18: every file above applied in this
-order on an empty Postgres 17 database with the local stubs, then every SQL
-suite passed (296 checks after migration 21).
+**Database freeze (2026-10-19)**: the list above is final for the launch.
+After the freeze, migrations and functions change only to fix real bugs
+(each noted in docs/WORKLOG.md); other ideas go to
+[db-followups.md](db-followups.md).
+
+Earlier rows were edited in place while still unapplied (separate consents,
+email confirmation checks, frozen identity while pending, stale reviews,
+cancellations after accepting, gallery folder and 80-file cap).
+
+### Before applying: extensions and secrets
+
+- Database > Extensions: `pg_cron` and `pg_net` (optional; without them
+  stale orders are not expired automatically and push needs the cron/poke).
+- Auth > Email: "Confirm email" on, OTP template with `{{ .Token }}` (see
+  docs/launch-checklist.md). Users who never confirmed their email can read
+  but cannot write until they confirm.
+
+Checked on 2026-10-19 on Postgres 17 with the local stubs:
+
+- clean install: every file in order on an empty database, then every SQL
+  suite (`supabase/tests/local/run.sh`);
+- production-like rehearsal (`supabase/tests/local/rehearsal.sh`): only the
+  four applied migrations, legacy data with dirty rows
+  (`legacy_seed.sql`), then every pending migration, checks of the old rows
+  (`rehearsal_checks.sql`) and the VALIDATE report. It caught a real bug
+  (fixed): an UPDATE of legacy rows would have been rejected by the NOT
+  VALID checks of earlier migrations.
 
 "Applied" is what the project documentation recorded before this batch
 (the orders migrations were the first ones marked as not applied); nothing
@@ -42,10 +73,13 @@ Every pending migration ends with `notify pgrst, 'reload schema';`, grants
 explicitly, revokes `EXECUTE` on its functions from `public` and `anon`, and
 keeps SQL comments in ASCII.
 
-## After applying 8 and 9: validate the NOT VALID constraints
+## After applying everything: validate the NOT VALID constraints
 
 The CHECK constraints added to existing tables are `NOT VALID`: new and
-updated rows are checked, old rows are not. Find rows that would fail:
+updated rows are checked, old rows are not (an owner editing an old dirty
+row must fix it first). Run `supabase/sql/validate-report.sql` in the SQL
+editor: it lists every unvalidated constraint with its failing row count.
+To see the rows themselves:
 
 ```sql
 select id, name, category, phone, address from public.businesses
@@ -82,7 +116,7 @@ alter table public.promotions validate constraint promotions_image_url_https;
 
 ## Security tests
 
-`supabase/tests/*.sql` (296 checks) run as the `anon` and `authenticated`
+`supabase/tests/*.sql` (410 checks) run as the `anon` and `authenticated`
 roles with a JWT `sub` (customers, owners and admins), each file in a
 transaction that is rolled back.
 
@@ -118,3 +152,15 @@ transaction that is rolled back.
 | `ai_gateway.sql` | closed AI tables, daily quotas (user, business, global), service_role-only cache, public/open candidates, owner-only sales aggregates without customer ids |
 | `promotion_discounts.sql` | discount rules, item of the same business, 5 active max, visibility, best discount and rounding in `create_order`, client prices ignored |
 | `verification_workflow.sql` | submit and review RPCs, admin-only actions, re-review trigger, reports, private legal data and documents |
+| `verification_review.sql` | frozen identity while pending, `stale_review`, transitions and reactivation |
+| `email_and_order_safeguards.sql` | confirmed email on every write, hourly caps, owner cancellations, `expire_stale_orders` |
+| `business_showcase.sql` | contact formats, gallery (8, owner only), 80 files per folder, menu cap |
+| `menu_scan_quota.sql` / `geocode_quota.sql` | quotas, owners only, refused calls not counted, cache TTL |
+| `push_notifications.sql` | tokens, preferences, `notify_promotion` rules, claim at most once, pg_net poke |
+| `export_my_data.sql` | own data only, no tokens, no customer data for owners, daily limit |
+| `policy_helpers.sql` | direct checks of the helpers used by policies |
+
+`scripts/db-drift.test.mjs` (`npm run test:scripts`) checks without a
+database: Storage folders vs delete-account, functions in config.toml, and
+REVOKE/search_path/reload/ASCII rules plus a SQL test for every exposed
+function in each pending migration.
