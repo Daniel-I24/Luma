@@ -145,6 +145,10 @@ agent's sessions).
 - FASE 2.6 order alerts: OrderAlertsStore in the owner shell polls pending
   order ids every 20 s while visible (badge on Pedidos on every screen; toast
   + vibration for new ones; first read and business switch never alert).
+- FASE 2.7 account: /account/password (current password checked by signing
+  in again, then updateUser), public /help (FAQ, legal links, version), links
+  and APP_VERSION in AccountActions (Profile and Mi negocio); APP_VERSION kept
+  equal to package.json by scripts/app-version.test.mjs.
 
 - Block D done: migration 20261021000000 (discounts, trigger, server prices in
   create_order; 23 SQL checks), customer /promotions (sort, filters, states,

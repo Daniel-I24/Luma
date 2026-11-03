@@ -32,6 +32,17 @@ export const routes: Routes = [
     loadComponent: () => import('./features/onboarding/welcome.page').then((m) => m.WelcomePage),
   },
   {
+    // Frequent questions and the app version: public.
+    path: 'help',
+    loadComponent: () => import('./features/help/help.page').then((m) => m.HelpPage),
+  },
+  {
+    path: 'account/password',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/account-password/account-password.page').then((m) => m.AccountPasswordPage),
+  },
+  {
     // The account type could not be read: "Reintentar", never a guess.
     path: 'account-error',
     canActivate: [authGuard],

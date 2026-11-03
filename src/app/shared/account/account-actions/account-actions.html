@@ -4,6 +4,18 @@
     {{ t(errorKey()!) }}
   </p>
   }
+  <nav class="mb-3 flex flex-col gap-2" [attr.aria-label]="t('profile.account')">
+    <a
+      routerLink="/account/password"
+      class="pressable flex min-h-11 items-center rounded-xl border border-border-subtle bg-surface px-4 text-body font-medium text-fg no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+      >{{ t('account.password.title') }}</a
+    >
+    <a
+      routerLink="/help"
+      class="pressable flex min-h-11 items-center rounded-xl border border-border-subtle bg-surface px-4 text-body font-medium text-fg no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+      >{{ t('help.title') }}</a
+    >
+  </nav>
   <app-luma-button
     variant="secondary"
     [fullWidth]="true"
@@ -20,6 +32,7 @@
       (clicked)="deleteSheetOpen.set(true)"
       >{{ t('profile.deleteAccount') }}</app-luma-button
     >
+    <p class="m-0 mt-3 text-center text-caption text-fg-subtle">{{ t('help.version', { version }) }}</p>
   </div>
   <!-- Delete account confirmation sheet -->
   <app-luma-bottom-sheet

@@ -1537,5 +1537,57 @@
       "load": "We couldn't load your notification preferences.",
       "save": "We couldn't save the change. Please try again."
     }
+  },
+  "account": {
+    "password": {
+      "title": "Change password",
+      "intro": "For security, confirm your current password first.",
+      "current": "Current password",
+      "next": "New password",
+      "rules": "At least 8 characters, with letters and numbers.",
+      "save": "Save password",
+      "saved": "Done: your password changed.",
+      "wrongCurrent": "The current password is not correct.",
+      "same": "The new password must be different from the current one."
+    }
+  },
+  "help": {
+    "title": "Help",
+    "legal": "Legal documents",
+    "version": "Luma version {{version}}",
+    "faq": {
+      "order": {
+        "q": "How do I order?",
+        "a": "Open a business from the map or home, add products to the cart and choose pickup now or at a scheduled time. The business tells you when it accepts it and when it's ready."
+      },
+      "pay": {
+        "q": "How do I pay?",
+        "a": "For now you pay at pickup, directly at the business. Luma never asks for card details."
+      },
+      "cancel": {
+        "q": "Can I cancel an order?",
+        "a": "Yes, while the business hasn't accepted it, from My orders. If it already did, message or call the business."
+      },
+      "business": {
+        "q": "How do I register my business?",
+        "a": "In Profile, tap “I have a business”. Fill in the details, hours, menu, legal data and documents, and send it for review. It's published once the team approves it."
+      },
+      "review": {
+        "q": "How long does a business review take?",
+        "a": "Usually a few working days. We let you know in Notifications; if something is missing you'll see what to fix."
+      },
+      "notifications": {
+        "q": "Why don't I get notifications on my phone?",
+        "a": "Check Profile > Notifications and that the phone allows Luma notifications. Promotions only arrive if you turned them on."
+      },
+      "data": {
+        "q": "What data does Luma keep about me?",
+        "a": "What the privacy policy explains: your account, orders, favourites and reviews. We never show your email or phone to other users."
+      },
+      "delete": {
+        "q": "How do I delete my account?",
+        "a": "In Profile > Account, “Delete account”. For security you must have signed in recently. Your data and your businesses' data are deleted."
+      }
+    }
   }
 }

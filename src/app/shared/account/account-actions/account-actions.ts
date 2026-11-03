@@ -1,21 +1,23 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
+import { APP_VERSION } from '@core/config/app-version';
 import { LumaBottomSheet, LumaButton } from '@design-system';
 
 /** What account deletion removes, listed in the confirmation sheet. */
 const DELETED_DATA = ['account', 'profile', 'favorites', 'reviews', 'businesses'] as const;
 
 /**
- * AccountActions — sign out, and delete the account after a confirmation
- * sheet. Shared by the Profile and "Mi negocio" (Luma Negocios).
+ * AccountActions — change password, help, sign out, delete the account
+ * after a confirmation sheet, and the app version. Shared by the Profile
+ * and "Mi negocio" (Luma Negocios).
  */
 @Component({
   selector: 'app-account-actions',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaBottomSheet, LumaButton],
+  imports: [TranslocoModule, RouterLink, LumaBottomSheet, LumaButton],
   templateUrl: './account-actions.html',
 })
 export class AccountActions {
@@ -26,6 +28,7 @@ export class AccountActions {
   protected readonly deleteSheetOpen = signal(false);
   protected readonly errorKey = signal<string | null>(null);
   protected readonly deletedData = DELETED_DATA;
+  protected readonly version = APP_VERSION;
 
   protected async onSignOut(): Promise<void> {
     this.errorKey.set(null);

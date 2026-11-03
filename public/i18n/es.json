@@ -1537,5 +1537,57 @@
       "load": "No pudimos cargar tus preferencias de notificaciones.",
       "save": "No pudimos guardar el cambio. Intenta de nuevo."
     }
+  },
+  "account": {
+    "password": {
+      "title": "Cambiar contraseña",
+      "intro": "Por seguridad, primero confirma tu contraseña actual.",
+      "current": "Contraseña actual",
+      "next": "Nueva contraseña",
+      "rules": "Mínimo 8 caracteres, con letras y números.",
+      "save": "Guardar contraseña",
+      "saved": "Listo: tu contraseña cambió.",
+      "wrongCurrent": "La contraseña actual no es correcta.",
+      "same": "La nueva contraseña debe ser distinta de la actual."
+    }
+  },
+  "help": {
+    "title": "Ayuda",
+    "legal": "Documentos legales",
+    "version": "Luma versión {{version}}",
+    "faq": {
+      "order": {
+        "q": "¿Cómo hago un pedido?",
+        "a": "Abre un negocio desde el mapa o el inicio, agrega productos al carrito y elige si lo recoges ahora o a una hora programada. El negocio te avisa cuando lo acepta y cuando está listo."
+      },
+      "pay": {
+        "q": "¿Cómo pago?",
+        "a": "Por ahora pagas al recoger, directamente en el negocio. Luma nunca te pide datos de tarjeta."
+      },
+      "cancel": {
+        "q": "¿Puedo cancelar un pedido?",
+        "a": "Sí, mientras el negocio no lo haya aceptado, desde Mis pedidos. Si ya lo aceptó, escríbele o llámalo."
+      },
+      "business": {
+        "q": "¿Cómo registro mi negocio?",
+        "a": "En Perfil, toca «Tengo un negocio». Completa los datos, el horario, el menú, los datos legales y los documentos, y envíalo a revisión. Se publica cuando el equipo lo aprueba."
+      },
+      "review": {
+        "q": "¿Cuánto tarda la revisión de un negocio?",
+        "a": "Normalmente unos días hábiles. Te avisamos en Notificaciones; si faltan datos verás qué corregir."
+      },
+      "notifications": {
+        "q": "¿Por qué no recibo notificaciones en el teléfono?",
+        "a": "Revisa Perfil > Notificaciones y que el teléfono permita las notificaciones de Luma. Las promociones solo llegan si las activaste."
+      },
+      "data": {
+        "q": "¿Qué datos guarda Luma de mí?",
+        "a": "Los que se explican en la política de privacidad: tu cuenta, tus pedidos, favoritos y reseñas. Nunca mostramos tu correo ni tu teléfono a otros usuarios."
+      },
+      "delete": {
+        "q": "¿Cómo elimino mi cuenta?",
+        "a": "En Perfil > Cuenta, «Eliminar cuenta». Por seguridad debes haber iniciado sesión hace poco. Se borran tus datos y los de tus negocios."
+      }
+    }
   }
 }
