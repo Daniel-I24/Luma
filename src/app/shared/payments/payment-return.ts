@@ -17,7 +17,7 @@ export interface PaymentReturnLink {
  */
 @Injectable({ providedIn: 'root' })
 export class PaymentReturn {
-  private static readonly PREFIX = 'luma://payments/return';
+  public static readonly PREFIX = 'luma://payments/return';
   private static readonly UUID = /^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
   private static readonly TRANSACTION = /^[0-9A-Za-z_-]{1,64}$/;
 
@@ -43,7 +43,12 @@ export class PaymentReturn {
   private async handle(url: string): Promise<void> {
     const link = PaymentReturn.parse(url);
     if (!link) return;
-    if (link.transactionId) await this.payments.recordRedirect(link.orderId, link.transactionId).catch(() => undefined);
+    await this.record(link);
     await this.router.navigate(['/orders', link.orderId]);
+  }
+
+  /** Best effort: the transaction id helps reconcile-payments; the status comes from the server. */
+  public async record(link: PaymentReturnLink): Promise<void> {
+    if (link.transactionId) await this.payments.recordRedirect(link.orderId, link.transactionId).catch(() => undefined);
   }
 }

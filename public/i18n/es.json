@@ -294,7 +294,7 @@
       "title": "Filtros",
       "button": "Filtros",
       "buttonCount": "Filtros ({{count}})",
-      "open": "Abrir filtros, {{count}} activos",
+      "open": "Abrir filtros, {{count}} {{count:activo|activos}}",
       "openNow": "Abierto ahora",
       "withPromotion": "Con promoción",
       "goodRating": "4 estrellas o más",
@@ -304,7 +304,7 @@
       "distanceNeedsLocation": "Activa tu ubicación para filtrar por distancia.",
       "categories": "Categorías",
       "clear": "Limpiar",
-      "show": "Ver {{count}} resultados"
+      "show": "Ver {{count}} {{count:resultado|resultados}}"
     },
     "places": {
       "title": "Lugares",
@@ -355,8 +355,8 @@
   },
   "rating": {
     "label": "Calificación {{rating}} de 5",
-    "labelWithReviews": "Calificación {{rating}} de 5, {{count}} reseñas",
-    "reviews": "({{count}} reseñas)",
+    "labelWithReviews": "Calificación {{rating}} de 5, {{count}} {{count:reseña|reseñas}}",
+    "reviews": "({{count}} {{count:reseña|reseñas}})",
     "none": "Sin reseñas"
   },
   "feed": {
@@ -604,7 +604,7 @@
         "51_200": "Entre 51 y 200 pedidos completados",
         "200_plus": "Más de 200 pedidos completados"
       },
-      "months": "En Luma desde hace {{count}} meses",
+      "months": "En Luma desde hace {{count}} {{count:mes|meses}}",
       "loadFailed": "No se pudo cargar la ficha de confianza."
     }
   },
@@ -922,7 +922,7 @@
       "action": "Avisar a mis seguidores",
       "sending": "Avisando…",
       "sent": "Ya avisaste a tus seguidores de esta promoción.",
-      "done": "Avisamos a {{count}} seguidores.",
+      "done": "Avisamos a {{count}} {{count:seguidor|seguidores}}.",
       "nobody": "Por ahora ninguno de tus seguidores acepta avisos de promociones.",
       "already": "Ya avisaste a tus seguidores de esta promoción.",
       "limit": "Solo puedes avisar de una promoción al día. Vuelve mañana.",
@@ -1173,7 +1173,7 @@
       "duplicate_phone": "El teléfono o WhatsApp lo usa un negocio de otro dueño.",
       "near_duplicate_location": "Hay un negocio de otro dueño a menos de 50 m.",
       "similar_name": "El nombre se parece mucho al de un negocio aprobado.",
-      "account": "Cuenta del dueño creada hace {{days}} días; tiene {{count}} negocio(s)."
+      "account": "Cuenta del dueño creada hace {{days}} {{days:día|días}}; tiene {{count}} {{count:negocio|negocios}}."
     },
     "operations": {
       "entry": "Pagos, avisos y registro",
@@ -1193,7 +1193,7 @@
       "markRefunded": "Marcar reembolsado",
       "void": {
         "voided": "Pago anulado en Wompi.",
-        "manual": "Este medio no se anula por API: reembólsalo en el panel de Wompi y márcalo aquí.",
+        "manual": "Este medio de pago no se puede anular desde Luma: reembólsalo en el panel de Wompi y márcalo aquí.",
         "pending": "Wompi recibió la anulación; el estado se actualizará pronto."
       },
       "refundMarked": "Reembolso marcado como hecho.",
@@ -1604,15 +1604,15 @@
       "loading": "Buscando ideas para tus promociones…",
       "loadFailed": "No pudimos preparar ideas ahora.",
       "empty": "Por ahora no hay ideas: tus productos se venden bien o ya tienen promoción.",
-      "duration": "por {{days}} días",
+      "duration": "por {{days}} {{days:día|días}}",
       "create": "Crear promoción",
       "margin": "Revisa tu margen antes de publicar",
       "sourceAi": "Ideas generadas con IA a partir de tus ventas",
       "sourceRules": "Ideas basadas en tus ventas de los últimos 60 días",
       "promoTitle": "{{percent}} % en {{item}}",
       "reasons": {
-        "slow_item": "No se ha vendido en 60 días y lleva {{days}} días en tu menú.",
-        "new_item": "Es nuevo ({{days}} días en el menú) y se ha vendido {{units}} veces: dalo a conocer.",
+        "slow_item": "No se ha vendido en 60 días y lleva {{days}} {{days:día|días}} en tu menú.",
+        "new_item": "Es nuevo ({{days}} {{days:día|días}} en el menú) y se ha vendido {{units}} {{units:vez|veces}}: dalo a conocer.",
         "quiet_slot": "Es tu producto más vendido ({{units}} en 60 días); úsalo para animar el {{weekday}} en la {{slot}}, tu momento más flojo.",
         "top_seller": "Es tu producto más vendido ({{units}} en 60 días)."
       },
@@ -1647,7 +1647,7 @@
       "section": "Sección",
       "add": "Agregar al menú ({{count}})",
       "discard": "Descartar y empezar de nuevo",
-      "done": "Listo: agregamos {{count}} productos a tu menú.",
+      "done": "Listo: agregamos {{count}} {{count:producto|productos}} a tu menú.",
       "toMenu": "Ver mi menú",
       "again": "Escanear otras fotos",
       "nothingFound": "No encontramos productos en las fotos. Prueba con fotos más nítidas y bien iluminadas.",
@@ -1662,8 +1662,8 @@
       "entryAi": "Escanear mi menú con IA",
       "entryHint": "Toma fotos de tu carta o pega el texto: creamos los productos por ti y tú los revisas.",
       "errors": {
-        "buildRules": "Esta versión de la app se compiló en modo reglas (AI_MODE=rules), sin Luma IA para leer fotos. Pega tu menú como texto: llega a la misma revisión.",
-        "notDeployed": "El servicio que lee las fotos (extract-menu) no está publicado. Pega tu menú como texto mientras tanto.",
+        "buildRules": "En esta versión de la app Luma IA no lee fotos. Pega tu menú como texto: llega a la misma revisión. (En Mi negocio, «Información técnica» dice por qué.)",
+        "notDeployed": "El servicio que lee las fotos todavía no está disponible. Pega tu menú como texto mientras tanto.",
         "noResponse": "El servicio que lee las fotos no respondió (red o configuración del servidor). Intenta de nuevo o pega tu menú como texto.",
         "notConfigured": "Luma IA no tiene configurado su proveedor en el servidor. Pega tu menú como texto mientras el equipo lo activa.",
         "providerKey": "El proveedor de Luma IA rechazó la clave del servidor. Avisamos al equipo; pega tu menú como texto mientras tanto.",
@@ -1674,7 +1674,7 @@
       }
     },
     "orderAlerts": {
-      "new": "Tienes {{count}} pedido(s) nuevo(s). Revísalos en Pedidos."
+      "new": "Tienes {{count}} {{count:pedido nuevo|pedidos nuevos}}. Revísalos en Pedidos."
     },
     "pause": {
       "title": "Pausar pedidos",
@@ -1695,7 +1695,7 @@
       },
       "range": "Periodo",
       "measure": "Qué mostrar",
-      "days": "{{count}} días",
+      "days": "{{count}} {{count:día|días}}",
       "measures": {
         "orders": "Pedidos",
         "revenue": "Ventas"
@@ -1703,10 +1703,10 @@
       "totals": "{{orders}} pedidos",
       "empty": "Todavía no hay ventas en este periodo.",
       "tapHint": "Toca una barra para ver el día.",
-      "ordersValue": "{{count}} pedidos",
+      "ordersValue": "{{count}} {{count:pedido|pedidos}}",
       "day": "Día",
       "topItems": "Lo más pedido",
-      "units": "{{count}} unidades",
+      "units": "{{count}} {{count:unidad|unidades}}",
       "errors": {
         "loadFailed": "No se pudo cargar el resumen de ventas."
       }
@@ -1787,7 +1787,7 @@
   "promotions": {
     "title": "Promociones",
     "loading": "Cargando promociones…",
-    "count": "{{count}} promociones",
+    "count": "{{count}} {{count:promoción|promociones}}",
     "seeAll": "Ver todas las promociones",
     "errors": {
       "loadFailed": "No se pudieron cargar las promociones."
@@ -1820,7 +1820,7 @@
       "now": "Ahora: ",
       "endsToday": "Termina hoy",
       "endsTomorrow": "Termina mañana",
-      "endsInDays": "Termina en {{days}} días",
+      "endsInDays": "Termina en {{days}} {{days:día|días}}",
       "order": "Pedir",
       "soldOut": "Agotado"
     }
@@ -1887,6 +1887,19 @@
       "sendCode": "Enviar código",
       "codeSent": "Te enviamos un código de 6 dígitos a tu correo. Escríbelo para guardar la nueva contraseña.",
       "code": "Código de 6 dígitos"
+    },
+    "export": {
+      "action": "Descargar mis datos",
+      "working": "Preparando tus datos…",
+      "done": {
+        "download": "Listo: descargamos una copia de tus datos (archivo JSON).",
+        "share": "Listo: elige dónde guardar la copia de tus datos.",
+        "clipboard": "Listo: copiamos tus datos. Pégalos en una nota o en un correo para guardarlos."
+      },
+      "errors": {
+        "limit": "Ya descargaste tus datos 3 veces hoy. Inténtalo mañana.",
+        "failed": "No pudimos preparar tus datos. Inténtalo de nuevo."
+      }
     }
   },
   "help": {
@@ -1994,7 +2007,7 @@
     "retry": "Reintentar pago",
     "opening": "Abriendo el pago...",
     "complete": "Completar pago",
-    "attemptsLeft": "Te quedan {{count}} intentos para pagar antes de que el pedido se cancele.",
+    "attemptsLeft": "Te {{count:queda|quedan}} {{count}} {{count:intento|intentos}} para pagar antes de que el pedido se cancele.",
     "noMoreAttempts": "Ya no se puede pagar este pedido. Cancélalo y haz uno nuevo.",
     "refundInfo": "Tu pedido se canceló después de pagar. Te devolveremos el dinero al mismo medio de pago.",
     "status": {
@@ -2033,7 +2046,7 @@
     },
     "strikes": "Pedidos sin recoger en los últimos 30 días: {{count}}.",
     "until": "La limitación termina el {{date}}.",
-    "improve": "Recoge {{count}} pedido(s) más para ser cliente confiable."
+    "improve": "Recoge {{count}} {{count:pedido|pedidos}} más para ser cliente confiable."
   },
   "avatar": {
     "errors": {

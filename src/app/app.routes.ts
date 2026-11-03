@@ -54,6 +54,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/account-error/account-error.page').then((m) => m.AccountErrorPage),
   },
   {
+    // Wompi's return for a payment started on the web (the APK uses luma://).
+    path: 'payments/return',
+    loadChildren: () => import('@shared/payments/payment-return.routes').then((m) => m.paymentReturnRoutes),
+  },
+  {
     // Terms and privacy: public, linked from the sign-up and the Profile.
     path: 'legal',
     loadChildren: () => import('./features/legal/legal.routes').then((m) => m.legalRoutes),

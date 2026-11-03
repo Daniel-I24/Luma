@@ -25,7 +25,7 @@ function setup(options: Partial<{
     },
   };
   const handler = createHandler({
-    allowedOrigins: [ORIGIN],
+    allowedOrigins: [ORIGIN, 'https://luma.example'],
     credentials: options.credentials === false ? null : sandboxCredentials(),
     redirectUrl: 'luma://payments/return',
     authenticate: (token) => Promise.resolve(token === 'good' ? customer : null),
@@ -90,4 +90,14 @@ Deno.test('an attempt still in progress answers 409 with the seconds left', asyn
   const res = await setup({ prepared: { error: 'attempt_in_progress', retryAfterSeconds: 95 } }).handler(post({ order_id: ORDER }));
   assertEquals([res.status, res.headers.get('Retry-After'), await res.json()],
     [409, '95', { error: 'attempt_in_progress', retry_after_seconds: 95 }]);
+});
+
+Deno.test('a payment started on the web returns to the web app; one started in the APK to luma://', async () => {
+  const { handler } = setup();
+  const redirect = async (origin: string) => {
+    const body = await (await handler(post({ order_id: ORDER }, 'good', origin))).json();
+    return new URL(body.checkout_url).searchParams.get('redirect-url');
+  };
+  assertEquals(await redirect('https://luma.example'), `https://luma.example/payments/return?order=${ORDER}`);
+  assertEquals(await redirect(ORIGIN), `luma://payments/return?order=${ORDER}`);
 });

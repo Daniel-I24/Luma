@@ -56,7 +56,11 @@ reads; nothing here depends on it.
    `luma://payments/return?order=<id>&id=<transaction>`; the app stores the
    transaction id (`record_payment_redirect`, untrusted) and, when it comes
    back to the foreground, reads the order from the server, the only source
-   of truth.
+   of truth. A payment started on the **web** (an allowed https origin other
+   than the APK's `localhost`) returns instead to
+   `https://<web>/payments/return?order=<id>&id=<transaction>`, which does the
+   same and opens the order (a browser cannot open `luma://`). Redeploy
+   `create-payment` for this (round 9).
 4. Wompi POSTs `transaction.updated` to `wompi-webhook`, which runs the
    verifier chain and calls `apply_payment_event` (service role).
 5. On approval the order moves to `pending`: the business sees it ("Pagado en

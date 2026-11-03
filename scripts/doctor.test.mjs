@@ -12,7 +12,7 @@ const KEY = 'AIza-secret-key';
 const TOKEN = 'sbp_secret_token';
 
 /** A project folder, a secrets folder and simulated Supabase, Gemini and WhatsApp services. */
-function setup({ secrets = [], functions = FUNCTIONS, applied = ['20261105000000'], challenge = 'echo', gemini = 200, files = {} } = {}) {
+function setup({ secrets = [], functions = FUNCTIONS, applied = ['20261105000000'], challenge = 'echo', gemini = 200, files = {}, token = true } = {}) {
   const root = mkdtempSync(join(tmpdir(), 'doctor-root-'));
   const dir = mkdtempSync(join(tmpdir(), 'doctor-secrets-'));
   mkdirSync(join(root, 'supabase', 'migrations'), { recursive: true });
@@ -24,8 +24,6 @@ function setup({ secrets = [], functions = FUNCTIONS, applied = ['20261105000000
     const json = (value, status = 200) => new Response(JSON.stringify(value), { status });
     if (url.endsWith('/database/migrations')) return json(applied.map((version) => ({ version })));
     if (url.endsWith('/database/query')) return json([{ key: 'payments_enabled', int_value: 0 }, { key: 'show_pending_businesses', int_value: 1 }]);
-    if (url.endsWith('/secrets')) return json(secrets.map((name) => ({ name, value: 'hash' })));
-    if (url.endsWith('/functions')) return json(functions.map((slug) => ({ slug })));
     if (url.includes('/whatsapp-webhook?')) {
       const sent = new URL(url).searchParams.get('hub.challenge');
       return challenge === 'echo' ? new Response(sent) : new Response('Forbidden', { status: 403 });
@@ -33,8 +31,15 @@ function setup({ secrets = [], functions = FUNCTIONS, applied = ['20261105000000
     if (url.includes('generativelanguage')) return json({}, gemini);
     return json({}, 404);
   };
-  const env = { SUPABASE_PROJECT_REF: REF, SUPABASE_ACCESS_TOKEN: TOKEN, LUMA_SECRETS_DIR: dir };
-  return { ctx: createContext({ env, root, fetchFn, random: () => 0.5 }), calls };
+  // The Supabase CLI with the user's own session (no token of theirs in the doctor).
+  const cli = (args) => {
+    calls.push({ url: `cli ${args.join(' ')}`, init: {} });
+    if (args[0] === 'secrets') return secrets.map((name) => ({ name, value: 'digest' }));
+    if (args[0] === 'functions') return functions.map((slug) => ({ slug, status: 'ACTIVE' }));
+    throw new Error('unexpected CLI call');
+  };
+  const env = { SUPABASE_PROJECT_REF: REF, LUMA_SECRETS_DIR: dir, ...(token ? { SUPABASE_ACCESS_TOKEN: TOKEN } : {}) };
+  return { ctx: createContext({ env, root, fetchFn, random: () => 0.5, cli }), calls };
 }
 
 const find = (lines, text) => lines.find((l) => l.item.includes(text));
@@ -84,17 +89,32 @@ test('a refused key, a missing model and a wrong WhatsApp token are FALTA with t
   assert.equal(find(unknown, 'no existe').state, 'FALTA');
 });
 
-test('a Management API failure is one FALTA line, not a crash', async () => {
+test('a failing CLI (no "npx supabase login") is one FALTA line, not a crash', async () => {
   const { ctx } = setup();
-  const broken = { ...ctx, api: async () => { throw new Error('la API de Supabase respondió 401 en /secrets'); } };
+  const broken = { ...ctx, cli: () => { throw new Error('"npx supabase secrets list" falló: ¿hiciste "npx supabase login"?'); } };
   const lines = await runDoctor(broken);
-  assert.ok(lines.some((l) => l.item.startsWith('No pude comprobar Features: la API de Supabase respondió 401')));
+  assert.ok(lines.some((l) => l.item.startsWith('No pude comprobar Features: "npx supabase secrets list" falló')));
 });
 
-test('without a project or a token the doctor says how to get them', () => {
+test('without a token: secrets and functions from the CLI session; migrations and flags are APAGADO', async () => {
+  const { ctx, calls } = setup({ token: false, secrets: ['LLM_PROVIDER', 'LLM_MODEL', 'LLM_API_KEY'] });
+  const lines = await runDoctor(ctx);
+  assert.equal(find(lines, 'Migraciones').state, 'APAGADO');
+  assert.equal(find(lines, 'Banderas').state, 'APAGADO');
+  assert.match(find(lines, 'Migraciones').next, /solo en memoria, no se guarda/);
+  assert.equal(find(lines, 'Luma IA').state, 'OK');
+  assert.equal(calls.some((c) => c.url.startsWith('https://api.supabase.com')), false, 'no Management API call without a token');
+  assert.ok(calls.some((c) => c.url === `cli secrets list --project-ref ${REF}`));
+});
+
+test('the doctor never reads a token from a file, and without a project says how to link it', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'doctor-secrets-'));
+  writeFileSync(join(dir, 'supabase-access-token.txt'), 'sbp_on_disk');
+  const root = mkdtempSync(join(tmpdir(), 'doctor-root-'));
+  mkdirSync(join(root, 'supabase', 'migrations'), { recursive: true });
+  const ctx = createContext({ env: { SUPABASE_PROJECT_REF: REF, LUMA_SECRETS_DIR: dir }, root, cli: () => [] });
+  assert.equal(ctx.api, null);
   assert.throws(() => createContext({ env: { LUMA_SECRETS_DIR: tmpdir() }, root: tmpdir() }), /npx supabase link/);
-  assert.throws(() => createContext({ env: { SUPABASE_PROJECT_REF: REF, LUMA_SECRETS_DIR: tmpdir() }, root: tmpdir() }),
-    /supabase-access-token\.txt/);
 });
 
 test('env files: quotes, comments and Windows line endings', () => {

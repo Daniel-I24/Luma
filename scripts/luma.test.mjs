@@ -23,7 +23,7 @@ function runOption(call, { files = {}, answers = [], http = {}, cli = 0, npm = 0
   writeFileSync(harness, `
 $ErrorActionPreference = 'Stop'
 $env:LUMA_SECRETS_DIR = '${dir}'
-foreach ($part in 'common', 'ai', 'push', 'payments', 'routes', 'whatsapp', 'apk') { . (Join-Path '${join(here, 'luma')}' "$part.ps1") }
+foreach ($part in 'common', 'ai', 'push', 'payments', 'routes', 'whatsapp', 'apk', 'doctor') { . (Join-Path '${join(here, 'luma')}' "$part.ps1") }
 $global:calls = @(); $global:answers = [Collections.ArrayList]@(${list(answers)}); $global:envFiles = @()
 function Invoke-Supabase {
   $i = [array]::IndexOf($args, '--env-file')
@@ -40,10 +40,11 @@ function Invoke-LumaHttp([string]$Uri, [hashtable]$Headers = @{}) {
   foreach ($k in $global:http.Keys) { if ($Uri -like "*$k*") { $r = $global:http[$k]; if ($r.Body -eq 'ECHO') { return @{ Status = 200; Body = ([regex]::Match($Uri, 'hub.challenge=(\\d+)').Groups[1].Value) } }; return $r } }
   return @{ Status = 404; Body = '' }
 }
-function Invoke-LumaNpm { $global:calls += "npm $($args -join ' ') AI_MODE=$env:AI_MODE"; return ${npm} }
+function Invoke-LumaNpm { $global:calls += "npm $($args -join ' ') AI_MODE=$env:AI_MODE TOKEN=$env:SUPABASE_ACCESS_TOKEN"; return ${npm} }
 function Invoke-LumaAdb { $global:calls += "adb $($args -join ' ')"; if ($args[0] -eq 'devices') { return @('List of devices attached'${phones.map((p) => `, "${p}\`tdevice"`).join('')}) }; return 'Success' }
 $lines = ${call}
 $tempLeft = $global:tempFile -and (Test-Path $global:tempFile)
+$global:calls += "after TOKEN=$env:SUPABASE_ACCESS_TOKEN"
 Write-Output (ConvertTo-Json -Depth 5 -Compress -InputObject @{ lines = @($lines | ForEach-Object { @{ state = $_.State; item = $_.Item; next = $_.Next } }); calls = @($global:calls); envFiles = @($global:envFiles); tempLeft = [bool]$tempLeft })
 `);
   const run = spawnSync(shell, ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', harness], { encoding: 'utf8' });
@@ -90,7 +91,7 @@ test('option 3 without all the keys says which prefix is missing and loads nothi
   const r = runOption(`Invoke-LumaPayments '${REF}'`, { files: { 'wompi-sandbox.txt': 'pub_test_A prv_test_B' } });
   assert.deepEqual(states(r), ['FALTA']);
   assert.match(r.lines[0].item, /test_events_\.\.\., test_integrity_\.\.\./);
-  assert.equal(r.calls.length, 0);
+  assert.equal(r.calls.filter((c) => !c.startsWith('after ')).length, 0);
 });
 
 test('option 1: Gemini key and models tested, LLM_* loaded, the three AI functions deployed', { skip }, () => {
@@ -144,8 +145,22 @@ test('options 4 and 5: the route key and the WhatsApp challenge are tested', { s
 test('option 6: app.env reaches the build, and with two phones it asks which', { skip }, () => {
   const app = 'SUPABASE_URL=https://x.supabase.co\nSUPABASE_ANON_KEY=anon\nAI_MODE=remote\n';
   const r = runOption('Invoke-LumaApk', { files: { 'app.env': app }, phones: ['AAA', 'BBB'], answers: ['2'] });
-  assert.ok(r.calls.includes('npm apk:debug AI_MODE=remote'), 'without signing variables: a debug APK');
+  assert.ok(r.calls.includes('npm apk:debug AI_MODE=remote TOKEN='), 'without signing variables: a debug APK');
   assert.ok(r.calls.includes('adb -s BBB install -r android\\app\\build\\outputs\\apk\\debug\\app-debug.apk'));
   const none = runOption('Invoke-LumaApk', { files: { 'app.env': app } });
   assert.ok(none.lines.some((l) => l.state === 'FALTA' && /telefono conectado/.test(l.item)));
 });
+
+test('option 7: the token lives only in the doctor process, is never written, and can be revoked', { skip }, () => {
+  const r = runOption('Invoke-LumaDoctor', { answers: ['sbp_secret_token'] });
+  assert.ok(r.calls.includes('npm doctor AI_MODE= TOKEN=sbp_secret_token'), 'the doctor gets it through its environment');
+  assert.ok(r.calls.includes('after TOKEN='), 'and it is gone from the window afterwards');
+  for (const name of readdirSync(r.dir)) assert.equal(readFileSync(join(r.dir, name), 'utf8').includes('sbp_secret_token'), false, name);
+  assert.equal(readdirSync(r.dir).length, 0, 'nothing written to luma-secrets');
+  assert.ok(r.lines.some((l) => /revocalo/.test(l.next)));
+  assert.equal(r.stdout.includes('sbp_secret_token'), false);
+  const without = runOption('Invoke-LumaDoctor', { answers: [''] });
+  assert.ok(without.calls.includes('npm doctor AI_MODE= TOKEN='));
+  assert.equal(without.lines.some((l) => /revocalo/.test(l.next)), false);
+});
+

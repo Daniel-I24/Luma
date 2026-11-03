@@ -1,17 +1,20 @@
 /**
  * The checks of `npm run doctor`. Each one returns lines
  * { state: 'OK' | 'FALTA' | 'APAGADO', item, next? } in plain Spanish and
- * never a secret value. `ctx` gives the Management API, fetch, the local
- * migrations and the local secret files (scripts/doctor.mjs).
+ * never a secret value. `ctx` gives the Supabase CLI (the user's session),
+ * the Management API only when a token was given in memory, fetch, the
+ * local migrations and the local secret files (scripts/doctor.mjs).
  */
 import { FEATURES, FLAGS, FUNCTIONS } from './expected.mjs';
 
 const ok = (item) => ({ state: 'OK', item });
 const missing = (item, next) => ({ state: 'FALTA', item, next });
 const off = (item, next) => ({ state: 'APAGADO', item, next });
+const NO_TOKEN = 'Opcional: en la opción 7 escribe un token personal (solo en memoria, no se guarda) para verlo.';
 
 /** Local migrations that the project has not applied yet. */
 async function checkMigrations(ctx) {
+  if (!ctx.api) return [off('Migraciones: no comprobadas (sin token)', NO_TOKEN)];
   const applied = new Set((await ctx.api('/database/migrations')).map((m) => String(m.version)));
   const pending = ctx.localMigrations.filter((version) => !applied.has(version));
   if (!pending.length) return [ok(`Migraciones: las ${ctx.localMigrations.length} están aplicadas`)];
@@ -21,6 +24,7 @@ async function checkMigrations(ctx) {
 
 /** The app_settings flags, as they are. */
 async function checkFlags(ctx) {
+  if (!ctx.api) return [off('Banderas de app_settings: no comprobadas (sin token)', NO_TOKEN)];
   const list = FLAGS.map((key) => `'${key}'`).join(', ');
   const rows = await ctx.api('/database/query', {
     method: 'POST',
@@ -33,8 +37,8 @@ async function checkFlags(ctx) {
 
 /** Secret names and deployed functions of each feature. */
 async function checkFeatures(ctx) {
-  const secrets = new Set((await ctx.api('/secrets')).map((s) => s.name));
-  const functions = new Set((await ctx.api('/functions')).map((f) => f.slug));
+  const secrets = new Set(ctx.cli(['secrets', 'list']).map((s) => s.name));
+  const functions = new Set(ctx.cli(['functions', 'list']).map((f) => f.slug));
   const lines = [];
   for (const feature of Object.values(FEATURES)) {
     const lacking = feature.secrets.filter((name) => !secrets.has(name));

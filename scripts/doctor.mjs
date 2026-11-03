@@ -4,13 +4,18 @@
  * Supabase project and what is missing, in plain Spanish. Reads only:
  *   - the project: supabase/.temp/project-ref (from "npx supabase link") or
  *     SUPABASE_PROJECT_REF;
- *   - a personal access token: SUPABASE_ACCESS_TOKEN or
- *     <secrets>/supabase-access-token.txt (Management API: migrations,
- *     app_settings flags, secret NAMES, functions);
+ *   - the CLI session of "npx supabase login": secret NAMES and deployed
+ *     functions ("npx supabase secrets list" and "functions list");
+ *   - optionally SUPABASE_ACCESS_TOKEN, only in memory (option 7 asks for it
+ *     as a SecureString and never writes it): migrations and app_settings
+ *     flags, which only the Management API answers. Without it, those lines
+ *     are APAGADO;
  *   - the secrets folder (LUMA_SECRETS_DIR, default %USERPROFILE%\luma-secrets):
  *     ai.env and whatsapp.env, to test the Gemini key and the WhatsApp challenge.
+ *     No file there holds an account token.
  * Writes nothing and never prints a secret. Exit 1 when something is missing.
  */
+import { spawnSync } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
@@ -31,18 +36,24 @@ export function parseEnvFile(text) {
   return values;
 }
 
-/** The context the checks use; every outside service comes through `fetchFn`. */
-export function createContext({ env = process.env, root = process.cwd(), fetchFn = fetch, random = Math.random } = {}) {
+/** The Supabase CLI with the user's own session ("npx supabase login"); JSON output. */
+export function supabaseCli(args) {
+  const run = spawnSync('npx', ['--yes', 'supabase', ...args, '--output', 'json'], {
+    encoding: 'utf8', shell: process.platform === 'win32',
+  });
+  if (run.status !== 0) throw new Error(`"npx supabase ${args.slice(0, 2).join(' ')}" falló: ¿hiciste "npx supabase login"?`);
+  return JSON.parse(run.stdout);
+}
+
+/** The context the checks use; every outside service comes through `fetchFn` and `cli`. */
+export function createContext({ env = process.env, root = process.cwd(), fetchFn = fetch, random = Math.random, cli = supabaseCli } = {}) {
   const secretsDir = env.LUMA_SECRETS_DIR || join(env.USERPROFILE || homedir(), 'luma-secrets');
   const read = (path) => (existsSync(path) ? readFileSync(path, 'utf8') : '');
   const ref = (env.SUPABASE_PROJECT_REF || read(join(root, 'supabase', '.temp', 'project-ref'))).trim();
-  const token = (env.SUPABASE_ACCESS_TOKEN || read(join(secretsDir, 'supabase-access-token.txt'))).trim();
   if (!/^[a-z0-9]{20}$/.test(ref)) throw new Error('Falta el proyecto: ejecuta "npx supabase link" en la carpeta del repo.');
-  if (!token) {
-    throw new Error('Falta el token de acceso: créalo en supabase.com/dashboard/account/tokens y guárdalo en '
-      + `${join(secretsDir, 'supabase-access-token.txt')} (la opción 7 de scripts\\luma.ps1 lo pide).`);
-  }
-  const api = async (path, { method = 'GET', body } = {}) => {
+  const token = (env.SUPABASE_ACCESS_TOKEN ?? '').trim();
+  // Only with a token given in memory: migrations and flags (Management API).
+  const api = token ? async (path, { method = 'GET', body } = {}) => {
     const response = await fetchFn(`${API_URL}/projects/${ref}${path}`, {
       method,
       headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
@@ -50,10 +61,11 @@ export function createContext({ env = process.env, root = process.cwd(), fetchFn
     });
     if (!response.ok) throw new Error(`la API de Supabase respondió ${response.status} en ${path}`);
     return response.json();
-  };
+  } : null;
   const migrationsDir = join(root, 'supabase', 'migrations');
   return {
     api,
+    cli: (args) => cli([...args, '--project-ref', ref]),
     fetch: fetchFn,
     random: () => Math.floor(random() * 1e9),
     functionsUrl: `https://${ref}.supabase.co/functions/v1`,

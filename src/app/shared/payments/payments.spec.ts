@@ -1,11 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-import { Router, provideRouter } from '@angular/router';
+import { Router, convertToParamMap, provideRouter, type ActivatedRouteSnapshot, type RouterStateSnapshot } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppEvents } from '@core/native/app-events';
 import { ExternalBrowser } from '@core/native/native-actions';
 import { PaymentGatewayFactory } from './payment-gateway';
 import { PaymentRepository } from './payment.repository';
 import { PaymentReturn } from './payment-return';
+import { webReturnGuard } from './payment-return.routes';
 
 const ORDER = '11111111-1111-4111-8111-111111111111';
 
@@ -61,5 +62,15 @@ describe('payments in the app', () => {
     expect(repo.recordRedirect).toHaveBeenCalledWith(ORDER, '99-1');
     TestBed.inject(AppEvents).emit('luma://something/else');
     expect(navigate).toHaveBeenCalledTimes(1);
+  });
+
+  it('on the web, Wompi returns to /payments/return: the same, then the order (or the list when malformed)', async () => {
+    const run = (query: Record<string, string>) => TestBed.runInInjectionContext(() =>
+      webReturnGuard({ queryParamMap: convertToParamMap(query) } as ActivatedRouteSnapshot, {} as RouterStateSnapshot));
+    const opened = await run({ order: ORDER, id: '99-1', env: 'test' });
+    expect(TestBed.inject(Router).serializeUrl(opened as never)).toBe(`/orders/${ORDER}`);
+    expect(repo.recordRedirect).toHaveBeenCalledWith(ORDER, '99-1');
+    const bad = await run({ order: '../../admin' });
+    expect(TestBed.inject(Router).serializeUrl(bad as never)).toBe('/orders');
   });
 });

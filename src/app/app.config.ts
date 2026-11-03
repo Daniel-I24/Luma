@@ -8,7 +8,8 @@ import {
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
 import { provideRouter, withViewTransitions } from '@angular/router';
-import { provideTransloco } from '@jsverse/transloco';
+import { TRANSLOCO_TRANSPILER, provideTransloco } from '@jsverse/transloco';
+import { PluralTranspiler } from '@core/i18n/plural-transpiler';
 import { LanguageService } from '@core/i18n/language.service';
 import { ConnectivityService } from '@core/network/connectivity.service';
 import { AppEvents } from '@core/native/app-events';
@@ -44,6 +45,8 @@ export const appConfig: ApplicationConfig = {
       },
       loader: TranslocoHttpLoader,
     }),
+    // "{{count:reseña|reseñas}}": texts that read right with 1 (core/i18n/plural-transpiler.ts).
+    { provide: TRANSLOCO_TRANSPILER, useClass: PluralTranspiler },
     // Activate the stored language before the first render (no flash of Spanish).
     provideAppInitializer(() => inject(LanguageService).init()),
     // Android back button and keyboard (no-op on the web). Never blocks startup:

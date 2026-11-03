@@ -3,12 +3,12 @@ import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
 import { APP_VERSION } from '@core/config/app-version';
-import { LumaButton } from '@design-system';
+import { LumaButton, ToastService } from '@design-system';
+import { DataExport } from '../data-export.service';
 import { DeleteAccountSheet } from '../delete-account-sheet/delete-account-sheet';
 
-
 /**
- * AccountActions — change password, help, sign out, delete the account
+ * AccountActions — change password, help, a copy of my data, sign out, delete the account
  * (DeleteAccountSheet: consequences, e-mail code, then delete) and the app version. Shared by the Profile
  * and "Mi negocio" (Luma Negocios).
  */
@@ -40,6 +40,12 @@ import { DeleteAccountSheet } from '../delete-account-sheet/delete-account-sheet
           class="pressable flex min-h-11 items-center rounded-xl border border-border-subtle bg-surface px-4 text-body font-medium text-fg no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
           >{{ t('help.title') }}</a
         >
+        <button
+          type="button"
+          class="pressable flex min-h-11 items-center rounded-xl border border-border-subtle bg-surface px-4 text-start text-body font-medium text-fg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+          [disabled]="exporting()"
+          (click)="exportData()"
+        >{{ t(exporting() ? 'account.export.working' : 'account.export.action') }}</button>
       </nav>
       <app-luma-button
         variant="secondary"
@@ -66,10 +72,13 @@ import { DeleteAccountSheet } from '../delete-account-sheet/delete-account-sheet
 export class AccountActions {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly dataExport = inject(DataExport);
+  private readonly toast = inject(ToastService);
 
   protected readonly loading = this.auth.loading;
   protected readonly deleteSheetOpen = signal(false);
   protected readonly errorKey = signal<string | null>(null);
+  protected readonly exporting = signal(false);
   protected readonly version = APP_VERSION;
 
   protected async onSignOut(): Promise<void> {
@@ -80,5 +89,15 @@ export class AccountActions {
     } else {
       this.errorKey.set('profile.errors.signOut');
     }
+  }
+
+  /** "Descargar mis datos": the copy of the account, with a message for how it arrived. */
+  protected async exportData(): Promise<void> {
+    this.errorKey.set(null);
+    this.exporting.set(true);
+    const result = await this.dataExport.download();
+    this.exporting.set(false);
+    if (result.errorKey) return this.errorKey.set(result.errorKey);
+    this.toast.show({ messageKey: `account.export.done.${result.delivered}`, tone: 'success' });
   }
 }

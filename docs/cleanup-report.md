@@ -184,3 +184,11 @@ left pointing at it) and the full Definition of Done stayed green.
   polls only while the channel is down). `PollWhileVisible` stays (checkout
   clock, FreshnessNote).
 
+## Round 9 — phase 3 (2026-11-03)
+
+- `supabase-access-token.txt` is no longer written or read: the doctor uses
+  the CLI session, and the optional token stays in memory (owner's request).
+  Delete that file from `%USERPROFILE%\luma-secrets` if an earlier run
+  created it, and revoke the token.
+- `PaymentReturn.webReturnGuard` moved to `payment-return.routes.ts` (lazy).
+

@@ -195,6 +195,16 @@ Phase 2 (tiempo real, docs/realtime.md):
   `appPullToRefresh`; map, Descubrir, ficha, pedidos (cliente y dueño),
   alertas y avisos refresh without flicker.
 
+Phase 3 (todo funciona de punta a punta, docs/feature-matrix.md):
+- `npm run test:e2e` (CI too): sign-up, pick-up order with the owner's
+  answer live, owner panel, simulated Wompi sandbox payment; simulated
+  Supabase, Realtime and Wompi; no console errors, no unsimulated request.
+- Gaps closed: web payments return to `/payments/return` (create-payment
+  picks the return by origin), "Descargar mis datos", plurals
+  (`PluralTranspiler`), technical words out of the texts, `id="null"`.
+- Option 7 no longer stores a Supabase token: CLI session, optional token
+  only in memory.
+
 ## Round 8 (2026-11-02)
 
 Phase 1 (fallos y legal público):

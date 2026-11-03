@@ -36,6 +36,18 @@ const PREPARE_ERRORS: Readonly<Record<string, number>> = {
 };
 
 /**
+ * Where Wompi sends the customer back: the web app itself when the payment
+ * started there (an allowed https origin that is not the APK's localhost),
+ * the luma:// link of the APK otherwise. A browser cannot open luma://.
+ */
+function returnUrl(req: Request, deps: CreatePaymentDeps): string {
+  const origin = req.headers.get('origin') ?? '';
+  if (!deps.allowedOrigins.includes(origin)) return deps.redirectUrl;
+  const url = new URL(origin);
+  return url.protocol === 'https:' && url.hostname !== 'localhost' ? `${url.origin}/payments/return` : deps.redirectUrl;
+}
+
+/**
  * Creates one checkout attempt for the caller's online order and answers the
  * signed Wompi checkout URL. The amount and the reference come from
  * prepare_payment (the database); the app never sends an amount.
@@ -74,7 +86,7 @@ export function createHandler(deps: CreatePaymentDeps): (req: Request) => Promis
       const url = await new CheckoutUrlBuilder(deps.credentials)
         .withReference(prepared.reference)
         .withAmount(Money.fromCents(prepared.amountInCents))
-        .withRedirectUrl(`${deps.redirectUrl}?order=${orderId}`)
+        .withRedirectUrl(`${returnUrl(req, deps)}?order=${orderId}`)
         .expiringAt(new Date(prepared.expiresAt))
         .build();
       deps.log.info('checkout_created', { source: 'checkout', count: prepared.attempt });

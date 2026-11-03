@@ -30,7 +30,7 @@ const OPTIONS: readonly { value: AccountTypeValue; key: string; icon: IconName }
             class="sr-only"
             type="radio"
             name="signup-account-type"
-            [id]="first ? 'signup-accountType' : null"
+            [attr.id]="first ? 'signup-accountType' : null"
             [value]="option.value"
             [checked]="store.draft().accountType === option.value"
             (change)="store.update('accountType', option.value)"

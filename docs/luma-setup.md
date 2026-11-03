@@ -22,6 +22,11 @@ despliegues usan `--use-api`, así que tampoco hace falta Docker.
 Todo lo privado vive en `%USERPROFILE%\luma-secrets` (fuera del
 repositorio; se puede cambiar con la variable `LUMA_SECRETS_DIR`).
 
+**Ningún archivo de `luma-secrets` contiene tokens de cuenta** (ni de
+Supabase ni de otra cuenta personal): las opciones usan la sesión de la CLI
+(`npx supabase login`), y el único token que el diagnóstico puede pedir vive
+solo en memoria.
+
 | Archivo | Lo escribe | Contiene |
 | --- | --- | --- |
 | `ai.env` | opción 1 | `LLM_API_KEY`, `LLM_MODEL`, `LLM_FALLBACK_MODEL` |
@@ -32,7 +37,6 @@ repositorio; se puede cambiar con la variable `LUMA_SECRETS_DIR`).
 | `routes.env` | opción 4 | `ROUTE_API_KEY` |
 | `whatsapp.env` | tú y la opción 5 | `WHATSAPP_VERIFY_TOKEN` (se genera si falta), `WHATSAPP_APP_SECRET`, `WHATSAPP_PHONE_NUMBER_ID` |
 | `app.env` | tú | las variables de compilación (docs/release.md) |
-| `supabase-access-token.txt` | opción 7 | el token de acceso para el diagnóstico |
 
 ## Las opciones
 
@@ -57,12 +61,15 @@ repositorio; se puede cambiar con la variable `LUMA_SECRETS_DIR`).
 6. **APK**: compila con todas las variables de `app.env` (firmado si están
    las cuatro `LUMA_KEY*`, de prueba si no) y lo instala con `adb`; si hay
    varios teléfonos conectados, pregunta cuál.
-7. **Diagnóstico** (`npm run doctor`): migraciones aplicadas, banderas de
-   `app_settings`, nombres de los secretos, funciones desplegadas, el reto de
-   WhatsApp, la clave de Gemini y el estado de push y pagos. Necesita un
-   token de acceso de Supabase (créalo con fecha de vencimiento en
-   supabase.com/dashboard/account/tokens); se guarda en la carpeta de
-   secretos y nunca se muestra.
+7. **Diagnóstico** (`npm run doctor`): nombres de los secretos y funciones
+   desplegadas con la sesión de la CLI (`npx supabase secrets list` y
+   `functions list`), el reto de WhatsApp, la clave de Gemini y el estado de
+   push y pagos. Las migraciones aplicadas y las banderas de `app_settings`
+   solo las responde la API de gestión: para verlas, la opción pide un token
+   personal **opcional**, como texto oculto y solo en memoria (nunca se
+   escribe a disco; se borra al terminar). Sin él, esas líneas salen
+   APAGADO. Si creaste el token solo para esto, revócalo después en
+   supabase.com/dashboard/account/tokens.
 
 Cada opción termina con un resumen: **OK** (listo), **FALTA** (hay que
 hacer algo: la línea siguiente dice qué) o **APAGADO** (opcional o apagado a

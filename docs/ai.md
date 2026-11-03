@@ -158,9 +158,9 @@ con su estado y códigos, nunca una clave ni un texto del proveedor).
 
 | Lo que ves | Causa | Cómo comprobarlo |
 | --- | --- | --- |
-| "Esta versión de la app se compiló en modo reglas" (botón deshabilitado con ese motivo) | La compilación no recibió `AI_MODE=remote` | "Información técnica" → Modo de Luma IA = `rules`. La salida de `npm run apk:release` / `build:prod` imprime `AI_MODE: …`. Vuelve a compilar con `AI_MODE=remote`. |
+| "En esta versión de la app Luma IA no lee fotos" (botón deshabilitado con ese motivo) | La compilación no recibió `AI_MODE=remote` | "Información técnica" → Modo de Luma IA = `rules`. La salida de `npm run apk:release` / `build:prod` imprime `AI_MODE: …`. Vuelve a compilar con `AI_MODE=remote`. |
 | "Ya usaste los escaneos de hoy" / "Enviaste muchos escaneos seguidos" | Cuota diaria (429 `quota_exceeded`) o límite por minutos (429 `rate_limited`) | `app_settings` (`ai_*`, `rate_menu_scan_*`). |
-| "El servicio que lee las fotos no está publicado" | 404: `extract-menu` no desplegada | `supabase functions list`; `supabase functions deploy extract-menu`. |
+| "El servicio que lee las fotos todavía no está disponible" | 404: `extract-menu` no desplegada | `supabase functions list`; `supabase functions deploy extract-menu`. |
 | "El servicio que lee las fotos no respondió" | Sin respuesta, función caída (502/504) o CORS (el origen no está en `ALLOWED_ORIGINS`) | Logs de la función; `ALLOWED_ORIGINS` incluye el origen de la web y `capacitor://localhost` / `https://localhost` del APK. |
 | "Luma IA no tiene configurado su proveedor" | 503 `not_configured`: faltan `LLM_PROVIDER` / `LLM_API_KEY` | `supabase secrets list` (solo nombres). |
 | "El proveedor de Luma IA rechazó la clave" | 503 `provider_auth`: el proveedor respondió 401/403 | Revisa `LLM_API_KEY` (Gemini: clave de AI Studio activa). |

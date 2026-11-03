@@ -304,7 +304,7 @@
       "distanceNeedsLocation": "Turn on your location to filter by distance.",
       "categories": "Categories",
       "clear": "Clear",
-      "show": "Show {{count}} results"
+      "show": "Show {{count}} {{count:result|results}}"
     },
     "places": {
       "title": "Places",
@@ -355,8 +355,8 @@
   },
   "rating": {
     "label": "Rated {{rating}} out of 5",
-    "labelWithReviews": "Rated {{rating}} out of 5, {{count}} reviews",
-    "reviews": "({{count}} reviews)",
+    "labelWithReviews": "Rated {{rating}} out of 5, {{count}} {{count:review|reviews}}",
+    "reviews": "({{count}} {{count:review|reviews}})",
     "none": "No reviews yet"
   },
   "feed": {
@@ -604,7 +604,7 @@
         "51_200": "Between 51 and 200 completed orders",
         "200_plus": "More than 200 completed orders"
       },
-      "months": "On Luma for {{count}} months",
+      "months": "On Luma for {{count}} {{count:month|months}}",
       "loadFailed": "The trust card could not be loaded."
     }
   },
@@ -922,7 +922,7 @@
       "action": "Tell my followers",
       "sending": "Sending…",
       "sent": "You already told your followers about this promotion.",
-      "done": "We told {{count}} followers.",
+      "done": "We told {{count}} {{count:follower|followers}}.",
       "nobody": "None of your followers accept promotion notices yet.",
       "already": "You already told your followers about this promotion.",
       "limit": "You can announce one promotion a day. Come back tomorrow.",
@@ -1173,7 +1173,7 @@
       "duplicate_phone": "The phone or WhatsApp is used by another owner's business.",
       "near_duplicate_location": "There is another owner's business within 50 m.",
       "similar_name": "The name is very similar to an approved business.",
-      "account": "Owner account created {{days}} days ago; {{count}} business(es)."
+      "account": "Owner account created {{days}} {{days:day|days}} ago; {{count}} {{count:business|businesses}}."
     },
     "operations": {
       "entry": "Payments, strikes and log",
@@ -1193,7 +1193,7 @@
       "markRefunded": "Mark refunded",
       "void": {
         "voided": "Payment voided in Wompi.",
-        "manual": "This method cannot be voided by API: refund it in the Wompi dashboard and mark it here.",
+        "manual": "This payment method cannot be voided from Luma: refund it in the Wompi dashboard and mark it here.",
         "pending": "Wompi received the void; the status will update soon."
       },
       "refundMarked": "Refund marked as done.",
@@ -1604,15 +1604,15 @@
       "loading": "Looking for deal ideas…",
       "loadFailed": "We could not prepare ideas right now.",
       "empty": "No ideas for now: your products sell well or already have a deal.",
-      "duration": "for {{days}} days",
+      "duration": "for {{days}} {{days:day|days}}",
       "create": "Create deal",
       "margin": "Check your margin before publishing",
       "sourceAi": "AI ideas based on your sales",
       "sourceRules": "Ideas based on your sales of the last 60 days",
       "promoTitle": "{{percent}} % off {{item}}",
       "reasons": {
-        "slow_item": "It has not sold in 60 days and has been on your menu for {{days}} days.",
-        "new_item": "It is new ({{days}} days on the menu) and sold {{units}} times: make it known.",
+        "slow_item": "It has not sold in 60 days and has been on your menu for {{days}} {{days:day|days}}.",
+        "new_item": "It is new ({{days}} {{days:day|days}} on the menu) and sold {{units}} {{units:time|times}}: make it known.",
         "quiet_slot": "It is your best seller ({{units}} in 60 days); use it to liven up {{weekday}} {{slot}}, your quietest time.",
         "top_seller": "It is your best seller ({{units}} in 60 days)."
       },
@@ -1647,7 +1647,7 @@
       "section": "Section",
       "add": "Add to menu ({{count}})",
       "discard": "Discard and start again",
-      "done": "Done: we added {{count}} products to your menu.",
+      "done": "Done: we added {{count}} {{count:product|products}} to your menu.",
       "toMenu": "See my menu",
       "again": "Scan other photos",
       "nothingFound": "We couldn't find products in the photos. Try sharper, well-lit photos.",
@@ -1662,8 +1662,8 @@
       "entryAi": "Scan my menu with AI",
       "entryHint": "Take photos of your menu or paste its text: we create the products and you review them.",
       "errors": {
-        "buildRules": "This version of the app was built in rules mode (AI_MODE=rules), without Luma IA to read photos. Paste your menu as text: it goes to the same review.",
-        "notDeployed": "The service that reads photos (extract-menu) is not published. Paste your menu as text meanwhile.",
+        "buildRules": "In this version of the app Luma AI does not read photos. Paste your menu as text: it reaches the same review. (In My business, “Technical info” says why.)",
+        "notDeployed": "The service that reads photos is not available yet. Paste your menu as text in the meantime.",
         "noResponse": "The service that reads photos did not answer (network or server settings). Try again or paste your menu as text.",
         "notConfigured": "Luma IA has no provider set up on the server. Paste your menu as text while the team turns it on.",
         "providerKey": "The Luma IA provider refused the server key. The team is told; paste your menu as text meanwhile.",
@@ -1674,7 +1674,7 @@
       }
     },
     "orderAlerts": {
-      "new": "You have {{count}} new order(s). Check them in Orders."
+      "new": "You have {{count}} new {{count:order|orders}}. Check them in Orders."
     },
     "pause": {
       "title": "Pause orders",
@@ -1695,7 +1695,7 @@
       },
       "range": "Period",
       "measure": "What to show",
-      "days": "{{count}} days",
+      "days": "{{count}} {{count:day|days}}",
       "measures": {
         "orders": "Orders",
         "revenue": "Sales"
@@ -1703,10 +1703,10 @@
       "totals": "{{orders}} orders",
       "empty": "No sales in this period yet.",
       "tapHint": "Tap a bar to see the day.",
-      "ordersValue": "{{count}} orders",
+      "ordersValue": "{{count}} {{count:order|orders}}",
       "day": "Day",
       "topItems": "Most ordered",
-      "units": "{{count}} units",
+      "units": "{{count}} {{count:unit|units}}",
       "errors": {
         "loadFailed": "Could not load the sales summary."
       }
@@ -1787,7 +1787,7 @@
   "promotions": {
     "title": "Deals",
     "loading": "Loading deals…",
-    "count": "{{count}} deals",
+    "count": "{{count}} {{count:deal|deals}}",
     "seeAll": "See all deals",
     "errors": {
       "loadFailed": "Could not load the deals."
@@ -1820,7 +1820,7 @@
       "now": "Now: ",
       "endsToday": "Ends today",
       "endsTomorrow": "Ends tomorrow",
-      "endsInDays": "Ends in {{days}} days",
+      "endsInDays": "Ends in {{days}} {{days:day|days}}",
       "order": "Order",
       "soldOut": "Sold out"
     }
@@ -1887,6 +1887,19 @@
       "sendCode": "Send code",
       "codeSent": "We emailed you a 6-digit code. Enter it to save the new password.",
       "code": "6-digit code"
+    },
+    "export": {
+      "action": "Download my data",
+      "working": "Preparing your data…",
+      "done": {
+        "download": "Done: we downloaded a copy of your data (JSON file).",
+        "share": "Done: choose where to keep the copy of your data.",
+        "clipboard": "Done: we copied your data. Paste it in a note or an e-mail to keep it."
+      },
+      "errors": {
+        "limit": "You already downloaded your data 3 times today. Try again tomorrow.",
+        "failed": "We could not prepare your data. Please try again."
+      }
     }
   },
   "help": {
@@ -1994,7 +2007,7 @@
     "retry": "Retry payment",
     "opening": "Opening the payment...",
     "complete": "Complete payment",
-    "attemptsLeft": "You have {{count}} attempts left to pay before the order is cancelled.",
+    "attemptsLeft": "You have {{count}} {{count:attempt|attempts}} left to pay before the order is cancelled.",
     "noMoreAttempts": "This order can no longer be paid. Cancel it and place a new one.",
     "refundInfo": "Your order was cancelled after you paid. We will refund the money to the same payment method.",
     "status": {
@@ -2033,7 +2046,7 @@
     },
     "strikes": "Orders not picked up in the last 30 days: {{count}}.",
     "until": "The limit ends on {{date}}.",
-    "improve": "Pick up {{count}} more order(s) to become a trusted customer."
+    "improve": "Pick up {{count}} more {{count:order|orders}} to become a trusted customer."
   },
   "avatar": {
     "errors": {

@@ -8,23 +8,8 @@
 # -----------------------------------------------------------------
 param([string]$Option = '')
 $ErrorActionPreference = 'Stop'
-foreach ($part in 'common', 'ai', 'push', 'payments', 'routes', 'whatsapp', 'apk') {
+foreach ($part in 'common', 'ai', 'push', 'payments', 'routes', 'whatsapp', 'apk', 'doctor') {
   . (Join-Path $PSScriptRoot "luma\$part.ps1")
-}
-
-function Invoke-LumaDoctor {
-  $dir = Get-LumaSecretsDir
-  $tokenFile = Join-Path $dir 'supabase-access-token.txt'
-  if (-not $env:SUPABASE_ACCESS_TOKEN -and -not (Test-Path $tokenFile)) {
-    Say 'El diagnostico necesita un token de acceso de Supabase (una vez).'
-    Say 'Crealo en supabase.com/dashboard/account/tokens (con fecha de vencimiento).'
-    $token = Read-LumaValue 'Token de acceso' -Secret
-    if (-not $token) { return @(New-LumaLine 'FALTA' 'Diagnostico: sin token de acceso' 'Vuelve a la opcion 7 con el token.') }
-    Write-LumaFile 'supabase-access-token.txt' $token
-  }
-  $code = Invoke-LumaNpm doctor
-  if ($code -eq 0) { return @(New-LumaLine 'OK' 'Diagnostico: todo lo comprobable esta bien') }
-  return @(New-LumaLine 'FALTA' 'Diagnostico: hay cosas por hacer (lista de arriba)' 'Empieza por la primera linea FALTA.')
 }
 
 $menu = [ordered]@{

@@ -45,6 +45,10 @@ jobs:
           npx ng build --configuration screens
           npx playwright-core install --with-deps chromium
           node scripts/check-responsive.mjs --browser=chromium
+      - name: End-to-end smoke flows on the web build with simulated services (no console errors)
+        env:
+          E2E_BROWSER: chromium
+        run: npm run test:e2e
       - name: No URL outside the config modules
         run: npm run check:hardcoded-urls
       - name: Destructive actions use the danger button

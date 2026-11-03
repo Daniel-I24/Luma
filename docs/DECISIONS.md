@@ -898,9 +898,12 @@ alternative that was not taken. The safest, most reversible option wins.
   jitter; timeouts and network errors 1 (vision calls take up to 30 s);
   a 429 (quota) none. LLM_FALLBACK_MODEL answers after provider_unavailable
   or timeout only.
-- **Doctor via the Management API** with a personal token kept in the
-  secrets folder (clients cannot read app_settings); a token with an
-  expiry date is recommended.
+- **Doctor via the CLI session** (`npx supabase secrets list` and
+  `functions list`). Migrations and flags need the Management API: the
+  token is asked for only in memory (SecureString in option 7, passed to the
+  doctor's process and cleared), never written; no file of luma-secrets
+  holds an account token (round 9, owner's request; it replaced a token
+  file).
 - **Sandbox payments stay off**: payments-settings.sql leaves the
   payments_enabled line commented out.
 
@@ -922,4 +925,21 @@ alternative that was not taken. The safest, most reversible option wins.
 - **Bundle**: raw initial size unchanged (670.15 kB, the reference); the
   transfer estimate grew 0.6 kB because `ConnectivityService` is now its own
   shared chunk (more lazy screens import it). Revisited in phase 5.
+
+## 2026-11-03 — Round 9, phase 3: end to end
+
+- **Web payments come back to the web**: create-payment picks the return
+  URL by the request origin (allowed https origin, not `localhost`), so a
+  browser never ends on `luma://`. The request and answer stay the same.
+- **Plurals in the texts, not in code**: `{{count:reseña|reseñas}}`
+  (`PluralTranspiler`) fixes "1 reseñas", "1 pedido(s)", "Te quedan 1
+  intentos" by editing the translation files only, without a new
+  dependency.
+- **"Descargar mis datos"**: the web downloads a JSON file; the APK shares it
+  (or copies it when the WebView has no sharing), since the WebView ignores
+  download links and no file plugin is installed.
+- **E2E without new dependencies**: `node:test` + `playwright-core` on the
+  `screens` build; Supabase, Realtime (Phoenix protocol on
+  `routeWebSocket`) and Wompi are simulated, and any request without a
+  simulation fails the test.
 
