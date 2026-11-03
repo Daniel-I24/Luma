@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LumaButton } from '@design-system';
+import { AvatarRepository } from '@shared/account/avatar.repository';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
 import { formatTime } from '@shared/format/date-format.util';
 import type { BusinessOrder } from '@shared/orders/business-order.repository';
@@ -31,10 +32,21 @@ export class OwnerOrderCard {
   readonly action = output<OrderAction>();
 
   protected readonly actions = computed(() => nextActions(this.order()));
+  /** The customer's photo, only while serving them and if they share it (signed, 60 s). */
+  protected readonly avatarUrl = signal<string | null>(null);
+  private readonly avatars = inject(AvatarRepository);
   protected readonly paidOnline = computed(() => this.order().payment_status === 'approved');
   protected readonly placedAt = computed(() => formatTime(this.order().created_at, this.lang()));
   protected readonly pickupAt = computed(() => {
     const pickup = this.order().pickup_at;
     return pickup ? formatTime(pickup, this.lang()) : null;
   });
+
+  public constructor() {
+    effect(() => {
+      const path = this.order().customer_avatar_path;
+      if (!path) this.avatarUrl.set(null);
+      else void this.avatars.signedUrl(path).then((url) => this.avatarUrl.set(url));
+    });
+  }
 }

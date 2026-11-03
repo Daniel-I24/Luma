@@ -5,6 +5,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaInput, ToastService } from '@design-system';
 import { ResidencePicker } from '@shared/geo/residence-picker/residence-picker';
 import { AccountDetailsStore } from './account-details.store';
+import { AvatarSettings } from './avatar-settings/avatar-settings';
 
 /** Only paths inside the app ("/checkout"), never "//host" or a full URL. */
 const INTERNAL_PATH = /^\/(?!\/)[\w\-/]*$/;
@@ -18,7 +19,7 @@ const INTERNAL_PATH = /^\/(?!\/)[\w\-/]*$/;
   selector: 'app-account-details-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaInput, ResidencePicker],
+  imports: [TranslocoModule, LumaButton, LumaInput, ResidencePicker, AvatarSettings],
   providers: [AccountDetailsStore],
   templateUrl: './account-details.page.html',
 })

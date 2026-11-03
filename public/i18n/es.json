@@ -1801,6 +1801,9 @@
       "consent": "Acepta el uso de la foto para guardarla.",
       "upload": "No se pudo guardar la foto. Puedes intentarlo de nuevo desde Mis datos.",
       "remove": "No se pudo quitar la foto. Intenta de nuevo."
-    }
+    },
+    "title": "Foto de perfil",
+    "alt": "Tu foto de perfil",
+    "share": "Mostrar mi foto al negocio mientras prepara mi pedido, para que me reconozca al recoger."
   }
 }

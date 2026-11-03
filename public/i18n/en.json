@@ -1801,6 +1801,9 @@
       "consent": "Accept how the photo is used to save it.",
       "upload": "Could not save the photo. You can try again from My details.",
       "remove": "Could not remove the photo. Try again."
-    }
+    },
+    "title": "Profile photo",
+    "alt": "Your profile photo",
+    "share": "Show my photo to the business while it prepares my order, so it recognises me at pick-up."
   }
 }
