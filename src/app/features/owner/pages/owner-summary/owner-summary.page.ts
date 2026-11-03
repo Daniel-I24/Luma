@@ -13,7 +13,7 @@ import { ownerPaths } from '@shared/account/owner-paths';
 import type { PromotionIdea } from '@shared/promotions/advisor/promotion-idea';
 import { IdeasCard } from '../../components/ideas-card/ideas-card';
 import { OrderPauseCard } from '../../components/order-pause-card/order-pause-card';
-import { PanelHeader } from '../../components/panel-header/panel-header';
+import { OwnerHero } from '../../components/owner-hero/owner-hero';
 import { PanelStateView } from '../../components/panel-state/panel-state';
 import { PublishCard } from '../../components/publish-card/publish-card';
 import { SalesSummaryCard } from '../../components/sales-summary-card/sales-summary-card';
@@ -40,7 +40,7 @@ import { TodayStatsCalculator } from '../../utils/today-stats';
     TranslocoModule,
     IdeasCard,
     OrderPauseCard,
-    PanelHeader,
+    OwnerHero,
     PanelStateView,
     PublishCard,
     SalesSummaryCard,

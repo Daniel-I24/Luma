@@ -74,6 +74,7 @@ test('reports each problem and never prints the key', async () => {
     '/rest/v1/device_tokens': () => Response.json({ code: 'PGRST205' }, { status: 404 }),
     '/rpc/sync_verified_phone': () => Response.json({ code: 'PGRST202' }, { status: 404 }),
     '/rpc/export_my_data': () => Response.json([{}], { status: 200 }),
+    '/rpc/send_test_notification': () => Response.json({ code: 'PGRST202' }, { status: 404 }),
     '/functions/v1/geocode': () => new Response(null, { status: 404 }),
     '/functions/v1/recommend': () => new Response(null, { status: 404 }),
     '/functions/v1/push-dispatch': () => new Response('BOOT_ERROR', { status: 503 }),
@@ -91,6 +92,7 @@ test('reports each problem and never prints the key', async () => {
     'FAIL bucket avatars (private): readable by anon',
   ]);
   assert.ok(lines.some((l) => l.ok && l.line === 'ok   function recommend: not deployed (not expected yet)'));
+  assert.ok(lines.some((l) => l.ok && l.line === 'ok   rpc send_test_notification [migration 52]: missing'));
   assert.equal(lines.some((l) => l.line.includes('anon-key-123')), false);
 });
 

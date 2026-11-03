@@ -6,24 +6,24 @@ import { AuthService } from '@core/auth/auth.service';
 import { accountHomeGuard } from './account.guards';
 import { AccountProfileRepository } from './account-profile.repository';
 import { AccountType } from './account-type';
-import { ONBOARDING_PATH, ONBOARDING_VERSION } from './onboarding';
+import { ONBOARDING_PATH, WelcomeTutorial } from './onboarding';
 import { SessionProfileStore } from './session-profile.store';
 
 describe('Onboarding landing', () => {
-  const repo = { getMine: vi.fn(), becomeBusinessOwner: vi.fn(), setOnboardingSeen: vi.fn() };
-  const profile = (seen: number) => ({
+  const repo = { getMine: vi.fn(), becomeBusinessOwner: vi.fn() };
+  const profile = () => ({
     data: {
       accountType: AccountType.customer,
       displayName: null,
       fullName: null,
       phone: null,
-      onboardingSeenVersion: seen,
     },
     errorKey: null,
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
+    localStorage.clear();
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
@@ -43,41 +43,39 @@ describe('Onboarding landing', () => {
     return TestBed.inject(Router).serializeUrl(tree);
   };
 
-  it('shows the tutorial to accounts that have not seen this version', async () => {
-    repo.getMine.mockResolvedValue(profile(ONBOARDING_VERSION - 1));
+  it('shows the tutorial the first time the app opens on this device', async () => {
+    repo.getMine.mockResolvedValue(profile());
     TestBed.inject(SessionProfileStore);
     TestBed.tick();
 
     expect(await land()).toBe(ONBOARDING_PATH);
   });
 
-  it('goes straight home once this version was seen', async () => {
-    repo.getMine.mockResolvedValue(profile(ONBOARDING_VERSION));
+  it('never again at the next sign-in on the same device', async () => {
+    repo.getMine.mockResolvedValue(profile());
+    TestBed.inject(WelcomeTutorial).markSeen();
     TestBed.inject(SessionProfileStore);
     TestBed.tick();
 
     expect(await land()).toBe('/map');
+    expect(localStorage.getItem('luma.welcome.v1')).not.toBeNull();
   });
 
-  it('records the version and stops showing it', async () => {
-    repo.getMine.mockResolvedValue(profile(0));
-    repo.setOnboardingSeen.mockResolvedValue({ data: true, errorKey: null });
-    const store = TestBed.inject(SessionProfileStore);
-    TestBed.tick();
-    await store.whenLoaded();
+  it('is remembered by the device, not by the account', () => {
+    TestBed.inject(WelcomeTutorial).markSeen();
+    TestBed.resetTestingModule();
 
-    expect(await store.markOnboardingSeen()).toBe(true);
-    expect(repo.setOnboardingSeen).toHaveBeenCalledWith('u1', ONBOARDING_VERSION);
-    expect(await store.landingPath()).toBe('/map');
+    expect(TestBed.inject(WelcomeTutorial).needed()).toBe(false);
   });
 
-  it('reports a failed save so the tutorial can still close', async () => {
-    repo.getMine.mockResolvedValue(profile(0));
-    repo.setOnboardingSeen.mockResolvedValue({ data: null, errorKey: 'x' });
-    const store = TestBed.inject(SessionProfileStore);
-    TestBed.tick();
-    await store.whenLoaded();
-
-    expect(await store.markOnboardingSeen()).toBe(false);
+  it('without storage it is shown at most once per app start', () => {
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('blocked');
+    });
+    const welcome = TestBed.inject(WelcomeTutorial);
+    expect(welcome.needed()).toBe(true);
+    welcome.markSeen();
+    expect(welcome.needed()).toBe(false);
+    vi.restoreAllMocks();
   });
 });

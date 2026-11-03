@@ -26,7 +26,7 @@ export class AppEvents {
   /** Starts listening to deep links and app resume (native only). */
   public async init(): Promise<void> {
     const { Capacitor } = await import('@capacitor/core');
-    if (!Capacitor.isNativePlatform()) return;
+    if (!Capacitor.isNativePlatform() || !Capacitor.isPluginAvailable('App')) return;
     const { App } = await import('@capacitor/app');
     await App.addListener('resume', () => this._resumes.update((n) => n + 1));
     await App.addListener('appUrlOpen', ({ url }) => this.emit(url));

@@ -94,6 +94,10 @@ export class PromotionsPanelStore {
       const errorKey = await action();
       this._errorKey.set(errorKey);
       return errorKey === null;
+    } catch {
+      // Never a silent failure: the form stays open with this message.
+      this._errorKey.set('businessPanel.errors.saveFailed');
+      return false;
     } finally {
       this._busy.set(false);
     }

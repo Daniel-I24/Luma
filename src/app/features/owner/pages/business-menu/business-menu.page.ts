@@ -1,25 +1,13 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  inject,
-  signal,
-  untracked,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, signal, untracked, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AI_MODE } from '@core/config/ai-mode';
-import {
-  LumaBottomSheet,
-  LumaButton,
-  LumaEmptyState,
-  LumaIconButton,
-  ToastService,
-} from '@design-system';
+import { LumaBottomSheet, LumaButton, LumaEmptyState, LumaIcon, ToastService } from '@design-system';
 import type { MenuItemInput } from '@shared/business/data/business-write.schemas';
 import type { MenuItem } from '@shared/business/models/menu.model';
-import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
+import type { HasUnsavedChanges } from '@shared/forms/unsaved-changes.guard';
 import { MenuItemForm } from '../../components/menu-item-form/menu-item-form';
+import { MenuItemRow } from '../../components/menu-item-row/menu-item-row';
 import { PanelHeader } from '../../components/panel-header/panel-header';
 import { PanelStateView } from '../../components/panel-state/panel-state';
 import { MenuPanelStore } from '../../state/menu-panel.store';
@@ -27,7 +15,12 @@ import { PanelBusinessStore } from '../../state/panel-business.store';
 import { RouteBusinessId } from '../../utils/route-business-id';
 import { SetupReturn } from '../../components/setup-return/setup-return';
 
-/** BusinessMenuPage — /owner/:id/menu: products by section, availability, edit and delete. */
+/**
+ * BusinessMenuPage — /owner/:id/menu: "Escanear mi menú con IA" always first
+ * (with the free text plan B), then products by section edited in place
+ * (name, price, Disponible/Agotado, order by up/down or drag), the full form
+ * for photo and description, and delete.
+ */
 @Component({
   selector: 'app-business-menu-page',
   standalone: true,
@@ -39,9 +32,9 @@ import { SetupReturn } from '../../components/setup-return/setup-return';
     LumaBottomSheet,
     LumaButton,
     LumaEmptyState,
-    LumaIconButton,
-    CopCurrencyPipe,
+    LumaIcon,
     MenuItemForm,
+    MenuItemRow,
     PanelHeader,
     PanelStateView,
   ],
@@ -49,17 +42,20 @@ import { SetupReturn } from '../../components/setup-return/setup-return';
   templateUrl: './business-menu.page.html',
   host: { class: 'block' },
 })
-export class BusinessMenuPage {
+export class BusinessMenuPage implements HasUnsavedChanges {
   protected readonly panel = inject(PanelBusinessStore);
   protected readonly menu = inject(MenuPanelStore);
   private readonly toast = inject(ToastService);
   protected readonly id = RouteBusinessId.routeBusinessId();
-  /** Scanning a printed menu needs the extract-menu function (Luma IA remote). */
+  /** Reading menu photos needs the extract-menu function (Luma IA remote); the text plan B always works. */
   protected readonly canScan = inject(AI_MODE) === 'remote';
 
   /** Item in the form sheet: null = new product, undefined = sheet closed. */
   protected readonly editing = signal<MenuItem | null | undefined>(undefined);
   protected readonly deleting = signal<MenuItem | null>(null);
+  /** The row a dragged product is over. */
+  protected readonly dropTarget = signal<string | null>(null);
+  private readonly form = viewChild(MenuItemForm);
 
   constructor() {
     effect(() => {
@@ -81,13 +77,15 @@ export class BusinessMenuPage {
     const item = this.editing();
     if (item === undefined) return;
     if (await this.menu.save(this.id(), item?.id ?? null, input)) {
+      this.form()?.markSaved();
       this.editing.set(undefined);
       this.toast.show({ messageKey: 'businessPanel.menu.saved', tone: 'success' });
     }
   }
 
-  protected toggle(item: MenuItem): void {
-    void this.menu.setAvailable(item, !item.is_available);
+  /** For the leave warning (unsavedChangesGuard). */
+  public hasUnsavedChanges(): boolean {
+    return this.editing() !== undefined && (this.form()?.hasChanges() ?? false);
   }
 
   protected async confirmDelete(): Promise<void> {

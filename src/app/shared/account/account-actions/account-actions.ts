@@ -3,21 +3,20 @@ import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
 import { APP_VERSION } from '@core/config/app-version';
-import { LumaBottomSheet, LumaButton } from '@design-system';
+import { LumaButton } from '@design-system';
+import { DeleteAccountSheet } from '../delete-account-sheet/delete-account-sheet';
 
-/** What account deletion removes, listed in the confirmation sheet. */
-const DELETED_DATA = ['account', 'profile', 'favorites', 'reviews', 'businesses'] as const;
 
 /**
  * AccountActions — change password, help, sign out, delete the account
- * after a confirmation sheet, and the app version. Shared by the Profile
+ * (DeleteAccountSheet: consequences, e-mail code, then delete) and the app version. Shared by the Profile
  * and "Mi negocio" (Luma Negocios).
  */
 @Component({
   selector: 'app-account-actions',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, RouterLink, LumaBottomSheet, LumaButton],
+  imports: [TranslocoModule, RouterLink, LumaButton, DeleteAccountSheet],
   templateUrl: './account-actions.html',
 })
 export class AccountActions {
@@ -27,7 +26,6 @@ export class AccountActions {
   protected readonly loading = this.auth.loading;
   protected readonly deleteSheetOpen = signal(false);
   protected readonly errorKey = signal<string | null>(null);
-  protected readonly deletedData = DELETED_DATA;
   protected readonly version = APP_VERSION;
 
   protected async onSignOut(): Promise<void> {
@@ -37,15 +35,6 @@ export class AccountActions {
       await this.router.navigate(['/auth/login']);
     } else {
       this.errorKey.set('profile.errors.signOut');
-    }
-  }
-
-  protected async onDeleteAccount(): Promise<void> {
-    this.deleteSheetOpen.set(false);
-    this.errorKey.set(null);
-    const result = await this.auth.deleteAccount();
-    if (!result.success) {
-      this.errorKey.set(result.errorKey ?? 'auth.errors.deleteAccountFailed');
     }
   }
 }

@@ -76,6 +76,9 @@ Deno.test('texts are Spanish, use only the public business name and skip unknown
   assertEquals(pushText({ ...row(1), type: 'promotion', business_name: 'Tienda\u0000<b>X</b>' })?.body, 'Tienda b X /b tiene una promoción nueva.');
   assertEquals(pushText({ ...row(1), type: 'business_review', status: 'approved' })?.title, 'Negocio aprobado');
   assertEquals(pushText({ ...row(1), status: 'weird' }), null);
+  assertEquals(pushText({ ...row(1), type: 'test', status: null })?.title, 'Notificación de prueba');
+  assertEquals(pushText({ ...row(1), type: 'contact_verification', status: 'approved' })?.title, 'Contacto verificado');
+  assertEquals(pushText({ ...row(1), type: 'contact_verification', status: 'weird' }), null);
   assertEquals(pushText({ ...row(1), type: 'other' }), null);
   assertEquals(pushText({ ...row(1), type: 'payment', status: 'approved' })?.title, 'Pago aprobado');
   assertEquals(pushText({ ...row(1), type: 'payment', status: 'approved' })?.body,

@@ -24,6 +24,9 @@ export const MAPTILER_BASE_URL = 'https://api.maptiler.com';
 export const NOMINATIM_BASE_URL = 'https://nominatim.openstreetmap.org';
 export const LOCATIONIQ_BASE_URL = 'https://us1.locationiq.com/v1';
 
+/** Routing (docs/route.md): OpenRouteService Directions V2; HeiGIT docs checked 2026-10-28. */
+export const OPENROUTESERVICE_DIRECTIONS_URL = 'https://api.openrouteservice.org/v2/directions';
+
 /** LLM providers (docs/ai.md); LLM_BASE_URL overrides the OpenAI-compatible one. */
 export const GEMINI_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta';
 export const OPENAI_COMPATIBLE_DEFAULT_BASE_URL = 'https://api.groq.com/openai/v1';

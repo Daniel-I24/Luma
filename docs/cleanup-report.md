@@ -73,3 +73,26 @@ Removed: nothing. The design preview is no longer bundled in production
   remaining unused exports are the ones kept on purpose (Edge Function
   module exports and types used by specs). The new `CheckoutLink` type
   stays private to `payment.repository.ts`.
+
+## Round 5 (2026-10-28)
+
+Deleted (no references left; build, lint, tests and checks green):
+
+- `AccountProfileRepository.setOnboardingSeen`, `SessionProfileStore.markOnboardingSeen`
+  and `AccountProfile.onboardingSeenVersion`: the welcome is per device now.
+- `OrderDetailView.directionsUrl`, the order screen's `directions()` and its
+  test: replaced by RouteMap (which keeps the Google Maps link).
+- Translation keys no longer used: `onboarding.saveFailed`,
+  `orders.detail.directions`, `businessPanel.menu.sortOrder`,
+  `businessPanel.menu.sortOrderHint`, `businessPanel.menu.drag`,
+  `owner.summary.title`, `owner.verificationPage.upload`.
+- The "Orden" number field of the product form.
+
+Moved, not deleted: `features/onboarding/onboarding-slides.ts` and the
+welcome template to `shared/tutorial/`, `features/profile/components/appearance-settings`
+to `shared/appearance/` (shared with "Mi negocio"); the delete sheet of
+`AccountActions` to `DeleteAccountSheet`.
+
+knip: no unused files or dependencies; the new exports that nothing used
+were made private. depcheck: only the known false positives (path aliases,
+tooling read through config files).

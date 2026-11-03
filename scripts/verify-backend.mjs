@@ -11,7 +11,8 @@
  *   "exists but not for anon" (401, 42501), so private tables are checked too;
  * - RPCs: called with placeholder values for their required parameters
  *   (verify-backend.expected.mjs): 401, 403 or 42501 is "protected", PGRST202
- *   with those arguments "missing". anon executes none (function_privileges.sql);
+ *   with those arguments "missing" (expected, not a failure, for migration 52
+ *   until it is applied). anon executes none (function_privileges.sql);
  * - Edge Functions: a CORS preflight. 404 is "not deployed" (a problem only
  *   for the names in --expect-deployed, empty by default); 5xx is "deployed
  *   but failing" (always a problem);
@@ -102,14 +103,12 @@ export async function verify(config, fetchFn = fetch) {
     check(verdict.startsWith('ok'), `table ${table} (${columns.join(', ')}): ${verdict}`);
   }
   for (const [name, params] of Object.entries(EXPECTED.rpcs)) {
-    const res = await fetchFn(`${config.url}/rest/v1/rpc/${name}`, {
-      method: 'POST',
-      headers: { ...headers, 'content-type': 'application/json' },
-      body: JSON.stringify(rpcBody(params)),
-    });
+    const body = JSON.stringify(rpcBody(params));
+    const res = await fetchFn(`${config.url}/rest/v1/rpc/${name}`, { method: 'POST', headers: { ...headers, 'content-type': 'application/json' }, body });
     const verdict = rpcVerdict(res.status, await json(res));
-    const tag = EXPECTED.migration50.includes(name) ? ' [migration 50]' : '';
-    check(verdict.startsWith('ok'), `rpc ${name}${tag}: ${verdict}`);
+    const pending = EXPECTED.migration52.includes(name);
+    const tag = EXPECTED.migration50.includes(name) ? ' [migration 50]' : pending ? ' [migration 52]' : '';
+    check(verdict.startsWith('ok') || (pending && verdict === 'missing'), `rpc ${name}${tag}: ${verdict}`);
   }
   for (const name of EXPECTED.functions) {
     const res = await fetchFn(`${config.url}/functions/v1/${name}`, {

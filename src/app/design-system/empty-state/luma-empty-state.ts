@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { LumaIcon } from '../icon/luma-icon';
 import type { IconName } from '../icon/luma-icons';
+import { type IllustrationName, LUMA_ILLUSTRATIONS } from './luma-illustrations';
 
 export type EmptyStateTone = 'neutral' | 'error' | 'success';
 
@@ -11,8 +12,9 @@ const TONE_CLASS: Record<EmptyStateTone, string> = {
 };
 
 /**
- * LumaEmptyState — designed empty, error or success state: icon, title,
- * description and projected actions. Texts arrive already translated.
+ * LumaEmptyState — designed empty, error or success state: icon (or one of
+ * Luma's own illustrations), title, description and projected actions.
+ * Texts arrive already translated.
  */
 @Component({
   selector: 'app-luma-empty-state',
@@ -27,6 +29,12 @@ export class LumaEmptyState {
   public readonly heading = input.required<string>();
   public readonly description = input<string | null>(null);
   public readonly tone = input<EmptyStateTone>('neutral');
+  /** Replaces the icon with a brand illustration (decorative). */
+  public readonly illustration = input<IllustrationName | null>(null);
+  protected readonly shapes = computed(() => {
+    const name = this.illustration();
+    return name ? LUMA_ILLUSTRATIONS[name] : null;
+  });
 
   protected readonly iconClass = computed(
     () =>

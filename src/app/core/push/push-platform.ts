@@ -59,7 +59,7 @@ class CapacitorPushPlatform extends PushPlatform {
   private async plugin(): Promise<typeof import('@capacitor/push-notifications').PushNotifications | null> {
     if (!this.enabled) return null;
     const { Capacitor } = await import('@capacitor/core');
-    if (!Capacitor.isNativePlatform()) return null;
+    if (!Capacitor.isNativePlatform() || !Capacitor.isPluginAvailable('PushNotifications')) return null;
     return (await import('@capacitor/push-notifications')).PushNotifications;
   }
 

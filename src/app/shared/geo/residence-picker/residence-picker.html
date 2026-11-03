@@ -51,6 +51,7 @@
   @if (showNeighborhood()) {
   <app-luma-input
     inputId="residence-neighborhood"
+    [placeholder]="t('placeholders.neighborhood')"
     [label]="t('residence.neighborhood')"
     [hint]="t('residence.neighborhoodHint')"
     [maxLength]="neighborhoodMax"

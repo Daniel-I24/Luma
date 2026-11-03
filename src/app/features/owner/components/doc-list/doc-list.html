@@ -16,6 +16,7 @@
       <span class="text-caption text-fg-muted">({{ t('owner.verificationPage.required') }})</span>
       }
     </p>
+    <p class="m-0 text-caption text-fg-muted">{{ t('owner.verificationPage.kindHint.' + kind) }}</p>
     @for (doc of byKind()[kind]; track doc.id) {
     <div class="flex min-h-11 items-center gap-2 rounded-md bg-canvas-subtle px-3">
       <app-luma-icon name="receipt" size="sm" class="text-fg-muted" />
@@ -23,7 +24,7 @@
       @if (store.editable()) {
       <app-luma-icon-button
         icon="trash"
-        variant="ghost"
+        variant="danger"
         [label]="t('owner.verificationPage.deleteDoc')"
         [disabled]="store.busy()"
         (clicked)="remove(doc)"
@@ -35,7 +36,7 @@
       class="pressable inline-flex min-h-11 cursor-pointer items-center gap-2 self-start rounded-md border border-border px-3 text-body-sm font-semibold text-fg-brand has-focus-visible:outline-2 has-focus-visible:outline-border-focus"
     >
       <app-luma-icon name="plus" size="sm" />
-      {{ t('owner.verificationPage.upload') }}
+      {{ t('owner.verificationPage.uploadKind', { kind: t('verification.docs.kinds.' + kind) }) }}
       <input
         class="sr-only"
         type="file"
@@ -44,6 +45,8 @@
         (change)="upload(kind, $event)"
       />
     </label>
+    } @else {
+    <p class="m-0 text-caption text-fg-subtle">{{ t('owner.verificationPage.uploadLocked') }}</p>
     }
   </div>
   }

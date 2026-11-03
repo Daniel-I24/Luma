@@ -46,6 +46,10 @@ design).
 | T18 | Double charge: two checkout attempts of one order both approved | One open attempt at a time (`attempt_in_progress`, 3 min); a second approval becomes `refund_required` (`duplicate_charge`), the order is paid once; order locked before payment everywhere | SQL `payments_round4.sql` |
 | T19 | Function callable as an RPC by anon by mistake (trigger helpers, new functions) | EXECUTE revoked from PUBLIC/anon; a suite fails if anon can execute anything but `is_business_public(uuid)` | SQL `function_privileges.sql` |
 | T20 | NIT squatting: a pending business blocks the real owner | Only approved businesses of another owner block (submit and approval); pending duplicates are a review flag | SQL `review_tax_id.sql`, `business_signals.sql` |
+| T21 | Fake orders: an owner orders from their own business to inflate figures | `create_order` refuses `own_business` | SQL `round5.sql`, `create_order_final.sql` |
+| T22 | Impersonated contacts: a business shows someone else's phone or Instagram | Contacts shown only after a person of the team checks a LUMA code; owners cannot write `<kind>_verified_at`; a changed value loses its badge; 3 requests a day | SQL `round5.sql`; `contact-verification.spec.ts`, `info-tab.spec.ts` |
+| T23 | Account takeover deletes the account | Deleting needs a fresh e-mail code (`verifyOtp`) and delete-account still requires a sign-in younger than 10 minutes | `delete-account-sheet.spec.ts`; Deno `delete-account` |
+| T24 | Routing key leaked or abused | Key only in the Edge Function (Authorization header, never a URL), JWT, 60 calls a day per user, cache | Deno `route/handler.test.ts` |
 
 ## Residual risks
 

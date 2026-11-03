@@ -10,7 +10,7 @@ export class NativeStatusBar {
   /** True when the status bar plugin can be used. */
   public async isAvailable(): Promise<boolean> {
     const { Capacitor } = await import('@capacitor/core');
-    return Capacitor.isNativePlatform();
+    return Capacitor.isNativePlatform() && Capacitor.isPluginAvailable('StatusBar');
   }
 
   /** Lets the web view draw under the status bar (edge to edge). */

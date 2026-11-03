@@ -72,7 +72,15 @@ describe('todayStats', () => {
         ],
         now,
       ),
-    ).toEqual({ newOrders: 1, preparing: 2, ready: 1, soldCop: 25_000 });
+    ).toEqual({
+      newOrders: 1, preparing: 2, ready: 1, soldCop: 25_000, ordersToday: 5, ordersYesterday: 1, soldYesterdayCop: 99_000,
+    });
+  });
+
+  it('compares with yesterday for the trend', () => {
+    expect(TodayStatsCalculator.trend(5, 1)).toBe('up');
+    expect(TodayStatsCalculator.trend(1, 5)).toBe('down');
+    expect(TodayStatsCalculator.trend(2, 2)).toBe('same');
   });
 });
 

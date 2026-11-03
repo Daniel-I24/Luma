@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RouteMap } from '@shared/route/route-map/route-map';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { map } from 'rxjs';
 import {
@@ -25,7 +26,7 @@ import { GeolocationService } from '@shared/geo/geolocation.service';
 import { Haversine } from '@shared/geo/haversine';
 import { OrderEstimates } from '@shared/orders/order-estimates';
 import { OrderStatusBadge } from '@shared/orders/order-status-badge';
-import type { OrderBusiness, OrderWithItems } from '@shared/orders/order.model';
+import type { OrderWithItems } from '@shared/orders/order.model';
 import { PollWhileVisible } from '@shared/ui/poll-while-visible';
 import { AppEvents } from '@core/native/app-events';
 import { OrderPayment } from './components/order-payment/order-payment';
@@ -39,7 +40,7 @@ export const ORDER_REFRESH_MS = 15_000;
 
 /**
  * OrderDetailPage — /orders/:id: status timeline, estimated time, address
- * with directions, lines and total, the online payment, and "Cancelar"
+ * with the route drawn in the app (RouteMap), lines and total, the online payment, and "Cancelar"
  * while pending or waiting for the payment. Re-reads the server when the
  * app comes back (e.g. from Wompi's checkout). Polls
  * every 15 s only while the screen is visible.
@@ -60,6 +61,7 @@ export const ORDER_REFRESH_MS = 15_000;
     OrderStatusBadge,
     OrderTimeline,
     OrderPayment,
+    RouteMap,
   ],
   providers: [OrderDetailStore],
   templateUrl: './order-detail.page.html',
@@ -115,10 +117,6 @@ export class OrderDetailPage {
 
   protected reload(): void {
     void this.store.load(this.id());
-  }
-
-  protected directions(business: OrderBusiness): string {
-    return OrderDetailView.directionsUrl(business);
   }
 
   protected async cancel(): Promise<void> {

@@ -1,0 +1,57 @@
+<section
+  *transloco="let t"
+  class="flex flex-col gap-3 rounded-xl border border-border-subtle bg-surface p-4"
+  aria-labelledby="contact-verification-title"
+>
+  <h2 id="contact-verification-title" class="m-0 text-title text-fg">{{ t('contactVerification.title') }}</h2>
+  <p class="m-0 text-body-sm text-fg-muted">{{ t('contactVerification.intro') }}</p>
+  @if (errorKey(); as key) {
+  <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
+  }
+  @for (row of rows(); track row.kind) {
+  <article class="flex flex-col gap-2 rounded-lg border border-border-subtle p-3">
+    <p class="m-0 flex flex-wrap items-center gap-2">
+      <span class="text-body font-medium text-fg">{{ t('contactVerification.kind.' + row.kind) }}</span>
+      <span class="min-w-0 flex-1 truncate text-body-sm text-fg-muted">{{ row.value }}</span>
+      @if (row.verifiedAt) {
+      <span class="inline-flex items-center gap-1 rounded-full bg-success-bg px-2 py-0.5 text-caption font-semibold text-success-fg">
+        <app-luma-icon name="check" size="sm" /> {{ t('contactVerification.verified') }}
+      </span>
+      } @else {
+      <span class="rounded-full bg-warning-bg px-2 py-0.5 text-caption font-semibold text-warning-fg">
+        {{ t('contactVerification.pendingBadge') }}
+      </span>
+      }
+    </p>
+    @if (!row.verifiedAt) { @if (row.pending; as request) {
+    <p class="m-0 text-body-sm text-fg">
+      {{ t('contactVerification.yourCode') }}
+      <strong class="font-mono tracking-wider">{{ request.code }}</strong>
+    </p>
+    @switch (step[row.kind]) { @case ('message') { @if (support) {
+    <p class="m-0 text-body-sm text-fg-muted">{{ t('contactVerification.steps.message', { value: row.value, code: request.code }) }}</p>
+    <a
+      class="pressable inline-flex min-h-11 items-center justify-center rounded-md bg-primary px-4 text-body font-semibold text-primary-fg no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+      target="_blank"
+      rel="noopener noreferrer"
+      [href]="supportLink(request.code)"
+      >{{ t('contactVerification.openWhatsapp') }}</a
+    >
+    } @else {
+    <p class="m-0 rounded-md bg-info-bg p-3 text-body-sm text-info-fg" role="note">{{ t('contactVerification.steps.noSupport') }}</p>
+    } } @case ('social') {
+    <p class="m-0 text-body-sm text-fg-muted">{{ t('contactVerification.steps.social', { code: request.code }) }}</p>
+    } @case ('website') {
+    <p class="m-0 text-body-sm text-fg-muted">{{ t('contactVerification.steps.website', { code: request.code, url: fileUrl(row.value) }) }}</p>
+    } }
+    <p class="m-0 text-caption text-fg-subtle">{{ t('contactVerification.steps.review') }}</p>
+    } @else {
+    <app-luma-button variant="secondary" size="sm" [disabled]="busy() !== null" (clicked)="request(row.kind)">
+      {{ t(busy() === row.kind ? 'contactVerification.requesting' : 'contactVerification.request') }}
+    </app-luma-button>
+    } }
+  </article>
+  } @empty {
+  <p class="m-0 text-body-sm text-fg-muted">{{ t('contactVerification.none') }}</p>
+  }
+</section>

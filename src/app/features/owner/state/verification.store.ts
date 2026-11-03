@@ -6,7 +6,7 @@ import type {
   VerificationDoc,
 } from '@shared/business/verification/verification.model';
 import { VerificationRepository } from '@shared/business/verification/verification.repository';
-import { EDITABLE_STATUSES } from '../utils/review-checklist';
+import { EDITABLE_STATUSES, OWNER_CORRECTION_NOTE } from '../utils/review-checklist';
 import { PanelBusinessStore } from './panel-business.store';
 
 /**
@@ -60,6 +60,13 @@ export class VerificationStore {
   /** Deletes a verification document; true when deleted. */
   public deleteDoc(doc: VerificationDoc): Promise<boolean> {
     return this.run(() => this.repo.deleteDoc(doc));
+  }
+
+  /** An approved business asks to correct its legal data: hidden and editable until a new review. */
+  public async requestLegalCorrection(): Promise<boolean> {
+    const ok = await this.run((id) => this.repo.requestLegalCorrection(id));
+    if (ok) this.panel.patch({ verification_status: 'rejected', verification_note: OWNER_CORRECTION_NOTE });
+    return ok;
   }
 
   /** Asks for review; on success the business is pending. */

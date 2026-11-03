@@ -16,12 +16,13 @@ values; never paste the service_role key anywhere in the app.
 2. **Prerequisites** in the dashboard: Authentication → Multi-Factor →
    TOTP **on**; Database → Extensions → `pg_trgm` **on** (optional:
    `pg_cron`, `pg_net`).
-3. **Check what is applied** (should list 1 to 50 as applied):
+3. **Check what is applied** (should list 1 to 51 as applied):
    ```powershell
    npx supabase migration list
    ```
-4. **Apply migration 51** (`20261101000000_round4_hardening.sql`) after your
-   review (docs/migrations.md):
+4. **Apply migration 52** (`20261102000000_round5.sql`) after your
+   review (docs/migrations.md); until then verify-backend reports its RPCs
+   as "[migration 52]: missing" without failing:
    ```powershell
    npx supabase db push
    ```
@@ -93,3 +94,14 @@ values; never paste the service_role key anywhere in the app.
   (docs/phone-verification.md).
 - **History cleanup** before making the repository public
   (docs/security-findings.md).
+
+## Round 5 additions (optional, each one free)
+
+- Email templates: the **Magic Link** template must carry `{{ .Token }}`
+  (docs/auth-emails.md); deleting an account needs it.
+- `SUPPORT_WHATSAPP` in `app.config.ts` (docs: `src/app/core/config/support.ts`)
+  so owners can verify phones and WhatsApp.
+- Route: `ROUTE_PROVIDER`, `ROUTE_API_KEY`, `supabase functions deploy route`
+  (docs/route.md); without them the app shows a straight-line estimate.
+- Push: docs/push-setup.md, then "Enviar notificación de prueba".
+- Payments in sandbox: docs/payments-setup.md.

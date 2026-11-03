@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { LumaCheckmark } from '../checkmark/luma-checkmark';
 import { LumaIcon } from '../icon/luma-icon';
 import type { IconName } from '../icon/luma-icons';
 import { ToastService } from './toast.service';
@@ -22,7 +23,7 @@ const TONE_CLASS: Record<ToastTone, string> = {
   selector: 'app-luma-toast-host',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoPipe, LumaIcon],
+  imports: [LumaCheckmark, TranslocoPipe, LumaIcon],
   templateUrl: './luma-toast-host.html',
 })
 export class LumaToastHost {

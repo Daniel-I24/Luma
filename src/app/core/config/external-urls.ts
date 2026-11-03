@@ -25,6 +25,11 @@ export class ExternalUrls {
     return `https://wa.me/${encodeURIComponent(digits)}`;
   }
 
+  /** WhatsApp chat with a number, with a message already typed. */
+  public static whatsappMessage(digits: string, text: string): string {
+    return `https://wa.me/${encodeURIComponent(digits)}?text=${encodeURIComponent(text)}`;
+  }
+
   /** Instagram profile URL of a handle. */
   public static instagram(handle: string): string {
     return `https://instagram.com/${encodeURIComponent(handle)}`;

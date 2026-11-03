@@ -44,3 +44,50 @@ and `npm run check:interactive`.
 - [ ] Every touch target at least 44 px; focus visible with a keyboard.
 - [ ] Themes Indigo, Midnight, Pearl, Sunset readable; system "reduce motion" removes animations.
 - [ ] Spanish and English: no raw keys (`map.places.title`) on any screen.
+
+## Round 5 (2026-10-28)
+
+- Two owner accounts on the same phone: each sees only its own businesses
+  and "N de 3 negocios"; at 3, "Añadir" is greyed with the reason.
+- Web (localhost) and APK: "Ver como cliente" opens the map; the welcome's
+  "Siguiente" and "Omitir" always work; a real error appears in the dev
+  console, never in production.
+- Sign in right after creating an account: no "no puedes ingresar"
+  screen; with the network off it shows only after two silent retries.
+- Delete account: consequences, then a code by e-mail (Magic Link template
+  with `{{ .Token }}`), then delete; a wrong code never deletes; each failure
+  has its own message.
+- Type half a promotion, product, business data, legal data or the
+  registration, leave and come back: "Recuperamos tu borrador"; "Descartar"
+  restores; saving forgets it; leaving asks first. Signing out wipes drafts.
+- Ajustes → "Ver tutorial" opens the welcome over the screen (the form stays
+  as it was); "Ver todos los tutoriales" shows each guide again; the "?" of
+  a screen repeats its guide; Escape and "Saltar" close it.
+- First visit to Mapa, Descubrir, Pedidos, Luma IA, Perfil, Checkout,
+  Resumen, Pedidos, Menú, Promociones and Mi negocio: the guide highlights
+  the real control; with reduced motion nothing slides.
+- Every text field shows an "Ej.: …" example (`npm run check:placeholders`).
+- "Mi negocio": theme and language like in the Profile.
+- Menú: "Escanear mi menú con IA" first; with Luma IA off it says so and
+  offers "Pegar mi menú como texto" (try "Bandeja paisa ........ 28.000");
+  change a price, mark "Agotado", move with the arrows and by dragging.
+- An owner ordering from their own business is refused with "Este negocio
+  es tuyo"; the business screen says so.
+- Trust limit message: without payments it never mentions paying online
+  and links to the pending order.
+- Contacts: ask for a code, follow the steps (WhatsApp to support, bio,
+  /luma-verificacion.txt); the admin verifies it in /admin; the customer sees
+  only verified contacts with the badge; changing a value removes the badge.
+- Business screen → Información: trust card without NIT or legal data.
+- Approved business → "Solicitar corrección de datos legales": warning,
+  hidden until a new review, legal data and documents editable; in draft or
+  changes requested every document has its upload button and explanation.
+- "Cómo llegar" on the business and the order: the route on our map with
+  km and minutes (walking or by car); without `ROUTE_API_KEY` a straight line
+  marked as an estimate; "Abrir en Google Maps" always there.
+- Perfil → Notificaciones → "Enviar notificación de prueba" (3 a day);
+  with Firebase set up (docs/push-setup.md) it arrives on the phone and a
+  tap on an order notice opens the order.
+- Resumen: cover and logo with the verification state, cards with the trend
+  against yesterday, quick actions; empty states with illustrations; order
+  cards with their state colour; success toasts draw a check.

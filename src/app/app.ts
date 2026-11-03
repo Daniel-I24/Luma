@@ -8,6 +8,7 @@ import { ThemeService } from '@core/theme/theme.service';
 import { LumaToastHost } from '@design-system/toast/luma-toast-host';
 import { ConnectionNotice } from '@shared/layout/connection-notice/connection-notice';
 import { UpdateBanner } from '@shared/layout/update-banner/update-banner';
+import { TutorialHost } from '@shared/tutorial/tutorial-host';
 
 /**
  * App root component.
@@ -15,10 +16,12 @@ import { UpdateBanner } from '@shared/layout/update-banner/update-banner';
  * so its effect applies data-theme on <html> before the first render (no FOUC).
  */
 @Component({
-  imports: [RouterOutlet, LumaToastHost, ConnectionNotice, UpdateBanner],
+  imports: [RouterOutlet, LumaToastHost, ConnectionNotice, UpdateBanner, TutorialHost],
   selector: 'app-root',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<app-update-banner /><app-connection-notice /><router-outlet /><app-luma-toast-host />`,
+  // Guides load when the browser is idle, outside the initial bundle.
+  template: `<app-update-banner /><app-connection-notice /><router-outlet /><app-luma-toast-host />
+    @defer (on idle) {<app-tutorial-host />}`,
 })
 export class App {
   // Eager injection — constructor + effect run at app startup.

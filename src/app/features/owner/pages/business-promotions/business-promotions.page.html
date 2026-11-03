@@ -9,13 +9,14 @@
       <app-ideas-card [businessId]="id()" (create)="openIdea($event)" />
       }
       <app-luma-button
+        data-tour="promo-add"
         [fullWidth]="true"
         describedBy="promo-limit"
         [disabled]="!promos.canAdd()"
         (clicked)="openForm(null)"
         >{{ t('businessPanel.promotions.add') }}</app-luma-button
       >
-      <p id="promo-limit" class="m-0 text-body-sm text-fg-muted">
+      <p id="promo-limit" data-tour="promo-limit" class="m-0 text-body-sm text-fg-muted">
         {{ t(promos.canAdd() ? 'owner.discount.limit' : 'owner.discount.limitReached', { count:
         promos.activeCount(), max: promos.maxActive }) }}
       </p>
@@ -25,6 +26,7 @@
       </p>
       } @if (promos.promotions().length === 0) {
       <app-luma-empty-state
+        illustration="promotions"
         icon="tag"
         [heading]="t('businessPanel.promotions.empty.title')"
         [description]="t('businessPanel.promotions.empty.description')"
@@ -32,7 +34,7 @@
       } @else {
       <ul class="m-0 flex list-none flex-col gap-2 p-0">
         @for (promo of promos.promotions(); track promo.id) {
-        <li class="flex items-start gap-2 rounded-xl border border-border-subtle bg-surface p-3">
+        <li [style.--stagger-index]="$index < 4 ? $index : 0" class="motion-stagger flex items-start gap-2 rounded-xl border border-border-subtle bg-surface p-3">
           <div class="flex min-w-0 flex-1 flex-col gap-1">
             <span class="text-body font-medium text-fg">{{ promo.title }}</span>
             @if (promo.discount_percent; as percent) {

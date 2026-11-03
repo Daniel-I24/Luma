@@ -5,7 +5,7 @@ import { NativeHaptics } from './native-haptics';
 const impact = vi.fn();
 const native = { value: false };
 
-vi.mock('@capacitor/core', () => ({ Capacitor: { isNativePlatform: () => native.value } }));
+vi.mock('@capacitor/core', () => ({ Capacitor: { isNativePlatform: () => native.value, isPluginAvailable: () => true } }));
 vi.mock('@capacitor/haptics', () => ({
   Haptics: { impact: (options: unknown) => impact(options) },
   ImpactStyle: { Light: 'LIGHT' },

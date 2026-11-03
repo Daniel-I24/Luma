@@ -12,6 +12,8 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { filter, map } from 'rxjs';
 import { LumaIcon, LumaTabBar, type TabBarItem } from '@design-system';
 import { OWNER_SECTIONS, type OwnerSection, ownerPaths } from '@shared/account/owner-paths';
+import { TourHelpButton } from '@shared/tutorial/tour-help-button';
+import { TourRoutes } from '@shared/tutorial/tour-registry';
 import { PollWhileVisible } from '@shared/ui/poll-while-visible';
 import { ORDER_ALERT_POLL_MS, OrderAlertsStore } from '../state/order-alerts.store';
 import { OwnerContextStore } from '../state/owner-context.store';
@@ -45,7 +47,7 @@ export class OwnerLocation {
   selector: 'app-owner-shell',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterOutlet, RouterLink, TranslocoModule, LumaIcon, LumaTabBar],
+  imports: [RouterOutlet, RouterLink, TranslocoModule, LumaIcon, LumaTabBar, TourHelpButton],
   templateUrl: './owner-shell.html',
   providers: [OrderAlertsStore],
   host: { class: 'flex h-dvh flex-col bg-canvas' },
@@ -63,6 +65,8 @@ export class OwnerShell {
     { initialValue: this.router.url },
   );
   protected readonly location = computed(() => OwnerLocation.ownerLocation(this.url()));
+  /** The guide of the section on screen, for its "?". */
+  protected readonly tourId = computed(() => TourRoutes.tourForUrl(this.url()));
   protected readonly tabs = computed<readonly TabBarItem[]>(() => {
     const id = this.location()?.id;
     if (!id) return [];
@@ -80,7 +84,7 @@ export class OwnerShell {
   });
 
   constructor() {
-    if (this.context.businesses() === null) void this.context.load();
+    if (this.context.businesses() === null || this.context.isStale()) void this.context.load();
     effect(() => {
       const id = this.location()?.id;
       if (id)

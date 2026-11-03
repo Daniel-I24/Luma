@@ -46,6 +46,7 @@ describe('clickAll', () => {
           useValue: {
             get: vi.fn().mockResolvedValue({ data: { orders: true, promotions: false }, errorKey: null }),
             set: vi.fn().mockResolvedValue({ data: true, errorKey: null }),
+            sendTest: vi.fn().mockResolvedValue({ data: true, errorKey: null }),
           },
         },
       ],
@@ -74,7 +75,7 @@ describe('clickAll', () => {
 
   it('every control of the notification settings works', async () => {
     const result = await report(NotificationSettings);
-    expect(result.clicked.length).toBe(3);
+    expect(result.clicked.length).toBe(4);
     expect(result.errors).toEqual([]);
   });
 

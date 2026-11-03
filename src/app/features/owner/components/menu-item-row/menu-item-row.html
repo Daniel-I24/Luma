@@ -1,0 +1,80 @@
+<div
+  *transloco="let t"
+  class="flex flex-col gap-2 rounded-xl border bg-surface p-3 transition-shadow duration-(--duration-fast) motion-reduce:transition-none"
+  [class.border-border-subtle]="!dropTarget()"
+  [class.border-primary]="dropTarget()"
+  [class.shadow-lg]="dragging()"
+  [class.opacity-70]="!item().is_available"
+>
+  <div class="flex items-center gap-3">
+    <!-- Drag with a finger or the mouse; keyboard and screen readers use "Subir" and "Bajar". -->
+    <span
+      class="flex min-h-11 min-w-11 cursor-grab touch-none items-center justify-center rounded-md text-fg-subtle"
+      aria-hidden="true"
+      [class.pointer-events-none]="busy()"
+      (pointerdown)="startDrag($event)"
+      (pointermove)="onDrag($event)"
+      (pointerup)="endDrag($event)"
+      (pointercancel)="endDrag($event)"
+    >
+      <app-luma-icon name="grip" />
+    </span>
+    <app-luma-image
+      class="size-14 shrink-0 overflow-hidden rounded-md"
+      [src]="item().image_url"
+      [alt]="item().name"
+      [width]="56"
+      [height]="56"
+      fallbackIcon="utensils"
+      iconSize="md"
+    />
+    <div class="flex min-w-0 flex-1 flex-col gap-1">
+      <label class="sr-only" [for]="'menu-name-' + item().id">{{ t('businessPanel.menu.name') }}</label>
+      <input
+        [id]="'menu-name-' + item().id"
+        class="min-h-11 w-full rounded-md border border-transparent bg-transparent px-2 text-body font-medium text-fg hover:border-border focus-visible:border-border focus-visible:outline-2 focus-visible:outline-border-focus"
+        maxlength="80"
+        [placeholder]="t('businessPanel.menu.namePlaceholder')"
+        [value]="item().name"
+        [disabled]="busy()"
+        (change)="onName($event)"
+      />
+      <label class="sr-only" [for]="'menu-price-' + item().id">{{ t('businessPanel.menu.price') }}</label>
+      <input
+        [id]="'menu-price-' + item().id"
+        inputmode="numeric"
+        class="min-h-11 w-32 rounded-md border bg-transparent px-2 text-body-sm text-fg-muted hover:border-border focus-visible:border-border focus-visible:outline-2 focus-visible:outline-border-focus"
+        [class.border-danger]="priceError()"
+        [class.border-transparent]="!priceError()"
+        [attr.aria-invalid]="priceError() ? 'true' : null"
+        [attr.aria-describedby]="priceError() ? 'menu-price-error-' + item().id : null"
+        [placeholder]="t('businessPanel.menu.pricePlaceholder')"
+        [value]="item().price_cop"
+        [disabled]="busy()"
+        (change)="onPrice($event)"
+      />
+      <span class="sr-only">{{ item().price_cop | cop }}</span>
+    </div>
+  </div>
+  @if (priceError()) {
+  <p [id]="'menu-price-error-' + item().id" class="m-0 text-caption text-danger-fg">{{ t('owner.menuScan.priceNeeded') }}</p>
+  }
+  <div class="flex flex-wrap items-center gap-1">
+    <button
+      type="button"
+      class="pressable min-h-11 rounded-full px-3 text-caption font-semibold focus-visible:outline-2 focus-visible:outline-border-focus"
+      [class]="item().is_available ? 'bg-success-bg text-success-fg' : 'bg-canvas-muted text-fg-muted'"
+      [attr.aria-pressed]="item().is_available"
+      [attr.aria-label]="t('businessPanel.menu.availability', { name: item().name })"
+      [disabled]="busy()"
+      (click)="availability.emit(!item().is_available)"
+    >
+      {{ t(item().is_available ? 'businessPanel.menu.available' : 'businessPanel.menu.soldOut') }}
+    </button>
+    <span class="flex-1"></span>
+    <app-luma-icon-button icon="arrow-up" variant="ghost" [label]="t('businessPanel.menu.moveUp', { name: item().name })" [disabled]="first() || busy()" (clicked)="moveUp.emit()" />
+    <app-luma-icon-button icon="arrow-down" variant="ghost" [label]="t('businessPanel.menu.moveDown', { name: item().name })" [disabled]="last() || busy()" (clicked)="moveDown.emit()" />
+    <app-luma-icon-button icon="edit" variant="ghost" [label]="t('businessPanel.menu.edit', { name: item().name })" (clicked)="edit.emit()" />
+    <app-luma-icon-button icon="trash" variant="danger" [label]="t('businessPanel.menu.delete', { name: item().name })" (clicked)="remove.emit()" />
+  </div>
+</div>

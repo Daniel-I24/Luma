@@ -8,7 +8,7 @@ const listeners = new Map<string, (event: { canGoBack: boolean }) => void>();
 const exitApp = vi.fn();
 
 // Isolated spec files keep these plugin mocks local to this file.
-vi.mock('@capacitor/core', () => ({ Capacitor: { isNativePlatform: () => native.value } }));
+vi.mock('@capacitor/core', () => ({ Capacitor: { isNativePlatform: () => native.value, isPluginAvailable: () => true } }));
 vi.mock('@capacitor/app', () => ({
   App: {
     addListener: (name: string, fn: (event: { canGoBack: boolean }) => void) => {

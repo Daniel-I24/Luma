@@ -119,7 +119,7 @@ select tests.expect_true('postgres', null, $$
     'is_business_public', 'business_paused', 'invalid_items', 'duplicate_items', 'item_unavailable', 'order_line_prices',
     'invalid_pickup_time', 'business_closed', 'invalid_notes', 'total_too_high', 'invalid_payment_method',
     'payments_disabled', 'customer_trust_tier', 'account_restricted', 'trust_pending_limit', 'trust_daily_limit',
-    'too_many_pending', 'awaiting_payment', 'too_many_orders', 'pg_advisory_xact_lock']) m$$,
+    'too_many_pending', 'awaiting_payment', 'too_many_orders', 'pg_advisory_xact_lock', 'own_business']) m$$,
   'create_order keeps every protection');
 select tests.expect_true('postgres', null,
   $$select count(*) = 1 from pg_proc where proname = 'create_order' and pronamespace = 'public'::regnamespace$$,

@@ -41,6 +41,9 @@
       [distanceKm]="store.distanceKm()"
       (back)="back()"
     />
+    @if (isOwner()) {
+    <p class="mx-4 mt-3 mb-0 rounded-md bg-info-bg p-3 text-body-sm text-info-fg" role="note">{{ t('businesses.ownerNotice') }}</p>
+    }
     <app-profile-stats [rating]="store.rating()" [ratingsLoaded]="store.ratingsLoaded()" />
 
     @if (store.promotions()[0]; as promo) {

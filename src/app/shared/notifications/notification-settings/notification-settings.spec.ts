@@ -62,9 +62,10 @@ describe('NotificationSettings', () => {
 
   it('offers the permission button only while the phone has not answered', async () => {
     const { fixture } = await render();
-    expect(fixture.nativeElement.querySelectorAll('app-luma-button').length).toBe(1);
+    // The permission button plus "Enviar notificación de prueba", always there.
+    expect(fixture.nativeElement.querySelectorAll('app-luma-button').length).toBe(2);
     permission.set('unavailable');
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelectorAll('app-luma-button').length).toBe(0);
+    expect(fixture.nativeElement.querySelectorAll('app-luma-button').length).toBe(1);
   });
 });

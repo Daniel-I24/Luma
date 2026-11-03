@@ -9,7 +9,12 @@
     animate.enter="motion-enter-down"
     animate.leave="motion-leave-up"
   >
+    @if (toast.tone === 'success') {
+    <!-- Saved, accepted, sent: the check draws itself (still under reduced motion). -->
+    <app-luma-checkmark class="text-success-fg" [size]="20" />
+    } @else {
     <app-luma-icon [class]="toneClass[toast.tone]" [name]="toneIcon[toast.tone]" />
+    }
     <p class="m-0 flex-1 text-body-sm font-medium text-fg">
       {{ toast.messageKey | transloco: toast.params }}
     </p>

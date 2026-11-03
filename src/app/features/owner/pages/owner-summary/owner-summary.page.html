@@ -1,7 +1,7 @@
 <div *transloco="let t" class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-4 pb-6">
   <app-panel-state [state]="panel.state()" (retry)="load()">
     @if (panel.business(); as business) {
-    <app-panel-header [heading]="t('owner.summary.title')" [subtitle]="business.name" />
+    <app-owner-hero [business]="business" />
 
     <app-verification-card
       [business]="business"
@@ -12,14 +12,14 @@
     />
 
     @if (business.verification_status === 'approved') {
-    <app-publish-card [business]="business" (toggled)="setPublished($event)" />
+    <app-publish-card data-tour="owner-publish" [business]="business" (toggled)="setPublished($event)" />
     @if (business.is_active) {
-    <app-order-pause-card [business]="business" />
+    <app-order-pause-card data-tour="owner-pause" [business]="business" />
     }
     <app-ideas-card [businessId]="business.id" (create)="createFromIdea($event)" />
     }
 
-    <app-today-stats [stats]="stats()" [ordersLink]="ordersLink()" />
+    <app-today-stats data-tour="owner-stats" [stats]="stats()" [ordersLink]="ordersLink()" />
     @if (business.verification_status === 'approved') {
     <app-sales-summary-card [businessId]="business.id" />
     }

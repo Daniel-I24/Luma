@@ -3,6 +3,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaInput, ToastService } from '@design-system';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
 import { type ContactErrors, type ContactField, BusinessContacts } from '@shared/business/models/business-contact';
+import { ContactVerificationCard } from '../../components/contact-verification/contact-verification';
 import { PanelHeader } from '../../components/panel-header/panel-header';
 import { PanelStateView } from '../../components/panel-state/panel-state';
 import { PanelBusinessStore } from '../../state/panel-business.store';
@@ -25,15 +26,15 @@ const FIELDS: readonly FieldSpec[] = [
 
 /**
  * BusinessContactPage — /owner/:id/business/contact: WhatsApp, Instagram,
- * Facebook and website, shown on the public profile. All optional; the
- * business phone stays in the business information.
+ * Facebook and website, all optional; the business phone stays in the
+ * business information. Customers see a contact only once the review team
+ * verified it (ContactVerificationCard: code and steps per contact).
  */
 @Component({
   selector: 'app-business-contact-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    SetupReturn,TranslocoModule, LumaButton, LumaInput, PanelHeader, PanelStateView],
+  imports: [SetupReturn, TranslocoModule, LumaButton, LumaInput, PanelHeader, PanelStateView, ContactVerificationCard],
   providers: [PanelBusinessStore],
   template: `
     <div
@@ -65,6 +66,9 @@ const FIELDS: readonly FieldSpec[] = [
             t(saving() ? 'businessPanel.form.saving' : 'businessPanel.form.save')
           }}</app-luma-button>
         </form>
+        @if (panel.business(); as business) {
+          <app-contact-verification class="mt-6 block" [business]="business" />
+        }
       </app-panel-state>
     </div>
   `,

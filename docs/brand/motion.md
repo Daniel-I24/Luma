@@ -57,6 +57,10 @@ Tokens live in `src/styles/scale.css`, utilities and keyframes in
 | Opening a business | View Transitions: the logo keeps its place from the card to the profile (`BusinessTransition.logoName(id)`) |
 | Changing tabs and routes | View Transitions, 340 ms fade |
 | Theme change | 200 ms colour crossfade, only while `ThemeService` sets the class |
+| Saved, accepted, sent | Success toasts draw `LumaCheckmark` instead of a static icon |
+| An owner accepts or readies an order | `NativeHaptics.tap()`; the card leaves its tab with `motion-leave-fade` and the board's cards enter with `motion-stagger` |
+| A guided tour step | The highlight moves to the next control (`--duration-normal`, none with reduced motion); the bubble fades in |
+| Menu and promotion lists | `motion-stagger` on the first four rows |
 
 ## App entry
 

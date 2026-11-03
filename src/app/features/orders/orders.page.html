@@ -2,7 +2,10 @@
   *transloco="let t"
   class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6"
 >
-  <h1 class="m-0 text-h3 text-fg">{{ t('orders.title') }}</h1>
+  <header class="flex items-center justify-between gap-2">
+    <h1 class="m-0 text-h3 text-fg">{{ t('orders.title') }}</h1>
+    <app-tour-help-button id="orders" />
+  </header>
 
   @switch (state()) { @case ('loading') {
   <div class="flex flex-col gap-3" aria-busy="true">
@@ -22,7 +25,7 @@
     <app-luma-button (clicked)="explore()">{{ t('orders.empty.action') }}</app-luma-button>
   </app-luma-empty-state>
   } @else {
-  <ul class="m-0 flex list-none flex-col gap-3 p-0">
+  <ul class="m-0 flex list-none flex-col gap-3 p-0" data-tour="orders-list">
     @for (order of orders(); track order.id) {
     <li class="motion-stagger" [style.--stagger-index]="$index < 6 ? $index : 0">
       <a
@@ -36,7 +39,7 @@
             <span class="text-caption text-fg-subtle">{{ t('orders.unknownBusiness') }}</span>
             }
           </span>
-          <app-order-status-badge [status]="order.status" />
+          <app-order-status-badge [status]="order.status" [attr.data-tour]="$first ? 'orders-status' : null" />
         </span>
         <span class="flex items-center justify-between gap-2 text-body-sm text-fg-muted">
           <span>{{ when(order) }}</span>

@@ -13,6 +13,8 @@ describe('notification view', () => {
     expect(NotificationView.notificationKey(notice({ type: 'review_invite', status: null }))).toBe('notifications.text.reviewInvite');
     expect(NotificationView.notificationKey(notice({ type: 'business_review', status: 'rejected' }))).toBe('notifications.text.businessReview.rejected');
     expect(NotificationView.notificationKey(notice({ type: 'promotion', status: null }))).toBe('notifications.text.promotion');
+    expect(NotificationView.notificationKey(notice({ type: 'test', status: null }))).toBe('notifications.text.test');
+    expect(NotificationView.notificationKey(notice({ type: 'contact_verification', status: 'approved' }))).toBe('notifications.text.contactVerification.approved');
     expect(NotificationView.notificationKey(notice({}))).toBe('notifications.text.status.ready');
   });
 

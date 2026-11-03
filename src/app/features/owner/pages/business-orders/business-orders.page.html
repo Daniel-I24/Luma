@@ -9,6 +9,7 @@
   >
     <div class="-mx-4">
       <app-luma-tabs
+        data-tour="owner-order-tabs"
         idPrefix="orders"
         [label]="t('businessOrders.title')"
         [tabs]="tabs()"
@@ -27,12 +28,17 @@
       </p>
       } @for (order of visible(); track order.id) {
       <app-owner-order-card
+        class="block motion-stagger"
+        [style.--stagger-index]="$index < 4 ? $index : 0"
+        animate.enter="motion-enter-fade"
+        animate.leave="motion-leave-fade"
+        [attr.data-tour]="$first ? 'owner-order-card' : null"
         [order]="order"
         [busy]="board.busyId() === order.id"
         (action)="onAction(order, $event)"
       />
       } @empty {
-      <app-luma-empty-state icon="receipt" [heading]="t('businessOrders.empty.' + tab())" />
+      <app-luma-empty-state icon="receipt" illustration="orders" [heading]="t('businessOrders.empty.' + tab())" />
       }
     </div>
   </app-panel-state>

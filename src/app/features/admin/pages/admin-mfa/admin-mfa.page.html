@@ -35,6 +35,7 @@
     <form class="mt-4 flex flex-col gap-3" novalidate (submit)="onSubmit($event)">
       <app-luma-input
         inputId="admin-mfa-code"
+        [placeholder]="t('placeholders.code')"
         inputMode="numeric"
         autocomplete="one-time-code"
         [label]="t('admin.mfa.codeLabel')"

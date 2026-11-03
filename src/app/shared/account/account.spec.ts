@@ -6,7 +6,6 @@ import { AuthService } from '@core/auth/auth.service';
 import { accountHomeGuard, ownerGuard } from './account.guards';
 import { AccountProfileRepository } from './account-profile.repository';
 import { AccountType } from './account-type';
-import { ONBOARDING_VERSION } from './onboarding';
 import { Phone } from './phone';
 import { SessionProfileStore } from './session-profile.store';
 
@@ -36,20 +35,20 @@ describe('Phone', () => {
 
 describe('SessionProfileStore and guards', () => {
   const user = signal<{ id: string } | null>({ id: 'u1' });
-  const repo = { getMine: vi.fn(), becomeBusinessOwner: vi.fn(), setOnboardingSeen: vi.fn() };
-  const profile = (type: string, seen = ONBOARDING_VERSION) => ({
+  const repo = { getMine: vi.fn(), becomeBusinessOwner: vi.fn() };
+  const profile = (type: string) => ({
     data: {
       accountType: AccountType.parse(type),
       displayName: null,
       fullName: null,
       phone: null,
-      onboardingSeenVersion: seen,
     },
     errorKey: null,
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
+    localStorage.setItem('luma.welcome.v1', 'seen');
     user.set({ id: 'u1' });
     TestBed.configureTestingModule({
       providers: [

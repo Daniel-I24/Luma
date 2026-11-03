@@ -9,6 +9,7 @@
     [subtitle]="t('businessPanel.register.subtitle')"
     [backLink]="backLink()"
   />
+  <app-draft-notice [draft]="autosave" />
 
   <app-business-basics-fields [idPrefix]="idPrefix" [(errors)]="errors" [(draft)]="draft" />
 

@@ -29,11 +29,33 @@ function setup(responses: Record<string, FakeResponse>, userId: string | null = 
 }
 
 describe('OwnedBusinessRepository', () => {
-  it('lists only the signed-in user businesses', async () => {
-    const { repo, queries } = setup({ businesses: ok([{ id: 'b1' }]) });
+  const row = (id: string, owner_id: string) => ({ id, name: id, category: 'Bar', is_active: true, owner_id });
 
-    expect(await repo.listMine()).toEqual({ data: [{ id: 'b1' }], errorKey: null });
+  it('lists only the signed-in user businesses', async () => {
+    const { repo, queries } = setup({ businesses: ok([row('b1', 'u1')]) });
+
+    expect(await repo.listMine()).toEqual({
+      data: [{ id: 'b1', name: 'b1', category: 'Bar', is_active: true }],
+      errorKey: null,
+    });
     expect(queries[0].call('eq')).toEqual(['owner_id', 'u1']);
+  });
+
+  it('two owners: rows of another owner never reach the panel', async () => {
+    const rows = [row('a1', 'u1'), row('b1', 'u2'), row('b2', 'u2'), row('a2', 'u1'), row('c1', 'u3')];
+    const first = setup({ businesses: ok(rows) }, 'u1');
+    expect((await first.repo.listMine()).data?.map((b) => b.id)).toEqual(['a1', 'a2']);
+    TestBed.resetTestingModule();
+    const second = setup({ businesses: ok(rows) }, 'u2');
+    expect((await second.repo.listMine()).data?.map((b) => b.id)).toEqual(['b1', 'b2']);
+  });
+
+  it('scopes every panel write to the owner', async () => {
+    const { repo, queries } = setup({ businesses: ok(null) });
+    await repo.setPublished('b1', false);
+    await repo.updateContact('b1', { whatsapp: null, instagram: null, facebook: null, website: null });
+
+    for (const query of queries) expect(query.calls).toContainEqual(['eq', ['owner_id', 'u1']]);
   });
 
   it('creates an unpublished business for the user, trimmed', async () => {

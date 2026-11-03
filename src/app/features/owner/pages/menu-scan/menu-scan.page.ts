@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
+import { AI_MODE } from '@core/config/ai-mode';
 import { LumaButton, LumaSkeleton } from '@design-system';
 import { ACCEPTED_IMAGE_TYPES } from '@shared/media/image-files';
 import { PanelHeader } from '../../components/panel-header/panel-header';
@@ -10,8 +11,9 @@ import { RouteBusinessId } from '../../utils/route-business-id';
 
 /**
  * MenuScanPage — /owner/:id/menu/scan: photos of a printed menu read by
- * Luma IA into a draft the owner corrects and chooses from. Nothing reaches
- * the menu until "Agregar al menú".
+ * Luma IA, or the menu pasted as text (free plan B, always offered and the
+ * only one when Luma IA is not available), into a draft the owner corrects
+ * and chooses from. Nothing reaches the menu until "Agregar al menú".
  */
 @Component({
   selector: 'app-menu-scan-page',
@@ -27,12 +29,19 @@ export class MenuScanPage {
   protected readonly id = RouteBusinessId.routeBusinessId();
   protected readonly accept = ACCEPTED_IMAGE_TYPES.join(',');
   protected readonly maxPhotos = MAX_SCAN_PHOTOS;
+  /** Reading photos needs the extract-menu function (Luma IA remote). */
+  protected readonly aiAvailable = inject(AI_MODE) === 'remote';
+  protected readonly pasted = signal('');
 
   protected async onFiles(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     const files = Array.from(input.files ?? []);
     input.value = '';
     await this.scan.read(this.id(), files);
+  }
+
+  protected onPaste(event: Event): void {
+    this.pasted.set((event.target as HTMLTextAreaElement).value);
   }
 
   protected text(event: Event): string {

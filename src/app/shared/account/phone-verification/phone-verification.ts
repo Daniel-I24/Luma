@@ -22,6 +22,7 @@ import { PhoneVerificationService } from '../phone-verification.service';
           <p class="m-0 text-body text-success-fg" role="status">{{ t('phoneVerification.done') }}</p>
         } @else if (sent()) {
           <app-luma-input inputId="phone-code" inputMode="numeric" [label]="t('phoneVerification.code')"
+          [placeholder]="t('placeholders.code')"
             [value]="code()" (valueChange)="code.set($event)" />
           <app-luma-button [loading]="busy()" (clicked)="confirm(mobile)">{{ t('phoneVerification.confirm') }}</app-luma-button>
         } @else {

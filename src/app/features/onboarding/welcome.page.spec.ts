@@ -3,8 +3,8 @@ import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ToastService } from '@design-system';
 import { AccountType } from '@shared/account/account-type';
+import { WelcomeTutorial } from '@shared/account/onboarding';
 import { SessionProfileStore } from '@shared/account/session-profile.store';
 import { WelcomePage } from './welcome.page';
 
@@ -12,17 +12,15 @@ describe('WelcomePage', () => {
   const type = signal(AccountType.customer);
   const session = {
     accountType: computed(() => type()),
-    markOnboardingSeen: vi.fn(),
     homePath: vi.fn(),
   };
-  const toast = { show: vi.fn() };
+  const welcome = { markSeen: vi.fn(), needed: vi.fn() };
 
   beforeEach(() => {
     vi.clearAllMocks();
     // jsdom has no scrolling; the carousel only needs the call to exist.
     Element.prototype.scrollTo = vi.fn();
     type.set(AccountType.customer);
-    session.markOnboardingSeen.mockResolvedValue(true);
     session.homePath.mockResolvedValue('/map');
     TestBed.configureTestingModule({
       imports: [
@@ -35,7 +33,7 @@ describe('WelcomePage', () => {
       providers: [
         provideRouter([]),
         { provide: SessionProfileStore, useValue: session },
-        { provide: ToastService, useValue: toast },
+        { provide: WelcomeTutorial, useValue: welcome },
       ],
     });
   });
@@ -82,17 +80,27 @@ describe('WelcomePage', () => {
     button('onboarding.start').click();
 
     await vi.waitFor(() => expect(navigate).toHaveBeenCalledWith('/map'));
-    expect(session.markOnboardingSeen).toHaveBeenCalledTimes(1);
+    expect(welcome.markSeen).toHaveBeenCalledTimes(1);
   });
 
-  it('"Omitir" also counts as seen and never traps the user when saving fails', async () => {
-    session.markOnboardingSeen.mockResolvedValue(false);
+  it('"Omitir" also counts as seen on this device', async () => {
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
     const { button } = await render();
 
     button('onboarding.skip').click();
 
     await vi.waitFor(() => expect(navigate).toHaveBeenCalledWith('/map'));
-    expect(toast.show).toHaveBeenCalledWith({ messageKey: 'onboarding.saveFailed', tone: 'info' });
+    expect(welcome.markSeen).toHaveBeenCalledTimes(1);
+  });
+
+  it('a failed navigation never leaves "Siguiente" disabled', async () => {
+    vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockRejectedValue(new Error('chunk failed'));
+    const { fixture, button } = await render();
+
+    button('onboarding.skip').click();
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(button('onboarding.next').disabled).toBe(false);
+    });
   });
 });

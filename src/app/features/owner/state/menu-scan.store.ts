@@ -3,6 +3,7 @@ import { MenuRepository } from '@shared/business/data/menu.repository';
 import { MenuWriteRepository } from '@shared/business/data/menu-write.repository';
 import { type DraftItem, MenuScanRepository } from '../services/menu-scan.repository';
 import { MAX_SORT_ORDER } from '@shared/business/data/business-write.schemas';
+import { MenuTextParser } from '../utils/menu-text-parser';
 
 /** One line of the draft as the owner reviews it (texts as typed). */
 export interface ReviewItem {
@@ -35,7 +36,10 @@ export class ScanPrices {
   }
 }
 
-/** MenuScanStore — photos → draft → review → the chosen items saved to the menu. */
+/**
+ * MenuScanStore — photos (Luma IA) or pasted text (MenuTextParser, free and
+ * local) → draft → review → the chosen items saved to the menu.
+ */
 @Injectable()
 export class MenuScanStore {
   private readonly scanner = inject(MenuScanRepository);
@@ -67,6 +71,15 @@ export class MenuScanStore {
     this._items.set(result.items.map(toReview));
     this._phase.set('review');
     if (result.items.length === 0) this._errorKey.set('owner.menuScan.nothingFound');
+  }
+
+  /** Plan B without Luma IA: the menu pasted as text goes to the same review. */
+  public fromText(text: string): void {
+    const items = MenuTextParser.parse(text);
+    this._errorKey.set(items.length ? null : 'owner.menuScan.nothingFound');
+    if (!items.length) return;
+    this._items.set(items.map(toReview));
+    this._phase.set('review');
   }
 
   /** Edits one scanned item before saving. */

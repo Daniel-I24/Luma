@@ -10,6 +10,7 @@
   <app-panel-state [state]="panel.state()" (retry)="load()">
     <app-business-images />
     <form class="mt-5 flex flex-col gap-5" novalidate (submit)="save($event)">
+      <app-draft-notice [draft]="autosave" />
       <app-business-basics-fields [idPrefix]="idPrefix" [(errors)]="errors" [(draft)]="draft" />
 
       <div class="flex flex-col gap-1">
@@ -22,6 +23,7 @@
           [class.border-danger]="!!errors()['description']"
           [class.border-border]="!errors()['description']"
           [id]="idPrefix + '-description'"
+          [placeholder]="t('placeholders.businessDescription')"
           [attr.maxlength]="descriptionMax"
           [attr.aria-invalid]="errors()['description'] ? 'true' : null"
           [attr.aria-describedby]="idPrefix + '-description-help'"
@@ -41,6 +43,7 @@
 
       <app-luma-input
         [inputId]="idPrefix + '-prep'"
+        [placeholder]="t('placeholders.prepMinutes')"
         type="number"
         [label]="t('businessPanel.form.prepMinutes')"
         [hint]="t('businessPanel.form.prepHint')"

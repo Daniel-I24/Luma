@@ -32,6 +32,7 @@ import { LumaButton, LumaInput, ToastService } from '@design-system';
         } @else {
           <p class="m-0 text-body-sm text-fg-muted" role="status">{{ t('account.password.codeSent') }}</p>
           <app-luma-input inputId="password-code" inputMode="numeric" autocomplete="one-time-code"
+          [placeholder]="t('placeholders.code')"
             [label]="t('account.password.code')" [required]="true" [value]="code()" (valueChange)="code.set($event)" />
         }
         @if (errorKey(); as key) {

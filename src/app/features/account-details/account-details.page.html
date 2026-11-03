@@ -7,6 +7,7 @@
   <form class="flex flex-col gap-4" novalidate (submit)="save($event)">
     <app-luma-input
       inputId="details-name"
+      [placeholder]="t('placeholders.fullName')"
       autocomplete="name"
       [label]="t('accountDetails.fullName')"
       [required]="true"
@@ -15,6 +16,7 @@
     />
     <app-luma-input
       inputId="details-phone"
+      [placeholder]="t('placeholders.mobile')"
       type="tel"
       autocomplete="tel-national"
       inputMode="tel"

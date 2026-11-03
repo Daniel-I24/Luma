@@ -29,6 +29,18 @@
       }
     </ol>
 
+    <a
+      class="pressable mt-2 flex min-h-14 items-center gap-3 rounded-xl bg-linear-to-br from-primary to-accent px-4 py-3 text-primary-fg no-underline shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+      [routerLink]="['/owner', id(), 'menu', 'scan']"
+      [queryParams]="setupQuery"
+    >
+      <app-luma-icon name="luma-ai" size="lg" />
+      <span class="flex flex-1 flex-col">
+        <span class="text-body font-semibold">{{ t('owner.menuScan.entryAi') }}</span>
+        <span class="text-caption">{{ t('owner.menuScan.entryHint') }}</span>
+      </span>
+    </a>
+
     <section class="mt-4 flex flex-col gap-2 rounded-xl border border-border-subtle bg-surface p-4" aria-labelledby="wizard-review">
       <h2 id="wizard-review" class="m-0 text-title text-fg">{{ t('owner.wizard.reviewTitle') }}</h2>
       @if (current(); as step) {

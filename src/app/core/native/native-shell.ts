@@ -15,7 +15,7 @@ export class NativeShell {
   /** Wires the Android back button and keyboard behaviour (native only). */
   public async init(): Promise<void> {
     const { Capacitor } = await import('@capacitor/core');
-    if (!Capacitor.isNativePlatform()) return;
+    if (!Capacitor.isNativePlatform() || !Capacitor.isPluginAvailable('App')) return;
     const [{ App }, { Keyboard }] = await Promise.all([
       import('@capacitor/app'),
       import('@capacitor/keyboard'),

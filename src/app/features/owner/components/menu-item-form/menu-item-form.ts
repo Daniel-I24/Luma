@@ -1,38 +1,29 @@
 import { DOCUMENT } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  inject,
-  input,
-  output,
-  signal,
-  untracked,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal, untracked } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaInput } from '@design-system';
 import { ImageField } from '../image-field/image-field';
 import { type MenuItemInput, menuItemSchema } from '@shared/business/data/business-write.schemas';
 import type { MenuItem } from '@shared/business/models/menu.model';
+import { DraftNotice } from '@shared/forms/draft-notice/draft-notice';
+import { FormDraftStore } from '@shared/forms/form-draft.store';
 import { type FieldErrors, FormErrors } from '@shared/forms/form-errors';
 
 const FIELD_ORDER = [
   ['name', 'menu-item-name'],
   ['price_cop', 'menu-item-price'],
   ['section', 'menu-item-section'],
-  ['sort_order', 'menu-item-order'],
   ['description', 'menu-item-description'],
 ] as const;
 
 /** Draft field -> validated field, to clear its error on edit. */
-const DRAFT_FIELD: Record<string, string> = { price: 'price_cop', sortOrder: 'sort_order' };
+const DRAFT_FIELD: Record<string, string> = { price: 'price_cop' };
 
 interface ItemDraft {
   name: string;
   description: string;
   price: string;
   section: string;
-  sortOrder: string;
   available: boolean;
   imageUrl: string | null;
 }
@@ -42,7 +33,6 @@ const EMPTY_DRAFT: ItemDraft = {
   description: '',
   price: '',
   section: '',
-  sortOrder: '0',
   available: true,
   imageUrl: null,
 };
@@ -54,18 +44,21 @@ function draftOf(item: MenuItem | null): ItemDraft {
     description: item.description ?? '',
     price: String(item.price_cop),
     section: item.section ?? '',
-    sortOrder: String(item.sort_order),
     available: item.is_available,
     imageUrl: item.image_url ?? null,
   };
 }
 
-/** MenuItemForm — create or edit one product; emits validated values. */
+/**
+ * MenuItemForm — create or edit one product; emits validated values. Its
+ * place in the menu is set by moving it in the list, not by a number here.
+ * What is typed is kept as a device draft until saved.
+ */
 @Component({
   selector: 'app-menu-item-form',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaInput, ImageField],
+  imports: [TranslocoModule, LumaButton, LumaInput, ImageField, DraftNotice],
   templateUrl: './menu-item-form.html',
 })
 export class MenuItemForm {
@@ -74,21 +67,35 @@ export class MenuItemForm {
   /** Item being edited, or null for a new one. */
   public readonly item = input<MenuItem | null>(null);
   public readonly businessId = input.required<string>();
+  /** Where a new product goes: after the last one. */
+  public readonly nextOrder = input(0);
   public readonly busy = input(false);
   public readonly submitted = output<MenuItemInput>();
   public readonly cancelled = output<void>();
 
   protected readonly draft = signal<ItemDraft>(draftOf(null));
   protected readonly errors = signal<FieldErrors>({});
+  protected readonly autosave = inject(FormDraftStore).attach(this.draft);
 
   constructor() {
     effect(() => {
       const item = this.item();
+      const businessId = this.businessId();
       untracked(() => {
-        this.draft.set(draftOf(item));
+        this.autosave.load(`menu-item.${businessId}.${item?.id ?? 'new'}`, draftOf(item));
         this.errors.set({});
       });
     });
+  }
+
+  /** True while the form holds changes that were not saved. */
+  public hasChanges(): boolean {
+    return this.autosave.dirty();
+  }
+
+  /** Called by the page once the server saved it. */
+  public markSaved(): void {
+    this.autosave.saved();
   }
 
   protected set<K extends keyof ItemDraft>(field: K, value: ItemDraft[K]): void {
@@ -112,7 +119,7 @@ export class MenuItemForm {
       description: draft.description.trim() || null,
       price_cop: draft.price.trim() === '' ? Number.NaN : Number(draft.price),
       section: draft.section.trim() || null,
-      sort_order: Number(draft.sortOrder || 0),
+      sort_order: this.item()?.sort_order ?? this.nextOrder(),
       is_available: draft.available,
       image_url: draft.imageUrl,
     });

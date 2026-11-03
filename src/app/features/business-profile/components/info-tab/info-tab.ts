@@ -4,6 +4,9 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { type IconName, LumaIcon } from '@design-system';
 import type { Business, BusinessHours } from '@shared/business/models/business.model';
 import { type ContactField, BusinessContacts } from '@shared/business/models/business-contact';
+import { VerifiedContacts } from '@shared/business/verification/contact-verification';
+import { RouteMap } from '@shared/route/route-map/route-map';
+import { TrustCard } from '../trust-card/trust-card';
 import { PhotoStrip } from '../photo-strip/photo-strip';
 import { ReportSheet } from '../report-sheet/report-sheet';
 import { MS_PER_DAY } from '@core/config/units';
@@ -32,12 +35,12 @@ export interface ScheduleRow {
   isToday: boolean;
 }
 
-/** InfoTab — photos, weekly schedule (today highlighted), contact, social links and address. */
+/** InfoTab — photos, weekly schedule (today highlighted), verified contacts with a badge, social links and address. */
 @Component({
   selector: 'app-info-tab',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaIcon, PhotoStrip, ReportSheet],
+  imports: [TranslocoModule, LumaIcon, PhotoStrip, ReportSheet, TrustCard, RouteMap],
   templateUrl: './info-tab.html',
   host: { class: 'block' },
 })
@@ -50,9 +53,15 @@ export class InfoTab {
   public readonly business = input.required<Business>();
   public readonly hours = input.required<readonly BusinessHours[]>();
 
-  /** Only well-formed values become links (wa.me, instagram.com, facebook.com, https). */
+  /** Only contacts the review team verified, and only well-formed values (wa.me, instagram.com, facebook.com, https). */
   protected readonly links = computed(() =>
-    BusinessContacts.contactLinks(this.business()).map((link) => ({ ...link, icon: CONTACT_ICON[link.field] })),
+    BusinessContacts.contactLinks(this.business())
+      .filter((link) => VerifiedContacts.isVerified(this.business(), link.field))
+      .map((link) => ({ ...link, icon: CONTACT_ICON[link.field] })),
+  );
+  /** The phone only once verified. */
+  protected readonly phone = computed(() =>
+    VerifiedContacts.isVerified(this.business(), 'phone') ? this.business().phone : null,
   );
 
   protected readonly rows = computed<ScheduleRow[]>(() => {

@@ -145,6 +145,8 @@ Provider URLs: `_shared/config/provider-urls.ts`; app link:
 
 ## Setting it up (owner, in order)
 
+The sandbox steps alone, in order: docs/payments-setup.md.
+
 1. Wompi dashboard (sandbox first): copy the four keys and set the events
    URL to `https://<ref>.supabase.co/functions/v1/wompi-webhook`.
 2. `supabase secrets set WOMPI_ENV=test WOMPI_PUBLIC_KEY=... WOMPI_PRIVATE_KEY=... WOMPI_INTEGRITY_SECRET=... WOMPI_EVENTS_SECRET=... PAYMENTS_CRON_SECRET=<64 hex>`.

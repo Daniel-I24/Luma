@@ -4,12 +4,7 @@ import { MenuRepository } from '@shared/business/data/menu.repository';
 import { MenuWriteRepository } from '@shared/business/data/menu-write.repository';
 import type { MenuItem } from '@shared/business/models/menu.model';
 import { BusinessImageRepository } from '@shared/media/business-image.repository';
-
-export interface MenuSection {
-  /** null for items without a section. */
-  readonly name: string | null;
-  readonly items: readonly MenuItem[];
-}
+import { type MenuSection, MenuSections } from '../utils/menu-sections';
 
 /** MenuPanelStore — the full menu of the managed business and its edits. */
 @Injectable()
@@ -24,19 +19,11 @@ export class MenuPanelStore {
   public readonly busy = this._busy.asReadonly();
   public readonly errorKey = this._errorKey.asReadonly();
   public readonly isEmpty = computed(() => this._items().length === 0);
+  /** sort_order of a new product: after the last one. */
+  public readonly nextOrder = computed(() => this._items().reduce((max, item) => Math.max(max, item.sort_order + 1), 0));
 
   /** Items grouped by section (named sections first), each in the owner's order. */
-  public readonly sections = computed<MenuSection[]>(() => {
-    const groups = new Map<string | null, MenuItem[]>();
-    const sorted = [...this._items()].sort(
-      (a, b) => a.sort_order - b.sort_order || a.name.localeCompare(b.name),
-    );
-    for (const item of sorted)
-      groups.set(item.section, [...(groups.get(item.section) ?? []), item]);
-    return [...groups]
-      .map(([name, items]) => ({ name, items }))
-      .sort((a, b) => (a.name === null ? 1 : b.name === null ? -1 : a.name.localeCompare(b.name)));
-  });
+  public readonly sections = computed<MenuSection[]>(() => MenuSections.group(this._items()));
 
   /** Resolves to false when the menu could not be loaded. */
   public async load(businessId: string): Promise<boolean> {
@@ -66,6 +53,41 @@ export class MenuPanelStore {
       const result = await this.writer.setAvailable(item.id, available);
       if (result.data) this.upsert({ ...item, is_available: available });
       return result.errorKey;
+    });
+  }
+
+  /** Inline change of name or price, without the product form. */
+  public async patch(item: MenuItem, changes: Partial<Pick<MenuItem, 'name' | 'price_cop'>>): Promise<boolean> {
+    return this.run(async () => {
+      const result = await this.writer.update(item.id, MenuSections.inputOf({ ...item, ...changes }));
+      if (result.data) this.upsert(result.data);
+      return result.errorKey;
+    });
+  }
+
+  /**
+   * Moves an item to the place of another one of its section (up/down
+   * buttons and drag). The section keeps its own sort_order values, in the
+   * new order; only the items whose value changes are written.
+   */
+  public async move(itemId: string, targetId: string): Promise<boolean> {
+    const section = this.sections().find((s) => s.items.some((i) => i.id === itemId));
+    const from = section?.items.findIndex((i) => i.id === itemId) ?? -1;
+    const to = section?.items.findIndex((i) => i.id === targetId) ?? -1;
+    if (!section || from < 0 || to < 0 || from === to) return false;
+    const order = [...section.items];
+    order.splice(to, 0, ...order.splice(from, 1));
+    const values = section.items.map((i) => i.sort_order).sort((a, b) => a - b);
+    // Equal values (old menus) become consecutive so the new order holds.
+    const slots = values.map((v, index) => Math.max(v, (values[0] ?? 0) + index));
+    const changed = order.map((item, index) => ({ ...item, sort_order: slots[index] })).filter((item, index) => item.sort_order !== order[index].sort_order);
+    return this.run(async () => {
+      for (const item of changed) {
+        const result = await this.writer.update(item.id, MenuSections.inputOf(item));
+        if (result.errorKey) return result.errorKey;
+        this.upsert(result.data ?? item);
+      }
+      return null;
     });
   }
 

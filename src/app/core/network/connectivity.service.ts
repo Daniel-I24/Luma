@@ -27,7 +27,7 @@ export class ConnectivityService {
   /** Native network status (no-op on the web); call once at startup. */
   public async watchNative(): Promise<void> {
     const { Capacitor } = await import('@capacitor/core');
-    if (!Capacitor.isNativePlatform()) return;
+    if (!Capacitor.isNativePlatform() || !Capacitor.isPluginAvailable('Network')) return;
     const { Network } = await import('@capacitor/network');
     this._online.set((await Network.getStatus()).connected);
     await Network.addListener('networkStatusChange', (status) =>

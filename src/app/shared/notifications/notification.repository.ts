@@ -5,7 +5,8 @@ import type { OrderStatus } from '@shared/orders/order.model';
 
 /** Who is told what (notifications_type_valid). */
 export type NotificationType =
-  | 'order_status' | 'order_new' | 'order_cancelled' | 'business_review' | 'promotion' | 'payment' | 'review_invite';
+  | 'order_status' | 'order_new' | 'order_cancelled' | 'business_review' | 'promotion' | 'payment' | 'review_invite'
+  | 'contact_verification' | 'test';
 /** Notifications sent to the owner of the business of the order. */
 export const OWNER_NOTIFICATION_TYPES: readonly NotificationType[] = [
   'order_new',

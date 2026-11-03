@@ -69,6 +69,18 @@ event bodies.
 - `npm audit --omit=dev` must be 0; dev-only accepted risks in
   docs/security-notes.md. Dependabot weekly.
 
+## Public and private business data (round 5)
+
+| Data | Who sees it |
+| --- | --- |
+| Name, category, address, location, hours, menu, photos | Anyone, once the business is approved and published |
+| Contacts (phone, WhatsApp, Instagram, Facebook, website) | The app shows a customer only the verified ones, with a badge. The raw columns stay readable through the API as before (public data entered by the owner) |
+| `<kind>_verified_at` | Readable; only `admin_verify_contact` writes them (no column grant for owners) |
+| Verification codes (`contact_verifications`) | The owner of the business and the review team; never customers |
+| Trust summary (`business_trust_summary`) | Signed-in users: verified since, verified contact kinds, completed orders as a range (0, 1-10, 11-50, 51-200, 200+), months on Luma |
+| NIT, legal name, legal representative, documents | Only the owner and the review team (RLS, private bucket); never in the trust summary |
+| Customers' names, phones and avatars | Never public; a business sees only what an order of theirs needs |
+
 ## Related documents
 
 - [Threat model](threat-model.md)

@@ -5,7 +5,7 @@
   aria-roledescription="carousel"
 >
   <div class="flex justify-end px-4">
-    <app-luma-button variant="ghost" size="sm" [disabled]="finishing()" (clicked)="finish()">
+    <app-luma-button variant="ghost" size="sm" [disabled]="busy()" (clicked)="finished.emit()">
       {{ t('onboarding.skip') }}
     </app-luma-button>
   </div>
@@ -57,7 +57,7 @@
       </button>
       }
     </div>
-    <app-luma-button size="lg" [fullWidth]="true" [disabled]="finishing()" (clicked)="next()">
+    <app-luma-button size="lg" [fullWidth]="true" [disabled]="busy()" (clicked)="next()">
       {{ t(isLast() ? 'onboarding.start' : 'onboarding.next') }}
     </app-luma-button>
   </div>

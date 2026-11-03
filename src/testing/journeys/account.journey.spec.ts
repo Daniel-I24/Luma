@@ -22,7 +22,7 @@ describe('journey: register a business owner on a phone', () => {
   let listener: Listener = () => undefined;
   const confirmed = { user: { id: 'u1', email_confirmed_at: '2026-10-19T10:00:00Z' } };
   const unconfirmed = { user: { id: 'u1', email_confirmed_at: null } };
-  const owner = { account_type: 'business_owner', display_name: null, full_name: 'Ana', phone: null, onboarding_seen_version: 99 };
+  const owner = { account_type: 'business_owner', display_name: null, full_name: 'Ana', phone: null };
   let profiles = failure('relation "profiles" has no column account_type');
 
   const auth = {
@@ -38,6 +38,7 @@ describe('journey: register a business owner on a phone', () => {
   };
 
   beforeEach(() => {
+    localStorage.setItem('luma.welcome.v1', 'seen');
     const fake = createFakeSupabase();
     const client = {
       ...fake.client,

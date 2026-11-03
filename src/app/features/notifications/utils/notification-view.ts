@@ -4,17 +4,29 @@ import {
   OWNER_NOTIFICATION_TYPES,
 } from '@shared/notifications/notification.repository';
 
+/** Types whose text does not depend on the status. */
+const FIXED_TEXT: Partial<Record<string, string>> = {
+  order_new: 'orderNew',
+  order_cancelled: 'orderCancelled',
+  review_invite: 'reviewInvite',
+  promotion: 'promotion',
+  test: 'test',
+};
+/** Types with one text per status; order_status (and anything else) uses notifications.text.status. */
+const BY_STATUS_TEXT: Partial<Record<string, string>> = {
+  payment: 'payment',
+  business_review: 'businessReview',
+  contact_verification: 'contactVerification',
+};
+
 /** NotificationView — text key and link of a notification. */
 export class NotificationView {
   /** Translation key of the notification text, from its type and status only. */
   public static notificationKey(notification: Pick<AppNotification, 'type' | 'status'>): string {
-    if (notification.type === 'order_new') return 'notifications.text.orderNew';
-    if (notification.type === 'order_cancelled') return 'notifications.text.orderCancelled';
-    if (notification.type === 'review_invite') return 'notifications.text.reviewInvite';
-    if (notification.type === 'promotion') return 'notifications.text.promotion';
-    if (notification.type === 'payment') return `notifications.text.payment.${notification.status ?? 'unknown'}`;
-    if (notification.type === 'business_review') return `notifications.text.businessReview.${notification.status ?? 'unknown'}`;
-    return `notifications.text.status.${notification.status ?? 'unknown'}`;
+    const fixed = FIXED_TEXT[notification.type];
+    if (fixed) return `notifications.text.${fixed}`;
+    const group = BY_STATUS_TEXT[notification.type] ?? 'status';
+    return `notifications.text.${group}.${notification.status ?? 'unknown'}`;
   }
 
   /** Where tapping it leads: the owner's board or the customer's order. */
@@ -35,6 +47,8 @@ export class NotificationView {
     // Invitation to review and promotions open the business; review decisions the owner panel.
     if ((type === 'review_invite' || type === 'promotion') && businessId) return ['/businesses', businessId];
     if (type === 'business_review') return businessId ? ownerPaths.section(businessId, 'summary') : ownerPaths.home();
+    if (type === 'contact_verification') return businessId ? ownerPaths.screen(businessId, 'contact') : ownerPaths.home();
+    if (type === 'test') return null;
     return orderId ? ['/orders', orderId] : null;
   }
 }

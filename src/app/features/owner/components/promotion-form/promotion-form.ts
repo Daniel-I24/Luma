@@ -16,6 +16,8 @@ import { ImageField } from '../image-field/image-field';
 import { type PromotionInput, promotionSchema } from '@shared/business/data/business-write.schemas';
 import type { Promotion } from '@shared/business/models/business.model';
 import type { MenuItem } from '@shared/business/models/menu.model';
+import { DraftNotice } from '@shared/forms/draft-notice/draft-notice';
+import { FormDraftStore } from '@shared/forms/form-draft.store';
 import { type FieldErrors, FormErrors } from '@shared/forms/form-errors';
 import { PromotionPhases } from '../../utils/promotion-phase';
 import { type PromoDraft, type PromotionPrefill, PromotionDrafts } from './promotion-draft';
@@ -37,12 +39,15 @@ const DRAFT_FIELD: Record<string, string> = {
   discount: 'discount_percent',
 };
 
-/** PromotionForm — create or edit a promotion; the end must be after the start and in the future. */
+/**
+ * PromotionForm — create or edit a promotion; the end must be after the start
+ * and in the future. What is typed is kept as a device draft until saved.
+ */
 @Component({
   selector: 'app-promotion-form',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaInput, DiscountFields, ImageField],
+  imports: [TranslocoModule, LumaButton, LumaInput, DiscountFields, ImageField, DraftNotice],
   templateUrl: './promotion-form.html',
 })
 export class PromotionForm {
@@ -59,16 +64,29 @@ export class PromotionForm {
 
   protected readonly draft = signal<PromoDraft>(PromotionDrafts.draftOf(null, new Date(), null));
   protected readonly errors = signal<FieldErrors>({});
+  protected readonly autosave = inject(FormDraftStore).attach(this.draft);
 
   constructor() {
     effect(() => {
       const promotion = this.promotion();
       const prefill = this.prefill();
+      const businessId = this.businessId();
       untracked(() => {
-        this.draft.set(PromotionDrafts.draftOf(promotion, new Date(), prefill));
+        const formId = `promotion.${businessId}.${promotion?.id ?? (prefill ? 'idea' : 'new')}`;
+        this.autosave.load(formId, PromotionDrafts.draftOf(promotion, new Date(), prefill));
         this.errors.set({});
       });
     });
+  }
+
+  /** True while the form holds changes that were not saved. */
+  public hasChanges(): boolean {
+    return this.autosave.dirty();
+  }
+
+  /** Called by the page once the server saved it: the draft is forgotten. */
+  public markSaved(): void {
+    this.autosave.saved();
   }
 
   protected set<K extends keyof PromoDraft>(field: K, value: PromoDraft[K]): void {

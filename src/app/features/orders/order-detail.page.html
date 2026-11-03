@@ -57,14 +57,7 @@
     </p>
     }
     @if (order.business; as business) {
-    <a
-      class="pressable inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-border px-4 text-title text-fg-brand no-underline focus-visible:outline-2 focus-visible:outline-border-focus"
-      target="_blank"
-      rel="noopener noreferrer"
-      [href]="directions(business)"
-    >
-      <app-luma-icon name="map" size="sm" /> {{ t('orders.detail.directions') }}
-    </a>
+    <app-route-map [lat]="business.latitude" [lng]="business.longitude" [name]="order.business_name" />
     }
   </section>
 

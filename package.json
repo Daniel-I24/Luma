@@ -20,6 +20,7 @@
     "check:contrast": "node scripts/brand-contrast.mjs",
     "check:buttons": "node scripts/check-destructive-buttons.mjs",
     "check:tokens": "node scripts/check-design-tokens.mjs",
+    "check:placeholders": "node scripts/check-placeholders.mjs",
     "scan:history": "node scripts/secret-scan-history.mjs",
     "check:wompi-event": "node scripts/check-wompi-event.mjs",
     "lint:functions": "node scripts/lint-functions.mjs"

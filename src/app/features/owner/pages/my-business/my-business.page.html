@@ -3,7 +3,7 @@
     @if (panel.business(); as business) {
     <app-panel-header [heading]="t('owner.myBusiness.title')" [subtitle]="business.name" />
 
-    <ul class="m-0 mt-2 flex list-none flex-col gap-2 p-0">
+    <ul class="m-0 mt-2 flex list-none flex-col gap-2 p-0" data-tour="business-sections">
       @for (item of screens; track item.screen) {
       <li>
         <a
@@ -39,14 +39,11 @@
       <app-luma-icon name="map" class="text-fg-brand" />
       <span class="flex-1 text-body font-medium">{{ t('owner.myBusiness.customerView') }}</span>
     </a>
-    <a
-      [routerLink]="tutorialPath"
-      class="pressable flex min-h-14 items-center gap-3 rounded-xl border border-border-subtle bg-surface px-4 text-fg no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
-    >
-      <app-luma-icon name="luma-ai" class="text-fg-brand" />
-      <span class="flex-1 text-body font-medium">{{ t('profile.help.tutorial') }}</span>
-    </a>
+    <app-tutorial-settings />
 
+    <div class="mt-4" data-tour="business-appearance">
+      <app-appearance-settings />
+    </div>
     <div class="mt-4">
       <app-notification-settings />
     </div>

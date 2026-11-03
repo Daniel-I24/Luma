@@ -2,21 +2,20 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { type IconName, LumaIcon } from '@design-system';
-import { ONBOARDING_PATH } from '@shared/account/onboarding';
+import { TutorialSettings } from '@shared/tutorial/tutorial-settings';
 
 const LINKS: readonly { path: string; key: string; icon: IconName }[] = [
-  { path: ONBOARDING_PATH, key: 'tutorial', icon: 'compass' },
   { path: '/legal/terms', key: 'terms', icon: 'info' },
   { path: '/legal/privacy', key: 'privacy', icon: 'info' },
   { path: '/legal/refunds', key: 'refunds', icon: 'info' },
 ];
 
-/** HelpLinks — Profile section: watch the tutorial again, terms and privacy policy. */
+/** HelpLinks — Profile section: the tutorials (never leaving the screen), terms and privacy policy. */
 @Component({
   selector: 'app-help-links',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, RouterLink, LumaIcon],
+  imports: [TranslocoModule, RouterLink, LumaIcon, TutorialSettings],
   template: `
     <section *transloco="let t" class="flex flex-col gap-2" aria-labelledby="help-heading">
       <h2
@@ -25,6 +24,7 @@ const LINKS: readonly { path: string; key: string; icon: IconName }[] = [
       >
         {{ t('profile.help.section') }}
       </h2>
+      <app-tutorial-settings />
       @for (link of links; track link.key) {
         <a
           [routerLink]="link.path"

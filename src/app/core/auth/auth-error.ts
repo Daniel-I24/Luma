@@ -1,4 +1,4 @@
-import { FunctionsFetchError, FunctionsHttpError } from '@supabase/supabase-js';
+import { FunctionsFetchError, FunctionsHttpError, FunctionsRelayError } from '@supabase/supabase-js';
 import { HTTP_STATUS } from '@core/config/http-status';
 
 /** Message fragments (lower case) of Supabase auth errors and their translation keys, in priority order. */
@@ -20,20 +20,28 @@ export class AuthErrors {
     return online ? 'errors.serviceUnavailable' : 'errors.offline';
   }
 
-  /** Maps a delete-account Edge Function error to a Transloco key. */
+  /**
+   * Maps a delete-account Edge Function error to its own message: no
+   * connection, session expired, a sign-in too old (reauth_required), the
+   * function not deployed or refusing this origin (unavailable), or a server failure.
+   */
   public static async mapDeleteAccountError(error: unknown, online = true): Promise<string> {
     if (error instanceof FunctionsFetchError) return AuthErrors.networkErrorKey(online);
-    if (error instanceof FunctionsHttpError) {
-      const response: unknown = error.context;
-      if (response instanceof Response && response.status === HTTP_STATUS.unauthorized) {
-        return 'auth.errors.sessionExpired';
-      }
-      // 403 reauth_required: the last sign-in is older than 10 minutes.
-      if (response instanceof Response && response.status === HTTP_STATUS.forbidden) {
-        const body: unknown = await response.json().catch(() => null);
-        if (isErrorBody(body, 'reauth_required')) return 'auth.errors.reauthRequired';
-      }
+    if (error instanceof FunctionsRelayError) return 'auth.errors.deleteAccountServer';
+    if (!(error instanceof FunctionsHttpError) || !(error.context instanceof Response)) return 'auth.errors.deleteAccountFailed';
+    return AuthErrors.deleteAccountHttpError(error.context);
+  }
+
+  /** The answer of delete-account: status first, then the error code of its body. */
+  private static async deleteAccountHttpError(response: Response): Promise<string> {
+    if (response.status === HTTP_STATUS.unauthorized) return 'auth.errors.sessionExpired';
+    const body: unknown = await response.json().catch(() => null);
+    // 403 reauth_required: the last sign-in is older than 10 minutes.
+    if (isErrorBody(body, 'reauth_required')) return 'auth.errors.reauthRequired';
+    if (response.status === HTTP_STATUS.notFound || isErrorBody(body, 'origin_not_allowed')) {
+      return 'auth.errors.deleteAccountUnavailable';
     }
+    if (response.status >= HTTP_STATUS.serverError) return 'auth.errors.deleteAccountServer';
     return 'auth.errors.deleteAccountFailed';
   }
 

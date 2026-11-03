@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, model, untracked } from '@angular/core';
+import { TourHelpButton } from '@shared/tutorial/tour-help-button';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaIcon, LumaSearchInput } from '@design-system';
 import { GeolocationService } from '@shared/geo/geolocation.service';
@@ -17,7 +18,7 @@ import { PlaceResults } from '../place-results/place-results';
   selector: 'app-map-top-bar',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaIcon, LumaSearchInput, MapFilterBar, PlaceResults],
+  imports: [TourHelpButton, TranslocoModule, LumaIcon, LumaSearchInput, MapFilterBar, PlaceResults],
   templateUrl: './map-top-bar.html',
   host: {
     class:

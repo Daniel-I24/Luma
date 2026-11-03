@@ -36,11 +36,13 @@ export class OwnedBusinessRepository {
     if (!userId) return { data: null, errorKey: 'businessPanel.errors.loadFailed' };
     const { data, error } = await this.db
       .from('businesses')
-      .select('id, name, category, is_active')
+      .select('id, name, category, is_active, owner_id')
       .eq('owner_id', userId)
       .order('created_at');
     if (error) return { data: null, errorKey: 'businessPanel.errors.loadFailed' };
-    return { data: data as OwnedBusinessSummary[], errorKey: null };
+    // The filter above is the rule; this second check keeps another owner's row out even if a query changes.
+    const rows = (data as (OwnedBusinessSummary & { owner_id: string })[]).filter((row) => row.owner_id === userId);
+    return { data: rows.map((row) => ({ id: row.id, name: row.name, category: row.category, is_active: row.is_active })), errorKey: null };
   }
 
   /** One of the user's businesses, or null when it is not theirs or does not exist. */
@@ -76,7 +78,7 @@ export class OwnedBusinessRepository {
   public async updateInfo(id: string, input: BusinessInfoInput): Promise<RepoResult<true>> {
     const parsed = businessInfoSchema.safeParse(input);
     if (!parsed.success) return { data: null, errorKey: INVALID };
-    const { error } = await this.db.from('businesses').update(parsed.data).eq('id', id);
+    const { error } = await this.mine(this.db.from('businesses').update(parsed.data).eq('id', id));
     if (error)
       return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, 'businessPanel.errors.saveFailed') };
     return { data: true, errorKey: null };
@@ -84,7 +86,7 @@ export class OwnedBusinessRepository {
 
   /** Public contact, already normalised by parseContact (the database checks it again). */
   public async updateContact(id: string, contact: BusinessContact): Promise<RepoResult<true>> {
-    const { error } = await this.db.from('businesses').update(contact).eq('id', id);
+    const { error } = await this.mine(this.db.from('businesses').update(contact).eq('id', id));
     if (error)
       return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, 'businessPanel.errors.saveFailed') };
     return { data: true, errorKey: null };
@@ -94,7 +96,7 @@ export class OwnedBusinessRepository {
   public async updateImages(id: string, input: BusinessImagesInput): Promise<RepoResult<true>> {
     const parsed = businessImagesSchema.safeParse(input);
     if (!parsed.success) return { data: null, errorKey: INVALID };
-    const { error } = await this.db.from('businesses').update(parsed.data).eq('id', id);
+    const { error } = await this.mine(this.db.from('businesses').update(parsed.data).eq('id', id));
     if (error)
       return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, 'businessPanel.errors.saveFailed') };
     return { data: true, errorKey: null };
@@ -102,12 +104,14 @@ export class OwnedBusinessRepository {
 
   /** Publishes or unpublishes; the database refuses to publish an incomplete business. */
   public async setPublished(id: string, published: boolean): Promise<RepoResult<true>> {
-    const { error } = await this.db
-      .from('businesses')
-      .update({ is_active: published })
-      .eq('id', id);
+    const { error } = await this.mine(this.db.from('businesses').update({ is_active: published }).eq('id', id));
     if (error)
       return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, 'businessPanel.errors.publishFailed') };
     return { data: true, errorKey: null };
+  }
+
+  /** Every panel write is also scoped to the signed-in owner (RLS enforces it too). */
+  private mine<Q extends { eq(column: string, value: string): Q }>(query: Q): Q {
+    return query.eq('owner_id', this.auth.user()?.id ?? '');
   }
 }

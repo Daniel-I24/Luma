@@ -52,6 +52,7 @@ them work without their optional secrets: they answer `ai_unavailable`,
 | `suggest-promotions` | app, AI_MODE remote | yes | `LLM_*` secrets | answers the rules (200) |
 | `extract-menu` | app, AI_MODE remote | yes | `LLM_*` (+ `LLM_VISION_MODEL`) | scan unavailable; manual menu |
 | `geocode` | app (map search) | yes | `GEOCODE_PROVIDER` (+ key/contact) | businesses-only search |
+| `route` | app (Cómo llegar) | yes | `ROUTE_PROVIDER`, `ROUTE_API_KEY` | straight-line estimate |
 | `push-dispatch` | the database (pg_net, pg_cron) | **no** (shared secret) | `FCM_SERVICE_ACCOUNT`, `PUSH_DISPATCH_SECRET` | in-app notifications only |
 | `create-payment` | app (checkout, online payment) | yes | `WOMPI_*` | `payments_unavailable`; pay at pick-up still works |
 | `wompi-webhook` | Wompi | **no** (event checksum) | `WOMPI_*` | every event rejected; Wompi retries |
@@ -84,6 +85,7 @@ shared secret or a signature instead.
 | --- | --- | --- | --- |
 | `delete-account` | `supabase functions deploy delete-account` | true | user JWT |
 | `geocode` | `supabase functions deploy geocode` | true | user JWT (docs/geocode.md for its secrets) |
+| `route` | `supabase functions deploy route` | true | user JWT (docs/route.md for its secrets) |
 | `recommend` | `supabase functions deploy recommend` | true | user JWT (docs/ai.md) |
 | `suggest-promotions` | `supabase functions deploy suggest-promotions` | true | user JWT (docs/ai.md) |
 | `extract-menu` | `supabase functions deploy extract-menu` | true | user JWT (docs/ai.md) |

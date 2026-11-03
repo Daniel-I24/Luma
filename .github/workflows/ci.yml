@@ -44,6 +44,8 @@ jobs:
         run: npm run check:contrast
       - name: Colours and sizes only through design tokens
         run: npm run check:tokens
+      - name: Every text field has an example
+        run: npm run check:placeholders
       # Verbose: every test and the full detail of each failure in the log.
       - run: npm test -- --watch=false --reporters=verbose
       - run: npm run test:scripts
@@ -83,7 +85,7 @@ jobs:
       - uses: actions/checkout@v7
       - name: Edge Function tests (fake fetch, no network to providers)
         run: |
-          for dir in _shared delete-account recommend suggest-promotions extract-menu geocode push-dispatch create-payment wompi-webhook reconcile-payments void-payment; do
+          for dir in _shared delete-account recommend suggest-promotions extract-menu geocode push-dispatch create-payment wompi-webhook reconcile-payments void-payment route; do
             echo "== $dir"
             (cd "supabase/functions/$dir" && deno test --no-lock --config deno.json -A)
           done
@@ -92,6 +94,6 @@ jobs:
         run: cd supabase/functions && deno lint --config deno.lint.json
       - name: Type check entry points
         run: |
-          for dir in delete-account recommend suggest-promotions extract-menu geocode push-dispatch create-payment wompi-webhook reconcile-payments void-payment; do
+          for dir in delete-account recommend suggest-promotions extract-menu geocode push-dispatch create-payment wompi-webhook reconcile-payments void-payment route; do
             (cd "supabase/functions/$dir" && deno check --no-lock --config deno.json index.ts)
           done

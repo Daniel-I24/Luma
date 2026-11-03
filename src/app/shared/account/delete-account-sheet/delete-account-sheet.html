@@ -1,0 +1,48 @@
+<ng-container *transloco="let t">
+  <app-luma-bottom-sheet [open]="open()" [title]="t('profile.deleteSheet.title')" (closed)="close()">
+    @if (step() === 'consequences') {
+    <p class="m-0 mb-2 text-body text-fg">{{ t('profile.deleteSheet.intro') }}</p>
+    <ul class="m-0 mb-4 list-disc space-y-1 ps-5 text-body-sm text-fg-muted">
+      @for (item of deletedData; track item) {
+      <li>{{ t('profile.deleteSheet.items.' + item) }}</li>
+      }
+    </ul>
+    <p class="m-0 mb-4 rounded-md bg-danger-bg p-3 text-body-sm font-semibold text-danger-fg">
+      {{ t('profile.deleteSheet.irreversible') }}
+    </p>
+    <p class="m-0 text-body-sm text-fg-muted">{{ t('profile.deleteSheet.codeIntro', { email: email() }) }}</p>
+    } @else {
+    <p class="m-0 mb-3 text-body text-fg">{{ t('profile.deleteSheet.codeSent', { email: email() }) }}</p>
+    <app-luma-input
+      inputId="delete-account-code"
+      [label]="t('profile.deleteSheet.codeLabel')"
+      [placeholder]="t('profile.deleteSheet.codePlaceholder')"
+      [hint]="t('profile.deleteSheet.codeHint')"
+      inputMode="numeric"
+      autocomplete="one-time-code"
+      [maxLength]="codeLength"
+      [(value)]="code"
+    />
+    }
+    @if (errorKey()) {
+    <p class="m-0 mt-3 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">{{ t(errorKey()!) }}</p>
+    }
+    <div class="mt-4 flex flex-col gap-3">
+      @if (step() === 'consequences') {
+      <app-luma-button variant="danger" [fullWidth]="true" [disabled]="busy() || !email()" (clicked)="sendCode()">
+        {{ t('profile.deleteSheet.sendCode') }}
+      </app-luma-button>
+      } @else {
+      <app-luma-button variant="danger" [fullWidth]="true" [disabled]="busy() || !codeReady()" (clicked)="confirm()">
+        {{ t('profile.deleteSheet.confirm') }}
+      </app-luma-button>
+      <app-luma-button variant="ghost" [fullWidth]="true" [disabled]="busy()" (clicked)="sendCode()">
+        {{ t('profile.deleteSheet.resend') }}
+      </app-luma-button>
+      }
+      <app-luma-button variant="ghost" [fullWidth]="true" (clicked)="close()">
+        {{ t('profile.deleteSheet.cancel') }}
+      </app-luma-button>
+    </div>
+  </app-luma-bottom-sheet>
+</ng-container>

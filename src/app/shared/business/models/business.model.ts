@@ -45,6 +45,12 @@ export interface Business {
   instagram?: string | null;
   facebook?: string | null;
   website?: string | null;
+  /** When the review team verified each contact (only admin_verify_contact writes them; round5). */
+  phone_verified_at?: string | null;
+  whatsapp_verified_at?: string | null;
+  instagram_verified_at?: string | null;
+  facebook_verified_at?: string | null;
+  website_verified_at?: string | null;
 }
 
 /** 0 = Sunday … 6 = Saturday (JS Date.getDay()). */

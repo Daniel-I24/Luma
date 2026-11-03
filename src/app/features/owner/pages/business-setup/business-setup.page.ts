@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, untracked } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaButton, ToastService } from '@design-system';
+import { LumaButton, LumaIcon, ToastService } from '@design-system';
 import { ownerPaths } from '@shared/account/owner-paths';
 import { PanelHeader } from '../../components/panel-header/panel-header';
 import { PanelStateView } from '../../components/panel-state/panel-state';
@@ -26,7 +26,7 @@ export const SETUP_QUERY = { setup: '1' } as const;
   selector: 'app-business-setup-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, RouterLink, LumaButton, PanelHeader, PanelStateView],
+  imports: [TranslocoModule, RouterLink, LumaButton, LumaIcon, PanelHeader, PanelStateView],
   providers: [PanelBusinessStore, PublishStore, VerificationStore],
   templateUrl: './business-setup.page.html',
   host: { class: 'block' },

@@ -9,7 +9,8 @@
       [label]="t('checkout.back')"
       (clicked)="back()"
     />
-    <h1 class="m-0 text-h3 text-fg">{{ t('checkout.title') }}</h1>
+    <h1 class="m-0 flex-1 text-h3 text-fg">{{ t('checkout.title') }}</h1>
+    <app-tour-help-button id="checkout" />
   </header>
 
   @if (cart.isEmpty()) {
@@ -38,7 +39,7 @@
 
   <section class="flex flex-col gap-2" aria-labelledby="checkout-when">
     <h2 id="checkout-when" class="m-0 text-title text-fg">{{ t('checkout.when.title') }}</h2>
-    <div class="flex flex-wrap gap-2" role="group" [attr.aria-labelledby]="'checkout-when'">
+    <div class="flex flex-wrap gap-2" role="group" data-tour="checkout-when" [attr.aria-labelledby]="'checkout-when'">
       @for (option of options; track option) {
       <app-luma-chip
         [toggleable]="false"
@@ -83,6 +84,7 @@
     <label class="text-title text-fg" for="checkout-notes">{{ t('checkout.notes.label') }}</label>
     <textarea
       id="checkout-notes"
+      data-tour="checkout-notes"
       rows="3"
       class="w-full resize-y rounded-md border border-border bg-surface p-3 text-body text-fg placeholder:text-fg-subtle focus-visible:border-primary focus-visible:outline-2 focus-visible:outline-border-focus"
       aria-describedby="checkout-notes-count"
@@ -101,7 +103,7 @@
   </section>
 
   @if (store.onlineAvailable()) {
-  <section class="flex flex-col gap-2" aria-labelledby="checkout-payment-title">
+  <section class="flex flex-col gap-2" data-tour="checkout-payment" aria-labelledby="checkout-payment-title">
     <h2 id="checkout-payment-title" class="m-0 text-title text-fg">{{ t('checkout.payment.title') }}</h2>
     <div class="flex flex-col gap-2" role="radiogroup" aria-labelledby="checkout-payment-title">
       @for (option of paymentMethods; track option) {
@@ -149,6 +151,13 @@
   <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
     {{ t(key) }}
   </p>
+  @if (store.blockingOrderId(); as orderId) {
+  <a
+    class="pressable inline-flex min-h-11 items-center justify-center rounded-md border border-border bg-surface px-4 text-body font-semibold text-fg-brand no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+    [routerLink]="['/orders', orderId]"
+    >{{ t('orders.errors.seePendingOrder') }}</a
+  >
+  }
   @if (key === profileIncompleteKey) {
   <app-luma-button variant="secondary" [fullWidth]="true" (clicked)="completeProfile()"
     >{{ t('accountDetails.completeAction') }}</app-luma-button

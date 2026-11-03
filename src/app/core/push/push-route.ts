@@ -6,8 +6,8 @@ export type RouteCommands = readonly string[];
 /**
  * PushRoute — the screen a tapped notification opens, from its type and ids
  * (push-dispatch data). Customers' order, payment and review notices open
- * the order; owners' order and review notices open their panel; promotions
- * open the business. Anything else, or a notice without its id, opens the
+ * the order; owners' order and review notices open their panel, contact
+ * verifications their contact screen; promotions open the business. Anything else, or a notice without its id, opens the
  * notification list.
  */
 export class PushRoute {
@@ -22,6 +22,7 @@ export class PushRoute {
     if (!type || !businessId) return PushRoute.FALLBACK;
     if (PushRoute.OWNER_ORDER_TYPES.has(type)) return ['/owner', businessId, 'orders'];
     if (type === 'business_review') return ['/owner', businessId, 'summary'];
+    if (type === 'contact_verification') return ['/owner', businessId, 'business', 'contact'];
     if (type === 'promotion') return ['/businesses', businessId];
     return PushRoute.FALLBACK;
   }

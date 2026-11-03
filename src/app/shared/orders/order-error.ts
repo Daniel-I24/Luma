@@ -25,6 +25,7 @@ const ORDER_ERROR_KEYS: Readonly<Record<string, string>> = {
   reason_required: 'orders.errors.reasonRequired',
   invalid_reason: 'orders.errors.reasonRequired',
   no_show_too_early: 'orders.errors.noShowTooEarly',
+  own_business: 'orders.errors.ownBusiness',
 };
 
 /** The error that the customer fixes by completing their profile. */

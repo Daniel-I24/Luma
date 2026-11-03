@@ -171,6 +171,40 @@ SQL suites, Deno 2.5.6 in Docker for the functions.
   Deno tests, type check and lint of the functions, every check, secret
   scan, audit 0, knip (no unused files or dependencies).
 
+## Round 5 (2026-10-28)
+
+- Block A: owner list filtered and re-checked by owner_id, keyed by user,
+  "N de 3 negocios" and a disabled "Añadir" with its reason; native plugins
+  behind isPluginAvailable, dev-only console error, welcome buttons never
+  stuck; the sign-in race of SessionProfileStore fixed plus two silent
+  retries; delete account with consequences, e-mail code (signInWithOtp /
+  verifyOtp) and one message per failure; FormDraftStore drafts and the
+  leave warning on promotion, product, business data, legal data and
+  registration; own_business in create_order (protections test extended);
+  the trust-limit message depends on payments and links to the order.
+- Block B: welcome once per device; section guides (GuidedTour,
+  TourRegistry, overlay, "?" per screen, Ajustes → "Ver todos los
+  tutoriales"); "Ej.: …" on every field and check:placeholders in CI; order
+  by up/down and drag; appearance in "Mi negocio"; menu scan always first
+  with the MenuTextParser plan B and inline edits; verifiable contacts
+  (owner steps, admin queue, badges); public trust card; legal data
+  correction; route Edge Function (OpenRouteService behind
+  RoutingProvider, quota, cache, straight-line fallback) and RouteMap;
+  test push and docs/push-setup.md, docs/payments-setup.md.
+- Block C: owner hero, cards with trend, quick actions, SVG empty states,
+  order cards by state colour, product photos; Lucide icons (docs/brand/icons.md);
+  success check, haptics, list stagger and tour motion.
+- Migration 52 `20261102000000_round5` (pending review) with
+  supabase/tests/round5.sql (27 checks).
+- DoD: build (667 kB initial), lint, 813 app tests, 92 script tests, 701
+  SQL checks, 133 Deno tests and type check of 11 functions, Deno lint,
+  every check (placeholders included), secret scan, audit 0, knip and
+  depcheck (known false positives only).
+- Not done: no browser run against the real project (the web failure of A2
+  and the 5 businesses of A1 were not reproduced; the causes found in code
+  are fixed); customer screens got the new cards and route but no full
+  redesign.
+
 ## Round 3 (2026-10-28, closing)
 
 - docs/round2-status.md (phases 4-7: all done except the screen pass with

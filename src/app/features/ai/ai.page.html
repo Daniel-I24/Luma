@@ -3,16 +3,20 @@
   class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6"
 >
   <header class="flex flex-col gap-1">
-    <h1 class="m-0 flex items-center gap-2 text-h3 text-fg">
-      <app-luma-icon class="text-fg-accent" name="luma-ai" />
-      {{ t('ai.title') }}
-    </h1>
+    <div class="flex items-center justify-between gap-2">
+      <h1 class="m-0 flex items-center gap-2 text-h3 text-fg">
+        <app-luma-icon class="text-fg-accent" name="luma-ai" />
+        {{ t('ai.title') }}
+      </h1>
+      <app-tour-help-button id="ai" />
+    </div>
     <p class="m-0 text-body-sm text-fg-muted">{{ t('ai.subtitle') }}</p>
   </header>
 
   <div
     class="-mx-4 flex gap-2 overflow-x-auto px-4 py-1 [scrollbar-width:none]"
     role="group"
+    data-tour="ai-moods"
     appRevealSelected
     [attr.aria-label]="t('ai.moments.label')"
   >
@@ -56,6 +60,7 @@
     {{ t(whyKey(result), { name: result.businesses[0].candidate.business.name }) }}
   </p>
   <app-recommendation-list
+    data-tour="ai-results"
     class="animate-fade-in"
     [picks]="result.businesses"
     (open)="openBusiness($event)"

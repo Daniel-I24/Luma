@@ -1,6 +1,7 @@
 <article
   *transloco="let t"
-  class="flex flex-col gap-3 rounded-xl border border-border-subtle bg-surface p-4"
+  class="flex flex-col gap-3 rounded-xl border border-l-4 border-border-subtle bg-surface p-4 shadow-card"
+  [class]="stripe()"
   [attr.aria-labelledby]="'order-' + order().id"
 >
   <header class="flex items-start justify-between gap-2">

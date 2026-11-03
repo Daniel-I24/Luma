@@ -18,7 +18,7 @@ import { useFixedClock } from '../../../../testing/fixed-clock';
 describe('CheckoutStore', () => {
   useFixedClock();
 
-  const orders = { create: vi.fn() };
+  const orders = { create: vi.fn(), list: vi.fn() };
   // Open every day 08:00-22:00; the fixed clock is Wednesday at noon.
   const week = Array.from({ length: 7 }, (_, day) => ({
     day_of_week: day,
@@ -100,6 +100,23 @@ describe('CheckoutStore', () => {
     expect(navigate).toHaveBeenCalledWith(['/orders', 'o1']);
   });
 
+  it('trust limit: never mentions paying online when payments are off, and links to the order to pick up', async () => {
+    orders.create.mockResolvedValue({ data: null, errorKey: 'orders.errors.trustPendingLimit' });
+    orders.list.mockResolvedValue({
+      data: [
+        { id: 'paid', payment_method: 'online', status: 'pending' },
+        { id: 'done', payment_method: 'pay_at_pickup', status: 'picked_up' },
+        { id: 'open', payment_method: 'pay_at_pickup', status: 'accepted' },
+      ],
+      errorKey: null,
+    });
+
+    await store.confirm();
+
+    expect(store.errorKey()).toBe('orders.errors.trustPendingLimit');
+    expect(store.blockingOrderId()).toBe('open');
+  });
+
   it('keeps the cart and shows the server rule that failed', async () => {
     orders.create.mockResolvedValue({ data: null, errorKey: 'orders.errors.tooManyPending' });
 
@@ -156,6 +173,19 @@ describe('CheckoutStore', () => {
     expect(orders.create.mock.calls[0][0].paymentMethod).toBe('online');
     expect(online.start).toHaveBeenCalledWith('o4');
     expect(navigate).toHaveBeenCalledWith(['/orders', 'o4']);
+  });
+
+  it('trust limit with payments on: offers paying this order online', async () => {
+    config.config.mockResolvedValue({ enabled: true, sandbox: false });
+    const fresh = TestBed.runInInjectionContext(() => new CheckoutStore());
+    await vi.waitFor(() => expect(fresh.onlineAvailable()).toBe(true));
+    orders.create.mockResolvedValue({ data: null, errorKey: 'orders.errors.trustPendingLimit' });
+    orders.list.mockResolvedValue({ data: [], errorKey: null });
+
+    await fresh.confirm();
+
+    expect(fresh.errorKey()).toBe('orders.errors.trustPendingLimitOnline');
+    expect(fresh.blockingOrderId()).toBeNull();
   });
 
   it('tells the customer when the business is in another department', async () => {

@@ -1,24 +1,12 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  inject,
-  signal,
-  untracked,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, signal, untracked, viewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import {
-  LumaBottomSheet,
-  LumaButton,
-  LumaEmptyState,
-  LumaIconButton,
-  ToastService,
-} from '@design-system';
+import { LumaBottomSheet, LumaButton, LumaEmptyState, LumaIconButton, ToastService } from '@design-system';
 import type { PromotionInput } from '@shared/business/data/business-write.schemas';
 import type { Promotion } from '@shared/business/models/business.model';
 import { DateFormat } from '@shared/format/date-format';
+import type { HasUnsavedChanges } from '@shared/forms/unsaved-changes.guard';
 import type { PromotionIdea } from '@shared/promotions/advisor/promotion-idea';
 import { IdeasCard } from '../../components/ideas-card/ideas-card';
 import { NotifyFollowers } from '../../components/notify-followers/notify-followers';
@@ -38,7 +26,11 @@ const PHASE_CLASS = {
   ended: 'bg-canvas-muted text-fg-muted',
 } as const;
 
-/** BusinessPromotionsPage — /owner/:id/promotions: create, edit and end promotions. */
+/**
+ * BusinessPromotionsPage — /owner/:id/promotions: create, edit and end
+ * promotions. Saving always ends in a toast (saved) or a message next to the
+ * form (failed), and a failure keeps the form open with what was typed.
+ */
 @Component({
   selector: 'app-business-promotions-page',
   standalone: true,
@@ -59,7 +51,7 @@ const PHASE_CLASS = {
   templateUrl: './business-promotions.page.html',
   host: { class: 'block' },
 })
-export class BusinessPromotionsPage {
+export class BusinessPromotionsPage implements HasUnsavedChanges {
   protected readonly panel = inject(PanelBusinessStore);
   protected readonly promos = inject(PromotionsPanelStore);
   private readonly toast = inject(ToastService);
@@ -77,6 +69,7 @@ export class BusinessPromotionsPage {
   private readonly query = inject(ActivatedRoute).snapshot.queryParamMap;
   protected readonly phase = PromotionPhases.promotionPhase;
   protected readonly phaseClass = PHASE_CLASS;
+  private readonly form = viewChild(PromotionForm);
 
   constructor() {
     effect(() => {
@@ -128,9 +121,15 @@ export class BusinessPromotionsPage {
     const promotion = this.editing();
     if (promotion === undefined) return;
     if (await this.promos.save(this.id(), promotion?.id ?? null, input)) {
+      this.form()?.markSaved();
       this.editing.set(undefined);
       this.toast.show({ messageKey: 'businessPanel.promotions.saved', tone: 'success' });
     }
+  }
+
+  /** The leave warning: an open form with changes not saved. */
+  public hasUnsavedChanges(): boolean {
+    return this.editing() !== undefined && (this.form()?.hasChanges() ?? false);
   }
 
   protected async confirmEnd(): Promise<void> {

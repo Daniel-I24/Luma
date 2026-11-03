@@ -34,12 +34,7 @@ export abstract class VerificationRepository {
   /** Legal data of a business, or null when not saved yet. */
   public abstract getLegal(businessId: string): Promise<RepoResult<LegalInfo | null>>;
   /** Saves NIT, legal name and legal representative. */
-  public abstract saveLegal(
-    businessId: string,
-    taxId: string,
-    legalName: string,
-    legalRep: string,
-  ): Promise<RepoResult<true>>;
+  public abstract saveLegal(businessId: string, taxId: string, legalName: string, legalRep: string): Promise<RepoResult<true>>;
   /** Uploaded verification documents. */
   public abstract listDocs(businessId: string): Promise<RepoResult<VerificationDoc[]>>;
   /** Uploads a verification document to private Storage. */
@@ -48,6 +43,8 @@ export abstract class VerificationRepository {
   public abstract deleteDoc(doc: VerificationDoc): Promise<RepoResult<true>>;
   /** Sends the business to review. */
   public abstract submit(businessId: string): Promise<RepoResult<SubmitResult>>;
+  /** Approved → changes requested ('owner_correction'): hidden until a new review, legal data editable. */
+  public abstract requestLegalCorrection(businessId: string): Promise<RepoResult<true>>;
 }
 
 /** SupabaseVerificationRepository — legal data and documents through RLS and Storage. */
@@ -135,13 +132,18 @@ class SupabaseVerificationRepository extends VerificationRepository {
 
   /** @inheritdoc */
   public async submit(businessId: string): Promise<RepoResult<SubmitResult>> {
-    const { data, error } = await this.db.rpc('submit_business_for_review', {
-      p_business_id: businessId,
-    });
+    const { data, error } = await this.db.rpc('submit_business_for_review', { p_business_id: businessId });
     if (error) return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, 'verification.errors.submitFailed') };
     const parsed = submitSchema.safeParse(data);
     return parsed.success
       ? { data: parsed.data, errorKey: null }
       : { data: null, errorKey: 'verification.errors.submitFailed' };
+  }
+
+  /** @inheritdoc */
+  public async requestLegalCorrection(businessId: string): Promise<RepoResult<true>> {
+    const { error } = await this.db.rpc('request_legal_correction', { p_business_id: businessId });
+    if (error) return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, 'owner.verificationPage.correctionFailed') };
+    return { data: true, errorKey: null };
   }
 }

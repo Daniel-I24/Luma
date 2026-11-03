@@ -1,6 +1,8 @@
 <form *transloco="let t" class="flex flex-col gap-4" novalidate (submit)="submit($event)">
+  <app-draft-notice [draft]="autosave" />
   <app-luma-input
     inputId="promo-title"
+    [placeholder]="t('placeholders.promoTitle')"
     [label]="t('businessPanel.promotions.promoTitle')"
     [required]="true"
     [maxLength]="80"
@@ -32,6 +34,7 @@
     >
     <textarea
       id="promo-description"
+      [placeholder]="t('placeholders.promoDescription')"
       rows="2"
       maxlength="300"
       class="w-full resize-y rounded-md border border-border bg-surface p-3 text-body text-fg focus-visible:outline-2 focus-visible:outline-border-focus"

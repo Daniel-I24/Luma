@@ -15,6 +15,8 @@ import { MIN_ADDRESS_LENGTH, MIN_NAME_LENGTH } from '@shared/business/data/busin
 
 /** Owners edit legal data and documents only while the database allows it. */
 export const EDITABLE_STATUSES: readonly VerificationStatus[] = ['draft', 'rejected'];
+/** verification_note written by request_legal_correction (the owner asked, not the team). */
+export const OWNER_CORRECTION_NOTE = 'owner_correction';
 
 export interface ReviewInputs {
   readonly business: Pick<

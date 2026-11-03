@@ -1,4 +1,5 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
+import { AuthService } from '@core/auth/auth.service';
 import { type UserScopedState, UserDataRegistry } from '@core/auth/user-data-registry';
 import { MAX_OWNED_BUSINESSES } from '@shared/account/owner-paths';
 import {
@@ -14,6 +15,9 @@ import {
 @Injectable({ providedIn: 'root' })
 export class OwnerContextStore implements UserScopedState {
   private readonly repo = inject(OwnedBusinessRepository);
+  private readonly auth = inject(AuthService);
+  /** Whose list is held: another account signing in on this device never sees it. */
+  private loadedFor: string | null = null;
 
   private readonly _businesses = signal<readonly OwnedBusinessSummary[] | null>(null);
   private readonly _selectedId = signal<string | null>(null);
@@ -26,7 +30,9 @@ export class OwnerContextStore implements UserScopedState {
   public readonly selected = computed(
     () => this._businesses()?.find((b) => b.id === this._selectedId()) ?? null,
   );
-  public readonly canAddMore = computed(() => (this._businesses()?.length ?? 0) < MAX_OWNED_BUSINESSES);
+  public readonly max = MAX_OWNED_BUSINESSES;
+  public readonly count = computed(() => this._businesses()?.length ?? 0);
+  public readonly canAddMore = computed(() => this.count() < MAX_OWNED_BUSINESSES);
 
   constructor() {
     inject(UserDataRegistry).register(this);
@@ -34,6 +40,9 @@ export class OwnerContextStore implements UserScopedState {
 
   /** Reads the owner's businesses; keeps the old list when the read fails. */
   public async load(): Promise<readonly OwnedBusinessSummary[] | null> {
+    const userId = this.auth.user()?.id ?? null;
+    if (this.loadedFor !== null && userId !== this.loadedFor) this.clearUserData();
+    this.loadedFor = userId;
     const result = await this.repo.listMine();
     this._errorKey.set(result.errorKey);
     if (result.data) this._businesses.set(result.data);
@@ -58,8 +67,14 @@ export class OwnerContextStore implements UserScopedState {
     );
   }
 
+  /** True when the list held belongs to another account than the signed-in one. */
+  public isStale(): boolean {
+    return this._businesses() !== null && this.loadedFor !== (this.auth.user()?.id ?? null);
+  }
+
   /** Forgets the owner's businesses (sign-out). */
   public clearUserData(): void {
+    this.loadedFor = null;
     this._businesses.set(null);
     this._selectedId.set(null);
     this._errorKey.set(null);

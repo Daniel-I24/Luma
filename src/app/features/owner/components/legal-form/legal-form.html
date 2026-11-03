@@ -8,6 +8,7 @@
   <h2 id="legal-title" class="m-0 text-title text-fg">
     {{ t('owner.verificationPage.legalTitle') }}
   </h2>
+  <app-draft-notice [draft]="autosave" />
   <app-luma-input
     inputId="legal-tax-id"
     inputMode="numeric"
@@ -22,6 +23,7 @@
   />
   <app-luma-input
     inputId="legal-name"
+    [placeholder]="t('placeholders.legalName')"
     [label]="t('verification.legal.legalName')"
     [required]="true"
     [maxLength]="150"
@@ -32,6 +34,7 @@
   />
   <app-luma-input
     inputId="legal-rep"
+    [placeholder]="t('placeholders.fullName')"
     [label]="t('verification.legal.legalRep')"
     [required]="true"
     [maxLength]="120"

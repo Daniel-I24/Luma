@@ -1,3 +1,4 @@
+import { unsavedChangesGuard } from '@shared/forms/unsaved-changes.guard';
 import type { Routes } from '@angular/router';
 import { DETAIL_ROUTE_DATA } from '@core/navigation/route-transition';
 import { ownerLandingGuard } from './owner.guards';
@@ -15,6 +16,7 @@ export const ownerRoutes: Routes = [
       { path: '', pathMatch: 'full', canActivate: [ownerLandingGuard], children: [] },
       {
         path: 'new',
+        canDeactivate: [unsavedChangesGuard],
         data: DETAIL_ROUTE_DATA,
         loadComponent: () =>
           import('./pages/register-business/register-business.page').then(
@@ -44,6 +46,7 @@ export const ownerRoutes: Routes = [
           },
           {
             path: 'menu',
+            canDeactivate: [unsavedChangesGuard],
             loadComponent: () =>
               import('./pages/business-menu/business-menu.page').then((m) => m.BusinessMenuPage),
           },
@@ -55,6 +58,7 @@ export const ownerRoutes: Routes = [
           },
           {
             path: 'promotions',
+            canDeactivate: [unsavedChangesGuard],
             loadComponent: () =>
               import('./pages/business-promotions/business-promotions.page').then(
                 (m) => m.BusinessPromotionsPage,
@@ -67,6 +71,7 @@ export const ownerRoutes: Routes = [
           },
           {
             path: 'business/info',
+            canDeactivate: [unsavedChangesGuard],
             data: DETAIL_ROUTE_DATA,
             loadComponent: () =>
               import('./pages/business-info/business-info.page').then((m) => m.BusinessInfoPage),
@@ -95,6 +100,7 @@ export const ownerRoutes: Routes = [
           },
           {
             path: 'business/verification',
+            canDeactivate: [unsavedChangesGuard],
             data: DETAIL_ROUTE_DATA,
             loadComponent: () =>
               import('./pages/business-verification/business-verification.page').then(

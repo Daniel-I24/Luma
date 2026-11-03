@@ -20,10 +20,4 @@ describe('order detail helpers', () => {
     ]);
     expect(OrderDetailView.timelineSteps('cancelled').every((s) => s.state === 'upcoming')).toBe(true);
   });
-
-  it('links to directions with the business coordinates', () => {
-    expect(OrderDetailView.directionsUrl({ latitude: 1.2136, longitude: -77.2811 })).toBe(
-      'https://www.google.com/maps/dir/?api=1&destination=1.2136%2C-77.2811',
-    );
-  });
 });

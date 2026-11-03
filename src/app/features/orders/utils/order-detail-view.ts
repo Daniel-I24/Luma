@@ -1,7 +1,6 @@
-import { ORDER_PROGRESS, type OrderBusiness, type OrderStatus } from '@shared/orders/order.model';
-import { ExternalUrls } from '@core/config/external-urls';
+import { ORDER_PROGRESS, type OrderStatus } from '@shared/orders/order.model';
 
-/** OrderDetailView — timeline, estimate and directions of an order. */
+/** OrderDetailView — timeline and estimate of an order. */
 export class OrderDetailView {
   /** The estimate only matters while the order is still being prepared. */
   public static showsEstimate(status: OrderStatus): boolean {
@@ -22,12 +21,6 @@ export class OrderDetailView {
               ? 'current'
               : 'upcoming',
     }));
-  }
-
-  /** Directions to the business in the user's maps app. */
-  public static directionsUrl(business: Pick<OrderBusiness, 'latitude' | 'longitude'>): string {
-    const destination = `${business.latitude},${business.longitude}`;
-    return ExternalUrls.directions(destination);
   }
 }
 

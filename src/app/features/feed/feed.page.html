@@ -42,6 +42,7 @@
       @for (card of store.cards(); track card.id; let i = $index) {
       <app-feed-card
         class="h-full snap-start snap-always"
+        [attr.data-tour]="i === 0 ? 'feed-card' : null"
         [card]="card"
         [position]="i + 1"
         [setSize]="store.hasMore() ? -1 : store.cards().length"
@@ -71,7 +72,9 @@
         aria-hidden="true"
         >{{ t('feed.position', { current: current() + 1, total: store.cards().length }) }}</span
       >
+      <app-tour-help-button class="rounded-full bg-surface-elevated shadow-md" id="discover" />
       <app-luma-icon-button
+        data-tour="feed-actions"
         icon="chevron-up"
         [label]="t('feed.previous')"
         [disabled]="current() === 0"

@@ -31,6 +31,22 @@ describe('AppErrorHandler', () => {
     handler.handleError(new Error('later'));
     expect(toast.show).toHaveBeenCalledTimes(2);
   });
+
+  it('writes the real error to the console in development only', () => {
+    const log = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const handler = TestBed.inject(AppErrorHandler);
+    const dev = vi.spyOn(handler as unknown as { devMode(): boolean }, 'devMode');
+    const error = new Error('Capacitor plugin not implemented on web');
+
+    dev.mockReturnValue(true);
+    handler.handleError(error);
+    expect(log).toHaveBeenCalledWith('[Luma] unhandled error', error);
+
+    log.mockClear();
+    dev.mockReturnValue(false);
+    handler.handleError(error);
+    expect(log).not.toHaveBeenCalled();
+  });
 });
 
 describe('ConnectionNotice', () => {

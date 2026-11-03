@@ -12,11 +12,12 @@ import {
   type TabItem,
 } from '@design-system';
 import { DateFormat } from '@shared/format/date-format';
+import { ContactQueue } from '../../components/contact-queue/contact-queue';
 import { AdminQueueStore } from '../../state/admin-queue.store';
 
 type QueueTab = 'pending' | 'reports';
 
-/** AdminQueuePage — /admin: businesses waiting for review and open reports. */
+/** AdminQueuePage — /admin: businesses waiting for review, open reports and contacts to verify. */
 @Component({
   selector: 'app-admin-queue-page',
   standalone: true,
@@ -29,6 +30,7 @@ type QueueTab = 'pending' | 'reports';
     LumaIconButton,
     LumaSkeleton,
     LumaTabs,
+    ContactQueue,
   ],
   providers: [AdminQueueStore],
   templateUrl: './admin-queue.page.html',

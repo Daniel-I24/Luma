@@ -11,7 +11,6 @@ export interface AccountProfile {
   readonly displayName: string | null;
   readonly fullName: string | null;
   readonly phone: Phone | null;
-  readonly onboardingSeenVersion: number;
   /** Department and municipality of residence; create_order needs it. */
   readonly residence?: Residence | null;
   /** Private avatars object, or null. */
@@ -32,7 +31,6 @@ interface ProfileRow {
   display_name: string | null;
   full_name: string | null;
   phone: string | null;
-  onboarding_seen_version: number;
   residence_department: string | null;
   residence_city: string | null;
   residence_dane_code: string | null;
@@ -48,8 +46,6 @@ export abstract class AccountProfileRepository {
   public abstract getMine(userId: string): Promise<RepoResult<AccountProfile>>;
   /** customer → business_owner (one way); resolves to the resulting type. */
   public abstract becomeBusinessOwner(): Promise<RepoResult<AccountType>>;
-  /** Records that the user saw the tutorial version. */
-  public abstract setOnboardingSeen(userId: string, version: number): Promise<RepoResult<true>>;
   /** Name, mobile and residence (column grants; the server checks every value again). */
   public abstract saveDetails(userId: string, details: ProfileDetails): Promise<RepoResult<true>>;
   /** Shows or hides the user's photo to businesses. */
@@ -70,7 +66,7 @@ class SupabaseAccountProfileRepository extends AccountProfileRepository {
   public async getMine(userId: string): Promise<RepoResult<AccountProfile>> {
     const { data, error } = await this.db
       .from('profiles')
-      .select('account_type, display_name, full_name, phone, onboarding_seen_version, residence_department, residence_city, residence_dane_code, residence_neighborhood, avatar_path, show_avatar_to_business')
+      .select('account_type, display_name, full_name, phone, residence_department, residence_city, residence_dane_code, residence_neighborhood, avatar_path, show_avatar_to_business')
       .eq('id', userId)
       .maybeSingle();
     if (error && OUTDATED_SCHEMA_CODES.has(error.code)) return { data: null, errorKey: 'accountError.outdated' };
@@ -82,7 +78,6 @@ class SupabaseAccountProfileRepository extends AccountProfileRepository {
         displayName: row.display_name,
         fullName: row.full_name,
         phone: Phone.parse(row.phone),
-        onboardingSeenVersion: row.onboarding_seen_version ?? 0,
         residence: Residence.of(row.residence_department, row.residence_city, row.residence_dane_code,
           row.residence_neighborhood),
         avatarPath: row.avatar_path,
@@ -100,16 +95,6 @@ class SupabaseAccountProfileRepository extends AccountProfileRepository {
       return { data: null, errorKey: key };
     }
     return { data: AccountType.parse(data), errorKey: null };
-  }
-
-  /** @inheritdoc */
-  public async setOnboardingSeen(userId: string, version: number): Promise<RepoResult<true>> {
-    const { error } = await this.db
-      .from('profiles')
-      .update({ onboarding_seen_version: version })
-      .eq('id', userId);
-    if (error) return { data: null, errorKey: 'profile.errors.save' };
-    return { data: true, errorKey: null };
   }
 
   /** @inheritdoc */

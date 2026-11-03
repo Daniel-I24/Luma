@@ -17,6 +17,7 @@
       <label class="text-label-lg text-fg" for="report-comment">{{ t('reports.comment') }}</label>
       <textarea
         id="report-comment"
+        [placeholder]="t('placeholders.reportComment')"
         rows="3"
         class="w-full resize-y rounded-md border border-border bg-surface p-3 text-body text-fg focus-visible:outline-2 focus-visible:outline-border-focus"
         [attr.maxlength]="commentMax"

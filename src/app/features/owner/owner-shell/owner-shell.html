@@ -6,10 +6,14 @@
       <app-luma-icon name="store" class="text-fg-brand" />
       {{ t('owner.brand') }}
     </p>
+    @if (tourId(); as tour) {
+    <app-tour-help-button [id]="tour" />
+    }
     @if (location() && (context.businesses()?.length ?? 0) > 1) {
     <label class="sr-only" for="owner-business-switch">{{ t('owner.switchLabel') }}</label>
     <select
       id="owner-business-switch"
+      aria-describedby="business-count"
       class="min-h-11 max-w-44 truncate rounded-md border border-border bg-surface px-2 text-body-sm text-fg focus-visible:outline-2 focus-visible:outline-border-focus"
       [value]="location()!.id"
       (change)="switchTo($event)"
@@ -20,7 +24,11 @@
       </option>
       }
     </select>
-    } @if (location()) { @if (context.canAddMore()) {
+    } @if (location()) {
+    <span id="business-count" class="text-caption text-fg-muted" data-testid="business-count">
+      {{ t('owner.businessCount', { count: context.count(), max: context.max }) }}
+    </span>
+    @if (context.canAddMore()) {
     <a
       class="inline-flex min-h-11 items-center gap-1 rounded-md px-2 text-body-sm font-semibold text-fg-brand"
       [routerLink]="registerLink"
@@ -30,7 +38,17 @@
       <span class="hidden xs:inline">{{ t('owner.addBusinessShort') }}</span>
     </a>
     } @else {
-    <span class="text-caption text-fg-muted">{{ t('owner.limitReached', { max: 3 }) }}</span>
+    <span
+      class="inline-flex min-h-11 items-center gap-1 rounded-md px-2 text-body-sm font-semibold text-fg-subtle"
+      aria-disabled="true"
+      aria-describedby="owner-limit-reason"
+    >
+      <app-luma-icon name="plus" size="sm" />
+      <span class="hidden xs:inline">{{ t('owner.addBusinessShort') }}</span>
+    </span>
+    <p id="owner-limit-reason" class="m-0 w-full text-caption text-fg-muted">
+      {{ t('owner.limitReached', { max: context.max }) }}
+    </p>
     } }
   </header>
 

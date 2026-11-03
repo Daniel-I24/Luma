@@ -62,7 +62,7 @@
           t('map.sheet.viewRestaurant')
         }}</app-luma-button>
         <app-favorite-button [businessId]="it.business.id" />
-        @if (it.business.phone; as phone) {
+        @if (it.business.phone_verified_at && it.business.phone; as phone) {
           <app-luma-icon-button
             icon="phone"
             variant="ghost"

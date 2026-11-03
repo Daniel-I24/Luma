@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { TourHelpButton } from '@shared/tutorial/tour-help-button';
 import { TranslocoModule } from '@jsverse/transloco';
 import {
   LumaButton,
@@ -28,6 +29,7 @@ import type { PickupOption } from './utils/pickup-time';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    TourHelpButton,
     TranslocoModule,
     RouterLink,
     LumaButton,

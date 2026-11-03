@@ -119,8 +119,10 @@
       "unknown": "Ocurrió un error inesperado. Intenta de nuevo.",
       "deleteAccountFailed": "No se pudo eliminar la cuenta. Intenta de nuevo.",
       "sessionExpired": "Tu sesión expiró. Inicia sesión de nuevo e intenta otra vez.",
-      "reauthRequired": "Por seguridad, cierra sesión, vuelve a entrar y elimina la cuenta en los 10 minutos siguientes.",
-      "codeInvalid": "El código es incorrecto o ya caducó. Revísalo o pide uno nuevo."
+      "reauthRequired": "El código ya no es válido para eliminar la cuenta. Pide uno nuevo y úsalo en los 10 minutos siguientes.",
+      "codeInvalid": "El código es incorrecto o ya caducó. Revísalo o pide uno nuevo.",
+      "deleteAccountUnavailable": "La eliminación de cuentas no está disponible en este momento. Escríbenos desde Ayuda y la haremos por ti.",
+      "deleteAccountServer": "El servidor no pudo eliminar la cuenta. Tus datos siguen intactos; intenta de nuevo en unos minutos."
     },
     "verify": {
       "title": "Escribe tu código",
@@ -219,8 +221,15 @@
         "businesses": "Los negocios que administras, con su menú, horarios, promociones y reseñas"
       },
       "irreversible": "Esta acción no se puede deshacer.",
-      "confirm": "Sí, eliminar mi cuenta",
-      "cancel": "Cancelar"
+      "confirm": "Eliminar mi cuenta para siempre",
+      "cancel": "Cancelar",
+      "codeIntro": "Para confirmar que eres tú, te enviaremos un código de 6 dígitos a {{email}}.",
+      "sendCode": "Enviar código para eliminar",
+      "codeSent": "Te enviamos un código a {{email}}. Escríbelo para eliminar tu cuenta.",
+      "codeLabel": "Código del correo",
+      "codePlaceholder": "Ej.: 123456",
+      "codeHint": "Caduca en 10 minutos. Revisa también la carpeta de spam.",
+      "resend": "Enviar otro código"
     },
     "errors": {
       "signOut": "No se pudo cerrar la sesión. Intenta de nuevo.",
@@ -290,7 +299,9 @@
       "tutorial": "Ver el tutorial",
       "terms": "Términos y condiciones",
       "privacy": "Política de privacidad",
-      "refunds": "Política de reembolsos"
+      "refunds": "Política de reembolsos",
+      "allTutorials": "Ver todos los tutoriales",
+      "allTutorialsReset": "Listo: cada pantalla volverá a mostrar su guía."
     },
     "ownerAppHint": "Gestiona tus negocios, pedidos y promociones."
   },
@@ -400,7 +411,8 @@
       "reviewsFailed": "No se pudieron cargar las reseñas.",
       "reviewSaveFailed": "No se pudo guardar tu reseña. Intenta de nuevo.",
       "reviewDeleteFailed": "No se pudo borrar tu reseña. Intenta de nuevo."
-    }
+    },
+    "ownerNotice": "Este es tu negocio: así lo ven tus clientes. No puedes pedir en tu propio negocio."
   },
   "tabBar": {
     "label": "Navegación principal",
@@ -517,7 +529,6 @@
       "timeline": "Estado del pedido",
       "readyAround": "Listo aprox. a las {{time}}",
       "pickupAt": "Para recoger a las {{time}}",
-      "directions": "Cómo llegar",
       "items": "Tu pedido",
       "notes": "Notas: {{notes}}",
       "cancelled": "Este pedido fue cancelado.",
@@ -554,11 +565,14 @@
       "phoneNotVerified": "Verifica tu número de celular para hacer pedidos.",
       "businessPaused": "Este negocio pausó los pedidos por un momento. Inténtalo más tarde.",
       "accountRestricted": "Por pedidos que no se recogieron, por ahora solo puedes pagar en línea.",
-      "trustPendingLimit": "Ya tienes un pedido para pagar al recoger. Recógelo o paga este en línea.",
+      "trustPendingLimit": "Ya tienes un pedido para pagar al recoger. Recógelo primero y luego podrás hacer otro.",
       "trustDailyLimit": "Llegaste al límite de pedidos de hoy para cuentas nuevas. Vuelve mañana.",
       "paymentsDisabled": "El pago en línea no está disponible ahora. Elige pagar al recoger.",
       "reasonRequired": "Elige el motivo de la cancelación.",
-      "noShowTooEarly": "Solo puedes marcar «No llegó» 15 minutos después de que el pedido esté listo."
+      "noShowTooEarly": "Solo puedes marcar «No llegó» 15 minutos después de que el pedido esté listo.",
+      "trustPendingLimitOnline": "Ya tienes un pedido para pagar al recoger. Recógelo o paga este en línea.",
+      "seePendingOrder": "Ver mi pedido pendiente",
+      "ownBusiness": "Este negocio es tuyo: no puedes pedir en tu propio negocio. Para probarlo, usa una cuenta de cliente."
     }
   },
   "reviews": {
@@ -633,7 +647,8 @@
         "instagram": "Instagram {{value}} (abre en otra pestaña)",
         "facebook": "Facebook {{value}} (abre en otra pestaña)",
         "website": "Sitio web {{value}} (abre en otra pestaña)"
-      }
+      },
+      "noVerifiedContact": "Este negocio aún no tiene contactos verificados. Puedes pedir desde la app."
     },
     "notFound": {
       "title": "Negocio no encontrado",
@@ -646,6 +661,21 @@
     "photos": {
       "title": "Fotos del lugar",
       "photo": "Foto {{n}} de {{name}}"
+    },
+    "trust": {
+      "title": "Ficha de confianza",
+      "verifiedSince": "Verificado por Luma desde el {{date}}",
+      "contacts": "Contactos verificados:",
+      "noContacts": "ninguno todavía",
+      "orders": {
+        "0": "Aún sin pedidos completados en Luma",
+        "1_10": "Entre 1 y 10 pedidos completados",
+        "11_50": "Entre 11 y 50 pedidos completados",
+        "51_200": "Entre 51 y 200 pedidos completados",
+        "200_plus": "Más de 200 pedidos completados"
+      },
+      "months": "En Luma desde hace {{count}} meses",
+      "loadFailed": "No se pudo cargar la ficha de confianza."
     }
   },
   "cart": {
@@ -852,8 +882,6 @@
       "priceHint": "Pesos enteros, sin decimales.",
       "section": "Sección (opcional)",
       "sectionPlaceholder": "Ej.: Bebidas",
-      "sortOrder": "Orden",
-      "sortOrderHint": "Los números menores aparecen primero.",
       "isAvailable": "Disponible para pedir",
       "save": "Guardar producto",
       "cancel": "Cancelar",
@@ -861,7 +889,12 @@
       "deleteDescription": "«{{name}}» se quitará del menú. Los pedidos anteriores lo conservan.",
       "deleteConfirm": "Sí, eliminar",
       "saved": "Producto guardado",
-      "deleted": "Producto eliminado"
+      "deleted": "Producto eliminado",
+      "moveUp": "Subir {{name}}",
+      "moveDown": "Bajar {{name}}",
+      "namePlaceholder": "Ej.: Hamburguesa clásica",
+      "pricePlaceholder": "Ej.: 15000",
+      "soldOutHint": "Agotado oculta el producto a los clientes hasta que lo vuelvas a marcar disponible."
     },
     "promotions": {
       "title": "Promociones",
@@ -1094,6 +1127,12 @@
         "rejected": "Tu negocio necesita cambios: revisa las notas",
         "suspended": "Tu negocio fue suspendido: revisa las notas",
         "unknown": "La revisión de tu negocio cambió"
+      },
+      "test": "Notificación de prueba de Luma: todo funciona.",
+      "contactVerification": {
+        "approved": "Verificamos uno de los contactos de tu negocio: ya lo ven tus clientes.",
+        "rejected": "No pudimos verificar un contacto de tu negocio. Revisa los pasos y pide otro código.",
+        "unknown": "La verificación de un contacto de tu negocio cambió"
       }
     },
     "errors": {
@@ -1263,6 +1302,15 @@
         "load": "No se pudieron cargar las operaciones.",
         "failed": "La acción no se pudo completar."
       }
+    },
+    "contacts": {
+      "title": "Contactos por verificar ({{count}})",
+      "code": "Código esperado:",
+      "open": "Abrir dónde debe estar el código",
+      "checkChat": "Compruébalo en el chat de WhatsApp de soporte: el código debe llegar desde ese número.",
+      "verify": "Verificar",
+      "reject": "Rechazar",
+      "empty": "No hay contactos por verificar."
     }
   },
   "reports": {
@@ -1425,7 +1473,6 @@
     "skip": "Omitir",
     "next": "Siguiente",
     "start": "Empezar",
-    "saveFailed": "No pudimos guardar que viste el tutorial; puede volver a aparecer.",
     "customer": {
       "discover": {
         "title": "Descubre en el mapa",
@@ -1468,7 +1515,7 @@
     "switchLabel": "Negocio que estás viendo",
     "addBusiness": "Añadir otro negocio",
     "addBusinessShort": "Añadir",
-    "limitReached": "Máximo {{max}} negocios",
+    "limitReached": "Llegaste al máximo de {{max}} negocios por cuenta. Para añadir otro, despublica y cierra uno desde Mi negocio o escríbenos.",
     "backFromCustomerView": "Estás viendo Luma como cliente · Volver a Luma Negocios",
     "tabs": {
       "label": "Secciones de Luma Negocios",
@@ -1477,9 +1524,6 @@
       "menu": "Menú",
       "promotions": "Promos",
       "business": "Mi negocio"
-    },
-    "summary": {
-      "title": "Resumen"
     },
     "verification": {
       "title": "Verificación",
@@ -1522,7 +1566,16 @@
       "new": "Nuevos",
       "preparing": "En preparación",
       "ready": "Listos",
-      "sold": "Total vendido"
+      "sold": "Total vendido",
+      "orders": "Pedidos hoy",
+      "vsYesterday": "ayer: {{value}}",
+      "trend": {
+        "up": "más que ayer",
+        "down": "menos que ayer",
+        "same": "igual que ayer"
+      },
+      "pending": "Pendientes",
+      "pendingHint": "por atender"
     },
     "myBusiness": {
       "title": "Mi negocio",
@@ -1550,9 +1603,24 @@
       "required": "Obligatorio",
       "docsTitle": "Documentos",
       "docsHint": "Imagen (JPG, PNG o WebP) o PDF de hasta 5 MB. Nunca se muestran a los clientes.",
-      "upload": "Subir archivo",
       "deleteDoc": "Eliminar documento",
-      "docUploaded": "Documento subido."
+      "docUploaded": "Documento subido.",
+      "kindHint": {
+        "rut": "El RUT de la DIAN con el NIT del negocio (PDF o foto legible).",
+        "facade": "Una foto de la fachada donde se vea el aviso o el nombre del negocio.",
+        "other": "Opcional: cámara de comercio, permiso de funcionamiento u otro que ayude a la revisión."
+      },
+      "uploadKind": "Subir {{kind}}",
+      "uploadLocked": "Para subir o cambiar documentos, el negocio debe estar en borrador o con cambios solicitados.",
+      "approvedNotice": "Tu negocio está verificado. Los datos legales y documentos quedan bloqueados para proteger a tus clientes.",
+      "requestCorrection": "Solicitar corrección de datos legales",
+      "correctionTitle": "¿Corregir los datos legales?",
+      "correctionWarning": "Tu negocio dejará de ser visible para los clientes y no recibirá pedidos hasta que el equipo de Luma lo revise de nuevo. Podrás editar los datos legales y documentos y luego enviarlo a revisión.",
+      "correctionConfirm": "Sí, ocultar y corregir",
+      "correctionCancel": "Cancelar",
+      "correctionDone": "Listo: ya puedes corregir los datos legales. Envíalo a revisión cuando termines.",
+      "correctionFailed": "No se pudo solicitar la corrección. Intenta de nuevo.",
+      "ownerCorrectionNote": "Pediste corregir los datos legales. Cuando termines, envía el negocio a revisión."
     },
     "reReview": {
       "title": "¿Volver a revisión?",
@@ -1629,7 +1697,14 @@
       "quota": "Ya usaste los escaneos de hoy para este negocio. Vuelve mañana o agrega los productos a mano.",
       "tooBig": "Las fotos no se pudieron enviar (máximo 4, de 2 MB cada una). Intenta con menos fotos.",
       "unavailable": "Luma IA no pudo leer el menú ahora. Intenta más tarde o agrega los productos a mano.",
-      "rateLimited": "Enviaste muchos escaneos seguidos. Espera unos minutos e inténtalo de nuevo."
+      "rateLimited": "Enviaste muchos escaneos seguidos. Espera unos minutos e inténtalo de nuevo.",
+      "aiUnavailable": "Luma IA no está disponible ahora para leer fotos. Puedes pegar tu menú como texto: es gratis y llega a la misma revisión.",
+      "pasteTitle": "Pegar mi menú como texto",
+      "pasteHelp": "Una línea por producto con su precio al final. Las secciones van en MAYÚSCULAS o terminan con dos puntos.",
+      "pastePlaceholder": "Ej.:\nPLATOS FUERTES\nBandeja paisa ........ 28.000\nBEBIDAS:\nJugo natural - $6.500",
+      "pasteReview": "Revisar productos",
+      "entryAi": "Escanear mi menú con IA",
+      "entryHint": "Toma fotos de tu carta o pega el texto: creamos los productos por ti y tú los revisas."
     },
     "orderAlerts": {
       "new": "Tienes {{count}} pedido(s) nuevo(s). Revísalos en Pedidos."
@@ -1696,6 +1771,24 @@
       "farFromAddress": "El pin quedó lejos de la dirección que buscaste. Revisa que esté sobre la entrada del negocio.",
       "municipalityLegend": "Departamento y municipio",
       "municipalityPurpose": "Dónde está el negocio, según el DANE. Nos ayuda a mostrarlo a los clientes de la zona."
+    },
+    "businessCount": "{{count}} de {{max}} negocios",
+    "hero": {
+      "logo": "Logo de {{name}}",
+      "quickActions": "Accesos rápidos",
+      "actions": {
+        "product": "Producto",
+        "promotion": "Promoción",
+        "orders": "Pedidos",
+        "customerView": "Ver como cliente"
+      },
+      "status": {
+        "draft": "Borrador",
+        "pending": "En revisión",
+        "approved": "Verificado",
+        "rejected": "Cambios solicitados",
+        "suspended": "Suspendido"
+      }
     }
   },
   "promotions": {
@@ -1777,6 +1870,14 @@
     "errors": {
       "load": "No pudimos cargar tus preferencias de notificaciones.",
       "save": "No pudimos guardar el cambio. Intenta de nuevo."
+    },
+    "test": {
+      "send": "Enviar notificación de prueba",
+      "sending": "Enviando…",
+      "hint": "Llega a la lista de avisos y, si el teléfono tiene permiso, como notificación. Hasta 3 al día.",
+      "sent": "Listo: revisa tus avisos y tu teléfono.",
+      "limited": "Ya enviaste 3 notificaciones de prueba hoy.",
+      "failed": "No se pudo enviar la notificación de prueba."
     }
   },
   "account": {
@@ -1963,5 +2064,221 @@
     "errors": {
       "sendFailed": "No pudimos enviar el código. Intenta más tarde."
     }
+  },
+  "forms": {
+    "draft": {
+      "restored": "Recuperamos tu borrador: lo que escribiste antes sigue aquí. Guárdalo cuando esté listo.",
+      "discard": "Descartar borrador",
+      "leaveConfirm": "Tienes cambios sin guardar. Quedan como borrador en este dispositivo. ¿Salir de todos modos?"
+    }
+  },
+  "tours": {
+    "action": {
+      "tap": "Toca aquí",
+      "type": "Escribe aquí",
+      "look": "Mira aquí"
+    },
+    "position": "{{current}} de {{total}}",
+    "skip": "Saltar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "done": "Entendido",
+    "replay": "Ver la guía de esta pantalla",
+    "map": {
+      "search": {
+        "title": "Busca un lugar",
+        "body": "Escribe un barrio o una dirección, por ejemplo \"Parque Nariño\", y el mapa te lleva allí."
+      },
+      "filters": {
+        "title": "Filtra lo que buscas",
+        "body": "Elige una categoría o \"Abierto ahora\" para ver solo esos negocios."
+      },
+      "nearby": {
+        "title": "Negocios cerca de ti",
+        "body": "Aquí ves la lista del mapa; toca uno para ver su ficha, su menú y cómo llegar."
+      }
+    },
+    "discover": {
+      "card": {
+        "title": "Descubre deslizando",
+        "body": "Cada tarjeta es un negocio o una promoción; desliza hacia arriba para ver la siguiente."
+      },
+      "actions": {
+        "title": "Anterior y siguiente",
+        "body": "Si prefieres botones, usa estas flechas."
+      }
+    },
+    "orders": {
+      "list": {
+        "title": "Tus pedidos",
+        "body": "Aquí están todos tus pedidos; toca uno para ver su detalle y cómo llegar a recogerlo."
+      },
+      "status": {
+        "title": "Su estado",
+        "body": "Te avisamos cuando el negocio lo acepta y cuando está listo."
+      }
+    },
+    "ai": {
+      "moods": {
+        "title": "¿Qué se te antoja?",
+        "body": "Toca un momento del día y Luma IA te sugiere qué pedir cerca."
+      },
+      "results": {
+        "title": "Sugerencias",
+        "body": "Cada sugerencia dice por qué te la recomendamos; tócala para ver el negocio."
+      }
+    },
+    "profile": {
+      "name": {
+        "title": "Tu nombre visible",
+        "body": "Escribe cómo quieres que te vean en las reseñas, por ejemplo \"Ana P.\"."
+      },
+      "notifications": {
+        "title": "Notificaciones",
+        "body": "Revisa tus avisos y elige cuáles recibir."
+      },
+      "help": {
+        "title": "Ayuda y tutoriales",
+        "body": "Vuelve a ver el tutorial o todas las guías cuando quieras."
+      }
+    },
+    "checkout": {
+      "when": {
+        "title": "¿Cuándo lo recoges?",
+        "body": "Toca \"Lo antes posible\" o elige una hora."
+      },
+      "notes": {
+        "title": "Notas para el negocio",
+        "body": "Escribe un detalle, por ejemplo \"Sin cebolla, por favor\"."
+      },
+      "payment": {
+        "title": "Cómo pagas",
+        "body": "Elige pagar al recoger o pagar en línea."
+      }
+    },
+    "owner-summary": {
+      "stats": {
+        "title": "Tu día en cifras",
+        "body": "Pedidos de hoy, ventas y lo que está pendiente."
+      },
+      "publish": {
+        "title": "Visible para clientes",
+        "body": "Toca aquí para publicar u ocultar tu negocio."
+      },
+      "pause": {
+        "title": "Pausa los pedidos",
+        "body": "Si estás lleno, pausa los pedidos nuevos por un rato."
+      }
+    },
+    "owner-orders": {
+      "tabs": {
+        "title": "Pedidos por estado",
+        "body": "Toca una pestaña: nuevos, en preparación, listos o terminados."
+      },
+      "card": {
+        "title": "Atiende un pedido",
+        "body": "Toca Aceptar y luego Listo cuando el cliente pueda recogerlo."
+      }
+    },
+    "owner-menu": {
+      "scan": {
+        "title": "Tu menú en minutos",
+        "body": "Toca aquí para escanear tu menú con IA o pegarlo como texto."
+      },
+      "add": {
+        "title": "Añade un producto",
+        "body": "Toca aquí para crear un producto con nombre, precio y foto."
+      },
+      "item": {
+        "title": "Cambios rápidos",
+        "body": "Cambia el precio, marca agotado o muévelo sin abrir un formulario."
+      }
+    },
+    "owner-promotions": {
+      "add": {
+        "title": "Crea una promoción",
+        "body": "Toca aquí, escribe un título como \"2x1 en hamburguesas\" y elige las fechas."
+      },
+      "limit": {
+        "title": "Promociones activas",
+        "body": "Aquí ves cuántas tienes activas y cuántas más puedes crear."
+      }
+    },
+    "owner-business": {
+      "sections": {
+        "title": "Datos de tu negocio",
+        "body": "Toca una sección para editar datos, contacto, fotos, horario o verificación."
+      },
+      "appearance": {
+        "title": "Apariencia",
+        "body": "Elige el tema y el idioma de la app."
+      }
+    }
+  },
+  "contactVerification": {
+    "title": "Verificación de contactos",
+    "intro": "Los clientes solo ven los contactos que el equipo de Luma verificó. Es gratis y lo revisa una persona.",
+    "kind": {
+      "phone": "Teléfono",
+      "whatsapp": "WhatsApp",
+      "instagram": "Instagram",
+      "facebook": "Facebook",
+      "website": "Sitio web"
+    },
+    "verified": "Verificado",
+    "pendingBadge": "Pendiente de verificación",
+    "yourCode": "Tu código:",
+    "request": "Verificar este contacto",
+    "requesting": "Generando código…",
+    "openWhatsapp": "Enviar el código por WhatsApp",
+    "none": "Añade un teléfono, WhatsApp, Instagram, Facebook o sitio web para verificarlo.",
+    "steps": {
+      "message": "Desde el número {{value}}, envía el código {{code}} por WhatsApp al soporte de Luma.",
+      "noSupport": "El WhatsApp de soporte de Luma aún no está configurado (SUPPORT_WHATSAPP). Vuelve más tarde para verificar este número.",
+      "social": "Publica el código {{code}} en la biografía o en una publicación pública de esta cuenta. Cuando quede verificado puedes quitarlo.",
+      "website": "Publica un archivo en {{url}} que contenga {{code}}.",
+      "review": "Una persona del equipo lo revisa y te avisamos con una notificación."
+    },
+    "errors": {
+      "tooMany": "Ya pediste 3 verificaciones hoy para este negocio. Intenta mañana.",
+      "missing": "Guarda primero ese contacto.",
+      "changed": "El dueño cambió ese contacto después de pedir la verificación: no se puede verificar.",
+      "notPending": "Esa solicitud ya se revisó.",
+      "load": "No se pudieron cargar las verificaciones.",
+      "failed": "No se pudo completar la verificación. Intenta de nuevo."
+    }
+  },
+  "route": {
+    "title": "Cómo llegar",
+    "mode": "Cómo vas",
+    "walk": "Caminando",
+    "drive": "En carro",
+    "mapLabel": "Mapa con la ruta hasta {{name}}",
+    "summary": {
+      "walk": "{{km}} km · unos {{minutes}} min caminando",
+      "drive": "{{km}} km · unos {{minutes}} min en carro"
+    },
+    "estimate": "Estimado en línea recta: las calles pueden alargarlo.",
+    "locate": "Usar mi ubicación para ver la ruta",
+    "googleMaps": "Abrir en Google Maps"
+  },
+  "placeholders": {
+    "fullName": "Ej.: Ana María Pérez",
+    "mobile": "Ej.: 300 123 4567",
+    "code": "Ej.: 123456",
+    "email": "Ej.: ana@correo.com",
+    "percent": "Ej.: 20",
+    "legalName": "Ej.: Fritanga Don Segundo S.A.S.",
+    "productDescription": "Ej.: Carne de res, queso, lechuga y tomate",
+    "promoTitle": "Ej.: 2x1 en hamburguesas",
+    "promoDescription": "Ej.: Válida de lunes a jueves en el local",
+    "caption": "Ej.: Nuestra terraza",
+    "businessDescription": "Ej.: Comida típica nariñense desde 1998",
+    "prepMinutes": "Ej.: 20",
+    "neighborhood": "Ej.: San Felipe",
+    "sortHint": "Cambia el orden de las promociones.",
+    "minDiscountHint": "Muestra solo descuentos desde ese porcentaje.",
+    "reviewNote": "Ej.: Falta la foto de la fachada con el aviso",
+    "reportComment": "Ej.: El negocio ya no está en esta dirección"
   }
 }

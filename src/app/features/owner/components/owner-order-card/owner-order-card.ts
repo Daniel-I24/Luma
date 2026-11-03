@@ -9,6 +9,15 @@ import type { BusinessOrder } from '@shared/orders/business-order.repository';
 import { OrderStatusBadge } from '@shared/orders/order-status-badge';
 import { type OrderAction, OrderBoard } from '../../utils/order-board';
 
+const STATUS_STRIPE: Readonly<Record<string, string>> = {
+  pending: 'border-l-accent',
+  accepted: 'border-l-info',
+  preparing: 'border-l-info',
+  ready: 'border-l-success',
+  picked_up: 'border-l-border',
+  cancelled: 'border-l-danger',
+};
+
 /**
  * OwnerOrderCard — one order on the owner's board: customer label, times,
  * lines, the customer's notes (plain text, escaped by interpolation), total
@@ -32,6 +41,8 @@ export class OwnerOrderCard {
   public readonly action = output<OrderAction>();
 
   protected readonly actions = computed(() => OrderBoard.nextActions(this.order()));
+  /** The colour of its state on the left edge: new, in the kitchen, ready, closed. */
+  protected readonly stripe = computed(() => STATUS_STRIPE[this.order().status] ?? 'border-l-border');
   /** The customer's photo, only while serving them and if they share it (signed, 60 s). */
   protected readonly avatarUrl = signal<string | null>(null);
   private readonly avatars = inject(AvatarRepository);

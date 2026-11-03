@@ -3,10 +3,15 @@ import { AuthService } from '@core/auth/auth.service';
 import { ACCOUNT_ERROR_PATH, ACCOUNT_HOMES } from './account-homes';
 import { type AccountProfile, AccountProfileRepository, type ProfileDetails } from './account-profile.repository';
 import type { AccountType } from './account-type';
-import { ONBOARDING_PATH, ONBOARDING_VERSION, Onboarding } from './onboarding';
+import { ONBOARDING_PATH, WelcomeTutorial } from './onboarding';
 
 /** Same minimum as is_profile_complete() in the database. */
 const MIN_FULL_NAME = 3;
+/** Silent retries of the profile read before the error screen, with a short wait each. */
+const FIRST_RETRY_MS = 400;
+const SECOND_RETRY_MS = 1200;
+export const PROFILE_RETRY_DELAYS_MS = [FIRST_RETRY_MS, SECOND_RETRY_MS] as const;
+const wait = (ms: number): Promise<void> => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 /**
  * SessionProfileStore — the signed-in user's account profile next to the
@@ -19,12 +24,16 @@ const MIN_FULL_NAME = 3;
 export class SessionProfileStore {
   private readonly auth = inject(AuthService);
   private readonly repo = inject(AccountProfileRepository);
+  private readonly welcome = inject(WelcomeTutorial);
 
   private readonly _profile = signal<AccountProfile | null>(null);
   private readonly _loaded = signal(false);
   private readonly _failed = signal(false);
   private readonly _failureKey = signal<string | null>(null);
   private loading: Promise<void> | null = null;
+  private loadingFor: string | null = null;
+  /** The user whose profile _loaded refers to (undefined: none read yet). */
+  private loadedFor: string | null | undefined = undefined;
 
   public readonly profile = this._profile.asReadonly();
   /** Null while unknown (signed out or still loading). */
@@ -51,7 +60,10 @@ export class SessionProfileStore {
   /** Resolves once the profile of the current user has been read (or failed). */
   public async whenLoaded(): Promise<void> {
     await this.auth.ready;
-    if (!this._loaded()) await (this.loading ?? this.reload(this.auth.user()?.id ?? null));
+    const userId = this.auth.user()?.id ?? null;
+    // Right after signing in, the effect may not have reloaded yet: _loaded still refers to "nobody".
+    if (this.loadedFor !== userId) await this.reload(userId);
+    else if (!this._loaded()) await (this.loading ?? this.reload(userId));
   }
 
   /** Where the current account lands: /map for customers, the panel for owners. */
@@ -67,20 +79,10 @@ export class SessionProfileStore {
     return !this._failed();
   }
 
-  /** Where to go right after signing in: the tutorial once per version, then home. */
+  /** Where to go right after signing in: the tutorial the first time on this device, then home. */
   public async landingPath(): Promise<string> {
     const home = await this.homePath();
-    return Onboarding.needsOnboarding(this._profile()) ? ONBOARDING_PATH : home;
-  }
-
-  /** Records that the tutorial was seen (or skipped); false when it could not be saved. */
-  public async markOnboardingSeen(): Promise<boolean> {
-    const userId = this.auth.user()?.id;
-    if (!userId) return false;
-    const result = await this.repo.setOnboardingSeen(userId, ONBOARDING_VERSION);
-    if (!result.data) return false;
-    this._profile.update((p) => (p ? { ...p, onboardingSeenVersion: ONBOARDING_VERSION } : p));
-    return true;
+    return home !== ACCOUNT_ERROR_PATH && this.welcome.needed() ? ONBOARDING_PATH : home;
   }
 
   /** Saves name, mobile and residence; resolves to an error key, or null when saved. */
@@ -102,22 +104,41 @@ export class SessionProfileStore {
     return this.isBusinessOwner();
   }
 
-  /** Reloads the profile of a user (null clears it). */
+  /** Reloads the profile of a user (null clears it); a read that fails is retried twice, silently. */
   public reload(userId: string | null): Promise<void> {
     if (!userId) {
+      this.loadedFor = null;
+      this.loading = null;
       this._profile.set(null);
       this._failed.set(false);
       this._loaded.set(true);
       return Promise.resolve();
     }
+    if (this.loading && this.loadingFor === userId) return this.loading;
     this._loaded.set(false);
-    this.loading = this.repo.getMine(userId).then((result) => {
+    this.loadingFor = userId;
+    const loading = this.readWithRetries(userId).then((result) => {
+      // A newer reload (another user) owns the state now.
+      if (this.loading !== loading) return;
+      this.loadedFor = userId;
       this._profile.set(result.data);
       this._failed.set(result.data === null);
       this._failureKey.set(result.data === null ? result.errorKey : null);
       this._loaded.set(true);
       this.loading = null;
     });
-    return this.loading;
+    this.loading = loading;
+    return loading;
+  }
+
+  private async readWithRetries(userId: string): ReturnType<AccountProfileRepository['getMine']> {
+    let result = await this.repo.getMine(userId);
+    for (const delay of PROFILE_RETRY_DELAYS_MS) {
+      // An outdated database will not fix itself in a second.
+      if (result.data || result.errorKey === 'accountError.outdated') break;
+      await wait(delay);
+      result = await this.repo.getMine(userId);
+    }
+    return result;
   }
 }

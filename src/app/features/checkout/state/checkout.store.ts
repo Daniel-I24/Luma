@@ -11,6 +11,8 @@ import { PickupScheduleStore } from './pickup-schedule.store';
 import { Residence } from '@shared/geo/residence';
 
 export const NOTES_MAX_LENGTH = 200;
+const TRUST_PENDING_KEY = 'orders.errors.trustPendingLimit';
+const OPEN_STATUSES: readonly string[] = ['pending', 'accepted', 'preparing', 'ready'];
 
 /**
  * CheckoutStore — the order being confirmed: notes, the pick-up chosen in
@@ -47,6 +49,8 @@ export class CheckoutStore {
   public readonly paymentLabelKey = computed(() => this.gateways.for(this.method()).labelKey);
   /** The business is in another department than the customer's residence (a heads-up, not a rule). */
   public readonly otherDepartment = signal(false);
+  /** The pay-at-pickup order that blocks a new one (trust limit), to link to it. */
+  public readonly blockingOrderId = signal<string | null>(null);
 
   constructor() {
     void this.payments.config().then((config) => {
@@ -100,7 +104,7 @@ export class CheckoutStore {
       paymentMethod: method,
     });
     if (!result.data) {
-      this._errorKey.set(result.errorKey ?? 'orders.errors.createFailed');
+      await this.explain(result.errorKey ?? 'orders.errors.createFailed');
       return;
     }
     this.cart.clear();
@@ -108,5 +112,18 @@ export class CheckoutStore {
     // Online: the order screen shows the payment state and "Reintentar pago" if opening failed.
     await this.gateways.for(method).start(result.data);
     await this.router.navigate(['/orders', result.data]);
+  }
+
+  /** The trust limit only mentions paying online when payments are on, and links to the order to pick up. */
+  private async explain(errorKey: string): Promise<void> {
+    this.blockingOrderId.set(null);
+    if (errorKey !== TRUST_PENDING_KEY) {
+      this._errorKey.set(errorKey);
+      return;
+    }
+    this._errorKey.set(this.onlineAvailable() ? 'orders.errors.trustPendingLimitOnline' : TRUST_PENDING_KEY);
+    const mine = await this.orders.list();
+    const open = mine.data?.find((o) => o.payment_method === 'pay_at_pickup' && OPEN_STATUSES.includes(o.status));
+    this.blockingOrderId.set(open?.id ?? null);
   }
 }

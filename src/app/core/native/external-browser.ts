@@ -21,7 +21,7 @@ class CapacitorExternalBrowser extends ExternalBrowser {
   /** @inheritdoc */
   public async open(url: string): Promise<void> {
     const { Capacitor } = await import('@capacitor/core');
-    if (Capacitor.isNativePlatform()) {
+    if (Capacitor.isNativePlatform() && Capacitor.isPluginAvailable('Browser')) {
       const { Browser } = await import('@capacitor/browser');
       await Browser.open({ url });
       return;

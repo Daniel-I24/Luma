@@ -556,3 +556,99 @@ alternative that was not taken. The safest, most reversible option wins.
 - **Why**: against the real project the old checks reported protected RPCs
   with required arguments and private buckets as missing.
 - **Alternative**: a service-role check (would need a secret on the PC).
+
+## 2026-10-28 — Round 5: one migration (52) and its choices
+
+- **What**: everything of round 5 that touches the database is in
+  `20261102000000_round5.sql`, not applied. Same signatures and grants for
+  `create_order`; new objects revoked from anon.
+- **Why**: the brief asks for one reviewable migration.
+
+## 2026-10-28 — A1: the owner list is filtered twice and keyed by user
+
+- **What**: `listMine` filters `owner_id = me` and drops any row of another
+  owner; every panel write also adds `owner_id = me`; `OwnerContextStore`
+  remembers whose list it holds and reloads for another account.
+- **Why**: the code already filtered, so the 5-business list could not be
+  reproduced without the real project. The most likely cause is a list kept
+  in memory when another account signed in without a SIGNED_OUT event; the
+  extra filter costs nothing. Recorded as not reproduced.
+
+## 2026-10-28 — A2/A3: the real causes found in code
+
+- **What**: `SessionProfileStore.whenLoaded()` returned at once right after
+  sign-in because `_loaded` still described "nobody": the guard saw no
+  account type and sent the user to "no puedes ingresar". It now tracks
+  whose profile is loaded, ignores stale reads and retries a failed read
+  twice (400 ms, 1.2 s). The welcome screen's buttons stayed disabled when
+  the navigation after "Omitir" threw (no `finally`). Every native plugin is
+  also guarded with `isPluginAvailable`, and `AppErrorHandler` prints the
+  real error in development only.
+- **Why**: the web failure itself could not be reproduced without the real
+  keys (src/environments may not be read); these were the paths that fit
+  both symptoms.
+
+## 2026-10-28 — B1: welcome per device, guides without a library
+
+- **What**: the welcome shows once per device (`luma.welcome.v1`), not per
+  account; the profile column `onboarding_seen_version` stays in the
+  database but the app no longer reads or writes it. Section guides are
+  our own (`GuidedTour`, `TourRegistry`, `GuidedTourOverlay`) without
+  @angular/cdk.
+- **Why**: adding the CDK (a new dependency) only for one positioned
+  overlay is more surface than ~120 lines of our own code; the overlay
+  measures the real control with `getBoundingClientRect`.
+- **Alternative**: CDK Overlay, if more overlays appear.
+
+## 2026-10-28 — A5: drafts on the device, wiped at sign-out
+
+- **What**: `FormDraftStore` keeps drafts per user and form for 14 days and
+  wipes them at sign-out and account deletion; the leave warning uses the
+  browser's own confirm.
+- **Why**: a shared phone must not keep someone's drafts; keeping them
+  across a deliberate sign-out is less safe than losing them.
+
+## 2026-10-28 — B4: "Agotado" hides the product
+
+- **What**: inline "Disponible / Agotado" toggles `is_available`; customers
+  do not see sold-out products (RLS), so "ocultar" and "agotado" are the
+  same state. The "Orden" field is gone; order changes with up/down and
+  drag (pointer events; keyboard and screen readers use up/down).
+- **Why**: a separate hidden flag needs RLS, `order_line_prices` and
+  `create_order` changes; not worth the risk in this round.
+
+## 2026-10-28 — B5: contact verification without cost
+
+- **What**: `contact_verifications` + `<kind>_verified_at` (no column grant
+  for owners, a trigger clears them when the value changes). Phones and
+  WhatsApp are checked in the support chat (`SUPPORT_WHATSAPP`, an
+  injection token, empty until configured); social profiles and websites by
+  the code published there. Customers see only verified contacts (app
+  level: the columns stay readable through the API as before).
+- **Why**: no SMS or paid API; the values were already public.
+
+## 2026-10-28 — B7: correction requested = "changes requested"
+
+- **What**: `request_legal_correction` moves an approved business to
+  `rejected` with the note `owner_correction` (shown translated), not to
+  `pending`.
+- **Why**: `pending` keeps the legal data locked (`owns_editable_business`)
+  and could be approved before the owner corrects anything; "changes
+  requested" hides the business, unlocks the data and needs a new submit.
+
+## 2026-10-28 — B8: OpenRouteService behind RoutingProvider
+
+- **What**: the `route` Edge Function uses OpenRouteService Directions V2
+  (HeiGIT docs, checked 2026-10-28: 2000 directions a day and 40 a minute by
+  default; the key must stay on the server). Without `ROUTE_API_KEY`, or
+  when it fails or the user's 60 a day are used, it answers a straight line
+  with distance and estimated time.
+- **Why**: free plan with a documented server-side key; the plans page
+  itself did not load, so the owner must confirm the plan and its terms
+  (commercial use) in the HeiGIT dashboard before enabling it.
+
+## 2026-10-28 — C2: Lucide copied as path data
+
+- **What**: every icon is Lucide 0.468.0 path data in the registry (ISC
+  licence in docs/brand/icons.md), no npm package; `luma-ai` stays ours.
+- **Why**: only ~40 icons are used; a package would add tooling for nothing.

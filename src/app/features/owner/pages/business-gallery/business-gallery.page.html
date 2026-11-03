@@ -49,6 +49,7 @@
             <input
               class="min-h-11 w-full rounded-md border border-border bg-surface px-3 text-body text-fg focus-visible:outline-2 focus-visible:outline-border-focus"
               [id]="'caption-' + photo.id"
+              [placeholder]="t('placeholders.caption')"
               [attr.maxlength]="maxCaption"
               [value]="photo.caption ?? ''"
               [disabled]="gallery.busy()"

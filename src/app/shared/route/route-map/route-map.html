@@ -1,0 +1,41 @@
+<section *transloco="let t" class="flex flex-col gap-2" aria-labelledby="route-title">
+  <h3 id="route-title" class="m-0 text-title text-fg">{{ t('route.title') }}</h3>
+  @if (located()) {
+  <div class="flex gap-2" role="group" [attr.aria-label]="t('route.mode')">
+    <app-luma-chip [toggleable]="false" [selected]="mode() === 'walk'" (selectedChange)="mode.set('walk')">{{ t('route.walk') }}</app-luma-chip>
+    <app-luma-chip [toggleable]="false" [selected]="mode() === 'drive'" (selectedChange)="mode.set('drive')">{{ t('route.drive') }}</app-luma-chip>
+  </div>
+  <div
+    #map
+    class="h-56 w-full overflow-hidden rounded-lg border border-border bg-map-canvas"
+    role="img"
+    [attr.aria-label]="t('route.mapLabel', { name: name() })"
+  ></div>
+  @if (route(); as r) {
+  <p class="m-0 text-body text-fg" aria-live="polite">
+    {{ t('route.summary.' + mode(), { km: km(), minutes: minutes() }) }}
+    @if (r.source === 'straight') {
+    <span class="block text-caption text-fg-muted">{{ t('route.estimate') }}</span>
+    }
+  </p>
+  } @if (failed()) {
+  <p class="m-0 text-caption text-fg-muted">{{ t('businessPanel.location.mapFailed') }}</p>
+  }
+  } @else {
+  <button
+    type="button"
+    class="pressable inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-primary px-4 text-body font-semibold text-primary-fg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+    (click)="locate()"
+  >
+    <app-luma-icon name="pin" size="sm" /> {{ t('route.locate') }}
+  </button>
+  }
+  <a
+    class="pressable inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-border px-4 text-body text-fg-brand no-underline focus-visible:outline-2 focus-visible:outline-border-focus"
+    target="_blank"
+    rel="noopener noreferrer"
+    [href]="googleMaps()"
+  >
+    <app-luma-icon name="map" size="sm" /> {{ t('route.googleMaps') }}
+  </a>
+</section>

@@ -47,4 +47,14 @@ export class NotificationPreferencesRepository {
     if (error) return { data: null, errorKey: 'notificationSettings.errors.save' };
     return { data: true, errorKey: null };
   }
+
+  /** send_test_notification: a test notice to this user (3 a day); push-dispatch pushes it to the phone. */
+  public async sendTest(): Promise<RepoResult<true>> {
+    const { error } = await this.db.rpc('send_test_notification');
+    if (error) {
+      const limited = error.message?.includes('rate_limited');
+      return { data: null, errorKey: limited ? 'notificationSettings.test.limited' : 'notificationSettings.test.failed' };
+    }
+    return { data: true, errorKey: null };
+  }
 }

@@ -8,6 +8,7 @@ import {
   untracked,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { NativeHaptics } from '@core/native/native-haptics';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import {
   TabIds,
@@ -56,6 +57,7 @@ export const BOARD_REFRESH_MS = 15_000;
 export class BusinessOrdersPage {
   protected readonly panel = inject(PanelBusinessStore);
   protected readonly board = inject(BusinessOrdersStore);
+  private readonly haptics = inject(NativeHaptics);
   private readonly toast = inject(ToastService);
   private readonly transloco = inject(TranslocoService);
   private readonly lang = toSignal(this.transloco.langChanges$, {
@@ -128,6 +130,8 @@ export class BusinessOrdersPage {
 
   private async apply(order: BusinessOrder, status: OrderAction['status'], reason: CancelReason | null = null): Promise<void> {
     if (await this.board.act(order, status, reason)) {
+      // Accepting or marking ready is felt, not only seen.
+      if (status !== 'cancelled') void this.haptics.tap();
       this.toast.show({ messageKey: 'businessOrders.updated', tone: 'success' });
     }
   }

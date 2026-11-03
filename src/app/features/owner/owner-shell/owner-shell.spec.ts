@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { AuthService } from '@core/auth/auth.service';
 import { UserDataRegistry } from '@core/auth/user-data-registry';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
 import { ownerLandingGuard } from '../owner.guards';
@@ -17,9 +18,11 @@ const business = (id: string) => ({ id, name: `Negocio ${id}`, category: 'Bar', 
 
 describe('OwnerShell and landing', () => {
   const repo = { listMine: vi.fn() };
+  const user = signal<{ id: string } | null>({ id: 'owner-1' });
 
   beforeEach(() => {
     vi.clearAllMocks();
+    user.set({ id: 'owner-1' });
     TestBed.configureTestingModule({
       imports: [
         TranslocoTestingModule.forRoot({
@@ -29,6 +32,7 @@ describe('OwnerShell and landing', () => {
       ],
       providers: [
         { provide: OwnedBusinessRepository, useValue: repo },
+        { provide: AuthService, useValue: { user } },
         provideRouter([
           {
             path: 'owner',
@@ -90,6 +94,40 @@ describe('OwnerShell and landing', () => {
     expect(TestBed.inject(Router).url).toBe('/owner/b/menu');
   });
 
+  it('shows the real count and keeps "Añadir" usable below the limit', async () => {
+    repo.listMine.mockResolvedValue({ data: [business('a')], errorKey: null });
+    const { harness, el } = await open('/owner/a/summary');
+    await vi.waitFor(() => {
+      harness.detectChanges();
+      expect(el.querySelector('[data-testid="business-count"]')).not.toBeNull();
+    });
+    expect(TestBed.inject(OwnerContextStore).count()).toBe(1);
+    expect(el.querySelector('a[href="/owner/new"]')).not.toBeNull();
+  });
+
+  it('never shows one owner the list of another owner of the same device', async () => {
+    const store = TestBed.inject(OwnerContextStore);
+    repo.listMine.mockResolvedValueOnce({ data: [business('a'), business('b')], errorKey: null });
+    await store.load();
+    user.set({ id: 'owner-2' });
+    expect(store.isStale()).toBe(true);
+    repo.listMine.mockResolvedValueOnce({ data: [business('z')], errorKey: null });
+    await store.load();
+
+    expect(store.businesses()?.map((b) => b.id)).toEqual(['z']);
+    expect(store.count()).toBe(1);
+  });
+
+  it('a failed read for a new owner never keeps the previous owner list', async () => {
+    const store = TestBed.inject(OwnerContextStore);
+    repo.listMine.mockResolvedValueOnce({ data: [business('a')], errorKey: null });
+    await store.load();
+    user.set({ id: 'owner-2' });
+    repo.listMine.mockResolvedValueOnce({ data: null, errorKey: 'businessPanel.errors.loadFailed' });
+
+    expect(await store.load()).toBeNull();
+  });
+
   it('hides "Añadir" at the limit of three businesses and forgets everything on sign-out', async () => {
     repo.listMine.mockResolvedValue({
       data: [business('a'), business('b'), business('c')],
@@ -101,6 +139,7 @@ describe('OwnerShell and landing', () => {
       expect(el.textContent).toContain('owner.limitReached');
     });
     expect(el.querySelector('a[href="/owner/new"]')).toBeNull();
+    expect(el.querySelector('[aria-disabled="true"][aria-describedby="owner-limit-reason"]')).not.toBeNull();
 
     TestBed.inject(UserDataRegistry).clearAll();
     expect(TestBed.inject(OwnerContextStore).businesses()).toBeNull();

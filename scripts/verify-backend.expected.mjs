@@ -56,11 +56,21 @@ export const EXPECTED = {
     // Migration 50 (phone verification): required.
     verified_auth_phone: {},
     sync_verified_phone: {},
+    // Migration 52 (round 5): reported apart while it is not applied.
+    request_contact_verification: { p_business_id: 'uuid', p_kind: 'text' },
+    admin_pending_contact_verifications: {},
+    admin_verify_contact: { p_verification_id: 'uuid', p_decision: 'text' },
+    business_trust_summary: { p_business_id: 'uuid' },
+    request_legal_correction: { p_business_id: 'uuid' },
+    send_test_notification: {},
   },
   /** RPCs that come from migration 50; reported as such. */
   migration50: ['verified_auth_phone', 'sync_verified_phone'],
+  /** RPCs of migration 52: "missing" is expected until it is applied (not a failure). */
+  migration52: ['request_contact_verification', 'admin_pending_contact_verifications', 'admin_verify_contact',
+    'business_trust_summary', 'request_legal_correction', 'send_test_notification'],
   functions: ['delete-account', 'recommend', 'suggest-promotions', 'extract-menu', 'geocode', 'push-dispatch',
-    'create-payment', 'wompi-webhook', 'reconcile-payments', 'void-payment'],
+    'create-payment', 'wompi-webhook', 'reconcile-payments', 'void-payment', 'route'],
   buckets: { 'business-images': 'public', 'verification-docs': 'private', avatars: 'private' },
 };
 

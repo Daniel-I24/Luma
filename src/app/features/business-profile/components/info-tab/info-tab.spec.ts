@@ -2,6 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { BusinessPhotoRepository } from '@shared/business/data/business-photo.repository';
+import { TrustSummaryRepository } from '@shared/business/data/trust-summary.repository';
+import { RouteRepository } from '@shared/route/route.repository';
 import type { Business, BusinessHours } from '@shared/business/models/business.model';
 import { InfoTab } from './info-tab';
 import { useFixedClock } from '../../../../../testing/fixed-clock';
@@ -20,7 +22,8 @@ const ES = {
   },
 };
 
-const business = { id: 'b1', phone: '+573001112233', address: 'Calle 19 # 22-40' } as Business;
+const VERIFIED = '2026-10-01T00:00:00Z';
+const business = { id: 'b1', phone: '+573001112233', phone_verified_at: VERIFIED, address: 'Calle 19 # 22-40', latitude: 1.21, longitude: -77.28 } as Business;
 const day = (d: BusinessHours['day_of_week'], closed = false): BusinessHours => ({
   id: `h${d}`,
   business_id: 'b1',
@@ -44,6 +47,8 @@ describe('InfoTab', () => {
       ],
       providers: [
         { provide: BusinessPhotoRepository, useValue: { list: vi.fn().mockResolvedValue({ data: [], errorKey: null }) } },
+        { provide: TrustSummaryRepository, useValue: { get: vi.fn().mockResolvedValue({ data: null, errorKey: null }) } },
+        { provide: RouteRepository, useValue: { route: vi.fn() } },
       ],
     });
   });
@@ -88,15 +93,27 @@ describe('InfoTab', () => {
     const el = render([], {
       ...business,
       whatsapp: '+573001234567',
+      whatsapp_verified_at: VERIFIED,
       instagram: 'cafe.publico',
+      instagram_verified_at: VERIFIED,
       facebook: null,
       website: 'javascript:alert(1)',
+      website_verified_at: VERIFIED,
     });
-    const external = Array.from(el.querySelectorAll('a[target="_blank"]'));
+    const external = Array.from(el.querySelectorAll('[aria-labelledby="info-contact"] a[target="_blank"]'));
     expect(external.map((a) => a.getAttribute('href'))).toEqual([
       'https://wa.me/573001234567',
       'https://instagram.com/cafe.publico',
     ]);
     expect(external.every((a) => a.getAttribute('rel') === 'noopener noreferrer')).toBe(true);
+  });
+
+  it('shows customers only the contacts the team verified, each with its badge', () => {
+    const el = render([], { ...business, phone_verified_at: null, whatsapp: '+573001234567', instagram: 'cafe.publico', instagram_verified_at: VERIFIED });
+
+    expect(el.querySelector('a[href^="tel:"]')).toBeNull();
+    expect(el.querySelector('a[href^="https://wa.me"]')).toBeNull();
+    const instagram = el.querySelector('a[href="https://instagram.com/cafe.publico"]');
+    expect(instagram?.textContent).toContain('contactVerification.verified');
   });
 });

@@ -1,5 +1,5 @@
 <ng-container *transloco="let t">
-  <form class="pointer-events-auto mx-4" role="search" (submit)="searchPlaces($event)">
+  <form class="pointer-events-auto mx-4" role="search" data-tour="map-search" (submit)="searchPlaces($event)">
     <app-luma-search-input
       inputId="map-search"
       [label]="t('map.search.label')"
@@ -37,5 +37,8 @@
     {{ t(zoneKey()) }}
   </p>
 
-  <app-map-filter-bar />
+  <div class="flex items-center gap-2 pe-4">
+    <app-map-filter-bar class="min-w-0 flex-1" data-tour="map-filters" />
+    <app-tour-help-button class="pointer-events-auto shrink-0 rounded-full bg-surface-elevated shadow-sm" id="map" />
+  </div>
 </ng-container>

@@ -1,16 +1,10 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  untracked,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, untracked } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { type IconName, LumaIcon } from '@design-system';
 import { AccountActions } from '@shared/account/account-actions/account-actions';
-import { ONBOARDING_PATH } from '@shared/account/onboarding';
+import { AppearanceSettings } from '@shared/appearance/appearance-settings/appearance-settings';
+import { TutorialSettings } from '@shared/tutorial/tutorial-settings';
 import { NotificationSettings } from '@shared/notifications/notification-settings/notification-settings';
 import { type OwnerBusinessScreen, ownerPaths } from '@shared/account/owner-paths';
 import { PanelHeader } from '../../components/panel-header/panel-header';
@@ -29,21 +23,16 @@ const SCREENS: readonly { screen: OwnerBusinessScreen; icon: IconName; key: stri
 
 /**
  * MyBusinessPage — /owner/:id/business ("Mi negocio"): the business data,
- * hours, legal data and documents, the customer view, the tutorial and the
- * account actions.
+ * hours, legal data and documents, the customer view, appearance (theme and
+ * language, shared with the Profile), the tutorials and the account actions.
  */
 @Component({
   selector: 'app-my-business-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    TranslocoModule,
-    RouterLink,
-    LumaIcon,
-    AccountActions,
-    NotificationSettings,
-    PanelHeader,
-    PanelStateView,
+    TranslocoModule, RouterLink, LumaIcon, AccountActions, AppearanceSettings, NotificationSettings, PanelHeader,
+    PanelStateView, TutorialSettings,
   ],
   providers: [PanelBusinessStore],
   templateUrl: './my-business.page.html',
@@ -53,7 +42,6 @@ export class MyBusinessPage {
   protected readonly panel = inject(PanelBusinessStore);
   protected readonly id = RouteBusinessId.routeBusinessId();
   protected readonly screens = SCREENS;
-  protected readonly tutorialPath = ONBOARDING_PATH;
   /** Legal data and documents can change only while draft or changes requested. */
   protected readonly docsEditable = computed(() => {
     const status = this.panel.business()?.verification_status;

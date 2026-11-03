@@ -4,7 +4,10 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaInput, ToastService } from '@design-system';
 import { type BusinessInfoInput, businessInfoSchema } from '@shared/business/data/business-write.schemas';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
+import { DraftNotice } from '@shared/forms/draft-notice/draft-notice';
+import { FormDraftStore } from '@shared/forms/form-draft.store';
 import { type FieldErrors, FormErrors } from '@shared/forms/form-errors';
+import type { HasUnsavedChanges } from '@shared/forms/unsaved-changes.guard';
 import { BusinessBasicsFields } from '../../components/business-basics-fields/business-basics-fields';
 import { BusinessImages } from '../../components/business-images/business-images';
 import { PanelHeader } from '../../components/panel-header/panel-header';
@@ -25,21 +28,14 @@ export const DESCRIPTION_MAX = 300;
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    SetupReturn,
-    TranslocoModule,
-    LumaButton,
-    LumaInput,
-    BusinessBasicsFields,
-    BusinessImages,
-    PanelHeader,
-    PanelStateView,
-    ReReviewSheet,
+    SetupReturn, TranslocoModule, LumaButton, LumaInput, BusinessBasicsFields, BusinessImages, PanelHeader,
+    PanelStateView, ReReviewSheet, DraftNotice,
   ],
   providers: [PanelBusinessStore],
   templateUrl: './business-info.page.html',
   host: { class: 'block' },
 })
-export class BusinessInfoPage {
+export class BusinessInfoPage implements HasUnsavedChanges {
   protected readonly panel = inject(PanelBusinessStore);
   private readonly repo = inject(OwnedBusinessRepository);
   private readonly toast = inject(ToastService);
@@ -56,6 +52,14 @@ export class BusinessInfoPage {
   protected readonly saving = signal(false);
   /** Values waiting for the owner to accept going back to review. */
   protected readonly pendingSave = signal<BusinessInfoInput | null>(null);
+  protected readonly autosave = inject(FormDraftStore).attachTo(
+    () => ({ basics: this.draft(), description: this.description(), prepMinutes: this.prepMinutes() }),
+    (value) => {
+      this.draft.set(value.basics);
+      this.description.set(value.description);
+      this.prepMinutes.set(value.prepMinutes);
+    },
+  );
 
   constructor() {
     effect(() => {
@@ -68,9 +72,16 @@ export class BusinessInfoPage {
     await this.panel.load(id);
     const business = this.panel.business();
     if (!business) return;
-    this.draft.set(BusinessDrafts.draftFrom(business));
-    this.description.set(business.description ?? '');
-    this.prepMinutes.set(String(business.prep_minutes));
+    this.autosave.load(`business-info.${business.id}`, {
+      basics: BusinessDrafts.draftFrom(business),
+      description: business.description ?? '',
+      prepMinutes: String(business.prep_minutes),
+    });
+  }
+
+  /** For the leave warning (unsavedChangesGuard). */
+  public hasUnsavedChanges(): boolean {
+    return this.autosave.dirty();
   }
 
   protected onDescription(event: Event): void {
@@ -122,6 +133,7 @@ export class BusinessInfoPage {
       this.errorKey.set(result.errorKey);
       return;
     }
+    this.autosave.saved();
     if (reReview) await this.load();
     else this.panel.patch(input);
     this.toast.show({

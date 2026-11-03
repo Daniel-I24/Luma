@@ -119,8 +119,10 @@
       "unknown": "An unexpected error occurred. Please try again.",
       "deleteAccountFailed": "Could not delete your account. Please try again.",
       "sessionExpired": "Your session has expired. Sign in again and retry.",
-      "reauthRequired": "For your security, sign out, sign back in and delete your account within 10 minutes.",
-      "codeInvalid": "The code is wrong or has expired. Check it or ask for a new one."
+      "reauthRequired": "The code is no longer valid to delete the account. Ask for a new one and use it within 10 minutes.",
+      "codeInvalid": "The code is wrong or has expired. Check it or ask for a new one.",
+      "deleteAccountUnavailable": "Account deletion is not available right now. Contact us from Help and we will do it for you.",
+      "deleteAccountServer": "The server could not delete the account. Your data is intact; try again in a few minutes."
     },
     "verify": {
       "title": "Enter your code",
@@ -219,8 +221,15 @@
         "businesses": "The businesses you manage, with their menu, hours, promotions and reviews"
       },
       "irreversible": "This action cannot be undone.",
-      "confirm": "Yes, delete my account",
-      "cancel": "Cancel"
+      "confirm": "Delete my account for good",
+      "cancel": "Cancel",
+      "codeIntro": "To confirm it is you, we will send a 6-digit code to {{email}}.",
+      "sendCode": "Send the code to delete",
+      "codeSent": "We sent a code to {{email}}. Type it to delete your account.",
+      "codeLabel": "Code from the e-mail",
+      "codePlaceholder": "E.g.: 123456",
+      "codeHint": "It expires in 10 minutes. Check the spam folder too.",
+      "resend": "Send another code"
     },
     "errors": {
       "signOut": "Could not sign out. Please try again.",
@@ -290,7 +299,9 @@
       "tutorial": "Watch the tutorial",
       "terms": "Terms and conditions",
       "privacy": "Privacy policy",
-      "refunds": "Refund policy"
+      "refunds": "Refund policy",
+      "allTutorials": "Show every tutorial again",
+      "allTutorialsReset": "Done: every screen will show its guide again."
     },
     "ownerAppHint": "Manage your businesses, orders and deals."
   },
@@ -400,7 +411,8 @@
       "reviewsFailed": "Could not load the reviews.",
       "reviewSaveFailed": "Could not save your review. Please try again.",
       "reviewDeleteFailed": "Could not delete your review. Please try again."
-    }
+    },
+    "ownerNotice": "This is your business: this is how customers see it. You cannot order from your own business."
   },
   "tabBar": {
     "label": "Main navigation",
@@ -517,7 +529,6 @@
       "timeline": "Order status",
       "readyAround": "Ready around {{time}}",
       "pickupAt": "Pick up at {{time}}",
-      "directions": "Get directions",
       "items": "Your items",
       "notes": "Notes: {{notes}}",
       "cancelled": "This order was cancelled.",
@@ -554,11 +565,14 @@
       "phoneNotVerified": "Verify your mobile number to place orders.",
       "businessPaused": "This business paused orders for a moment. Try again later.",
       "accountRestricted": "Because of orders that were not picked up, for now you can only pay online.",
-      "trustPendingLimit": "You already have an order to pay at pick-up. Pick it up or pay this one online.",
+      "trustPendingLimit": "You already have an order to pay at pick-up. Pick it up first and then you can place another one.",
       "trustDailyLimit": "You reached today's order limit for new accounts. Come back tomorrow.",
       "paymentsDisabled": "Online payment is not available right now. Choose pay at pick-up.",
       "reasonRequired": "Choose why the order is cancelled.",
-      "noShowTooEarly": "You can mark \"Did not come\" only 15 minutes after the order is ready."
+      "noShowTooEarly": "You can mark \"Did not come\" only 15 minutes after the order is ready.",
+      "trustPendingLimitOnline": "You already have an order to pay at pick-up. Pick it up or pay this one online.",
+      "seePendingOrder": "See my pending order",
+      "ownBusiness": "This business is yours: you cannot order from your own business. To try it, use a customer account."
     }
   },
   "reviews": {
@@ -633,7 +647,8 @@
         "instagram": "Instagram {{value}} (opens in a new tab)",
         "facebook": "Facebook {{value}} (opens in a new tab)",
         "website": "Website {{value}} (opens in a new tab)"
-      }
+      },
+      "noVerifiedContact": "This business has no verified contacts yet. You can order from the app."
     },
     "notFound": {
       "title": "Business not found",
@@ -646,6 +661,21 @@
     "photos": {
       "title": "Photos of the place",
       "photo": "Photo {{n}} of {{name}}"
+    },
+    "trust": {
+      "title": "Trust card",
+      "verifiedSince": "Verified by Luma since {{date}}",
+      "contacts": "Verified contacts:",
+      "noContacts": "none yet",
+      "orders": {
+        "0": "No completed orders on Luma yet",
+        "1_10": "Between 1 and 10 completed orders",
+        "11_50": "Between 11 and 50 completed orders",
+        "51_200": "Between 51 and 200 completed orders",
+        "200_plus": "More than 200 completed orders"
+      },
+      "months": "On Luma for {{count}} months",
+      "loadFailed": "The trust card could not be loaded."
     }
   },
   "cart": {
@@ -852,8 +882,6 @@
       "priceHint": "Whole pesos, no decimals.",
       "section": "Section (optional)",
       "sectionPlaceholder": "E.g. Drinks",
-      "sortOrder": "Order",
-      "sortOrderHint": "Lower numbers show first.",
       "isAvailable": "Available to order",
       "save": "Save product",
       "cancel": "Cancel",
@@ -861,7 +889,12 @@
       "deleteDescription": "“{{name}}” will be removed from the menu. Past orders keep it.",
       "deleteConfirm": "Yes, delete",
       "saved": "Product saved",
-      "deleted": "Product deleted"
+      "deleted": "Product deleted",
+      "moveUp": "Move {{name}} up",
+      "moveDown": "Move {{name}} down",
+      "namePlaceholder": "E.g.: Classic burger",
+      "pricePlaceholder": "E.g.: 15000",
+      "soldOutHint": "Sold out hides the product from customers until you mark it available again."
     },
     "promotions": {
       "title": "Promotions",
@@ -1094,6 +1127,12 @@
         "rejected": "Your business needs changes: check the notes",
         "suspended": "Your business was suspended: check the notes",
         "unknown": "Your business review changed"
+      },
+      "test": "Luma test notification: everything works.",
+      "contactVerification": {
+        "approved": "We verified one of your business contacts: customers can see it now.",
+        "rejected": "We could not verify one of your business contacts. Check the steps and ask for another code.",
+        "unknown": "The verification of a business contact changed"
       }
     },
     "errors": {
@@ -1263,6 +1302,15 @@
         "load": "Could not load the operations.",
         "failed": "The action could not be completed."
       }
+    },
+    "contacts": {
+      "title": "Contacts to verify ({{count}})",
+      "code": "Expected code:",
+      "open": "Open where the code must be",
+      "checkChat": "Check it in the support WhatsApp chat: the code must come from that number.",
+      "verify": "Verify",
+      "reject": "Reject",
+      "empty": "No contacts to verify."
     }
   },
   "reports": {
@@ -1425,7 +1473,6 @@
     "skip": "Skip",
     "next": "Next",
     "start": "Get started",
-    "saveFailed": "We could not save that you saw the tutorial; it may show again.",
     "customer": {
       "discover": {
         "title": "Discover on the map",
@@ -1468,7 +1515,7 @@
     "switchLabel": "Business you are viewing",
     "addBusiness": "Add another business",
     "addBusinessShort": "Add",
-    "limitReached": "Up to {{max}} businesses",
+    "limitReached": "You reached the limit of {{max}} businesses per account. To add another, unpublish and close one from My business or contact us.",
     "backFromCustomerView": "You are viewing Luma as a customer · Back to Luma Business",
     "tabs": {
       "label": "Luma Business sections",
@@ -1477,9 +1524,6 @@
       "menu": "Menu",
       "promotions": "Deals",
       "business": "My business"
-    },
-    "summary": {
-      "title": "Summary"
     },
     "verification": {
       "title": "Verification",
@@ -1522,7 +1566,16 @@
       "new": "New",
       "preparing": "Preparing",
       "ready": "Ready",
-      "sold": "Total sold"
+      "sold": "Total sold",
+      "orders": "Orders today",
+      "vsYesterday": "yesterday: {{value}}",
+      "trend": {
+        "up": "more than yesterday",
+        "down": "less than yesterday",
+        "same": "same as yesterday"
+      },
+      "pending": "Pending",
+      "pendingHint": "to handle"
     },
     "myBusiness": {
       "title": "My business",
@@ -1550,9 +1603,24 @@
       "required": "Required",
       "docsTitle": "Documents",
       "docsHint": "Image (JPG, PNG or WebP) or PDF up to 5 MB. Never shown to customers.",
-      "upload": "Upload file",
       "deleteDoc": "Delete document",
-      "docUploaded": "Document uploaded."
+      "docUploaded": "Document uploaded.",
+      "kindHint": {
+        "rut": "The DIAN RUT with the business NIT (PDF or a readable photo).",
+        "facade": "A photo of the front where the sign or business name can be seen.",
+        "other": "Optional: chamber of commerce, operating permit or anything that helps the review."
+      },
+      "uploadKind": "Upload {{kind}}",
+      "uploadLocked": "To upload or change documents, the business must be a draft or have changes requested.",
+      "approvedNotice": "Your business is verified. Its legal data and documents are locked to protect your customers.",
+      "requestCorrection": "Ask to correct the legal data",
+      "correctionTitle": "Correct the legal data?",
+      "correctionWarning": "Your business will stop being visible to customers and will not get orders until the Luma team reviews it again. You will be able to edit the legal data and documents and then send it for review.",
+      "correctionConfirm": "Yes, hide and correct",
+      "correctionCancel": "Cancel",
+      "correctionDone": "Done: you can correct the legal data now. Send it for review when you finish.",
+      "correctionFailed": "The correction could not be requested. Try again.",
+      "ownerCorrectionNote": "You asked to correct the legal data. When you finish, send the business for review."
     },
     "reReview": {
       "title": "Send back for review?",
@@ -1629,7 +1697,14 @@
       "quota": "You've used today's scans for this business. Come back tomorrow or add the products by hand.",
       "tooBig": "The photos couldn't be sent (4 at most, 2 MB each). Try fewer photos.",
       "unavailable": "Luma IA couldn't read the menu right now. Try later or add the products by hand.",
-      "rateLimited": "You sent many scans in a row. Wait a few minutes and try again."
+      "rateLimited": "You sent many scans in a row. Wait a few minutes and try again.",
+      "aiUnavailable": "Luma IA cannot read photos right now. You can paste your menu as text: it is free and goes to the same review.",
+      "pasteTitle": "Paste my menu as text",
+      "pasteHelp": "One line per product with its price at the end. Sections go in CAPITALS or end with a colon.",
+      "pastePlaceholder": "E.g.:\nMAIN DISHES\nBandeja paisa ........ 28.000\nDRINKS:\nJugo natural - $6.500",
+      "pasteReview": "Review products",
+      "entryAi": "Scan my menu with AI",
+      "entryHint": "Take photos of your menu or paste its text: we create the products and you review them."
     },
     "orderAlerts": {
       "new": "You have {{count}} new order(s). Check them in Orders."
@@ -1696,6 +1771,24 @@
       "farFromAddress": "The pin is far from the address you searched. Check that it is on the entrance of the business.",
       "municipalityLegend": "Department and municipality",
       "municipalityPurpose": "Where the business is, according to DANE. It helps us show it to customers nearby."
+    },
+    "businessCount": "{{count}} of {{max}} businesses",
+    "hero": {
+      "logo": "{{name}} logo",
+      "quickActions": "Quick actions",
+      "actions": {
+        "product": "Product",
+        "promotion": "Deal",
+        "orders": "Orders",
+        "customerView": "Customer view"
+      },
+      "status": {
+        "draft": "Draft",
+        "pending": "In review",
+        "approved": "Verified",
+        "rejected": "Changes requested",
+        "suspended": "Suspended"
+      }
     }
   },
   "promotions": {
@@ -1777,6 +1870,14 @@
     "errors": {
       "load": "We couldn't load your notification preferences.",
       "save": "We couldn't save the change. Please try again."
+    },
+    "test": {
+      "send": "Send a test notification",
+      "sending": "Sending…",
+      "hint": "It reaches your notices and, if the phone allows it, appears as a notification. Up to 3 a day.",
+      "sent": "Done: check your notices and your phone.",
+      "limited": "You already sent 3 test notifications today.",
+      "failed": "The test notification could not be sent."
     }
   },
   "account": {
@@ -1963,5 +2064,221 @@
     "errors": {
       "sendFailed": "We could not send the code. Try again later."
     }
+  },
+  "forms": {
+    "draft": {
+      "restored": "We recovered your draft: what you typed before is still here. Save it when it is ready.",
+      "discard": "Discard draft",
+      "leaveConfirm": "You have unsaved changes. They stay as a draft on this device. Leave anyway?"
+    }
+  },
+  "tours": {
+    "action": {
+      "tap": "Tap here",
+      "type": "Type here",
+      "look": "Look here"
+    },
+    "position": "{{current}} of {{total}}",
+    "skip": "Skip",
+    "back": "Back",
+    "next": "Next",
+    "done": "Got it",
+    "replay": "Show this screen's guide",
+    "map": {
+      "search": {
+        "title": "Search for a place",
+        "body": "Type a neighbourhood or an address, for example \"Parque Nariño\", and the map takes you there."
+      },
+      "filters": {
+        "title": "Filter what you want",
+        "body": "Pick a category or \"Open now\" to see only those businesses."
+      },
+      "nearby": {
+        "title": "Businesses near you",
+        "body": "This is the map's list; tap one to see its page, its menu and how to get there."
+      }
+    },
+    "discover": {
+      "card": {
+        "title": "Discover by swiping",
+        "body": "Each card is a business or a deal; swipe up to see the next one."
+      },
+      "actions": {
+        "title": "Previous and next",
+        "body": "If you prefer buttons, use these arrows."
+      }
+    },
+    "orders": {
+      "list": {
+        "title": "Your orders",
+        "body": "All your orders are here; tap one to see its details and how to get there to pick it up."
+      },
+      "status": {
+        "title": "Its status",
+        "body": "We let you know when the business accepts it and when it is ready."
+      }
+    },
+    "ai": {
+      "moods": {
+        "title": "What are you in the mood for?",
+        "body": "Tap a moment of the day and Luma IA suggests what to order nearby."
+      },
+      "results": {
+        "title": "Suggestions",
+        "body": "Each suggestion says why we recommend it; tap it to see the business."
+      }
+    },
+    "profile": {
+      "name": {
+        "title": "Your visible name",
+        "body": "Type how you want to appear in reviews, for example \"Ana P.\"."
+      },
+      "notifications": {
+        "title": "Notifications",
+        "body": "Check your notices and choose which ones to get."
+      },
+      "help": {
+        "title": "Help and tutorials",
+        "body": "Watch the tutorial or every guide again whenever you want."
+      }
+    },
+    "checkout": {
+      "when": {
+        "title": "When do you pick it up?",
+        "body": "Tap \"As soon as possible\" or pick a time."
+      },
+      "notes": {
+        "title": "Notes for the business",
+        "body": "Type a detail, for example \"No onion, please\"."
+      },
+      "payment": {
+        "title": "How you pay",
+        "body": "Choose to pay at pick-up or pay online."
+      }
+    },
+    "owner-summary": {
+      "stats": {
+        "title": "Your day in numbers",
+        "body": "Today's orders, sales and what is pending."
+      },
+      "publish": {
+        "title": "Visible to customers",
+        "body": "Tap here to publish or hide your business."
+      },
+      "pause": {
+        "title": "Pause orders",
+        "body": "If you are busy, pause new orders for a while."
+      }
+    },
+    "owner-orders": {
+      "tabs": {
+        "title": "Orders by status",
+        "body": "Tap a tab: new, preparing, ready or finished."
+      },
+      "card": {
+        "title": "Handle an order",
+        "body": "Tap Accept and then Ready when the customer can pick it up."
+      }
+    },
+    "owner-menu": {
+      "scan": {
+        "title": "Your menu in minutes",
+        "body": "Tap here to scan your menu with AI or paste it as text."
+      },
+      "add": {
+        "title": "Add a product",
+        "body": "Tap here to create a product with a name, a price and a photo."
+      },
+      "item": {
+        "title": "Quick changes",
+        "body": "Change the price, mark it sold out or move it without opening a form."
+      }
+    },
+    "owner-promotions": {
+      "add": {
+        "title": "Create a deal",
+        "body": "Tap here, type a title such as \"2x1 burgers\" and pick the dates."
+      },
+      "limit": {
+        "title": "Active deals",
+        "body": "See how many are active and how many more you can create."
+      }
+    },
+    "owner-business": {
+      "sections": {
+        "title": "Your business data",
+        "body": "Tap a section to edit data, contact, photos, hours or verification."
+      },
+      "appearance": {
+        "title": "Appearance",
+        "body": "Choose the app's theme and language."
+      }
+    }
+  },
+  "contactVerification": {
+    "title": "Contact verification",
+    "intro": "Customers only see the contacts the Luma team verified. It is free and a person reviews it.",
+    "kind": {
+      "phone": "Phone",
+      "whatsapp": "WhatsApp",
+      "instagram": "Instagram",
+      "facebook": "Facebook",
+      "website": "Website"
+    },
+    "verified": "Verified",
+    "pendingBadge": "Pending verification",
+    "yourCode": "Your code:",
+    "request": "Verify this contact",
+    "requesting": "Creating the code…",
+    "openWhatsapp": "Send the code on WhatsApp",
+    "none": "Add a phone, WhatsApp, Instagram, Facebook or website to verify it.",
+    "steps": {
+      "message": "From the number {{value}}, send the code {{code}} on WhatsApp to Luma support.",
+      "noSupport": "Luma's support WhatsApp is not configured yet (SUPPORT_WHATSAPP). Come back later to verify this number.",
+      "social": "Post the code {{code}} in the bio or in a public post of this account. Once verified you can remove it.",
+      "website": "Publish a file at {{url}} containing {{code}}.",
+      "review": "A person of the team checks it and we let you know with a notification."
+    },
+    "errors": {
+      "tooMany": "You already asked for 3 verifications today for this business. Try tomorrow.",
+      "missing": "Save that contact first.",
+      "changed": "The owner changed that contact after asking for the verification: it cannot be verified.",
+      "notPending": "That request was already reviewed.",
+      "load": "The verifications could not be loaded.",
+      "failed": "The verification could not be completed. Try again."
+    }
+  },
+  "route": {
+    "title": "How to get there",
+    "mode": "How you go",
+    "walk": "Walking",
+    "drive": "By car",
+    "mapLabel": "Map with the route to {{name}}",
+    "summary": {
+      "walk": "{{km}} km · about {{minutes}} min walking",
+      "drive": "{{km}} km · about {{minutes}} min by car"
+    },
+    "estimate": "Straight-line estimate: streets may make it longer.",
+    "locate": "Use my location to see the route",
+    "googleMaps": "Open in Google Maps"
+  },
+  "placeholders": {
+    "fullName": "E.g.: Ana María Pérez",
+    "mobile": "E.g.: 300 123 4567",
+    "code": "E.g.: 123456",
+    "email": "E.g.: ana@mail.com",
+    "percent": "E.g.: 20",
+    "legalName": "E.g.: Fritanga Don Segundo S.A.S.",
+    "productDescription": "E.g.: Beef, cheese, lettuce and tomato",
+    "promoTitle": "E.g.: 2-for-1 burgers",
+    "promoDescription": "E.g.: Valid Monday to Thursday in the shop",
+    "caption": "E.g.: Our terrace",
+    "businessDescription": "E.g.: Traditional Nariño food since 1998",
+    "prepMinutes": "E.g.: 20",
+    "neighborhood": "E.g.: San Felipe",
+    "sortHint": "Changes the order of the deals.",
+    "minDiscountHint": "Shows only discounts from that percentage.",
+    "reviewNote": "E.g.: The photo of the front with the sign is missing",
+    "reportComment": "E.g.: The business is no longer at this address"
   }
 }

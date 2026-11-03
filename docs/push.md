@@ -55,6 +55,8 @@ for `promotion`; the notification list for anything else.
 
 ## Setup (manual, by the owner)
 
+Step by step, with the test notification: docs/push-setup.md.
+
 1. Firebase console: create a project, add the Android app
    (`applicationId` of `android/app/build.gradle`), download
    `google-services.json` to `android/app/` (**gitignored, never commit it**).

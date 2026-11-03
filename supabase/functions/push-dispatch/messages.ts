@@ -49,6 +49,11 @@ const PAYMENT: Record<string, (b: string) => PushText> = {
   refund_pending_admin: () => ({ title: 'Reembolso pendiente', body: 'Hay un reembolso pendiente de hacer.' }),
 };
 
+const CONTACT: Record<string, (b: string) => PushText> = {
+  approved: (b) => ({ title: 'Contacto verificado', body: `Verificamos un contacto de ${b}: ya lo ven tus clientes.` }),
+  rejected: (b) => ({ title: 'Contacto sin verificar', body: `No pudimos verificar un contacto de ${b}. Pide otro código.` }),
+};
+
 /**
  * Spanish text of a push (the server does not know the app language; the
  * in-app list stays translated). Never customer names or user-written text,
@@ -71,6 +76,10 @@ export function pushText(row: PushRow): PushText | null {
       return PAYMENT[row.status ?? '']?.(b) ?? null;
     case 'review_invite':
       return { title: '¿Qué tal tu pedido?', body: `Cuéntanos cómo te fue en ${b}.` };
+    case 'contact_verification':
+      return CONTACT[row.status ?? '']?.(b) ?? null;
+    case 'test':
+      return { title: 'Notificación de prueba', body: 'Todo funciona: así te avisaremos de tus pedidos.' };
     default:
       return null;
   }

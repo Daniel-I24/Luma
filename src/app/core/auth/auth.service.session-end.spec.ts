@@ -54,7 +54,7 @@ describe('AuthService — ending the session', () => {
 
     const result = await service.deleteAccount();
 
-    expect(result).toEqual({ success: false, errorKey: 'auth.errors.deleteAccountFailed' });
+    expect(result).toEqual({ success: false, errorKey: 'auth.errors.deleteAccountServer' });
     expect(auth.signOut).not.toHaveBeenCalled();
     expect(state.clearUserData).not.toHaveBeenCalled();
     expect(router.navigate).not.toHaveBeenCalled();
