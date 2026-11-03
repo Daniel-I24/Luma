@@ -14,6 +14,7 @@
       [places]="places.places()"
       [loading]="places.loading()"
       [errorKey]="places.errorKey()"
+      [attribution]="places.attribution()"
       (choose)="goTo($event)"
       (dismiss)="places.close()"
     />

@@ -15,11 +15,18 @@ export const placeSchema = z.object({
 });
 export type Place = z.infer<typeof placeSchema>;
 
-const answerSchema = z.object({ places: z.array(placeSchema).check(z.maxLength(8)) });
+const answerSchema = z.object({
+  places: z.array(placeSchema).check(z.maxLength(8)),
+  /** Provider whose terms require a visible credit ('locationiq'), or null. */
+  attribution: z.optional(z.nullable(z.enum(['locationiq']))),
+});
 
 export type PlaceSearchResult =
-  | { readonly places: readonly Place[]; readonly errorKey: null }
-  | { readonly places: null; readonly errorKey: string };
+  | { readonly places: readonly Place[]; readonly attribution: PlaceAttribution; readonly errorKey: null }
+  | { readonly places: null; readonly attribution?: undefined; readonly errorKey: string };
+
+/** Credit the results must show (LocationIQ's free plan: "Search by LocationIQ.com"). */
+export type PlaceAttribution = 'locationiq' | null;
 
 /** Contract of the place search (the geocode function is one implementation). */
 @Injectable({ providedIn: 'root', useFactory: () => new GeocodePlaceSearchRepository() })
@@ -41,7 +48,7 @@ export class GeocodePlaceSearchRepository extends PlaceSearchRepository {
       if (error) return { places: null, errorKey: await this.errorKey(error) };
       const parsed = answerSchema.safeParse(data);
       return parsed.success
-        ? { places: parsed.data.places, errorKey: null }
+        ? { places: parsed.data.places, attribution: parsed.data.attribution ?? null, errorKey: null }
         : { places: null, errorKey: 'map.places.unavailable' };
     } catch {
       return { places: null, errorKey: networkErrorKey(this.online()) };

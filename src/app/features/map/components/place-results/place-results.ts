@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { type IconName, LumaIcon, LumaSkeleton } from '@design-system';
-import type { Place } from '../../services/place-search.repository';
+import { ExternalUrls } from '@core/config/external-urls';
+import type { Place, PlaceAttribution } from '../../services/place-search.repository';
 
 const KIND_ICON: Record<Place['kind'], IconName> = {
   address: 'pin',
@@ -61,6 +62,13 @@ const KIND_ICON: Record<Place['kind'], IconName> = {
             </li>
           }
         </ul>
+        @if (attribution() === 'locationiq') {
+          <p class="m-0 px-3 pb-2 text-caption text-fg-subtle">
+            <a class="text-fg-muted underline" [href]="locationIqUrl" target="_blank" rel="noopener noreferrer">{{
+              t('map.places.byLocationIq')
+            }}</a>
+          </p>
+        }
       }
     </section>
   `,
@@ -69,6 +77,8 @@ export class PlaceResults {
   readonly places = input<readonly Place[] | null>(null);
   readonly loading = input(false);
   readonly errorKey = input<string | null>(null);
+  readonly attribution = input<PlaceAttribution>(null);
+  protected readonly locationIqUrl = ExternalUrls.LOCATIONIQ;
 
   readonly choose = output<Place>();
   readonly dismiss = output<void>();

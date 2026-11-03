@@ -377,7 +377,8 @@
         "neighbourhood": "Neighbourhood",
         "city": "City or town",
         "poi": "Place"
-      }
+      },
+      "byLocationIq": "Search by LocationIQ.com"
     }
   },
   "status": {

@@ -377,7 +377,8 @@
         "neighbourhood": "Barrio",
         "city": "Ciudad o pueblo",
         "poi": "Lugar"
-      }
+      },
+      "byLocationIq": "Search by LocationIQ.com"
     }
   },
   "status": {

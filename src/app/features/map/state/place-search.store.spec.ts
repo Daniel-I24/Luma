@@ -26,7 +26,7 @@ describe('GeocodePlaceSearchRepository', () => {
 
   it('sends the query and the bias point, and validates the answer', async () => {
     invoke.mockResolvedValue({ data: { places: [CENTRO] }, error: null });
-    expect(await repo().search('centro', near)).toEqual({ places: [CENTRO], errorKey: null });
+    expect(await repo().search('centro', near)).toEqual({ places: [CENTRO], attribution: null, errorKey: null });
     expect(invoke).toHaveBeenCalledWith('geocode', { method: 'POST', body: { q: 'centro', near } });
   });
 

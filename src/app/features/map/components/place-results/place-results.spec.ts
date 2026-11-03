@@ -27,6 +27,14 @@ describe('PlaceResults', () => {
     expect(chosen).toHaveBeenCalledWith(CENTRO);
   });
 
+  it('shows the LocationIQ credit only when the provider requires it', () => {
+    const credited = render({ places: [CENTRO], attribution: 'locationiq' }).el.querySelector('a');
+    expect(credited?.getAttribute('href')).toBe('https://locationiq.com');
+    expect(credited?.getAttribute('rel')).toContain('noopener');
+    TestBed.resetTestingModule();
+    expect(render({ places: [CENTRO], attribution: null }).el.querySelector('a')).toBeNull();
+  });
+
   it('shows skeletons while loading, then the error or the empty message', () => {
     expect(render({ loading: true }).el.querySelector('app-luma-skeleton')).not.toBeNull();
     TestBed.resetTestingModule();

@@ -16,7 +16,10 @@ provider key and enforces quotas and caching.
 - Errors: 400 `invalid_request`, 401, 429 `quota_exceeded`, 503
   `geocode_unavailable` (no provider configured or provider down). The app
   then shows business results only and a short notice.
-- Cache: `ai_cache`, key `geocode:<sha256(provider, query, bias)>`, 7 days.
+- Cache: `ai_cache`, key `geocode:<sha256(provider, query, bias)>`, 7 days,
+  except LocationIQ: 48 hours (its terms allow free accounts to cache
+  request-response pairs for up to 48 hours; locationiq.com/tos, checked
+  2026-10-26).
   The quota (`consume_geocode_quota`: `geocode_daily_per_user` 200,
   `geocode_daily_global` 5000) is spent only on cache misses.
 
@@ -26,7 +29,7 @@ provider key and enforces quotas and caching.
 | --- | --- | --- |
 | `photon` | none | photon.komoot.io: fair use, no heavy traffic; fine for launch volume |
 | `nominatim` | `GEOCODE_CONTACT` (email or URL, sent in the User-Agent) | max 1 request/s, identifying User-Agent, caching, no search-as-you-type; tests and very low volume only |
-| `locationiq` | `GEOCODE_API_KEY` | free plan daily/second limits; attribution to OpenStreetMap |
+| `locationiq` (**recommended**) | `GEOCODE_API_KEY` | free plan 5000/day, 2/s, 60/min; free plan needs the visible link "Search by LocationIQ.com" (shown under the results, `attribution: 'locationiq'` in the answer); cache at most 48 h |
 | `maptiler` | `GEOCODE_API_KEY` | free plan monthly limit; MapTiler and OpenStreetMap attribution |
 
 All requests are restricted to Colombia (`countrycodes=co`, `country=co` or
@@ -41,8 +44,8 @@ no-autocomplete rule. Business results update while typing.
 ## Deploying (manual)
 
 ```sh
-supabase secrets set GEOCODE_PROVIDER=photon
-# or: GEOCODE_PROVIDER=maptiler GEOCODE_API_KEY=<key>
+supabase secrets set GEOCODE_PROVIDER=locationiq GEOCODE_API_KEY=<key>
+# or: GEOCODE_PROVIDER=photon (no key) / maptiler GEOCODE_API_KEY=<key>
 supabase functions deploy geocode
 ```
 

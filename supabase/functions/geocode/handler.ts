@@ -22,6 +22,18 @@ export interface GeocodeDeps {
 
 /** Places change slowly; the database caps geocode keys at 7 days. */
 export const CACHE_TTL_SECONDS = 7 * 24 * 60 * 60;
+/**
+ * LocationIQ lets free accounts cache request-response pairs for up to 48
+ * hours (locationiq.com/tos, "Acceptable Use"); paid accounts for as long as
+ * they are customers. 48 hours is safe for both.
+ */
+const PROVIDER_CACHE_TTL_SECONDS: Readonly<Record<string, number>> = { locationiq: 48 * 60 * 60 };
+/** Providers whose terms require a visible credit next to the results. */
+const ATTRIBUTED_PROVIDERS = new Set(['locationiq']);
+
+export function cacheTtlFor(provider: string): number {
+  return PROVIDER_CACHE_TTL_SECONDS[provider] ?? CACHE_TTL_SECONDS;
+}
 
 export function createHandler(deps: GeocodeDeps): (req: Request) => Promise<Response> {
   return async (req) => {
@@ -46,8 +58,9 @@ export function createHandler(deps: GeocodeDeps): (req: Request) => Promise<Resp
       if (!(await caller.consumeQuota())) return json(429, { error: 'quota_exceeded' }, cors);
 
       const places: Place[] = finalizePlaces(await deps.geocoder.search(input));
-      const result = { places };
-      await deps.cache.put(key, result, CACHE_TTL_SECONDS).catch(() => undefined);
+      // The app shows "Search by LocationIQ.com" when attribution says so.
+      const result = { places, attribution: ATTRIBUTED_PROVIDERS.has(deps.geocoder.name) ? deps.geocoder.name : null };
+      await deps.cache.put(key, result, cacheTtlFor(deps.geocoder.name)).catch(() => undefined);
       return json(200, result, cors);
     } catch {
       return unavailable();

@@ -1,17 +1,17 @@
 import { assertEquals } from '@std/assert';
 
-import { CACHE_TTL_SECONDS, createHandler } from './handler.ts';
+import { CACHE_TTL_SECONDS, cacheTtlFor, createHandler } from './handler.ts';
 import { type GeocodeInput, parseInput, type Place, PASTO } from './model.ts';
 import type { GeocodeProvider } from './providers.ts';
 
 const ORIGIN = 'http://localhost:4200';
 const CENTRO: Place = { label: 'Centro, Pasto', kind: 'neighbourhood', lat: 1.214, lng: -77.281 };
 
-function setup(options: { quota?: boolean; cached?: unknown; geocoder?: boolean; fails?: boolean } = {}) {
+function setup(options: { quota?: boolean; cached?: unknown; geocoder?: boolean; fails?: boolean; name?: string } = {}) {
   const searches: GeocodeInput[] = [];
   const stored: [string, unknown, number][] = [];
   const geocoder: GeocodeProvider = {
-    name: 'fake',
+    name: options.name ?? 'fake',
     search: (input) => {
       searches.push(input);
       return options.fails ? Promise.reject(new Error('down')) : Promise.resolve([CENTRO, null]);
@@ -39,7 +39,7 @@ const post = (body: unknown, token = 'good') =>
 Deno.test('finds places and caches them for 7 days', async () => {
   const { handler, stored } = setup();
   const res = await handler(post({ q: '  centro   pasto ' }));
-  assertEquals([res.status, await res.json()], [200, { places: [CENTRO] }]);
+  assertEquals([res.status, await res.json()], [200, { places: [CENTRO], attribution: null }]);
   assertEquals(stored[0][0].startsWith('geocode:'), true);
   assertEquals(stored[0][2], CACHE_TTL_SECONDS);
 });
@@ -65,4 +65,12 @@ Deno.test('quota 429, no session 401, bad body 400, no provider or a failure 503
   const none = await setup({ geocoder: false }).handler(post({ q: 'centro' }));
   assertEquals([none.status, await none.json()], [503, { error: 'geocode_unavailable' }]);
   assertEquals((await setup({ fails: true }).handler(post({ q: 'centro' }))).status, 503);
+});
+
+Deno.test('LocationIQ answers are cached 48 hours (its terms) and carry its attribution', async () => {
+  const { handler, stored } = setup({ name: 'locationiq' });
+  const res = await handler(post({ q: 'centro pasto' }));
+  assertEquals((await res.json()).attribution, 'locationiq');
+  assertEquals(stored[0][2], 48 * 60 * 60);
+  assertEquals([cacheTtlFor('photon'), cacheTtlFor('locationiq')], [CACHE_TTL_SECONDS, 172800]);
 });
