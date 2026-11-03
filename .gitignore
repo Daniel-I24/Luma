@@ -64,3 +64,10 @@ GoogleService-Info.plist
 
 # Screen review screenshots (scripts/screens/capture.mjs)
 docs/screens/
+
+# Local secrets for scripts and Edge Functions (supabase secrets set --env-file)
+.env
+.env.*
+!.env.example
+supabase/functions/.env
+supabase/.branches/
