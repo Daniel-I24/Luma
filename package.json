@@ -11,7 +11,8 @@
     "build:prod": "node scripts/generate-env.mjs && ng build --configuration production,deploy",
     "test:scripts": "node --test scripts/*.test.mjs",
     "apk:debug": "node scripts/apk.mjs debug",
-    "apk:release": "node scripts/apk.mjs release"
+    "apk:release": "node scripts/apk.mjs release",
+    "check:interactive": "node scripts/check-interactive.mjs"
   },
   "private": true,
   "packageManager": "npm@11.21.0",

@@ -132,6 +132,11 @@ agent's sessions).
   enable() from a user action, token removed via SignOutHooks before
   sign-out, tap opens the order or /notifications), NotificationSettings in
   Profile and Mi negocio (orders on, promotions opt-in), POST_NOTIFICATIONS.
+- FASE 2.9: scripts/check-interactive.mjs (npm run check:interactive; dead
+  buttons/links, keyboard access of clickable non-buttons, literal routerLinks
+  vs declared routes) with tests; src/testing/click-all.ts clicks every
+  control of a rendered component and reports handler errors (used on the
+  account error screen, notification settings and place results).
 
 - Block D done: migration 20261021000000 (discounts, trigger, server prices in
   create_order; 23 SQL checks), customer /promotions (sort, filters, states,
