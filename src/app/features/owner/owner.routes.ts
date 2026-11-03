@@ -43,6 +43,12 @@ export const ownerRoutes: Routes = [
               import('./pages/business-menu/business-menu.page').then((m) => m.BusinessMenuPage),
           },
           {
+            path: 'menu/scan',
+            data: DETAIL_ROUTE_DATA,
+            loadComponent: () =>
+              import('./pages/menu-scan/menu-scan.page').then((m) => m.MenuScanPage),
+          },
+          {
             path: 'promotions',
             loadComponent: () =>
               import('./pages/business-promotions/business-promotions.page').then(

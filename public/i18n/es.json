@@ -927,6 +927,18 @@
       "delete": "Eliminar",
       "confirmDelete": "Toca otra vez para eliminar",
       "loadFailed": "No pudimos cargar tus fotos. Intenta de nuevo."
+    },
+    "notify": {
+      "action": "Avisar a mis seguidores",
+      "sending": "Avisando…",
+      "sent": "Ya avisaste a tus seguidores de esta promoción.",
+      "done": "Avisamos a {{count}} seguidores.",
+      "nobody": "Por ahora ninguno de tus seguidores acepta avisos de promociones.",
+      "already": "Ya avisaste a tus seguidores de esta promoción.",
+      "limit": "Solo puedes avisar de una promoción al día. Vuelve mañana.",
+      "notRunning": "Solo puedes avisar mientras la promoción está activa.",
+      "notPublic": "Tu negocio debe estar publicado y aprobado para avisar a tus seguidores.",
+      "failed": "No pudimos enviar el aviso. Intenta de nuevo."
     }
   },
   "media": {
@@ -1409,6 +1421,29 @@
         "evening": "noche",
         "night": "madrugada"
       }
+    },
+    "menuScan": {
+      "entry": "Escanear menú con Luma IA",
+      "title": "Escanear menú",
+      "intro": "Toma o elige hasta {{max}} fotos de tu menú impreso. Luma IA lee los productos y precios, y tú revisas todo antes de agregarlo.",
+      "pick": "Elegir fotos del menú",
+      "privacy": "Las fotos se reducen y pierden su ubicación GPS antes de enviarse. Solo se usan para leer el menú; no se guardan.",
+      "reading": "Leyendo tu menú… puede tardar unos segundos.",
+      "review": "Revisa cada producto: corrige lo que haga falta y desmarca lo que no quieras agregar.",
+      "keep": "Agregar este producto",
+      "name": "Nombre",
+      "price": "Precio (COP)",
+      "section": "Sección",
+      "priceNeeded": "Escribe el precio para poder agregarlo.",
+      "add": "Agregar al menú ({{count}})",
+      "discard": "Descartar y empezar de nuevo",
+      "done": "Listo: agregamos {{count}} productos a tu menú.",
+      "toMenu": "Ver mi menú",
+      "again": "Escanear otras fotos",
+      "nothingFound": "No encontramos productos en las fotos. Prueba con fotos más nítidas y bien iluminadas.",
+      "quota": "Ya usaste los escaneos de hoy para este negocio. Vuelve mañana o agrega los productos a mano.",
+      "tooBig": "Las fotos no se pudieron enviar (máximo 4, de 2 MB cada una). Intenta con menos fotos.",
+      "unavailable": "Luma IA no pudo leer el menú ahora. Intenta más tarde o agrega los productos a mano."
     }
   },
   "promotions": {

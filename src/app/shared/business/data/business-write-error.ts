@@ -9,6 +9,10 @@ const MESSAGE_KEYS: Readonly<Record<string, string>> = {
   email_not_confirmed: 'errors.emailNotConfirmed',
   gallery_limit: 'businessPanel.errors.galleryLimit',
   menu_limit: 'businessPanel.errors.menuLimit',
+  already_notified: 'businessPanel.notify.already',
+  notify_limit: 'businessPanel.notify.limit',
+  promotion_not_running: 'businessPanel.notify.notRunning',
+  business_not_public: 'businessPanel.notify.notPublic',
 };
 const CODE_KEYS: Readonly<Record<string, string>> = {
   '23514': 'businessPanel.errors.invalidData',

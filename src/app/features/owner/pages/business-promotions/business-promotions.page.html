@@ -50,6 +50,9 @@
               [class]="phaseClass[phase(promo)]"
               >{{ t('businessPanel.promotions.phase.' + phase(promo)) }}</span
             >
+            @if (phase(promo) === 'running') {
+            <app-notify-followers class="mt-1" [promotion]="promo" />
+            }
           </div>
           @if (phase(promo) !== 'ended') {
           <app-luma-icon-button

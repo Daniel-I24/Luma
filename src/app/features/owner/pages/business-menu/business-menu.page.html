@@ -8,6 +8,13 @@
       <app-luma-button [fullWidth]="true" (clicked)="openForm(null)"
         >{{ t('businessPanel.menu.add') }}</app-luma-button
       >
+      @if (canScan) {
+      <a
+        [routerLink]="['/owner', id(), 'menu', 'scan']"
+        class="pressable inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-border-subtle bg-surface px-4 text-body font-semibold text-fg-brand no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+        >{{ t('owner.menuScan.entry') }}</a
+      >
+      }
       @if (menu.errorKey(); as key) {
       <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
         {{ t(key) }}

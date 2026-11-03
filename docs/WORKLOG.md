@@ -119,6 +119,11 @@ agent's sessions).
   parseContact normalises WhatsApp/Instagram/Facebook/https web) and Fotos del
   lugar (/business/gallery: up to 8, re-encoded, caption, order, two-tap
   delete; file removed if the row is refused). Fixed a stale admin spec.
+- FASE 2.3 (part 2): Escanear menu (/owner/:id/menu/scan, only with AI_MODE
+  remote): up to 4 photos re-encoded (1600 px) -> extract-menu -> review
+  (keep, name, price, section; no price = must type it) -> saved one by one
+  after the current menu, stops at menu_limit. "Avisar a mis seguidores" on
+  running promotions (notify_promotion, errors mapped).
 
 - Block D done: migration 20261021000000 (discounts, trigger, server prices in
   create_order; 23 SQL checks), customer /promotions (sort, filters, states,

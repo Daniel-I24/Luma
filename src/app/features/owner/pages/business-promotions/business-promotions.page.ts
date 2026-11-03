@@ -21,6 +21,7 @@ import type { Promotion } from '@shared/business/models/business.model';
 import { formatDateTime } from '@shared/format/date-format.util';
 import type { PromotionIdea } from '@shared/promotions/advisor/promotion-idea';
 import { IdeasCard } from '../../components/ideas-card/ideas-card';
+import { NotifyFollowers } from '../../components/notify-followers/notify-followers';
 import { PanelHeader } from '../../components/panel-header/panel-header';
 import { PanelStateView } from '../../components/panel-state/panel-state';
 import type { PromotionPrefill } from '../../components/promotion-form/promotion-draft';
@@ -42,6 +43,7 @@ const PHASE_CLASS = {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NotifyFollowers,
     TranslocoModule,
     LumaBottomSheet,
     LumaButton,

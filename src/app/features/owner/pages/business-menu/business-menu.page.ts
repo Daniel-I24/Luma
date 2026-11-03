@@ -6,7 +6,9 @@ import {
   signal,
   untracked,
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
+import { AI_MODE } from '@core/config/ai-mode';
 import {
   LumaBottomSheet,
   LumaButton,
@@ -31,6 +33,7 @@ import { routeBusinessId } from '../../utils/route-business-id';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     TranslocoModule,
+    RouterLink,
     LumaBottomSheet,
     LumaButton,
     LumaEmptyState,
@@ -49,6 +52,8 @@ export class BusinessMenuPage {
   protected readonly menu = inject(MenuPanelStore);
   private readonly toast = inject(ToastService);
   protected readonly id = routeBusinessId();
+  /** Scanning a printed menu needs the extract-menu function (Luma IA remote). */
+  protected readonly canScan = inject(AI_MODE) === 'remote';
 
   /** Item in the form sheet: null = new product, undefined = sheet closed. */
   protected readonly editing = signal<MenuItem | null | undefined>(undefined);

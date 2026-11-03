@@ -927,6 +927,18 @@
       "delete": "Delete",
       "confirmDelete": "Tap again to delete",
       "loadFailed": "We couldn't load your photos. Please try again."
+    },
+    "notify": {
+      "action": "Tell my followers",
+      "sending": "Sending…",
+      "sent": "You already told your followers about this promotion.",
+      "done": "We told {{count}} followers.",
+      "nobody": "None of your followers accept promotion notices yet.",
+      "already": "You already told your followers about this promotion.",
+      "limit": "You can announce one promotion a day. Come back tomorrow.",
+      "notRunning": "You can only announce a promotion while it's running.",
+      "notPublic": "Your business must be published and approved to tell your followers.",
+      "failed": "We couldn't send the notice. Please try again."
     }
   },
   "media": {
@@ -1409,6 +1421,29 @@
         "evening": "evening",
         "night": "late night"
       }
+    },
+    "menuScan": {
+      "entry": "Scan menu with Luma IA",
+      "title": "Scan menu",
+      "intro": "Take or choose up to {{max}} photos of your printed menu. Luma IA reads the products and prices, and you review everything before adding it.",
+      "pick": "Choose menu photos",
+      "privacy": "Photos are resized and lose their GPS location before being sent. They're only used to read the menu and aren't stored.",
+      "reading": "Reading your menu… this can take a few seconds.",
+      "review": "Review each product: fix anything needed and untick what you don't want to add.",
+      "keep": "Add this product",
+      "name": "Name",
+      "price": "Price (COP)",
+      "section": "Section",
+      "priceNeeded": "Enter the price to be able to add it.",
+      "add": "Add to menu ({{count}})",
+      "discard": "Discard and start again",
+      "done": "Done: we added {{count}} products to your menu.",
+      "toMenu": "See my menu",
+      "again": "Scan other photos",
+      "nothingFound": "We couldn't find products in the photos. Try sharper, well-lit photos.",
+      "quota": "You've used today's scans for this business. Come back tomorrow or add the products by hand.",
+      "tooBig": "The photos couldn't be sent (4 at most, 2 MB each). Try fewer photos.",
+      "unavailable": "Luma IA couldn't read the menu right now. Try later or add the products by hand."
     }
   },
   "promotions": {

@@ -71,6 +71,8 @@ export interface Promotion {
   /** 5-90 when the promotion discounts menu_item_id. */
   discount_percent: number | null;
   created_at: string;
+  /** When the owner told the followers (push_notifications; absent before it). */
+  notified_at?: string | null;
 }
 
 /**

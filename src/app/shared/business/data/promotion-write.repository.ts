@@ -68,4 +68,14 @@ export class PromotionWriteRepository {
     if (error) return { data: null, errorKey: mapWriteError(error, SAVE_FAILED) };
     return { data: true, errorKey: null };
   }
+
+  /**
+   * Tells the followers who accepted promotions (notify_promotion): once per
+   * promotion, once a day per business. Resolves to how many were told.
+   */
+  async notifyFollowers(promotionId: string): Promise<RepoResult<number>> {
+    const { data, error } = await this.db.rpc('notify_promotion', { p_promotion_id: promotionId });
+    if (error) return { data: null, errorKey: mapWriteError(error, 'businessPanel.notify.failed') };
+    return { data: typeof data === 'number' ? data : 0, errorKey: null };
+  }
 }
