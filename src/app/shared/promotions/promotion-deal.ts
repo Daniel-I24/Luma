@@ -1,4 +1,4 @@
-import { BusinessDay } from '@shared/utils/business-day';
+import { BusinessDay } from '@shared/business/domain/opening-hours';
 import { MS_PER_DAY, PERCENT } from '@core/config/units';
 
 /** PromotionPricing — promotional price and time left of a deal. */

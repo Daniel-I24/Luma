@@ -5,7 +5,7 @@ import type {
   BusinessHours,
   BusinessStatus,
 } from '@shared/business/models/business.model';
-import { BusinessStatusRules } from '@shared/business/utils/business-status-rules';
+import { BusinessStatusRules } from '@shared/business/domain/opening-hours';
 import { FavoritesStore } from '@shared/favorites/favorites.store';
 
 export interface FavoriteBusiness {

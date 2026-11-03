@@ -1,6 +1,6 @@
 import { PlatformMerchantCredentials } from './merchant-credentials.ts';
 import type { ApplyOutcome, AttemptView, ConfirmedEvent, PaymentRepository, ReconcileItem } from './payment-repository.ts';
-import { sha256Hex } from './secure-compare.ts';
+import { sha256Hex } from '../secure-compare.ts';
 import type { EventTransaction } from './wompi-event.ts';
 
 // Example and test secrets, assembled so the secret scan stays strict.

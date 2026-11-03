@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import type { BusinessOrder } from '@shared/orders/business-order.repository';
 import { OwnerLocation } from '../owner-shell/owner-shell';
-import { ReReview } from './re-review';
+import { ReReview } from './publication-rules';
 import { ReviewChecklist } from './review-checklist';
-import { BusinessDay } from '@shared/utils/business-day';
+import { BusinessDay } from '@shared/business/domain/opening-hours';
 import { TodayStatsCalculator } from './today-stats';
 
 const business = {

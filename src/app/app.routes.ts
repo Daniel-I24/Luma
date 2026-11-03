@@ -1,9 +1,7 @@
 import { Routes } from '@angular/router';
-import { authGuard } from '@core/auth/auth.guard';
-import { guestGuard } from '@core/auth/guest.guard';
+import { authGuard, guestGuard } from '@core/auth/auth.guard';
 import { DETAIL_ROUTE_DATA } from '@core/navigation/route-transition';
 import { accountHomeGuard, accountReadyGuard, ownerChildGuard, ownerGuard } from '@shared/account/account.guards';
-import { DEV_ONLY_ROUTES } from './dev-routes';
 
 export const routes: Routes = [
   {
@@ -60,8 +58,6 @@ export const routes: Routes = [
     path: 'legal',
     loadChildren: () => import('./features/legal/legal.routes').then((m) => m.legalRoutes),
   },
-  // Design system showcase: development builds only (dev-routes.ts is empty in production and deploy builds).
-  ...DEV_ONLY_ROUTES,
   {
     // Luma Negocios: business-owner accounts, with their own shell and tabs.
     path: 'owner',

@@ -1,7 +1,7 @@
 import { bearerToken, json } from '../_shared/edge.ts';
 import type { PaymentLog } from '../_shared/payments/payment-log.ts';
 import type { ReconcileReport } from '../_shared/payments/reconciler.ts';
-import { SecureCompare } from '../_shared/payments/secure-compare.ts';
+import { SecureCompare } from '../_shared/secure-compare.ts';
 
 export interface ReconcileDeps {
   /** PAYMENTS_CRON_SECRET; the same value as private.payments_cron.secret. */

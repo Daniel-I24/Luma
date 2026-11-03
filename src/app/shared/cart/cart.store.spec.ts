@@ -2,7 +2,7 @@ import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { AuthService } from '@core/auth/auth.service';
-import { UserDataRegistry } from '@core/auth/user-data-registry';
+import { UserDataRegistry } from '@core/auth/session-end';
 import { MAX_CART_UNITS, MAX_PER_ITEM, type CartProduct } from './cart.model';
 import { CartStore } from './cart.store';
 

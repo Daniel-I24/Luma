@@ -36,7 +36,28 @@ const SIZE_CLASS: Record<AvatarSize, string> = {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LumaIcon],
-  templateUrl: './luma-avatar.html',
+  template: `
+    <span [class]="classes()">
+      @if (src() && !failed()) {
+      <img
+        class="size-full object-cover"
+        loading="lazy"
+        decoding="async"
+        [width]="sizePx()"
+        [height]="sizePx()"
+        [src]="src()"
+        [alt]="decorative() ? '' : name()"
+        (error)="failed.set(true)"
+      />
+      } @else { @if (fallbackIcon(); as icon) {
+      <app-luma-icon [name]="icon" [size]="iconSize()" />
+      } @else {
+      <span aria-hidden="true">{{ initials() }}</span>
+      } @if (!decorative()) {
+      <span class="sr-only">{{ name() }}</span>
+      } }
+    </span>
+  `,
   host: { class: 'inline-flex shrink-0' },
 })
 export class LumaAvatar {

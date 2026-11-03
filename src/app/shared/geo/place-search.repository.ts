@@ -34,19 +34,13 @@ export type PlaceSearchResult =
 /** Credit the results must show (LocationIQ's free plan: "Search by LocationIQ.com"). */
 export type PlaceAttribution = 'locationiq' | null;
 
-/** Contract of the place search (the geocode function is one implementation). */
-@Injectable({ providedIn: 'root', useFactory: () => new GeocodePlaceSearchRepository() })
-export abstract class PlaceSearchRepository {
-  /** `near` is rounded by the server before reaching any provider. */
-  public abstract search(query: string, near: { lat: number; lng: number }): Promise<PlaceSearchResult>;
-}
-
-/** GeocodePlaceSearchRepository — place search through the geocode Edge Function. */
-export class GeocodePlaceSearchRepository extends PlaceSearchRepository {
+/** PlaceSearchRepository — place search through the geocode Edge Function. */
+@Injectable({ providedIn: 'root' })
+export class PlaceSearchRepository {
   private readonly db = inject(SupabaseService).client;
   private readonly online = inject(ConnectivityService).online;
 
-  /** @inheritdoc */
+  /** Places matching `query` near a point (neighbourhoods, addresses, landmarks), or a translation key. */
   public async search(query: string, near: { lat: number; lng: number }): Promise<PlaceSearchResult> {
     try {
       const { data, error } = await this.db.functions.invoke('geocode', {

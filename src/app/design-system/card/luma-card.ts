@@ -12,7 +12,15 @@ export type CardElevation = 'flat' | 'raised' | 'elevated';
   selector: 'app-luma-card',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './luma-card.html',
+  template: `
+    <div
+      [class]="hostClasses"
+      [attr.role]="interactive() ? 'button' : null"
+      [attr.tabindex]="interactive() ? '0' : null"
+    >
+      <ng-content />
+    </div>
+  `,
   styleUrl: './luma-card.css',
 })
 export class LumaCard {

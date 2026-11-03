@@ -11,7 +11,34 @@ import type { PromotionDeal } from '@shared/promotions/promotion-deal';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoModule, RouterLink, LumaEmptyState, PromotionCard],
-  templateUrl: './promos-tab.html',
+  template: `
+    <ng-container *transloco="let t">
+      @if (promotions().length === 0) {
+      <app-luma-empty-state
+        icon="tag"
+        [heading]="t('businessProfile.promos.emptyTitle')"
+        [description]="t('businessProfile.promos.emptyDescription')"
+      />
+      } @else {
+      <ul class="m-0 flex list-none flex-col gap-3 p-4">
+        @for (deal of promotions(); track deal.id) {
+        <li>
+          <app-promotion-card
+            [deal]="deal"
+            [showBusiness]="false"
+            [recommended]="deal.id === recommendedId()"
+          />
+        </li>
+        }
+      </ul>
+      }
+      <a
+        class="mx-4 mb-4 inline-flex min-h-11 items-center text-body-sm font-semibold text-fg-brand"
+        routerLink="/promotions"
+        >{{ t('promotions.seeAll') }}</a
+      >
+    </ng-container>
+  `,
   host: { class: 'block' },
 })
 export class PromosTab {

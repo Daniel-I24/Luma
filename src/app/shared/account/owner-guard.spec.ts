@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '@core/auth/auth.service';
 import { routes } from '../../app.routes';
 import { ownerChildGuard, ownerGuard } from './account.guards';
-import { OWNER_INVITE_PATH } from './account-homes';
+import { OWNER_INVITE_PATH } from './account-type';
 import { AccountProfileRepository } from './account-profile.repository';
 import { AccountType } from './account-type';
 

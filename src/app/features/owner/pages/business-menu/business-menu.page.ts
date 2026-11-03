@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, effect, inject, signal, untracked, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
-import { AI_MODE } from '@core/config/ai-mode';
+import { AI_MODE } from '@core/config/build-flags';
 import { LumaBottomSheet, LumaButton, LumaEmptyState, LumaIcon, ToastService } from '@design-system';
 import type { MenuItemInput } from '@shared/business/data/business-write.schemas';
 import type { MenuItem } from '@shared/business/models/menu.model';
@@ -46,7 +46,7 @@ export class BusinessMenuPage implements HasUnsavedChanges {
   protected readonly panel = inject(PanelBusinessStore);
   protected readonly menu = inject(MenuPanelStore);
   private readonly toast = inject(ToastService);
-  protected readonly id = RouteBusinessId.routeBusinessId();
+  protected readonly id = RouteBusinessId.routeBusinessId((id) => this.load(id));
   /** Reading menu photos needs the extract-menu function (Luma IA remote); the text plan B always works. */
   protected readonly canScan = inject(AI_MODE) === 'remote';
 
@@ -56,13 +56,6 @@ export class BusinessMenuPage implements HasUnsavedChanges {
   /** The row a dragged product is over. */
   protected readonly dropTarget = signal<string | null>(null);
   private readonly form = viewChild(MenuItemForm);
-
-  constructor() {
-    effect(() => {
-      const id = this.id();
-      if (id) untracked(() => void this.load(id));
-    });
-  }
 
   protected async load(id = this.id()): Promise<void> {
     await Promise.all([this.panel.load(id), this.menu.load(id)]);

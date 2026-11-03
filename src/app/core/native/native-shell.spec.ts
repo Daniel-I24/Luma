@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { NativeShell } from './native-shell';
+import { NativeShell } from './native-device';
 
 const native = { value: true };
 const listeners = new Map<string, (event: { canGoBack: boolean }) => void>();

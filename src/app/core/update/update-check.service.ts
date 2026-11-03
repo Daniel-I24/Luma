@@ -2,7 +2,16 @@ import { DOCUMENT } from '@angular/common';
 import { Injectable, InjectionToken, inject, signal } from '@angular/core';
 import * as z from 'zod/mini';
 import { APP_VERSION } from '@core/config/app-version';
-import { UPDATE_SITE_URL } from '@core/config/update-check-url';
+
+/**
+ * Where the APK reads /version.json: the origin of the deployed download
+ * site. Null by default: the APK then skips the check. The web build always
+ * checks its own origin.
+ */
+export const UPDATE_SITE_URL = new InjectionToken<string | null>('UPDATE_SITE_URL', {
+  providedIn: 'root',
+  factory: () => null,
+});
 
 /** major.minor.patch */
 const VERSION_PARTS = 3;

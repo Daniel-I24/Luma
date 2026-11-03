@@ -15,7 +15,34 @@ import { CartStore } from '../cart.store';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoModule, LumaButton, LumaIconButton],
-  templateUrl: './add-to-cart.html',
+  template: `
+    <ng-container *transloco="let t">
+      @if (quantity() === 0) {
+      <app-luma-button size="sm" (clicked)="add()">{{ t('cart.add') }}</app-luma-button>
+      } @else {
+      <div
+        class="inline-flex items-center gap-1 rounded-md border border-border bg-surface"
+        role="group"
+        [attr.aria-label]="t('cart.quantityOf', { name: product().name })"
+      >
+        <app-luma-icon-button
+          icon="minus"
+          variant="ghost"
+          [label]="t('cart.decrease', { name: product().name })"
+          (clicked)="decrease()"
+        />
+        <span class="min-w-6 text-center text-title text-fg" aria-live="polite">{{ quantity() }}</span>
+        <app-luma-icon-button
+          icon="plus"
+          variant="ghost"
+          [label]="t('cart.increase', { name: product().name })"
+          [disabled]="atLimit()"
+          (clicked)="add()"
+        />
+      </div>
+      }
+    </ng-container>
+  `,
   host: { class: 'inline-flex' },
 })
 export class AddToCart {

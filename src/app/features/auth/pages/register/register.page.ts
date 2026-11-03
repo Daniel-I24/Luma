@@ -1,11 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  afterNextRender,
-  inject,
-  Injector,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, afterNextRender, inject, Injector } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
@@ -49,7 +43,9 @@ const STEP_TITLE_ID = 'signup-step-title';
     ConsentStep,
   ],
   templateUrl: './register.page.html',
-  styleUrl: './register.page.css',
+  styles: `
+    @import '../../auth-page.css';
+  `,
 })
 export class RegisterPage {
   private readonly auth = inject(AuthService);

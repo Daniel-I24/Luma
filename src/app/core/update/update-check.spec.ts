@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { APP_VERSION } from '@core/config/app-version';
-import { UPDATE_SITE_URL } from '@core/config/update-check-url';
+import { UPDATE_SITE_URL } from '@core/update/update-check.service';
 import { PAGE_LOCATION, UpdateCheck, AppVersion } from './update-check.service';
 
 const bump = (v: string) => v.replace(/\.(\d+)$/, (_, p: string) => `.${Number(p) + 1}`);

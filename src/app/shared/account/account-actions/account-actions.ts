@@ -17,7 +17,51 @@ import { DeleteAccountSheet } from '../delete-account-sheet/delete-account-sheet
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoModule, RouterLink, LumaButton, DeleteAccountSheet],
-  templateUrl: './account-actions.html',
+  template: `
+    <ng-container *transloco="let t">
+      @if (errorKey()) {
+      <p class="m-0 mb-3 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+        {{ t(errorKey()!) }}
+      </p>
+      }
+      <nav class="mb-3 flex flex-col gap-2" [attr.aria-label]="t('profile.account')">
+        <a
+          routerLink="/account/details"
+          class="pressable flex min-h-11 items-center rounded-xl border border-border-subtle bg-surface px-4 text-body font-medium text-fg no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+          >{{ t('accountDetails.title') }}</a
+        >
+        <a
+          routerLink="/account/password"
+          class="pressable flex min-h-11 items-center rounded-xl border border-border-subtle bg-surface px-4 text-body font-medium text-fg no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+          >{{ t('account.password.title') }}</a
+        >
+        <a
+          routerLink="/help"
+          class="pressable flex min-h-11 items-center rounded-xl border border-border-subtle bg-surface px-4 text-body font-medium text-fg no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+          >{{ t('help.title') }}</a
+        >
+      </nav>
+      <app-luma-button
+        variant="secondary"
+        [fullWidth]="true"
+        [disabled]="loading()"
+        (clicked)="onSignOut()"
+        >{{ t('profile.signOut') }}</app-luma-button
+      >
+      <div class="mt-8">
+        <app-luma-button
+          variant="danger"
+          size="sm"
+          [fullWidth]="true"
+          [disabled]="loading()"
+          (clicked)="deleteSheetOpen.set(true)"
+          >{{ t('profile.deleteAccount') }}</app-luma-button
+        >
+        <p class="m-0 mt-3 text-center text-caption text-fg-subtle">{{ t('help.version', { version }) }}</p>
+      </div>
+      <app-delete-account-sheet [open]="deleteSheetOpen()" (closed)="deleteSheetOpen.set(false)" />
+    </ng-container>
+  `,
 })
 export class AccountActions {
   private readonly auth = inject(AuthService);

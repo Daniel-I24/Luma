@@ -5,67 +5,6 @@
     "retry": "Reintentar",
     "back": "Volver"
   },
-  "designPreview": {
-    "title": "Sistema de diseño — Luma",
-    "subtitle": "Componentes base y tokens de diseño",
-    "themeSelector": {
-      "label": "Tema activo",
-      "sky": "Cielo andino",
-      "night": "Noche",
-      "lacquer": "Barniz",
-      "maize": "Maíz"
-    },
-    "sections": {
-      "buttons": "Botones",
-      "cards": "Tarjetas",
-      "bottomSheet": "Bottom Sheet",
-      "statusBadges": "Insignias de estado",
-      "inputs": "Campos de texto",
-      "chips": "Chips"
-    },
-    "buttons": {
-      "primary": "Principal",
-      "secondary": "Secundario",
-      "ghost": "Fantasma",
-      "danger": "Peligro",
-      "dangerOutline": "Peligro discreto",
-      "disabled": "Deshabilitado",
-      "small": "Pequeño",
-      "medium": "Mediano",
-      "large": "Grande"
-    },
-    "cards": {
-      "flat": "Plano",
-      "raised": "Elevado",
-      "elevated": "Alto relieve",
-      "interactive": "Interactivo",
-      "body": "Contenido de ejemplo para la tarjeta.",
-      "openSheet": "Abrir Bottom Sheet"
-    },
-    "bottomSheet": {
-      "title": "Detalle del negocio",
-      "body": "Aquí iría la información del negocio seleccionado.",
-      "close": "Cerrar"
-    },
-    "inputs": {
-      "defaultLabel": "Correo electrónico",
-      "defaultPlaceholder": "nombre@ejemplo.com",
-      "hint": "Usaremos este correo para notificaciones.",
-      "withError": "Campo con error",
-      "errorMessage": "Este campo es obligatorio.",
-      "disabled": "Campo deshabilitado"
-    },
-    "chips": {
-      "default": "Predeterminado",
-      "primary": "Principal",
-      "accent": "Acento",
-      "success": "Éxito",
-      "warning": "Advertencia",
-      "danger": "Peligro",
-      "dismissible": "Descartable",
-      "selected": "Seleccionado"
-    }
-  },
   "auth": {
     "login": {
       "title": "Iniciar sesión",

@@ -1,6 +1,6 @@
 import { MS_PER_DAY } from '@core/config/units';
 import type { BusinessOrder } from '@shared/orders/business-order.repository';
-import { BusinessDay } from '@shared/utils/business-day';
+import { BusinessDay } from '@shared/business/domain/opening-hours';
 
 export interface TodayStats {
   /** Waiting for the owner to accept. */

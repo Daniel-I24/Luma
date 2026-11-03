@@ -80,10 +80,8 @@ test('writes the gitignored deploy environment, never the committed prod one', (
 test('the deploy configuration swaps environment.ts for the generated file', () => {
   const angular = JSON.parse(readFileSync(new URL('../angular.json', import.meta.url), 'utf8'));
   const deploy = angular.projects.luma.architect.build.configurations.deploy;
-  // Deploy replaces production's list, so it also drops the dev-only routes.
   assert.deepEqual(deploy.fileReplacements, [
     { replace: 'src/environments/environment.ts', with: TARGET_PATH },
-    { replace: 'src/app/dev-routes.ts', with: 'src/app/dev-routes.prod.ts' },
   ]);
   const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
   assert.match(

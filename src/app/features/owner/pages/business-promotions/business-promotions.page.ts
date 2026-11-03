@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, signal, untracked, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, viewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
@@ -59,7 +59,7 @@ export class BusinessPromotionsPage implements HasUnsavedChanges {
   private readonly lang = toSignal(this.transloco.langChanges$, {
     initialValue: this.transloco.getActiveLang(),
   });
-  protected readonly id = RouteBusinessId.routeBusinessId();
+  protected readonly id = RouteBusinessId.routeBusinessId((id) => this.load(id));
 
   /** Promotion in the form sheet: null = new, undefined = closed. */
   protected readonly editing = signal<Promotion | null | undefined>(undefined);
@@ -70,13 +70,6 @@ export class BusinessPromotionsPage implements HasUnsavedChanges {
   protected readonly phase = PromotionPhases.promotionPhase;
   protected readonly phaseClass = PHASE_CLASS;
   private readonly form = viewChild(PromotionForm);
-
-  constructor() {
-    effect(() => {
-      const id = this.id();
-      if (id) untracked(() => void this.load(id));
-    });
-  }
 
   protected async load(id = this.id()): Promise<void> {
     await Promise.all([this.panel.load(id), this.promos.load(id)]);

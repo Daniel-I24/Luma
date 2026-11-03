@@ -4,13 +4,13 @@ import { FunctionsFetchError, FunctionsHttpError } from '@supabase/supabase-js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ConnectivityService } from '@core/network/connectivity.service';
 import { SupabaseService } from '@core/supabase/supabase.service';
-import { GeocodePlaceSearchRepository, PlaceSearchRepository } from '@shared/geo/place-search.repository';
+import { PlaceSearchRepository } from '@shared/geo/place-search.repository';
 import { PlaceSearchStore } from './place-search.store';
 
 const CENTRO = { label: 'Centro, Pasto', kind: 'neighbourhood', lat: 1.214, lng: -77.281 };
 const near = { lat: 1.21, lng: -77.28 };
 
-describe('GeocodePlaceSearchRepository', () => {
+describe('PlaceSearchRepository', () => {
   const invoke = vi.fn();
   const online = signal(true);
   const repo = () => {
@@ -20,7 +20,7 @@ describe('GeocodePlaceSearchRepository', () => {
         { provide: ConnectivityService, useValue: { online } },
       ],
     });
-    return TestBed.runInInjectionContext(() => new GeocodePlaceSearchRepository());
+    return TestBed.runInInjectionContext(() => new PlaceSearchRepository());
   };
   beforeEach(() => invoke.mockReset());
 

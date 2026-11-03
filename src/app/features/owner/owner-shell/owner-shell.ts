@@ -1,17 +1,10 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  untracked,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, untracked } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { filter, map } from 'rxjs';
 import { LumaIcon, LumaTabBar, type TabBarItem } from '@design-system';
-import { OWNER_SECTIONS, type OwnerSection, ownerPaths } from '@shared/account/owner-paths';
+import { OWNER_SECTIONS, type OwnerSection, ownerPaths } from '@shared/account/account-paths';
 import { TourHelpButton } from '@shared/tutorial/tour-help-button';
 import { TourRoutes } from '@shared/tutorial/tour-registry';
 import { PollWhileVisible } from '@shared/ui/poll-while-visible';

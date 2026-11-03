@@ -1,5 +1,5 @@
 import type { WompiEnvironment } from './merchant-credentials.ts';
-import { SecureCompare, sha256Hex } from './secure-compare.ts';
+import { SecureCompare, sha256Hex } from '../secure-compare.ts';
 
 /** The transaction fields Luma reads from an event (never the customer's email or name). */
 export interface EventTransaction {

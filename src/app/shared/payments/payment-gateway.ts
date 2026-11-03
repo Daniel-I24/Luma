@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { ExternalUrls } from '@core/config/external-urls';
-import { ExternalBrowser } from '@core/native/external-browser';
+import { ExternalBrowser } from '@core/native/native-actions';
 import { PaymentRepository } from './payment.repository';
 
 export type PaymentMethod = 'pay_at_pickup' | 'online';

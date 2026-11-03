@@ -19,7 +19,52 @@ import { PlaceResults } from '../place-results/place-results';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TourHelpButton, TranslocoModule, LumaIcon, LumaSearchInput, MapFilterBar, PlaceResults],
-  templateUrl: './map-top-bar.html',
+  template: `
+    <ng-container *transloco="let t">
+      <form class="pointer-events-auto mx-4" role="search" data-tour="map-search" (submit)="searchPlaces($event)">
+        <app-luma-search-input
+          inputId="map-search"
+          [label]="t('map.search.label')"
+          [placeholder]="t('map.search.placeholder')"
+          [clearLabel]="t('map.search.clear')"
+          [(value)]="query"
+        />
+      </form>
+
+      @if (places.open()) {
+        <app-place-results
+          [places]="places.places()"
+          [loading]="places.loading()"
+          [errorKey]="places.errorKey()"
+          [attribution]="places.attribution()"
+          (choose)="goTo($event)"
+          (dismiss)="places.close()"
+        />
+      } @else if (places.canSearch(query())) {
+        <button
+          type="button"
+          class="pointer-events-auto mx-4 inline-flex min-h-11 items-center gap-2 self-start rounded-full border border-border-subtle bg-surface-elevated px-4 text-caption font-semibold text-fg-brand shadow-sm focus-visible:outline-2 focus-visible:outline-border-focus"
+          (click)="searchPlaces()"
+        >
+          <app-luma-icon name="search" size="sm" />
+          {{ t('map.places.search', { query: query().trim() }) }}
+        </button>
+      }
+
+      <p
+        class="pointer-events-auto mx-4 my-0 inline-flex max-w-[calc(100%-var(--spacing-8))] items-center gap-1 self-start rounded-full border border-border-subtle bg-surface-elevated px-3 py-1 text-caption font-semibold text-fg-muted shadow-sm"
+        role="status"
+      >
+        <app-luma-icon class="text-fg-brand" name="pin" size="sm" />
+        {{ t(zoneKey()) }}
+      </p>
+
+      <div class="flex items-center gap-2 pe-4">
+        <app-map-filter-bar class="min-w-0 flex-1" data-tour="map-filters" />
+        <app-tour-help-button class="pointer-events-auto shrink-0 rounded-full bg-surface-elevated shadow-sm" id="map" />
+      </div>
+    </ng-container>
+  `,
   host: {
     class:
       'pointer-events-none absolute inset-x-0 top-0 z-20 flex flex-col gap-2 pt-[calc(env(safe-area-inset-top)+var(--spacing-3))]',

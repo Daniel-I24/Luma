@@ -87,10 +87,7 @@ function walk(dir, out = []) {
 }
 
 export function run(root = ROOT) {
-  // design-preview is a development-only showcase (dropped from production builds).
-  const files = walk(join(root, 'src', 'app')).filter(
-    (f) => !f.endsWith('.spec.ts') && !f.replaceAll('\\', '/').includes('/features/design-preview/'),
-  );
+  const files = walk(join(root, 'src', 'app')).filter((f) => !f.endsWith('.spec.ts'));
   const routes = routeSegments(files.filter((f) => /routes\.ts$/.test(f)).map((f) => readFileSync(f, 'utf8')));
   const problems = [];
   for (const file of files) {

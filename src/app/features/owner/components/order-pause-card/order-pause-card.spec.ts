@@ -1,9 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { describe, expect, it, vi } from 'vitest';
-import { BusinessPause } from '@shared/business/models/business-pause';
-import type { Business } from '@shared/business/models/business.model';
-import { OrderPauseRepository } from '../../services/order-pause.repository';
+import { type Business, BusinessPause } from '@shared/business/models/business.model';
+import { OrderPauseRepository } from '../../services/order-operations.repository';
 import { OrderPauseCard } from './order-pause-card';
 
 const flush = () => new Promise((resolve) => setTimeout(resolve));

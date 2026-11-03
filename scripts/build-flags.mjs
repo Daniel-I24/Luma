@@ -3,12 +3,12 @@
  * Build flags that are not secrets, passed to `ng build` as `--define`
  * (never written to src/environments):
  *   - AI_MODE: "rules" (default) or "remote" → LUMA_AI_MODE in the bundle
- *     (src/app/core/config/ai-mode.ts reads it).
+ *     (src/app/core/config/build-flags.ts reads it).
  *   - PUSH_ENABLED: "1" or "0"; unset → on when android/app/google-services.json
  *     exists (push without it crashes the Android app, so "1" without the file
- *     fails) → LUMA_PUSH_ENABLED (src/app/core/config/push-enabled.ts).
+ *     fails) → LUMA_PUSH_ENABLED (src/app/core/push/push-platform.ts).
  *   - SUPPORT_WHATSAPP: Luma's support WhatsApp, 57 + 10 digits (no "+"),
- *     empty by default → LUMA_SUPPORT_WHATSAPP (src/app/core/config/support.ts).
+ *     empty by default → LUMA_SUPPORT_WHATSAPP (src/app/core/config/build-flags.ts).
  *   - LEGAL_CONTACT_EMAIL: the contact e-mail of the legal texts, empty by
  *     default → LUMA_CONTACT_EMAIL (also used by scripts/build-legal.mjs).
  * Used by scripts/apk.mjs and `npm run build:prod`. An unknown value fails

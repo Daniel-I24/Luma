@@ -5,9 +5,9 @@ import { MenuRepository } from '@shared/business/data/menu.repository';
 import type { Business, BusinessHours } from '@shared/business/models/business.model';
 import type { MenuItem } from '@shared/business/models/menu.model';
 import type { BusinessRating } from '@shared/business/models/review.model';
-import { BusinessStatusRules } from '@shared/business/utils/business-status-rules';
+import { BusinessStatusRules } from '@shared/business/domain/opening-hours';
 import { GeolocationService } from '@shared/geo/geolocation.service';
-import { Haversine } from '@shared/geo/haversine';
+import { Haversine } from '@shared/geo/distance';
 import type { PromotionDeal } from '@shared/promotions/promotion-deal';
 import { PromotionDealRepository } from '@shared/promotions/promotion-deal.repository';
 

@@ -3,10 +3,9 @@ import { TestBed } from '@angular/core/testing';
 import { Router, UrlTree, provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '@core/auth/auth.service';
-import { ACCOUNT_ERROR_PATH } from './account-homes';
 import { accountHomeGuard, accountReadyGuard, ownerGuard } from './account.guards';
 import { AccountProfileRepository } from './account-profile.repository';
-import { AccountType } from './account-type';
+import { ACCOUNT_ERROR_PATH, AccountType } from './account-type';
 import { PROFILE_RETRY_DELAYS_MS, SessionProfileStore } from './session-profile.store';
 
 describe('an unreadable profile is never a customer', () => {

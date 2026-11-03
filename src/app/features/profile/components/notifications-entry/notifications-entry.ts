@@ -10,7 +10,25 @@ import { UnreadNotifications } from '@shared/notifications/unread-notifications'
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoModule, RouterLink, LumaIcon],
-  templateUrl: './notifications-entry.html',
+  template: `
+    <a
+      *transloco="let t"
+      routerLink="/notifications"
+      class="pressable flex min-h-14 items-center gap-3 rounded-xl border border-border-subtle bg-surface px-4 text-fg no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+    >
+      <span class="inline-flex size-9 shrink-0 items-center justify-center rounded-md bg-surface-selected text-fg-brand">
+        <app-luma-icon name="bell" />
+      </span>
+      <span class="flex-1 text-body font-medium">{{ t('profile.notifications') }}</span>
+      @if (count(); as unread) {
+      <span class="rounded-full bg-danger px-2 py-0.5 text-caption font-bold text-danger-fg-on">
+        <span aria-hidden="true">{{ unread > 9 ? '9+' : unread }}</span>
+        <span class="sr-only">{{ t('tabBar.badge', { count: unread }) }}</span>
+      </span>
+      }
+      <app-luma-icon class="-rotate-90 text-fg-subtle" name="chevron-down" size="sm" />
+    </a>
+  `,
 })
 export class NotificationsEntry {
   private readonly unread = inject(UnreadNotifications, { optional: true });

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import shared from '../../../../../supabase/tests/fixtures/opening_hours_cases.json';
 import type { BusinessHours, BusinessStatus } from '../models/business.model';
-import { BusinessStatusRules } from '../utils/business-status-rules';
+import { BusinessStatusRules } from '../domain/opening-hours';
 import { OpeningHours } from './opening-hours';
 
 interface SharedCase {

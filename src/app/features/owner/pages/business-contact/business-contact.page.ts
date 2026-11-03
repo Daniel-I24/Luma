@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, signal, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaInput, ToastService } from '@design-system';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
@@ -81,7 +81,7 @@ export class BusinessContactPage {
   protected readonly panel = inject(PanelBusinessStore);
   private readonly repo = inject(OwnedBusinessRepository);
   private readonly toast = inject(ToastService);
-  protected readonly id = RouteBusinessId.routeBusinessId();
+  protected readonly id = RouteBusinessId.routeBusinessId((id) => this.load(id));
   protected readonly fields = FIELDS;
   protected readonly rules = CONTACT_RULES;
 
@@ -89,13 +89,6 @@ export class BusinessContactPage {
   protected readonly errors = signal<ContactErrors>({});
   protected readonly errorKey = signal<string | null>(null);
   protected readonly saving = signal(false);
-
-  constructor() {
-    effect(() => {
-      const id = this.id();
-      if (id) untracked(() => void this.load(id));
-    });
-  }
 
   protected async load(id = this.id()): Promise<void> {
     await this.panel.load(id);

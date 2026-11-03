@@ -15,22 +15,12 @@ const reportSchema = z.object({
   comment: ZodRules.optionalText(REPORT_COMMENT_RULE),
 });
 
-/** Contract: a user's reports about a business (Supabase is one implementation). */
-@Injectable({ providedIn: 'root', useFactory: () => new SupabaseReportRepository() })
-export abstract class ReportRepository {
-  /** Reports a business to the admins. */
-  public abstract create(
-    businessId: string,
-    reason: ReportReason,
-    comment: string | null,
-  ): Promise<RepoResult<true>>;
-}
-
-/** SupabaseReportRepository — reports through RLS. */
-class SupabaseReportRepository extends ReportRepository {
+/** ReportRepository — reports through RLS. */
+@Injectable({ providedIn: 'root' })
+export class ReportRepository {
   private readonly db = inject(SupabaseService).client;
 
-  /** @inheritdoc */
+  /** Reports a business to the admins. */
   public async create(
     businessId: string,
     reason: ReportReason,

@@ -869,3 +869,21 @@ alternative that was not taken. The safest, most reversible option wins.
   text sits on top. They drift one tile in 120 s; still with reduced motion.
 - **Why**: more life without images to license; masks keep one file for
   every theme. Buttons carry the saturated blue, ají and sun.
+
+## 2026-11-02 — Round 8, phase 4: cleanup with no change of behaviour
+
+- **Design preview removed**: the `/design-preview` showcase only existed
+  in development builds and duplicated what the design system and the
+  screen captures show. Removing it is reversible (git history) and
+  touches no production code path.
+- **Fewer, larger files**: templates and styles up to 45 / 40 lines move
+  into their component, files of one responsibility are merged, and an
+  abstract class with one implementation becomes that class (tests
+  replace it by provider). Every file stays within 150 lines.
+- **Merges follow the chunk**: code used only by lazy screens is never
+  merged into a module the first screen loads (esbuild keeps a module in
+  one chunk), so the initial bundle does not grow.
+- **The line goal (−10 %) is not met on purpose**: the remaining lines are
+  tests and required JSDoc; deleting them or reformatting would lower
+  quality without changing behaviour. Files −10.1 %, bundle smaller
+  (docs/optimization-report.md).

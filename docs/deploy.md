@@ -177,13 +177,12 @@ Sent on every response (`vercel.json`):
 
 Login, redirect to the map, MapLibre canvas with tiles from
 `tiles.openfreemap.org`, markers, theme change and language change work with
-zero CSP violations (verified on the 2026-10-17 build). In production
-`/design-preview` does not exist and opens the 404 page.
+zero CSP violations (verified on the 2026-10-17 build).
 
 ## Production-only behaviour
 
-- `/design-preview` (design-system showcase) exists only in development
-  builds; production drops the route and unknown URLs open the 404 page.
+- Unknown URLs open the 404 page. The development-only `/design-preview`
+  showcase was removed in round 8 (phase 4).
 
 ## Audits (2026-10-17, production build)
 

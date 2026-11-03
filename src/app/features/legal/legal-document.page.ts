@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { CONTACT_EMAIL } from '@core/config/support';
+import { CONTACT_EMAIL } from '@core/config/build-flags';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
@@ -22,7 +22,46 @@ const TABS: readonly LegalDocument[] = ['terms', 'privacy', 'refunds'];
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoModule, LumaIconButton, LumaTabs],
-  templateUrl: './legal-document.page.html',
+  template: `
+    <article
+      *transloco="let t"
+      class="mx-auto flex max-w-2xl flex-col gap-5 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-4))] pb-[calc(env(safe-area-inset-bottom)+var(--spacing-8))]"
+    >
+      <header class="flex items-center gap-2">
+        <app-luma-icon-button
+          icon="arrow-left"
+          variant="ghost"
+          [label]="t('common.back')"
+          (clicked)="back()"
+        />
+        <h1 class="m-0 text-title text-fg">{{ t(tabbed() ? 'profile.help.legal' : 'legal.' + document() + '.title') }}</h1>
+      </header>
+      @if (tabbed()) {
+      <app-luma-tabs idPrefix="legal" [label]="t('profile.help.legal')" [tabs]="tabs()" [selected]="document()" (selectedChange)="selectTab($event)" />
+      }
+
+      <p
+        class="m-0 rounded-md bg-warning-bg p-3 text-body-sm font-semibold text-warning-fg"
+        role="note"
+      >
+        {{ t('legal.draftNotice') }}
+      </p>
+      <p class="m-0 text-body-sm text-fg-muted">{{ t('legal.version', { version: version() }) }}</p>
+
+      <div class="flex flex-col gap-5" [id]="'legal-panel-' + document()" [attr.role]="tabbed() ? 'tabpanel' : null" [attr.aria-labelledby]="tabbed() ? 'legal-tab-' + document() : null">
+      @for (section of sections(); track section) {
+      <section class="flex flex-col gap-2" [attr.aria-labelledby]="'legal-' + section">
+        <h2 [id]="'legal-' + section" class="m-0 text-label-lg text-fg">
+          {{ t('legal.' + document() + '.sections.' + section + '.title') }}
+        </h2>
+        <p class="m-0 text-body text-fg-muted">
+          {{ t('legal.' + document() + '.sections.' + section + '.body', { email: email || t('legal.contactPending') }) }}
+        </p>
+      </section>
+      }
+      </div>
+    </article>
+  `,
   host: { class: 'block min-h-dvh bg-canvas' },
 })
 export class LegalDocumentPage {

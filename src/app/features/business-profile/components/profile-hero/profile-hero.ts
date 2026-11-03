@@ -5,7 +5,7 @@ import { LumaAvatar, LumaIcon, LumaIconButton, LumaImage, StatusBadge, BusinessT
 import type { Business, BusinessStatus } from '@shared/business/models/business.model';
 import { CategoryIcons } from '@shared/business/utils/category-icons';
 import { FavoriteButton } from '@shared/favorites/favorite-button/favorite-button';
-import { DistancePipe } from '@shared/geo/distance.pipe';
+import { DistancePipe } from '@shared/geo/distance';
 
 /**
  * ProfileHero — top of the business profile: cover (or a token background

@@ -97,7 +97,7 @@ To rotate the secret: set the new value in both places, Edge secret first.
 
 ## Turning it on in the app
 
-`src/app/core/config/push-enabled.ts` (`PUSH_ENABLED`) is `false` by
+`src/app/core/push/push-platform.ts` (`PUSH_ENABLED`) is `false` by
 default: without `google-services.json` the Android app would crash when
 registering. After steps 1-5, set it to `true`, rebuild the APK
 (`npm run apk:release`) and check on a phone: Profile > Notificaciones >

@@ -217,8 +217,18 @@ transaction that is rolled back.
 | `payments_round4.sql` | `attempt_in_progress` and its hint, two approved attempts (duplicate charge, paid once), refund notifications, void and refund rules, reconcile without id, `payments` closed to service_role, `business_order_items` |
 | `review_tax_id.sql` | NIT with two owners: pending is a flag, approval refused with `tax_id_in_use` |
 | `function_privileges.sql` | anon executes only `is_business_public(uuid)` (plus a commented allow-list); `set_updated_at` triggers still run |
+| `payment_service.sql` | service RPCs of the payment functions (service_role only), `admin_note_reconcile` with aal2 and logged, private cron settings |
+| `phone_verification.sql` | off by default nothing changes; with `require_phone_verification` the order, owner and review RPCs refuse `phone_not_verified`; phone synced from auth |
+| `round5.sql` | `own_business`, verifiable contacts, public trust summary, legal data correction, test push |
+| `round6.sql` | automatic contact verification: WhatsApp inbound, website file, strategy per kind, Instagram/Facebook in the admin queue |
+| `round7.sql` | businesses per owner, validation vectors shared with the app, CHECK constraints |
+| `round8.sql` | migration 55: test notification for admins only, `show_pending_businesses` visibility, pick-up only while in review |
 
 `scripts/db-drift.test.mjs` (`npm run test:scripts`) checks without a
 database: Storage folders vs delete-account, functions in config.toml, and
 REVOKE/search_path/reload/ASCII rules plus a SQL test for every exposed
 function in each pending migration.
+
+Files starting with `_` (`_helpers.sql` and the `_*_fixtures.sql`) are
+shared fixtures loaded by the suites, not suites. Round 8 phase 4 changed
+no SQL: migration 55 is still the only pending one.

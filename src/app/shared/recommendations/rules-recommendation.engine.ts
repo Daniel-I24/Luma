@@ -1,4 +1,4 @@
-import { TextNormalizer } from '@shared/utils/text-normalizer';
+import { SearchText } from '@shared/business/utils/search-text';
 import { ComboBuilder } from './combo-builder';
 import type { RecommendationEngine } from './recommendation-engine';
 import {
@@ -35,7 +35,7 @@ export class RecommendationScoring {
 
   /** True when a category fits the moment of the day. */
   public static suitsMoment(category: string, moment: DayMoment): boolean {
-    const words = TextNormalizer.normalizeText(category).split(/\s+/);
+    const words = SearchText.normalize(category).split(/\s+/);
     return MOMENT_CATEGORIES[moment].some((keyword) => words.some((w) => w.startsWith(keyword)));
   }
 

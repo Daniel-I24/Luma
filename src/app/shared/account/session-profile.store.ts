@@ -1,8 +1,7 @@
 import { Injectable, computed, effect, inject, signal, untracked } from '@angular/core';
 import { AuthService } from '@core/auth/auth.service';
-import { ACCOUNT_ERROR_PATH, ACCOUNT_HOMES } from './account-homes';
+import { ACCOUNT_ERROR_PATH, ACCOUNT_HOMES, type AccountType } from './account-type';
 import { type AccountProfile, AccountProfileRepository, type ProfileDetails } from './account-profile.repository';
-import type { AccountType } from './account-type';
 import { ONBOARDING_PATH, WelcomeTutorial } from './onboarding';
 
 /** Same minimum as is_profile_complete() in the database. */

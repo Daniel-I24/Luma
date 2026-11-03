@@ -23,7 +23,25 @@ const VARIANT_CLASS: Record<IconButtonVariant, string> = {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LumaIcon],
-  templateUrl: './luma-icon-button.html',
+  template: `
+    @if (href(); as url) {
+    <a [class]="classes()" [href]="url" [attr.aria-label]="label()">
+      <app-luma-icon [name]="icon()" [filled]="filledIcon()" />
+    </a>
+    } @else {
+    <button
+      type="button"
+      [class]="classes()"
+      [disabled]="disabled()"
+      [attr.aria-label]="label()"
+      [attr.aria-disabled]="disabled() ? 'true' : null"
+      [attr.aria-pressed]="pressed() ?? null"
+      (click)="clicked.emit()"
+    >
+      <app-luma-icon [name]="icon()" [filled]="filledIcon()" />
+    </button>
+    }
+  `,
   host: { class: 'inline-flex' },
 })
 export class LumaIconButton {

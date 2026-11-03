@@ -99,7 +99,7 @@ values; never paste the service_role key anywhere in the app.
 
 - Email templates: the **Magic Link** template must carry `{{ .Token }}`
   (docs/auth-emails.md); deleting an account needs it.
-- `SUPPORT_WHATSAPP` in `app.config.ts` (docs: `src/app/core/config/support.ts`)
+- `SUPPORT_WHATSAPP` in `app.config.ts` (docs: `src/app/core/config/build-flags.ts`)
   so owners can verify phones and WhatsApp.
 - Route: `ROUTE_PROVIDER`, `ROUTE_API_KEY`, `supabase functions deploy route`
   (docs/route.md); without them the app shows a straight-line estimate.

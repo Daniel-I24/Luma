@@ -60,10 +60,7 @@ function walk(dir, out = []) {
 
 /** Problems of the whole app against the exception list. */
 export function run(root = ROOT, exceptions = EXCEPTIONS) {
-  // design-preview is a development-only showcase (dropped from production builds).
-  const files = walk(join(root, 'src', 'app')).filter(
-    (f) => !f.endsWith('.spec.ts') && !f.replaceAll('\\', '/').includes('/features/design-preview/'),
-  );
+  const files = walk(join(root, 'src', 'app')).filter((f) => !f.endsWith('.spec.ts'));
   const listed = new Map(exceptions.map((e) => [`${e.file}#${e.field}`, e]));
   const used = new Set();
   const problems = [];

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, input, si
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaSkeleton } from '@design-system';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
-import type { SalesRange } from '../../services/sales-summary.repository';
+import type { SalesRange } from '../../services/order-operations.repository';
 import { type SalesBar, type SalesMeasure, SalesSummaryStore } from '../../state/sales-summary.store';
 import { SALES_RANGES } from '../../state/sales-summary.store';
 

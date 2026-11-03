@@ -12,7 +12,7 @@ import { provideTransloco } from '@jsverse/transloco';
 import { LanguageService } from '@core/i18n/language.service';
 import { ConnectivityService } from '@core/network/connectivity.service';
 import { AppEvents } from '@core/native/app-events';
-import { NativeShell } from '@core/native/native-shell';
+import { NativeShell } from '@core/native/native-device';
 import { PushRegistration } from '@core/push/push-registration.service';
 import { UpdateCheck } from '@core/update/update-check.service';
 import { AppErrorHandler } from '@shared/errors/app-error-handler';

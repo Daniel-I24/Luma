@@ -2,7 +2,7 @@ import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '@core/auth/auth.service';
-import { UserDataRegistry } from '@core/auth/user-data-registry';
+import { UserDataRegistry } from '@core/auth/session-end';
 import { ToastService } from '@design-system/toast/toast.service';
 import { FavoriteRepository } from '@shared/business/data/favorite.repository';
 import { FavoritesStore } from './favorites.store';

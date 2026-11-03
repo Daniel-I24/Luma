@@ -5,67 +5,6 @@
     "retry": "Try again",
     "back": "Back"
   },
-  "designPreview": {
-    "title": "Design System — Luma",
-    "subtitle": "Base components and design tokens",
-    "themeSelector": {
-      "label": "Active theme",
-      "sky": "Andean sky",
-      "night": "Night",
-      "lacquer": "Lacquer",
-      "maize": "Maize"
-    },
-    "sections": {
-      "buttons": "Buttons",
-      "cards": "Cards",
-      "bottomSheet": "Bottom Sheet",
-      "statusBadges": "Status badges",
-      "inputs": "Text fields",
-      "chips": "Chips"
-    },
-    "buttons": {
-      "primary": "Primary",
-      "secondary": "Secondary",
-      "ghost": "Ghost",
-      "danger": "Danger",
-      "dangerOutline": "Subtle danger",
-      "disabled": "Disabled",
-      "small": "Small",
-      "medium": "Medium",
-      "large": "Large"
-    },
-    "cards": {
-      "flat": "Flat",
-      "raised": "Raised",
-      "elevated": "Elevated",
-      "interactive": "Interactive",
-      "body": "Sample content for the card.",
-      "openSheet": "Open Bottom Sheet"
-    },
-    "bottomSheet": {
-      "title": "Business detail",
-      "body": "Business details would appear here.",
-      "close": "Close"
-    },
-    "inputs": {
-      "defaultLabel": "Email address",
-      "defaultPlaceholder": "name@example.com",
-      "hint": "We will use this email for notifications.",
-      "withError": "Field with error",
-      "errorMessage": "This field is required.",
-      "disabled": "Disabled field"
-    },
-    "chips": {
-      "default": "Default",
-      "primary": "Primary",
-      "accent": "Accent",
-      "success": "Success",
-      "warning": "Warning",
-      "danger": "Danger",
-      "dismissible": "Dismissible",
-      "selected": "Selected"
-    }
-  },
   "auth": {
     "login": {
       "title": "Sign in",

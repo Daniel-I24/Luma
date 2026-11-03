@@ -106,7 +106,7 @@ cobro duplicado…" and the admins "Hay un reembolso pendiente de hacer".
 
 If Wompi only accepts https redirect URLs, publish this page (for example
 `https://<usuario>.github.io/luma-pago/`) and set `APP_PAYMENT_RETURN_URL`
-in `supabase/functions/_shared/config/app-links.ts` to it. The page only
+in `supabase/functions/create-payment/index.ts` (`APP_PAYMENT_RETURN_URL`) to it. The page only
 forwards the query to the app; it never reads or stores anything.
 
 ```html

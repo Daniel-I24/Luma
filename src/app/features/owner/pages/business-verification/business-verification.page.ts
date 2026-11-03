@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, viewChild } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaBottomSheet, LumaButton, ToastService } from '@design-system';
-import { ownerPaths } from '@shared/account/owner-paths';
+import { ownerPaths } from '@shared/account/account-paths';
 import type { HasUnsavedChanges } from '@shared/forms/unsaved-changes.guard';
 import { DocList } from '../../components/doc-list/doc-list';
 import { LegalForm } from '../../components/legal-form/legal-form';
@@ -73,18 +73,11 @@ import { SetupReturn } from '../../components/setup-return/setup-return';
 export class BusinessVerificationPage implements HasUnsavedChanges {
   protected readonly panel = inject(PanelBusinessStore);
   protected readonly verification = inject(VerificationStore);
-  protected readonly id = RouteBusinessId.routeBusinessId();
+  protected readonly id = RouteBusinessId.routeBusinessId((id) => this.load(id));
   protected readonly backLink = computed(() => ownerPaths.section(this.id(), 'business'));
   private readonly legalForm = viewChild(LegalForm);
   private readonly toast = inject(ToastService);
   protected readonly confirming = signal(false);
-
-  constructor() {
-    effect(() => {
-      const id = this.id();
-      if (id) untracked(() => void this.load(id));
-    });
-  }
 
   protected async load(id = this.id()): Promise<void> {
     await Promise.all([this.panel.load(id), this.verification.load(id)]);

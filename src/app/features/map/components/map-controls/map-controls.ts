@@ -8,7 +8,17 @@ import { LumaIconButton } from '@design-system';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoModule, LumaIconButton],
-  templateUrl: './map-controls.html',
+  template: `
+    <ng-container *transloco="let t">
+      <app-luma-icon-button icon="locate" [label]="t('map.centerOnMe')" (clicked)="locate.emit()" />
+      <app-luma-icon-button icon="plus" [label]="t('map.controls.zoomIn')" (clicked)="zoomIn.emit()" />
+      <app-luma-icon-button
+        icon="minus"
+        [label]="t('map.controls.zoomOut')"
+        (clicked)="zoomOut.emit()"
+      />
+    </ng-container>
+  `,
   host: { class: 'absolute right-3 bottom-3 z-20 flex flex-col gap-2' },
 })
 export class MapControls {

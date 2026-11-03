@@ -5,7 +5,7 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LumaButton, LumaIcon } from '@design-system';
 import { CartActions } from '@shared/cart/cart-actions.service';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
-import { DistancePipe } from '@shared/geo/distance.pipe';
+import { DistancePipe } from '@shared/geo/distance';
 import { type PromotionDeal, PromotionPricing } from '../promotion-deal';
 
 /**

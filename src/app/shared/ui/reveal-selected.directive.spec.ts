@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { RevealSelectedDirective } from './reveal-selected.directive';
+import { RevealSelectedDirective } from './viewport.directives';
 
 function row(selectedLeft: number): HTMLElement {
   const container = document.createElement('div');

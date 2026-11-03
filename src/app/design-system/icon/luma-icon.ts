@@ -21,7 +21,26 @@ const SIZE_CLASS: Record<IconSize, string> = {
   selector: 'app-luma-icon',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './luma-icon.html',
+  template: `
+    <svg
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      focusable="false"
+      [attr.class]="sizeClass()"
+      fill="currentColor"
+      [style.fill-opacity]="filled() ? 1 : 0"
+      [attr.role]="label() ? 'img' : null"
+      [attr.aria-label]="label()"
+      [attr.aria-hidden]="label() ? null : 'true'"
+    >
+      @for (d of paths(); track $index) {
+      <path [attr.d]="d" />
+      }
+    </svg>
+  `,
   host: { class: 'inline-flex shrink-0' },
 })
 export class LumaIcon {

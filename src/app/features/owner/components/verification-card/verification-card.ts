@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, output } f
 import { RouterLink } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { type IconName, LumaButton, LumaIcon } from '@design-system';
-import { ownerPaths } from '@shared/account/owner-paths';
+import { ownerPaths } from '@shared/account/account-paths';
 import type { Business, VerificationStatus } from '@shared/business/models/business.model';
 import type { ReviewRequirement } from '@shared/business/verification/verification.model';
 import { REQUIREMENT_STEP } from '../../utils/review-checklist';

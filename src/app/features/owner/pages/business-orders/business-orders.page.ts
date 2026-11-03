@@ -1,14 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  signal,
-  untracked,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { NativeHaptics } from '@core/native/native-haptics';
+import { NativeHaptics } from '@core/native/native-actions';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import {
   TabIds,
@@ -63,7 +55,7 @@ export class BusinessOrdersPage {
   private readonly lang = toSignal(this.transloco.langChanges$, {
     initialValue: this.transloco.getActiveLang(),
   });
-  protected readonly id = RouteBusinessId.routeBusinessId();
+  protected readonly id = RouteBusinessId.routeBusinessId((id) => this.load(id));
 
   protected readonly tab = signal<OrderTab>('new');
   protected readonly rejecting = signal<BusinessOrder | null>(null);
@@ -88,10 +80,6 @@ export class BusinessOrdersPage {
   protected readonly visible = computed(() => OrderBoard.ordersOfTab(this.board.orders(), this.tab()));
 
   constructor() {
-    effect(() => {
-      const id = this.id();
-      if (id) untracked(() => void this.load(id));
-    });
     PollWhileVisible.pollWhileVisible(() => void this.board.refresh(), BOARD_REFRESH_MS);
   }
 

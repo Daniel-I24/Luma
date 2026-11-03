@@ -6,8 +6,7 @@ import { SupabaseService } from '@core/supabase/supabase.service';
 import { AuthErrors } from './auth-error';
 import { signInSchema, signUpSchema } from './auth.schemas';
 import { type SignUpProfile, SignUpMetadata } from './sign-up-profile';
-import { SignOutHooks } from './sign-out-hooks';
-import { UserDataRegistry } from './user-data-registry';
+import { SignOutHooks, UserDataRegistry } from './session-end';
 
 /** Shape of an operation result returned by every auth method. */
 export interface AuthResult {

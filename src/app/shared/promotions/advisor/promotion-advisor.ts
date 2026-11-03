@@ -1,5 +1,5 @@
 import { InjectionToken, inject } from '@angular/core';
-import { AI_MODE } from '@core/config/ai-mode';
+import { AI_MODE } from '@core/config/build-flags';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import { OwnerSalesRepository } from './owner-sales.repository';
 import { type IdeasResult, ideasResultSchema } from './promotion-idea';

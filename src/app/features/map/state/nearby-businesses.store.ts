@@ -4,14 +4,14 @@ import { BusinessHighlightsRepository } from '@shared/business/data/business-hig
 import { BusinessRepository } from '@shared/business/data/business.repository';
 import type { Business, BusinessStatus, Promotion } from '@shared/business/models/business.model';
 import type { BusinessRating } from '@shared/business/models/review.model';
-import { BusinessStatusRules } from '@shared/business/utils/business-status-rules';
+import { BusinessStatusRules } from '@shared/business/domain/opening-hours';
 import { NEARBY_RADIUS_KM } from '../map.constants';
 import { BusinessHoursCacheService } from '../services/business-hours-cache.service';
 import { GeolocationService } from '@shared/geo/geolocation.service';
 import { BusinessFilter } from '../utils/business-filter';
 import { type MapFilters, NO_FILTERS, MapFilterRules } from '../utils/map-filter-rules';
 import { CategoryIcons } from '@shared/business/utils/category-icons';
-import { Haversine } from '@shared/geo/haversine';
+import { Haversine } from '@shared/geo/distance';
 
 /** A nearby business ready to render: status, distance and highlights resolved. */
 export interface NearbyBusiness {

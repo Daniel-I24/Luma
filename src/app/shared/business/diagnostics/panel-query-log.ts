@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { type UserScopedState, UserDataRegistry } from '@core/auth/user-data-registry';
+import { type UserScopedState, UserDataRegistry } from '@core/auth/session-end';
 
 /** One read of Luma Negocios: what was asked and how many rows came back (never their content). */
 export interface PanelQuery {

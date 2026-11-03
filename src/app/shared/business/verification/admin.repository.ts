@@ -2,12 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import type { RepoResult } from '../data/business.repository';
 import type { Business } from '../models/business.model';
-import {
-  type OpenReport,
-  type ReviewDecision,
-  VERIFICATION_BUCKET,
-  type VerificationDoc,
-} from './verification.model';
+import { type OpenReport, type ReviewDecision, VERIFICATION_BUCKET, type VerificationDoc } from './verification.model';
 
 /** Signed document URLs live one minute. */
 export const SIGNED_URL_SECONDS = 60;
@@ -22,34 +17,9 @@ const ADMIN_ERRORS: Readonly<Record<string, string>> = {
 /** admin_access(): not an admin, an admin who still has to pass MFA (aal2), or ready. */
 export type AdminAccess = 'none' | 'needs_mfa' | 'ok';
 
-/** Contract: what the review team reads and decides (Supabase is one implementation). */
-@Injectable({ providedIn: 'root', useFactory: () => new SupabaseAdminRepository() })
-export abstract class AdminRepository {
-  /** 'none' also when the server cannot be reached: never a guess in favour of access. */
-  public abstract access(): Promise<AdminAccess>;
-  /** Businesses waiting for review. */
-  public abstract pendingBusinesses(): Promise<RepoResult<Business[]>>;
-  /** One business, or null when it does not exist. */
-  public abstract business(id: string): Promise<RepoResult<Business | null>>;
-  /** A short-lived URL to read a verification document. */
-  public abstract signedDocUrl(doc: VerificationDoc): Promise<RepoResult<string>>;
-  /** seenUpdatedAt: businesses.updated_at as shown; a newer one is stale_review. */
-  public abstract review(
-    id: string,
-    decision: ReviewDecision,
-    note: string | null,
-    seenUpdatedAt: string,
-  ): Promise<RepoResult<true>>;
-  /** Removes every document of a business (after approval). */
-  public abstract deleteDocs(docs: readonly VerificationDoc[]): Promise<RepoResult<true>>;
-  /** Reports not yet resolved. */
-  public abstract openReports(): Promise<RepoResult<OpenReport[]>>;
-  /** Closes a report. */
-  public abstract resolveReport(id: string, status: 'reviewed' | 'dismissed'): Promise<RepoResult<true>>;
-}
-
-/** SupabaseAdminRepository — admin reads and decisions (aal2 checked in SQL). */
-class SupabaseAdminRepository extends AdminRepository {
+/** AdminRepository — admin reads and decisions (aal2 checked in SQL). */
+@Injectable({ providedIn: 'root' })
+export class AdminRepository {
   private readonly db = inject(SupabaseService).client;
 
   /** Whether the user is an admin and has a verified second factor. */
@@ -58,7 +28,7 @@ class SupabaseAdminRepository extends AdminRepository {
     return !error && (data === 'ok' || data === 'needs_mfa') ? data : 'none';
   }
 
-  /** @inheritdoc */
+  /** Businesses waiting for review. */
   public async pendingBusinesses(): Promise<RepoResult<Business[]>> {
     const { data, error } = await this.db
       .from('businesses')
@@ -69,14 +39,14 @@ class SupabaseAdminRepository extends AdminRepository {
     return { data: data as Business[], errorKey: null };
   }
 
-  /** @inheritdoc */
+  /** One business, or null when it does not exist. */
   public async business(id: string): Promise<RepoResult<Business | null>> {
     const { data, error } = await this.db.from('businesses').select('*').eq('id', id).maybeSingle();
     if (error) return { data: null, errorKey: 'admin.errors.loadFailed' };
     return { data: data as Business | null, errorKey: null };
   }
 
-  /** @inheritdoc */
+  /** A short-lived URL to read a verification document. */
   public async signedDocUrl(doc: VerificationDoc): Promise<RepoResult<string>> {
     const { data, error } = await this.db.storage
       .from(VERIFICATION_BUCKET)
@@ -122,14 +92,14 @@ class SupabaseAdminRepository extends AdminRepository {
       : { data: true, errorKey: null };
   }
 
-  /** @inheritdoc */
+  /** Reports not yet resolved. */
   public async openReports(): Promise<RepoResult<OpenReport[]>> {
     const { data, error } = await this.db.rpc('admin_open_reports');
     if (error) return { data: null, errorKey: 'admin.errors.loadFailed' };
     return { data: data as OpenReport[], errorKey: null };
   }
 
-  /** @inheritdoc */
+  /** Closes a report. */
   public async resolveReport(id: string, status: 'reviewed' | 'dismissed'): Promise<RepoResult<true>> {
     const { error } = await this.db.rpc('resolve_report', { p_report_id: id, p_status: status });
     return error

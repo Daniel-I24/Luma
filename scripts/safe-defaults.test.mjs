@@ -18,9 +18,9 @@ test('database switches start at 0: online payments and phone verification', () 
 
 test('app switches: push off, AI by rules, phone verification off unless the build says otherwise', () => {
   // Round 8: push and AI come from the build (scripts/build-flags.mjs); without a define they stay off.
-  assert.match(read('src/app/core/config/push-enabled.ts'), /typeof LUMA_PUSH_ENABLED !== 'undefined' && LUMA_PUSH_ENABLED === 'true'/);
-  assert.match(read('src/app/core/config/ai-mode.ts'), /LUMA_AI_MODE === 'remote' \? 'remote' : 'rules'/);
-  assert.match(read('src/app/core/config/features.ts'), /factory: \(\) => false/);
+  assert.match(read('src/app/core/push/push-platform.ts'), /typeof LUMA_PUSH_ENABLED !== 'undefined' && LUMA_PUSH_ENABLED === 'true'/);
+  assert.match(read('src/app/core/config/build-flags.ts'), /LUMA_AI_MODE === 'remote' \? 'remote' : 'rules'/);
+  assert.match(read('src/app/core/config/build-flags.ts'), /factory: \(\) => false/);
 });
 
 test('no Firebase config is committed (push cannot start without it)', () => {

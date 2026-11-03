@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { FieldRules } from '@core/validation/field-rule';
 import { TextRules } from '@core/validation/text-rules';
@@ -23,7 +16,25 @@ import { MAX_DISPLAY_NAME_LENGTH, ProfileRepository } from '@shared/profile/prof
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoModule, LumaButton, LumaInput],
-  templateUrl: './display-name-field.html',
+  template: `
+    <form *transloco="let t" class="flex flex-col gap-2" (submit)="save($event)">
+      <app-luma-input
+        inputId="display-name"
+        [label]="t('profile.displayName.label')"
+        [placeholder]="t('profile.displayName.placeholder')"
+        [maxLength]="maxLength"
+        [hint]="t('profile.displayName.hint', { count: value().length, max: maxLength })"
+        autocomplete="nickname"
+        [errorMessage]="errorKey() ? t(errorKey()!) : undefined"
+        [value]="value()"
+        (valueChange)="edit($event)"
+        (blurred)="check()"
+      />
+      <app-luma-button type="submit" variant="secondary" [disabled]="saving() || unchanged()"
+        >{{ t('profile.displayName.save') }}</app-luma-button
+      >
+    </form>
+  `,
   host: { class: 'block' },
 })
 export class DisplayNameField implements OnInit {

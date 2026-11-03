@@ -14,7 +14,29 @@ const STAR_COUNT = 5;
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoPipe, LumaIcon],
-  templateUrl: './luma-rating-stars.html',
+  template: `
+    <span class="inline-flex items-center gap-1" aria-hidden="true">
+      @if (variant() === 'stars') { @for (star of starSlots; track star) {
+      <app-luma-icon
+        name="star"
+        size="sm"
+        [class]="star <= roundedRating() ? 'text-rating' : 'text-fg-disabled'"
+        [filled]="star <= roundedRating()"
+      />
+      } } @else {
+      <app-luma-icon class="text-rating" name="star" size="sm" [filled]="true" />
+      <span class="text-label-lg font-bold text-fg">{{ score() }}</span>
+      @if (reviewCount() !== null) {
+      <span class="text-caption text-fg-subtle"
+        >{{ 'rating.reviews' | transloco: { count: reviewCount() } }}</span
+      >
+      } }
+    </span>
+    <span class="sr-only">
+      @if (reviewCount() !== null) { {{ 'rating.labelWithReviews' | transloco: { rating: score(), count:
+      reviewCount() } }} } @else { {{ 'rating.label' | transloco: { rating: score() } }} }
+    </span>
+  `,
   host: { class: 'inline-flex items-center' },
 })
 export class LumaRatingStars {

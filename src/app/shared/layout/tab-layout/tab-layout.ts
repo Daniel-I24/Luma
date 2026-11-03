@@ -31,8 +31,36 @@ const MAIN_TABS: readonly TabBarItem[] = [
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterOutlet, LumaTabBar, CartBar, CartConflictSheet, OwnerReturnBanner],
-  templateUrl: './tab-layout.html',
-  styleUrl: './tab-layout.css',
+  template: `
+    <div class="tab-layout">
+      <app-owner-return-banner />
+      <!-- Very quiet food doodles behind every customer screen, under a veil (styles/doodles.css). -->
+      <div class="doodles doodles--faint doodles--veil pointer-events-none fixed inset-0 -z-10" aria-hidden="true"></div>
+      <main class="tab-layout__content">
+        <router-outlet />
+      </main>
+      <app-cart-bar />
+      <app-luma-tab-bar [items]="tabs" labelKey="tabBar.label" [badges]="badges()" />
+    </div>
+    <app-cart-conflict-sheet />
+  `,
+  styles: `
+    /* TabLayout styles — tokens only */
+
+    .tab-layout {
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      background-color: var(--color-canvas);
+    }
+
+    .tab-layout__content {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+    }
+  `,
   providers: [UnreadNotifications],
 })
 export class TabLayout {

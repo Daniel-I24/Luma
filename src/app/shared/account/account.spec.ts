@@ -4,9 +4,8 @@ import { Router, UrlTree, provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '@core/auth/auth.service';
 import { accountHomeGuard, ownerGuard } from './account.guards';
-import { OWNER_INVITE_PATH } from './account-homes';
 import { AccountProfileRepository } from './account-profile.repository';
-import { AccountType } from './account-type';
+import { AccountType, OWNER_INVITE_PATH } from './account-type';
 import { Phone } from './phone';
 import { SessionProfileStore } from './session-profile.store';
 

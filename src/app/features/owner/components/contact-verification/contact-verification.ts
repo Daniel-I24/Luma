@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, input, signal, untracked } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { ExternalUrls } from '@core/config/external-urls';
-import { SUPPORT_WHATSAPP } from '@core/config/support';
+import { SUPPORT_WHATSAPP } from '@core/config/build-flags';
 import { LumaButton, LumaIcon } from '@design-system';
 import type { Business } from '@shared/business/models/business.model';
 import {

@@ -39,30 +39,18 @@ interface ProfileRow {
   show_avatar_to_business: boolean | null;
 }
 
-/** Contract of the account profile data (Supabase is one implementation). */
-@Injectable({ providedIn: 'root', useFactory: () => new SupabaseAccountProfileRepository() })
-export abstract class AccountProfileRepository {
-  /** The signed-in user's profile. */
-  public abstract getMine(userId: string): Promise<RepoResult<AccountProfile>>;
-  /** customer → business_owner (one way); resolves to the resulting type. */
-  public abstract becomeBusinessOwner(): Promise<RepoResult<AccountType>>;
-  /** Name, mobile and residence (column grants; the server checks every value again). */
-  public abstract saveDetails(userId: string, details: ProfileDetails): Promise<RepoResult<true>>;
-  /** Shows or hides the user's photo to businesses. */
-  public abstract setShowAvatar(userId: string, show: boolean): Promise<RepoResult<true>>;
-}
-
 /**
  * PostgREST/Postgres codes of a missing column, table or function: the
  * database does not have this app version's migrations yet.
  */
 const OUTDATED_SCHEMA_CODES = new Set(['42703', 'PGRST204', '42P01', 'PGRST205', '42883', 'PGRST202']);
 
-/** SupabaseAccountProfileRepository — profiles through RLS and SECURITY DEFINER functions. */
-class SupabaseAccountProfileRepository extends AccountProfileRepository {
+/** AccountProfileRepository — profiles through RLS and SECURITY DEFINER functions. */
+@Injectable({ providedIn: 'root' })
+export class AccountProfileRepository {
   private readonly db = inject(SupabaseService).client;
 
-  /** @inheritdoc */
+  /** The signed-in user's profile. */
   public async getMine(userId: string): Promise<RepoResult<AccountProfile>> {
     const { data, error } = await this.db
       .from('profiles')
@@ -97,7 +85,7 @@ class SupabaseAccountProfileRepository extends AccountProfileRepository {
     return { data: AccountType.parse(data), errorKey: null };
   }
 
-  /** @inheritdoc */
+  /** Shows or hides the user's photo to businesses. */
   public async setShowAvatar(userId: string, show: boolean): Promise<RepoResult<true>> {
     const { error } = await this.db.from('profiles').update({ show_avatar_to_business: show }).eq('id', userId);
     return error ? { data: null, errorKey: 'profile.errors.save' } : { data: true, errorKey: null };

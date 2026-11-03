@@ -7,7 +7,7 @@ import { CartMath } from '@shared/cart/cart.model';
 import { FavoriteButton } from '@shared/favorites/favorite-button/favorite-button';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
 import { DateFormat } from '@shared/format/date-format';
-import { DistancePipe } from '@shared/geo/distance.pipe';
+import { DistancePipe } from '@shared/geo/distance';
 import type { FeedCard as FeedCardModel } from '../../models/feed-card.model';
 
 /**

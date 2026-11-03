@@ -1,8 +1,5 @@
-import { ownerPaths } from '@shared/account/owner-paths';
-import {
-  type AppNotification,
-  OWNER_NOTIFICATION_TYPES,
-} from '@shared/notifications/notification.repository';
+import { ownerPaths } from '@shared/account/account-paths';
+import { type AppNotification, OWNER_NOTIFICATION_TYPES } from '@shared/notifications/notification.repository';
 
 /** Types whose text does not depend on the status. */
 const FIXED_TEXT: Partial<Record<string, string>> = {

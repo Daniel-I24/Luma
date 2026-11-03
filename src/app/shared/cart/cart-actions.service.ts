@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { NativeHaptics } from '@core/native/native-haptics';
+import { NativeHaptics } from '@core/native/native-actions';
 import { ToastService } from '@design-system/toast/toast.service';
 import type { CartProduct } from './cart.model';
 import { CartStore } from './cart.store';

@@ -74,7 +74,7 @@ release build is unsigned and the script refuses to start.
 
 ## What the app does natively
 
-- **Back button** (`@capacitor/app`, `core/native/native-shell.ts`): goes
+- **Back button** (`@capacitor/app`, `core/native/native-device.ts`): goes
   back in the app; on the first screen it closes the app.
 - **Keyboard** (`@capacitor/keyboard`): the WebView resizes above the
   keyboard and the focused field scrolls into view.

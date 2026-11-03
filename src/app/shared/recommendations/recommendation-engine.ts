@@ -1,11 +1,8 @@
 import { InjectionToken, inject } from '@angular/core';
-import { AI_MODE } from '@core/config/ai-mode';
+import { AI_MODE } from '@core/config/build-flags';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import type { Recommendation, RecommendationRequest } from './recommendation.model';
-import {
-  FallbackRecommendationEngine,
-  RemoteRecommendationEngine,
-} from './remote-recommendation.engine';
+import { FallbackRecommendationEngine, RemoteRecommendationEngine } from './remote-recommendation.engine';
 import { RulesRecommendationEngine } from './rules-recommendation.engine';
 
 /**

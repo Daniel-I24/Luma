@@ -1,4 +1,5 @@
-import { METERS_PER_KM, MINUTES_PER_HOUR } from '@core/config/units';
+import { METERS_PER_KM, MINUTES_PER_HOUR, HALF } from '@core/config/units';
+import { Pipe, PipeTransform } from '@angular/core';
 
 /** Short distances are rounded to 10 m. */
 const METERS_STEP = 10;
@@ -19,3 +20,34 @@ export class Distance {
   }
 }
 
+const SQUARE = 2;
+/** Diameter in radii. */
+const DIAMETER = 2;
+const DEGREES_PER_PI = 180;
+/** Haversine — great-circle distance between two WGS-84 points. */
+export class Haversine {
+  /** Haversine formula — distance in km between two WGS-84 points. */
+  public static haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
+    const R = 6371;
+    const dLat = toRad(lat2 - lat1);
+    const dLng = toRad(lng2 - lng1);
+    const a =
+      Math.sin(dLat * HALF) ** SQUARE +
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng * HALF) ** SQUARE;
+    return R * DIAMETER * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+}
+
+
+function toRad(deg: number): number {
+  return (deg * Math.PI) / DEGREES_PER_PI;
+}
+
+/** Formats a distance in km for a language; null stays null (unknown). */
+@Pipe({ name: 'distance', standalone: true })
+export class DistancePipe implements PipeTransform {
+  /** A readable distance ("350 m", "1,2 km"), or null when unknown. */
+  public transform(km: number | null, lang: string): string | null {
+    return km === null ? null : Distance.formatDistance(km, lang);
+  }
+}

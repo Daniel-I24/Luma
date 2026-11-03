@@ -1,29 +1,21 @@
-import { createClient } from '@supabase/supabase-js';
-
-import { allowedOriginsFrom } from '../_shared/cors.ts';
 import { MerchantCredentialsFactory } from '../_shared/payments/merchant-credentials.ts';
 import { PaymentApplier } from '../_shared/payments/payment-applier.ts';
 import { PaymentLog } from '../_shared/payments/payment-log.ts';
 import { SupabasePaymentRepository } from '../_shared/payments/payment-repository.ts';
 import { WompiApi } from '../_shared/payments/wompi-api.ts';
+import { SupabaseEnv } from '../_shared/supabase-env.ts';
 import { type AdminPayments, createHandler, type VoidTarget } from './handler.ts';
 
-const url = Deno.env.get('SUPABASE_URL');
-const anonKey = Deno.env.get('SUPABASE_ANON_KEY');
-const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
-if (!url || !anonKey || !serviceRoleKey) {
-  throw new Error('void-payment: missing Supabase environment configuration');
-}
-const noSession = { auth: { persistSession: false, autoRefreshToken: false } };
-const service = createClient(url, serviceRoleKey, noSession);
+const env = SupabaseEnv.read('void-payment', { service: true });
+const service = env.service();
 const credentials = new MerchantCredentialsFactory((name) => Deno.env.get(name)).forPlatform();
 const ERROR_CODE = /^[a-z_]{1,40}$/;
 
 // The admin's own JWT: admin_request_void checks aal2 and writes the audit log.
 async function authenticate(token: string): Promise<AdminPayments | null> {
-  const db = createClient(url!, anonKey!, { ...noSession, global: { headers: { Authorization: `Bearer ${token}` } } });
-  const { data, error } = await db.auth.getUser(token);
-  if (error || !data.user) return null;
+  const caller = await env.asCaller(token);
+  if (!caller) return null;
+  const { db } = caller;
   return {
     requestVoid: async (paymentId): Promise<VoidTarget> => {
       const { data: rows, error: rpcError } = await db.rpc('admin_request_void', { p_payment_id: paymentId });
@@ -43,7 +35,7 @@ const applier = credentials ? new PaymentApplier(new SupabasePaymentRepository(s
 
 Deno.serve(
   createHandler({
-    allowedOrigins: allowedOriginsFrom(Deno.env.get('ALLOWED_ORIGINS'), Deno.env.get('ALLOWED_ORIGIN')),
+    allowedOrigins: SupabaseEnv.allowedOrigins(),
     authenticate,
     gateway: credentials && api && applier
       ? {

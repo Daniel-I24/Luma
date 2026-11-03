@@ -36,7 +36,44 @@ export class TabBarRoutes {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, RouterLinkActive, TranslocoPipe, LumaIcon],
-  templateUrl: './luma-tab-bar.html',
+  template: `
+    <nav class="luma-tab-bar" [attr.aria-label]="labelKey() | transloco">
+      <div
+        class="luma-tab-bar__track"
+        [style.--tab-count]="items().length"
+        [style.--tab-index]="activeIndex()"
+      >
+        <span
+          class="luma-tab-bar__indicator"
+          [class.luma-tab-bar__indicator--hidden]="activeIndex() < 0"
+          aria-hidden="true"
+        ></span>
+        <ul class="luma-tab-bar__list">
+          @for (item of items(); track item.path) {
+          <li class="luma-tab-bar__item">
+            <a
+              class="luma-tab-bar__link"
+              [routerLink]="item.path"
+              routerLinkActive="luma-tab-bar__link--active"
+              ariaCurrentWhenActive="page"
+            >
+              <span class="luma-tab-bar__pill">
+                <app-luma-icon class="luma-tab-bar__icon" [name]="item.icon" />
+                @if (badges()[item.path]; as count) {
+                <span class="luma-tab-bar__badge" aria-hidden="true">{{ badgeText(count) }}</span>
+                }
+              </span>
+              <span class="luma-tab-bar__label">{{ item.labelKey | transloco }}</span>
+              @if (badges()[item.path]; as count) {
+              <span class="sr-only">{{ badgeLabelKey() | transloco: { count } }}</span>
+              }
+            </a>
+          </li>
+          }
+        </ul>
+      </div>
+    </nav>
+  `,
   styleUrl: './luma-tab-bar.css',
 })
 export class LumaTabBar {

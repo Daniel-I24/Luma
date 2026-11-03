@@ -15,7 +15,17 @@ type Feedback = 'pop' | 'shake';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoModule, LumaIconButton],
-  templateUrl: './favorite-button.html',
+  template: `
+    <app-luma-icon-button
+      *transloco="let t"
+      icon="heart"
+      [variant]="variant()"
+      [pressed]="isFavorite()"
+      [filledIcon]="isFavorite()"
+      [label]="t(isFavorite() ? 'favorites.remove' : 'favorites.add')"
+      (clicked)="toggle()"
+    />
+  `,
   host: {
     class: 'inline-flex',
     '[class.motion-pop]': "feedback() === 'pop'",

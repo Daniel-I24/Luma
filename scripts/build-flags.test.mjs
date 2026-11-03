@@ -17,7 +17,7 @@ test('the APK and the production build pass the flag (it was never read before r
   assert.match(readFileSync(new URL('./apk.mjs', import.meta.url), 'utf8'), /'production,deploy', \.\.\.defineArgs\(env\)/);
   const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
   assert.match(pkg.scripts['build:prod'], /build-flags\.mjs ng build/);
-  assert.match(readFileSync(new URL('../src/app/core/config/ai-mode.ts', import.meta.url), 'utf8'), /LUMA_AI_MODE === 'remote'/);
+  assert.match(readFileSync(new URL('../src/app/core/config/build-flags.ts', import.meta.url), 'utf8'), /LUMA_AI_MODE === 'remote'/);
 });
 
 test('push follows Firebase: on with google-services.json, PUSH_ENABLED=0 turns it off, =1 without the file fails', () => {

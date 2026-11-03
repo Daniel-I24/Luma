@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BusinessPause } from './business-pause';
+import { BusinessPause } from './business.model';
 
 const NOW = Date.parse('2026-11-01T12:00:00Z');
 

@@ -12,7 +12,24 @@ import type { IconName } from '../icon/luma-icons';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LumaIcon],
-  templateUrl: './luma-image.html',
+  template: `
+    @if (src() && !failed()) {
+    <img
+      class="size-full object-cover"
+      decoding="async"
+      [attr.loading]="eager() ? 'eager' : 'lazy'"
+      [src]="src()"
+      [alt]="alt()"
+      [width]="width()"
+      [height]="height()"
+      (error)="failed.set(true)"
+    />
+    } @else {
+    <span class="flex size-full items-center justify-center" [attr.role]="alt() ? 'img' : null" [attr.aria-label]="alt() || null">
+      <app-luma-icon [name]="fallbackIcon()" [size]="iconSize()" />
+    </span>
+    }
+  `,
   // `contents`: the image fills its parent, so size the PARENT (a span with
   // size-14…); classes on <app-luma-image> itself are ignored (round 8 bug:
   // the menu row image took the whole row).

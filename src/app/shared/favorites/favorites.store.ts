@@ -1,9 +1,9 @@
 import { Injectable, computed, effect, inject, signal, untracked } from '@angular/core';
 import { AuthService } from '@core/auth/auth.service';
-import { type UserScopedState, UserDataRegistry } from '@core/auth/user-data-registry';
+import { type UserScopedState, UserDataRegistry } from '@core/auth/session-end';
 import { ToastService } from '@design-system/toast/toast.service';
 import { FavoriteRepository } from '@shared/business/data/favorite.repository';
-import { NativeHaptics } from '@core/native/native-haptics';
+import { NativeHaptics } from '@core/native/native-actions';
 
 /**
  * FavoritesStore — ids of the signed-in user's favourite businesses. Loaded

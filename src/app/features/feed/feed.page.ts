@@ -1,16 +1,9 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  inject,
-  signal,
-  viewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { TourHelpButton } from '@shared/tutorial/tour-help-button';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaEmptyState, LumaIconButton, LumaSkeleton } from '@design-system';
-import { NearViewportDirective } from '@shared/ui/near-viewport.directive';
+import { NearViewportDirective } from '@shared/ui/viewport.directives';
 import { FeedCard } from './components/feed-card/feed-card';
 import type { FeedCard as FeedCardModel } from './models/feed-card.model';
 import { FeedStore } from './state/feed.store';

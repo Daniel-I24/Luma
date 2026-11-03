@@ -1,29 +1,14 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  signal,
-  untracked,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouteMap } from '@shared/route/route-map/route-map';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { map } from 'rxjs';
-import {
-  LumaBottomSheet,
-  LumaButton,
-  LumaEmptyState,
-  LumaIcon,
-  LumaIconButton,
-  LumaSkeleton,
-} from '@design-system';
+import { LumaBottomSheet, LumaButton, LumaEmptyState, LumaIcon, LumaIconButton, LumaSkeleton } from '@design-system';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
 import { DateFormat } from '@shared/format/date-format';
 import { GeolocationService } from '@shared/geo/geolocation.service';
-import { Haversine } from '@shared/geo/haversine';
+import { Haversine } from '@shared/geo/distance';
 import { OrderEstimates } from '@shared/orders/order-estimates';
 import { OrderStatusBadge } from '@shared/orders/order-status-badge';
 import type { OrderWithItems } from '@shared/orders/order.model';

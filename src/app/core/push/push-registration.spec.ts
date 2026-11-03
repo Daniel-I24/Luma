@@ -4,7 +4,7 @@ import { Router, provideRouter } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '@core/auth/auth.service';
-import { SIGN_OUT_HOOK_TIMEOUT_MS, SignOutHooks } from '@core/auth/sign-out-hooks';
+import { SIGN_OUT_HOOK_TIMEOUT_MS, SignOutHooks } from '@core/auth/session-end';
 import { DeviceTokenRepository } from './device-token.repository';
 import { type PushAction, PushPlatform } from './push-platform';
 import { PushRegistration } from './push-registration.service';

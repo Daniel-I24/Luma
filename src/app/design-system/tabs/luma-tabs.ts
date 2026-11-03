@@ -36,7 +36,36 @@ export class TabIds {
   selector: 'app-luma-tabs',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './luma-tabs.html',
+  template: `
+    <div
+      role="tablist"
+      class="relative flex overflow-x-auto border-b border-border-subtle px-4 [scrollbar-width:none]"
+      [attr.aria-label]="label()"
+    >
+      <span
+        #indicator
+        class="absolute bottom-0 left-0 h-0.5 w-px origin-left bg-primary data-ready:transition-transform data-ready:duration-(--duration-normal) data-ready:ease-enter"
+        aria-hidden="true"
+      ></span>
+      @for (tab of tabs(); track tab.id) {
+      <button
+        #tabButton
+        type="button"
+        role="tab"
+        class="min-h-11 shrink-0 cursor-pointer border-0 bg-transparent px-4 text-label font-semibold whitespace-nowrap transition-colors duration-(--duration-fast) focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-border-focus"
+        [class]="selected() === tab.id ? 'text-fg-brand' : 'text-fg-muted'"
+        [id]="tabElementId(idPrefix(), tab.id)"
+        [attr.aria-selected]="selected() === tab.id"
+        [attr.aria-controls]="tabPanelId(idPrefix(), tab.id)"
+        [attr.tabindex]="selected() === tab.id ? 0 : -1"
+        (click)="selected.set(tab.id)"
+        (keydown)="onKeydown($event)"
+      >
+        {{ tab.label }}
+      </button>
+      }
+    </div>
+  `,
   host: { class: 'block' },
 })
 export class LumaTabs {

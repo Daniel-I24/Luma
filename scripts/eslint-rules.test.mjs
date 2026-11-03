@@ -15,7 +15,7 @@ const tester = new RuleTester({ languageOptions: { parser: tsParser } });
 test('layer-boundaries: features → shared → core, no feature-to-feature imports', () => {
   tester.run('layer-boundaries', rules['layer-boundaries'], {
     valid: [
-      { filename: at('features', 'map', 'map.page.ts'), code: "import { X } from '@shared/geo/haversine';" },
+      { filename: at('features', 'map', 'map.page.ts'), code: "import { X } from '@shared/geo/distance';" },
       { filename: at('features', 'map', 'a', 'b.ts'), code: "import { X } from '../map.page';" },
       { filename: at('shared', 'geo', 'x.ts'), code: "import { X } from '@core/config/units';" },
       { filename: at('design-system', 'x.ts'), code: "import { X } from '@core/theme/theme.service';" },
@@ -23,7 +23,7 @@ test('layer-boundaries: features → shared → core, no feature-to-feature impo
     invalid: [
       { filename: at('features', 'map', 'x.ts'), code: "import { X } from '@features/cart/cart.page';", errors: [{ messageId: 'feature' }] },
       { filename: at('features', 'map', 'a', 'x.ts'), code: "import { X } from '../../cart/cart.page';", errors: [{ messageId: 'feature' }] },
-      { filename: at('core', 'x.ts'), code: "import { X } from '@shared/geo/haversine';", errors: [{ messageId: 'layer' }] },
+      { filename: at('core', 'x.ts'), code: "import { X } from '@shared/geo/distance';", errors: [{ messageId: 'layer' }] },
       { filename: at('shared', 'x.ts'), code: "import { X } from '@features/map/map.page';", errors: [{ messageId: 'layer' }] },
     ],
   });

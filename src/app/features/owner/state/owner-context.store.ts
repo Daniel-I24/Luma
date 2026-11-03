@@ -1,11 +1,8 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { AuthService } from '@core/auth/auth.service';
-import { type UserScopedState, UserDataRegistry } from '@core/auth/user-data-registry';
-import { MAX_OWNED_BUSINESSES } from '@shared/account/owner-paths';
-import {
-  OwnedBusinessRepository,
-  type OwnedBusinessSummary,
-} from '@shared/business/data/owned-business.repository';
+import { type UserScopedState, UserDataRegistry } from '@core/auth/session-end';
+import { MAX_OWNED_BUSINESSES } from '@shared/account/account-paths';
+import { OwnedBusinessRepository, type OwnedBusinessSummary } from '@shared/business/data/owned-business.repository';
 
 /**
  * OwnerContextStore — the owner's businesses and the one Luma Negocios is

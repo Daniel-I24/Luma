@@ -1,17 +1,11 @@
-import { createClient } from '@supabase/supabase-js';
-
-import { APP_PAYMENT_RETURN_URL } from '../_shared/config/app-links.ts';
-import { allowedOriginsFrom } from '../_shared/cors.ts';
 import { MerchantCredentialsFactory } from '../_shared/payments/merchant-credentials.ts';
 import { PaymentLog } from '../_shared/payments/payment-log.ts';
+import { SupabaseEnv } from '../_shared/supabase-env.ts';
 import { createHandler, type CustomerPayments, type Prepared } from './handler.ts';
 
-const url = Deno.env.get('SUPABASE_URL');
-const anonKey = Deno.env.get('SUPABASE_ANON_KEY');
-if (!url || !anonKey) {
-  throw new Error('create-payment: missing Supabase environment configuration');
-}
-const noSession = { auth: { persistSession: false, autoRefreshToken: false } };
+const env = SupabaseEnv.read('create-payment');
+/** Wompi sends the customer back here after the checkout (informative only; deep link of AndroidManifest.xml). */
+const APP_PAYMENT_RETURN_URL = 'luma://payments/return';
 
 const MAX_WAIT_SECONDS = 600;
 
@@ -28,9 +22,9 @@ const refusal = (error: unknown): Prepared => {
 
 // Only the caller's JWT: the order, the attempts and the amount are decided by RLS and prepare_payment.
 async function authenticate(token: string): Promise<CustomerPayments | null> {
-  const db = createClient(url!, anonKey!, { ...noSession, global: { headers: { Authorization: `Bearer ${token}` } } });
-  const { data, error } = await db.auth.getUser(token);
-  if (error || !data.user) return null;
+  const caller = await env.asCaller(token);
+  if (!caller) return null;
+  const { db } = caller;
   return {
     emailConfirmed: async () => (await db.rpc('is_email_confirmed')).data === true,
     withinRateLimit: async () => (await db.rpc('hit_rate_limit', { p_bucket: 'create_payment' })).data === true,
@@ -52,7 +46,7 @@ async function authenticate(token: string): Promise<CustomerPayments | null> {
 
 Deno.serve(
   createHandler({
-    allowedOrigins: allowedOriginsFrom(Deno.env.get('ALLOWED_ORIGINS'), Deno.env.get('ALLOWED_ORIGIN')),
+    allowedOrigins: SupabaseEnv.allowedOrigins(),
     credentials: new MerchantCredentialsFactory((name) => Deno.env.get(name)).forPlatform(),
     redirectUrl: APP_PAYMENT_RETURN_URL,
     authenticate,

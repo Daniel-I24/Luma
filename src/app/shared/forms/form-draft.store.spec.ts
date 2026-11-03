@@ -4,7 +4,7 @@ import { Router, provideRouter } from '@angular/router';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '@core/auth/auth.service';
-import { UserDataRegistry } from '@core/auth/user-data-registry';
+import { UserDataRegistry } from '@core/auth/session-end';
 import { DRAFT_MAX_AGE_MS, FormDraftStore } from './form-draft.store';
 import { type HasUnsavedChanges, unsavedChangesGuard } from './unsaved-changes.guard';
 

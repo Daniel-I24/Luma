@@ -16,7 +16,7 @@ Two features use it:
 The build sets it (round 8): `AI_MODE=remote` in the environment of
 `npm run build:prod` or `npm run apk:release` becomes
 `ng build --define LUMA_AI_MODE='remote'` (`scripts/build-flags.mjs`), which
-`src/app/core/config/ai-mode.ts` reads. Without it the app is in `rules`.
+`src/app/core/config/build-flags.ts` reads. Without it the app is in `rules`.
 Before round 8 nothing read the variable, so every build was in rules mode
 and "Escanear menú" said Luma IA was not available.
 

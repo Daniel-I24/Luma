@@ -3,10 +3,10 @@ import { BusinessHighlightsRepository } from '@shared/business/data/business-hig
 import { BusinessRepository } from '@shared/business/data/business.repository';
 import { MenuRepository } from '@shared/business/data/menu.repository';
 import type { Business, BusinessHours } from '@shared/business/models/business.model';
-import { BusinessStatusRules } from '@shared/business/utils/business-status-rules';
+import { BusinessStatusRules } from '@shared/business/domain/opening-hours';
 import { FavoritesStore } from '@shared/favorites/favorites.store';
 import { GeolocationService } from '@shared/geo/geolocation.service';
-import { Haversine } from '@shared/geo/haversine';
+import { Haversine } from '@shared/geo/distance';
 import { RECOMMENDATION_ENGINE } from '@shared/recommendations/recommendation-engine';
 import type {
   DayMoment,

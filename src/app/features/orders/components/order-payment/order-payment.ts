@@ -23,7 +23,39 @@ const TONE: Readonly<Record<string, string>> = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoModule, LumaButton, LumaCheckmark],
   providers: [OrderPaymentStore],
-  templateUrl: './order-payment.html',
+  template: `
+    <section *transloco="let t" class="flex flex-col gap-3 rounded-xl border border-border-subtle bg-surface p-4" aria-labelledby="order-payment-title">
+      <h2 id="order-payment-title" class="m-0 text-title text-fg">{{ t('payments.title') }}</h2>
+      <p class="m-0 inline-flex items-center gap-1 self-start rounded-full px-3 py-1 text-label" [class]="tone()" role="status">
+        @if (status() === 'approved') {
+        <app-luma-checkmark [size]="16" />
+        }
+        {{ t('payments.status.' + status()) }}
+      </p>
+
+      @if (awaiting()) { @if (payment.canStillPay()) {
+      <p class="m-0 text-body-sm text-fg-muted">
+        {{ t('payments.attemptsLeft', { count: payment.attemptsLeft() }) }}
+      </p>
+      }
+      <app-luma-button
+        variant="primary"
+        [fullWidth]="true"
+        [disabled]="payment.busy() || payment.blockedKey() !== null"
+        (clicked)="payment.pay()"
+        >{{ t(payment.busy() ? 'payments.opening' : payKey()) }}</app-luma-button
+      >
+      @if (payment.blockedKey(); as cause) {
+      <p class="m-0 text-body-sm text-fg-muted" role="status">{{ t(cause, { time: payment.waitLabel() }) }}</p>
+      } @if (!payment.canStillPay()) {
+      <p class="m-0 text-body-sm text-fg-muted">{{ t('payments.noMoreAttempts') }}</p>
+      } } @if (payment.errorKey(); as key) {
+      <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
+      } @if (status() === 'refund_required') {
+      <p class="m-0 text-body-sm text-fg-muted">{{ t('payments.refundInfo') }}</p>
+      }
+    </section>
+  `,
 })
 export class OrderPayment {
   protected readonly payment = inject(OrderPaymentStore);

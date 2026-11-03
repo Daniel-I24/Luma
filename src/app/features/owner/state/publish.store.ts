@@ -4,7 +4,7 @@ import { MenuRepository } from '@shared/business/data/menu.repository';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
 import type { BusinessHours } from '@shared/business/models/business.model';
 import type { MenuItem } from '@shared/business/models/menu.model';
-import { PublishRequirements } from '../utils/publish-requirements';
+import { PublishRequirements } from '../utils/publication-rules';
 import { PanelBusinessStore } from './panel-business.store';
 
 /**

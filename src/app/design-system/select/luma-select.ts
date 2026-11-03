@@ -19,7 +19,45 @@ export interface SelectOption {
   selector: 'app-luma-select',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './luma-select.html',
+  template: `
+    <div class="luma-input">
+      @if (label()) {
+      <label class="luma-input__label" [for]="selectId()">
+        {{ label() }} @if (required()) {
+        <span class="luma-input__required" aria-hidden="true">*</span>
+        }
+      </label>
+      }
+
+      <div
+        class="luma-input__wrapper"
+        [class.luma-input__wrapper--error]="!!errorMessage()"
+        [class.luma-input__wrapper--disabled]="disabled()"
+      >
+        <select
+          class="luma-input__field luma-input__field--select"
+          [id]="selectId()"
+          [disabled]="disabled()"
+          [required]="required()"
+          [attr.aria-invalid]="errorMessage() ? 'true' : null"
+          [attr.aria-describedby]="describedBy()"
+          (change)="onChange($event)"
+        >
+          @if (placeholder() !== undefined) {
+          <option value="" [selected]="value() === ''">{{ placeholder() }}</option>
+          } @for (option of options(); track option.value) {
+          <option [value]="option.value" [selected]="option.value === value()">{{ option.label }}</option>
+          }
+        </select>
+      </div>
+
+      @if (errorMessage()) {
+      <span [id]="selectId() + '-error'" class="luma-input__error" role="alert">{{ errorMessage() }}</span>
+      } @else if (hint()) {
+      <span [id]="selectId() + '-hint'" class="luma-input__hint">{{ hint() }}</span>
+      }
+    </div>
+  `,
   styleUrl: '../input/luma-input.css',
 })
 export class LumaSelect {

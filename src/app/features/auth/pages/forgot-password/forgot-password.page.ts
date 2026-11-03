@@ -23,7 +23,9 @@ type Step = 'email' | 'code';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, TranslocoModule, LumaButton, LumaCard, LumaInput],
   templateUrl: './forgot-password.page.html',
-  styleUrl: './forgot-password.page.css',
+  styles: `
+    @import '../../auth-page.css';
+  `,
 })
 export class ForgotPasswordPage {
   private readonly codes = inject(AuthCodeService);

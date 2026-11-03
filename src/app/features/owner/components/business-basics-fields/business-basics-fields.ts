@@ -7,7 +7,7 @@ import { LumaInput, LumaSelect, type SelectOption } from '@design-system';
 import { BUSINESS_CATEGORIES } from '@shared/business/data/business-categories';
 import { type FieldErrors, FormErrors } from '@shared/forms/form-errors';
 import { type GeoCoords, PASTO_CENTRE } from '@shared/geo/geolocation.service';
-import { Haversine } from '@shared/geo/haversine';
+import { Haversine } from '@shared/geo/distance';
 import type { Place } from '@shared/geo/place-search.repository';
 import type { Residence } from '@shared/geo/residence';
 import { ResidencePicker } from '@shared/geo/residence-picker/residence-picker';

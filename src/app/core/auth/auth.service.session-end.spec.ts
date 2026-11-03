@@ -4,7 +4,7 @@ import { FunctionsFetchError, FunctionsHttpError } from '@supabase/supabase-js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import { AuthService } from './auth.service';
-import { UserDataRegistry } from './user-data-registry';
+import { UserDataRegistry } from './session-end';
 
 describe('AuthService — ending the session', () => {
   let authListener: (event: string, session: unknown) => void;

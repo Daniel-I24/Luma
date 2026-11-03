@@ -72,8 +72,8 @@ export function scan(root = APP) {
   const all = [];
   for (const path of templates(root)) {
     const text = readFileSync(path, 'utf8');
-    // The dev-only design preview is no app screen; design-system fields get their texts from the caller.
-    if (path.includes(`${sep}design-preview${sep}`) || path.includes(`${sep}design-system${sep}`)) continue;
+    // Design-system fields get their texts from the caller.
+    if (path.includes(`${sep}design-system${sep}`)) continue;
     for (const problem of findMissing(text)) all.push({ file: relative(ROOT, path), ...problem });
   }
   return all;

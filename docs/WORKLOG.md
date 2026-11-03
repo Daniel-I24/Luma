@@ -203,6 +203,16 @@ Phase 3 (imagen visual):
   token, drift with reduced motion respected, veils; quiet-doodle check in
   check:contrast.
 
+Phase 4 (limpieza y optimización, docs/optimization-report.md):
+- 914 → 822 files (−10.1 %), lines −1.3 % (goal not met, see DECISIONS),
+  initial bundle 670.15 → 670.04 kB; clones 79 → 51.
+- Templates inline, same-responsibility merges, single-implementation
+  abstractions collapsed, `SupabaseEnv` and `SecureCompare` shared by the
+  Edge Functions, design preview and its keys removed.
+- Green: build, lint, 862 app tests, 112 script tests, 154 Deno tests +
+  check + lint, 776 SQL checks, every check:* (responsive too), secret
+  scan, npm audit 0.
+
 ## Round 7 (2026-10-31)
 
 - Migration 54 `20261104000000_round7` (pending review; 52 and 53 applied):

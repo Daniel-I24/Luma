@@ -1,6 +1,6 @@
 import { Injectable, type Signal, type WritableSignal, computed, effect, inject, signal, untracked } from '@angular/core';
 import { AuthService } from '@core/auth/auth.service';
-import { type UserScopedState, UserDataRegistry } from '@core/auth/user-data-registry';
+import { type UserScopedState, UserDataRegistry } from '@core/auth/session-end';
 import { MS_PER_DAY } from '@core/config/units';
 import { DeviceStorage } from '@core/storage/device-storage';
 

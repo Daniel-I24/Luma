@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, inject, signal, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { TextRules } from '@core/validation/text-rules';
 import { LumaButton, LumaInput, ToastService } from '@design-system';
@@ -16,7 +16,7 @@ import { PanelStateView } from '../../components/panel-state/panel-state';
 import { ReReviewSheet } from '../../components/re-review-sheet/re-review-sheet';
 import { PanelBusinessStore } from '../../state/panel-business.store';
 import { EMPTY_DRAFT, BusinessDrafts } from '../../utils/business-draft';
-import { ReReview } from '../../utils/re-review';
+import { ReReview } from '../../utils/publication-rules';
 import { RouteBusinessId } from '../../utils/route-business-id';
 import { SetupReturn } from '../../components/setup-return/setup-return';
 
@@ -42,7 +42,7 @@ export class BusinessInfoPage implements HasUnsavedChanges {
   private readonly repo = inject(OwnedBusinessRepository);
   private readonly toast = inject(ToastService);
   private readonly document = inject(DOCUMENT);
-  protected readonly id = RouteBusinessId.routeBusinessId();
+  protected readonly id = RouteBusinessId.routeBusinessId((id) => this.load(id));
 
   protected readonly idPrefix = ID_PREFIX;
   protected readonly descriptionMax = DESCRIPTION_MAX;
@@ -62,13 +62,6 @@ export class BusinessInfoPage implements HasUnsavedChanges {
       this.prepMinutes.set(value.prepMinutes);
     },
   );
-
-  constructor() {
-    effect(() => {
-      const id = this.id();
-      if (id) untracked(() => void this.load(id));
-    });
-  }
 
   protected async load(id = this.id()): Promise<void> {
     await this.panel.load(id);

@@ -2,7 +2,7 @@ import { Injectable, effect, inject, signal, untracked } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
-import { SignOutHooks } from '@core/auth/sign-out-hooks';
+import { SignOutHooks } from '@core/auth/session-end';
 import { DeviceTokenRepository } from './device-token.repository';
 import { type PushAction, type PushChannel, type PushPermission, PushPlatform } from './push-platform';
 import { PushRoute } from './push-route';

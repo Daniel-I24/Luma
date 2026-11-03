@@ -4,7 +4,7 @@ import { BusinessRepository } from '@shared/business/data/business.repository';
 import { MenuRepository } from '@shared/business/data/menu.repository';
 import type { Business } from '@shared/business/models/business.model';
 import { GeolocationService } from '@shared/geo/geolocation.service';
-import { Haversine } from '@shared/geo/haversine';
+import { Haversine } from '@shared/geo/distance';
 import type { FeedCard } from '../models/feed-card.model';
 import { FeedCards } from '../utils/feed-cards';
 

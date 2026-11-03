@@ -1,7 +1,7 @@
 import { Injectable, effect, inject, signal } from '@angular/core';
 import { ThemeService } from '@core/theme/theme.service';
 import type { Theme } from '@core/theme/theme.service';
-import { NativeStatusBar } from './native-status-bar';
+import { NativeStatusBar } from './native-device';
 
 const DARK_THEMES: readonly Theme[] = ['night'];
 

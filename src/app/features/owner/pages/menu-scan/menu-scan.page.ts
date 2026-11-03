@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
-import { AI_MODE } from '@core/config/ai-mode';
+import { AI_MODE } from '@core/config/build-flags';
 import { FieldRules } from '@core/validation/field-rule';
 import { TextRules } from '@core/validation/text-rules';
 import { LumaButton, LumaSkeleton } from '@design-system';

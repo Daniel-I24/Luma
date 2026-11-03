@@ -3,7 +3,7 @@ import { DAYS_PER_WEEK, MINUTES_PER_DAY, MINUTES_PER_HOUR } from '@core/config/u
 
 const DAY_MINUTES = MINUTES_PER_DAY;
 /** Minutes before opening / closing that trigger the "soon" statuses. */
-export const SOON_WINDOW_MINUTES = 30;
+const SOON_WINDOW_MINUTES = 30;
 
 /** An opening interval of one calendar day, in minutes; `to` is exclusive. */
 export interface DayWindow {
@@ -103,5 +103,36 @@ export class OpeningHours {
 
   private crosses(row: HoursRow): boolean {
     return ClockTime.timeToMinutes(row.closes_at) < ClockTime.timeToMinutes(row.opens_at);
+  }
+}
+
+/** The business day follows Colombia, like create_order (America/Bogota). */
+const BUSINESS_TIME_ZONE = 'America/Bogota';
+
+/** BusinessDay — the calendar day in Bogotá. */
+export class BusinessDay {
+  /** "YYYY-MM-DD" of an instant in Bogota. */
+  public static bogotaDay(instant: Date): string {
+    return instant.toLocaleDateString('en-CA', { timeZone: BUSINESS_TIME_ZONE });
+  }
+}
+
+/** BusinessStatusRules — open, closing soon, closed or opening soon. */
+export class BusinessStatusRules {
+  /**
+   * Status of a business at a moment (open, closing soon, opening soon or
+   * closed), from the app's single opening-hours rule (OpeningHours).
+   */
+  public static getBusinessStatus(
+    hours: readonly BusinessHours[],
+    now: Date = new Date(),
+    soonWindowMinutes = SOON_WINDOW_MINUTES,
+  ): BusinessStatus {
+    return OpeningHours.from(hours).statusAt(now, soonWindowMinutes);
+  }
+
+  /** Whether a status means the business is serving customers now. */
+  public static isOpenStatus(status: BusinessStatus): boolean {
+    return status === 'open' || status === 'closing-soon';
   }
 }

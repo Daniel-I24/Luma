@@ -1,4 +1,4 @@
-import type { OwnerBusinessScreen, OwnerSection } from '@shared/account/owner-paths';
+import type { OwnerBusinessScreen, OwnerSection } from '@shared/account/account-paths';
 import type {
   Business,
   BusinessHours,

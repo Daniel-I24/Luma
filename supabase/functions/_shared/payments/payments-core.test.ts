@@ -6,7 +6,7 @@ import { MerchantCredentialsFactory } from './merchant-credentials.ts';
 import { Money } from './money.ts';
 import { PaymentLog } from './payment-log.ts';
 import { type PaymentStatus, PaymentStateMachine } from './payment-state-machine.ts';
-import { sha256Hex } from './secure-compare.ts';
+import { sha256Hex } from '../secure-compare.ts';
 import { DOC_INTEGRITY_SECRET, sandboxSecrets } from './payments.test-helper.ts';
 
 Deno.test('Money is whole cents from whole pesos; floats and negatives are refused', () => {

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { SUPPORT_WHATSAPP } from '@core/config/support';
+import { SUPPORT_WHATSAPP } from '@core/config/build-flags';
 import type { Business } from '@shared/business/models/business.model';
 import { ContactVerificationRepository } from '@shared/business/verification/contact-verification.repository';
 import { ContactVerifiers } from '@shared/business/verification/contact-verifier';

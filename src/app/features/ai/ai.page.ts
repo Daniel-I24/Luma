@@ -4,7 +4,7 @@ import { TourHelpButton } from '@shared/tutorial/tour-help-button';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaChip, LumaEmptyState, LumaIcon, LumaSkeleton } from '@design-system';
 import { DAY_MOMENTS, type Recommendation } from '@shared/recommendations/recommendation.model';
-import { RevealSelectedDirective } from '@shared/ui/reveal-selected.directive';
+import { RevealSelectedDirective } from '@shared/ui/viewport.directives';
 import { ComboCard } from './components/combo-card/combo-card';
 import { RecommendationList } from './components/recommendation-list/recommendation-list';
 import { AiStore } from './state/ai.store';

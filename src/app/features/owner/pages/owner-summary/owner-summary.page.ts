@@ -1,15 +1,8 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  untracked,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { ToastService } from '@design-system';
-import { ownerPaths } from '@shared/account/owner-paths';
+import { ownerPaths } from '@shared/account/account-paths';
 import type { PromotionIdea } from '@shared/promotions/advisor/promotion-idea';
 import { IdeasCard } from '../../components/ideas-card/ideas-card';
 import { OrderPauseCard } from '../../components/order-pause-card/order-pause-card';
@@ -48,7 +41,36 @@ import { TodayStatsCalculator } from '../../utils/today-stats';
     VerificationCard,
   ],
   providers: [PanelBusinessStore, PublishStore, VerificationStore, BusinessOrdersStore],
-  templateUrl: './owner-summary.page.html',
+  template: `
+    <div *transloco="let t" class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-4 pb-6">
+      <app-panel-state [state]="panel.state()" (retry)="load()">
+        @if (panel.business(); as business) {
+        <app-owner-hero [business]="business" />
+
+        <app-verification-card
+          [business]="business"
+          [missing]="missing()"
+          [busy]="verification.busy()"
+          [errorKey]="verification.errorKey()"
+          (submitted)="submitForReview()"
+        />
+
+        @if (business.verification_status === 'approved') {
+        <app-publish-card data-tour="owner-publish" [business]="business" (toggled)="setPublished($event)" />
+        @if (business.is_active) {
+        <app-order-pause-card data-tour="owner-pause" [business]="business" />
+        }
+        <app-ideas-card [businessId]="business.id" (create)="createFromIdea($event)" />
+        }
+
+        <app-today-stats data-tour="owner-stats" [stats]="stats()" [ordersLink]="ordersLink()" />
+        @if (business.verification_status === 'approved') {
+        <app-sales-summary-card [businessId]="business.id" />
+        }
+        }
+      </app-panel-state>
+    </div>
+  `,
   host: { class: 'block' },
 })
 export class OwnerSummaryPage {
@@ -59,7 +81,7 @@ export class OwnerSummaryPage {
   private readonly context = inject(OwnerContextStore);
   private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
-  protected readonly id = RouteBusinessId.routeBusinessId();
+  protected readonly id = RouteBusinessId.routeBusinessId((id) => this.load(id));
 
   protected readonly missing = computed(() => {
     const business = this.panel.business();
@@ -74,13 +96,6 @@ export class OwnerSummaryPage {
   });
   protected readonly stats = computed(() => TodayStatsCalculator.todayStats(this.orders.orders(), new Date()));
   protected readonly ordersLink = computed(() => ownerPaths.section(this.id(), 'orders'));
-
-  constructor() {
-    effect(() => {
-      const id = this.id();
-      if (id) untracked(() => void this.load(id));
-    });
-  }
 
   protected async load(id = this.id()): Promise<void> {
     await Promise.all([

@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, ToastService } from '@design-system';
-import { ownerPaths } from '@shared/account/owner-paths';
+import { ownerPaths } from '@shared/account/account-paths';
 import { newBusinessSchema } from '@shared/business/data/business-write.schemas';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
 import { DraftNotice } from '@shared/forms/draft-notice/draft-notice';
@@ -23,7 +23,33 @@ const ID_PREFIX = 'register';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoModule, LumaButton, BusinessBasicsFields, PanelHeader, DraftNotice],
-  templateUrl: './register-business.page.html',
+  template: `
+    <form
+      *transloco="let t"
+      class="mx-auto flex max-w-lg flex-col gap-5 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6"
+      novalidate
+      (submit)="submit($event)"
+    >
+      <app-panel-header
+        [heading]="t('businessPanel.register.title')"
+        [subtitle]="t('businessPanel.register.subtitle')"
+        [backLink]="backLink()"
+      />
+      <app-draft-notice [draft]="autosave" />
+
+      <app-business-basics-fields [idPrefix]="idPrefix" [(errors)]="errors" [(draft)]="draft" />
+
+      @if (errorKey(); as key) {
+      <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+        {{ t(key) }}
+      </p>
+      }
+      <app-luma-button type="submit" size="lg" [fullWidth]="true" [disabled]="saving()"
+        >{{ t(saving() ? 'businessPanel.form.saving' : 'businessPanel.register.submit')
+        }}</app-luma-button
+      >
+    </form>
+  `,
   host: { class: 'block' },
 })
 export class RegisterBusinessPage implements HasUnsavedChanges {

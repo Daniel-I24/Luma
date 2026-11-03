@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '@core/auth/auth.service';
-import { UserDataRegistry } from '@core/auth/user-data-registry';
+import { UserDataRegistry } from '@core/auth/session-end';
 import { PanelQueryLog } from '@shared/business/diagnostics/panel-query-log';
 import { OwnerContextStore } from '../../state/owner-context.store';
 import { TechnicalInfo } from './technical-info';

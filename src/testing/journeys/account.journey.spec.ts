@@ -6,7 +6,7 @@ import { AuthCodeService } from '@core/auth/auth-code.service';
 import { AuthService } from '@core/auth/auth.service';
 import { ConnectivityService } from '@core/network/connectivity.service';
 import { SupabaseService } from '@core/supabase/supabase.service';
-import { ACCOUNT_ERROR_PATH } from '@shared/account/account-homes';
+import { ACCOUNT_ERROR_PATH } from '@shared/account/account-type';
 import { SessionProfileStore } from '@shared/account/session-profile.store';
 import { createFakeSupabase, failure, ok } from '../fake-supabase';
 

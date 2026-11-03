@@ -16,7 +16,35 @@ export type ChipVariant = 'default' | 'primary' | 'accent' | 'success' | 'warnin
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoPipe, LumaIcon],
-  templateUrl: './luma-chip.html',
+  template: `
+    <span
+      [class]="hostClasses"
+      [attr.role]="dismissible() ? 'listitem' : 'button'"
+      [attr.tabindex]="disabled() ? '-1' : '0'"
+      [attr.aria-pressed]="!dismissible() ? selected() : null"
+      [attr.aria-disabled]="disabled() ? 'true' : null"
+      (click)="toggle()"
+      (keydown.enter)="toggle()"
+      (keydown.space)="$event.preventDefault(); toggle()"
+    >
+      @if (icon(); as name) {
+      <app-luma-icon [name]="name" size="sm" />
+      }
+      <ng-content />
+
+      @if (dismissible()) {
+      <button
+        class="luma-chip__dismiss"
+        type="button"
+        [attr.aria-label]="'common.remove' | transloco"
+        [disabled]="disabled()"
+        (click)="dismiss($event)"
+      >
+        <app-luma-icon name="close" size="sm" />
+      </button>
+      }
+    </span>
+  `,
   styleUrl: './luma-chip.css',
 })
 export class LumaChip {

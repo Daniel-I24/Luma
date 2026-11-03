@@ -12,7 +12,27 @@ export type SkeletonShape = 'text' | 'rect' | 'circle';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: '',
-  styleUrl: './luma-skeleton.css',
+  styles: `
+    /* LumaSkeleton — subtle shimmer: a soft highlight slides across a canvas
+       token with transform only. Motion is disabled globally under
+       prefers-reduced-motion (styles/base.css). */
+    :host {
+      position: relative;
+      display: block;
+      overflow: hidden;
+      background-color: var(--color-canvas-subtle);
+    }
+
+    :host::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, var(--color-canvas-muted), transparent);
+      transform: translateX(-100%);
+      animation: var(--animate-shimmer);
+      will-change: transform;
+    }
+  `,
   host: {
     'aria-hidden': 'true',
     '[class.rounded-xs]': "shape() === 'text'",

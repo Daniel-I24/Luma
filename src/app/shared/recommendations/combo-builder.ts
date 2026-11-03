@@ -1,5 +1,5 @@
 import type { MenuItem } from '@shared/business/models/menu.model';
-import { TextNormalizer } from '@shared/utils/text-normalizer';
+import { SearchText } from '@shared/business/utils/search-text';
 import { SECTION_ROLES } from './recommendation-rules';
 import type { Combo, ComboRole, RecommendationCandidate } from './recommendation.model';
 
@@ -10,7 +10,7 @@ export class ComboBuilder {
   /** Role of a menu section from the dictionary, or null when it has none. */
   public static sectionRole(section: string | null): ComboRole | null {
     if (!section) return null;
-    const words = TextNormalizer.normalizeText(section).split(/\s+/);
+    const words = SearchText.normalize(section).split(/\s+/);
     const match = SECTION_ROLES.find(([keyword]) => words.some((w) => w.startsWith(keyword)));
     return match?.[1] ?? null;
   }

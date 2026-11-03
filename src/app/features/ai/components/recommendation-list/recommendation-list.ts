@@ -3,7 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LumaBusinessCard } from '@design-system';
 import { CategoryIcons } from '@shared/business/utils/category-icons';
-import { DistancePipe } from '@shared/geo/distance.pipe';
+import { DistancePipe } from '@shared/geo/distance';
 import type { RecommendedBusiness } from '@shared/recommendations/recommendation.model';
 
 /** RecommendationList — the recommended businesses, best first, with why. */
@@ -12,7 +12,42 @@ import type { RecommendedBusiness } from '@shared/recommendations/recommendation
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoModule, LumaBusinessCard, DistancePipe],
-  templateUrl: './recommendation-list.html',
+  template: `
+    <section *transloco="let t" aria-labelledby="ai-picks-heading">
+      <h2 id="ai-picks-heading" class="m-0 pb-2 text-label tracking-wide text-fg-subtle uppercase">
+        {{ t('ai.picks') }}
+      </h2>
+      <ol class="m-0 flex list-none flex-col gap-3 p-0">
+        @for (pick of picks(); track pick.candidate.business.id) {
+        <li class="motion-stagger flex flex-col gap-1" [style.--stagger-index]="$index">
+          <app-luma-business-card
+            [transitionId]="pick.candidate.business.id"
+            variant="list"
+            [name]="pick.candidate.business.name"
+            [status]="pick.candidate.status"
+            [reviewLabel]="pick.candidate.business.verification_status === 'pending' ? t('verification.inReview') : null"
+            [category]="pick.candidate.business.category"
+            [logoUrl]="pick.candidate.business.logo_url"
+            [logoIcon]="icon(pick.candidate.business.category)"
+            [rating]="pick.candidate.rating"
+            [distanceLabel]="pick.candidate.distanceKm | distance: lang()"
+            (selected)="open.emit(pick.candidate.business.id)"
+          />
+          @if (pick.reasons.length) {
+          <p class="m-0 flex flex-wrap gap-1 px-1">
+            <span class="sr-only">{{ t('ai.reasons.label') }}</span>
+            @for (reason of pick.reasons; track reason) {
+            <span class="rounded-full bg-surface-selected px-2 py-0.5 text-caption text-fg-brand"
+              >{{ t('ai.reasons.' + reason) }}</span
+            >
+            }
+          </p>
+          }
+        </li>
+        }
+      </ol>
+    </section>
+  `,
   host: { class: 'block' },
 })
 export class RecommendationList {

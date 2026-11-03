@@ -2,10 +2,9 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, input, si
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LumaButton } from '@design-system';
-import { BusinessPause } from '@shared/business/models/business-pause';
-import type { Business } from '@shared/business/models/business.model';
+import { type Business, BusinessPause } from '@shared/business/models/business.model';
 import { DateFormat } from '@shared/format/date-format';
-import { OrderPauseRepository } from '../../services/order-pause.repository';
+import { OrderPauseRepository } from '../../services/order-operations.repository';
 
 /**
  * OrderPauseCard — "Pausar pedidos" on Resumen: stop new orders for 15, 30,
@@ -17,7 +16,28 @@ import { OrderPauseRepository } from '../../services/order-pause.repository';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoModule, LumaButton],
-  templateUrl: './order-pause-card.html',
+  template: `
+    <section *transloco="let t" class="flex flex-col gap-3 rounded-xl border border-border-subtle bg-surface p-4" aria-labelledby="pause-title">
+      <h2 id="pause-title" class="m-0 text-title text-fg">{{ t('owner.pause.title') }}</h2>
+      @if (paused()) {
+      <p class="m-0 rounded-md bg-warning-bg p-3 text-body-sm text-warning-fg" role="status">
+        @if (endsAt(); as time) { {{ t('owner.pause.pausedUntil', { time }) }} } @else { {{ t('owner.pause.pausedIndefinitely') }} }
+      </p>
+      <app-luma-button variant="confirm" [fullWidth]="true" [disabled]="busy()" (clicked)="set(0)">{{ t('owner.pause.resume') }}</app-luma-button>
+      } @else {
+      <p class="m-0 text-body-sm text-fg-muted">{{ t('owner.pause.intro') }}</p>
+      <div class="grid grid-cols-2 gap-2">
+        @for (minutes of options; track minutes) {
+        <app-luma-button variant="warning" [fullWidth]="true" [disabled]="busy()" (clicked)="set(minutes)">{{
+          t(optionKey(minutes), { minutes })
+        }}</app-luma-button>
+        }
+      </div>
+      } @if (errorKey(); as key) {
+      <p class="m-0 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
+      }
+    </section>
+  `,
 })
 export class OrderPauseCard {
   private readonly repo = inject(OrderPauseRepository);

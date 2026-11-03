@@ -3,7 +3,7 @@ import { AuthRules } from '@core/validation/auth-rules';
 import { ValidatedField } from '@core/validation/validated-field';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaInput } from '@design-system';
-import { PHONE_VERIFICATION_ENABLED } from '@core/config/features';
+import { PHONE_VERIFICATION_ENABLED } from '@core/config/build-flags';
 import type { Phone } from '../phone';
 import { PhoneVerificationService } from '../phone-verification.service';
 

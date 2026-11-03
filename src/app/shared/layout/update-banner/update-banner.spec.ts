@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { APP_VERSION } from '@core/config/app-version';
-import { UPDATE_SITE_URL } from '@core/config/update-check-url';
+import { UPDATE_SITE_URL } from '@core/update/update-check.service';
 import { PAGE_LOCATION, UpdateCheck } from '@core/update/update-check.service';
 import { UpdateBanner } from './update-banner';
 

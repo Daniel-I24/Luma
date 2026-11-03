@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { type CanActivateFn, Router } from '@angular/router';
-import { ownerPaths } from '@shared/account/owner-paths';
+import { ownerPaths } from '@shared/account/account-paths';
 import { OwnerContextStore } from './state/owner-context.store';
 
 /**

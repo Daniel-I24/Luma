@@ -6,7 +6,7 @@ import { AccountActions } from '@shared/account/account-actions/account-actions'
 import { AppearanceSettings } from '@shared/appearance/appearance-settings/appearance-settings';
 import { HelpEntries } from '@shared/tutorial/help-entries';
 import { NotificationSettings } from '@shared/notifications/notification-settings/notification-settings';
-import { type OwnerBusinessScreen, ownerPaths } from '@shared/account/owner-paths';
+import { type OwnerBusinessScreen, ownerPaths } from '@shared/account/account-paths';
 import { PanelHeader } from '../../components/panel-header/panel-header';
 import { TechnicalInfo } from '../../components/technical-info/technical-info';
 import { PanelStateView } from '../../components/panel-state/panel-state';

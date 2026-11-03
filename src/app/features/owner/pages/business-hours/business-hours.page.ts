@@ -1,12 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  inject,
-  signal,
-  untracked,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaInput, ToastService } from '@design-system';
 import { BusinessHoursWriteRepository } from '@shared/business/data/business-hours-write.repository';
@@ -37,7 +30,7 @@ export class BusinessHoursPage {
   private readonly hoursRepo = inject(BusinessHoursWriteRepository);
   private readonly toast = inject(ToastService);
   private readonly document = inject(DOCUMENT);
-  protected readonly id = RouteBusinessId.routeBusinessId();
+  protected readonly id = RouteBusinessId.routeBusinessId((id) => this.load(id));
 
   protected readonly week = signal<DayDraft[]>(WeekDrafts.weekDraft([]));
   /** Error key per day of the week. */
@@ -45,13 +38,6 @@ export class BusinessHoursPage {
   protected readonly errorKey = signal<string | null>(null);
   protected readonly saving = signal(false);
   protected readonly crossesMidnight = WeekDrafts.crossesMidnight;
-
-  constructor() {
-    effect(() => {
-      const id = this.id();
-      if (id) untracked(() => void this.load(id));
-    });
-  }
 
   protected async load(id = this.id()): Promise<void> {
     const [, hours] = await Promise.all([this.panel.load(id), this.businesses.getHours(id)]);

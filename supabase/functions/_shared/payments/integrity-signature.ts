@@ -1,5 +1,5 @@
 import type { Money } from './money.ts';
-import { sha256Hex } from './secure-compare.ts';
+import { sha256Hex } from '../secure-compare.ts';
 
 /** What Wompi signs for a checkout (docs.wompi.co, Web Checkout, step 3). */
 export interface SignedCheckout {

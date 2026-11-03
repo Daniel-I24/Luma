@@ -1,5 +1,5 @@
 import type { Business } from '@shared/business/models/business.model';
-import { TextNormalizer } from '@shared/utils/text-normalizer';
+import { SearchText } from '@shared/business/utils/search-text';
 
 /** BusinessFilter — text and category filtering of nearby businesses. */
 export class BusinessFilter {
@@ -14,9 +14,9 @@ export class BusinessFilter {
    * query must appear in the name, category or address.
    */
   public static filterBusinesses(businesses: readonly Business[], query: string): Business[] {
-    const words = TextNormalizer.normalizeText(query).split(/\s+/).filter(Boolean);
+    const words = SearchText.normalize(query).split(/\s+/).filter(Boolean);
     return businesses.filter((b) => {
-      const haystack = TextNormalizer.normalizeText(`${b.name} ${b.category} ${b.address}`);
+      const haystack = SearchText.normalize(`${b.name} ${b.category} ${b.address}`);
       return words.every((word) => haystack.includes(word));
     });
   }

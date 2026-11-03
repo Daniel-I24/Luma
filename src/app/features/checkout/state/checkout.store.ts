@@ -1,6 +1,6 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { NativeHaptics } from '@core/native/native-haptics';
+import { NativeHaptics } from '@core/native/native-actions';
 import { TextNormalizer } from '@core/validation/text-normalizer';
 import { SessionProfileStore } from '@shared/account/session-profile.store';
 import { BusinessRepository } from '@shared/business/data/business.repository';

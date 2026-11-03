@@ -1,6 +1,6 @@
 import type { Business, BusinessHours, Promotion } from '@shared/business/models/business.model';
 import type { MenuItem } from '@shared/business/models/menu.model';
-import { BusinessStatusRules } from '@shared/business/utils/business-status-rules';
+import { BusinessStatusRules } from '@shared/business/domain/opening-hours';
 import { CategoryIcons } from '@shared/business/utils/category-icons';
 import { PromotionPricing } from '@shared/promotions/promotion-deal';
 import type { FeedCard } from '../models/feed-card.model';

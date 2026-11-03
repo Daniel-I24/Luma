@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { BusinessRepository } from '@shared/business/data/business.repository';
 import { MenuRepository } from '@shared/business/data/menu.repository';
-import { BusinessPause } from '@shared/business/models/business-pause';
+import { BusinessPause } from '@shared/business/models/business.model';
 import { CartStore } from '@shared/cart/cart.store';
 import { type CartNotice, CartReviewer } from '../utils/cart-reviewer';
 

@@ -20,7 +20,24 @@ export type ButtonSize = 'sm' | 'md' | 'lg';
   selector: 'app-luma-button',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './luma-button.html',
+  template: `
+    <button
+      [class]="hostClasses()"
+      [type]="type()"
+      [attr.id]="buttonId()"
+      [attr.aria-describedby]="describedBy()"
+      [disabled]="inactive()"
+      [attr.aria-label]="ariaLabel() ?? null"
+      [attr.aria-disabled]="inactive() ? 'true' : null"
+      [attr.aria-busy]="loading() ? 'true' : null"
+      (click)="handleClick()"
+    >
+      <ng-content />
+      @if (loading()) {
+      <span class="luma-btn__dots" aria-hidden="true"><span></span><span></span><span></span></span>
+      }
+    </button>
+  `,
   styleUrl: './luma-button.css',
   host: { '[class.block]': 'fullWidth()', '[class.flex-1]': 'fullWidth()' },
 })

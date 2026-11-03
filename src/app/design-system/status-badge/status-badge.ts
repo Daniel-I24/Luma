@@ -22,7 +22,12 @@ export const STATUS_LABEL_KEY: Record<BusinessStatus, string> = {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoModule],
-  templateUrl: './status-badge.html',
+  template: `
+    <span [class]="'status-badge ' + modifier()" role="status" *transloco="let t">
+      <span class="status-badge__dot" aria-hidden="true"></span>
+      {{ t(labelKey()) }}
+    </span>
+  `,
   styleUrl: './status-badge.css',
 })
 export class StatusBadge {

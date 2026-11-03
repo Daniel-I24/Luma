@@ -9,7 +9,24 @@ import { LumaIconButton } from '@design-system';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoModule, LumaIconButton],
-  templateUrl: './panel-header.html',
+  template: `
+    <header *transloco="let t" class="flex items-start gap-2">
+      @if (backLink()) {
+      <app-luma-icon-button
+        icon="arrow-left"
+        variant="ghost"
+        [label]="t('businessPanel.back')"
+        (clicked)="back()"
+      />
+      }
+      <div class="flex min-w-0 flex-col gap-1 pt-1">
+        <h1 class="m-0 text-h3 text-fg">{{ heading() }}</h1>
+        @if (subtitle(); as text) {
+        <p class="m-0 text-body-sm text-fg-muted">{{ text }}</p>
+        }
+      </div>
+    </header>
+  `,
 })
 export class PanelHeader {
   private readonly router = inject(Router);

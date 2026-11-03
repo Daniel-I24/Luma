@@ -4,7 +4,7 @@ import { PaymentEventVerifier, type TransactionSource } from './payment-event-ve
 import {
   DOC_EVENTS_SECRET, FakePaymentRepository, sandboxCredentials, sandboxSecrets, signedEvent, transaction,
 } from './payments.test-helper.ts';
-import { sha256Hex } from './secure-compare.ts';
+import { sha256Hex } from '../secure-compare.ts';
 import { WompiApi, WompiUnavailable } from './wompi-api.ts';
 import { EventChecksum, type EventTransaction, WompiEventParser } from './wompi-event.ts';
 

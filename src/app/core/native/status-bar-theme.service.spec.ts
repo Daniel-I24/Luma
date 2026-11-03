@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { describe, expect, it, vi } from 'vitest';
 import { ThemeService } from '@core/theme/theme.service';
 import type { Theme } from '@core/theme/theme.service';
-import { NativeStatusBar } from './native-status-bar';
+import { NativeStatusBar } from './native-device';
 import { StatusBarThemeService } from './status-bar-theme.service';
 
 async function setup(native: boolean, initialTheme: Theme = 'sky') {

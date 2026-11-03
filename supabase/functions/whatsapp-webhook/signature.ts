@@ -1,3 +1,5 @@
+import { SecureCompare } from '../_shared/secure-compare.ts';
+
 const encoder = new TextEncoder();
 const PREFIX = 'sha256=';
 const HEX_SIGNATURE = /^sha256=[0-9a-f]{64}$/;
@@ -12,10 +14,7 @@ async function hmacHex(secret: string, data: Uint8Array<ArrayBuffer>): Promise<s
 
 /** Same length strings compared without stopping at the first difference. */
 export function constantTimeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return diff === 0;
+  return SecureCompare.equal(a, b);
 }
 
 /**

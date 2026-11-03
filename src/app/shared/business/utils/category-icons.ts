@@ -1,5 +1,5 @@
 import type { IconName } from '@design-system';
-import { TextNormalizer } from '@shared/utils/text-normalizer';
+import { SearchText } from './search-text';
 
 /** Keyword (accent-insensitive prefix) → icon, checked in order. */
 const CATEGORY_ICONS: readonly [string, IconName][] = [
@@ -23,7 +23,7 @@ export class CategoryIcons {
    * (free text in the database). Unknown categories use the store icon.
    */
   public static categoryIcon(category: string): IconName {
-    const words = TextNormalizer.normalizeText(category).split(/\s+/);
+    const words = SearchText.normalize(category).split(/\s+/);
     const match = CATEGORY_ICONS.find(([keyword]) => words.some((w) => w.startsWith(keyword)));
     return match?.[1] ?? 'store';
   }

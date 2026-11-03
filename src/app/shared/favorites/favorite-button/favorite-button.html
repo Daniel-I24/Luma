@@ -1,9 +1,0 @@
-<app-luma-icon-button
-  *transloco="let t"
-  icon="heart"
-  [variant]="variant()"
-  [pressed]="isFavorite()"
-  [filledIcon]="isFavorite()"
-  [label]="t(isFavorite() ? 'favorites.remove' : 'favorites.add')"
-  (clicked)="toggle()"
-/>

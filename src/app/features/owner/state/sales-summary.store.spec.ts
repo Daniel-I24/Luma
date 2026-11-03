@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { SalesSummaryRepository } from '../services/sales-summary.repository';
+import { SalesSummaryRepository } from '../services/order-operations.repository';
 import { SalesSummaryStore } from './sales-summary.store';
 
 describe('SalesSummaryStore', () => {

@@ -7,7 +7,7 @@ costs nothing while it is off or in demo mode. No CAPTCHA today.
 
 | Switch | Where | Default |
 | --- | --- | --- |
-| App flag | `PHONE_VERIFICATION_ENABLED` in `src/app/core/config/features.ts` (not in the environment files) | `false` |
+| App flag | `PHONE_VERIFICATION_ENABLED` in `src/app/core/config/build-flags.ts` (not in the environment files) | `false` |
 | Database requirement | `app_settings.require_phone_verification` | `0` |
 
 Both off: nothing changes. The app never asks for a code, the user edits

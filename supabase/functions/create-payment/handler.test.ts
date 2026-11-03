@@ -2,7 +2,7 @@ import { assertEquals } from '@std/assert';
 
 import { PaymentLog } from '../_shared/payments/payment-log.ts';
 import { sandboxCredentials, sandboxSecrets } from '../_shared/payments/payments.test-helper.ts';
-import { sha256Hex } from '../_shared/payments/secure-compare.ts';
+import { sha256Hex } from '../_shared/secure-compare.ts';
 import { type CustomerPayments, createHandler, type Prepared } from './handler.ts';
 
 const ORIGIN = 'https://localhost';

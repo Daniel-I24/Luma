@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { describe, expect, it, vi } from 'vitest';
-import { NativeHaptics } from './native-haptics';
+import { NativeHaptics } from './native-actions';
 
 const impact = vi.fn();
 const native = { value: false };

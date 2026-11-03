@@ -10,8 +10,7 @@ import {
 } from '@angular/router';
 import { describe, it, expect } from 'vitest';
 import { AuthService } from './auth.service';
-import { authGuard } from './auth.guard';
-import { guestGuard } from './guest.guard';
+import { authGuard, guestGuard } from './auth.guard';
 
 interface AuthStub {
   ready: Promise<void>;

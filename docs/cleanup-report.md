@@ -137,3 +137,32 @@ tooling read through config files).
   `owner.myBusiness.help` were removed after checking nothing used them.
 - `scripts/screens/capture.mjs` shares its static server
   (`scripts/screens/server.mjs`) with `check-responsive`.
+
+## Round 8 — phase 4 (2026-11-02)
+
+Every item was checked with git grep (no import, route, script or doc
+left pointing at it) and the full Definition of Done stayed green.
+
+- Deleted the development-only design preview: `src/app/features/design-preview/`
+  (page and its two preview components), `src/app/dev-routes.ts`,
+  `src/app/dev-routes.prod.ts`, their two `fileReplacements` in
+  `angular.json`, the route test in `app.routes.spec.ts` and the 45
+  `designPreview.*` keys of `es.json` and `en.json`. It never shipped in
+  production (docs/DECISIONS.md, round 8 phase 4).
+- Deleted files whose content moved into another file of the same
+  responsibility (list in docs/optimization-report.md): 65 component
+  templates and styles, `core/config/{ai-mode,features,support,push-enabled,update-check-url}.ts`,
+  `core/auth/{guest.guard,sign-out-hooks,user-data-registry}.ts`,
+  `core/native/{native-shell,native-status-bar,external-browser,native-haptics}.ts`,
+  `shared/geo/{haversine,distance.pipe}.ts`, `shared/utils/{business-day,text-normalizer}.ts`,
+  `shared/business/models/business-pause.ts`,
+  `shared/business/utils/business-status-rules.ts`,
+  `shared/account/{owner-paths,account-homes}.ts`,
+  `shared/ui/{near-viewport,reveal-selected}.directive.ts`,
+  `features/owner/utils/{publish-requirements,re-review}.ts`,
+  `features/owner/services/{order-pause,sales-summary}.repository.ts`,
+  `core/auth/auth.service.{confirmed,ready}.spec.ts`, `app.routes.spec.ts`,
+  `supabase/functions/_shared/config/app-links.ts` and the per-function
+  `secure-compare.ts` copy.
+- Deleted the abstract classes with a single implementation (eight; the
+  implementation kept the abstract class's name).

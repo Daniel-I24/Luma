@@ -141,7 +141,7 @@ with `PlatformMerchantCredentials` and `MerchantCredentialsFactory`
 `MatchAndApplyStep`), `PaymentApplier`, `Reconciler`, `PaymentRepository`
 with `SupabasePaymentRepository`, `PaymentLog` (typed fields, codes only).
 Provider URLs: `_shared/config/provider-urls.ts`; app link:
-`_shared/config/app-links.ts` (`luma://payments/return`).
+`create-payment/index.ts` (`luma://payments/return`).
 
 ## Setting it up (owner, in order)
 

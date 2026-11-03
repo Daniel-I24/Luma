@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { NativeHaptics } from '@core/native/native-haptics';
+import { NativeHaptics } from '@core/native/native-actions';
 import { ToastService } from '@design-system';
 import { BusinessOrderRepository } from '@shared/orders/business-order.repository';
 import { OrderAlertsStore } from './order-alerts.store';

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { BusinessHours } from '@shared/business/models/business.model';
 import { useFixedClock } from '../../../../testing/fixed-clock';
 import { PromotionPhases } from './promotion-phase';
-import { PublishRequirements } from './publish-requirements';
+import { PublishRequirements } from './publication-rules';
 import { WeekDrafts } from './week-draft';
 
 const business = { name: 'Fritanga', category: 'Restaurante', latitude: 1.21, longitude: -77.28 };

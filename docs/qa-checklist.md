@@ -195,3 +195,13 @@ and `npm run check:interactive`.
   text over them is always readable (veil). They move slowly; with "Reducir
   movimiento" they stand still.
 - Native splash and launcher show the new blue; the favicon too.
+
+## Round 8 — phase 4 (2026-11-02)
+
+No visible change is expected: a quick pass on a phone is enough.
+- Sign in, map, feed, a business profile, cart and order: same as before.
+- Luma Negocios: every tab loads its business; switching business reloads
+  the tab; pausing orders and the sales summary still work.
+- Back button and keyboard on Android; haptic tap on add to cart and
+  favourite; "Abrir en el navegador" links.
+- `/design-preview` opens the 404 page (also in development).

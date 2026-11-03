@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import * as z from 'zod/mini';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import { METERS_PER_KM } from '@core/config/units';
-import { Haversine } from '@shared/geo/haversine';
+import { Haversine } from '@shared/geo/distance';
 import { type TravelMode, TravelModePreference } from './travel-modes';
 
 export interface LatLng {

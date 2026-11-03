@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { FunctionsFetchError, FunctionsHttpError } from '@supabase/supabase-js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { AiModes } from '@core/config/ai-mode';
+import { AiModes } from '@core/config/build-flags';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import { PanelQueryLog } from '@shared/business/diagnostics/panel-query-log';
 import { IMAGE_ENCODER } from '@shared/media/image-encoder';

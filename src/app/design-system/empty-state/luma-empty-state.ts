@@ -21,7 +21,24 @@ const TONE_CLASS: Record<EmptyStateTone, string> = {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LumaIcon],
-  templateUrl: './luma-empty-state.html',
+  template: `
+    @if (shapes(); as list) {
+    <svg class="mb-4 h-24 w-30" viewBox="0 0 120 96" aria-hidden="true" focusable="false">
+      @for (shape of list; track $index) {
+      <path [attr.d]="shape.d" [attr.class]="shape.cls" stroke-linecap="round" stroke-linejoin="round" />
+      }
+    </svg>
+    } @else {
+    <span [class]="iconClass()">
+      <app-luma-icon [name]="icon()" size="lg" />
+    </span>
+    }
+    <h2 class="m-0 mb-2 text-h3 text-fg">{{ heading() }}</h2>
+    @if (description(); as text) {
+    <p class="m-0 mb-5 max-w-72 text-body text-fg-muted">{{ text }}</p>
+    }
+    <ng-content />
+  `,
   host: { class: 'doodles doodles--veil flex flex-col items-center rounded-xl px-5 py-8 text-center animate-fade-in' },
 })
 export class LumaEmptyState {

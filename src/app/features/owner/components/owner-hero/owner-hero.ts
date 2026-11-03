@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { type IconName, LumaIcon, LumaImage } from '@design-system';
-import { ownerPaths } from '@shared/account/owner-paths';
+import { ownerPaths } from '@shared/account/account-paths';
 import type { Business, VerificationStatus } from '@shared/business/models/business.model';
 
 const STATUS_CLASS: Readonly<Record<VerificationStatus, string>> = {

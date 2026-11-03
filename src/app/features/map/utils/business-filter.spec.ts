@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Business } from '@shared/business/models/business.model';
-import { TextNormalizer } from '@shared/utils/text-normalizer';
+import { SearchText } from '@shared/business/utils/search-text';
 import { BusinessFilter } from './business-filter';
 
 function biz(name: string, category: string, address = 'Calle 18, Pasto'): Business {
@@ -35,7 +35,7 @@ const LIST = [
 
 describe('business filter utils', () => {
   it('normalizes accents and case', () => {
-    expect(TextNormalizer.normalizeText('  Café ÁRBOL ')).toBe('cafe arbol');
+    expect(SearchText.normalize('  Café ÁRBOL ')).toBe('cafe arbol');
   });
 
   it('extracts distinct sorted categories', () => {

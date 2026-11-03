@@ -68,10 +68,6 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
-                },
-                {
-                  "replace": "src/app/dev-routes.ts",
-                  "with": "src/app/dev-routes.prod.ts"
                 }
               ]
             },
@@ -80,10 +76,6 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.deploy.ts"
-                },
-                {
-                  "replace": "src/app/dev-routes.ts",
-                  "with": "src/app/dev-routes.prod.ts"
                 }
               ]
             },

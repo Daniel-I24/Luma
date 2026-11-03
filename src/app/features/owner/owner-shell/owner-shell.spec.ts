@@ -5,7 +5,7 @@ import { RouterTestingHarness } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '@core/auth/auth.service';
-import { UserDataRegistry } from '@core/auth/user-data-registry';
+import { UserDataRegistry } from '@core/auth/session-end';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
 import { ownerLandingGuard } from '../owner.guards';
 import { OwnerContextStore } from '../state/owner-context.store';

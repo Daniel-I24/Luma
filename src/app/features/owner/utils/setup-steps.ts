@@ -1,4 +1,4 @@
-import { ownerPaths } from '@shared/account/owner-paths';
+import { ownerPaths } from '@shared/account/account-paths';
 import type { ReviewRequirement } from '@shared/business/verification/verification.model';
 
 export type SetupStepId = 'basics' | 'location' | 'hours' | 'contact' | 'legal' | 'menu';

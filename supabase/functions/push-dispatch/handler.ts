@@ -1,4 +1,5 @@
 import { json } from '../_shared/edge.ts';
+import { SecureCompare } from '../_shared/secure-compare.ts';
 import type { PushMessage, SendResult } from './fcm.ts';
 import { channelFor, pushData, type PushRow, pushText } from './messages.ts';
 
@@ -25,11 +26,7 @@ const MAX_BATCHES = 5;
 
 /** Constant-time comparison of the shared secret. */
 export function sameSecret(given: string | null, expected: string): boolean {
-  const a = new TextEncoder().encode(given ?? '');
-  const b = new TextEncoder().encode(expected);
-  let diff = a.length ^ b.length;
-  for (let i = 0; i < b.length; i++) diff |= (a[i] ?? 0) ^ b[i];
-  return diff === 0;
+  return SecureCompare.equal(given ?? '', expected);
 }
 
 /** One send: a thrown error (network, OAuth) counts as failed and never stops the batch. */

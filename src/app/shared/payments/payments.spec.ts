@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppEvents } from '@core/native/app-events';
-import { ExternalBrowser } from '@core/native/external-browser';
+import { ExternalBrowser } from '@core/native/native-actions';
 import { PaymentGatewayFactory } from './payment-gateway';
 import { PaymentRepository } from './payment.repository';
 import { PaymentReturn } from './payment-return';

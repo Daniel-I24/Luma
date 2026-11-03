@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaIcon, ToastService } from '@design-system';
-import { ownerPaths } from '@shared/account/owner-paths';
+import { ownerPaths } from '@shared/account/account-paths';
 import { PanelHeader } from '../../components/panel-header/panel-header';
 import { PanelStateView } from '../../components/panel-state/panel-state';
 import { PanelBusinessStore } from '../../state/panel-business.store';
@@ -36,7 +36,7 @@ export class BusinessSetupPage {
   protected readonly publish = inject(PublishStore);
   protected readonly verification = inject(VerificationStore);
   private readonly toast = inject(ToastService);
-  protected readonly id = RouteBusinessId.routeBusinessId();
+  protected readonly id = RouteBusinessId.routeBusinessId((id) => this.load(id));
   protected readonly steps = SetupSteps.ALL;
   protected readonly setupQuery = SETUP_QUERY;
 
@@ -51,13 +51,6 @@ export class BusinessSetupPage {
   protected readonly current = computed(() => SetupSteps.current(this.missing()));
   protected readonly percent = computed(() => Math.round(SetupSteps.progress(this.missing()) * PERCENT));
   protected readonly summaryLink = computed(() => ownerPaths.section(this.id(), 'summary'));
-
-  constructor() {
-    effect(() => {
-      const id = this.id();
-      if (id) untracked(() => void this.load(id));
-    });
-  }
 
   protected async load(id = this.id()): Promise<void> {
     await Promise.all([this.panel.load(id), this.publish.load(id), this.verification.load(id)]);

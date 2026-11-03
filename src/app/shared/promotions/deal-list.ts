@@ -1,6 +1,6 @@
 import { OpeningHours } from '@shared/business/domain/opening-hours';
 import type { GeoCoords } from '@shared/geo/geolocation.service';
-import { Haversine } from '@shared/geo/haversine';
+import { Haversine } from '@shared/geo/distance';
 import type { PromotionDeal } from './promotion-deal';
 import type { DealWithHours } from './promotion-deal.repository';
 

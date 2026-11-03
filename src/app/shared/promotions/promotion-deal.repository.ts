@@ -57,25 +57,17 @@ export interface DealWithHours {
   >[];
 }
 
-/** Contract: current promotions as customers see them (Supabase is one implementation). */
-@Injectable({ providedIn: 'root', useFactory: () => new SupabasePromotionDealRepository() })
-export abstract class PromotionDealRepository {
-  /** Current promotions of public businesses (RLS decides what is public). */
-  public abstract listCurrent(): Promise<RepoResult<DealWithHours[]>>;
-  /** Current deals of one business. */
-  public abstract listForBusiness(businessId: string): Promise<RepoResult<DealWithHours[]>>;
-}
-
-/** SupabasePromotionDealRepository — current deals through RLS. */
-class SupabasePromotionDealRepository extends PromotionDealRepository {
+/** PromotionDealRepository — current deals through RLS. */
+@Injectable({ providedIn: 'root' })
+export class PromotionDealRepository {
   private readonly db = inject(SupabaseService).client;
 
-  /** @inheritdoc */
+  /** Current promotions of public businesses (RLS decides what is public). */
   public listCurrent(): Promise<RepoResult<DealWithHours[]>> {
     return this.read();
   }
 
-  /** @inheritdoc */
+  /** Current deals of one business. */
   public listForBusiness(businessId: string): Promise<RepoResult<DealWithHours[]>> {
     return this.read(businessId);
   }

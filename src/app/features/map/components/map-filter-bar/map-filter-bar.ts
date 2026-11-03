@@ -24,7 +24,31 @@ interface ActiveChip {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoModule, LumaButton, LumaChip, MapFilterSheet],
-  templateUrl: './map-filter-bar.html',
+  template: `
+    <ng-container *transloco="let t">
+      <div
+        class="pointer-events-auto flex items-center gap-2 overflow-x-auto px-4 py-2 [scrollbar-width:none]"
+        role="group"
+        [attr.aria-label]="t('map.filters.title')"
+      >
+        <app-luma-button
+          class="shrink-0"
+          variant="secondary"
+          size="sm"
+          buttonId="map-filters-button"
+          [ariaLabel]="t('map.filters.open', { count: store.filterCount() })"
+          (clicked)="sheetOpen.set(true)"
+          >{{ store.filterCount() ? t('map.filters.buttonCount', { count: store.filterCount() }) : t('map.filters.button') }}</app-luma-button
+        >
+        @for (chip of chips(); track chip.id) {
+        <app-luma-chip class="shrink-0 shadow-sm" variant="primary" [dismissible]="true" (dismissed)="remove(chip)">{{
+          chip.key ? t(chip.key, chip.params) : chip.text
+        }}</app-luma-chip>
+        }
+      </div>
+      <app-map-filter-sheet [(open)]="sheetOpen" />
+    </ng-container>
+  `,
 })
 export class MapFilterBar {
   protected readonly store = inject(NearbyBusinessesStore);

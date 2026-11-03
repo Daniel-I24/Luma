@@ -31,7 +31,46 @@ const GAP = 8;
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoModule, LumaButton],
   templateUrl: './guided-tour-overlay.html',
-  styleUrl: './guided-tour-overlay.css',
+  styles: `
+    :host {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      pointer-events: none;
+    }
+
+    .tour-dim {
+      position: absolute;
+      inset: 0;
+      background-color: var(--color-overlay);
+      pointer-events: auto;
+    }
+
+    /* The control stays visible: the dark ring around it dims everything else. */
+    .tour-hole {
+      position: absolute;
+      border-radius: var(--radius-lg);
+      outline: medium solid var(--color-border-focus);
+      box-shadow: 0 0 0 100vmax var(--color-overlay);
+      pointer-events: auto;
+      transition: top var(--duration-normal) var(--ease-enter), left var(--duration-normal) var(--ease-enter),
+        width var(--duration-normal) var(--ease-enter), height var(--duration-normal) var(--ease-enter);
+    }
+
+    .tour-bubble {
+      position: absolute;
+      inset-inline: var(--spacing-4);
+      max-width: var(--container-auth);
+      margin-inline: auto;
+      pointer-events: auto;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tour-hole {
+        transition: none;
+      }
+    }
+  `,
   host: { '(document:keydown.escape)': 'tour.skip()', '(window:resize)': 'measure()' },
 })
 export class GuidedTourOverlay {

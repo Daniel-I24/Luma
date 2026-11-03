@@ -1,6 +1,6 @@
 import { Injectable, computed, effect, inject, signal, untracked } from '@angular/core';
 import { AuthService } from '@core/auth/auth.service';
-import { type UserScopedState, UserDataRegistry } from '@core/auth/user-data-registry';
+import { type UserScopedState, UserDataRegistry } from '@core/auth/session-end';
 import { CartStorage } from './cart-storage';
 import { type CartItem, type CartProduct, type CartSnapshot, EMPTY_CART, MAX_CART_UNITS, MAX_PER_ITEM, CartMath } from './cart.model';
 

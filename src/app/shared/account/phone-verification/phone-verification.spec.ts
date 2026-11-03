@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { describe, expect, it, vi } from 'vitest';
-import { PHONE_VERIFICATION_ENABLED } from '@core/config/features';
+import { PHONE_VERIFICATION_ENABLED } from '@core/config/build-flags';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import { Phone } from '../phone';
 import { PhoneVerificationService } from '../phone-verification.service';

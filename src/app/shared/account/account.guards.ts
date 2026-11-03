@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { type CanActivateChildFn, type CanActivateFn, Router } from '@angular/router';
-import { ACCOUNT_ERROR_PATH, OWNER_INVITE_PATH } from './account-homes';
+import { ACCOUNT_ERROR_PATH, OWNER_INVITE_PATH } from './account-type';
 import { SessionProfileStore } from './session-profile.store';
 
 /**

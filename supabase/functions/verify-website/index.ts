@@ -1,21 +1,15 @@
-import { createClient } from '@supabase/supabase-js';
-
-import { allowedOriginsFrom } from '../_shared/cors.ts';
+import { SupabaseEnv } from '../_shared/supabase-env.ts';
 import { type CallerApi, createHandler } from './handler.ts';
 import { runtimeResolver } from './resolver.ts';
 
-const url = Deno.env.get('SUPABASE_URL');
-const anonKey = Deno.env.get('SUPABASE_ANON_KEY');
-const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
-if (!url || !anonKey || !serviceRoleKey) throw new Error('verify-website: missing Supabase environment configuration');
-const noSession = { auth: { persistSession: false, autoRefreshToken: false } };
+const env = SupabaseEnv.read('verify-website', { service: true });
 // Service role: only complete_website_check, after the file matched.
-const service = createClient(url, serviceRoleKey, noSession);
+const service = env.service();
 
 async function authenticate(token: string): Promise<CallerApi | null> {
-  const db = createClient(url!, anonKey!, { ...noSession, global: { headers: { Authorization: `Bearer ${token}` } } });
-  const { data, error } = await db.auth.getUser(token);
-  if (error || !data.user) return null;
+  const caller = await env.asCaller(token);
+  if (!caller) return null;
+  const { db } = caller;
   return {
     startCheck: async (businessId) => {
       const { data: rows, error: rpcError } = await db.rpc('start_website_check', { p_business_id: businessId });
@@ -32,7 +26,7 @@ const resolve = runtimeResolver(native, (target, init) => fetch(target, init));
 
 Deno.serve(
   createHandler({
-    allowedOrigins: allowedOriginsFrom(Deno.env.get('ALLOWED_ORIGINS'), Deno.env.get('ALLOWED_ORIGIN')),
+    allowedOrigins: SupabaseEnv.allowedOrigins(),
     authenticate,
     complete: async (verificationId) => {
       const { data, error } = await service.rpc('complete_website_check', { p_verification_id: verificationId });
