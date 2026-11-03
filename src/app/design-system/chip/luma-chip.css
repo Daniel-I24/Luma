@@ -8,7 +8,7 @@
   min-height: var(--spacing-8);
   padding: 0 var(--spacing-3);
   border-radius: var(--radius-full);
-  border: 1.5px solid var(--color-border);
+  border: var(--border-control) solid var(--color-border);
   background-color: var(--color-surface);
   color: var(--color-fg-muted);
   font-size: var(--text-label);
@@ -37,8 +37,8 @@
 }
 
 .luma-chip:focus-visible {
-  outline: 2px solid var(--color-border-focus);
-  outline-offset: 2px;
+  outline: var(--focus-ring-width) solid var(--color-border-focus);
+  outline-offset: var(--focus-ring-offset);
 }
 
 /* Variants */

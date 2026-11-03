@@ -18,7 +18,8 @@
     "apk:demo": "node scripts/apk-demo.mjs",
     "check:hardcoded-urls": "node scripts/check-hardcoded-urls.mjs",
     "check:contrast": "node scripts/brand-contrast.mjs",
-    "check:buttons": "node scripts/check-destructive-buttons.mjs"
+    "check:buttons": "node scripts/check-destructive-buttons.mjs",
+    "check:tokens": "node scripts/check-design-tokens.mjs"
   },
   "private": true,
   "packageManager": "npm@11.21.0",
@@ -58,6 +59,7 @@
     "angular-eslint": "22.5.0",
     "eslint": "^10.9.1",
     "jsdom": "^30.1.2",
+    "playwright-core": "1.63.0",
     "prettier": "^3.9.10",
     "typescript": "~6.0.2",
     "typescript-eslint": "8.71.1",

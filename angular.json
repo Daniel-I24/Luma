@@ -83,6 +83,18 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "screens": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": false,
+              "outputPath": "dist/screens",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.screens.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"

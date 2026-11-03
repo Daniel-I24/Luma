@@ -8,6 +8,7 @@ const LINKS: readonly { path: string; key: string; icon: IconName }[] = [
   { path: ONBOARDING_PATH, key: 'tutorial', icon: 'compass' },
   { path: '/legal/terms', key: 'terms', icon: 'info' },
   { path: '/legal/privacy', key: 'privacy', icon: 'info' },
+  { path: '/legal/refunds', key: 'refunds', icon: 'info' },
 ];
 
 /** HelpLinks — Profile section: watch the tutorial again, terms and privacy policy. */

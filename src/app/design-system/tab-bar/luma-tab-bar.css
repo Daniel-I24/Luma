@@ -4,7 +4,7 @@
   /* Stays still while the page content changes (View Transitions). */
   view-transition-name: tab-bar;
   background-color: var(--color-nav);
-  border-top: 1px solid var(--color-border-subtle);
+  border-top: var(--border-hairline) solid var(--color-border-subtle);
   padding: 0 var(--spacing-1) env(safe-area-inset-bottom);
   transition: background-color var(--duration-normal) var(--ease-enter);
 }
@@ -77,8 +77,8 @@
 }
 
 .luma-tab-bar__link:focus-visible {
-  outline: 2px solid var(--color-border-focus);
-  outline-offset: -2px;
+  outline: var(--focus-ring-width) solid var(--color-border-focus);
+  outline-offset: calc(var(--focus-ring-offset) * -1);
 }
 
 .luma-tab-bar__link--active {

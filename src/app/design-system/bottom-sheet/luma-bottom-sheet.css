@@ -57,7 +57,7 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--spacing-4) var(--spacing-5);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: var(--border-hairline) solid var(--color-border);
   touch-action: none; /* drag handle */
 }
 
@@ -89,8 +89,8 @@
 }
 
 .luma-bottom-sheet__close:focus-visible {
-  outline: 2px solid var(--color-border-focus);
-  outline-offset: 2px;
+  outline: var(--focus-ring-width) solid var(--color-border-focus);
+  outline-offset: var(--focus-ring-offset);
 }
 
 .luma-bottom-sheet__handle {
@@ -107,8 +107,8 @@
 }
 
 .luma-bottom-sheet__handle:focus-visible {
-  outline: 2px solid var(--color-border-focus);
-  outline-offset: -2px;
+  outline: var(--focus-ring-width) solid var(--color-border-focus);
+  outline-offset: calc(var(--focus-ring-offset) * -1);
 }
 
 .luma-bottom-sheet__grip {

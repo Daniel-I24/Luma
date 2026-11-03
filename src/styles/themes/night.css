@@ -3,6 +3,8 @@
    Applied when <html data-theme="night">
 ───────────────────────────────────────────── */
 [data-theme='night'] {
+  /* Native controls (checkboxes, select lists, scrollbars) in dark. */
+  color-scheme: dark;
   --color-canvas: #0e1419;
   --color-canvas-subtle: #121a20;
   --color-canvas-muted: #172129;

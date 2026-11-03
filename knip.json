@@ -3,11 +3,12 @@
   "entry": [
     "src/**/*.spec.ts",
     "scripts/*.mjs",
+    "scripts/screens/capture.mjs",
     "supabase/functions/*/index.ts",
     "supabase/functions/**/*.test.ts",
     "transloco.config.ts"
   ],
   "project": ["src/**/*.ts", "scripts/**/*.mjs", "supabase/functions/**/*.ts"],
   "ignore": ["src/environments/**"],
-  "ignoreDependencies": ["@fontsource-variable/inter", "prettier", "@std/assert", "@angular-eslint/builder"]
+  "ignoreDependencies": ["prettier", "@std/assert", "@angular-eslint/builder"]
 }

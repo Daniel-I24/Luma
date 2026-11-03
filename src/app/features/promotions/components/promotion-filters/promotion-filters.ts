@@ -1,36 +1,46 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { TranslocoModule } from '@jsverse/transloco';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
+import { LumaChip, LumaSelect, type SelectOption } from '@design-system';
 import { BUSINESS_CATEGORIES } from '@shared/business/data/business-categories';
 import { DEAL_SORTS, type DealSort, MIN_DISCOUNTS } from '@shared/promotions/deal-list.util';
 import { PromotionsStore } from '../../state/promotions.store';
-
-const SELECT_CLASS =
-  'min-h-11 rounded-md border border-border bg-surface px-2 text-body-sm text-fg focus-visible:outline-2 focus-visible:outline-border-focus';
-const CHIP_CLASS =
-  'min-h-11 shrink-0 cursor-pointer rounded-full border px-3 text-body-sm focus-visible:outline-2 focus-visible:outline-border-focus';
 
 /** PromotionFilters — order, category, minimum discount and "abierto ahora". */
 @Component({
   selector: 'app-promotion-filters',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule],
+  imports: [TranslocoModule, LumaChip, LumaSelect],
   templateUrl: './promotion-filters.html',
 })
 export class PromotionFilters {
   protected readonly store = inject(PromotionsStore);
-  protected readonly categories = BUSINESS_CATEGORIES;
-  protected readonly sorts = DEAL_SORTS;
-  protected readonly minDiscounts = MIN_DISCOUNTS;
-  protected readonly selectClass = SELECT_CLASS;
-  protected readonly chipClass = CHIP_CLASS;
+  private readonly transloco = inject(TranslocoService);
+  private readonly lang = toSignal(this.transloco.langChanges$, { initialValue: this.transloco.getActiveLang() });
 
-  protected onSort(event: Event): void {
-    this.store.sort.set((event.target as HTMLSelectElement).value as DealSort);
+  protected readonly categories = BUSINESS_CATEGORIES;
+  protected readonly sortOptions = computed<SelectOption[]>(() => {
+    this.lang();
+    return DEAL_SORTS.map((sort) => ({ value: sort, label: this.transloco.translate(`promotions.sort.${sort}`) }));
+  });
+  protected readonly discountOptions = computed<SelectOption[]>(() => {
+    this.lang();
+    return MIN_DISCOUNTS.map((min) => ({
+      value: String(min),
+      label: min
+        ? this.transloco.translate('promotions.filters.atLeast', { percent: min })
+        : this.transloco.translate('promotions.filters.anyDiscount'),
+    }));
+  });
+  protected readonly minDiscount = computed(() => String(this.store.filters().minDiscount));
+
+  protected onSort(value: string): void {
+    this.store.sort.set(value as DealSort);
   }
 
-  protected onMinDiscount(event: Event): void {
-    this.store.setFilter('minDiscount', Number((event.target as HTMLSelectElement).value));
+  protected onMinDiscount(value: string): void {
+    this.store.setFilter('minDiscount', Number(value));
   }
 
   protected toggleCategory(value: string): void {

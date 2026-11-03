@@ -411,3 +411,16 @@ alternative that was not taken. The safest, most reversible option wins.
 - **Alternative**: always play the full 0.9–1.8 s (a fixed delay on every
   start), or colour the entry with the user's theme (a visible colour jump
   from the native splash).
+
+## 2026-10-26 — playwright-core (dev) for the screen review
+
+- **What**: `playwright-core@1.63.0` (exact, no dependencies, released
+  2026-09-04) drives the system Edge to capture the screens
+  (`scripts/screens/capture.mjs`) from a `screens` build that uses
+  `environment.screens.ts` (an invented `.invalid` host) and fixtures; all
+  other requests are aborted. Not part of CI or the app bundle.
+- **Why**: the review at 360/412/768 px in four themes needs real renders;
+  `playwright-core` downloads no browsers and touches no real backend.
+  `npm audit --omit=dev` is unchanged (0).
+- **Alternative**: the full `playwright` package (downloads browsers), or a
+  manual review on a device only.

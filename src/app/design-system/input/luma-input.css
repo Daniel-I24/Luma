@@ -8,7 +8,7 @@
 }
 
 .luma-input__label {
-  font-size: 0.875rem;
+  font-size: var(--text-body);
   font-weight: 500;
   color: var(--color-fg);
   line-height: 1.25;
@@ -24,10 +24,10 @@
   align-items: center;
   gap: var(--spacing-2);
   background-color: var(--color-surface);
-  border: 1.5px solid var(--color-border);
+  border: var(--border-control) solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: 0 var(--spacing-3);
-  min-height: 44px;
+  min-height: var(--spacing-11);
   transition: border-color var(--duration-fast) var(--ease-enter);
 }
 
@@ -53,7 +53,7 @@
   background: transparent;
   color: var(--color-fg);
   font-family: var(--font-sans);
-  font-size: 0.875rem;
+  font-size: var(--text-body);
   line-height: 1.5;
   min-width: 0;
 }
@@ -67,12 +67,12 @@
 }
 
 .luma-input__hint {
-  font-size: 0.75rem;
+  font-size: var(--text-label);
   color: var(--color-fg-muted);
 }
 
 .luma-input__error {
-  font-size: 0.75rem;
+  font-size: var(--text-label);
   color: var(--color-danger);
 }
 

@@ -6,21 +6,21 @@
 
 .preview-cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--size-preview-tile), 1fr));
   gap: var(--spacing-4);
 }
 
 .card-label {
   margin: 0 0 var(--spacing-2);
-  font-size: 0.75rem;
+  font-size: var(--text-label);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--text-label--letter-spacing);
   color: var(--color-fg-muted);
 }
 
 .card-body {
   margin: 0;
-  font-size: 0.875rem;
+  font-size: var(--text-body);
   color: var(--color-fg);
 }

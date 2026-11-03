@@ -13,7 +13,7 @@
 
 .auth-page app-luma-card {
   width: 100%;
-  max-width: 420px;
+  max-width: var(--container-auth);
 }
 
 .auth-header {
@@ -23,14 +23,14 @@
 
 .auth-title {
   margin: 0 0 var(--spacing-2);
-  font-size: 1.5rem;
+  font-size: var(--text-h2);
   font-weight: 700;
   color: var(--color-fg);
 }
 
 .auth-subtitle {
   margin: 0;
-  font-size: 0.875rem;
+  font-size: var(--text-body);
   color: var(--color-fg-muted);
 }
 
@@ -46,7 +46,7 @@
 }
 
 .auth-error {
-  font-size: 0.875rem;
+  font-size: var(--text-body);
   color: var(--color-danger);
   background-color: var(--color-danger-bg);
   border-radius: var(--radius-md);
@@ -64,14 +64,14 @@
 
 .auth-switch {
   margin: 0;
-  font-size: 0.875rem;
+  font-size: var(--text-body);
   color: var(--color-fg-muted);
   text-align: center;
 }
 
 .auth-link {
   color: var(--color-primary);
-  font-size: 0.875rem;
+  font-size: var(--text-body);
   font-weight: 500;
   text-decoration: none;
 }
@@ -93,13 +93,13 @@
 
 .auth-success__title {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: var(--text-h3);
   font-weight: 700;
   color: var(--color-fg);
 }
 
 .auth-success__message {
   margin: 0;
-  font-size: 0.875rem;
+  font-size: var(--text-body);
   color: var(--color-fg-muted);
 }

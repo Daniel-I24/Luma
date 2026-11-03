@@ -289,7 +289,8 @@
       "section": "Help and legal",
       "tutorial": "Watch the tutorial",
       "terms": "Terms and conditions",
-      "privacy": "Privacy policy"
+      "privacy": "Privacy policy",
+      "refunds": "Refund policy"
     },
     "ownerAppHint": "Manage your businesses, orders and deals."
   },
@@ -1717,7 +1718,7 @@
       "sort": "Sort",
       "minDiscount": "Minimum discount",
       "atLeast": "From {{percent}} %",
-      "anyDiscount": "Any discount",
+      "anyDiscount": "Any",
       "openNow": "Open now",
       "category": "Category",
       "clear": "Clear filters"

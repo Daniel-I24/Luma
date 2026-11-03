@@ -33,7 +33,7 @@
           (valueChange)="onCode($event)"
         />
 
-        <app-luma-button variant="primary" size="lg" type="submit" class="auth-submit" [disabled]="submission.submitting()">{{
+        <app-luma-button variant="primary" size="lg" type="submit" class="auth-submit" [fullWidth]="true" [disabled]="submission.submitting()">{{
           t(submission.submitting() ? 'auth.verify.checking' : 'auth.verify.submit')
         }}</app-luma-button>
       </form>

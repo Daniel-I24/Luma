@@ -13,7 +13,7 @@
   justify-content: space-between;
   gap: var(--spacing-4);
   padding: var(--spacing-6) var(--spacing-5);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: var(--border-hairline) solid var(--color-border);
   background-color: var(--color-surface);
   position: sticky;
   top: 0;
@@ -22,14 +22,14 @@
 
 .preview-title {
   margin: 0 0 var(--spacing-1);
-  font-size: 1.25rem;
+  font-size: var(--text-h3);
   font-weight: 700;
   color: var(--color-fg);
 }
 
 .preview-subtitle {
   margin: 0;
-  font-size: 0.875rem;
+  font-size: var(--text-body);
   color: var(--color-fg-muted);
 }
 
@@ -41,7 +41,7 @@
 }
 
 .theme-selector__label {
-  font-size: 0.875rem;
+  font-size: var(--text-body);
   font-weight: 500;
   color: var(--color-fg-muted);
 }
@@ -51,7 +51,7 @@
   flex-direction: column;
   gap: var(--spacing-8);
   padding: var(--spacing-8) var(--spacing-5);
-  max-width: 900px;
+  max-width: var(--container-preview);
   margin: 0 auto;
 }
 
@@ -63,13 +63,13 @@
 
 .preview-section__title {
   margin: 0;
-  font-size: 0.75rem;
+  font-size: var(--text-label);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--text-label--letter-spacing);
   color: var(--color-fg-muted);
   padding-bottom: var(--spacing-2);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: var(--border-hairline) solid var(--color-border);
 }
 
 .preview-row {
@@ -81,6 +81,6 @@
 
 .preview-inputs-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--size-preview-card), 1fr));
   gap: var(--spacing-4);
 }

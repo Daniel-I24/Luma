@@ -80,16 +80,32 @@
   --radius-2xl: 24px;
   --radius-full: 9999px;
 
+  /* === Strokes: borders, focus rings, underlines === */
+  --border-hairline: 1px; /* dividers, cards */
+  --border-control: 1.5px; /* buttons, chips, inputs */
+  --border-strong: 2px; /* map marker ring */
+  --border-marker: 3px; /* user dot, selected marker */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --underline-offset: 3px;
+
+  /* === Layout === */
+  --container-auth: 420px; /* sign-in and sign-up column (max-w-auth) */
+  --breakpoint-xs: 400px; /* wide phones (xs:) */
+  --container-preview: 900px; /* design preview page (dev only) */
+  --size-preview-tile: 200px;
+  --size-preview-card: 260px;
+
   /* === Shadows === */
   --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.06);
   --shadow-sm: 0 1px 4px rgb(0 0 0 / 0.08), 0 1px 2px rgb(0 0 0 / 0.06);
   --shadow-md: 0 4px 12px rgb(0 0 0 / 0.1), 0 2px 4px rgb(0 0 0 / 0.06);
   --shadow-lg: 0 8px 24px rgb(0 0 0 / 0.12), 0 4px 8px rgb(0 0 0 / 0.08);
   --shadow-xl: 0 16px 40px rgb(0 0 0 / 0.16), 0 8px 16px rgb(0 0 0 / 0.1);
-  --shadow-card: 0 2px 8px rgb(20 23 74 / 0.08), 0 1px 3px rgb(0 0 0 / 0.05);
-  --shadow-sheet: 0 -4px 24px rgb(20 23 74 / 0.12);
-  --shadow-float: 0 4px 16px rgb(20 23 74 / 0.22);
-  --shadow-brand: 0 4px 16px rgb(20 23 74 / 0.35);
+  --shadow-card: 0 2px 8px rgb(21 32 43 / 0.08), 0 1px 3px rgb(0 0 0 / 0.05);
+  --shadow-sheet: 0 -4px 24px rgb(21 32 43 / 0.12);
+  --shadow-float: 0 4px 16px rgb(21 32 43 / 0.22);
+  --shadow-brand: 0 4px 16px rgb(21 32 43 / 0.35);
 
   /* === Motion (docs/brand/motion.md; utilities and keyframes: styles/motion.css) === */
   --duration-instant: 120ms; /* press feedback; the only fade under reduced motion */

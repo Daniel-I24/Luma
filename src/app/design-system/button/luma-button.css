@@ -10,7 +10,7 @@
   font-weight: 600;
   line-height: 1;
   border-radius: var(--radius-md);
-  border: 1.5px solid transparent;
+  border: var(--border-control) solid transparent;
   cursor: pointer;
   text-decoration: none;
   white-space: nowrap;
@@ -29,8 +29,8 @@
 }
 
 .luma-btn:focus-visible {
-  outline: 2px solid var(--color-border-focus);
-  outline-offset: 2px;
+  outline: var(--focus-ring-width) solid var(--color-border-focus);
+  outline-offset: var(--focus-ring-offset);
 }
 
 .luma-btn--full {
@@ -98,7 +98,7 @@
   background-color: transparent;
   color: var(--color-fg-accent);
   text-decoration: underline;
-  text-underline-offset: 3px;
+  text-underline-offset: var(--underline-offset);
 }
 
 /* Disabled and loading */

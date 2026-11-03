@@ -23,7 +23,7 @@
   justify-content: center;
   width: var(--spacing-8);
   height: var(--spacing-8);
-  border: 2px solid var(--color-surface);
+  border: var(--border-strong) solid var(--color-surface);
   border-radius: 50% 50% 50% 0;
   box-shadow: var(--shadow-md);
   color: var(--color-fg-inverse);
@@ -82,8 +82,8 @@
 }
 
 .luma-marker:focus-visible {
-  outline: 2px solid var(--color-border-focus);
-  outline-offset: 2px;
+  outline: var(--focus-ring-width) solid var(--color-border-focus);
+  outline-offset: var(--focus-ring-offset);
   border-radius: var(--radius-full);
 }
 
@@ -92,7 +92,7 @@
   position: relative;
   width: var(--spacing-4);
   height: var(--spacing-4);
-  border: 3px solid var(--color-surface);
+  border: var(--border-marker) solid var(--color-surface);
   border-radius: var(--radius-full);
   background-color: var(--color-info);
   box-shadow: var(--shadow-md);
@@ -131,7 +131,7 @@
 .luma-place-pin {
   width: var(--spacing-6);
   height: var(--spacing-6);
-  border: 3px solid var(--color-surface);
+  border: var(--border-marker) solid var(--color-surface);
   border-radius: 50% 50% 50% 0;
   background: var(--color-primary);
   box-shadow: var(--shadow-md);

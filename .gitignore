@@ -61,3 +61,6 @@ keystore.properties
 google-services.json
 GoogleService-Info.plist
 *service-account*.json
+
+# Screen review screenshots (scripts/screens/capture.mjs)
+docs/screens/

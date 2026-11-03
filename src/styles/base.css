@@ -7,6 +7,16 @@
   box-sizing: border-box;
 }
 
+html {
+  color-scheme: light;
+}
+
+/* Native checkboxes and radios take the theme's primary colour. */
+input[type='checkbox'],
+input[type='radio'] {
+  accent-color: var(--color-primary);
+}
+
 html,
 body {
   margin: 0;

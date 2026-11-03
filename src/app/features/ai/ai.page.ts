@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaChip, LumaEmptyState, LumaIcon, LumaSkeleton } from '@design-system';
 import { DAY_MOMENTS, type Recommendation } from '@shared/recommendations/recommendation.model';
+import { RevealSelectedDirective } from '@shared/ui/reveal-selected.directive';
 import { ComboCard } from './components/combo-card/combo-card';
 import { RecommendationList } from './components/recommendation-list/recommendation-list';
 import { AiStore } from './state/ai.store';
@@ -25,6 +26,7 @@ import { AiStore } from './state/ai.store';
     LumaSkeleton,
     ComboCard,
     RecommendationList,
+    RevealSelectedDirective,
   ],
   providers: [AiStore],
   templateUrl: './ai.page.html',
