@@ -114,6 +114,14 @@ describe('verification repositories', () => {
     expect((await admin.review('b1', 'rejected', null, '2026-10-19T00:00:00Z')).errorKey).toBe('admin.errors.noteRequired');
   });
 
+  it('sends updated_at as the exact server string, microseconds included', async () => {
+    const { admin, fake } = setup({ 'rpc:review_business': { data: null, error: null } });
+    await admin.review('b1', 'approved', null, '2026-10-19T12:00:00.123456+00:00');
+    expect(fake.rpcCalls.at(-1)).toEqual(['review_business', {
+      p_business_id: 'b1', p_decision: 'approved', p_note: null, p_seen_updated_at: '2026-10-19T12:00:00.123456+00:00',
+    }]);
+  });
+
   it('deletes the files first, then their rows', async () => {
     bucket.remove.mockResolvedValue({ error: null });
     const { admin, fake } = setup();

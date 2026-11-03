@@ -71,4 +71,17 @@ select tests.expect_true('service_role', null, $$
   from public.claim_push_batch(100)$$,
   'promotion and review pushes carry the business id');
 
+-- -- review_business compares updated_at to the microsecond ---------------------------
+alter table public.businesses disable trigger businesses_set_updated_at;
+update public.businesses set verification_status = 'pending', updated_at = '2026-10-19 12:00:00.123456+00'
+where id = tests.id('v1');
+alter table public.businesses enable trigger businesses_set_updated_at;
+select tests.expect_error('authenticated', tests.id('adm'),
+  $$select public.review_business(tests.id('v1'), 'approved', null, '2026-10-19T12:00:00.123Z')$$, 'stale_review');
+select tests.exec_as('authenticated', tests.id('adm'),
+  $$select public.review_business(tests.id('v1'), 'approved', null, '2026-10-19T12:00:00.123456+00:00')$$);
+select tests.expect_true('postgres', null,
+  $$select verification_status = 'approved' from public.businesses where id = tests.id('v1')$$,
+  'the exact server string (microseconds) is accepted; a JS Date (milliseconds) is stale');
+
 rollback;
