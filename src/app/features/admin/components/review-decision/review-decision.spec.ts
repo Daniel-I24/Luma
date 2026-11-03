@@ -41,7 +41,9 @@ describe('ReviewDecisionSheet', () => {
 
     confirm();
     expect(emitted).toEqual([]);
-    expect(root.querySelector('[role="alert"]')?.textContent).toContain('admin.errors.noteRequired');
+    expect(root.querySelector('[role="alert"]')?.textContent).toContain(
+      'admin.errors.noteRequired',
+    );
 
     const note = root.querySelector('textarea')!;
     note.value = '  Falta el RUT  ';

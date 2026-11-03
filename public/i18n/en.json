@@ -868,7 +868,8 @@
       "notBusinessOwner": "Only business accounts can register businesses.",
       "businessLimit": "You reached the maximum number of businesses per account.",
       "promotionLimit": "You already have 5 active deals. End one to create another.",
-      "promotionItemMismatch": "That product does not belong to this business."
+      "promotionItemMismatch": "That product does not belong to this business.",
+      "underReview": "Your business is under review: the name, address and location cannot change until the team finishes."
     },
     "images": {
       "logo": "Logo",
@@ -1001,7 +1002,8 @@
       "invalidTransition": "The business already changed status. Reload the queue.",
       "reviewFailed": "The decision could not be saved. Try again.",
       "docFailed": "The document could not be opened.",
-      "docsDeleteFailed": "The decision was saved, but the documents could not be deleted."
+      "docsDeleteFailed": "The decision was saved, but the documents could not be deleted.",
+      "staleReview": "The business changed while you were reviewing it. Reload to see the current version before deciding."
     },
     "title": "Business review",
     "entry": "Review team",
@@ -1045,7 +1047,8 @@
         "approved": "Customers will see it if it is published. Its documents will be deleted.",
         "rejected": "The business will see your note and can fix and resubmit. Documents are kept.",
         "suspended": "Customers will no longer see it. The business will see your note."
-      }
+      },
+      "reload": "Reload"
     }
   },
   "reports": {
@@ -1400,7 +1403,8 @@
     "serviceUnavailable": "The service is not responding right now. Try again in a few minutes.",
     "offlineBanner": "Offline: some features are unavailable.",
     "placeholderConfig": "Development mode: environment.ts has template values (placeholder.supabase.co). The app cannot reach Supabase.",
-    "unexpected": "Something went wrong. You can keep using the app; if it happens again, reload it."
+    "unexpected": "Something went wrong. You can keep using the app; if it happens again, reload it.",
+    "emailNotConfirmed": "Confirm your email with the code we sent you to continue."
   },
   "notFound": {
     "title": "We could not find this page",

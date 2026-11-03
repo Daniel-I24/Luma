@@ -10,7 +10,8 @@ export const adminRoutes: Routes = [
     children: [
       {
         path: '',
-        loadComponent: () => import('./pages/admin-queue/admin-queue.page').then((m) => m.AdminQueuePage),
+        loadComponent: () =>
+          import('./pages/admin-queue/admin-queue.page').then((m) => m.AdminQueuePage),
       },
       {
         path: 'businesses/:id',

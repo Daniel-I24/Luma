@@ -28,7 +28,9 @@ const PREVIEW_ZOOM = 16;
         #map
         class="h-48 w-full overflow-hidden rounded-lg border border-border bg-map-canvas"
         role="img"
-        [attr.aria-label]="t('admin.review.mapLabel', { lat: lat().toFixed(5), lng: lng().toFixed(5) })"
+        [attr.aria-label]="
+          t('admin.review.mapLabel', { lat: lat().toFixed(5), lng: lng().toFixed(5) })
+        "
       ></div>
       @if (failed()) {
         <p class="m-0 text-caption text-fg-muted">{{ t('businessPanel.location.mapFailed') }}</p>

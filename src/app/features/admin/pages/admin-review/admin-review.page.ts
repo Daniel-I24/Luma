@@ -3,7 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaEmptyState, LumaIconButton, LumaSkeleton } from '@design-system';
 import { Nit } from '@shared/business/domain/nit';
-import type { ReviewDecision, VerificationDoc } from '@shared/business/verification/verification.model';
+import type {
+  ReviewDecision,
+  VerificationDoc,
+} from '@shared/business/verification/verification.model';
 import { LocationPreview } from '../../components/location-preview/location-preview';
 import { ReviewDecisionSheet } from '../../components/review-decision/review-decision';
 import { AdminReviewStore } from '../../state/admin-review.store';
@@ -45,9 +48,12 @@ export class AdminReviewPage {
   protected readonly actions = computed<ReviewDecision[]>(() => {
     switch (this.store.business()?.verification_status) {
       case 'pending':
-        return ['approved', 'rejected'];
+        return ['approved', 'rejected', 'suspended'];
       case 'approved':
         return ['suspended'];
+      case 'suspended':
+        // Reactivation.
+        return ['approved'];
       default:
         return [];
     }

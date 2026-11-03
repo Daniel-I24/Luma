@@ -5,7 +5,12 @@ import type { VerificationDoc } from '@shared/business/verification/verification
 import { VerificationRepository } from '@shared/business/verification/verification.repository';
 import { AdminReviewStore } from './admin-review.store';
 
-const business = { id: 'b1', name: 'Café', verification_status: 'pending' };
+const business = {
+  id: 'b1',
+  name: 'Café',
+  verification_status: 'pending',
+  updated_at: '2026-10-19T12:00:00.123456+00:00',
+};
 const docs: VerificationDoc[] = [
   { id: 'd1', business_id: 'b1', kind: 'rut', storage_path: 'b1/rut.pdf', created_at: '' },
 ];
@@ -60,7 +65,12 @@ describe('AdminReviewStore', () => {
     await store.load('b1');
 
     expect(await store.decide('rejected', 'Falta el RUT')).toBe(true);
-    expect(admin.review).toHaveBeenCalledWith('b1', 'rejected', 'Falta el RUT');
+    expect(admin.review).toHaveBeenCalledWith(
+      'b1',
+      'rejected',
+      'Falta el RUT',
+      business.updated_at,
+    );
     expect(admin.deleteDocs).not.toHaveBeenCalled();
 
     expect(await store.decide('approved', null)).toBe(true);
@@ -77,7 +87,10 @@ describe('AdminReviewStore', () => {
   });
 
   it('surfaces a failed document clean-up after approving', async () => {
-    admin.deleteDocs.mockResolvedValueOnce({ data: null, errorKey: 'admin.errors.docsDeleteFailed' });
+    admin.deleteDocs.mockResolvedValueOnce({
+      data: null,
+      errorKey: 'admin.errors.docsDeleteFailed',
+    });
     await store.load('b1');
 
     expect(await store.decide('approved', null)).toBe(true);

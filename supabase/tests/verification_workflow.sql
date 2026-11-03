@@ -73,12 +73,12 @@ select tests.expect_true('authenticated', tests.id('adm'),
 
 -- -- decisions: admins only, note required to reject or suspend ---------------------
 select tests.expect_error('authenticated', tests.id('owner'),
-  $$select public.review_business(tests.id('v1'), 'approved')$$, 'not_admin');
+  $$select public.review_business(tests.id('v1'), 'approved', null, now())$$, 'not_admin');
 select tests.expect_error('authenticated', tests.id('adm'),
-  $$select public.review_business(tests.id('v1'), 'rejected', '  ')$$, 'note_required');
+  $$select public.review_business(tests.id('v1'), 'rejected', '  ', now())$$, 'note_required');
 select tests.expect_error('anon', null,
-  $$select public.review_business(tests.id('v1'), 'approved')$$, 'permission denied');
-select tests.exec_as('authenticated', tests.id('adm'), $$select public.review_business(tests.id('v1'), 'approved')$$);
+  $$select public.review_business(tests.id('v1'), 'approved', null, now())$$, 'permission denied');
+select tests.exec_as('authenticated', tests.id('adm'), $$select public.review_business(tests.id('v1'), 'approved', null, (select updated_at from public.businesses where id = tests.id('v1')))$$);
 select tests.expect_true('anon', null,
   $$select count(*) = 1 from public.businesses where id = tests.id('v1')$$, 'approved and published: public');
 select tests.expect_true('authenticated', tests.id('owner'),
@@ -102,9 +102,9 @@ select tests.exec_as('authenticated', tests.id('owner'),
 select tests.expect_true('authenticated', tests.id('owner'),
   $$select verification_status = 'pending' from public.businesses where id = tests.id('v1')$$,
   'a new address sends it back to review');
-select tests.exec_as('authenticated', tests.id('adm'), $$select public.review_business(tests.id('v1'), 'approved')$$);
+select tests.exec_as('authenticated', tests.id('adm'), $$select public.review_business(tests.id('v1'), 'approved', null, (select updated_at from public.businesses where id = tests.id('v1')))$$);
 select tests.exec_as('authenticated', tests.id('adm'),
-  $$select public.review_business(tests.id('v1'), 'suspended', 'Reportes de información falsa')$$);
+  $$select public.review_business(tests.id('v1'), 'suspended', 'Reportes de información falsa', (select updated_at from public.businesses where id = tests.id('v1')))$$);
 select tests.expect_true('anon', null,
   $$select count(*) = 0 from public.businesses where id = tests.id('v1')$$, 'a suspended business is hidden');
 

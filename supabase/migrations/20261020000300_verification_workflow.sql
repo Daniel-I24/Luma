@@ -58,7 +58,13 @@ end;
 $$;
 
 -- 2. Decide (admin) ---------------------------------------------------------------
-create or replace function public.review_business(p_business_id uuid, p_decision text, p_note text default null)
+-- p_seen_updated_at: businesses.updated_at as the admin saw it; any change
+-- since then (owner edit, another admin) rejects the decision as stale_review.
+-- Transitions: pending -> approved | rejected | suspended; approved ->
+-- suspended; suspended -> approved (reactivation). The owner is notified.
+create or replace function public.review_business(
+  p_business_id uuid, p_decision text, p_note text, p_seen_updated_at timestamptz
+)
 returns void
 language plpgsql
 security definer
@@ -67,6 +73,7 @@ as $$
 declare
   v_status text;
   v_owner uuid;
+  v_updated timestamptz;
   v_note text := nullif(btrim(p_note), '');
 begin
   if not public.is_admin() then
@@ -75,16 +82,21 @@ begin
   if p_decision not in ('approved', 'rejected', 'suspended') then
     raise exception using errcode = 'P0001', message = 'invalid_decision';
   end if;
-  if p_decision <> 'approved' and v_note is null then
+  if p_decision in ('rejected', 'suspended') and v_note is null then
     raise exception using errcode = 'P0001', message = 'note_required';
   end if;
-  select verification_status, owner_id into v_status, v_owner
+  select verification_status, owner_id, updated_at into v_status, v_owner, v_updated
   from public.businesses where id = p_business_id for update;
   if not found then
     raise exception using errcode = 'P0001', message = 'business_not_found';
   end if;
-  if (p_decision in ('approved', 'rejected') and v_status <> 'pending')
-     or (p_decision = 'suspended' and v_status <> 'approved') then
+  if v_updated is distinct from p_seen_updated_at then
+    raise exception using errcode = 'P0001', message = 'stale_review';
+  end if;
+  if (v_status, p_decision) not in (
+    ('pending', 'approved'), ('pending', 'rejected'), ('pending', 'suspended'),
+    ('approved', 'suspended'), ('suspended', 'approved')
+  ) then
     raise exception using errcode = 'P0001', message = 'invalid_transition';
   end if;
   update public.businesses
@@ -99,7 +111,8 @@ $$;
 
 -- 3. Re-review after sensitive changes ----------------------------------------------
 -- An approved business whose owner (not an admin) changes its name, address
--- or location goes back to pending.
+-- or location goes back to pending. While pending, the owner cannot change
+-- them at all (business_under_review): the team reviews what it sees.
 create or replace function public.businesses_require_rereview()
 returns trigger
 language plpgsql
@@ -107,6 +120,13 @@ security definer
 set search_path = ''
 as $$
 begin
+  if old.verification_status = 'pending'
+     and coalesce(nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'role', '') = 'authenticated'
+     and not public.is_admin()
+     and (new.name is distinct from old.name or new.address is distinct from old.address
+          or new.latitude is distinct from old.latitude or new.longitude is distinct from old.longitude) then
+    raise exception using errcode = 'P0001', message = 'business_under_review';
+  end if;
   if old.verification_status = 'approved'
      and coalesce(nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'role', '') = 'authenticated'
      and not public.is_admin()
@@ -124,9 +144,9 @@ create trigger businesses_require_rereview
   for each row execute procedure public.businesses_require_rereview();
 
 revoke execute on function public.submit_business_for_review(uuid) from public, anon;
-revoke execute on function public.review_business(uuid, text, text) from public, anon;
+revoke execute on function public.review_business(uuid, text, text, timestamptz) from public, anon;
 revoke execute on function public.businesses_require_rereview() from public, anon, authenticated;
 grant execute on function public.submit_business_for_review(uuid) to authenticated;
-grant execute on function public.review_business(uuid, text, text) to authenticated;
+grant execute on function public.review_business(uuid, text, text, timestamptz) to authenticated;
 
 notify pgrst, 'reload schema';

@@ -15,6 +15,7 @@ const ADMIN_ERRORS: Readonly<Record<string, string>> = {
   note_required: 'admin.errors.noteRequired',
   invalid_transition: 'admin.errors.invalidTransition',
   not_admin: 'admin.errors.notAdmin',
+  stale_review: 'admin.errors.staleReview',
 };
 
 /** Contract: what the review team reads and decides (Supabase is one implementation). */
@@ -24,10 +25,12 @@ export abstract class AdminRepository {
   abstract pendingBusinesses(): Promise<RepoResult<Business[]>>;
   abstract business(id: string): Promise<RepoResult<Business | null>>;
   abstract signedDocUrl(doc: VerificationDoc): Promise<RepoResult<string>>;
+  /** seenUpdatedAt: businesses.updated_at as shown; a newer one is stale_review. */
   abstract review(
     id: string,
     decision: ReviewDecision,
     note: string | null,
+    seenUpdatedAt: string,
   ): Promise<RepoResult<true>>;
   /** Removes every document of a business (after approval). */
   abstract deleteDocs(docs: readonly VerificationDoc[]): Promise<RepoResult<true>>;
@@ -71,11 +74,13 @@ export class SupabaseAdminRepository extends AdminRepository {
     id: string,
     decision: ReviewDecision,
     note: string | null,
+    seenUpdatedAt: string,
   ): Promise<RepoResult<true>> {
     const { error } = await this.db.rpc('review_business', {
       p_business_id: id,
       p_decision: decision,
       p_note: note,
+      p_seen_updated_at: seenUpdatedAt,
     });
     if (error)
       return { data: null, errorKey: ADMIN_ERRORS[error.message] ?? 'admin.errors.reviewFailed' };

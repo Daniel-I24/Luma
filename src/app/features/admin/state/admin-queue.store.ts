@@ -21,7 +21,10 @@ export class AdminQueueStore {
 
   async load(): Promise<void> {
     this._state.set('loading');
-    const [pending, reports] = await Promise.all([this.repo.pendingBusinesses(), this.repo.openReports()]);
+    const [pending, reports] = await Promise.all([
+      this.repo.pendingBusinesses(),
+      this.repo.openReports(),
+    ]);
     if (!pending.data || !reports.data) {
       this._state.set('error');
       return;

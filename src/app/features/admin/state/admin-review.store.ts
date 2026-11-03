@@ -65,7 +65,7 @@ export class AdminReviewStore {
     this._busy.set(true);
     this._errorKey.set(null);
     try {
-      const result = await this.admin.review(business.id, decision, note);
+      const result = await this.admin.review(business.id, decision, note, business.updated_at);
       if (result.errorKey) {
         this._errorKey.set(result.errorKey);
         return false;

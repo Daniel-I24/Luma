@@ -12,12 +12,27 @@ by its owner and approved by the review team**.
 | `pending` | owner, `submit_business_for_review` | no | no |
 | `approved` | admin, `review_business` | when `is_active` | no |
 | `rejected` (changes requested) | admin, note required | no | yes |
-| `suspended` | admin (only from approved), note required | no | no |
+| `suspended` | admin, note required | no | no |
 
-Transitions: draft or rejected → pending (only when nothing is missing);
-pending → approved or rejected; approved → suspended. A verified business
-whose owner changes **name, address or location** goes back to `pending`
-(trigger); Luma Negocios warns before saving such a change.
+## Transitions
+
+| From | To | Who | Notes |
+| --- | --- | --- | --- |
+| draft, rejected | pending | owner (`submit_business_for_review`) | only when nothing is missing; confirmed email |
+| pending | approved | admin (`review_business`) | |
+| pending | rejected | admin | note required |
+| pending | suspended | admin | note required (e.g. a fake business) |
+| approved | suspended | admin | note required |
+| suspended | approved | admin | reactivation; note optional |
+| approved | pending | trigger | the owner changed name, address or location |
+
+Every admin decision notifies the owner (`business_review`). `review_business`
+receives the `updated_at` the admin saw: if the business changed since
+(owner edit or another admin), it answers `stale_review` and the review page
+offers "Recargar". While **pending**, the owner cannot change name, address or
+location (`business_under_review`): the team reviews exactly what it sees;
+corrections by the team are made from the SQL editor. Luma Negocios warns
+before saving such a change on a verified business.
 
 Visibility is decided in one place, `is_business_public(uuid)`
 (`is_active and verification_status = 'approved'`), used by every public

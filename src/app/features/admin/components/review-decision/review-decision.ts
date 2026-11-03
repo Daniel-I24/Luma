@@ -25,7 +25,9 @@ export class ReviewDecisionSheet {
 
   protected readonly note = signal('');
   protected readonly noteMax = NOTE_MAX;
-  protected readonly needsNote = computed(() => this.decision() !== null && this.decision() !== 'approved');
+  protected readonly needsNote = computed(
+    () => this.decision() !== null && this.decision() !== 'approved',
+  );
   protected readonly missingNote = signal(false);
 
   protected onNote(event: Event): void {

@@ -21,7 +21,15 @@ type QueueTab = 'pending' | 'reports';
   selector: 'app-admin-queue-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, RouterLink, LumaButton, LumaEmptyState, LumaIconButton, LumaSkeleton, LumaTabs],
+  imports: [
+    TranslocoModule,
+    RouterLink,
+    LumaButton,
+    LumaEmptyState,
+    LumaIconButton,
+    LumaSkeleton,
+    LumaTabs,
+  ],
   providers: [AdminQueueStore],
   templateUrl: './admin-queue.page.html',
   host: { class: 'block' },
@@ -39,8 +47,18 @@ export class AdminQueuePage {
   protected readonly tabs = computed<TabItem[]>(() => {
     this.lang();
     return [
-      { id: 'pending', label: this.transloco.translate('admin.queue.pending', { count: this.store.pending().length }) },
-      { id: 'reports', label: this.transloco.translate('admin.queue.reports', { count: this.store.reports().length }) },
+      {
+        id: 'pending',
+        label: this.transloco.translate('admin.queue.pending', {
+          count: this.store.pending().length,
+        }),
+      },
+      {
+        id: 'reports',
+        label: this.transloco.translate('admin.queue.reports', {
+          count: this.store.reports().length,
+        }),
+      },
     ];
   });
 
