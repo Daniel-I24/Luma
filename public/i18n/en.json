@@ -869,7 +869,13 @@
       "endsInPast": "The end date must be in the future.",
       "imageUrl": "The image must be an https address.",
       "discount": "The discount must be a whole number between 5 and 90.",
-      "discountNeedsItem": "Choose the product the discount applies to."
+      "discountNeedsItem": "Choose the product the discount applies to.",
+      "contact": {
+        "whatsapp": "Enter a 10-digit Colombian mobile that starts with 3.",
+        "instagram": "Use only lowercase letters, numbers, dots and underscores (up to 30).",
+        "facebook": "Enter the page name as it appears in facebook.com/…",
+        "website": "The address must start with https:// (200 characters at most)."
+      }
     },
     "errors": {
       "loadFailed": "Your business information could not be loaded.",
@@ -884,7 +890,9 @@
       "businessLimit": "You reached the maximum number of businesses per account.",
       "promotionLimit": "You already have 5 active deals. End one to create another.",
       "promotionItemMismatch": "That product does not belong to this business.",
-      "underReview": "Your business is under review: the name, address and location cannot change until the team finishes."
+      "underReview": "Your business is under review: the name, address and location cannot change until the team finishes.",
+      "galleryLimit": "You already have 8 photos. Delete one to add another.",
+      "menuLimit": "Your menu reached the maximum of 200 products."
     },
     "images": {
       "logo": "Logo",
@@ -892,6 +900,33 @@
       "item": "Product photo",
       "promotion": "Promotion image",
       "saved": "Image updated"
+    },
+    "contact": {
+      "title": "Contact and social",
+      "intro": "Everything is optional. It's shown on your public profile so customers can message or follow you.",
+      "whatsapp": "WhatsApp",
+      "whatsappPlaceholder": "300 123 4567",
+      "instagram": "Instagram",
+      "instagramPlaceholder": "your.business",
+      "facebook": "Facebook page",
+      "facebookPlaceholder": "YourBusiness",
+      "website": "Website",
+      "websitePlaceholder": "https://yourbusiness.co"
+    },
+    "gallery": {
+      "title": "Photos of the place",
+      "intro": "Show your place, your shop window or your dishes. Up to {{max}} photos; we resize them and remove the GPS location before uploading.",
+      "add": "Add photos",
+      "uploading": "Uploading…",
+      "count": "{{count}} of {{max}} photos",
+      "empty": "You have no photos yet. Photos help customers recognise you when they arrive.",
+      "photo": "Photo {{n}}",
+      "caption": "Short caption (optional)",
+      "earlier": "Move earlier",
+      "later": "Move later",
+      "delete": "Delete",
+      "confirmDelete": "Tap again to delete",
+      "loadFailed": "We couldn't load your photos. Please try again."
     }
   },
   "media": {
@@ -1302,7 +1337,11 @@
       "verificationEditable": "Tax id, company name, RUT and storefront",
       "verificationLocked": "Read only unless changes are requested",
       "more": "More",
-      "customerView": "View as a customer"
+      "customerView": "View as a customer",
+      "contact": "Contact and social",
+      "contactHint": "WhatsApp, Instagram, Facebook and website",
+      "gallery": "Photos of the place",
+      "galleryHint": "Up to 8 photos for your public profile"
     },
     "verificationPage": {
       "title": "Legal data and documents",

@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { AuthService } from '@core/auth/auth.service';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import type { Business } from '../models/business.model';
+import type { BusinessContact } from '../models/business-contact';
 import type { RepoResult } from './business.repository';
 import { mapWriteError } from './business-write-error';
 import {
@@ -75,6 +76,14 @@ export class OwnedBusinessRepository {
     const parsed = businessInfoSchema.safeParse(input);
     if (!parsed.success) return { data: null, errorKey: INVALID };
     const { error } = await this.db.from('businesses').update(parsed.data).eq('id', id);
+    if (error)
+      return { data: null, errorKey: mapWriteError(error, 'businessPanel.errors.saveFailed') };
+    return { data: true, errorKey: null };
+  }
+
+  /** Public contact, already normalised by parseContact (the database checks it again). */
+  async updateContact(id: string, contact: BusinessContact): Promise<RepoResult<true>> {
+    const { error } = await this.db.from('businesses').update(contact).eq('id', id);
     if (error)
       return { data: null, errorKey: mapWriteError(error, 'businessPanel.errors.saveFailed') };
     return { data: true, errorKey: null };

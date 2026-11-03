@@ -7,6 +7,8 @@ const MESSAGE_KEYS: Readonly<Record<string, string>> = {
   promotion_item_mismatch: 'businessPanel.errors.promotionItemMismatch',
   business_under_review: 'businessPanel.errors.underReview',
   email_not_confirmed: 'errors.emailNotConfirmed',
+  gallery_limit: 'businessPanel.errors.galleryLimit',
+  menu_limit: 'businessPanel.errors.menuLimit',
 };
 const CODE_KEYS: Readonly<Record<string, string>> = {
   '23514': 'businessPanel.errors.invalidData',

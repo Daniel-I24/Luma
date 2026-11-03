@@ -869,7 +869,13 @@
       "endsInPast": "La fecha de fin debe estar en el futuro.",
       "imageUrl": "La imagen debe ser una dirección https.",
       "discount": "El descuento debe ser un número entero entre 5 y 90.",
-      "discountNeedsItem": "Elige el producto al que se aplica el descuento."
+      "discountNeedsItem": "Elige el producto al que se aplica el descuento.",
+      "contact": {
+        "whatsapp": "Escribe un celular colombiano de 10 dígitos que empiece por 3.",
+        "instagram": "Usa solo letras minúsculas, números, puntos y guiones bajos (hasta 30).",
+        "facebook": "Escribe el nombre de la página tal como aparece en facebook.com/…",
+        "website": "La dirección debe empezar por https:// (máximo 200 caracteres)."
+      }
     },
     "errors": {
       "loadFailed": "No se pudo cargar la información de tu negocio.",
@@ -884,7 +890,9 @@
       "businessLimit": "Llegaste al máximo de negocios por cuenta.",
       "promotionLimit": "Ya tienes 5 promociones activas. Termina una para crear otra.",
       "promotionItemMismatch": "Ese producto no es de este negocio.",
-      "underReview": "Tu negocio está en revisión: el nombre, la dirección y la ubicación no se pueden cambiar hasta que el equipo termine."
+      "underReview": "Tu negocio está en revisión: el nombre, la dirección y la ubicación no se pueden cambiar hasta que el equipo termine.",
+      "galleryLimit": "Ya tienes 8 fotos. Elimina una para agregar otra.",
+      "menuLimit": "Tu menú llegó al máximo de 200 productos."
     },
     "images": {
       "logo": "Logo",
@@ -892,6 +900,33 @@
       "item": "Foto del producto",
       "promotion": "Imagen de la promoción",
       "saved": "Imagen actualizada"
+    },
+    "contact": {
+      "title": "Contacto y redes",
+      "intro": "Todo es opcional. Se muestra en tu perfil público para que los clientes te escriban o te sigan.",
+      "whatsapp": "WhatsApp",
+      "whatsappPlaceholder": "300 123 4567",
+      "instagram": "Instagram",
+      "instagramPlaceholder": "tu.negocio",
+      "facebook": "Página de Facebook",
+      "facebookPlaceholder": "TuNegocio",
+      "website": "Sitio web",
+      "websitePlaceholder": "https://tunegocio.co"
+    },
+    "gallery": {
+      "title": "Fotos del lugar",
+      "intro": "Muestra tu local, tu vitrina o tus platos. Hasta {{max}} fotos; las reducimos y quitamos la ubicación GPS antes de subirlas.",
+      "add": "Agregar fotos",
+      "uploading": "Subiendo…",
+      "count": "{{count}} de {{max}} fotos",
+      "empty": "Aún no tienes fotos. Las fotos ayudan a que los clientes te reconozcan al llegar.",
+      "photo": "Foto {{n}}",
+      "caption": "Descripción corta (opcional)",
+      "earlier": "Mover antes",
+      "later": "Mover después",
+      "delete": "Eliminar",
+      "confirmDelete": "Toca otra vez para eliminar",
+      "loadFailed": "No pudimos cargar tus fotos. Intenta de nuevo."
     }
   },
   "media": {
@@ -1302,7 +1337,11 @@
       "verificationEditable": "NIT, razón social, RUT y fachada",
       "verificationLocked": "Solo lectura mientras no estén pendientes de cambios",
       "more": "Más",
-      "customerView": "Ver como cliente"
+      "customerView": "Ver como cliente",
+      "contact": "Contacto y redes",
+      "contactHint": "WhatsApp, Instagram, Facebook y sitio web",
+      "gallery": "Fotos del lugar",
+      "galleryHint": "Hasta 8 fotos para tu perfil público"
     },
     "verificationPage": {
       "title": "Datos legales y documentos",

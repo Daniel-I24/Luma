@@ -3,7 +3,7 @@ export const OWNER_SECTIONS = ['summary', 'orders', 'menu', 'promotions', 'busin
 export type OwnerSection = (typeof OWNER_SECTIONS)[number];
 
 /** Screens reached from "Mi negocio" (/owner/:id/business/...). */
-export type OwnerBusinessScreen = 'info' | 'hours' | 'verification';
+export type OwnerBusinessScreen = 'info' | 'contact' | 'gallery' | 'hours' | 'verification';
 
 /** At most this many businesses per owner (enforced by the database too). */
 export const MAX_OWNED_BUSINESSES = 3;

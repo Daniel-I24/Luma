@@ -115,6 +115,10 @@ agent's sessions).
   "Buscar lugares" asks geocode (neighbourhoods, addresses, places) with the
   map centre as bias; results list (skeletons, empty, quota, unavailable),
   place pin + fly-to. PlaceSearchRepository (Zod, Colombia bounds) and store.
+- FASE 2.3 (part 1) Luma Negocios: Contacto y redes (/owner/:id/business/contact,
+  parseContact normalises WhatsApp/Instagram/Facebook/https web) and Fotos del
+  lugar (/business/gallery: up to 8, re-encoded, caption, order, two-tap
+  delete; file removed if the row is refused). Fixed a stale admin spec.
 
 - Block D done: migration 20261021000000 (discounts, trigger, server prices in
   create_order; 23 SQL checks), customer /promotions (sort, filters, states,

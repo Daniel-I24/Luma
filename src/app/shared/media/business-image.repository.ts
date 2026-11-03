@@ -5,7 +5,13 @@ import { ImageEncodeError, reencodeImage } from './image-encoder';
 import { checkImageFile, imagePathFromUrl } from './image-file.util';
 
 export const BUSINESS_IMAGES_BUCKET = 'business-images';
-export type BusinessImageKind = 'logo' | 'cover' | 'menu' | 'promotions';
+export type BusinessImageKind = 'logo' | 'cover' | 'menu' | 'promotions' | 'gallery';
+
+/** A stored picture: its Storage path (for rows that keep it) and public URL. */
+export interface StoredImage {
+  readonly path: string;
+  readonly url: string;
+}
 
 /** One year: object names are unique, so a stored picture never changes. */
 const CACHE_SECONDS = '31536000';
@@ -25,6 +31,21 @@ export class BusinessImageRepository {
     kind: BusinessImageKind,
     file: File,
   ): Promise<RepoResult<string>> {
+    const stored = await this.store(businessId, kind, file);
+    return stored.data ? { data: stored.data.url, errorKey: null } : { data: null, errorKey: stored.errorKey };
+  }
+
+  /** Public URL of a stored path (for rows that keep the path). */
+  publicUrl(path: string): string {
+    return this.storage.from(BUSINESS_IMAGES_BUCKET).getPublicUrl(path).data.publicUrl;
+  }
+
+  /** Validates, re-encodes and uploads; resolves to the path and URL. */
+  async store(
+    businessId: string,
+    kind: BusinessImageKind,
+    file: File,
+  ): Promise<RepoResult<StoredImage>> {
     const invalid = checkImageFile(file);
     if (invalid) return { data: null, errorKey: invalid };
     let encoded;
@@ -41,8 +62,9 @@ export class BusinessImageRepository {
       cacheControl: CACHE_SECONDS,
       upsert: false,
     });
+    // The bucket refuses a 81st file of a business (insert policy).
     if (error) return { data: null, errorKey: 'media.errors.uploadFailed' };
-    return { data: bucket.getPublicUrl(path).data.publicUrl, errorKey: null };
+    return { data: { path, url: bucket.getPublicUrl(path).data.publicUrl }, errorKey: null };
   }
 
   /**
@@ -50,7 +72,10 @@ export class BusinessImageRepository {
    * once the new URL is saved, so the old file does not linger.
    */
   async remove(url: string | null | undefined): Promise<RepoResult<true>> {
-    const path = imagePathFromUrl(url);
+    return this.removePath(imagePathFromUrl(url));
+  }
+
+  async removePath(path: string | null): Promise<RepoResult<true>> {
     if (!path) return { data: true, errorKey: null };
     const { error } = await this.storage.from(BUSINESS_IMAGES_BUCKET).remove([path]);
     if (error) return { data: null, errorKey: 'media.errors.deleteFailed' };

@@ -111,7 +111,7 @@ describe('verification repositories', () => {
 
     expect((await admin.signedDocUrl(doc)).data).toBe('https://signed');
     expect(bucket.createSignedUrl).toHaveBeenCalledWith('b1/rut/x.pdf', SIGNED_URL_SECONDS);
-    expect((await admin.review('b1', 'rejected', null)).errorKey).toBe('admin.errors.noteRequired');
+    expect((await admin.review('b1', 'rejected', null, '2026-10-19T00:00:00Z')).errorKey).toBe('admin.errors.noteRequired');
   });
 
   it('deletes the files first, then their rows', async () => {

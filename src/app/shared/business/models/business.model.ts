@@ -34,6 +34,11 @@ export interface Business {
   verified_at: string | null;
   created_at: string;
   updated_at: string;
+  /** Public contact (migration business_showcase; absent before it is applied). */
+  whatsapp?: string | null;
+  instagram?: string | null;
+  facebook?: string | null;
+  website?: string | null;
 }
 
 /**

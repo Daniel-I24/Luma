@@ -61,6 +61,22 @@ export const ownerRoutes: Routes = [
               import('./pages/business-info/business-info.page').then((m) => m.BusinessInfoPage),
           },
           {
+            path: 'business/contact',
+            data: DETAIL_ROUTE_DATA,
+            loadComponent: () =>
+              import('./pages/business-contact/business-contact.page').then(
+                (m) => m.BusinessContactPage,
+              ),
+          },
+          {
+            path: 'business/gallery',
+            data: DETAIL_ROUTE_DATA,
+            loadComponent: () =>
+              import('./pages/business-gallery/business-gallery.page').then(
+                (m) => m.BusinessGalleryPage,
+              ),
+          },
+          {
             path: 'business/hours',
             data: DETAIL_ROUTE_DATA,
             loadComponent: () =>

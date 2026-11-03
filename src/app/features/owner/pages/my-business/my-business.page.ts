@@ -20,6 +20,8 @@ import { routeBusinessId } from '../../utils/route-business-id';
 
 const SCREENS: readonly { screen: OwnerBusinessScreen; icon: IconName; key: string }[] = [
   { screen: 'info', icon: 'store', key: 'info' },
+  { screen: 'contact', icon: 'phone', key: 'contact' },
+  { screen: 'gallery', icon: 'image', key: 'gallery' },
   { screen: 'hours', icon: 'clock', key: 'hours' },
   { screen: 'verification', icon: 'check', key: 'verification' },
 ];

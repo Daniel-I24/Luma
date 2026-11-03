@@ -1,0 +1,70 @@
+<div
+  *transloco="let t"
+  class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6"
+>
+  <app-panel-header [heading]="t('businessPanel.gallery.title')" [backLink]="['/owner', id(), 'business']" />
+  <p class="m-0 text-body-sm text-fg-muted">{{ t('businessPanel.gallery.intro', { max }) }}</p>
+
+  <input
+    #file
+    id="gallery-file"
+    type="file"
+    class="sr-only"
+    multiple
+    [accept]="accept"
+    [attr.aria-label]="t('businessPanel.gallery.add')"
+    (change)="onFiles($event)"
+  />
+  <app-luma-button [fullWidth]="true" [disabled]="gallery.busy() || gallery.free() === 0" (clicked)="file.click()">{{
+    t(gallery.busy() ? 'businessPanel.gallery.uploading' : 'businessPanel.gallery.add')
+  }}</app-luma-button>
+  <p class="m-0 text-caption text-fg-subtle" aria-live="polite">
+    {{ t('businessPanel.gallery.count', { count: gallery.photos().length, max }) }}
+  </p>
+
+  @if (gallery.errorKey(); as key) {
+    <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
+  }
+
+  @if (gallery.loading()) {
+    <app-luma-skeleton shape="rect" /><app-luma-skeleton shape="rect" />
+  } @else if (gallery.photos().length === 0) {
+    <p class="m-0 rounded-xl border border-dashed border-border-subtle p-6 text-center text-body text-fg-muted">
+      {{ t('businessPanel.gallery.empty') }}
+    </p>
+  } @else {
+    <ul class="m-0 flex list-none flex-col gap-3 p-0">
+      @for (photo of gallery.photos(); track photo.id; let first = $first, last = $last, i = $index) {
+        <li class="flex gap-3 rounded-xl border border-border-subtle bg-surface p-2">
+          <app-luma-image
+            class="shrink-0 overflow-hidden rounded-md"
+            [src]="photo.url"
+            [alt]="photo.caption ?? t('businessPanel.gallery.photo', { n: i + 1 })"
+            [width]="96"
+            [height]="96"
+            fallbackIcon="image"
+          />
+          <div class="flex min-w-0 flex-1 flex-col gap-2">
+            <label class="text-caption text-fg-muted" [for]="'caption-' + photo.id">{{ t('businessPanel.gallery.caption') }}</label>
+            <input
+              class="min-h-11 w-full rounded-md border border-border bg-surface px-3 text-body text-fg focus-visible:outline-2 focus-visible:outline-border-focus"
+              [id]="'caption-' + photo.id"
+              [attr.maxlength]="maxCaption"
+              [value]="photo.caption ?? ''"
+              [disabled]="gallery.busy()"
+              (change)="onCaption(photo, $event)"
+            />
+            <div class="flex items-center gap-1">
+              <app-luma-icon-button icon="chevron-up" variant="ghost" [label]="t('businessPanel.gallery.earlier')" [disabled]="first || gallery.busy()" (clicked)="gallery.move(photo, -1)" />
+              <app-luma-icon-button icon="chevron-down" variant="ghost" [label]="t('businessPanel.gallery.later')" [disabled]="last || gallery.busy()" (clicked)="gallery.move(photo, 1)" />
+              <span class="flex-1"></span>
+              <app-luma-button variant="ghost" size="sm" [disabled]="gallery.busy()" (clicked)="remove(photo)">{{
+                t(confirming() === photo.id ? 'businessPanel.gallery.confirmDelete' : 'businessPanel.gallery.delete')
+              }}</app-luma-button>
+            </div>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</div>
