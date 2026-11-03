@@ -13,10 +13,18 @@ language plpgsql
 as $$
 begin
   perform set_config('request.jwt.claim.sub', coalesce(p_sub::text, ''), true);
-  perform set_config('request.jwt.claims', json_build_object('sub', p_sub, 'role', p_role)::text, true);
+  -- aal: 'aal2' (MFA done) unless a test calls tests.use_aal('aal1').
+  perform set_config('request.jwt.claims', json_build_object(
+    'sub', p_sub, 'role', p_role, 'aal', coalesce(nullif(current_setting('tests.aal', true), ''), 'aal2'))::text, true);
   execute format('set local role %I', p_role);
 end;
 $$;
+
+-- Authenticator assurance level of the next checks ('aal1' or 'aal2').
+create function tests.use_aal(p_aal text)
+returns void
+language sql
+as $$ select set_config('tests.aal', p_aal, true) $$;
 
 -- Back to the test runner: no role, no claims (auth.uid() is null). Every
 -- helper calls it after each check, also after a failure, so no identity
