@@ -44,3 +44,17 @@ npx ng lint
 npm test -- --watch=false
 npm run test:scripts
 ```
+
+## Definition of Done (every phase and every prompt)
+Close each phase, and every prompt, only when all of this holds:
+1. Green, with no new warnings: `npm run build`, `npx ng lint`, `npm test -- --watch=false`,
+   `npm run test:scripts`, the Edge Function tests and type check (`deno test` / `deno check`
+   per function, see `.github/workflows/ci.yml`), the SQL suites (`supabase/tests/local/run.sh`),
+   `npm run check:interactive`, `npm run check:hardcoded-urls`, the secret scan
+   (`node scripts/secret-scan.mjs`) and `npm audit --omit=dev`.
+2. Cleanup: run `npx knip` and `npx depcheck` and look for files, folders, exports,
+   dependencies, assets, commented-out lines and documents that serve no purpose. Delete them
+   ONLY when you prove they are unused (no references, everything above still green). Never
+   delete what CLAUDE.md, `.kiro/steering/` or `docs/design-prototype/` reference.
+3. Record every deletion in `docs/cleanup-report.md`.
+4. Update `docs/WORKLOG.md` and every document the change affects.
