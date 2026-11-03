@@ -46,3 +46,7 @@ security definer
 set search_path = ''
 as $$ select o.id from public.orders o where o.notes = p_notes $$;
 grant execute on function tests.order_id(text) to anon, authenticated;
+
+-- Trust tier limits have their own suite (create_order_final.sql); here they
+-- would only get in the way of the rules each suite tests.
+update public.app_settings set int_value = 100 where key in ('trust_new_max_pending_pickup', 'trust_new_max_daily');

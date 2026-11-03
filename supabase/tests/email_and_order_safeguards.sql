@@ -55,7 +55,7 @@ select tests.expect_error('authenticated', tests.id('cus'),
 
 -- The final create_order keeps every protection.
 select tests.expect_true('postgres', null, $$
-  select bool_and(position(m in pg_get_functiondef('public.create_order(uuid, jsonb, timestamptz, text)'::regprocedure)) > 0)
+  select bool_and(position(m in pg_get_functiondef('public.create_order(uuid, jsonb, timestamptz, text, text)'::regprocedure)) > 0)
   from unnest(array['not_authenticated', 'email_not_confirmed', 'is_business_public', 'invalid_items',
     'duplicate_items', 'item_unavailable', 'order_line_prices', 'invalid_pickup_time', 'business_closed',
     'invalid_notes', 'total_too_high', 'too_many_pending', 'too_many_orders', 'pg_advisory_xact_lock']) m$$,

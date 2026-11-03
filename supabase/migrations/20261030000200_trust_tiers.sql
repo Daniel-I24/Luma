@@ -7,14 +7,9 @@
 --      dropped and replaced (reason defaults to null, so old calls keep
 --      working). Cancelling after accepting needs a reason; 'no_show' only
 --      from 'ready' and at least no_show_min_minutes (15) after it was ready.
---   3. customer_trust_tier(user) (internal): 'restricted' with
---      trust_restricted_strikes (3) no-shows in trust_strike_window_days (30)
---      since the last admin clear; 'trusted' with trust_trusted_min_picked_up
---      (2) picked-up orders and no strikes; 'new' otherwise.
---   4. my_trust_status(): the caller's tier, strikes, end of the restriction
---      and how many pick-ups are left to become trusted.
---   5. admin_clear_strikes(user) (admin with aal2, logged) and
---      admin_strikes() (users with strikes, ids and counts only).
+--   3. customer_strikes(user) (internal): active no-show strikes since the
+--      last admin clear, and when a restriction would end. The tiers and the
+--      RPCs built on it are in 20261030000210_trust_status.sql.
 -- NOT APPLIED YET.
 -- -----------------------------------------------------------------------------
 
@@ -131,25 +126,5 @@ as $$
 $$;
 
 revoke execute on function public.customer_strikes(uuid) from public, anon, authenticated;
-
-create or replace function public.customer_trust_tier(p_user uuid)
-returns text
-language sql
-stable
-security definer
-set search_path = ''
-as $$
-  select case
-    when s.strikes >= coalesce((select v.int_value from public.app_settings v where v.key = 'trust_restricted_strikes'), 3)
-      then 'restricted'
-    when s.strikes = 0 and (select count(*) from public.orders o where o.user_id = p_user and o.status = 'picked_up')
-         >= coalesce((select v.int_value from public.app_settings v where v.key = 'trust_trusted_min_picked_up'), 2)
-      then 'trusted'
-    else 'new'
-  end
-  from public.customer_strikes(p_user) s
-$$;
-
-revoke execute on function public.customer_trust_tier(uuid) from public, anon, authenticated;
 
 notify pgrst, 'reload schema';

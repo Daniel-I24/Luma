@@ -1,0 +1,258 @@
+{
+ "states": [
+  "pending",
+  "approved",
+  "declined",
+  "error",
+  "voided",
+  "refund_required",
+  "refunded"
+ ],
+ "vectors": [
+  {
+   "from": "pending",
+   "to": "pending",
+   "allowed": false
+  },
+  {
+   "from": "pending",
+   "to": "approved",
+   "allowed": true
+  },
+  {
+   "from": "pending",
+   "to": "declined",
+   "allowed": true
+  },
+  {
+   "from": "pending",
+   "to": "error",
+   "allowed": true
+  },
+  {
+   "from": "pending",
+   "to": "voided",
+   "allowed": true
+  },
+  {
+   "from": "pending",
+   "to": "refund_required",
+   "allowed": false
+  },
+  {
+   "from": "pending",
+   "to": "refunded",
+   "allowed": false
+  },
+  {
+   "from": "approved",
+   "to": "pending",
+   "allowed": false
+  },
+  {
+   "from": "approved",
+   "to": "approved",
+   "allowed": false
+  },
+  {
+   "from": "approved",
+   "to": "declined",
+   "allowed": false
+  },
+  {
+   "from": "approved",
+   "to": "error",
+   "allowed": false
+  },
+  {
+   "from": "approved",
+   "to": "voided",
+   "allowed": true
+  },
+  {
+   "from": "approved",
+   "to": "refund_required",
+   "allowed": true
+  },
+  {
+   "from": "approved",
+   "to": "refunded",
+   "allowed": false
+  },
+  {
+   "from": "declined",
+   "to": "pending",
+   "allowed": false
+  },
+  {
+   "from": "declined",
+   "to": "approved",
+   "allowed": true
+  },
+  {
+   "from": "declined",
+   "to": "declined",
+   "allowed": false
+  },
+  {
+   "from": "declined",
+   "to": "error",
+   "allowed": false
+  },
+  {
+   "from": "declined",
+   "to": "voided",
+   "allowed": false
+  },
+  {
+   "from": "declined",
+   "to": "refund_required",
+   "allowed": false
+  },
+  {
+   "from": "declined",
+   "to": "refunded",
+   "allowed": false
+  },
+  {
+   "from": "error",
+   "to": "pending",
+   "allowed": false
+  },
+  {
+   "from": "error",
+   "to": "approved",
+   "allowed": true
+  },
+  {
+   "from": "error",
+   "to": "declined",
+   "allowed": false
+  },
+  {
+   "from": "error",
+   "to": "error",
+   "allowed": false
+  },
+  {
+   "from": "error",
+   "to": "voided",
+   "allowed": false
+  },
+  {
+   "from": "error",
+   "to": "refund_required",
+   "allowed": false
+  },
+  {
+   "from": "error",
+   "to": "refunded",
+   "allowed": false
+  },
+  {
+   "from": "voided",
+   "to": "pending",
+   "allowed": false
+  },
+  {
+   "from": "voided",
+   "to": "approved",
+   "allowed": false
+  },
+  {
+   "from": "voided",
+   "to": "declined",
+   "allowed": false
+  },
+  {
+   "from": "voided",
+   "to": "error",
+   "allowed": false
+  },
+  {
+   "from": "voided",
+   "to": "voided",
+   "allowed": false
+  },
+  {
+   "from": "voided",
+   "to": "refund_required",
+   "allowed": false
+  },
+  {
+   "from": "voided",
+   "to": "refunded",
+   "allowed": false
+  },
+  {
+   "from": "refund_required",
+   "to": "pending",
+   "allowed": false
+  },
+  {
+   "from": "refund_required",
+   "to": "approved",
+   "allowed": false
+  },
+  {
+   "from": "refund_required",
+   "to": "declined",
+   "allowed": false
+  },
+  {
+   "from": "refund_required",
+   "to": "error",
+   "allowed": false
+  },
+  {
+   "from": "refund_required",
+   "to": "voided",
+   "allowed": true
+  },
+  {
+   "from": "refund_required",
+   "to": "refund_required",
+   "allowed": false
+  },
+  {
+   "from": "refund_required",
+   "to": "refunded",
+   "allowed": true
+  },
+  {
+   "from": "refunded",
+   "to": "pending",
+   "allowed": false
+  },
+  {
+   "from": "refunded",
+   "to": "approved",
+   "allowed": false
+  },
+  {
+   "from": "refunded",
+   "to": "declined",
+   "allowed": false
+  },
+  {
+   "from": "refunded",
+   "to": "error",
+   "allowed": false
+  },
+  {
+   "from": "refunded",
+   "to": "voided",
+   "allowed": false
+  },
+  {
+   "from": "refunded",
+   "to": "refund_required",
+   "allowed": false
+  },
+  {
+   "from": "refunded",
+   "to": "refunded",
+   "allowed": false
+  }
+ ]
+}

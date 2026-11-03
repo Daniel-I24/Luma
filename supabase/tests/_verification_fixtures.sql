@@ -33,3 +33,7 @@ create function tests.line_of(p_item text, p_quantity int)
 returns jsonb language sql immutable
 as $$ select jsonb_build_object('menu_item_id', tests.id(p_item), 'quantity', p_quantity) $$;
 grant execute on function tests.line_of(text, int) to anon, authenticated;
+
+-- Trust tier limits have their own suite (create_order_final.sql); here they
+-- would only get in the way of the rules each suite tests.
+update public.app_settings set int_value = 100 where key in ('trust_new_max_pending_pickup', 'trust_new_max_daily');
