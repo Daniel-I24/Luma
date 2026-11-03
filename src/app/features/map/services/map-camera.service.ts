@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as maplibregl from 'maplibre-gl';
 import { PASTO_CENTRE } from '@shared/geo/geolocation.service';
-import { createBaseMap } from '@shared/map/map-base';
+import { BaseMap } from '@shared/map/map-base';
 import { DEFAULT_ZOOM, MOVE_DEBOUNCE_MS, MOVE_THRESHOLD_DEG, PLACE_ZOOM } from '../map.constants';
 
 /** Owns the MapLibre instance, fly-to, and nearby-refetch on pan. */
@@ -13,7 +13,7 @@ export class MapCameraService {
   private userMarker: maplibregl.Marker | null = null;
   private placeMarker: maplibregl.Marker | null = null;
 
-  get instance(): maplibregl.Map {
+  public get instance(): maplibregl.Map {
     return this.map;
   }
 
@@ -21,29 +21,29 @@ export class MapCameraService {
    * Creates the map. Throws (e.g. GPUInitializationError without WebGL2);
    * callers show the error state.
    */
-  init(container: HTMLElement, onMovedFar: (lat: number, lng: number) => void): void {
-    this.map = createBaseMap(container, PASTO_CENTRE, DEFAULT_ZOOM);
+  public init(container: HTMLElement, onMovedFar: (lat: number, lng: number) => void): void {
+    this.map = BaseMap.createBaseMap(container, PASTO_CENTRE, DEFAULT_ZOOM);
     this.map.on('moveend', () => this.onMoveEnd(onMovedFar));
   }
 
-  destroy(): void {
+  public destroy(): void {
     if (this.moveDebounce) clearTimeout(this.moveDebounce);
     this.userMarker = null;
     this.placeMarker = null;
     this.map?.remove();
   }
 
-  flyTo(lat: number, lng: number): void {
+  public flyTo(lat: number, lng: number): void {
     this.map.flyTo({ center: [lng, lat], zoom: DEFAULT_ZOOM });
   }
 
   /** Glides to a point keeping the zoom (instant under reduced motion). */
-  easeTo(lat: number, lng: number): void {
+  public easeTo(lat: number, lng: number): void {
     this.map.easeTo({ center: [lng, lat] });
   }
 
   /** Places (or moves) the user's position dot. */
-  showUser(lat: number, lng: number): void {
+  public showUser(lat: number, lng: number): void {
     if (!this.userMarker) {
       const element = document.createElement('div');
       element.className = 'luma-user-dot';
@@ -55,7 +55,7 @@ export class MapCameraService {
   }
 
   /** Pin of the place chosen in the search, then a closer look at it. */
-  showPlace(lat: number, lng: number, label: string): void {
+  public showPlace(lat: number, lng: number, label: string): void {
     if (!this.placeMarker) {
       const element = document.createElement('div');
       element.className = 'luma-place-pin';
@@ -67,19 +67,19 @@ export class MapCameraService {
     this.map.flyTo({ center: [lng, lat], zoom: PLACE_ZOOM });
   }
 
-  zoomIn(): void {
+  public zoomIn(): void {
     this.map.zoomIn();
   }
 
-  zoomOut(): void {
+  public zoomOut(): void {
     this.map.zoomOut();
   }
 
-  markFetched(lat: number, lng: number): void {
+  public markFetched(lat: number, lng: number): void {
     this.lastFetchCentre = { lat, lng };
   }
 
-  currentCenter(): { lat: number; lng: number } {
+  public currentCenter(): { lat: number; lng: number } {
     const c = this.map.getCenter();
     return { lat: c.lat, lng: c.lng };
   }

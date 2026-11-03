@@ -5,7 +5,7 @@ import type {
   BusinessHours,
   BusinessStatus,
 } from '@shared/business/models/business.model';
-import { getBusinessStatus } from '@shared/business/utils/business-status.util';
+import { BusinessStatusRules } from '@shared/business/utils/business-status-rules';
 import { FavoritesStore } from '@shared/favorites/favorites.store';
 
 export interface FavoriteBusiness {
@@ -28,16 +28,16 @@ export class FavoritesPageStore {
   private readonly _state = signal<FavoritesPageState>('loading');
   private readonly loaded = signal<ReadonlyMap<string, FavoriteBusiness>>(new Map());
 
-  readonly state = this._state.asReadonly();
+  public readonly state = this._state.asReadonly();
   /** In FavoritesStore order, only those still marked. */
-  readonly items = computed(() =>
+  public readonly items = computed(() =>
     [...this.favorites.ids()]
       .map((id) => this.loaded().get(id))
       .filter((item): item is FavoriteBusiness => item !== undefined),
   );
 
   /** Call once FavoritesStore is ready (its ids are known). */
-  async load(): Promise<void> {
+  public async load(): Promise<void> {
     this._state.set('loading');
     if (this.favorites.failed()) {
       this._state.set('error');
@@ -61,5 +61,5 @@ export class FavoritesPageStore {
 }
 
 function statusOf(business: Business, hours: readonly BusinessHours[]): BusinessStatus {
-  return getBusinessStatus(hours.filter((h) => h.business_id === business.id));
+  return BusinessStatusRules.getBusinessStatus(hours.filter((h) => h.business_id === business.id));
 }

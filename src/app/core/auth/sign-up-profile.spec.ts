@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { signUpMetadata } from './sign-up-profile';
+import { SignUpMetadata } from './sign-up-profile';
 
 describe('signUpMetadata', () => {
   it('uses the keys handle_new_user reads, with the name trimmed', () => {
     expect(
-      signUpMetadata({
+      SignUpMetadata.signUpMetadata({
         accountType: 'business_owner',
         fullName: '  Ana Pérez ',
         phone: '+573001234567',

@@ -6,11 +6,11 @@ import { LumaButton, ToastService } from '@design-system';
 import { ownerPaths } from '@shared/account/owner-paths';
 import { newBusinessSchema } from '@shared/business/data/business-write.schemas';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
-import { type FieldErrors, fieldErrors, focusFirstError } from '@shared/forms/form-errors';
+import { type FieldErrors, FormErrors } from '@shared/forms/form-errors';
 import { BusinessBasicsFields } from '../../components/business-basics-fields/business-basics-fields';
 import { PanelHeader } from '../../components/panel-header/panel-header';
 import { OwnerContextStore } from '../../state/owner-context.store';
-import { EMPTY_DRAFT, basicsFieldOrder, draftValues } from '../../utils/business-draft.util';
+import { EMPTY_DRAFT, BusinessDrafts } from '../../utils/business-draft';
 
 const ID_PREFIX = 'register';
 
@@ -44,11 +44,11 @@ export class RegisterBusinessPage {
   protected async submit(event: Event): Promise<void> {
     event.preventDefault();
     if (this.saving()) return;
-    const parsed = newBusinessSchema.safeParse(draftValues(this.draft()));
+    const parsed = newBusinessSchema.safeParse(BusinessDrafts.draftValues(this.draft()));
     if (!parsed.success) {
-      this.errors.set(fieldErrors(parsed.error.issues));
+      this.errors.set(FormErrors.fieldErrors(parsed.error.issues));
       this.errorKey.set('businessPanel.form.fixErrors');
-      focusFirstError(this.document, basicsFieldOrder(ID_PREFIX), this.errors());
+      FormErrors.focusFirstError(this.document, BusinessDrafts.basicsFieldOrder(ID_PREFIX), this.errors());
       return;
     }
     this.errors.set({});

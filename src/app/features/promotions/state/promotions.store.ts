@@ -1,11 +1,6 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { GeolocationService } from '@shared/geo/geolocation.service';
-import {
-  type DealFilters,
-  type DealSort,
-  NO_DEAL_FILTERS,
-  arrangeDeals,
-} from '@shared/promotions/deal-list.util';
+import { type DealFilters, type DealSort, NO_DEAL_FILTERS, DealList } from '@shared/promotions/deal-list';
 import {
   type DealWithHours,
   PromotionDealRepository,
@@ -23,15 +18,15 @@ export class PromotionsStore {
   private readonly _deals = signal<readonly DealWithHours[]>([]);
   private readonly _errorKey = signal<string | null>(null);
 
-  readonly state = this._state.asReadonly();
-  readonly errorKey = this._errorKey.asReadonly();
-  readonly sort = signal<DealSort>('distance');
-  readonly filters = signal<DealFilters>(NO_DEAL_FILTERS);
-  readonly hasFilters = computed(() => this.filters() !== NO_DEAL_FILTERS);
+  public readonly state = this._state.asReadonly();
+  public readonly errorKey = this._errorKey.asReadonly();
+  public readonly sort = signal<DealSort>('distance');
+  public readonly filters = signal<DealFilters>(NO_DEAL_FILTERS);
+  public readonly hasFilters = computed(() => this.filters() !== NO_DEAL_FILTERS);
 
   /** Deals in display order; recomputed when filters, sort or location change. */
-  readonly listed = computed(() =>
-    arrangeDeals(this._deals(), {
+  public readonly listed = computed(() =>
+    DealList.arrangeDeals(this._deals(), {
       sort: this.sort(),
       filters: this.filters(),
       origin: this.geo.coords(),
@@ -39,7 +34,7 @@ export class PromotionsStore {
     }),
   );
 
-  async load(): Promise<void> {
+  public async load(): Promise<void> {
     this._state.set('loading');
     const result = await this.repo.listCurrent();
     if (!result.data) {
@@ -51,11 +46,11 @@ export class PromotionsStore {
     this._state.set('ready');
   }
 
-  setFilter<K extends keyof DealFilters>(key: K, value: DealFilters[K]): void {
+  public setFilter<K extends keyof DealFilters>(key: K, value: DealFilters[K]): void {
     this.filters.update((filters) => ({ ...filters, [key]: value }));
   }
 
-  clearFilters(): void {
+  public clearFilters(): void {
     this.filters.set(NO_DEAL_FILTERS);
   }
 }

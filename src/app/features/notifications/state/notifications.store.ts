@@ -21,17 +21,17 @@ export class NotificationsStore {
   private readonly _items = signal<readonly AppNotification[]>([]);
   /** Ids that were unread when they were first shown. */
   private readonly _fresh = signal<ReadonlySet<string>>(new Set());
-  readonly state = this._state.asReadonly();
-  readonly items = this._items.asReadonly();
-  readonly fresh = this._fresh.asReadonly();
+  public readonly state = this._state.asReadonly();
+  public readonly items = this._items.asReadonly();
+  public readonly fresh = this._fresh.asReadonly();
 
-  async load(): Promise<void> {
+  public async load(): Promise<void> {
     this._state.set('loading');
     await this.refresh();
   }
 
   /** Re-reads the list; a failed background refresh keeps what is shown. */
-  async refresh(): Promise<void> {
+  public async refresh(): Promise<void> {
     const result = await this.repo.list();
     if (!result.data) {
       if (this._state() !== 'ready') this._state.set('error');

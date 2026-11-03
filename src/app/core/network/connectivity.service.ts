@@ -10,7 +10,7 @@ import { DestroyRef, Injectable, inject, signal } from '@angular/core';
 export class ConnectivityService {
   private readonly window = inject(DOCUMENT).defaultView;
   private readonly _online = signal(this.window?.navigator.onLine ?? true);
-  readonly online = this._online.asReadonly();
+  public readonly online = this._online.asReadonly();
 
   constructor() {
     const set = (online: boolean) => () => this._online.set(online);
@@ -25,7 +25,7 @@ export class ConnectivityService {
   }
 
   /** Native network status (no-op on the web); call once at startup. */
-  async watchNative(): Promise<void> {
+  public async watchNative(): Promise<void> {
     const { Capacitor } = await import('@capacitor/core');
     if (!Capacitor.isNativePlatform()) return;
     const { Network } = await import('@capacitor/network');

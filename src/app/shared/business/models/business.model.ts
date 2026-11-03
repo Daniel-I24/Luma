@@ -47,6 +47,9 @@ export interface Business {
   website?: string | null;
 }
 
+/** 0 = Sunday … 6 = Saturday (JS Date.getDay()). */
+export type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+
 /**
  * BusinessHours — mirrors the public.business_hours table row.
  * day_of_week: 0 = Sunday … 6 = Saturday (matches JS Date.getDay()).
@@ -54,7 +57,7 @@ export interface Business {
 export interface BusinessHours {
   id: string;
   business_id: string;
-  day_of_week: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+  day_of_week: Weekday;
   opens_at: string; // 'HH:MM:SS'
   closes_at: string; // 'HH:MM:SS'
   is_closed: boolean;

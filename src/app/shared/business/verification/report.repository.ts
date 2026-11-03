@@ -4,15 +4,17 @@ import { SupabaseService } from '@core/supabase/supabase.service';
 import type { RepoResult } from '../data/business.repository';
 import { REPORT_REASONS, type ReportReason } from './verification.model';
 
+const MAX_REPORT_COMMENT = 300;
+
 const reportSchema = z.object({
   reason: z.enum(REPORT_REASONS),
-  comment: z.nullable(z.string().check(z.trim(), z.maxLength(300, 'reports.validation.comment'))),
+  comment: z.nullable(z.string().check(z.trim(), z.maxLength(MAX_REPORT_COMMENT, 'reports.validation.comment'))),
 });
 
 /** Contract: a user's reports about a business (Supabase is one implementation). */
 @Injectable({ providedIn: 'root', useFactory: () => new SupabaseReportRepository() })
 export abstract class ReportRepository {
-  abstract create(
+  public abstract create(
     businessId: string,
     reason: ReportReason,
     comment: string | null,
@@ -22,7 +24,7 @@ export abstract class ReportRepository {
 export class SupabaseReportRepository extends ReportRepository {
   private readonly db = inject(SupabaseService).client;
 
-  async create(
+  public async create(
     businessId: string,
     reason: ReportReason,
     comment: string | null,

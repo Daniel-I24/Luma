@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { LumaTabBar, activeTabIndex } from './luma-tab-bar';
+import { LumaTabBar, TabBarRoutes } from './luma-tab-bar';
 import type { TabBarItem } from './luma-tab-bar';
 
 @Component({ template: '' })
@@ -94,12 +94,12 @@ describe('LumaTabBar', () => {
 
 describe('activeTabIndex', () => {
   it('matches the tab path, its children and ignores query strings', () => {
-    expect(activeTabIndex(ITEMS, '/map')).toBe(0);
-    expect(activeTabIndex(ITEMS, '/profile/settings?x=1')).toBe(1);
+    expect(TabBarRoutes.activeTabIndex(ITEMS, '/map')).toBe(0);
+    expect(TabBarRoutes.activeTabIndex(ITEMS, '/profile/settings?x=1')).toBe(1);
   });
 
   it('returns -1 outside the tabs (e.g. a business profile)', () => {
-    expect(activeTabIndex(ITEMS, '/businesses/42')).toBe(-1);
-    expect(activeTabIndex(ITEMS, '/mapping')).toBe(-1);
+    expect(TabBarRoutes.activeTabIndex(ITEMS, '/businesses/42')).toBe(-1);
+    expect(TabBarRoutes.activeTabIndex(ITEMS, '/mapping')).toBe(-1);
   });
 });

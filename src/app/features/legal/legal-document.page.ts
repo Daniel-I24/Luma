@@ -6,7 +6,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { map } from 'rxjs';
 import { LumaIconButton } from '@design-system';
 import { LEGAL_VERSIONS } from '@shared/legal/legal-version';
-import { LEGAL_DOCUMENTS, type LegalDocument, isLegalDocument } from './legal-documents';
+import { LEGAL_DOCUMENTS, type LegalDocument, LegalDocuments } from './legal-documents';
 
 /** LegalDocumentPage — /legal/terms and /legal/privacy (drafts pending legal review). */
 @Component({
@@ -24,7 +24,7 @@ export class LegalDocumentPage {
   protected readonly document = toSignal(
     inject(ActivatedRoute).data.pipe(
       map((data): LegalDocument =>
-        isLegalDocument(data['document']) ? data['document'] : 'terms',
+        LegalDocuments.isLegalDocument(data['document']) ? data['document'] : 'terms',
       ),
     ),
     { initialValue: 'terms' as LegalDocument },

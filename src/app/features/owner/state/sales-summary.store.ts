@@ -1,6 +1,9 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { type SalesDay, type SalesRange, type SalesSummary, SalesSummaryRepository } from '../services/sales-summary.repository';
 
+// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- data table: the ranges the owner can pick, in days
+export const SALES_RANGES: readonly SalesRange[] = [7, 30];
+
 /** Which measure the bars show. */
 export type SalesMeasure = 'orders' | 'revenue';
 
@@ -19,7 +22,7 @@ export interface SalesBar {
 export class SalesSummaryStore {
   private readonly repo = inject(SalesSummaryRepository);
 
-  public readonly range = signal<SalesRange>(7);
+  public readonly range = signal<SalesRange>(SALES_RANGES[0]);
   public readonly measure = signal<SalesMeasure>('orders');
   private readonly _summary = signal<SalesSummary | null>(null);
   private readonly _state = signal<'loading' | 'ready' | 'error'>('loading');

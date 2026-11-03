@@ -1,9 +1,9 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { ConnectivityService } from '@core/network/connectivity.service';
 import { SupabaseService } from '@core/supabase/supabase.service';
-import { mapAuthError } from './auth-error';
+import { AuthErrors } from './auth-error';
 import { recoverPasswordSchema, resetPasswordSchema, verifyCodeSchema } from './auth.schemas';
-import { type AuthResult, OK, fail } from './auth.service';
+import { type AuthResult, OK, AuthResults } from './auth.service';
 
 /** Errors that may be shown without revealing whether an account exists. */
 const NEUTRAL_ERRORS = new Set([
@@ -23,44 +23,44 @@ export class AuthCodeService {
   private readonly auth = inject(SupabaseService).client.auth;
   private readonly online = inject(ConnectivityService).online;
   private readonly _busy = signal(false);
-  readonly busy = this._busy.asReadonly();
+  public readonly busy = this._busy.asReadonly();
 
   /** Confirms a new account; on success the user is signed in. */
-  confirmSignup(email: string, code: string): Promise<AuthResult> {
+  public confirmSignup(email: string, code: string): Promise<AuthResult> {
     const parsed = verifyCodeSchema.safeParse({ email, code });
-    if (!parsed.success) return Promise.resolve(fail(parsed.error.issues[0].message));
+    if (!parsed.success) return Promise.resolve(AuthResults.fail(parsed.error.issues[0].message));
     return this.run(async () => {
       const { error } = await this.auth.verifyOtp({
         email: parsed.data.email,
         token: parsed.data.code,
         type: 'signup',
       });
-      return error ? fail(mapAuthError(error.message, this.online())) : OK;
+      return error ? AuthResults.fail(AuthErrors.mapAuthError(error.message, this.online())) : OK;
     });
   }
 
-  resendSignupCode(email: string): Promise<AuthResult> {
+  public resendSignupCode(email: string): Promise<AuthResult> {
     return this.neutral(email, (address) => this.auth.resend({ type: 'signup', email: address }));
   }
 
   /** Emails a recovery code; succeeds whether or not the email has an account. */
-  requestRecoveryCode(email: string): Promise<AuthResult> {
+  public requestRecoveryCode(email: string): Promise<AuthResult> {
     return this.neutral(email, (address) => this.auth.resetPasswordForEmail(address));
   }
 
   /** Checks the recovery code (which signs the user in) and sets the new password. */
-  recoverPassword(email: string, code: string, password: string): Promise<AuthResult> {
+  public recoverPassword(email: string, code: string, password: string): Promise<AuthResult> {
     const parsed = recoverPasswordSchema.safeParse({ email, code, password });
-    if (!parsed.success) return Promise.resolve(fail(parsed.error.issues[0].message));
+    if (!parsed.success) return Promise.resolve(AuthResults.fail(parsed.error.issues[0].message));
     return this.run(async () => {
       const verified = await this.auth.verifyOtp({
         email: parsed.data.email,
         token: parsed.data.code,
         type: 'recovery',
       });
-      if (verified.error) return fail(mapAuthError(verified.error.message, this.online()));
+      if (verified.error) return AuthResults.fail(AuthErrors.mapAuthError(verified.error.message, this.online()));
       const { error } = await this.auth.updateUser({ password: parsed.data.password });
-      return error ? fail(mapAuthError(error.message, this.online())) : OK;
+      return error ? AuthResults.fail(AuthErrors.mapAuthError(error.message, this.online())) : OK;
     });
   }
 
@@ -69,11 +69,11 @@ export class AuthCodeService {
     send: (email: string) => Promise<{ error: { message: string } | null }>,
   ): Promise<AuthResult> {
     const parsed = resetPasswordSchema.safeParse({ email });
-    if (!parsed.success) return Promise.resolve(fail(parsed.error.issues[0].message));
+    if (!parsed.success) return Promise.resolve(AuthResults.fail(parsed.error.issues[0].message));
     return this.run(async () => {
       const { error } = await send(parsed.data.email);
-      const key = error ? mapAuthError(error.message, this.online()) : null;
-      return key && NEUTRAL_ERRORS.has(key) ? fail(key) : OK;
+      const key = error ? AuthErrors.mapAuthError(error.message, this.online()) : null;
+      return key && NEUTRAL_ERRORS.has(key) ? AuthResults.fail(key) : OK;
     });
   }
 
@@ -82,7 +82,7 @@ export class AuthCodeService {
     try {
       return await operation();
     } catch {
-      return fail('auth.errors.unknown');
+      return AuthResults.fail('auth.errors.unknown');
     } finally {
       this._busy.set(false);
     }

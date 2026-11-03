@@ -11,10 +11,10 @@ export class PanelBusinessStore {
 
   private readonly _state = signal<PanelState>('loading');
   private readonly _business = signal<Business | null>(null);
-  readonly state = this._state.asReadonly();
-  readonly business = this._business.asReadonly();
+  public readonly state = this._state.asReadonly();
+  public readonly business = this._business.asReadonly();
 
-  async load(id: string): Promise<void> {
+  public async load(id: string): Promise<void> {
     this._state.set('loading');
     const result = await this.repo.getMine(id);
     if (result.errorKey) {
@@ -26,7 +26,7 @@ export class PanelBusinessStore {
   }
 
   /** Keeps the local copy in step after a successful save. */
-  patch(changes: Partial<Business>): void {
+  public patch(changes: Partial<Business>): void {
     this._business.update((business) => (business ? { ...business, ...changes } : business));
   }
 }

@@ -21,14 +21,14 @@ export class ReviewsStore {
   private readonly _saving = signal(false);
   private readonly _formErrorKey = signal<string | null>(null);
 
-  readonly reviews = this._reviews.asReadonly();
-  readonly ownReview = this._ownReview.asReadonly();
-  readonly loading = this._loading.asReadonly();
-  readonly errorKey = this._errorKey.asReadonly();
-  readonly saving = this._saving.asReadonly();
-  readonly formErrorKey = this._formErrorKey.asReadonly();
+  public readonly reviews = this._reviews.asReadonly();
+  public readonly ownReview = this._ownReview.asReadonly();
+  public readonly loading = this._loading.asReadonly();
+  public readonly errorKey = this._errorKey.asReadonly();
+  public readonly saving = this._saving.asReadonly();
+  public readonly formErrorKey = this._formErrorKey.asReadonly();
 
-  async load(businessId: string): Promise<void> {
+  public async load(businessId: string): Promise<void> {
     this._loading.set(true);
     this._errorKey.set(null);
     const [list, own] = await Promise.all([
@@ -45,7 +45,7 @@ export class ReviewsStore {
   }
 
   /** Creates the user's review, or updates it if they already wrote one. */
-  async save(businessId: string, input: ReviewInput): Promise<boolean> {
+  public async save(businessId: string, input: ReviewInput): Promise<boolean> {
     const own = this._ownReview();
     const done = await this.run(() =>
       own ? this.repo.update(own.id, input) : this.repo.create(businessId, input),
@@ -54,7 +54,7 @@ export class ReviewsStore {
     return done;
   }
 
-  async remove(businessId: string): Promise<boolean> {
+  public async remove(businessId: string): Promise<boolean> {
     const own = this._ownReview();
     if (!own) return false;
     const done = await this.run(() => this.repo.remove(own.id));

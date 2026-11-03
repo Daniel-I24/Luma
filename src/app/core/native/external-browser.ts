@@ -12,7 +12,7 @@ export abstract class ExternalBrowser {
 }
 
 export class CapacitorExternalBrowser extends ExternalBrowser {
-  public constructor(private readonly document: Document) {
+  constructor(private readonly document: Document) {
     super();
   }
 

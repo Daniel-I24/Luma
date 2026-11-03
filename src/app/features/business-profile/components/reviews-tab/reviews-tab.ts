@@ -30,12 +30,12 @@ export class ReviewsTab {
   protected readonly store = inject(ReviewsStore);
   private readonly transloco = inject(TranslocoService);
 
-  readonly businessId = input.required<string>();
-  readonly rating = input<BusinessRating | null>(null);
-  readonly isOwner = input(false);
+  public readonly businessId = input.required<string>();
+  public readonly rating = input<BusinessRating | null>(null);
+  public readonly isOwner = input(false);
 
   /** Emitted after the user's review was saved or deleted. */
-  readonly changed = output<void>();
+  public readonly changed = output<void>();
 
   protected score(rating: BusinessRating): string {
     return rating.rating.toLocaleString(this.transloco.getActiveLang(), {

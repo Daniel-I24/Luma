@@ -15,7 +15,7 @@ export class AppErrorHandler implements ErrorHandler {
   private readonly toast = inject(ToastService);
   private lastShown = Number.NEGATIVE_INFINITY;
 
-  handleError(): void {
+  public handleError(): void {
     const now = Date.now();
     if (now - this.lastShown < QUIET_MS) return;
     this.lastShown = now;

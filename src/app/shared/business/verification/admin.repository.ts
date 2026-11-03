@@ -25,32 +25,32 @@ export type AdminAccess = 'none' | 'needs_mfa' | 'ok';
 @Injectable({ providedIn: 'root', useFactory: () => new SupabaseAdminRepository() })
 export abstract class AdminRepository {
   /** 'none' also when the server cannot be reached: never a guess in favour of access. */
-  abstract access(): Promise<AdminAccess>;
-  abstract pendingBusinesses(): Promise<RepoResult<Business[]>>;
-  abstract business(id: string): Promise<RepoResult<Business | null>>;
-  abstract signedDocUrl(doc: VerificationDoc): Promise<RepoResult<string>>;
+  public abstract access(): Promise<AdminAccess>;
+  public abstract pendingBusinesses(): Promise<RepoResult<Business[]>>;
+  public abstract business(id: string): Promise<RepoResult<Business | null>>;
+  public abstract signedDocUrl(doc: VerificationDoc): Promise<RepoResult<string>>;
   /** seenUpdatedAt: businesses.updated_at as shown; a newer one is stale_review. */
-  abstract review(
+  public abstract review(
     id: string,
     decision: ReviewDecision,
     note: string | null,
     seenUpdatedAt: string,
   ): Promise<RepoResult<true>>;
   /** Removes every document of a business (after approval). */
-  abstract deleteDocs(docs: readonly VerificationDoc[]): Promise<RepoResult<true>>;
-  abstract openReports(): Promise<RepoResult<OpenReport[]>>;
-  abstract resolveReport(id: string, status: 'reviewed' | 'dismissed'): Promise<RepoResult<true>>;
+  public abstract deleteDocs(docs: readonly VerificationDoc[]): Promise<RepoResult<true>>;
+  public abstract openReports(): Promise<RepoResult<OpenReport[]>>;
+  public abstract resolveReport(id: string, status: 'reviewed' | 'dismissed'): Promise<RepoResult<true>>;
 }
 
 export class SupabaseAdminRepository extends AdminRepository {
   private readonly db = inject(SupabaseService).client;
 
-  async access(): Promise<AdminAccess> {
+  public async access(): Promise<AdminAccess> {
     const { data, error } = await this.db.rpc('admin_access');
     return !error && (data === 'ok' || data === 'needs_mfa') ? data : 'none';
   }
 
-  async pendingBusinesses(): Promise<RepoResult<Business[]>> {
+  public async pendingBusinesses(): Promise<RepoResult<Business[]>> {
     const { data, error } = await this.db
       .from('businesses')
       .select('*')
@@ -60,13 +60,13 @@ export class SupabaseAdminRepository extends AdminRepository {
     return { data: data as Business[], errorKey: null };
   }
 
-  async business(id: string): Promise<RepoResult<Business | null>> {
+  public async business(id: string): Promise<RepoResult<Business | null>> {
     const { data, error } = await this.db.from('businesses').select('*').eq('id', id).maybeSingle();
     if (error) return { data: null, errorKey: 'admin.errors.loadFailed' };
     return { data: data as Business | null, errorKey: null };
   }
 
-  async signedDocUrl(doc: VerificationDoc): Promise<RepoResult<string>> {
+  public async signedDocUrl(doc: VerificationDoc): Promise<RepoResult<string>> {
     const { data, error } = await this.db.storage
       .from(VERIFICATION_BUCKET)
       .createSignedUrl(doc.storage_path, SIGNED_URL_SECONDS);
@@ -74,7 +74,7 @@ export class SupabaseAdminRepository extends AdminRepository {
     return { data: data.signedUrl, errorKey: null };
   }
 
-  async review(
+  public async review(
     id: string,
     decision: ReviewDecision,
     note: string | null,
@@ -91,7 +91,7 @@ export class SupabaseAdminRepository extends AdminRepository {
     return { data: true, errorKey: null };
   }
 
-  async deleteDocs(docs: readonly VerificationDoc[]): Promise<RepoResult<true>> {
+  public async deleteDocs(docs: readonly VerificationDoc[]): Promise<RepoResult<true>> {
     if (docs.length === 0) return { data: true, errorKey: null };
     const removed = await this.db.storage
       .from(VERIFICATION_BUCKET)
@@ -109,13 +109,13 @@ export class SupabaseAdminRepository extends AdminRepository {
       : { data: true, errorKey: null };
   }
 
-  async openReports(): Promise<RepoResult<OpenReport[]>> {
+  public async openReports(): Promise<RepoResult<OpenReport[]>> {
     const { data, error } = await this.db.rpc('admin_open_reports');
     if (error) return { data: null, errorKey: 'admin.errors.loadFailed' };
     return { data: data as OpenReport[], errorKey: null };
   }
 
-  async resolveReport(id: string, status: 'reviewed' | 'dismissed'): Promise<RepoResult<true>> {
+  public async resolveReport(id: string, status: 'reviewed' | 'dismissed'): Promise<RepoResult<true>> {
     const { error } = await this.db.rpc('resolve_report', { p_report_id: id, p_status: status });
     return error
       ? { data: null, errorKey: 'admin.errors.reviewFailed' }

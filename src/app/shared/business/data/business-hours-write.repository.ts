@@ -2,12 +2,13 @@ import { Injectable, inject } from '@angular/core';
 import * as z from 'zod/mini';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import type { RepoResult } from './business.repository';
-import { mapWriteError } from './business-write-error';
+import { BusinessWriteErrors } from './business-write-error';
 import { type DayHoursInput, dayHoursSchema } from './business-write.schemas';
+import { DAYS_PER_WEEK } from '@core/config/units';
 
 const weekSchema = z.array(dayHoursSchema).check(
-  z.length(7),
-  z.refine((days) => new Set(days.map((d) => d.day_of_week)).size === 7),
+  z.length(DAYS_PER_WEEK),
+  z.refine((days) => new Set(days.map((d) => d.day_of_week)).size === DAYS_PER_WEEK),
 );
 
 /**
@@ -19,7 +20,7 @@ const weekSchema = z.array(dayHoursSchema).check(
 export class BusinessHoursWriteRepository {
   private readonly db = inject(SupabaseService).client;
 
-  async saveWeek(businessId: string, week: readonly DayHoursInput[]): Promise<RepoResult<true>> {
+  public async saveWeek(businessId: string, week: readonly DayHoursInput[]): Promise<RepoResult<true>> {
     const parsed = weekSchema.safeParse(week);
     if (!parsed.success) return { data: null, errorKey: 'businessPanel.errors.invalidData' };
     const rows = parsed.data.map((day) => ({ ...day, business_id: businessId }));
@@ -27,7 +28,7 @@ export class BusinessHoursWriteRepository {
       .from('business_hours')
       .upsert(rows, { onConflict: 'business_id,day_of_week' });
     if (error)
-      return { data: null, errorKey: mapWriteError(error, 'businessPanel.errors.saveFailed') };
+      return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, 'businessPanel.errors.saveFailed') };
     return { data: true, errorKey: null };
   }
 }

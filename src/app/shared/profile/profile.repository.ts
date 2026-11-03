@@ -23,7 +23,7 @@ const displayNameSchema = z.pipe(
 export class ProfileRepository {
   private readonly db = inject(SupabaseService).client;
 
-  async getDisplayName(userId: string): Promise<RepoResult<string | null>> {
+  public async getDisplayName(userId: string): Promise<RepoResult<string | null>> {
     const { data, error } = await this.db
       .from('profiles')
       .select('display_name')
@@ -38,7 +38,7 @@ export class ProfileRepository {
   }
 
   /** Saves the display name; returns the stored value (null when cleared). */
-  async updateDisplayName(userId: string, name: string): Promise<RepoResult<string | null>> {
+  public async updateDisplayName(userId: string, name: string): Promise<RepoResult<string | null>> {
     const parsed = displayNameSchema.safeParse(name);
     if (!parsed.success) return { data: null, errorKey: parsed.error.issues[0].message };
 

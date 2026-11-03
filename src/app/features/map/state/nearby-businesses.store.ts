@@ -4,19 +4,14 @@ import { BusinessHighlightsRepository } from '@shared/business/data/business-hig
 import { BusinessRepository } from '@shared/business/data/business.repository';
 import type { Business, BusinessStatus, Promotion } from '@shared/business/models/business.model';
 import type { BusinessRating } from '@shared/business/models/review.model';
-import { getBusinessStatus } from '@shared/business/utils/business-status.util';
+import { BusinessStatusRules } from '@shared/business/utils/business-status-rules';
 import { NEARBY_RADIUS_KM } from '../map.constants';
 import { BusinessHoursCacheService } from '../services/business-hours-cache.service';
 import { GeolocationService } from '@shared/geo/geolocation.service';
-import { extractCategories, filterBusinesses } from '../utils/business-filter.util';
-import {
-  type MapFilters,
-  NO_FILTERS,
-  activeFilterCount,
-  applyMapFilters,
-} from '../utils/map-filters.util';
-import { categoryIcon } from '@shared/business/utils/category-icon.util';
-import { haversineKm } from '@shared/geo/haversine.util';
+import { BusinessFilter } from '../utils/business-filter';
+import { type MapFilters, NO_FILTERS, MapFilterRules } from '../utils/map-filter-rules';
+import { CategoryIcons } from '@shared/business/utils/category-icons';
+import { Haversine } from '@shared/geo/haversine';
 
 /** A nearby business ready to render: status, distance and highlights resolved. */
 export interface NearbyBusiness {
@@ -57,28 +52,28 @@ export class NearbyBusinessesStore {
   private readonly _loaded = signal(false);
   private readonly _errorKey = signal<string | null>(null);
 
-  readonly query = signal('');
-  readonly filters = signal<MapFilters>(NO_FILTERS);
-  readonly loading = this._loading.asReadonly();
-  readonly errorKey = this._errorKey.asReadonly();
+  public readonly query = signal('');
+  public readonly filters = signal<MapFilters>(NO_FILTERS);
+  public readonly loading = this._loading.asReadonly();
+  public readonly errorKey = this._errorKey.asReadonly();
 
-  readonly categories = computed(() => extractCategories(this.businesses()));
-  readonly filterCount = computed(() => activeFilterCount(this.filters()));
-  readonly filtersActive = computed(() => this.query().trim() !== '' || this.filterCount() > 0);
+  public readonly categories = computed(() => BusinessFilter.extractCategories(this.businesses()));
+  public readonly filterCount = computed(() => MapFilterRules.activeFilterCount(this.filters()));
+  public readonly filtersActive = computed(() => this.query().trim() !== '' || this.filterCount() > 0);
   /** Distance can only be filtered once the user's location is known. */
-  readonly canFilterDistance = this.geo.hasRealLocation;
-  readonly items = computed(() =>
-    applyMapFilters(
-      filterBusinesses(this.businesses(), this.query()).map((business) => this.toNearby(business)),
+  public readonly canFilterDistance = this.geo.hasRealLocation;
+  public readonly items = computed(() =>
+    MapFilterRules.applyMapFilters(
+      BusinessFilter.filterBusinesses(this.businesses(), this.query()).map((business) => this.toNearby(business)),
       this.filters(),
     ).sort((a, b) => (a.distanceKm ?? Infinity) - (b.distanceKm ?? Infinity)),
   );
-  readonly empty = computed(
+  public readonly empty = computed(
     () => this._loaded() && !this._loading() && !this._errorKey() && this.items().length === 0,
   );
 
   /** Loads active businesses around a point, then their hours, ratings and promotions. */
-  async load(lat: number, lng: number): Promise<void> {
+  public async load(lat: number, lng: number): Promise<void> {
     this._loading.set(true);
     this._errorKey.set(null);
     const done = this.pendingTasks.add();
@@ -105,7 +100,7 @@ export class NearbyBusinessesStore {
     }
   }
 
-  clearFilters(): void {
+  public clearFilters(): void {
     this.query.set('');
     this.filters.set(NO_FILTERS);
   }
@@ -115,14 +110,14 @@ export class NearbyBusinessesStore {
     const ratings = this.ratings();
     return {
       business,
-      status: getBusinessStatus(this.hoursCache.get(business.id)),
+      status: BusinessStatusRules.getBusinessStatus(this.hoursCache.get(business.id)),
       distanceKm: this.geo.hasRealLocation()
-        ? haversineKm(coords.lat, coords.lng, business.latitude, business.longitude)
+        ? Haversine.haversineKm(coords.lat, coords.lng, business.latitude, business.longitude)
         : null,
       rating: ratings?.get(business.id) ?? null,
       ratingsLoaded: ratings !== null,
       promotion: this.promotions().get(business.id) ?? null,
-      logoIcon: categoryIcon(business.category),
+      logoIcon: CategoryIcons.categoryIcon(business.category),
     };
   }
 }
@@ -130,7 +125,7 @@ export class NearbyBusinessesStore {
 /** The promotion to show per business: the biggest discount, else the first. */
 function firstPerBusiness(promotions: readonly Promotion[]): Map<string, Promotion> {
   const byBusiness = new Map<string, Promotion>();
-  const off = (p: Promotion) => (p.menu_item_id ? (p.discount_percent ?? 0) : 0);
+  const off = (p: Promotion): number => (p.menu_item_id ? (p.discount_percent ?? 0) : 0);
   for (const promo of promotions) {
     const current = byBusiness.get(promo.business_id);
     if (!current || off(promo) > off(current)) byBusiness.set(promo.business_id, promo);

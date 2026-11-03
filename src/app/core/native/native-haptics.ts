@@ -1,6 +1,9 @@
 import { DOCUMENT } from '@angular/common';
 import { Injectable, inject } from '@angular/core';
 
+/** Web fallback: a vibration short enough to feel like a tap. */
+const TAP_VIBRATION_MS = 10;
+
 /**
  * NativeHaptics — a short tap for confirmations (add to cart, favourite,
  * order placed): @capacitor/haptics on the device, the Vibration API on the
@@ -10,7 +13,7 @@ import { Injectable, inject } from '@angular/core';
 export class NativeHaptics {
   private readonly navigator = inject(DOCUMENT).defaultView?.navigator;
 
-  async tap(): Promise<void> {
+  public async tap(): Promise<void> {
     try {
       const { Capacitor } = await import('@capacitor/core');
       if (Capacitor.isNativePlatform()) {
@@ -18,7 +21,7 @@ export class NativeHaptics {
         await Haptics.impact({ style: ImpactStyle.Light });
         return;
       }
-      this.navigator?.vibrate?.(10);
+      this.navigator?.vibrate?.(TAP_VIBRATION_MS);
     } catch {
       // A device without haptics simply does not vibrate.
     }

@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import type { RepoResult } from '@shared/business/data/business.repository';
-import { ImageEncodeError, reencodeImage } from './image-encoder';
-import { checkImageFile, imagePathFromUrl } from './image-file.util';
+import { ImageEncodeError, ImageReencoder } from './image-encoder';
+import { ImageFiles } from './image-files';
 
 export const BUSINESS_IMAGES_BUCKET = 'business-images';
 export type BusinessImageKind = 'logo' | 'cover' | 'menu' | 'promotions' | 'gallery';
@@ -26,7 +26,7 @@ export class BusinessImageRepository {
   private readonly storage = inject(SupabaseService).client.storage;
 
   /** Uploads a picture; resolves to its public https URL. */
-  async upload(
+  public async upload(
     businessId: string,
     kind: BusinessImageKind,
     file: File,
@@ -36,21 +36,21 @@ export class BusinessImageRepository {
   }
 
   /** Public URL of a stored path (for rows that keep the path). */
-  publicUrl(path: string): string {
+  public publicUrl(path: string): string {
     return this.storage.from(BUSINESS_IMAGES_BUCKET).getPublicUrl(path).data.publicUrl;
   }
 
   /** Validates, re-encodes and uploads; resolves to the path and URL. */
-  async store(
+  public async store(
     businessId: string,
     kind: BusinessImageKind,
     file: File,
   ): Promise<RepoResult<StoredImage>> {
-    const invalid = checkImageFile(file);
+    const invalid = ImageFiles.checkImageFile(file);
     if (invalid) return { data: null, errorKey: invalid };
     let encoded;
     try {
-      encoded = await reencodeImage(file);
+      encoded = await ImageReencoder.reencodeImage(file);
     } catch (error) {
       const key = error instanceof ImageEncodeError ? error.errorKey : 'media.errors.decode';
       return { data: null, errorKey: key };
@@ -71,11 +71,11 @@ export class BusinessImageRepository {
    * Deletes a picture this app uploaded (other URLs are left alone). Used
    * once the new URL is saved, so the old file does not linger.
    */
-  async remove(url: string | null | undefined): Promise<RepoResult<true>> {
-    return this.removePath(imagePathFromUrl(url));
+  public async remove(url: string | null | undefined): Promise<RepoResult<true>> {
+    return this.removePath(ImageFiles.imagePathFromUrl(url));
   }
 
-  async removePath(path: string | null): Promise<RepoResult<true>> {
+  public async removePath(path: string | null): Promise<RepoResult<true>> {
     if (!path) return { data: true, errorKey: null };
     const { error } = await this.storage.from(BUSINESS_IMAGES_BUCKET).remove([path]);
     if (error) return { data: null, errorKey: 'media.errors.deleteFailed' };

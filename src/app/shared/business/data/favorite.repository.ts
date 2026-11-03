@@ -11,7 +11,7 @@ export class FavoriteRepository {
   private readonly db = inject(SupabaseService).client;
 
   /** Ids of the businesses the user saved, newest first. */
-  async getFavoriteIds(): Promise<RepoResult<string[]>> {
+  public async getFavoriteIds(): Promise<RepoResult<string[]>> {
     const { data, error } = await this.db
       .from('favorites')
       .select('business_id')
@@ -24,13 +24,13 @@ export class FavoriteRepository {
     };
   }
 
-  async add(businessId: string): Promise<RepoResult<true>> {
+  public async add(businessId: string): Promise<RepoResult<true>> {
     const { error } = await this.db.from('favorites').insert({ business_id: businessId });
     if (error) return { data: null, errorKey: 'businesses.errors.favoriteSaveFailed' };
     return { data: true, errorKey: null };
   }
 
-  async remove(businessId: string): Promise<RepoResult<true>> {
+  public async remove(businessId: string): Promise<RepoResult<true>> {
     const { error } = await this.db.from('favorites').delete().eq('business_id', businessId);
     if (error) return { data: null, errorKey: 'businesses.errors.favoriteSaveFailed' };
     return { data: true, errorKey: null };

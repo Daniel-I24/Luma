@@ -3,7 +3,7 @@ import { AI_MODE } from '@core/config/ai-mode';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import { OwnerSalesRepository } from './owner-sales.repository';
 import { type IdeasResult, ideasResultSchema } from './promotion-idea';
-import { ruleIdeas } from './rules-promotion-ideas';
+import { RulePromotionIdeas } from './rules-promotion-ideas';
 
 /** Promotion ideas for an owner's business. The owner always reviews and publishes. */
 export interface PromotionAdvisor {
@@ -17,13 +17,13 @@ type Db = SupabaseService['client'];
 export class RulesPromotionAdvisor implements PromotionAdvisor {
   constructor(private readonly sales: OwnerSalesRepository) {}
 
-  async suggest(businessId: string): Promise<IdeasResult> {
+  public async suggest(businessId: string): Promise<IdeasResult> {
     const [summary, promoted] = await Promise.all([
       this.sales.summary(businessId),
       this.sales.promotedItems(businessId),
     ]);
     if (!summary.data || !promoted.data) throw new Error('ideas_unavailable');
-    return { source: 'rules', ideas: ruleIdeas(summary.data, promoted.data) };
+    return { source: 'rules', ideas: RulePromotionIdeas.ruleIdeas(summary.data, promoted.data) };
   }
 }
 
@@ -31,7 +31,7 @@ export class RulesPromotionAdvisor implements PromotionAdvisor {
 export class RemotePromotionAdvisor implements PromotionAdvisor {
   constructor(private readonly db: Db) {}
 
-  async suggest(businessId: string): Promise<IdeasResult> {
+  public async suggest(businessId: string): Promise<IdeasResult> {
     const { data, error } = await this.db.functions.invoke('suggest-promotions', {
       method: 'POST',
       body: { business_id: businessId },
@@ -49,7 +49,7 @@ export class FallbackPromotionAdvisor implements PromotionAdvisor {
     private readonly fallback: PromotionAdvisor,
   ) {}
 
-  async suggest(businessId: string): Promise<IdeasResult> {
+  public async suggest(businessId: string): Promise<IdeasResult> {
     try {
       return await this.primary.suggest(businessId);
     } catch {

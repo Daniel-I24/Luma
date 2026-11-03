@@ -17,7 +17,7 @@ import { PushRegistration } from '@core/push/push-registration.service';
 import { UpdateCheck } from '@core/update/update-check.service';
 import { AppErrorHandler } from '@shared/errors/app-error-handler';
 import { PaymentReturn } from '@shared/payments/payment-return';
-import { onRouteTransitionCreated } from '@core/navigation/route-transition';
+import { RouteTransition } from '@core/navigation/route-transition';
 import { routes } from './app.routes';
 import { TranslocoHttpLoader } from './transloco-loader';
 
@@ -30,7 +30,7 @@ export const appConfig: ApplicationConfig = {
       routes,
       withViewTransitions({
         skipInitialTransition: true,
-        onViewTransitionCreated: onRouteTransitionCreated,
+        onViewTransitionCreated: RouteTransition.onRouteTransitionCreated,
       }),
     ),
     provideHttpClient(),

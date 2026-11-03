@@ -16,9 +16,9 @@ export type CardElevation = 'flat' | 'raised' | 'elevated';
   styleUrl: './luma-card.css',
 })
 export class LumaCard {
-  readonly elevation = input<CardElevation>('raised');
-  readonly padded = input<boolean>(true);
-  readonly interactive = input<boolean>(false);
+  public readonly elevation = input<CardElevation>('raised');
+  public readonly padded = input<boolean>(true);
+  public readonly interactive = input<boolean>(false);
 
   protected get hostClasses(): string {
     return [

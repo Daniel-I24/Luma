@@ -34,7 +34,7 @@ export class ThemeService {
   private transitionTimer: ReturnType<typeof setTimeout> | null = null;
 
   /** Readonly signal with the currently active theme. */
-  readonly theme = computed(() => this._theme());
+  public readonly theme = computed(() => this._theme());
 
   constructor() {
     // Keep the DOM attribute in sync with the signal value.
@@ -44,7 +44,7 @@ export class ThemeService {
   }
 
   /** Change the active theme, persist it, and update the DOM. */
-  setTheme(theme: Theme): void {
+  public setTheme(theme: Theme): void {
     if (theme !== this._theme()) this.startColorTransition();
     this._theme.set(theme);
     if (this.isBrowser) {

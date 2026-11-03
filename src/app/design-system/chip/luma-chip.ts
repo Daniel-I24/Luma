@@ -20,16 +20,16 @@ export type ChipVariant = 'default' | 'primary' | 'accent' | 'success' | 'warnin
   styleUrl: './luma-chip.css',
 })
 export class LumaChip {
-  readonly variant = input<ChipVariant>('default');
+  public readonly variant = input<ChipVariant>('default');
   /** Two-way bindable selected state. Supports [(selected)] syntax. */
-  readonly selected = model<boolean>(false);
-  readonly dismissible = input<boolean>(false);
-  readonly icon = input<IconName | null>(null);
-  readonly disabled = input<boolean>(false);
+  public readonly selected = model<boolean>(false);
+  public readonly dismissible = input<boolean>(false);
+  public readonly icon = input<IconName | null>(null);
+  public readonly disabled = input<boolean>(false);
   /** False for single-choice groups: tapping the selected chip keeps it selected. */
-  readonly toggleable = input<boolean>(true);
+  public readonly toggleable = input<boolean>(true);
 
-  readonly dismissed = output<void>();
+  public readonly dismissed = output<void>();
 
   protected get hostClasses(): string {
     return [

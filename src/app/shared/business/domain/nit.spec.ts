@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Nit, nitCheckDigit } from './nit';
+import { Nit, NitDigits } from './nit';
 
 /** Public NITs of well-known Colombian entities. */
 const KNOWN = [
@@ -13,7 +13,7 @@ const KNOWN = [
 
 describe('Nit', () => {
   it('computes the DIAN check digit of known public NITs', () => {
-    for (const [body, digit] of KNOWN) expect(nitCheckDigit(body)).toBe(digit);
+    for (const [body, digit] of KNOWN) expect(NitDigits.nitCheckDigit(body)).toBe(digit);
   });
 
   it('parses the usual spellings and normalises them', () => {

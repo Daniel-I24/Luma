@@ -26,8 +26,8 @@ export const STATUS_LABEL_KEY: Record<BusinessStatus, string> = {
   styleUrl: './status-badge.css',
 })
 export class StatusBadge {
-  readonly status = input.required<BusinessStatus>();
-  readonly size = input<'sm' | 'md'>('md');
+  public readonly status = input.required<BusinessStatus>();
+  public readonly size = input<'sm' | 'md'>('md');
 
   protected readonly modifier = computed(
     () => `status-badge--${this.status()} status-badge--${this.size()}`,

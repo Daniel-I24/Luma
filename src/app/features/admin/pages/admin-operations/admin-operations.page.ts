@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LumaButton, LumaSkeleton } from '@design-system';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
-import { formatDateTime } from '@shared/format/date-format.util';
+import { DateFormat } from '@shared/format/date-format';
 import { AdminOperationsStore } from '../../state/admin-operations.store';
 
 const CENTS_PER_PESO = 100;
@@ -26,7 +26,7 @@ export class AdminOperationsPage {
   private readonly transloco = inject(TranslocoService);
   private readonly lang = toSignal(this.transloco.langChanges$, { initialValue: this.transloco.getActiveLang() });
 
-  public constructor() {
+  constructor() {
     void this.ops.load();
   }
 
@@ -39,6 +39,6 @@ export class AdminOperationsPage {
   }
 
   protected when(iso: string | null): string {
-    return iso ? formatDateTime(iso, this.lang()) : '';
+    return iso ? DateFormat.formatDateTime(iso, this.lang()) : '';
   }
 }

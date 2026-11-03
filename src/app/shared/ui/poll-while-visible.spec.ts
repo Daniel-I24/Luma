@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { pollWhileVisible } from './poll-while-visible';
+import { PollWhileVisible } from './poll-while-visible';
 
 const refresh = vi.fn();
 
 @Component({ template: '' })
 class Poller {
   constructor() {
-    pollWhileVisible(refresh, 15_000);
+    PollWhileVisible.pollWhileVisible(refresh, 15_000);
   }
 }
 

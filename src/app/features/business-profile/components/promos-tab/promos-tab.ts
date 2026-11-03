@@ -15,7 +15,7 @@ import type { PromotionDeal } from '@shared/promotions/promotion-deal';
   host: { class: 'block' },
 })
 export class PromosTab {
-  readonly promotions = input.required<readonly PromotionDeal[]>();
+  public readonly promotions = input.required<readonly PromotionDeal[]>();
   /** Id of the deal Luma IA recommends for this moment, if any. */
-  readonly recommendedId = input<string | null>(null);
+  public readonly recommendedId = input<string | null>(null);
 }

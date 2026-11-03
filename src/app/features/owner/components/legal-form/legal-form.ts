@@ -3,6 +3,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaInput, ToastService } from '@design-system';
 import { Nit } from '@shared/business/domain/nit';
 import { VerificationStore } from '../../state/verification.store';
+import { MIN_NAME_LENGTH } from '@shared/business/data/business-write.schemas';
 
 /** LegalForm — NIT (with check digit), legal name and legal representative. */
 @Component({
@@ -35,7 +36,7 @@ export class LegalForm {
   protected async save(event: Event): Promise<void> {
     event.preventDefault();
     this.nitError.set(!Nit.parse(this.taxId()));
-    this.textError.set(this.legalName().trim().length < 2 || this.legalRep().trim().length < 2);
+    this.textError.set(this.legalName().trim().length < MIN_NAME_LENGTH || this.legalRep().trim().length < MIN_NAME_LENGTH);
     if (this.nitError() || this.textError()) return;
     if (await this.store.saveLegal(this.taxId(), this.legalName(), this.legalRep())) {
       this.toast.show({ messageKey: 'owner.verificationPage.legalSaved', tone: 'success' });

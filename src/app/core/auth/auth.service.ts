@@ -3,9 +3,9 @@ import { Router } from '@angular/router';
 import type { Session, User } from '@supabase/supabase-js';
 import { ConnectivityService } from '@core/network/connectivity.service';
 import { SupabaseService } from '@core/supabase/supabase.service';
-import { mapAuthError, mapDeleteAccountError } from './auth-error';
+import { AuthErrors } from './auth-error';
 import { signInSchema, signUpSchema } from './auth.schemas';
-import { type SignUpProfile, signUpMetadata } from './sign-up-profile';
+import { type SignUpProfile, SignUpMetadata } from './sign-up-profile';
 import { SignOutHooks } from './sign-out-hooks';
 import { UserDataRegistry } from './user-data-registry';
 
@@ -21,7 +21,11 @@ export const OK: AuthResult = { success: true };
 /** A session counts only when its email is confirmed (6-digit code). */
 const isConfirmed = (session: Session | null): session is Session =>
   !!session?.user.email_confirmed_at;
-export const fail = (errorKey: string): AuthResult => ({ success: false, errorKey });
+
+/** AuthResults — the failed result of an auth operation, with its translation key. */
+export class AuthResults {
+  public static readonly fail = (errorKey: string): AuthResult => ({ success: false, errorKey });
+}
 
 /**
  * AuthService — manages authentication state for the entire app.
@@ -44,53 +48,53 @@ export class AuthService {
   private readonly _loading = signal<boolean>(false);
 
   /** Readonly signal: current Supabase session or null. */
-  readonly session = computed(() => this._session());
+  public readonly session = computed(() => this._session());
 
   /** Readonly signal: authenticated user or null. */
-  readonly user = computed<User | null>(() => this._session()?.user ?? null);
+  public readonly user = computed<User | null>(() => this._session()?.user ?? null);
 
   /** Readonly signal: true while an auth operation is in progress. */
-  readonly loading = computed(() => this._loading());
+  public readonly loading = computed(() => this._loading());
 
   /** Resolves once the persisted session has been restored (never rejects). */
-  readonly ready: Promise<void> = this.initSession();
+  public readonly ready: Promise<void> = this.initSession();
 
   // ── Public API ────────────────────────────────────────────────────
 
-  signIn(email: string, password: string): Promise<AuthResult> {
+  public signIn(email: string, password: string): Promise<AuthResult> {
     const parsed = signInSchema.safeParse({ email, password });
-    if (!parsed.success) return Promise.resolve(fail(parsed.error.issues[0].message));
+    if (!parsed.success) return Promise.resolve(AuthResults.fail(parsed.error.issues[0].message));
     return this.withLoading(async () => {
       const { data, error } = await this.supabase.auth.signInWithPassword(parsed.data);
-      if (error) return fail(mapAuthError(error.message, this.online()));
+      if (error) return AuthResults.fail(AuthErrors.mapAuthError(error.message, this.online()));
       // Even if the project stops requiring confirmation, an unconfirmed
       // email never gets a session in the app (the database refuses its writes).
       if (!isConfirmed(data.session)) {
         await this.supabase.auth.signOut({ scope: 'local' });
-        return fail('auth.errors.emailNotConfirmed');
+        return AuthResults.fail('auth.errors.emailNotConfirmed');
       }
       return OK;
     });
   }
 
   /** `profile` travels as user metadata, read and re-validated by handle_new_user. */
-  signUp(email: string, password: string, profile?: SignUpProfile): Promise<AuthResult> {
+  public signUp(email: string, password: string, profile?: SignUpProfile): Promise<AuthResult> {
     const parsed = signUpSchema.safeParse({ email, password });
-    if (!parsed.success) return Promise.resolve(fail(parsed.error.issues[0].message));
+    if (!parsed.success) return Promise.resolve(AuthResults.fail(parsed.error.issues[0].message));
     return this.withLoading(async () => {
-      const options = profile ? { data: signUpMetadata(profile) } : undefined;
+      const options = profile ? { data: SignUpMetadata.signUpMetadata(profile) } : undefined;
       const { error } = await this.supabase.auth.signUp({ ...parsed.data, options });
-      const errorKey = error ? mapAuthError(error.message, this.online()) : null;
+      const errorKey = error ? AuthErrors.mapAuthError(error.message, this.online()) : null;
       // Never reveal that an email is already registered: same next step.
-      return errorKey && errorKey !== 'auth.errors.emailAlreadyRegistered' ? fail(errorKey) : OK;
+      return errorKey && errorKey !== 'auth.errors.emailAlreadyRegistered' ? AuthResults.fail(errorKey) : OK;
     });
   }
 
-  signOut(): Promise<AuthResult> {
+  public signOut(): Promise<AuthResult> {
     return this.withLoading(async () => {
       await this.signOutHooks.run();
       const { error } = await this.supabase.auth.signOut();
-      if (error) return fail(mapAuthError(error.message, this.online()));
+      if (error) return AuthResults.fail(AuthErrors.mapAuthError(error.message, this.online()));
       this.userData.clearAll();
       return OK;
     });
@@ -101,10 +105,10 @@ export class AuthService {
    * Function (it identifies the user by the session JWT), then ends the local
    * session, wipes per-user caches and goes to the login page.
    */
-  deleteAccount(): Promise<AuthResult> {
+  public deleteAccount(): Promise<AuthResult> {
     return this.withLoading(async () => {
       const { error } = await this.supabase.functions.invoke('delete-account', { method: 'POST' });
-      if (error) return fail(await mapDeleteAccountError(error, this.online()));
+      if (error) return AuthResults.fail(await AuthErrors.mapDeleteAccountError(error, this.online()));
       // The user no longer exists server-side; local scope clears storage without a request.
       await this.supabase.auth.signOut({ scope: 'local' });
       this.userData.clearAll();
@@ -120,7 +124,7 @@ export class AuthService {
     try {
       return await operation();
     } catch {
-      return fail('auth.errors.unknown');
+      return AuthResults.fail('auth.errors.unknown');
     } finally {
       this._loading.set(false);
     }

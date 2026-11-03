@@ -8,6 +8,7 @@ import { OrderRepository } from '@shared/orders/order.repository';
 import { PaymentGatewayFactory, type PaymentMethod } from '@shared/payments/payment-gateway';
 import { type PaymentConfig, PaymentRepository } from '@shared/payments/payment.repository';
 import { PickupScheduleStore } from './pickup-schedule.store';
+import { Residence } from '@shared/geo/residence';
 
 export const NOTES_MAX_LENGTH = 200;
 
@@ -30,22 +31,22 @@ export class CheckoutStore {
   private readonly businesses = inject(BusinessRepository);
   private readonly session = inject(SessionProfileStore);
 
-  readonly notes = signal('');
-  readonly method = signal<PaymentMethod>('pay_at_pickup');
+  public readonly notes = signal('');
+  public readonly method = signal<PaymentMethod>('pay_at_pickup');
 
   private readonly _config = signal<PaymentConfig>({ enabled: false, sandbox: false });
   private readonly _submitting = signal(false);
   private readonly _errorKey = signal<string | null>(null);
-  readonly submitting = this._submitting.asReadonly();
-  readonly errorKey = this._errorKey.asReadonly();
-  readonly notesTooLong = computed(() => this.notes().length > NOTES_MAX_LENGTH);
+  public readonly submitting = this._submitting.asReadonly();
+  public readonly errorKey = this._errorKey.asReadonly();
+  public readonly notesTooLong = computed(() => this.notes().length > NOTES_MAX_LENGTH);
   /** "Pagar en línea" is offered only when the server enables it. */
-  readonly onlineAvailable = computed(() => this._config().enabled);
+  public readonly onlineAvailable = computed(() => this._config().enabled);
   /** Sandbox: "Modo de pruebas: no se cobra dinero real". */
-  readonly sandbox = computed(() => this._config().enabled && this._config().sandbox);
-  readonly paymentLabelKey = computed(() => this.gateways.for(this.method()).labelKey);
+  public readonly sandbox = computed(() => this._config().enabled && this._config().sandbox);
+  public readonly paymentLabelKey = computed(() => this.gateways.for(this.method()).labelKey);
   /** The business is in another department than the customer's residence (a heads-up, not a rule). */
-  readonly otherDepartment = signal(false);
+  public readonly otherDepartment = signal(false);
 
   constructor() {
     void this.payments.config().then((config) => {
@@ -61,42 +62,50 @@ export class CheckoutStore {
     await this.session.whenLoaded();
     const home = this.session.profile()?.residence?.departmentCode;
     const business = await this.businesses.getById(businessId);
-    const there = business.data?.city_dane_code?.slice(0, 2);
+    const there = business.data?.city_dane_code ? Residence.departmentOf(business.data.city_dane_code) : null;
     this.otherDepartment.set(!!home && !!there && home !== there);
   }
 
-  async confirm(): Promise<void> {
-    if (this._submitting() || this.cart.isEmpty()) return;
-    const pickup = this.schedule.choice();
-    if (pickup.errorKey || this.notesTooLong()) {
-      this._errorKey.set(pickup.errorKey ?? 'orders.errors.invalidNotes');
-      return;
-    }
-    const businessId = this.cart.businessId();
+  public async confirm(): Promise<void> {
+    const businessId = this.readyToSubmit();
     if (!businessId) return;
-
     this._errorKey.set(null);
     this._submitting.set(true);
     try {
-      const method = this.onlineAvailable() ? this.method() : 'pay_at_pickup';
-      const result = await this.orders.create({
-        businessId,
-        items: this.cart.items().map((item) => ({ menuItemId: item.menuItemId, quantity: item.quantity })),
-        pickupAt: pickup.pickupAt,
-        notes: this.notes().trim() || null,
-        paymentMethod: method,
-      });
-      if (!result.data) {
-        this._errorKey.set(result.errorKey ?? 'orders.errors.createFailed');
-        return;
-      }
-      this.cart.clear();
-      void this.haptics.tap();
-      // Online: the order screen shows the payment state and "Reintentar pago" if opening failed.
-      await this.gateways.for(method).start(result.data);
-      await this.router.navigate(['/orders', result.data]);
+      await this.submit(businessId);
     } finally {
       this._submitting.set(false);
     }
+  }
+
+  /** The cart's business when the order can be sent; otherwise null (and the reason as an error). */
+  private readyToSubmit(): string | null {
+    if (this._submitting() || this.cart.isEmpty()) return null;
+    const pickup = this.schedule.choice();
+    if (pickup.errorKey || this.notesTooLong()) {
+      this._errorKey.set(pickup.errorKey ?? 'orders.errors.invalidNotes');
+      return null;
+    }
+    return this.cart.businessId();
+  }
+
+  private async submit(businessId: string): Promise<void> {
+    const method = this.onlineAvailable() ? this.method() : 'pay_at_pickup';
+    const result = await this.orders.create({
+      businessId,
+      items: this.cart.items().map((item) => ({ menuItemId: item.menuItemId, quantity: item.quantity })),
+      pickupAt: this.schedule.choice().pickupAt,
+      notes: this.notes().trim() || null,
+      paymentMethod: method,
+    });
+    if (!result.data) {
+      this._errorKey.set(result.errorKey ?? 'orders.errors.createFailed');
+      return;
+    }
+    this.cart.clear();
+    void this.haptics.tap();
+    // Online: the order screen shows the payment state and "Reintentar pago" if opening failed.
+    await this.gateways.for(method).start(result.data);
+    await this.router.navigate(['/orders', result.data]);
   }
 }

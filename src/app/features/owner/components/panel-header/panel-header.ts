@@ -15,10 +15,10 @@ export class PanelHeader {
   private readonly router = inject(Router);
 
   /** Already translated title. */
-  readonly heading = input.required<string>();
-  readonly subtitle = input<string | undefined>(undefined);
+  public readonly heading = input.required<string>();
+  public readonly subtitle = input<string | undefined>(undefined);
   /** Screens under a tab go back to it; tab roots have no back button (null). */
-  readonly backLink = input<readonly string[] | null>(null);
+  public readonly backLink = input<readonly string[] | null>(null);
 
   protected back(): void {
     const link = this.backLink();

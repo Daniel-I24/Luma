@@ -12,7 +12,7 @@ import { LumaIconButton } from '@design-system';
   host: { class: 'absolute right-3 bottom-3 z-20 flex flex-col gap-2' },
 })
 export class MapControls {
-  readonly locate = output<void>();
-  readonly zoomIn = output<void>();
-  readonly zoomOut = output<void>();
+  public readonly locate = output<void>();
+  public readonly zoomIn = output<void>();
+  public readonly zoomOut = output<void>();
 }

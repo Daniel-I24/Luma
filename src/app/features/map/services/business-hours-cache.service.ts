@@ -11,15 +11,15 @@ export class BusinessHoursCacheService {
   private readonly repo = inject(BusinessRepository);
   private readonly cache = new Map<string, BusinessHours[]>();
 
-  has(businessId: string): boolean {
+  public has(businessId: string): boolean {
     return this.cache.has(businessId);
   }
 
-  get(businessId: string): BusinessHours[] {
+  public get(businessId: string): BusinessHours[] {
     return this.cache.get(businessId) ?? [];
   }
 
-  snapshot(): Map<string, BusinessHours[]> {
+  public snapshot(): Map<string, BusinessHours[]> {
     return this.cache;
   }
 
@@ -27,7 +27,7 @@ export class BusinessHoursCacheService {
    * Loads hours for ids not yet cached, in parallel.
    * Failed fetches are stored as [] so the same id is not retried forever.
    */
-  async prefetch(businessIds: string[]): Promise<void> {
+  public async prefetch(businessIds: string[]): Promise<void> {
     const missing = businessIds.filter((id) => !this.cache.has(id));
     if (missing.length === 0) return;
 

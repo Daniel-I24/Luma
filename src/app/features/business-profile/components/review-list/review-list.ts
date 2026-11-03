@@ -22,7 +22,7 @@ export class ReviewList {
     initialValue: this.transloco.getActiveLang(),
   });
 
-  readonly reviews = input.required<readonly ReviewWithAuthor[]>();
+  public readonly reviews = input.required<readonly ReviewWithAuthor[]>();
 
   protected date(review: ReviewWithAuthor): string {
     return new Intl.DateTimeFormat(this.lang(), { dateStyle: 'medium' }).format(

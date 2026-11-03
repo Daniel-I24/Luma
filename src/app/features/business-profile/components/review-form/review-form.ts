@@ -11,6 +11,8 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaIcon } from '@design-system';
 import type { ReviewInput, ReviewWithAuthor } from '@shared/business/models/review.model';
 
+const STAR_COUNT = 5;
+
 export const MAX_COMMENT_LENGTH = 500;
 
 /**
@@ -27,16 +29,16 @@ export const MAX_COMMENT_LENGTH = 500;
   host: { class: 'block' },
 })
 export class ReviewForm {
-  readonly existing = input<ReviewWithAuthor | null>(null);
-  readonly saving = input(false);
+  public readonly existing = input<ReviewWithAuthor | null>(null);
+  public readonly saving = input(false);
   /** i18n key of the last save/delete error. */
-  readonly errorKey = input<string | null>(null);
+  public readonly errorKey = input<string | null>(null);
 
-  readonly submitted = output<ReviewInput>();
-  readonly deleted = output<void>();
+  public readonly submitted = output<ReviewInput>();
+  public readonly deleted = output<void>();
 
   protected readonly maxLength = MAX_COMMENT_LENGTH;
-  protected readonly stars = [1, 2, 3, 4, 5];
+  protected readonly stars = Array.from({ length: STAR_COUNT }, (_, i) => i + 1);
   protected readonly rating = linkedSignal(() => this.existing()?.rating ?? 0);
   protected readonly comment = linkedSignal(() => this.existing()?.comment ?? '');
   protected readonly confirmingDelete = signal(false);

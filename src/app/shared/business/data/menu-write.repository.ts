@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import type { MenuItem } from '../models/menu.model';
 import type { RepoResult } from './business.repository';
-import { mapWriteError } from './business-write-error';
+import { BusinessWriteErrors } from './business-write-error';
 import { type MenuItemInput, menuItemSchema } from './business-write.schemas';
 
 const INVALID = 'businessPanel.errors.invalidData';
@@ -17,7 +17,7 @@ const SAVE_FAILED = 'businessPanel.errors.saveFailed';
 export class MenuWriteRepository {
   private readonly db = inject(SupabaseService).client;
 
-  async create(businessId: string, input: MenuItemInput): Promise<RepoResult<MenuItem>> {
+  public async create(businessId: string, input: MenuItemInput): Promise<RepoResult<MenuItem>> {
     const parsed = menuItemSchema.safeParse(input);
     if (!parsed.success) return { data: null, errorKey: INVALID };
     const { data, error } = await this.db
@@ -25,11 +25,11 @@ export class MenuWriteRepository {
       .insert({ ...parsed.data, business_id: businessId })
       .select('*')
       .single();
-    if (error) return { data: null, errorKey: mapWriteError(error, SAVE_FAILED) };
+    if (error) return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, SAVE_FAILED) };
     return { data: data as MenuItem, errorKey: null };
   }
 
-  async update(id: string, input: MenuItemInput): Promise<RepoResult<MenuItem>> {
+  public async update(id: string, input: MenuItemInput): Promise<RepoResult<MenuItem>> {
     const parsed = menuItemSchema.safeParse(input);
     if (!parsed.success) return { data: null, errorKey: INVALID };
     const { data, error } = await this.db
@@ -38,23 +38,23 @@ export class MenuWriteRepository {
       .eq('id', id)
       .select('*')
       .single();
-    if (error) return { data: null, errorKey: mapWriteError(error, SAVE_FAILED) };
+    if (error) return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, SAVE_FAILED) };
     return { data: data as MenuItem, errorKey: null };
   }
 
-  async setAvailable(id: string, available: boolean): Promise<RepoResult<true>> {
+  public async setAvailable(id: string, available: boolean): Promise<RepoResult<true>> {
     const { error } = await this.db
       .from('menu_items')
       .update({ is_available: available })
       .eq('id', id);
-    if (error) return { data: null, errorKey: mapWriteError(error, SAVE_FAILED) };
+    if (error) return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, SAVE_FAILED) };
     return { data: true, errorKey: null };
   }
 
-  async remove(id: string): Promise<RepoResult<true>> {
+  public async remove(id: string): Promise<RepoResult<true>> {
     const { error } = await this.db.from('menu_items').delete().eq('id', id);
     if (error)
-      return { data: null, errorKey: mapWriteError(error, 'businessPanel.errors.deleteFailed') };
+      return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, 'businessPanel.errors.deleteFailed') };
     return { data: true, errorKey: null };
   }
 }

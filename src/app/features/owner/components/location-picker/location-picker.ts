@@ -16,8 +16,11 @@ import { TranslocoModule } from '@jsverse/transloco';
 import * as maplibregl from 'maplibre-gl';
 import { LumaButton } from '@design-system';
 import { type GeoCoords, GeolocationService, PASTO_CENTRE } from '@shared/geo/geolocation.service';
-import { createBaseMap } from '@shared/map/map-base';
+import { BaseMap } from '@shared/map/map-base';
 import { MapStylesLoader } from '@shared/map/map-styles.loader';
+
+/** About one metre. */
+const COORDINATE_DECIMALS = 5;
 
 const PICKER_ZOOM = 16;
 
@@ -39,9 +42,9 @@ export class LocationPicker {
   private readonly styles = inject(MapStylesLoader);
   private readonly container = viewChild.required<ElementRef<HTMLElement>>('map');
 
-  readonly pickerId = input.required<string>();
-  readonly errorMessage = input<string | undefined>(undefined);
-  readonly position = model<GeoCoords | null>(null);
+  public readonly pickerId = input.required<string>();
+  public readonly errorMessage = input<string | undefined>(undefined);
+  public readonly position = model<GeoCoords | null>(null);
 
   protected readonly mapFailed = signal(false);
   protected readonly locating = signal(false);
@@ -76,14 +79,14 @@ export class LocationPicker {
   }
 
   protected format(value: number): string {
-    return value.toFixed(5);
+    return value.toFixed(COORDINATE_DECIMALS);
   }
 
   private initMap(): void {
     try {
       this.styles.ensureLoaded();
       const start = this.position() ?? PASTO_CENTRE;
-      this.map = createBaseMap(this.container().nativeElement, start, PICKER_ZOOM);
+      this.map = BaseMap.createBaseMap(this.container().nativeElement, start, PICKER_ZOOM);
       this.map.on('click', (event) =>
         this.place({ lat: event.lngLat.lat, lng: event.lngLat.lng }, false),
       );

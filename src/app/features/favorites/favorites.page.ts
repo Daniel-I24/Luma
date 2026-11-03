@@ -15,7 +15,7 @@ import {
   LumaIconButton,
   LumaSkeleton,
 } from '@design-system';
-import { categoryIcon } from '@shared/business/utils/category-icon.util';
+import { CategoryIcons } from '@shared/business/utils/category-icons';
 import { FavoriteButton } from '@shared/favorites/favorite-button/favorite-button';
 import { FavoritesStore } from '@shared/favorites/favorites.store';
 import { FavoritesPageStore } from './state/favorites-page.store';
@@ -45,7 +45,7 @@ export class FavoritesPage {
   protected readonly store = inject(FavoritesPageStore);
   private readonly favorites = inject(FavoritesStore);
   private readonly router = inject(Router);
-  protected readonly icon = categoryIcon;
+  protected readonly icon = CategoryIcons.categoryIcon;
 
   /** Loading until the favourite ids themselves are known. */
   protected readonly state = computed(() =>

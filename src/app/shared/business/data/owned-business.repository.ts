@@ -4,7 +4,7 @@ import { SupabaseService } from '@core/supabase/supabase.service';
 import type { Business } from '../models/business.model';
 import type { BusinessContact } from '../models/business-contact';
 import type { RepoResult } from './business.repository';
-import { mapWriteError } from './business-write-error';
+import { BusinessWriteErrors } from './business-write-error';
 import {
   type BusinessImagesInput,
   type BusinessInfoInput,
@@ -31,7 +31,7 @@ export class OwnedBusinessRepository {
   private readonly auth = inject(AuthService);
 
   /** The user's businesses, published or not, oldest first. */
-  async listMine(): Promise<RepoResult<OwnedBusinessSummary[]>> {
+  public async listMine(): Promise<RepoResult<OwnedBusinessSummary[]>> {
     const userId = this.auth.user()?.id;
     if (!userId) return { data: null, errorKey: 'businessPanel.errors.loadFailed' };
     const { data, error } = await this.db
@@ -44,7 +44,7 @@ export class OwnedBusinessRepository {
   }
 
   /** One of the user's businesses, or null when it is not theirs or does not exist. */
-  async getMine(id: string): Promise<RepoResult<Business | null>> {
+  public async getMine(id: string): Promise<RepoResult<Business | null>> {
     const userId = this.auth.user()?.id;
     if (!userId) return { data: null, errorKey: 'businessPanel.errors.loadFailed' };
     const { data, error } = await this.db
@@ -58,7 +58,7 @@ export class OwnedBusinessRepository {
   }
 
   /** Registers an unpublished business; resolves to its id. */
-  async create(input: NewBusinessInput): Promise<RepoResult<string>> {
+  public async create(input: NewBusinessInput): Promise<RepoResult<string>> {
     const userId = this.auth.user()?.id;
     const parsed = newBusinessSchema.safeParse(input);
     if (!userId || !parsed.success) return { data: null, errorKey: INVALID };
@@ -68,45 +68,45 @@ export class OwnedBusinessRepository {
       .select('id')
       .single();
     if (error)
-      return { data: null, errorKey: mapWriteError(error, 'businessPanel.errors.saveFailed') };
+      return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, 'businessPanel.errors.saveFailed') };
     return { data: (data as { id: string }).id, errorKey: null };
   }
 
-  async updateInfo(id: string, input: BusinessInfoInput): Promise<RepoResult<true>> {
+  public async updateInfo(id: string, input: BusinessInfoInput): Promise<RepoResult<true>> {
     const parsed = businessInfoSchema.safeParse(input);
     if (!parsed.success) return { data: null, errorKey: INVALID };
     const { error } = await this.db.from('businesses').update(parsed.data).eq('id', id);
     if (error)
-      return { data: null, errorKey: mapWriteError(error, 'businessPanel.errors.saveFailed') };
+      return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, 'businessPanel.errors.saveFailed') };
     return { data: true, errorKey: null };
   }
 
   /** Public contact, already normalised by parseContact (the database checks it again). */
-  async updateContact(id: string, contact: BusinessContact): Promise<RepoResult<true>> {
+  public async updateContact(id: string, contact: BusinessContact): Promise<RepoResult<true>> {
     const { error } = await this.db.from('businesses').update(contact).eq('id', id);
     if (error)
-      return { data: null, errorKey: mapWriteError(error, 'businessPanel.errors.saveFailed') };
+      return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, 'businessPanel.errors.saveFailed') };
     return { data: true, errorKey: null };
   }
 
   /** Sets the logo and/or cover URL (https only). */
-  async updateImages(id: string, input: BusinessImagesInput): Promise<RepoResult<true>> {
+  public async updateImages(id: string, input: BusinessImagesInput): Promise<RepoResult<true>> {
     const parsed = businessImagesSchema.safeParse(input);
     if (!parsed.success) return { data: null, errorKey: INVALID };
     const { error } = await this.db.from('businesses').update(parsed.data).eq('id', id);
     if (error)
-      return { data: null, errorKey: mapWriteError(error, 'businessPanel.errors.saveFailed') };
+      return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, 'businessPanel.errors.saveFailed') };
     return { data: true, errorKey: null };
   }
 
   /** Publishes or unpublishes; the database refuses to publish an incomplete business. */
-  async setPublished(id: string, published: boolean): Promise<RepoResult<true>> {
+  public async setPublished(id: string, published: boolean): Promise<RepoResult<true>> {
     const { error } = await this.db
       .from('businesses')
       .update({ is_active: published })
       .eq('id', id);
     if (error)
-      return { data: null, errorKey: mapWriteError(error, 'businessPanel.errors.publishFailed') };
+      return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, 'businessPanel.errors.publishFailed') };
     return { data: true, errorKey: null };
   }
 }

@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { AuthService } from '@core/auth/auth.service';
 import type { MenuItem } from '@shared/business/models/menu.model';
 import { CartStore } from '@shared/cart/cart.store';
-import { MenuTab, groupBySection } from './menu-tab';
+import { MenuTab, MenuSections } from './menu-tab';
 
 const item = (id: string, section: string | null, price: number): MenuItem => ({
   id,
@@ -58,7 +58,7 @@ describe('MenuTab', () => {
   }
 
   it('groups items by section in order of appearance, without a section last as "Otros"', () => {
-    const sections = groupBySection([
+    const sections = MenuSections.groupBySection([
       item('1', 'Bebidas', 4000),
       item('2', 'Postres', 7000),
       item('3', 'Bebidas', 5000),

@@ -21,12 +21,12 @@ export class MenuPanelStore {
   private readonly _items = signal<readonly MenuItem[]>([]);
   private readonly _busy = signal(false);
   private readonly _errorKey = signal<string | null>(null);
-  readonly busy = this._busy.asReadonly();
-  readonly errorKey = this._errorKey.asReadonly();
-  readonly isEmpty = computed(() => this._items().length === 0);
+  public readonly busy = this._busy.asReadonly();
+  public readonly errorKey = this._errorKey.asReadonly();
+  public readonly isEmpty = computed(() => this._items().length === 0);
 
   /** Items grouped by section (named sections first), each in the owner's order. */
-  readonly sections = computed<MenuSection[]>(() => {
+  public readonly sections = computed<MenuSection[]>(() => {
     const groups = new Map<string | null, MenuItem[]>();
     const sorted = [...this._items()].sort(
       (a, b) => a.sort_order - b.sort_order || a.name.localeCompare(b.name),
@@ -39,14 +39,14 @@ export class MenuPanelStore {
   });
 
   /** Resolves to false when the menu could not be loaded. */
-  async load(businessId: string): Promise<boolean> {
+  public async load(businessId: string): Promise<boolean> {
     const result = await this.reader.getMenu(businessId);
     this._items.set(result.data ?? []);
     return !result.errorKey;
   }
 
   /** Creates (no id) or updates an item; a replaced picture is deleted once saved. */
-  async save(businessId: string, id: string | null, input: MenuItemInput): Promise<boolean> {
+  public async save(businessId: string, id: string | null, input: MenuItemInput): Promise<boolean> {
     return this.run(async () => {
       const result = id
         ? await this.writer.update(id, input)
@@ -60,7 +60,7 @@ export class MenuPanelStore {
     });
   }
 
-  async setAvailable(item: MenuItem, available: boolean): Promise<boolean> {
+  public async setAvailable(item: MenuItem, available: boolean): Promise<boolean> {
     return this.run(async () => {
       const result = await this.writer.setAvailable(item.id, available);
       if (result.data) this.upsert({ ...item, is_available: available });
@@ -69,7 +69,7 @@ export class MenuPanelStore {
   }
 
   /** Deletes an item and then its picture. */
-  async remove(id: string): Promise<boolean> {
+  public async remove(id: string): Promise<boolean> {
     return this.run(async () => {
       const image = this._items().find((item) => item.id === id)?.image_url;
       const result = await this.writer.remove(id);
@@ -81,7 +81,7 @@ export class MenuPanelStore {
     });
   }
 
-  clearError(): void {
+  public clearError(): void {
     this._errorKey.set(null);
   }
 

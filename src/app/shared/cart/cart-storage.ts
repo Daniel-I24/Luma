@@ -10,7 +10,7 @@ const KEY_PREFIX = 'luma-cart:';
  */
 @Injectable({ providedIn: 'root' })
 export class CartStorage {
-  load(userId: string): CartSnapshot {
+  public load(userId: string): CartSnapshot {
     try {
       const raw = localStorage.getItem(KEY_PREFIX + userId);
       if (!raw) return EMPTY_CART;
@@ -21,7 +21,7 @@ export class CartStorage {
     }
   }
 
-  save(userId: string, cart: CartSnapshot): void {
+  public save(userId: string, cart: CartSnapshot): void {
     try {
       if (cart.items.length === 0) localStorage.removeItem(KEY_PREFIX + userId);
       else localStorage.setItem(KEY_PREFIX + userId, JSON.stringify(cart));
@@ -30,7 +30,7 @@ export class CartStorage {
     }
   }
 
-  remove(userId: string): void {
+  public remove(userId: string): void {
     this.save(userId, EMPTY_CART);
   }
 }

@@ -14,7 +14,7 @@ import { PanelHeader } from '../../components/panel-header/panel-header';
 import { PanelStateView } from '../../components/panel-state/panel-state';
 import { PanelBusinessStore } from '../../state/panel-business.store';
 import { VerificationStore } from '../../state/verification.store';
-import { routeBusinessId } from '../../utils/route-business-id';
+import { RouteBusinessId } from '../../utils/route-business-id';
 import { SetupReturn } from '../../components/setup-return/setup-return';
 
 /**
@@ -54,7 +54,7 @@ import { SetupReturn } from '../../components/setup-return/setup-return';
 export class BusinessVerificationPage {
   protected readonly panel = inject(PanelBusinessStore);
   protected readonly verification = inject(VerificationStore);
-  protected readonly id = routeBusinessId();
+  protected readonly id = RouteBusinessId.routeBusinessId();
   protected readonly backLink = computed(() => ownerPaths.section(this.id(), 'business'));
 
   constructor() {

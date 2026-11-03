@@ -1,4 +1,5 @@
 import { DOCUMENT, Injectable, inject } from '@angular/core';
+import { HALF } from '@core/config/units';
 
 /**
  * CartFlight — the "dish flies to the cart bar" micro-interaction: a small
@@ -32,11 +33,11 @@ export class CartFlight {
     const dot = this.document.createElement('span');
     dot.className = 'pointer-events-none fixed z-50 size-3 rounded-full bg-primary';
     dot.setAttribute('aria-hidden', 'true');
-    dot.style.left = `${from.left + from.width / 2}px`;
-    dot.style.top = `${from.top + from.height / 2}px`;
+    dot.style.left = `${from.left + from.width * HALF}px`;
+    dot.style.top = `${from.top + from.height * HALF}px`;
     this.document.body.appendChild(dot);
-    const dx = to.left + to.width / 2 - (from.left + from.width / 2);
-    const dy = to.top + to.height / 2 - (from.top + from.height / 2);
+    const dx = to.left + to.width * HALF - (from.left + from.width * HALF);
+    const dy = to.top + to.height * HALF - (from.top + from.height * HALF);
     const tokens = view.getComputedStyle(this.document.documentElement);
     const animation = dot.animate(
       [

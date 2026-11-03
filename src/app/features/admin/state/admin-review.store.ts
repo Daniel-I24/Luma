@@ -26,14 +26,14 @@ export class AdminReviewStore {
   private readonly _docs = signal<readonly VerificationDoc[]>([]);
   private readonly _busy = signal(false);
   private readonly _errorKey = signal<string | null>(null);
-  readonly state = this._state.asReadonly();
-  readonly business = this._business.asReadonly();
-  readonly legal = this._legal.asReadonly();
-  readonly docs = this._docs.asReadonly();
-  readonly busy = this._busy.asReadonly();
-  readonly errorKey = this._errorKey.asReadonly();
+  public readonly state = this._state.asReadonly();
+  public readonly business = this._business.asReadonly();
+  public readonly legal = this._legal.asReadonly();
+  public readonly docs = this._docs.asReadonly();
+  public readonly busy = this._busy.asReadonly();
+  public readonly errorKey = this._errorKey.asReadonly();
 
-  async load(id: string): Promise<void> {
+  public async load(id: string): Promise<void> {
     this._state.set('loading');
     const [business, legal, docs] = await Promise.all([
       this.admin.business(id),
@@ -51,7 +51,7 @@ export class AdminReviewStore {
   }
 
   /** Opens a document with a signed URL that expires in a minute. */
-  async signedUrl(doc: VerificationDoc): Promise<string | null> {
+  public async signedUrl(doc: VerificationDoc): Promise<string | null> {
     this._errorKey.set(null);
     const result = await this.admin.signedDocUrl(doc);
     this._errorKey.set(result.errorKey);
@@ -59,7 +59,7 @@ export class AdminReviewStore {
   }
 
   /** Resolves to true when the decision was saved. */
-  async decide(decision: ReviewDecision, note: string | null): Promise<boolean> {
+  public async decide(decision: ReviewDecision, note: string | null): Promise<boolean> {
     const business = this._business();
     if (!business || this._busy()) return false;
     this._busy.set(true);

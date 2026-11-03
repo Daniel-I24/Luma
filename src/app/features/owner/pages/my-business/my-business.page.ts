@@ -16,8 +16,8 @@ import { type OwnerBusinessScreen, ownerPaths } from '@shared/account/owner-path
 import { PanelHeader } from '../../components/panel-header/panel-header';
 import { PanelStateView } from '../../components/panel-state/panel-state';
 import { PanelBusinessStore } from '../../state/panel-business.store';
-import { EDITABLE_STATUSES } from '../../utils/review-checklist.util';
-import { routeBusinessId } from '../../utils/route-business-id';
+import { EDITABLE_STATUSES } from '../../utils/review-checklist';
+import { RouteBusinessId } from '../../utils/route-business-id';
 
 const SCREENS: readonly { screen: OwnerBusinessScreen; icon: IconName; key: string }[] = [
   { screen: 'info', icon: 'store', key: 'info' },
@@ -51,7 +51,7 @@ const SCREENS: readonly { screen: OwnerBusinessScreen; icon: IconName; key: stri
 })
 export class MyBusinessPage {
   protected readonly panel = inject(PanelBusinessStore);
-  protected readonly id = routeBusinessId();
+  protected readonly id = RouteBusinessId.routeBusinessId();
   protected readonly screens = SCREENS;
   protected readonly tutorialPath = ONBOARDING_PATH;
   /** Legal data and documents can change only while draft or changes requested. */

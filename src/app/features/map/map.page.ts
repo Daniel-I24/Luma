@@ -1,15 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-  computed,
-  effect,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
@@ -26,7 +16,7 @@ import { MapStylesLoader } from '@shared/map/map-styles.loader';
 import { BusinessSelectionStore } from './state/business-selection.store';
 import { NearbyBusinessesStore, type NearbyBusiness } from './state/nearby-businesses.store';
 import { PlaceSearchStore } from './state/place-search.store';
-import { getZoneLabelKey } from './utils/zone-label.util';
+import { ZoneLabel } from './utils/zone-label';
 import { ResidenceMapCentre } from '@shared/geo/residence-map-centre';
 
 /** MapPage — /map: live map, filters, nearby businesses and the business sheet. */
@@ -49,7 +39,7 @@ import { ResidenceMapCentre } from '@shared/geo/residence-map-centre';
   host: { class: 'block h-full' },
 })
 export class MapPage implements OnInit, OnDestroy {
-  @ViewChild('mapContainer', { static: true }) mapContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild('mapContainer', { static: true }) public mapContainer!: ElementRef<HTMLDivElement>;
 
   protected readonly store = inject(NearbyBusinessesStore);
   protected readonly selection = inject(BusinessSelectionStore);
@@ -64,7 +54,7 @@ export class MapPage implements OnInit, OnDestroy {
   private readonly mapReady = signal(false);
   protected readonly mapFailed = signal(false);
   protected readonly showLocationPrompt = signal(false);
-  protected readonly zoneKey = computed(() => getZoneLabelKey(this.geo.state()));
+  protected readonly zoneKey = computed(() => ZoneLabel.getZoneLabelKey(this.geo.state()));
 
   constructor() {
     // No device location yet: start at the municipality of residence.
@@ -95,12 +85,12 @@ export class MapPage implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.styles.ensureLoaded();
     this.startMap();
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.markerSync.clear();
     if (this.mapReady()) this.camera.destroy();
   }

@@ -7,14 +7,18 @@ const COP = new Intl.NumberFormat('es-CO', {
   maximumFractionDigits: 0,
 });
 
-/** Formats a whole number of Colombian pesos for display. */
-export function formatCop(amount: number): string {
-  return COP.format(amount);
+/** CopFormat — formats whole Colombian pesos. */
+export class CopFormat {
+  /** Formats a whole number of Colombian pesos for display. */
+  public static formatCop(amount: number): string {
+    return COP.format(amount);
+  }
 }
+
 
 @Pipe({ name: 'cop', standalone: true })
 export class CopCurrencyPipe implements PipeTransform {
-  transform(amount: number): string {
-    return formatCop(amount);
+  public transform(amount: number): string {
+    return CopFormat.formatCop(amount);
   }
 }

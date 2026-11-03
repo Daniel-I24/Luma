@@ -4,7 +4,7 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LumaButton } from '@design-system';
 import { BusinessPause } from '@shared/business/models/business-pause';
 import type { Business } from '@shared/business/models/business.model';
-import { formatTime } from '@shared/format/date-format.util';
+import { DateFormat } from '@shared/format/date-format';
 import { OrderPauseRepository } from '../../services/order-pause.repository';
 
 /**
@@ -33,10 +33,10 @@ export class OrderPauseCard {
   protected readonly paused = computed(() => BusinessPause.isPaused(this.until()));
   protected readonly endsAt = computed(() => {
     const until = this.until();
-    return until && !BusinessPause.isIndefinite(until) ? formatTime(until, this.lang()) : null;
+    return until && !BusinessPause.isIndefinite(until) ? DateFormat.formatTime(until, this.lang()) : null;
   });
 
-  public constructor() {
+  constructor() {
     effect(() => this.until.set(this.business().orders_paused_until ?? null));
   }
 

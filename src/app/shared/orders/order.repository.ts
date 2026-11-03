@@ -2,8 +2,10 @@ import { Injectable, inject } from '@angular/core';
 import * as z from 'zod/mini';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import type { RepoResult } from '@shared/business/data/business.repository';
-import { mapOrderError } from './order-error';
+import { OrderErrors } from './order-error';
 import type { NewOrder, Order, OrderWithItems } from './order.model';
+
+const ORDER_HISTORY_LIMIT = 50;
 
 const ORDER_COLUMNS =
   'id, business_id, business_name, business_address, status, pickup_at, total_cop, notes, ' +
@@ -23,7 +25,7 @@ export class OrderRepository {
   private readonly db = inject(SupabaseService).client;
 
   /** Creates the order (pending, or awaiting_payment when online); resolves to its id. Only ids and quantities are sent. */
-  async create(order: NewOrder): Promise<RepoResult<string>> {
+  public async create(order: NewOrder): Promise<RepoResult<string>> {
     const { data, error } = await this.db.rpc('create_order', {
       p_business_id: order.businessId,
       p_items: order.items.map((item) => ({
@@ -35,25 +37,25 @@ export class OrderRepository {
       p_payment_method: order.paymentMethod ?? 'pay_at_pickup',
     });
     if (error)
-      return { data: null, errorKey: mapOrderError(error.message, 'orders.errors.createFailed') };
+      return { data: null, errorKey: OrderErrors.mapOrderError(error.message, 'orders.errors.createFailed') };
     const id = orderIdSchema.safeParse(data);
     if (!id.success) return { data: null, errorKey: 'orders.errors.createFailed' };
     return { data: id.data, errorKey: null };
   }
 
   /** The user's orders, newest first. */
-  async list(): Promise<RepoResult<Order[]>> {
+  public async list(): Promise<RepoResult<Order[]>> {
     const { data, error } = await this.db
       .from('orders')
       .select(ORDER_COLUMNS)
       .order('created_at', { ascending: false })
-      .limit(50);
+      .limit(ORDER_HISTORY_LIMIT);
     if (error) return { data: null, errorKey: 'orders.errors.loadFailed' };
     return { data: data as unknown as Order[], errorKey: null };
   }
 
   /** One order with its lines, or null when it does not exist (or is not the user's). */
-  async getById(id: string): Promise<RepoResult<OrderWithItems | null>> {
+  public async getById(id: string): Promise<RepoResult<OrderWithItems | null>> {
     const { data, error } = await this.db
       .from('orders')
       .select(
@@ -65,10 +67,10 @@ export class OrderRepository {
     return { data: data as unknown as OrderWithItems | null, errorKey: null };
   }
 
-  async cancel(id: string): Promise<RepoResult<true>> {
+  public async cancel(id: string): Promise<RepoResult<true>> {
     const { error } = await this.db.rpc('cancel_order', { p_order_id: id });
     if (error)
-      return { data: null, errorKey: mapOrderError(error.message, 'orders.errors.cancelFailed') };
+      return { data: null, errorKey: OrderErrors.mapOrderError(error.message, 'orders.errors.cancelFailed') };
     return { data: true, errorKey: null };
   }
 }

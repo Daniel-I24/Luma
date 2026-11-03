@@ -13,10 +13,10 @@ export class AuthFormSubmission {
   private readonly _submitting = signal(false);
   private readonly _errorKey = signal<string | null>(null);
 
-  readonly submitting = this._submitting.asReadonly();
-  readonly errorKey = this._errorKey.asReadonly();
+  public readonly submitting = this._submitting.asReadonly();
+  public readonly errorKey = this._errorKey.asReadonly();
 
-  async run(
+  public async run(
     form: Pick<AbstractControl, 'invalid'>,
     action: () => Promise<AuthResult>,
     onSuccess: () => unknown,

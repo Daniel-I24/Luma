@@ -14,12 +14,7 @@ import { LumaButton, LumaInput } from '@design-system';
 import { ImageField } from '../image-field/image-field';
 import { type MenuItemInput, menuItemSchema } from '@shared/business/data/business-write.schemas';
 import type { MenuItem } from '@shared/business/models/menu.model';
-import {
-  type FieldErrors,
-  fieldErrors,
-  focusFirstError,
-  withoutErrors,
-} from '@shared/forms/form-errors';
+import { type FieldErrors, FormErrors } from '@shared/forms/form-errors';
 
 const FIELD_ORDER = [
   ['name', 'menu-item-name'],
@@ -42,15 +37,26 @@ interface ItemDraft {
   imageUrl: string | null;
 }
 
+const EMPTY_DRAFT: ItemDraft = {
+  name: '',
+  description: '',
+  price: '',
+  section: '',
+  sortOrder: '0',
+  available: true,
+  imageUrl: null,
+};
+
 function draftOf(item: MenuItem | null): ItemDraft {
+  if (!item) return EMPTY_DRAFT;
   return {
-    name: item?.name ?? '',
-    description: item?.description ?? '',
-    price: item ? String(item.price_cop) : '',
-    section: item?.section ?? '',
-    sortOrder: String(item?.sort_order ?? 0),
-    available: item?.is_available ?? true,
-    imageUrl: item?.image_url ?? null,
+    name: item.name,
+    description: item.description ?? '',
+    price: String(item.price_cop),
+    section: item.section ?? '',
+    sortOrder: String(item.sort_order),
+    available: item.is_available,
+    imageUrl: item.image_url ?? null,
   };
 }
 
@@ -66,11 +72,11 @@ export class MenuItemForm {
   private readonly document = inject(DOCUMENT);
 
   /** Item being edited, or null for a new one. */
-  readonly item = input<MenuItem | null>(null);
-  readonly businessId = input.required<string>();
-  readonly busy = input(false);
-  readonly submitted = output<MenuItemInput>();
-  readonly cancelled = output<void>();
+  public readonly item = input<MenuItem | null>(null);
+  public readonly businessId = input.required<string>();
+  public readonly busy = input(false);
+  public readonly submitted = output<MenuItemInput>();
+  public readonly cancelled = output<void>();
 
   protected readonly draft = signal<ItemDraft>(draftOf(null));
   protected readonly errors = signal<FieldErrors>({});
@@ -87,7 +93,7 @@ export class MenuItemForm {
 
   protected set<K extends keyof ItemDraft>(field: K, value: ItemDraft[K]): void {
     this.draft.update((draft) => ({ ...draft, [field]: value }));
-    this.errors.update((errors) => withoutErrors(errors, DRAFT_FIELD[field] ?? field));
+    this.errors.update((errors) => FormErrors.withoutErrors(errors, DRAFT_FIELD[field] ?? field));
   }
 
   protected onAvailable(event: Event): void {
@@ -111,8 +117,8 @@ export class MenuItemForm {
       image_url: draft.imageUrl,
     });
     if (!parsed.success) {
-      this.errors.set(fieldErrors(parsed.error.issues));
-      focusFirstError(this.document, FIELD_ORDER, this.errors());
+      this.errors.set(FormErrors.fieldErrors(parsed.error.issues));
+      FormErrors.focusFirstError(this.document, FIELD_ORDER, this.errors());
       return;
     }
     this.errors.set({});

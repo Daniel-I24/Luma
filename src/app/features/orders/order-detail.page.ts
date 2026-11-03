@@ -20,19 +20,19 @@ import {
   LumaSkeleton,
 } from '@design-system';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
-import { formatTime } from '@shared/format/date-format.util';
+import { DateFormat } from '@shared/format/date-format';
 import { GeolocationService } from '@shared/geo/geolocation.service';
-import { haversineKm } from '@shared/geo/haversine.util';
-import { estimateReadyAt, estimateTravelMinutes } from '@shared/orders/order-estimates.util';
+import { Haversine } from '@shared/geo/haversine';
+import { OrderEstimates } from '@shared/orders/order-estimates';
 import { OrderStatusBadge } from '@shared/orders/order-status-badge';
 import type { OrderBusiness, OrderWithItems } from '@shared/orders/order.model';
-import { pollWhileVisible } from '@shared/ui/poll-while-visible';
+import { PollWhileVisible } from '@shared/ui/poll-while-visible';
 import { AppEvents } from '@core/native/app-events';
 import { OrderPayment } from './components/order-payment/order-payment';
 import { ReorderService } from './services/reorder.service';
 import { OrderTimeline } from './components/order-timeline/order-timeline';
 import { OrderDetailStore } from './state/order-detail.store';
-import { directionsUrl, showsEstimate } from './utils/order-detail.util';
+import { OrderDetailView } from './utils/order-detail-view';
 
 /** Status refresh period while the screen is visible. */
 export const ORDER_REFRESH_MS = 15_000;
@@ -83,17 +83,17 @@ export class OrderDetailPage {
   protected readonly reorder = inject(ReorderService);
   protected readonly estimate = computed(() => {
     const order = this.store.order();
-    if (!order || !showsEstimate(order.status)) return null;
-    const ready = estimateReadyAt(order, order.business?.prep_minutes);
+    if (!order || !OrderDetailView.showsEstimate(order.status)) return null;
+    const ready = OrderEstimates.estimateReadyAt(order, order.business?.prep_minutes);
     const key = ready.kind === 'pickup' ? 'orders.detail.pickupAt' : 'orders.detail.readyAround';
-    return { key, time: formatTime(ready.at, this.lang()) };
+    return { key, time: DateFormat.formatTime(ready.at, this.lang()) };
   });
   /** Approximate trip to the business, only once the user's location is known. */
   protected readonly travel = computed(() => {
     const business = this.store.order()?.business;
     if (!business || !this.geo.hasRealLocation()) return null;
     const { lat, lng } = this.geo.coords();
-    return estimateTravelMinutes(haversineKm(lat, lng, business.latitude, business.longitude));
+    return OrderEstimates.estimateTravelMinutes(Haversine.haversineKm(lat, lng, business.latitude, business.longitude));
   });
 
   constructor() {
@@ -101,7 +101,7 @@ export class OrderDetailPage {
       const id = this.id();
       untracked(() => void this.store.load(id));
     });
-    pollWhileVisible(() => void this.store.refresh(), ORDER_REFRESH_MS);
+    PollWhileVisible.pollWhileVisible(() => void this.store.refresh(), ORDER_REFRESH_MS);
     // Back from the payment page: the server, not the redirect, says how it went.
     const events = inject(AppEvents);
     let seen = events.resumes();
@@ -118,7 +118,7 @@ export class OrderDetailPage {
   }
 
   protected directions(business: OrderBusiness): string {
-    return directionsUrl(business);
+    return OrderDetailView.directionsUrl(business);
   }
 
   protected async cancel(): Promise<void> {

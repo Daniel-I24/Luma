@@ -31,8 +31,8 @@ import { TranslocoModule } from '@jsverse/transloco';
   `,
 })
 export class SignupProgress {
-  readonly index = input.required<number>();
-  readonly total = input.required<number>();
+  public readonly index = input.required<number>();
+  public readonly total = input.required<number>();
 
   protected readonly segments = computed(() => Array.from({ length: this.total() }, (_, i) => i));
 }

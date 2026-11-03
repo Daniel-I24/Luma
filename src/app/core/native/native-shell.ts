@@ -12,7 +12,7 @@ export class NativeShell {
   private readonly location = inject(Location);
   private readonly document = inject(DOCUMENT);
 
-  async init(): Promise<void> {
+  public async init(): Promise<void> {
     const { Capacitor } = await import('@capacitor/core');
     if (!Capacitor.isNativePlatform()) return;
     const [{ App }, { Keyboard }] = await Promise.all([

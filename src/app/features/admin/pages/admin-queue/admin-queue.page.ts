@@ -3,15 +3,15 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import {
+  TabIds,
   LumaButton,
   LumaEmptyState,
   LumaIconButton,
   LumaSkeleton,
   LumaTabs,
   type TabItem,
-  tabPanelId,
 } from '@design-system';
-import { formatDateTime } from '@shared/format/date-format.util';
+import { DateFormat } from '@shared/format/date-format';
 import { AdminQueueStore } from '../../state/admin-queue.store';
 
 type QueueTab = 'pending' | 'reports';
@@ -43,7 +43,7 @@ export class AdminQueuePage {
   });
 
   protected readonly tab = signal<QueueTab>('pending');
-  protected readonly panelId = tabPanelId;
+  protected readonly panelId = TabIds.tabPanelId;
   protected readonly tabs = computed<TabItem[]>(() => {
     this.lang();
     return [
@@ -67,7 +67,7 @@ export class AdminQueuePage {
   }
 
   protected when(iso: string): string {
-    return formatDateTime(iso, this.lang());
+    return DateFormat.formatDateTime(iso, this.lang());
   }
 
   protected back(): void {

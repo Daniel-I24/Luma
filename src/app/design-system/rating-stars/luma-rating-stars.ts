@@ -3,6 +3,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { LumaIcon } from '../icon/luma-icon';
 
+const STAR_COUNT = 5;
+
 /**
  * LumaRatingStars — compact rating: star, score (0–5) and optional review
  * count. Screen readers get one full sentence instead of the fragments.
@@ -21,12 +23,12 @@ export class LumaRatingStars {
     initialValue: this.transloco.getActiveLang(),
   });
 
-  readonly rating = input.required<number>();
-  readonly reviewCount = input<number | null>(null);
+  public readonly rating = input.required<number>();
+  public readonly reviewCount = input<number | null>(null);
   /** `compact`: one star and the score; `stars`: five stars (e.g. one review). */
-  readonly variant = input<'compact' | 'stars'>('compact');
+  public readonly variant = input<'compact' | 'stars'>('compact');
 
-  protected readonly starSlots = [1, 2, 3, 4, 5];
+  protected readonly starSlots = Array.from({ length: STAR_COUNT }, (_, i) => i + 1);
   protected readonly roundedRating = computed(() => Math.round(this.rating()));
 
   /** Score with one decimal, formatted for the active language. */

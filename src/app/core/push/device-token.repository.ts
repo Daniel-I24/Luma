@@ -10,12 +10,12 @@ import { SupabaseService } from '@core/supabase/supabase.service';
 export class DeviceTokenRepository {
   private readonly db = inject(SupabaseService).client;
 
-  async register(token: string): Promise<boolean> {
+  public async register(token: string): Promise<boolean> {
     const { error } = await this.db.rpc('register_device_token', { p_token: token, p_platform: 'android' });
     return !error;
   }
 
-  async unregister(token: string): Promise<boolean> {
+  public async unregister(token: string): Promise<boolean> {
     const { error } = await this.db.rpc('unregister_device_token', { p_token: token });
     return !error;
   }

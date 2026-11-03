@@ -23,8 +23,8 @@ export class ProfileStats {
     initialValue: this.transloco.getActiveLang(),
   });
 
-  readonly rating = input<BusinessRating | null>(null);
-  readonly ratingsLoaded = input(false);
+  public readonly rating = input<BusinessRating | null>(null);
+  public readonly ratingsLoaded = input(false);
 
   protected readonly score = computed(() =>
     this.rating()?.rating.toLocaleString(this.lang(), {

@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaImage, LumaSkeleton } from '@design-system';
-import { ACCEPTED_IMAGE_TYPES } from '@shared/media/image-file.util';
+import { ACCEPTED_IMAGE_TYPES } from '@shared/media/image-files';
 import {
   type BusinessImageKind,
   BusinessImageRepository,
@@ -34,15 +34,15 @@ export class ImageField {
   private readonly images = inject(BusinessImageRepository);
   private readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>('file');
 
-  readonly fieldId = input.required<string>();
+  public readonly fieldId = input.required<string>();
   /** Already translated label and alternative text of the preview. */
-  readonly label = input.required<string>();
-  readonly alt = input.required<string>();
-  readonly businessId = input.required<string>();
-  readonly kind = input.required<BusinessImageKind>();
-  readonly url = model<string | null>(null);
+  public readonly label = input.required<string>();
+  public readonly alt = input.required<string>();
+  public readonly businessId = input.required<string>();
+  public readonly kind = input.required<BusinessImageKind>();
+  public readonly url = model<string | null>(null);
   /** Emitted after a successful upload or removal, with the new URL. */
-  readonly changed = output<string | null>();
+  public readonly changed = output<string | null>();
 
   protected readonly accept = ACCEPTED_IMAGE_TYPES.join(',');
   protected readonly uploading = signal(false);

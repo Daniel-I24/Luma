@@ -1,5 +1,7 @@
 import * as z from 'zod/mini';
 
+export const MAX_RATING = 5;
+
 /** Limits mirror the CHECK constraints of public.reviews. */
 const MAX_COMMENT_LENGTH = 500;
 
@@ -9,7 +11,7 @@ export const reviewInputSchema = z.object({
     .int('reviews.validation.ratingRange')
     .check(
       z.minimum(1, 'reviews.validation.ratingRange'),
-      z.maximum(5, 'reviews.validation.ratingRange'),
+      z.maximum(MAX_RATING, 'reviews.validation.ratingRange'),
     ),
   comment: z.nullable(
     z.pipe(

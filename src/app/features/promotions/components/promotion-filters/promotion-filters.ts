@@ -3,7 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LumaChip, LumaSelect, type SelectOption } from '@design-system';
 import { BUSINESS_CATEGORIES } from '@shared/business/data/business-categories';
-import { DEAL_SORTS, type DealSort, MIN_DISCOUNTS } from '@shared/promotions/deal-list.util';
+import { DEAL_SORTS, type DealSort, MIN_DISCOUNTS } from '@shared/promotions/deal-list';
 import { PromotionsStore } from '../../state/promotions.store';
 
 /** PromotionFilters — order, category, minimum discount and "abierto ahora". */

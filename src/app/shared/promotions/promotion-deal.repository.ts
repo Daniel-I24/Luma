@@ -3,7 +3,9 @@ import * as z from 'zod/mini';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import type { RepoResult } from '@shared/business/data/business.repository';
 import type { BusinessHours } from '@shared/business/models/business.model';
-import { type PromotionDeal, promotionPrice } from './promotion-deal';
+import { type PromotionDeal, PromotionPricing } from './promotion-deal';
+
+const DEALS_LIMIT = 200;
 
 const LOAD_FAILED = 'promotions.errors.loadFailed';
 const SELECT = `id, title, description, image_url, starts_at, ends_at, discount_percent,
@@ -59,18 +61,18 @@ export interface DealWithHours {
 @Injectable({ providedIn: 'root', useFactory: () => new SupabasePromotionDealRepository() })
 export abstract class PromotionDealRepository {
   /** Current promotions of public businesses (RLS decides what is public). */
-  abstract listCurrent(): Promise<RepoResult<DealWithHours[]>>;
-  abstract listForBusiness(businessId: string): Promise<RepoResult<DealWithHours[]>>;
+  public abstract listCurrent(): Promise<RepoResult<DealWithHours[]>>;
+  public abstract listForBusiness(businessId: string): Promise<RepoResult<DealWithHours[]>>;
 }
 
 export class SupabasePromotionDealRepository extends PromotionDealRepository {
   private readonly db = inject(SupabaseService).client;
 
-  listCurrent(): Promise<RepoResult<DealWithHours[]>> {
+  public listCurrent(): Promise<RepoResult<DealWithHours[]>> {
     return this.read();
   }
 
-  listForBusiness(businessId: string): Promise<RepoResult<DealWithHours[]>> {
+  public listForBusiness(businessId: string): Promise<RepoResult<DealWithHours[]>> {
     return this.read(businessId);
   }
 
@@ -82,7 +84,7 @@ export class SupabasePromotionDealRepository extends PromotionDealRepository {
       .eq('is_active', true)
       .lte('starts_at', now)
       .gte('ends_at', now)
-      .limit(200);
+      .limit(DEALS_LIMIT);
     if (businessId) query = query.eq('business_id', businessId);
     const { data, error } = await query;
     if (error) return { data: null, errorKey: LOAD_FAILED };
@@ -112,7 +114,7 @@ function toDeal(row: DealRow): DealWithHours {
         name: item.name,
         imageUrl: item.image_url,
         listCop: item.price_cop,
-        finalCop: promotionPrice(item.price_cop, percent),
+        finalCop: PromotionPricing.promotionPrice(item.price_cop, percent),
         available: item.is_available,
       },
       business,

@@ -16,14 +16,9 @@ import { ImageField } from '../image-field/image-field';
 import { type PromotionInput, promotionSchema } from '@shared/business/data/business-write.schemas';
 import type { Promotion } from '@shared/business/models/business.model';
 import type { MenuItem } from '@shared/business/models/menu.model';
-import {
-  type FieldErrors,
-  fieldErrors,
-  focusFirstError,
-  withoutErrors,
-} from '@shared/forms/form-errors';
-import { fromLocalInput } from '../../utils/promotion-phase.util';
-import { type PromoDraft, type PromotionPrefill, draftOf } from './promotion-draft';
+import { type FieldErrors, FormErrors } from '@shared/forms/form-errors';
+import { PromotionPhases } from '../../utils/promotion-phase';
+import { type PromoDraft, type PromotionPrefill, PromotionDrafts } from './promotion-draft';
 
 const FIELD_ORDER = [
   ['title', 'promo-title'],
@@ -53,16 +48,16 @@ const DRAFT_FIELD: Record<string, string> = {
 export class PromotionForm {
   private readonly document = inject(DOCUMENT);
 
-  readonly promotion = input<Promotion | null>(null);
-  readonly prefill = input<PromotionPrefill | null>(null);
-  readonly businessId = input.required<string>();
+  public readonly promotion = input<Promotion | null>(null);
+  public readonly prefill = input<PromotionPrefill | null>(null);
+  public readonly businessId = input.required<string>();
   /** Products of the business that a discount can apply to. */
-  readonly items = input<readonly MenuItem[]>([]);
-  readonly busy = input(false);
-  readonly submitted = output<PromotionInput>();
-  readonly cancelled = output<void>();
+  public readonly items = input<readonly MenuItem[]>([]);
+  public readonly busy = input(false);
+  public readonly submitted = output<PromotionInput>();
+  public readonly cancelled = output<void>();
 
-  protected readonly draft = signal<PromoDraft>(draftOf(null, new Date(), null));
+  protected readonly draft = signal<PromoDraft>(PromotionDrafts.draftOf(null, new Date(), null));
   protected readonly errors = signal<FieldErrors>({});
 
   constructor() {
@@ -70,7 +65,7 @@ export class PromotionForm {
       const promotion = this.promotion();
       const prefill = this.prefill();
       untracked(() => {
-        this.draft.set(draftOf(promotion, new Date(), prefill));
+        this.draft.set(PromotionDrafts.draftOf(promotion, new Date(), prefill));
         this.errors.set({});
       });
     });
@@ -78,7 +73,7 @@ export class PromotionForm {
 
   protected set<K extends keyof PromoDraft>(field: K, value: PromoDraft[K]): void {
     this.draft.update((draft) => ({ ...draft, [field]: value }));
-    this.errors.update((errors) => withoutErrors(errors, DRAFT_FIELD[field] ?? field));
+    this.errors.update((errors) => FormErrors.withoutErrors(errors, DRAFT_FIELD[field] ?? field));
   }
 
   protected onDescription(event: Event): void {
@@ -91,19 +86,19 @@ export class PromotionForm {
     const parsed = promotionSchema.safeParse({
       title: draft.title,
       description: draft.description.trim() || null,
-      starts_at: fromLocalInput(draft.startsAt),
-      ends_at: fromLocalInput(draft.endsAt),
+      starts_at: PromotionPhases.fromLocalInput(draft.startsAt),
+      ends_at: PromotionPhases.fromLocalInput(draft.endsAt),
       image_url: draft.imageUrl,
       menu_item_id: draft.menuItemId,
       discount_percent: draft.discount.trim() ? Number(draft.discount) : null,
     });
-    const errors = parsed.success ? {} : { ...fieldErrors(parsed.error.issues) };
+    const errors = parsed.success ? {} : { ...FormErrors.fieldErrors(parsed.error.issues) };
     if (parsed.success && Date.parse(parsed.data.ends_at) <= Date.now()) {
       Object.assign(errors, { ends_at: 'businessPanel.validation.endsInPast' });
     }
     this.errors.set(errors);
     if (!parsed.success || Object.keys(errors).length) {
-      focusFirstError(this.document, FIELD_ORDER, errors);
+      FormErrors.focusFirstError(this.document, FIELD_ORDER, errors);
       return;
     }
     this.submitted.emit(parsed.data);

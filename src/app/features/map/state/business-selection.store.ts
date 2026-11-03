@@ -16,23 +16,23 @@ export class BusinessSelectionStore {
   private readonly _selected = signal<NearbyBusiness | null>(null);
   private readonly _open = signal(false);
 
-  readonly selected = this._selected.asReadonly();
-  readonly open = this._open.asReadonly();
-  readonly selectedId = computed(() => this._selected()?.business.id ?? null);
-  readonly promotion = computed(() => this._selected()?.promotion ?? null);
-  readonly hours = computed(() => {
+  public readonly selected = this._selected.asReadonly();
+  public readonly open = this._open.asReadonly();
+  public readonly selectedId = computed(() => this._selected()?.business.id ?? null);
+  public readonly promotion = computed(() => this._selected()?.promotion ?? null);
+  public readonly hours = computed(() => {
     const id = this.selectedId();
     return id ? this.hoursCache.get(id) : [];
   });
 
   /** Opens the sheet for a business and highlights its marker. */
-  select(item: NearbyBusiness): void {
+  public select(item: NearbyBusiness): void {
     this._selected.set(item);
     this._open.set(true);
     this.markerSync.select(item.business.id);
   }
 
-  close(): void {
+  public close(): void {
     this._open.set(false);
     this.markerSync.select(null);
   }

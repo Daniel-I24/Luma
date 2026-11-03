@@ -25,10 +25,10 @@ export class FavoritesStore implements UserScopedState {
   private readonly pending = new Set<string>();
   private loadedFor: string | null = null;
 
-  readonly ids = this._ids.asReadonly();
+  public readonly ids = this._ids.asReadonly();
   /** True once the signed-in user's favourites were requested (loaded or failed). */
-  readonly ready = this._ready.asReadonly();
-  readonly failed = this._failed.asReadonly();
+  public readonly ready = this._ready.asReadonly();
+  public readonly failed = this._failed.asReadonly();
 
   constructor() {
     inject(UserDataRegistry).register(this);
@@ -38,7 +38,7 @@ export class FavoritesStore implements UserScopedState {
     });
   }
 
-  clearUserData(): void {
+  public clearUserData(): void {
     this.loadedFor = null;
     this.pending.clear();
     this._ids.set(new Set());
@@ -47,18 +47,18 @@ export class FavoritesStore implements UserScopedState {
   }
 
   /** Requests the signed-in user's favourites again (e.g. after a failure). */
-  async reload(): Promise<void> {
+  public async reload(): Promise<void> {
     const userId = this.loadedFor;
     this.loadedFor = null;
     await this.onUserChange(userId);
   }
 
-  isFavorite(businessId: string): boolean {
+  public isFavorite(businessId: string): boolean {
     return this._ids().has(businessId);
   }
 
   /** Adds or removes a favourite; resolves to false when it had to be reverted. */
-  async toggle(businessId: string): Promise<boolean> {
+  public async toggle(businessId: string): Promise<boolean> {
     if (this.pending.has(businessId)) return true;
     const wasFavorite = this.isFavorite(businessId);
     const owner = this.loadedFor;

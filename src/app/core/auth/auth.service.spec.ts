@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { describe, it, expect, vi } from 'vitest';
 import { AuthService } from './auth.service';
-import { signUpMetadata } from './sign-up-profile';
+import { SignUpMetadata } from './sign-up-profile';
 import { SupabaseService } from '@core/supabase/supabase.service';
 
 /** Creates a minimal SupabaseService stub with controllable auth responses. */
@@ -107,7 +107,7 @@ describe('AuthService', () => {
     expect(signUp).toHaveBeenCalledWith({
       email: 'ana@example.com',
       password: 'password123',
-      options: { data: signUpMetadata(profile) },
+      options: { data: SignUpMetadata.signUpMetadata(profile) },
     });
   });
 

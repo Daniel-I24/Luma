@@ -29,23 +29,23 @@ export class BusinessTransition {
   host: { class: 'block' },
 })
 export class LumaBusinessCard {
-  readonly variant = input<BusinessCardVariant>('compact');
-  readonly name = input.required<string>();
-  readonly status = input.required<BusinessStatus>();
-  readonly category = input<string | null>(null);
-  readonly logoUrl = input<string | null>(null);
+  public readonly variant = input<BusinessCardVariant>('compact');
+  public readonly name = input.required<string>();
+  public readonly status = input.required<BusinessStatus>();
+  public readonly category = input<string | null>(null);
+  public readonly logoUrl = input<string | null>(null);
   /** Business id: the logo then flies to the profile (shared view-transition name). */
-  readonly transitionId = input<string | null>(null);
+  public readonly transitionId = input<string | null>(null);
   protected readonly transitionName = computed(() => BusinessTransition.logoName(this.transitionId()));
   /** Shown on a token background when there is no logo (e.g. the category icon). */
-  readonly logoIcon = input<IconName>('store');
-  readonly rating = input<number | null>(null);
+  public readonly logoIcon = input<IconName>('store');
+  public readonly rating = input<number | null>(null);
   /** Text shown instead of the stars when there is no rating (e.g. "Sin reseñas"). */
-  readonly ratingFallback = input<string | null>(null);
-  readonly distanceLabel = input<string | null>(null);
-  readonly promoLabel = input<string | null>(null);
+  public readonly ratingFallback = input<string | null>(null);
+  public readonly distanceLabel = input<string | null>(null);
+  public readonly promoLabel = input<string | null>(null);
   /** Marks the card whose business is currently open in the map sheet. */
-  readonly current = input(false);
+  public readonly current = input(false);
 
-  readonly selected = output<void>();
+  public readonly selected = output<void>();
 }

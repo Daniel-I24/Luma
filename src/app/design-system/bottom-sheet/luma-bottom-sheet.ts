@@ -33,14 +33,14 @@ import { SheetDrag } from './sheet-drag';
   styleUrl: './luma-bottom-sheet.css',
 })
 export class LumaBottomSheet {
-  readonly open = input<boolean>(false);
-  readonly title = input<string | undefined>(undefined);
-  readonly titleId = input<string>('bottom-sheet-title');
+  public readonly open = input<boolean>(false);
+  public readonly title = input<string | undefined>(undefined);
+  public readonly titleId = input<string>('bottom-sheet-title');
   /** Id of a heading inside the projected content, used when there is no title. */
-  readonly ariaLabelledBy = input<string | null>(null);
-  readonly closeOnOverlay = input<boolean>(true);
+  public readonly ariaLabelledBy = input<string | null>(null);
+  public readonly closeOnOverlay = input<boolean>(true);
 
-  readonly closed = output<void>();
+  public readonly closed = output<void>();
 
   private readonly injector = inject(Injector);
   private readonly document = inject(DOCUMENT);

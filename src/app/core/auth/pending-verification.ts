@@ -8,13 +8,13 @@ import { Injectable, signal } from '@angular/core';
 @Injectable({ providedIn: 'root' })
 export class PendingVerification {
   private readonly _email = signal<string | null>(null);
-  readonly email = this._email.asReadonly();
+  public readonly email = this._email.asReadonly();
 
-  set(email: string): void {
+  public set(email: string): void {
     this._email.set(email.trim());
   }
 
-  clear(): void {
+  public clear(): void {
     this._email.set(null);
   }
 }

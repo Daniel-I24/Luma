@@ -15,20 +15,20 @@ export class OrderDetailStore {
   private readonly _errorKey = signal<string | null>(null);
   private id: string | null = null;
 
-  readonly state = this._state.asReadonly();
-  readonly order = this._order.asReadonly();
-  readonly cancelling = this._cancelling.asReadonly();
+  public readonly state = this._state.asReadonly();
+  public readonly order = this._order.asReadonly();
+  public readonly cancelling = this._cancelling.asReadonly();
   /** Error of the last action (cancelling); loading errors use `state`. */
-  readonly errorKey = this._errorKey.asReadonly();
+  public readonly errorKey = this._errorKey.asReadonly();
 
-  async load(id: string): Promise<void> {
+  public async load(id: string): Promise<void> {
     this.id = id;
     this._state.set('loading');
     await this.refresh();
   }
 
   /** Re-reads the order; a failed background refresh keeps what is shown. */
-  async refresh(): Promise<void> {
+  public async refresh(): Promise<void> {
     if (!this.id) return;
     const result = await this.repo.getById(this.id);
     if (result.errorKey) {
@@ -39,7 +39,7 @@ export class OrderDetailStore {
     this._state.set(result.data ? 'ready' : 'notFound');
   }
 
-  async cancel(): Promise<void> {
+  public async cancel(): Promise<void> {
     if (!this.id || this._cancelling()) return;
     this._cancelling.set(true);
     this._errorKey.set(null);

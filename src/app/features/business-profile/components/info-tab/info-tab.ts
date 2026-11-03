@@ -3,9 +3,13 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { type IconName, LumaIcon } from '@design-system';
 import type { Business, BusinessHours } from '@shared/business/models/business.model';
-import { type ContactField, contactLinks } from '@shared/business/models/business-contact';
+import { type ContactField, BusinessContacts } from '@shared/business/models/business-contact';
 import { PhotoStrip } from '../photo-strip/photo-strip';
 import { ReportSheet } from '../report-sheet/report-sheet';
+import { MS_PER_DAY } from '@core/config/units';
+
+/** "HH:MM" out of "HH:MM:SS". */
+const HH_MM = 5;
 
 const CONTACT_ICON: Record<ContactField, IconName> = {
   whatsapp: 'phone',
@@ -15,9 +19,10 @@ const CONTACT_ICON: Record<ContactField, IconName> = {
 };
 
 /** Week starting on Monday, as is customary in Colombia (JS: 0 = Sunday). */
+// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- data table: Monday-first week
 const WEEK: readonly BusinessHours['day_of_week'][] = [1, 2, 3, 4, 5, 6, 0];
 /** 1 January 2024 was a Monday: offsets give each weekday's name. */
-const A_MONDAY = new Date(2024, 0, 1);
+const A_MONDAY = new Date('2024-01-01T12:00:00');
 
 export interface ScheduleRow {
   day: BusinessHours['day_of_week'];
@@ -42,12 +47,12 @@ export class InfoTab {
     initialValue: this.transloco.getActiveLang(),
   });
 
-  readonly business = input.required<Business>();
-  readonly hours = input.required<readonly BusinessHours[]>();
+  public readonly business = input.required<Business>();
+  public readonly hours = input.required<readonly BusinessHours[]>();
 
   /** Only well-formed values become links (wa.me, instagram.com, facebook.com, https). */
   protected readonly links = computed(() =>
-    contactLinks(this.business()).map((link) => ({ ...link, icon: CONTACT_ICON[link.field] })),
+    BusinessContacts.contactLinks(this.business()).map((link) => ({ ...link, icon: CONTACT_ICON[link.field] })),
   );
 
   protected readonly rows = computed<ScheduleRow[]>(() => {
@@ -56,11 +61,11 @@ export class InfoTab {
     return WEEK.map((day, offset) => {
       const entry = this.hours().find((h) => h.day_of_week === day);
       const open = entry && !entry.is_closed;
-      const name = weekday.format(new Date(A_MONDAY.getTime() + offset * 86_400_000));
+      const name = weekday.format(new Date(A_MONDAY.getTime() + offset * MS_PER_DAY));
       return {
         day,
         name: name.charAt(0).toUpperCase() + name.slice(1),
-        hours: open ? `${entry.opens_at.slice(0, 5)} – ${entry.closes_at.slice(0, 5)}` : null,
+        hours: open ? `${entry.opens_at.slice(0, HH_MM)} – ${entry.closes_at.slice(0, HH_MM)}` : null,
         isToday: day === today,
       };
     });

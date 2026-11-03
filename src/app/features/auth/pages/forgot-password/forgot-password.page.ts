@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthCodeService } from '@core/auth/auth-code.service';
-import { CODE_LENGTH, normalizeCode } from '@core/auth/auth.schemas';
+import { CODE_LENGTH, AuthCode } from '@core/auth/auth.schemas';
 import { LumaButton, LumaCard, LumaInput } from '@design-system';
 import { SessionProfileStore } from '@shared/account/session-profile.store';
 import { AuthFormSubmission } from '../../forms/auth-form-submission';
@@ -36,7 +36,7 @@ export class ForgotPasswordPage {
   protected readonly submission = new AuthFormSubmission();
 
   protected onCode(value: string): void {
-    this.code.set(normalizeCode(value));
+    this.code.set(AuthCode.normalizeCode(value));
   }
 
   protected requestCode(event: Event): Promise<void> {

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input } from '@an
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaIcon } from '@design-system';
 import { CartActions } from '@shared/cart/cart-actions.service';
-import { toCartProduct } from '@shared/cart/cart.model';
+import { CartMath } from '@shared/cart/cart.model';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
 import type { Combo, ComboRole } from '@shared/recommendations/recommendation.model';
 
@@ -50,11 +50,11 @@ const ROLES: readonly ComboRole[] = ['main', 'side', 'drink'];
 export class ComboCard {
   private readonly cart = inject(CartActions);
 
-  readonly combo = input.required<Combo>();
+  public readonly combo = input.required<Combo>();
 
   protected readonly roles = ROLES;
   private readonly products = computed(() =>
-    ROLES.map((role) => toCartProduct(this.combo().items[role], this.combo().business.name)),
+    ROLES.map((role) => CartMath.toCartProduct(this.combo().items[role], this.combo().business.name)),
   );
 
   protected addToCart(): void {

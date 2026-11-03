@@ -27,18 +27,18 @@ const VARIANT_CLASS: Record<IconButtonVariant, string> = {
   host: { class: 'inline-flex' },
 })
 export class LumaIconButton {
-  readonly icon = input.required<IconName>();
+  public readonly icon = input.required<IconName>();
   /** Already translated accessible name. */
-  readonly label = input.required<string>();
-  readonly variant = input<IconButtonVariant>('surface');
-  readonly disabled = input(false);
+  public readonly label = input.required<string>();
+  public readonly variant = input<IconButtonVariant>('surface');
+  public readonly disabled = input(false);
   /** Toggle state (aria-pressed); undefined for plain buttons. */
-  readonly pressed = input<boolean | undefined>(undefined);
-  readonly filledIcon = input(false);
+  public readonly pressed = input<boolean | undefined>(undefined);
+  public readonly filledIcon = input(false);
   /** Renders a link instead of a button (e.g. "tel:" or an external URL). */
-  readonly href = input<string | null>(null);
+  public readonly href = input<string | null>(null);
 
-  readonly clicked = output<void>();
+  public readonly clicked = output<void>();
 
   protected readonly classes = computed(() =>
     [

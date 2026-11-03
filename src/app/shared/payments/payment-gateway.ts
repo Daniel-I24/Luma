@@ -37,7 +37,7 @@ export class WompiGateway implements PaymentGateway {
   public readonly method = 'online';
   public readonly labelKey = 'checkout.payment.online';
 
-  public constructor(
+  constructor(
     private readonly payments: PaymentRepository,
     private readonly browser: ExternalBrowser,
   ) {}

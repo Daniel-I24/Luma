@@ -16,16 +16,16 @@ import type { IconName } from '../icon/luma-icons';
   host: { class: 'contents' },
 })
 export class LumaImage {
-  readonly src = input<string | null | undefined>(null);
+  public readonly src = input<string | null | undefined>(null);
   /** Already translated; '' only for purely decorative pictures. */
-  readonly alt = input.required<string>();
+  public readonly alt = input.required<string>();
   /** Intrinsic size in CSS pixels (reserves space before loading). */
-  readonly width = input.required<number>();
-  readonly height = input.required<number>();
-  readonly fallbackIcon = input<IconName>('store');
-  readonly iconSize = input<IconSize>('lg');
+  public readonly width = input.required<number>();
+  public readonly height = input.required<number>();
+  public readonly fallbackIcon = input<IconName>('store');
+  public readonly iconSize = input<IconSize>('lg');
   /** Above-the-fold pictures load eagerly. */
-  readonly eager = input(false);
+  public readonly eager = input(false);
 
   /** Reset whenever the source changes. */
   protected readonly failed = linkedSignal({ source: this.src, computation: () => false });

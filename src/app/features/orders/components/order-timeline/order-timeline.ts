@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaIcon } from '@design-system';
 import type { OrderStatus } from '@shared/orders/order.model';
-import { timelineSteps } from '../../utils/order-detail.util';
+import { OrderDetailView } from '../../utils/order-detail-view';
 
 /** OrderTimeline — the steps of an order with the current one highlighted. */
 @Component({
@@ -48,9 +48,9 @@ import { timelineSteps } from '../../utils/order-detail.util';
   `,
 })
 export class OrderTimeline {
-  readonly status = input.required<OrderStatus>();
+  public readonly status = input.required<OrderStatus>();
 
-  protected readonly steps = computed(() => timelineSteps(this.status()));
+  protected readonly steps = computed(() => OrderDetailView.timelineSteps(this.status()));
   protected readonly dotClass = {
     done: 'border-primary bg-primary text-primary-fg',
     current: 'border-primary bg-surface-selected text-fg-brand',

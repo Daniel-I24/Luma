@@ -25,11 +25,11 @@ const SIZE_CLASS: Record<IconSize, string> = {
   host: { class: 'inline-flex shrink-0' },
 })
 export class LumaIcon {
-  readonly name = input.required<IconName>();
-  readonly size = input<IconSize>('md');
+  public readonly name = input.required<IconName>();
+  public readonly size = input<IconSize>('md');
   /** Fills the shape with the current color (e.g. a rated star). */
-  readonly filled = input(false);
-  readonly label = input<string | null>(null);
+  public readonly filled = input(false);
+  public readonly label = input<string | null>(null);
 
   protected readonly paths = computed(() => LUMA_ICONS[this.name()]);
   protected readonly sizeClass = computed(() => SIZE_CLASS[this.size()]);

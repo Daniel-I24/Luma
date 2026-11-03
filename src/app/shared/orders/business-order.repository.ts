@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import type { RepoResult } from '@shared/business/data/business.repository';
-import { mapOrderError } from './order-error';
+import { OrderErrors } from './order-error';
 import type { OrderStatus } from './order.model';
 
 /** Row of public.business_order_items. */
@@ -55,7 +55,7 @@ export class BusinessOrderRepository {
   private readonly db = inject(SupabaseService).client;
 
   /** Ids of the orders waiting for the business to accept them (light, for alerts). */
-  async pendingIds(businessId: string): Promise<RepoResult<string[]>> {
+  public async pendingIds(businessId: string): Promise<RepoResult<string[]>> {
     const { data, error } = await this.db
       .from('business_orders')
       .select('id')
@@ -67,7 +67,7 @@ export class BusinessOrderRepository {
   }
 
   /** Latest orders of the business with their lines, newest first. */
-  async list(businessId: string): Promise<RepoResult<BusinessOrder[]>> {
+  public async list(businessId: string): Promise<RepoResult<BusinessOrder[]>> {
     const { data, error } = await this.db
       .from('business_orders')
       .select(ORDER_COLUMNS)
@@ -97,7 +97,7 @@ export class BusinessOrderRepository {
   }
 
   /** Moves an order forward; the server accepts only valid transitions and checks the reason. */
-  async setStatus(
+  public async setStatus(
     orderId: string,
     status: OwnerOrderAction,
     reason: CancelReason | null = null,
@@ -110,7 +110,7 @@ export class BusinessOrderRepository {
     if (error)
       return {
         data: null,
-        errorKey: mapOrderError(error.message, 'businessOrders.errors.updateFailed'),
+        errorKey: OrderErrors.mapOrderError(error.message, 'businessOrders.errors.updateFailed'),
       };
     return { data: true, errorKey: null };
   }

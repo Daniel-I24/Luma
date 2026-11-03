@@ -47,8 +47,8 @@ import { type BusinessPhoto, BusinessPhotoRepository } from '@shared/business/da
 export class PhotoStrip {
   private readonly repo = inject(BusinessPhotoRepository);
 
-  readonly businessId = input.required<string>();
-  readonly businessName = input.required<string>();
+  public readonly businessId = input.required<string>();
+  public readonly businessName = input.required<string>();
 
   protected readonly photos = signal<readonly BusinessPhoto[]>([]);
   protected readonly loading = signal(true);

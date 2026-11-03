@@ -2,31 +2,31 @@ import { TestBed } from '@angular/core/testing';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import { BusinessImageRepository } from './business-image.repository';
-import { ImageEncodeError, reencodeImage } from './image-encoder';
-import { checkImageFile, fitWithin, imagePathFromUrl } from './image-file.util';
+import { ImageEncodeError, ImageReencoder } from './image-encoder';
+import { ImageFiles } from './image-files';
 
 const PUBLIC = 'https://x.supabase.co/storage/v1/object/public/business-images/';
 
 describe('image file checks', () => {
   it('accepts JPEG, PNG and WebP up to 15 MB', () => {
-    expect(checkImageFile({ type: 'image/webp', size: 1000 })).toBeNull();
-    expect(checkImageFile({ type: 'image/gif', size: 1000 })).toBe('media.errors.type');
-    expect(checkImageFile({ type: 'image/svg+xml', size: 10 })).toBe('media.errors.type');
-    expect(checkImageFile({ type: 'image/jpeg', size: 16 * 1024 * 1024 })).toBe(
+    expect(ImageFiles.checkImageFile({ type: 'image/webp', size: 1000 })).toBeNull();
+    expect(ImageFiles.checkImageFile({ type: 'image/gif', size: 1000 })).toBe('media.errors.type');
+    expect(ImageFiles.checkImageFile({ type: 'image/svg+xml', size: 10 })).toBe('media.errors.type');
+    expect(ImageFiles.checkImageFile({ type: 'image/jpeg', size: 16 * 1024 * 1024 })).toBe(
       'media.errors.size',
     );
   });
 
   it('scales down to the longest side without enlarging', () => {
-    expect(fitWithin(4000, 3000)).toEqual({ width: 1280, height: 960 });
-    expect(fitWithin(1000, 3000)).toEqual({ width: 427, height: 1280 });
-    expect(fitWithin(800, 600)).toEqual({ width: 800, height: 600 });
+    expect(ImageFiles.fitWithin(4000, 3000)).toEqual({ width: 1280, height: 960 });
+    expect(ImageFiles.fitWithin(1000, 3000)).toEqual({ width: 427, height: 1280 });
+    expect(ImageFiles.fitWithin(800, 600)).toEqual({ width: 800, height: 600 });
   });
 
   it('reads the object path only from business-images public URLs', () => {
-    expect(imagePathFromUrl(`${PUBLIC}b1/logo/f.webp`)).toBe('b1/logo/f.webp');
-    expect(imagePathFromUrl('https://cdn.example.com/b1/logo/f.webp')).toBeNull();
-    expect(imagePathFromUrl(null)).toBeNull();
+    expect(ImageFiles.imagePathFromUrl(`${PUBLIC}b1/logo/f.webp`)).toBe('b1/logo/f.webp');
+    expect(ImageFiles.imagePathFromUrl('https://cdn.example.com/b1/logo/f.webp')).toBeNull();
+    expect(ImageFiles.imagePathFromUrl(null)).toBeNull();
   });
 });
 
@@ -52,7 +52,7 @@ describe('reencodeImage', () => {
   it('draws the picture at most 1280 px wide and encodes it as WebP', async () => {
     const { drawImage, toBlob, close } = stubCanvas([new Blob(['x'], { type: 'image/webp' })]);
 
-    const encoded = await reencodeImage(new Blob(['raw'], { type: 'image/jpeg' }));
+    const encoded = await ImageReencoder.reencodeImage(new Blob(['raw'], { type: 'image/jpeg' }));
 
     expect(encoded).toEqual(
       expect.objectContaining({ contentType: 'image/webp', extension: 'webp' }),
@@ -68,14 +68,14 @@ describe('reencodeImage', () => {
   it('falls back to JPEG when the browser cannot write WebP', async () => {
     stubCanvas([new Blob(['x'], { type: 'image/png' }), new Blob(['y'], { type: 'image/jpeg' })]);
 
-    expect((await reencodeImage(new Blob())).extension).toBe('jpg');
+    expect((await ImageReencoder.reencodeImage(new Blob())).extension).toBe('jpg');
   });
 
   it('lowers the quality until it fits in 2 MB, then gives up', async () => {
     const big = () => new Blob([new Uint8Array(3 * 1024 * 1024)], { type: 'image/webp' });
     stubCanvas([big(), big(), big(), big(), big(), big()]);
 
-    await expect(reencodeImage(new Blob())).rejects.toEqual(
+    await expect(ImageReencoder.reencodeImage(new Blob())).rejects.toEqual(
       new ImageEncodeError('media.errors.size'),
     );
   });
@@ -83,7 +83,7 @@ describe('reencodeImage', () => {
   it('reports pictures that cannot be decoded', async () => {
     vi.stubGlobal('createImageBitmap', vi.fn().mockRejectedValue(new Error('bad')));
 
-    await expect(reencodeImage(new Blob())).rejects.toEqual(
+    await expect(ImageReencoder.reencodeImage(new Blob())).rejects.toEqual(
       new ImageEncodeError('media.errors.decode'),
     );
   });

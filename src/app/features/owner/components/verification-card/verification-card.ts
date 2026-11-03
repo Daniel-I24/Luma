@@ -5,7 +5,7 @@ import { type IconName, LumaButton, LumaIcon } from '@design-system';
 import { ownerPaths } from '@shared/account/owner-paths';
 import type { Business, VerificationStatus } from '@shared/business/models/business.model';
 import type { ReviewRequirement } from '@shared/business/verification/verification.model';
-import { REQUIREMENT_STEP } from '../../utils/review-checklist.util';
+import { REQUIREMENT_STEP } from '../../utils/review-checklist';
 
 const STATUS_LOOK: Readonly<Record<VerificationStatus, { icon: IconName; tone: string }>> = {
   draft: { icon: 'edit', tone: 'bg-canvas-muted text-fg-muted' },
@@ -28,12 +28,12 @@ const STATUS_LOOK: Readonly<Record<VerificationStatus, { icon: IconName; tone: s
   templateUrl: './verification-card.html',
 })
 export class VerificationCard {
-  readonly business =
+  public readonly business =
     input.required<Pick<Business, 'id' | 'verification_status' | 'verification_note'>>();
-  readonly missing = input.required<readonly ReviewRequirement[]>();
-  readonly busy = input(false);
-  readonly errorKey = input<string | null>(null);
-  readonly submitted = output<void>();
+  public readonly missing = input.required<readonly ReviewRequirement[]>();
+  public readonly busy = input(false);
+  public readonly errorKey = input<string | null>(null);
+  public readonly submitted = output<void>();
 
   protected readonly status = computed(() => this.business().verification_status);
   protected readonly look = computed(() => STATUS_LOOK[this.status()]);

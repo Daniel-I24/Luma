@@ -1,11 +1,4 @@
-import {
-  DRAG_SLOP_PX,
-  type PointerSample,
-  flingDurationMs,
-  resolveSheetDrag,
-  sampleVelocity,
-  sheetDragOffset,
-} from './sheet-drag.util';
+import { DRAG_SLOP_PX, type PointerSample, SheetDragMath } from './sheet-drag-math';
 
 const DRAGGING_CLASS = 'luma-bottom-sheet__panel--dragging';
 const RETURNING_CLASS = 'luma-bottom-sheet__panel--returning';
@@ -26,14 +19,14 @@ export class SheetDrag {
     private readonly close: () => void,
   ) {}
 
-  onPointerDown(event: PointerEvent): void {
+  public onPointerDown(event: PointerEvent): void {
     if (event.button !== 0) return;
     this.start = this.previous = this.latest = { y: event.clientY, time: event.timeStamp };
     this.moved = false;
     (event.currentTarget as HTMLElement | null)?.setPointerCapture?.(event.pointerId);
   }
 
-  onPointerMove(event: PointerEvent): void {
+  public onPointerMove(event: PointerEvent): void {
     if (!this.start) return;
     const delta = event.clientY - this.start.y;
     if (!this.moved && Math.abs(delta) < DRAG_SLOP_PX) return;
@@ -43,27 +36,27 @@ export class SheetDrag {
     }
     this.previous = this.latest;
     this.latest = { y: event.clientY, time: event.timeStamp };
-    this.panel().style.transform = `translateY(${sheetDragOffset(delta)}px)`;
+    this.panel().style.transform = `translateY(${SheetDragMath.sheetDragOffset(delta)}px)`;
   }
 
-  onPointerUp(): void {
+  public onPointerUp(): void {
     if (!this.start || !this.latest || !this.previous) return;
     const wasDragging = this.moved;
-    const offsetPx = sheetDragOffset(this.latest.y - this.start.y);
-    const velocityPxPerMs = sampleVelocity(this.previous, this.latest);
+    const offsetPx = SheetDragMath.sheetDragOffset(this.latest.y - this.start.y);
+    const velocityPxPerMs = SheetDragMath.sampleVelocity(this.previous, this.latest);
     this.start = null;
     if (!wasDragging) return;
 
     const panel = this.panel();
     panel.classList.remove(DRAGGING_CLASS);
-    const outcome = resolveSheetDrag({
+    const outcome = SheetDragMath.resolveSheetDrag({
       offsetPx,
       velocityPxPerMs,
       sheetHeightPx: panel.offsetHeight,
     });
     if (outcome === 'close') {
       // Keep going down at the finger's speed (inertia); reset() clears it on reopen.
-      panel.style.transitionDuration = `${flingDurationMs(panel.offsetHeight - offsetPx, velocityPxPerMs)}ms`;
+      panel.style.transitionDuration = `${SheetDragMath.flingDurationMs(panel.offsetHeight - offsetPx, velocityPxPerMs)}ms`;
       panel.style.transform = 'translateY(100%)';
       this.close();
       return;
@@ -76,7 +69,7 @@ export class SheetDrag {
   }
 
   /** Clears any position left by a previous drag (call when the sheet opens). */
-  reset(): void {
+  public reset(): void {
     const panel = this.panel();
     panel.style.transform = '';
     panel.style.transitionDuration = '';
@@ -84,7 +77,7 @@ export class SheetDrag {
   }
 
   /** True once after a drag, so the click that follows it is ignored. */
-  consumeDrag(): boolean {
+  public consumeDrag(): boolean {
     const dragged = this.moved;
     this.moved = false;
     return dragged;

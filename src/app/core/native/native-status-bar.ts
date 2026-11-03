@@ -7,19 +7,19 @@ import { Injectable } from '@angular/core';
  */
 @Injectable({ providedIn: 'root' })
 export class NativeStatusBar {
-  async isAvailable(): Promise<boolean> {
+  public async isAvailable(): Promise<boolean> {
     const { Capacitor } = await import('@capacitor/core');
     return Capacitor.isNativePlatform();
   }
 
   /** Lets the web view draw under the status bar (edge to edge). */
-  async overlayWebView(): Promise<void> {
+  public async overlayWebView(): Promise<void> {
     const { StatusBar } = await import('@capacitor/status-bar');
     await StatusBar.setOverlaysWebView({ overlay: true });
   }
 
   /** `light-content` = light icons for dark backgrounds. */
-  async setContent(content: 'light-content' | 'dark-content'): Promise<void> {
+  public async setContent(content: 'light-content' | 'dark-content'): Promise<void> {
     const { StatusBar, Style } = await import('@capacitor/status-bar');
     await StatusBar.setStyle({ style: content === 'light-content' ? Style.Dark : Style.Light });
   }

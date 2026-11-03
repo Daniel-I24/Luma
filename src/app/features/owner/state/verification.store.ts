@@ -6,7 +6,7 @@ import type {
   VerificationDoc,
 } from '@shared/business/verification/verification.model';
 import { VerificationRepository } from '@shared/business/verification/verification.repository';
-import { EDITABLE_STATUSES } from '../utils/review-checklist.util';
+import { EDITABLE_STATUSES } from '../utils/review-checklist';
 import { PanelBusinessStore } from './panel-business.store';
 
 /**
@@ -26,17 +26,17 @@ export class VerificationStore {
   /** Requirements the server reported on the last submit. */
   private readonly _serverMissing = signal<readonly ReviewRequirement[]>([]);
 
-  readonly legal = this._legal.asReadonly();
-  readonly docs = this._docs.asReadonly();
-  readonly busy = this._busy.asReadonly();
-  readonly errorKey = this._errorKey.asReadonly();
-  readonly serverMissing = this._serverMissing.asReadonly();
-  readonly editable = computed(() => {
+  public readonly legal = this._legal.asReadonly();
+  public readonly docs = this._docs.asReadonly();
+  public readonly busy = this._busy.asReadonly();
+  public readonly errorKey = this._errorKey.asReadonly();
+  public readonly serverMissing = this._serverMissing.asReadonly();
+  public readonly editable = computed(() => {
     const status = this.panel.business()?.verification_status;
     return !!status && EDITABLE_STATUSES.includes(status);
   });
 
-  async load(businessId: string): Promise<void> {
+  public async load(businessId: string): Promise<void> {
     const [legal, docs] = await Promise.all([
       this.repo.getLegal(businessId),
       this.repo.listDocs(businessId),
@@ -46,20 +46,20 @@ export class VerificationStore {
     this._errorKey.set(legal.errorKey ?? docs.errorKey);
   }
 
-  saveLegal(taxId: string, legalName: string, legalRep: string): Promise<boolean> {
+  public saveLegal(taxId: string, legalName: string, legalRep: string): Promise<boolean> {
     return this.run((id) => this.repo.saveLegal(id, taxId, legalName, legalRep));
   }
 
-  uploadDoc(kind: DocKind, file: File): Promise<boolean> {
+  public uploadDoc(kind: DocKind, file: File): Promise<boolean> {
     return this.run((id) => this.repo.uploadDoc(id, kind, file));
   }
 
-  deleteDoc(doc: VerificationDoc): Promise<boolean> {
+  public deleteDoc(doc: VerificationDoc): Promise<boolean> {
     return this.run(() => this.repo.deleteDoc(doc));
   }
 
   /** Asks for review; on success the business is pending. */
-  async submit(): Promise<boolean> {
+  public async submit(): Promise<boolean> {
     const business = this.panel.business();
     if (!business || this._busy()) return false;
     this._busy.set(true);

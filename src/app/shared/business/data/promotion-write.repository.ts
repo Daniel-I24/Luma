@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import type { Promotion } from '../models/business.model';
 import type { RepoResult } from './business.repository';
-import { mapWriteError } from './business-write-error';
+import { BusinessWriteErrors } from './business-write-error';
 import { type PromotionInput, promotionSchema } from './business-write.schemas';
 
 const INVALID = 'businessPanel.errors.invalidData';
@@ -17,7 +17,7 @@ export class PromotionWriteRepository {
   private readonly db = inject(SupabaseService).client;
 
   /** All promotions of the business, newest start first. */
-  async listForOwner(businessId: string): Promise<RepoResult<Promotion[]>> {
+  public async listForOwner(businessId: string): Promise<RepoResult<Promotion[]>> {
     const { data, error } = await this.db
       .from('promotions')
       .select('*')
@@ -27,7 +27,7 @@ export class PromotionWriteRepository {
     return { data: data as Promotion[], errorKey: null };
   }
 
-  async create(businessId: string, input: PromotionInput): Promise<RepoResult<Promotion>> {
+  public async create(businessId: string, input: PromotionInput): Promise<RepoResult<Promotion>> {
     const parsed = promotionSchema.safeParse(input);
     if (!parsed.success) return { data: null, errorKey: INVALID };
     const { data, error } = await this.db
@@ -35,11 +35,11 @@ export class PromotionWriteRepository {
       .insert({ ...parsed.data, business_id: businessId, is_active: true })
       .select('*')
       .single();
-    if (error) return { data: null, errorKey: mapWriteError(error, SAVE_FAILED) };
+    if (error) return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, SAVE_FAILED) };
     return { data: data as Promotion, errorKey: null };
   }
 
-  async update(id: string, input: PromotionInput): Promise<RepoResult<Promotion>> {
+  public async update(id: string, input: PromotionInput): Promise<RepoResult<Promotion>> {
     const parsed = promotionSchema.safeParse(input);
     if (!parsed.success) return { data: null, errorKey: INVALID };
     const { data, error } = await this.db
@@ -48,7 +48,7 @@ export class PromotionWriteRepository {
       .eq('id', id)
       .select('*')
       .single();
-    if (error) return { data: null, errorKey: mapWriteError(error, SAVE_FAILED) };
+    if (error) return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, SAVE_FAILED) };
     return { data: data as Promotion, errorKey: null };
   }
 
@@ -56,7 +56,7 @@ export class PromotionWriteRepository {
    * Ends a promotion now: it stops showing and stays in the history. One
    * that has not started keeps its dates (ends_at must stay after starts_at).
    */
-  async end(
+  public async end(
     promotion: Pick<Promotion, 'id' | 'starts_at'>,
     now: Date = new Date(),
   ): Promise<RepoResult<true>> {
@@ -65,7 +65,7 @@ export class PromotionWriteRepository {
       .from('promotions')
       .update(started ? { is_active: false, ends_at: now.toISOString() } : { is_active: false })
       .eq('id', promotion.id);
-    if (error) return { data: null, errorKey: mapWriteError(error, SAVE_FAILED) };
+    if (error) return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, SAVE_FAILED) };
     return { data: true, errorKey: null };
   }
 
@@ -73,9 +73,9 @@ export class PromotionWriteRepository {
    * Tells the followers who accepted promotions (notify_promotion): once per
    * promotion, once a day per business. Resolves to how many were told.
    */
-  async notifyFollowers(promotionId: string): Promise<RepoResult<number>> {
+  public async notifyFollowers(promotionId: string): Promise<RepoResult<number>> {
     const { data, error } = await this.db.rpc('notify_promotion', { p_promotion_id: promotionId });
-    if (error) return { data: null, errorKey: mapWriteError(error, 'businessPanel.notify.failed') };
+    if (error) return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, 'businessPanel.notify.failed') };
     return { data: typeof data === 'number' ? data : 0, errorKey: null };
   }
 }

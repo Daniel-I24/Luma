@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import { formatShortDate } from '@shared/format/date-format.util';
+import { DateFormat } from '@shared/format/date-format';
 import { type TrustStatus, TrustStatusRepository } from '../../services/trust-status.repository';
 
 const TONE: Readonly<Record<TrustStatus['tier'], string>> = {
@@ -31,10 +31,10 @@ export class TrustStatusCard {
   protected readonly tone = computed(() => TONE[this.status()?.tier ?? 'new']);
   protected readonly until = computed(() => {
     const at = this.status()?.restrictedUntil;
-    return at ? formatShortDate(at, this.lang()) : null;
+    return at ? DateFormat.formatShortDate(at, this.lang()) : null;
   });
 
-  public constructor() {
+  constructor() {
     void this.repo.mine().then((status) => this.status.set(status));
   }
 }

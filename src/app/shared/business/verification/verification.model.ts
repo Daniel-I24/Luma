@@ -58,6 +58,6 @@ export interface OpenReport {
 }
 
 /** Limits of the verification-docs bucket. */
-export const DOC_MAX_BYTES = 5 * 1024 * 1024;
+export const DOC_MAX_BYTES = 5_242_880; // 5 MB
 export const DOC_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'] as const;
 export const VERIFICATION_BUCKET = 'verification-docs';

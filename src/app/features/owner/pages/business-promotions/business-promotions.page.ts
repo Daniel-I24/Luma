@@ -18,7 +18,7 @@ import {
 } from '@design-system';
 import type { PromotionInput } from '@shared/business/data/business-write.schemas';
 import type { Promotion } from '@shared/business/models/business.model';
-import { formatDateTime } from '@shared/format/date-format.util';
+import { DateFormat } from '@shared/format/date-format';
 import type { PromotionIdea } from '@shared/promotions/advisor/promotion-idea';
 import { IdeasCard } from '../../components/ideas-card/ideas-card';
 import { NotifyFollowers } from '../../components/notify-followers/notify-followers';
@@ -28,8 +28,9 @@ import type { PromotionPrefill } from '../../components/promotion-form/promotion
 import { PromotionForm } from '../../components/promotion-form/promotion-form';
 import { PanelBusinessStore } from '../../state/panel-business.store';
 import { PromotionsPanelStore } from '../../state/promotions-panel.store';
-import { promotionPhase } from '../../utils/promotion-phase.util';
-import { routeBusinessId } from '../../utils/route-business-id';
+import { PromotionPhases } from '../../utils/promotion-phase';
+import { RouteBusinessId } from '../../utils/route-business-id';
+import { MAX_PROMOTION_TITLE } from '@shared/business/data/business-write.schemas';
 
 const PHASE_CLASS = {
   scheduled: 'bg-info-bg text-info-fg',
@@ -66,7 +67,7 @@ export class BusinessPromotionsPage {
   private readonly lang = toSignal(this.transloco.langChanges$, {
     initialValue: this.transloco.getActiveLang(),
   });
-  protected readonly id = routeBusinessId();
+  protected readonly id = RouteBusinessId.routeBusinessId();
 
   /** Promotion in the form sheet: null = new, undefined = closed. */
   protected readonly editing = signal<Promotion | null | undefined>(undefined);
@@ -74,7 +75,7 @@ export class BusinessPromotionsPage {
   /** A Luma IA idea opened in the form (the owner reviews and saves it). */
   protected readonly prefill = signal<PromotionPrefill | null>(null);
   private readonly query = inject(ActivatedRoute).snapshot.queryParamMap;
-  protected readonly phase = promotionPhase;
+  protected readonly phase = PromotionPhases.promotionPhase;
   protected readonly phaseClass = PHASE_CLASS;
 
   constructor() {
@@ -101,7 +102,7 @@ export class BusinessPromotionsPage {
     const title = this.transloco.translate('owner.ideas.promoTitle', { percent, item: name });
     this.promos.clearError();
     this.prefill.set({
-      title: title.slice(0, 80),
+      title: title.slice(0, MAX_PROMOTION_TITLE),
       menuItemId,
       discountPercent: percent,
       durationDays: days,
@@ -114,7 +115,7 @@ export class BusinessPromotionsPage {
   }
 
   protected when(iso: string): string {
-    return formatDateTime(iso, this.lang());
+    return DateFormat.formatDateTime(iso, this.lang());
   }
 
   protected openForm(promotion: Promotion | null): void {

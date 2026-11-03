@@ -1,38 +1,30 @@
 import { describe, expect, it, vi } from 'vitest';
 import { SheetDrag } from './sheet-drag';
-import {
-  FLING_VELOCITY,
-  MIN_FLING_DISTANCE_PX,
-  OVERDRAG_RESISTANCE,
-  flingDurationMs,
-  resolveSheetDrag,
-  sampleVelocity,
-  sheetDragOffset,
-} from './sheet-drag.util';
+import { FLING_VELOCITY, MIN_FLING_DISTANCE_PX, OVERDRAG_RESISTANCE, SheetDragMath } from './sheet-drag-math';
 
 const HEIGHT = 400;
 
 describe('resolveSheetDrag', () => {
   it('closes when dragged past 30% of the height, however slowly', () => {
-    expect(resolveSheetDrag({ offsetPx: 120, velocityPxPerMs: 0, sheetHeightPx: HEIGHT })).toBe(
+    expect(SheetDragMath.resolveSheetDrag({ offsetPx: 120, velocityPxPerMs: 0, sheetHeightPx: HEIGHT })).toBe(
       'close',
     );
   });
 
   it('springs back from a short, slow drag', () => {
-    expect(resolveSheetDrag({ offsetPx: 100, velocityPxPerMs: 0.1, sheetHeightPx: HEIGHT })).toBe(
+    expect(SheetDragMath.resolveSheetDrag({ offsetPx: 100, velocityPxPerMs: 0.1, sheetHeightPx: HEIGHT })).toBe(
       'restore',
     );
   });
 
   it('closes on a fast flick once it moved the minimum distance', () => {
     const fling = { velocityPxPerMs: FLING_VELOCITY, sheetHeightPx: HEIGHT };
-    expect(resolveSheetDrag({ ...fling, offsetPx: MIN_FLING_DISTANCE_PX })).toBe('close');
-    expect(resolveSheetDrag({ ...fling, offsetPx: MIN_FLING_DISTANCE_PX - 1 })).toBe('restore');
+    expect(SheetDragMath.resolveSheetDrag({ ...fling, offsetPx: MIN_FLING_DISTANCE_PX })).toBe('close');
+    expect(SheetDragMath.resolveSheetDrag({ ...fling, offsetPx: MIN_FLING_DISTANCE_PX - 1 })).toBe('restore');
   });
 
   it('never closes when dragged upwards', () => {
-    expect(resolveSheetDrag({ offsetPx: -50, velocityPxPerMs: 2, sheetHeightPx: HEIGHT })).toBe(
+    expect(SheetDragMath.resolveSheetDrag({ offsetPx: -50, velocityPxPerMs: 2, sheetHeightPx: HEIGHT })).toBe(
       'restore',
     );
   });
@@ -40,13 +32,13 @@ describe('resolveSheetDrag', () => {
 
 describe('sheetDragOffset and sampleVelocity', () => {
   it('follows the finger down and resists upwards (elastic)', () => {
-    expect(sheetDragOffset(80)).toBe(80);
-    expect(sheetDragOffset(-80)).toBe(-80 * OVERDRAG_RESISTANCE);
+    expect(SheetDragMath.sheetDragOffset(80)).toBe(80);
+    expect(SheetDragMath.sheetDragOffset(-80)).toBe(-80 * OVERDRAG_RESISTANCE);
   });
 
   it('measures px/ms between samples and ignores zero elapsed time', () => {
-    expect(sampleVelocity({ y: 0, time: 0 }, { y: 50, time: 100 })).toBe(0.5);
-    expect(sampleVelocity({ y: 0, time: 5 }, { y: 50, time: 5 })).toBe(0);
+    expect(SheetDragMath.sampleVelocity({ y: 0, time: 0 }, { y: 50, time: 100 })).toBe(0.5);
+    expect(SheetDragMath.sampleVelocity({ y: 0, time: 5 }, { y: 50, time: 5 })).toBe(0);
   });
 });
 
@@ -100,9 +92,9 @@ describe('SheetDrag', () => {
 
 describe('flingDurationMs', () => {
   it('keeps the release speed within 120-340 ms', () => {
-    expect(flingDurationMs(300, 1.5)).toBe(200);
-    expect(flingDurationMs(300, 10)).toBe(120);
-    expect(flingDurationMs(300, 0.2)).toBe(340);
-    expect(flingDurationMs(300, 0)).toBe(340);
+    expect(SheetDragMath.flingDurationMs(300, 1.5)).toBe(200);
+    expect(SheetDragMath.flingDurationMs(300, 10)).toBe(120);
+    expect(SheetDragMath.flingDurationMs(300, 0.2)).toBe(340);
+    expect(SheetDragMath.flingDurationMs(300, 0)).toBe(340);
   });
 });

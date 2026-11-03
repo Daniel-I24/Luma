@@ -12,6 +12,6 @@ import type { PanelState } from '../../state/panel-business.store';
   templateUrl: './panel-state.html',
 })
 export class PanelStateView {
-  readonly state = input.required<PanelState>();
-  readonly retry = output<void>();
+  public readonly state = input.required<PanelState>();
+  public readonly retry = output<void>();
 }

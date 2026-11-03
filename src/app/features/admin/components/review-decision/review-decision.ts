@@ -18,10 +18,10 @@ export const NOTE_MAX = 300;
 })
 export class ReviewDecisionSheet {
   /** null = closed. */
-  readonly decision = input<ReviewDecision | null>(null);
-  readonly busy = input(false);
-  readonly confirmed = output<{ decision: ReviewDecision; note: string | null }>();
-  readonly closed = output<void>();
+  public readonly decision = input<ReviewDecision | null>(null);
+  public readonly busy = input(false);
+  public readonly confirmed = output<{ decision: ReviewDecision; note: string | null }>();
+  public readonly closed = output<void>();
 
   protected readonly note = signal('');
   protected readonly noteMax = NOTE_MAX;

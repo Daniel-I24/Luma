@@ -38,7 +38,7 @@ export class OrderPayment {
     this.status() === 'declined' || this.status() === 'error' ? 'payments.retry' : 'payments.pay',
   );
 
-  public constructor() {
+  constructor() {
     // Re-read attempts whenever the order (re-fetched on resume or by polling) changes.
     effect(() => {
       const order = this.order();

@@ -30,9 +30,9 @@ export class MapTopBar {
   private readonly geo = inject(GeolocationService);
 
   /** i18n key of the zone indicator. */
-  readonly zoneKey = input.required<string>();
+  public readonly zoneKey = input.required<string>();
 
-  readonly query = model('');
+  public readonly query = model('');
 
   constructor() {
     // Results belong to the submitted text: editing it closes them.

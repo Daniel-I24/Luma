@@ -16,13 +16,13 @@ export class GalleryStore {
   private readonly _errorKey = signal<string | null>(null);
   private businessId = '';
 
-  readonly photos = this._photos.asReadonly();
-  readonly loading = this._loading.asReadonly();
-  readonly busy = this._busy.asReadonly();
-  readonly errorKey = this._errorKey.asReadonly();
-  readonly free = computed(() => MAX_PHOTOS - this._photos().length);
+  public readonly photos = this._photos.asReadonly();
+  public readonly loading = this._loading.asReadonly();
+  public readonly busy = this._busy.asReadonly();
+  public readonly errorKey = this._errorKey.asReadonly();
+  public readonly free = computed(() => MAX_PHOTOS - this._photos().length);
 
-  async load(businessId: string): Promise<void> {
+  public async load(businessId: string): Promise<void> {
     this.businessId = businessId;
     this._loading.set(true);
     const result = await this.repo.list(businessId);
@@ -32,7 +32,7 @@ export class GalleryStore {
   }
 
   /** Adds the chosen files in order, as many as still fit. */
-  async add(files: readonly File[]): Promise<void> {
+  public async add(files: readonly File[]): Promise<void> {
     const room = this.free();
     await this.run(async () => {
       for (const file of files.slice(0, room)) {
@@ -45,7 +45,7 @@ export class GalleryStore {
     });
   }
 
-  async caption(photo: BusinessPhoto, caption: string): Promise<void> {
+  public async caption(photo: BusinessPhoto, caption: string): Promise<void> {
     if ((photo.caption ?? '') === caption.trim()) return;
     await this.run(async () => {
       const result = await this.repo.update(photo.id, { caption });
@@ -56,7 +56,7 @@ export class GalleryStore {
   }
 
   /** Swaps a photo with its neighbour (direction -1: earlier, 1: later). */
-  async move(photo: BusinessPhoto, direction: -1 | 1): Promise<void> {
+  public async move(photo: BusinessPhoto, direction: -1 | 1): Promise<void> {
     const photos = [...this._photos()];
     const from = photos.findIndex((p) => p.id === photo.id);
     const to = from + direction;
@@ -73,7 +73,7 @@ export class GalleryStore {
     });
   }
 
-  async remove(photo: BusinessPhoto): Promise<void> {
+  public async remove(photo: BusinessPhoto): Promise<void> {
     await this.run(async () => {
       const result = await this.repo.remove(photo);
       if (result.errorKey) return result.errorKey;

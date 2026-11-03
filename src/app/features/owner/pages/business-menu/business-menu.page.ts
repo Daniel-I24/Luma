@@ -24,7 +24,7 @@ import { PanelHeader } from '../../components/panel-header/panel-header';
 import { PanelStateView } from '../../components/panel-state/panel-state';
 import { MenuPanelStore } from '../../state/menu-panel.store';
 import { PanelBusinessStore } from '../../state/panel-business.store';
-import { routeBusinessId } from '../../utils/route-business-id';
+import { RouteBusinessId } from '../../utils/route-business-id';
 import { SetupReturn } from '../../components/setup-return/setup-return';
 
 /** BusinessMenuPage — /owner/:id/menu: products by section, availability, edit and delete. */
@@ -53,7 +53,7 @@ export class BusinessMenuPage {
   protected readonly panel = inject(PanelBusinessStore);
   protected readonly menu = inject(MenuPanelStore);
   private readonly toast = inject(ToastService);
-  protected readonly id = routeBusinessId();
+  protected readonly id = RouteBusinessId.routeBusinessId();
   /** Scanning a printed menu needs the extract-menu function (Luma IA remote). */
   protected readonly canScan = inject(AI_MODE) === 'remote';
 

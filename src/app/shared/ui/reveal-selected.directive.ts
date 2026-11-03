@@ -1,4 +1,5 @@
 import { Directive, ElementRef, afterNextRender, inject } from '@angular/core';
+import { HALF } from '@core/config/units';
 
 /**
  * appRevealSelected — on a horizontal chip row, scrolls the preselected chip
@@ -20,6 +21,6 @@ export class RevealSelectedDirective {
     const left = selected.getBoundingClientRect().left - container.getBoundingClientRect().left + container.scrollLeft;
     const right = left + selected.offsetWidth;
     const visible = left >= container.scrollLeft && right <= container.scrollLeft + container.clientWidth;
-    if (!visible) container.scrollLeft = left - (container.clientWidth - selected.offsetWidth) / 2;
+    if (!visible) container.scrollLeft = left - (container.clientWidth - selected.offsetWidth) * HALF;
   }
 }

@@ -2,11 +2,11 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaSkeleton } from '@design-system';
-import { ACCEPTED_IMAGE_TYPES } from '@shared/media/image-file.util';
+import { ACCEPTED_IMAGE_TYPES } from '@shared/media/image-files';
 import { PanelHeader } from '../../components/panel-header/panel-header';
 import { MAX_SCAN_PHOTOS } from '../../services/menu-scan.repository';
-import { MenuScanStore, type ReviewItem, priceOf } from '../../state/menu-scan.store';
-import { routeBusinessId } from '../../utils/route-business-id';
+import { MenuScanStore, type ReviewItem, ScanPrices } from '../../state/menu-scan.store';
+import { RouteBusinessId } from '../../utils/route-business-id';
 
 /**
  * MenuScanPage — /owner/:id/menu/scan: photos of a printed menu read by
@@ -24,7 +24,7 @@ import { routeBusinessId } from '../../utils/route-business-id';
 })
 export class MenuScanPage {
   protected readonly scan = inject(MenuScanStore);
-  protected readonly id = routeBusinessId();
+  protected readonly id = RouteBusinessId.routeBusinessId();
   protected readonly accept = ACCEPTED_IMAGE_TYPES.join(',');
   protected readonly maxPhotos = MAX_SCAN_PHOTOS;
 
@@ -44,6 +44,6 @@ export class MenuScanPage {
   }
 
   protected priceMissing(item: ReviewItem): boolean {
-    return item.selected && priceOf(item.price) === null;
+    return item.selected && ScanPrices.priceOf(item.price) === null;
   }
 }

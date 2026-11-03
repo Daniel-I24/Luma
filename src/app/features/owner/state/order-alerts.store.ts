@@ -22,10 +22,10 @@ export class OrderAlertsStore {
   private businessId: string | null = null;
   private known: Set<string> | null = null;
 
-  readonly pending = this._pending.asReadonly();
+  public readonly pending = this._pending.asReadonly();
 
   /** Starts watching another business (no alert for what it already has). */
-  watch(businessId: string): Promise<void> {
+  public watch(businessId: string): Promise<void> {
     if (businessId === this.businessId) return Promise.resolve();
     this.businessId = businessId;
     this.known = null;
@@ -33,7 +33,7 @@ export class OrderAlertsStore {
     return this.refresh();
   }
 
-  async refresh(): Promise<void> {
+  public async refresh(): Promise<void> {
     const id = this.businessId;
     if (!id) return;
     const result = await this.repo.pendingIds(id);

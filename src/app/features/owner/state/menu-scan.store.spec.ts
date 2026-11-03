@@ -7,7 +7,7 @@ import { SupabaseService } from '@core/supabase/supabase.service';
 import { MenuRepository } from '@shared/business/data/menu.repository';
 import { MenuWriteRepository } from '@shared/business/data/menu-write.repository';
 import { MenuScanRepository } from '../services/menu-scan.repository';
-import { MenuScanStore, priceOf } from './menu-scan.store';
+import { MenuScanStore, ScanPrices } from './menu-scan.store';
 
 const draft = [
   { name: 'Tinto', description: null, price_cop: 2000, section: 'Bebidas' },
@@ -76,7 +76,7 @@ describe('MenuScanStore', () => {
   });
 
   it('parses prices typed by owners', () => {
-    expect(['12.500', '$ 8000', '0', 'doce', '-5'].map(priceOf)).toEqual([12500, 8000, null, null, null]);
+    expect(['12.500', '$ 8000', '0', 'doce', '-5'].map(ScanPrices.priceOf)).toEqual([12500, 8000, null, null, null]);
   });
 });
 

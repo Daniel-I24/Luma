@@ -27,13 +27,13 @@ export class LanguageService {
   private readonly _language = signal<Language>(this.readStored());
 
   /** Readonly signal with the active language. */
-  readonly language = computed(() => this._language());
+  public readonly language = computed(() => this._language());
 
   /**
    * Loads the stored language's translations and activates it.
    * Meant for app initialization so the first render is already translated.
    */
-  async init(): Promise<void> {
+  public async init(): Promise<void> {
     const language = this._language();
     try {
       await firstValueFrom(this.transloco.load(language));
@@ -44,7 +44,7 @@ export class LanguageService {
   }
 
   /** Switches the language at runtime and persists the choice. */
-  setLanguage(language: Language): void {
+  public setLanguage(language: Language): void {
     this._language.set(language);
     this.apply(language);
     try {

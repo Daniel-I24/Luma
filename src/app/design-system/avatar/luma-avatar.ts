@@ -3,6 +3,8 @@ import { LumaIcon } from '../icon/luma-icon';
 import type { IconSize } from '../icon/luma-icon';
 import type { IconName } from '../icon/luma-icons';
 
+const MAX_INITIALS = 2;
+
 export type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 export type AvatarShape = 'circle' | 'square';
 
@@ -38,14 +40,14 @@ const SIZE_CLASS: Record<AvatarSize, string> = {
   host: { class: 'inline-flex shrink-0' },
 })
 export class LumaAvatar {
-  readonly name = input.required<string>();
-  readonly src = input<string | null>(null);
-  readonly size = input<AvatarSize>('md');
-  readonly shape = input<AvatarShape>('circle');
+  public readonly name = input.required<string>();
+  public readonly src = input<string | null>(null);
+  public readonly size = input<AvatarSize>('md');
+  public readonly shape = input<AvatarShape>('circle');
   /** True when the name is already visible next to the avatar. */
-  readonly decorative = input(false);
+  public readonly decorative = input(false);
   /** Icon shown instead of the initials when there is no image (e.g. a category). */
-  readonly fallbackIcon = input<IconName | null>(null);
+  public readonly fallbackIcon = input<IconName | null>(null);
 
   /** Reset whenever the source changes. */
   protected readonly failed = linkedSignal({ source: this.src, computation: () => false });
@@ -56,7 +58,7 @@ export class LumaAvatar {
     this.name()
       .trim()
       .split(/\s+/)
-      .slice(0, 2)
+      .slice(0, MAX_INITIALS)
       .map((word) => word.charAt(0).toUpperCase())
       .join(''),
   );

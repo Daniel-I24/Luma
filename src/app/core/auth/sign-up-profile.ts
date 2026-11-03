@@ -16,16 +16,20 @@ export interface SignUpProfile {
   readonly privacyVersion: string;
 }
 
-/** Metadata keys as handle_new_user expects them. */
-export function signUpMetadata(profile: SignUpProfile): Record<string, string | boolean | null> {
-  return {
-    account_type: profile.accountType,
-    full_name: profile.fullName.trim(),
-    phone: profile.phone,
-    accepted_terms: profile.acceptedTerms,
-    accepted_privacy: profile.acceptedPrivacy,
-    confirmed_age: profile.confirmedAge,
-    terms_version: profile.termsVersion,
-    privacy_version: profile.privacyVersion,
-  };
+/** SignUpMetadata — the user metadata sent with a sign-up. */
+export class SignUpMetadata {
+  /** Metadata keys as handle_new_user expects them. */
+  public static signUpMetadata(profile: SignUpProfile): Record<string, string | boolean | null> {
+    return {
+      account_type: profile.accountType,
+      full_name: profile.fullName.trim(),
+      phone: profile.phone,
+      accepted_terms: profile.acceptedTerms,
+      accepted_privacy: profile.acceptedPrivacy,
+      confirmed_age: profile.confirmedAge,
+      terms_version: profile.termsVersion,
+      privacy_version: profile.privacyVersion,
+    };
+  }
 }
+

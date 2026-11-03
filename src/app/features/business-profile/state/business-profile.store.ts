@@ -5,9 +5,9 @@ import { MenuRepository } from '@shared/business/data/menu.repository';
 import type { Business, BusinessHours } from '@shared/business/models/business.model';
 import type { MenuItem } from '@shared/business/models/menu.model';
 import type { BusinessRating } from '@shared/business/models/review.model';
-import { getBusinessStatus } from '@shared/business/utils/business-status.util';
+import { BusinessStatusRules } from '@shared/business/utils/business-status-rules';
 import { GeolocationService } from '@shared/geo/geolocation.service';
-import { haversineKm } from '@shared/geo/haversine.util';
+import { Haversine } from '@shared/geo/haversine';
 import type { PromotionDeal } from '@shared/promotions/promotion-deal';
 import { PromotionDealRepository } from '@shared/promotions/promotion-deal.repository';
 
@@ -37,30 +37,30 @@ export class BusinessProfileStore {
   private readonly _promotions = signal<PromotionDeal[]>([]);
   private readonly _menu = signal<MenuItem[] | null>(null);
 
-  readonly state = this._state.asReadonly();
-  readonly business = this._business.asReadonly();
-  readonly hours = this._hours.asReadonly();
-  readonly rating = this._rating.asReadonly();
-  readonly ratingsLoaded = this._ratingsLoaded.asReadonly();
-  readonly promotions = this._promotions.asReadonly();
+  public readonly state = this._state.asReadonly();
+  public readonly business = this._business.asReadonly();
+  public readonly hours = this._hours.asReadonly();
+  public readonly rating = this._rating.asReadonly();
+  public readonly ratingsLoaded = this._ratingsLoaded.asReadonly();
+  public readonly promotions = this._promotions.asReadonly();
   /** "Recomendada por Luma IA": the biggest discount on an available item (none without discounts). */
-  readonly recommendedDealId = computed(
+  public readonly recommendedDealId = computed(
     () =>
       [...this._promotions()]
         .filter((deal) => deal.discountPercent !== null && deal.item?.available)
         .sort((a, b) => (b.discountPercent ?? 0) - (a.discountPercent ?? 0))[0]?.id ?? null,
   );
   /** Null when the menu could not be loaded. */
-  readonly menu = this._menu.asReadonly();
-  readonly status = computed(() => getBusinessStatus(this._hours()));
-  readonly distanceKm = computed(() => {
+  public readonly menu = this._menu.asReadonly();
+  public readonly status = computed(() => BusinessStatusRules.getBusinessStatus(this._hours()));
+  public readonly distanceKm = computed(() => {
     const business = this._business();
     if (!business || !this.geo.hasRealLocation()) return null;
     const { lat, lng } = this.geo.coords();
-    return haversineKm(lat, lng, business.latitude, business.longitude);
+    return Haversine.haversineKm(lat, lng, business.latitude, business.longitude);
   });
 
-  async load(id: string): Promise<void> {
+  public async load(id: string): Promise<void> {
     if (!UUID.test(id)) {
       this._state.set('notFound');
       return;
@@ -79,7 +79,7 @@ export class BusinessProfileStore {
   }
 
   /** Re-reads the rating after the user wrote, edited or deleted a review. */
-  async refreshRating(): Promise<void> {
+  public async refreshRating(): Promise<void> {
     const business = this._business();
     if (!business) return;
     const ratings = await this.highlights.getRatings([business.id]);

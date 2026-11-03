@@ -10,28 +10,23 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import {
+  TabIds,
   LumaBottomSheet,
   LumaButton,
   LumaEmptyState,
   LumaTabs,
   type TabItem,
   ToastService,
-  tabPanelId,
 } from '@design-system';
 import type { BusinessOrder, CancelReason } from '@shared/orders/business-order.repository';
-import { pollWhileVisible } from '@shared/ui/poll-while-visible';
+import { PollWhileVisible } from '@shared/ui/poll-while-visible';
 import { OwnerOrderCard } from '../../components/owner-order-card/owner-order-card';
 import { PanelHeader } from '../../components/panel-header/panel-header';
 import { PanelStateView } from '../../components/panel-state/panel-state';
 import { BusinessOrdersStore } from '../../state/business-orders.store';
 import { PanelBusinessStore } from '../../state/panel-business.store';
-import {
-  ORDER_TABS,
-  type OrderAction,
-  type OrderTab,
-  ordersOfTab,
-} from '../../utils/order-board.util';
-import { routeBusinessId } from '../../utils/route-business-id';
+import { ORDER_TABS, type OrderAction, type OrderTab, OrderBoard } from '../../utils/order-board';
+import { RouteBusinessId } from '../../utils/route-business-id';
 
 /** Reasons the owner can pick when cancelling after accepting ("No llegó" has its own button). */
 const CANCEL_REASONS = ['out_of_stock', 'closed', 'other'] as const;
@@ -66,7 +61,7 @@ export class BusinessOrdersPage {
   private readonly lang = toSignal(this.transloco.langChanges$, {
     initialValue: this.transloco.getActiveLang(),
   });
-  protected readonly id = routeBusinessId();
+  protected readonly id = RouteBusinessId.routeBusinessId();
 
   protected readonly tab = signal<OrderTab>('new');
   protected readonly rejecting = signal<BusinessOrder | null>(null);
@@ -76,7 +71,7 @@ export class BusinessOrdersPage {
   /** Order whose customer did not come. */
   protected readonly noShow = signal<BusinessOrder | null>(null);
   protected readonly reasons = CANCEL_REASONS;
-  protected readonly panelId = tabPanelId;
+  protected readonly panelId = TabIds.tabPanelId;
 
   protected readonly tabs = computed<TabItem[]>(() => {
     this.lang();
@@ -84,18 +79,18 @@ export class BusinessOrdersPage {
       id: tab,
       label: this.transloco.translate('businessOrders.tabLabel', {
         label: this.transloco.translate(`businessOrders.tabs.${tab}`),
-        count: ordersOfTab(this.board.orders(), tab).length,
+        count: OrderBoard.ordersOfTab(this.board.orders(), tab).length,
       }),
     }));
   });
-  protected readonly visible = computed(() => ordersOfTab(this.board.orders(), this.tab()));
+  protected readonly visible = computed(() => OrderBoard.ordersOfTab(this.board.orders(), this.tab()));
 
   constructor() {
     effect(() => {
       const id = this.id();
       if (id) untracked(() => void this.load(id));
     });
-    pollWhileVisible(() => void this.board.refresh(), BOARD_REFRESH_MS);
+    PollWhileVisible.pollWhileVisible(() => void this.board.refresh(), BOARD_REFRESH_MS);
   }
 
   protected async load(id = this.id()): Promise<void> {

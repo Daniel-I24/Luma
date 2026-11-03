@@ -29,7 +29,7 @@ import { LumaBottomSheet, LumaButton } from '@design-system';
   `,
 })
 export class ReReviewSheet {
-  readonly open = input(false);
-  readonly confirmed = output<void>();
-  readonly cancelled = output<void>();
+  public readonly open = input(false);
+  public readonly confirmed = output<void>();
+  public readonly cancelled = output<void>();
 }

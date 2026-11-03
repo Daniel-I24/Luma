@@ -21,14 +21,14 @@ export class GeolocationService {
   private readonly _state = signal<GeoState>('idle');
   private readonly _coords = signal<GeoCoords>(PASTO_CENTRE);
 
-  readonly state = computed(() => this._state());
-  readonly coords = computed(() => this._coords());
+  public readonly state = computed(() => this._state());
+  public readonly coords = computed(() => this._coords());
 
   /** True only after a successful geolocation response. */
-  readonly hasRealLocation = computed(() => this._state() === 'granted');
+  public readonly hasRealLocation = computed(() => this._state() === 'granted');
 
   /** Centre to use while the real location is unknown (e.g. the municipality of residence). */
-  useFallback(coords: GeoCoords): void {
+  public useFallback(coords: GeoCoords): void {
     if (this._state() !== 'granted') this._coords.set(coords);
   }
 
@@ -36,7 +36,7 @@ export class GeolocationService {
    * Requests the user's current position.
    * Sets state to 'locating' while waiting; resolves to 'granted' or 'denied'.
    */
-  requestLocation(): void {
+  public requestLocation(): void {
     if (!navigator.geolocation) {
       this._state.set('unavailable');
       return;

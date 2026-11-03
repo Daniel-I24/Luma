@@ -38,7 +38,7 @@ export class NotificationRepository {
   private readonly db = inject(SupabaseService).client;
 
   /** Latest notifications, newest first. */
-  async list(): Promise<RepoResult<AppNotification[]>> {
+  public async list(): Promise<RepoResult<AppNotification[]>> {
     const { data, error } = await this.db
       .from('notifications')
       .select(COLUMNS)
@@ -70,7 +70,7 @@ export class NotificationRepository {
   }
 
   /** Number of unread notifications (a HEAD count, no rows). */
-  async unreadCount(): Promise<RepoResult<number>> {
+  public async unreadCount(): Promise<RepoResult<number>> {
     const { count, error } = await this.db
       .from('notifications')
       .select('id', { count: 'exact', head: true })
@@ -80,7 +80,7 @@ export class NotificationRepository {
   }
 
   /** Marks every unread notification as read. */
-  async markAllRead(now: Date = new Date()): Promise<RepoResult<true>> {
+  public async markAllRead(now: Date = new Date()): Promise<RepoResult<true>> {
     const { error } = await this.db
       .from('notifications')
       .update({ read_at: now.toISOString() })

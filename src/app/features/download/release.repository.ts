@@ -21,7 +21,7 @@ export interface AndroidRelease {
 /** ReleaseRepository — reads /version.json of this site (same origin, no credentials). */
 @Injectable({ providedIn: 'root' })
 export class ReleaseRepository {
-  async latest(): Promise<AndroidRelease | null> {
+  public async latest(): Promise<AndroidRelease | null> {
     try {
       const response = await fetch('/version.json', { cache: 'no-store', credentials: 'omit' });
       const parsed = fileSchema.safeParse(response.ok ? await response.json() : null);

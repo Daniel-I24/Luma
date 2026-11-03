@@ -17,13 +17,13 @@ import type { IconName } from '../icon/luma-icons';
   host: { class: 'block' },
 })
 export class LumaDisclosure {
-  readonly panelId = input.required<string>();
-  readonly icon = input.required<IconName>();
-  readonly heading = input.required<string>();
+  public readonly panelId = input.required<string>();
+  public readonly icon = input.required<IconName>();
+  public readonly heading = input.required<string>();
   /** Current value shown under the heading (e.g. the active theme). */
-  readonly description = input<string | null>(null);
+  public readonly description = input<string | null>(null);
 
-  readonly expanded = model(false);
+  public readonly expanded = model(false);
 
   protected readonly buttonId = computed(() => `${this.panelId()}-button`);
 }

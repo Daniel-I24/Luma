@@ -12,9 +12,9 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
   host: { class: 'flex items-center justify-between gap-2' },
 })
 export class LumaSectionHeader {
-  readonly heading = input.required<string>();
-  readonly headingId = input<string | null>(null);
-  readonly actionLabel = input<string | null>(null);
+  public readonly heading = input.required<string>();
+  public readonly headingId = input<string | null>(null);
+  public readonly actionLabel = input<string | null>(null);
 
-  readonly action = output<void>();
+  public readonly action = output<void>();
 }

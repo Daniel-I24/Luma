@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import type { RepoResult } from '@shared/business/data/business.repository';
 import { type EncodedImage, IMAGE_ENCODER, ImageEncodeError } from '@shared/media/image-encoder';
-import { checkImageFile } from '@shared/media/image-file.util';
+import { ImageFiles } from '@shared/media/image-files';
 
 /**
  * AvatarRepository — the optional profile photo in the private avatars
@@ -22,7 +22,7 @@ export class AvatarRepository {
   /** Replaces the user's photo; the old object is removed first (one per user). */
   public async upload(userId: string, file: File, consent: boolean): Promise<RepoResult<string>> {
     if (!consent) return { data: null, errorKey: 'avatar.errors.consent' };
-    const invalid = checkImageFile(file);
+    const invalid = ImageFiles.checkImageFile(file);
     if (invalid) return { data: null, errorKey: invalid };
     let encoded: EncodedImage;
     try {

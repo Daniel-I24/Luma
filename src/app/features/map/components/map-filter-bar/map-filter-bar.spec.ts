@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { NearbyBusinessesStore } from '../../state/nearby-businesses.store';
-import { type MapFilters, NO_FILTERS, activeFilterCount } from '../../utils/map-filters.util';
+import { type MapFilters, NO_FILTERS, MapFilterRules } from '../../utils/map-filter-rules';
 import { MapFilterBar } from './map-filter-bar';
 
 describe('MapFilterBar', () => {
@@ -11,7 +11,7 @@ describe('MapFilterBar', () => {
   const located = signal(false);
   const store = {
     filters,
-    filterCount: computed(() => activeFilterCount(filters())),
+    filterCount: computed(() => MapFilterRules.activeFilterCount(filters())),
     canFilterDistance: located,
     categories: signal(['Bar', 'Café']),
     items: signal([]),

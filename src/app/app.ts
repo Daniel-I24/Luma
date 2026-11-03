@@ -22,7 +22,7 @@ import { UpdateBanner } from '@shared/layout/update-banner/update-banner';
 })
 export class App {
   // Eager injection — constructor + effect run at app startup.
-  readonly themeService = inject(ThemeService);
+  public readonly themeService = inject(ThemeService);
   private readonly statusBarTheme = inject(StatusBarThemeService);
 
   constructor() {

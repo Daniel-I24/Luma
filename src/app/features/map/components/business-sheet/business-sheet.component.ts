@@ -14,7 +14,10 @@ import {
 import type { BusinessHours, Promotion } from '@shared/business/models/business.model';
 import { FavoriteButton } from '@shared/favorites/favorite-button/favorite-button';
 import type { NearbyBusiness } from '../../state/nearby-businesses.store';
-import { formatDistance, walkingMinutes } from '@shared/geo/distance.util';
+import { Distance } from '@shared/geo/distance';
+
+/** "HH:MM" out of "HH:MM:SS". */
+const HH_MM = 5;
 
 /**
  * BusinessSheetComponent — bottom sheet shown when a business is chosen on
@@ -45,12 +48,12 @@ export class BusinessSheetComponent {
     initialValue: this.transloco.getActiveLang(),
   });
 
-  readonly item = input<NearbyBusiness | null>(null);
-  readonly hours = input<BusinessHours[]>([]);
-  readonly promotion = input<Promotion | null>(null);
-  readonly open = input<boolean>(false);
+  public readonly item = input<NearbyBusiness | null>(null);
+  public readonly hours = input<BusinessHours[]>([]);
+  public readonly promotion = input<Promotion | null>(null);
+  public readonly open = input<boolean>(false);
 
-  readonly closed = output<void>();
+  public readonly closed = output<void>();
 
   /** Opens the full profile by URL (the profile is another feature). */
   protected viewRestaurant(businessId: string): void {
@@ -61,7 +64,7 @@ export class BusinessSheetComponent {
     const day = new Date().getDay() as BusinessHours['day_of_week'];
     const today = this.hours().find((h) => h.day_of_week === day);
     return today && !today.is_closed
-      ? { from: today.opens_at.slice(0, 5), to: today.closes_at.slice(0, 5) }
+      ? { from: today.opens_at.slice(0, HH_MM), to: today.closes_at.slice(0, HH_MM) }
       : null;
   });
 
@@ -69,6 +72,6 @@ export class BusinessSheetComponent {
     const km = this.item()?.distanceKm ?? null;
     return km === null
       ? null
-      : { distance: formatDistance(km, this.lang()), minutes: walkingMinutes(km) };
+      : { distance: Distance.formatDistance(km, this.lang()), minutes: Distance.walkingMinutes(km) };
   });
 }

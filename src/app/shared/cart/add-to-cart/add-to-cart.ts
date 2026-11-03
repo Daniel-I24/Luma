@@ -24,7 +24,7 @@ export class AddToCart {
   private readonly flight = inject(CartFlight);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
-  readonly product = input.required<CartProduct>();
+  public readonly product = input.required<CartProduct>();
 
   protected readonly quantity = computed(() => this.cart.quantityOf(this.product().menuItemId));
   protected readonly atLimit = computed(() => this.quantity() >= MAX_PER_ITEM);

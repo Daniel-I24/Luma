@@ -6,7 +6,7 @@ import { LumaButton, LumaIcon } from '@design-system';
 import { CartActions } from '@shared/cart/cart-actions.service';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
 import { DistancePipe } from '@shared/geo/distance.pipe';
-import { type PromotionDeal, endsIn } from '../promotion-deal';
+import { type PromotionDeal, PromotionPricing } from '../promotion-deal';
 
 /**
  * PromotionCard — one deal: discount badge, struck list price and final
@@ -30,15 +30,15 @@ export class PromotionCard {
     initialValue: this.transloco.getActiveLang(),
   });
 
-  readonly deal = input.required<PromotionDeal>();
-  readonly distanceKm = input<number | null>(null);
+  public readonly deal = input.required<PromotionDeal>();
+  public readonly distanceKm = input<number | null>(null);
   /** Hidden inside the restaurant's own profile. */
-  readonly showBusiness = input(true);
+  public readonly showBusiness = input(true);
   /** "Recomendada por Luma IA" (the promotion that best fits the moment). */
-  readonly recommended = input(false);
+  public readonly recommended = input(false);
 
   protected readonly endsLabel = computed(() => {
-    const ends = endsIn(this.deal().endsAt, new Date());
+    const ends = PromotionPricing.endsIn(this.deal().endsAt, new Date());
     return {
       key: `promotions.card.${ends.key}`,
       params: ends.key === 'endsInDays' ? { days: ends.days } : {},

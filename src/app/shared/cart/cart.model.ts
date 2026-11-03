@@ -1,6 +1,10 @@
 import * as z from 'zod/mini';
 import type { MenuItem } from '@shared/business/models/menu.model';
 
+/** Bounds of what the cart restores from storage (generous: the server re-checks). */
+const MAX_STORED_BUSINESS_NAME = 120;
+const MAX_STORED_ITEM_NAME = 80;
+
 /** Most units of one product in the cart. */
 export const MAX_PER_ITEM = 20;
 /** Most units in the whole cart. */
@@ -35,13 +39,13 @@ export const EMPTY_CART: CartSnapshot = { businessName: null, items: [] };
 
 /** What is read back from localStorage is untrusted: validate it. */
 export const cartSnapshotSchema = z.object({
-  businessName: z.nullable(z.string().check(z.maxLength(120))),
+  businessName: z.nullable(z.string().check(z.maxLength(MAX_STORED_BUSINESS_NAME))),
   items: z
     .array(
       z.object({
         menuItemId: z.string().check(z.minLength(1)),
         businessId: z.string().check(z.minLength(1)),
-        name: z.string().check(z.maxLength(80)),
+        name: z.string().check(z.maxLength(MAX_STORED_ITEM_NAME)),
         priceCop: z.int().check(z.nonnegative()),
         quantity: z.int().check(z.minimum(1), z.maximum(MAX_PER_ITEM)),
       }),
@@ -49,23 +53,27 @@ export const cartSnapshotSchema = z.object({
     .check(z.maxLength(MAX_CART_UNITS)),
 });
 
-/** The cart product for a menu item of a business. */
-export function toCartProduct(item: MenuItem, businessName: string): CartProduct {
-  return {
-    menuItemId: item.id,
-    businessId: item.business_id,
-    businessName,
-    name: item.name,
-    priceCop: item.price_cop,
-  };
+/** CartMath — cart products, totals and units. */
+export class CartMath {
+  /** The cart product for a menu item of a business. */
+  public static toCartProduct(item: MenuItem, businessName: string): CartProduct {
+    return {
+      menuItemId: item.id,
+      businessId: item.business_id,
+      businessName,
+      name: item.name,
+      priceCop: item.price_cop,
+    };
+  }
+
+  /** Total in whole pesos. */
+  public static cartTotal(items: readonly CartItem[]): number {
+    return items.reduce((sum, item) => sum + item.priceCop * item.quantity, 0);
+  }
+
+  /** Units in the cart. */
+  public static cartUnits(items: readonly CartItem[]): number {
+    return items.reduce((sum, item) => sum + item.quantity, 0);
+  }
 }
 
-/** Total in whole pesos. */
-export function cartTotal(items: readonly CartItem[]): number {
-  return items.reduce((sum, item) => sum + item.priceCop * item.quantity, 0);
-}
-
-/** Units in the cart. */
-export function cartUnits(items: readonly CartItem[]): number {
-  return items.reduce((sum, item) => sum + item.quantity, 0);
-}

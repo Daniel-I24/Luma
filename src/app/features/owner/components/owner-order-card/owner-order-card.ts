@@ -4,10 +4,10 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LumaButton } from '@design-system';
 import { AvatarRepository } from '@shared/account/avatar.repository';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
-import { formatTime } from '@shared/format/date-format.util';
+import { DateFormat } from '@shared/format/date-format';
 import type { BusinessOrder } from '@shared/orders/business-order.repository';
 import { OrderStatusBadge } from '@shared/orders/order-status-badge';
-import { type OrderAction, nextActions } from '../../utils/order-board.util';
+import { type OrderAction, OrderBoard } from '../../utils/order-board';
 
 /**
  * OwnerOrderCard — one order on the owner's board: customer label, times,
@@ -27,22 +27,22 @@ export class OwnerOrderCard {
     initialValue: this.transloco.getActiveLang(),
   });
 
-  readonly order = input.required<BusinessOrder>();
-  readonly busy = input(false);
-  readonly action = output<OrderAction>();
+  public readonly order = input.required<BusinessOrder>();
+  public readonly busy = input(false);
+  public readonly action = output<OrderAction>();
 
-  protected readonly actions = computed(() => nextActions(this.order()));
+  protected readonly actions = computed(() => OrderBoard.nextActions(this.order()));
   /** The customer's photo, only while serving them and if they share it (signed, 60 s). */
   protected readonly avatarUrl = signal<string | null>(null);
   private readonly avatars = inject(AvatarRepository);
   protected readonly paidOnline = computed(() => this.order().payment_status === 'approved');
-  protected readonly placedAt = computed(() => formatTime(this.order().created_at, this.lang()));
+  protected readonly placedAt = computed(() => DateFormat.formatTime(this.order().created_at, this.lang()));
   protected readonly pickupAt = computed(() => {
     const pickup = this.order().pickup_at;
-    return pickup ? formatTime(pickup, this.lang()) : null;
+    return pickup ? DateFormat.formatTime(pickup, this.lang()) : null;
   });
 
-  public constructor() {
+  constructor() {
     effect(() => {
       const path = this.order().customer_avatar_path;
       if (!path) this.avatarUrl.set(null);

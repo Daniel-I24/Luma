@@ -33,6 +33,10 @@ export const LEGAL_DOCUMENTS = {
 
 export type LegalDocument = keyof typeof LEGAL_DOCUMENTS;
 
-export function isLegalDocument(value: unknown): value is LegalDocument {
-  return value === 'terms' || value === 'privacy' || value === 'refunds';
+/** LegalDocuments — the legal documents the app can show. */
+export class LegalDocuments {
+  public static isLegalDocument(value: unknown): value is LegalDocument {
+    return value === 'terms' || value === 'privacy' || value === 'refunds';
+  }
 }
+

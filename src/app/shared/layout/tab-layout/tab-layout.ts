@@ -7,7 +7,7 @@ import { CartConflictSheet } from '@shared/cart/cart-conflict-sheet/cart-conflic
 import { FavoritesStore } from '@shared/favorites/favorites.store';
 import { OwnerReturnBanner } from '@shared/layout/owner-return-banner/owner-return-banner';
 import { UnreadNotifications } from '@shared/notifications/unread-notifications';
-import { pollWhileVisible } from '@shared/ui/poll-while-visible';
+import { PollWhileVisible } from '@shared/ui/poll-while-visible';
 
 /** How often the unread badge is refreshed while the app is visible. */
 export const UNREAD_REFRESH_MS = 30_000;
@@ -44,6 +44,6 @@ export class TabLayout {
 
   constructor() {
     void this.unread.refresh();
-    pollWhileVisible(() => void this.unread.refresh(), UNREAD_REFRESH_MS);
+    PollWhileVisible.pollWhileVisible(() => void this.unread.refresh(), UNREAD_REFRESH_MS);
   }
 }

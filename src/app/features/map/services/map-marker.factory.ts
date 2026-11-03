@@ -20,7 +20,7 @@ const SELECTED_CLASS = 'luma-marker--selected';
 export class MapMarkerFactory {
   private readonly document = inject(DOCUMENT);
 
-  create(status: BusinessStatus, label: string): HTMLButtonElement {
+  public create(status: BusinessStatus, label: string): HTMLButtonElement {
     const button = this.document.createElement('button');
     button.type = 'button';
     button.className = 'luma-marker';
@@ -30,13 +30,13 @@ export class MapMarkerFactory {
   }
 
   /** Applies a new status and label to an existing marker. */
-  update(element: HTMLElement, status: BusinessStatus, label: string): void {
+  public update(element: HTMLElement, status: BusinessStatus, label: string): void {
     element.classList.remove(...STATUS_CLASSES);
     element.classList.add(`luma-marker--${status}`);
     element.setAttribute('aria-label', label);
   }
 
-  setSelected(element: HTMLElement, selected: boolean): void {
+  public setSelected(element: HTMLElement, selected: boolean): void {
     element.classList.toggle(SELECTED_CLASS, selected);
     element.setAttribute('aria-pressed', String(selected));
   }

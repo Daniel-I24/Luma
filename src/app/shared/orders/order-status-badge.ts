@@ -22,7 +22,7 @@ const TONE: Record<OrderStatus, string> = {
   host: { class: 'inline-flex' },
 })
 export class OrderStatusBadge {
-  readonly status = input.required<OrderStatus>();
+  public readonly status = input.required<OrderStatus>();
 
   protected readonly classes = computed(
     () => `inline-flex items-center rounded-full px-2 py-0.5 text-label ${TONE[this.status()]}`,

@@ -14,12 +14,12 @@ export class AdminQueueStore {
   private readonly _pending = signal<readonly Business[]>([]);
   private readonly _reports = signal<readonly OpenReport[]>([]);
   private readonly _errorKey = signal<string | null>(null);
-  readonly state = this._state.asReadonly();
-  readonly pending = this._pending.asReadonly();
-  readonly reports = this._reports.asReadonly();
-  readonly errorKey = this._errorKey.asReadonly();
+  public readonly state = this._state.asReadonly();
+  public readonly pending = this._pending.asReadonly();
+  public readonly reports = this._reports.asReadonly();
+  public readonly errorKey = this._errorKey.asReadonly();
 
-  async load(): Promise<void> {
+  public async load(): Promise<void> {
     this._state.set('loading');
     const [pending, reports] = await Promise.all([
       this.repo.pendingBusinesses(),
@@ -34,7 +34,7 @@ export class AdminQueueStore {
     this._state.set('ready');
   }
 
-  async resolve(report: OpenReport, status: 'reviewed' | 'dismissed'): Promise<void> {
+  public async resolve(report: OpenReport, status: 'reviewed' | 'dismissed'): Promise<void> {
     this._errorKey.set(null);
     const result = await this.repo.resolveReport(report.id, status);
     if (result.errorKey) {

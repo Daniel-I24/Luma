@@ -2,16 +2,11 @@ import { ChangeDetectionStrategy, Component, effect, inject, signal, untracked }
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaInput, ToastService } from '@design-system';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
-import {
-  type ContactErrors,
-  type ContactField,
-  contactDraft,
-  parseContact,
-} from '@shared/business/models/business-contact';
+import { type ContactErrors, type ContactField, BusinessContacts } from '@shared/business/models/business-contact';
 import { PanelHeader } from '../../components/panel-header/panel-header';
 import { PanelStateView } from '../../components/panel-state/panel-state';
 import { PanelBusinessStore } from '../../state/panel-business.store';
-import { routeBusinessId } from '../../utils/route-business-id';
+import { RouteBusinessId } from '../../utils/route-business-id';
 import { SetupReturn } from '../../components/setup-return/setup-return';
 
 interface FieldSpec {
@@ -79,10 +74,10 @@ export class BusinessContactPage {
   protected readonly panel = inject(PanelBusinessStore);
   private readonly repo = inject(OwnedBusinessRepository);
   private readonly toast = inject(ToastService);
-  protected readonly id = routeBusinessId();
+  protected readonly id = RouteBusinessId.routeBusinessId();
   protected readonly fields = FIELDS;
 
-  protected readonly draft = signal(contactDraft({}));
+  protected readonly draft = signal(BusinessContacts.contactDraft({}));
   protected readonly errors = signal<ContactErrors>({});
   protected readonly errorKey = signal<string | null>(null);
   protected readonly saving = signal(false);
@@ -97,7 +92,7 @@ export class BusinessContactPage {
   protected async load(id = this.id()): Promise<void> {
     await this.panel.load(id);
     const business = this.panel.business();
-    if (business) this.draft.set(contactDraft(business));
+    if (business) this.draft.set(BusinessContacts.contactDraft(business));
   }
 
   protected onInput(field: ContactField, value: string): void {
@@ -112,7 +107,7 @@ export class BusinessContactPage {
   protected async save(event: Event): Promise<void> {
     event.preventDefault();
     if (this.saving()) return;
-    const { value, errors } = parseContact(this.draft());
+    const { value, errors } = BusinessContacts.parseContact(this.draft());
     this.errors.set(errors);
     if (Object.keys(errors).length > 0) {
       this.errorKey.set('businessPanel.form.fixErrors');
@@ -127,7 +122,7 @@ export class BusinessContactPage {
       return;
     }
     this.panel.patch(value);
-    this.draft.set(contactDraft(value));
+    this.draft.set(BusinessContacts.contactDraft(value));
     this.toast.show({ messageKey: 'businessPanel.form.saved', tone: 'success' });
   }
 }

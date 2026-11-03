@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton } from '@design-system';
-import { ACCEPTED_IMAGE_TYPES } from '@shared/media/image-file.util';
+import { ACCEPTED_IMAGE_TYPES } from '@shared/media/image-files';
 import { AvatarSettingsStore } from '../avatar-settings.store';
 
 /** AvatarSettings — "Foto de perfil" block of "Mis datos". */
@@ -18,7 +18,7 @@ export class AvatarSettings {
   protected readonly accept = ACCEPTED_IMAGE_TYPES.join(',');
   protected readonly consent = signal(false);
 
-  public constructor() {
+  constructor() {
     void this.avatar.load();
   }
 

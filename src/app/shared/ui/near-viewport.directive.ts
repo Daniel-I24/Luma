@@ -10,10 +10,10 @@ export class NearViewportDirective {
   private readonly element = inject<ElementRef<HTMLElement>>(ElementRef);
 
   /** Scroll container to measure against (null: the viewport). */
-  readonly root = input<HTMLElement | null>(null);
+  public readonly root = input<HTMLElement | null>(null);
   /** How far ahead to trigger, as a CSS margin (default: one screen). */
-  readonly margin = input('100% 0px');
-  readonly nearViewport = output<void>();
+  public readonly margin = input('100% 0px');
+  public readonly nearViewport = output<void>();
 
   constructor() {
     const destroyRef = inject(DestroyRef);

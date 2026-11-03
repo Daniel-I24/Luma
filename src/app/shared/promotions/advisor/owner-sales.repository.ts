@@ -11,7 +11,7 @@ export class OwnerSalesRepository {
   private readonly db = inject(SupabaseService).client;
 
   /** 60-day aggregates (owner_sales_summary checks the ownership). */
-  async summary(businessId: string): Promise<RepoResult<SalesSummary>> {
+  public async summary(businessId: string): Promise<RepoResult<SalesSummary>> {
     const { data, error } = await this.db.rpc('owner_sales_summary', { p_business_id: businessId });
     const parsed = salesSummarySchema.safeParse(data);
     return error || !parsed.success
@@ -20,7 +20,7 @@ export class OwnerSalesRepository {
   }
 
   /** Items that already have a running promotion. */
-  async promotedItems(businessId: string): Promise<RepoResult<Set<string>>> {
+  public async promotedItems(businessId: string): Promise<RepoResult<Set<string>>> {
     const { data, error } = await this.db
       .from('promotions')
       .select('menu_item_id')

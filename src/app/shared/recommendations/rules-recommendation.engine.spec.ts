@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import type { Business } from '@shared/business/models/business.model';
 import type { MenuItem } from '@shared/business/models/menu.model';
-import { buildCombo, sectionRole } from './combo.util';
+import { ComboBuilder } from './combo-builder';
 import type { RecommendationCandidate } from './recommendation.model';
-import { RulesRecommendationEngine, momentForHour, scoreCandidate } from './rules-recommendation.engine';
+import { RulesRecommendationEngine, RecommendationScoring } from './rules-recommendation.engine';
 
 let order = 0;
 const item = (business_id: string, section: string | null, name: string, price_cop: number) =>
@@ -38,7 +38,7 @@ describe('momentForHour', () => {
     [5, 'breakfast'], [9, 'breakfast'], [10, 'midMorning'], [12, 'lunch'],
     [15, 'afternoon'], [18, 'dinner'], [22, 'night'], [2, 'night'],
   ])('%i h → %s', (hour, moment) => {
-    expect(momentForHour(hour)).toBe(moment);
+    expect(RecommendationScoring.momentForHour(hour)).toBe(moment);
   });
 });
 
@@ -66,8 +66,8 @@ describe('RulesRecommendationEngine', () => {
   });
 
   it('weighs distance (only when known), rating, promotion and favourites', () => {
-    const plain = scoreCandidate(candidate('x', 'Tienda'), 'lunch').score;
-    const rich = scoreCandidate(
+    const plain = RecommendationScoring.scoreCandidate(candidate('x', 'Tienda'), 'lunch').score;
+    const rich = RecommendationScoring.scoreCandidate(
       candidate('y', 'Tienda', { distanceKm: 0.5, rating: 4.5, hasPromotion: true, isFavorite: true }),
       'lunch',
     );
@@ -92,7 +92,7 @@ describe('RulesRecommendationEngine', () => {
 
     expect(result.businesses).toHaveLength(1);
     expect(result.combo).toBeNull();
-    expect(buildCombo(grill)).toBeNull();
+    expect(ComboBuilder.buildCombo(grill)).toBeNull();
   });
 
   it('handles no data at all', async () => {
@@ -103,10 +103,10 @@ describe('RulesRecommendationEngine', () => {
   });
 
   it('maps menu sections to combo roles with the dictionary', () => {
-    expect(sectionRole('Platos fuertes')).toBe('main');
-    expect(sectionRole('Entradas')).toBe('side');
-    expect(sectionRole('BEBIDAS')).toBe('drink');
-    expect(sectionRole('Despensa')).toBeNull();
-    expect(sectionRole(null)).toBeNull();
+    expect(ComboBuilder.sectionRole('Platos fuertes')).toBe('main');
+    expect(ComboBuilder.sectionRole('Entradas')).toBe('side');
+    expect(ComboBuilder.sectionRole('BEBIDAS')).toBe('drink');
+    expect(ComboBuilder.sectionRole('Despensa')).toBeNull();
+    expect(ComboBuilder.sectionRole(null)).toBeNull();
   });
 });

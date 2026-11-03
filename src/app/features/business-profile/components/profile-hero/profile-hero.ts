@@ -3,7 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LumaAvatar, LumaIcon, LumaIconButton, LumaImage, StatusBadge, BusinessTransition } from '@design-system';
 import type { Business, BusinessStatus } from '@shared/business/models/business.model';
-import { categoryIcon } from '@shared/business/utils/category-icon.util';
+import { CategoryIcons } from '@shared/business/utils/category-icons';
 import { FavoriteButton } from '@shared/favorites/favorite-button/favorite-button';
 import { DistancePipe } from '@shared/geo/distance.pipe';
 
@@ -35,13 +35,13 @@ export class ProfileHero {
     initialValue: this.transloco.getActiveLang(),
   });
 
-  readonly business = input.required<Business>();
-  readonly status = input.required<BusinessStatus>();
-  readonly distanceKm = input<number | null>(null);
+  public readonly business = input.required<Business>();
+  public readonly status = input.required<BusinessStatus>();
+  public readonly distanceKm = input<number | null>(null);
 
-  readonly back = output<void>();
+  public readonly back = output<void>();
 
-  protected readonly icon = computed(() => categoryIcon(this.business().category));
+  protected readonly icon = computed(() => CategoryIcons.categoryIcon(this.business().category));
   /** Same name as the card that opened the profile: the logo flies here. */
   protected readonly logoTransition = computed(() => BusinessTransition.logoName(this.business().id));
 }

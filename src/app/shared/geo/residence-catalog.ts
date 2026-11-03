@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import * as z from 'zod/mini';
+import { Residence } from './residence';
 
 /** A department of the DANE catalog. */
 export interface Department {
@@ -78,7 +79,7 @@ export class ResidenceCatalog {
       if (!parsed.success) throw new Error('invalid_catalog');
       this.departmentList = parsed.data.departments.map(([code, name]) => ({ code, name }));
       for (const [code, name, latitude, longitude] of parsed.data.municipalities) {
-        const municipality = { code, name, departmentCode: code.slice(0, 2), latitude, longitude };
+        const municipality = { code, name, departmentCode: Residence.departmentOf(code), latitude, longitude };
         this.byCode.set(code, municipality);
         const list = this.byDepartment.get(municipality.departmentCode) ?? [];
         list.push(municipality);

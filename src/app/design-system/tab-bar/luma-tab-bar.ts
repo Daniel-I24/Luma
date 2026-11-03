@@ -6,6 +6,9 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { LumaIcon } from '../icon/luma-icon';
 import type { IconName } from '../icon/luma-icons';
 
+/** Badges show at most "9+". */
+const MAX_BADGE = 9;
+
 export interface TabBarItem {
   path: string;
   /** Transloco key of the visible label. */
@@ -13,11 +16,15 @@ export interface TabBarItem {
   icon: IconName;
 }
 
-/** Index of the tab whose path is `url` or a parent of it; -1 when none. */
-export function activeTabIndex(items: readonly TabBarItem[], url: string): number {
-  const path = url.split(/[?#]/)[0];
-  return items.findIndex((item) => path === item.path || path.startsWith(`${item.path}/`));
+/** TabBarRoutes — which tab matches the current URL. */
+export class TabBarRoutes {
+  /** Index of the tab whose path is `url` or a parent of it; -1 when none. */
+  public static activeTabIndex(items: readonly TabBarItem[], url: string): number {
+    const path = url.split(/[?#]/)[0];
+    return items.findIndex((item) => path === item.path || path.startsWith(`${item.path}/`));
+  }
 }
+
 
 /**
  * LumaTabBar — bottom navigation bar. Marks the active tab with
@@ -33,16 +40,16 @@ export function activeTabIndex(items: readonly TabBarItem[], url: string): numbe
   styleUrl: './luma-tab-bar.css',
 })
 export class LumaTabBar {
-  readonly items = input.required<readonly TabBarItem[]>();
+  public readonly items = input.required<readonly TabBarItem[]>();
   /** Transloco key of the navigation landmark label. */
-  readonly labelKey = input.required<string>();
+  public readonly labelKey = input.required<string>();
   /** Counts shown on tabs, by path (e.g. unread notifications); 0 hides it. */
-  readonly badges = input<Readonly<Record<string, number>>>({});
+  public readonly badges = input<Readonly<Record<string, number>>>({});
   /** Transloco key of the badge text for screen readers, with {{count}}. */
-  readonly badgeLabelKey = input('tabBar.badge');
+  public readonly badgeLabelKey = input('tabBar.badge');
 
   protected badgeText(count: number): string {
-    return count > 9 ? '9+' : String(count);
+    return count > MAX_BADGE ? `${MAX_BADGE}+` : String(count);
   }
 
   private readonly router = inject(Router);
@@ -54,5 +61,5 @@ export class LumaTabBar {
     { initialValue: this.router.url },
   );
 
-  protected readonly activeIndex = computed(() => activeTabIndex(this.items(), this.url()));
+  protected readonly activeIndex = computed(() => TabBarRoutes.activeTabIndex(this.items(), this.url()));
 }

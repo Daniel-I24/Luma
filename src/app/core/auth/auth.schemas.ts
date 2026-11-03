@@ -41,7 +41,11 @@ export const recoverPasswordSchema = z.object({
   password: newPasswordSchema,
 });
 
-/** Keeps the digits of a typed or pasted code ("123 456" → "123456"), at most 6. */
-export function normalizeCode(value: string): string {
-  return value.replace(/\D/g, '').slice(0, CODE_LENGTH);
+/** AuthCode — normalises the 6-digit codes users type or paste. */
+export class AuthCode {
+  /** Keeps the digits of a typed or pasted code ("123 456" → "123456"), at most 6. */
+  public static normalizeCode(value: string): string {
+    return value.replace(/\D/g, '').slice(0, CODE_LENGTH);
+  }
 }
+

@@ -4,9 +4,9 @@ import { BusinessRepository } from '@shared/business/data/business.repository';
 import { MenuRepository } from '@shared/business/data/menu.repository';
 import type { Business } from '@shared/business/models/business.model';
 import { GeolocationService } from '@shared/geo/geolocation.service';
-import { haversineKm } from '@shared/geo/haversine.util';
+import { Haversine } from '@shared/geo/haversine';
 import type { FeedCard } from '../models/feed-card.model';
-import { buildFeedCards } from '../utils/feed-cards.util';
+import { FeedCards } from '../utils/feed-cards';
 
 /** Same search radius as the map. */
 export const FEED_RADIUS_KM = 10;
@@ -34,15 +34,15 @@ export class FeedStore {
   private readonly _hasMore = signal(false);
   private queue: Business[] = [];
 
-  readonly cards = this._cards.asReadonly();
-  readonly state = this._state.asReadonly();
-  readonly loadingMore = this._loadingMore.asReadonly();
-  readonly moreFailed = this._moreFailed.asReadonly();
-  readonly hasMore = this._hasMore.asReadonly();
-  readonly empty = computed(() => this._state() === 'ready' && this._cards().length === 0);
+  public readonly cards = this._cards.asReadonly();
+  public readonly state = this._state.asReadonly();
+  public readonly loadingMore = this._loadingMore.asReadonly();
+  public readonly moreFailed = this._moreFailed.asReadonly();
+  public readonly hasMore = this._hasMore.asReadonly();
+  public readonly empty = computed(() => this._state() === 'ready' && this._cards().length === 0);
 
   /** (Re)loads the feed from the first page. */
-  async load(): Promise<void> {
+  public async load(): Promise<void> {
     this._state.set('loading');
     this._cards.set([]);
     const { lat, lng } = this.geo.coords();
@@ -51,7 +51,7 @@ export class FeedStore {
       this._state.set('error');
       return;
     }
-    const km = (b: Business) => haversineKm(lat, lng, b.latitude, b.longitude);
+    const km = (b: Business): number => Haversine.haversineKm(lat, lng, b.latitude, b.longitude);
     this.queue = [...nearby.data].sort((a, b) => km(a) - km(b));
     this._hasMore.set(this.queue.length > 0);
     const loaded = await this.loadUntilSomethingNew();
@@ -59,7 +59,7 @@ export class FeedStore {
   }
 
   /** Appends the next batch; called when the end of the feed comes near. */
-  async loadMore(): Promise<void> {
+  public async loadMore(): Promise<void> {
     if (this._loadingMore() || !this.hasMore() || this._state() !== 'ready') return;
     this._loadingMore.set(true);
     this._moreFailed.set(false);
@@ -88,7 +88,7 @@ export class FeedStore {
     ]);
     if (!promotions.data || !menu.data) return false;
 
-    const cards = buildFeedCards({
+    const cards = FeedCards.buildFeedCards({
       businesses: batch,
       // Without hours every business shows as closed rather than failing the page.
       hours: hours.data ?? [],
@@ -105,6 +105,6 @@ export class FeedStore {
   private distanceKm(business: Business): number | null {
     if (!this.geo.hasRealLocation()) return null;
     const { lat, lng } = this.geo.coords();
-    return haversineKm(lat, lng, business.latitude, business.longitude);
+    return Haversine.haversineKm(lat, lng, business.latitude, business.longitude);
   }
 }

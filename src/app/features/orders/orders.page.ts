@@ -4,7 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LumaButton, LumaEmptyState, LumaSkeleton } from '@design-system';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
-import { formatDateTime } from '@shared/format/date-format.util';
+import { DateFormat } from '@shared/format/date-format';
 import { OrderStatusBadge } from '@shared/orders/order-status-badge';
 import type { Order } from '@shared/orders/order.model';
 import { OrderRepository } from '@shared/orders/order.repository';
@@ -51,7 +51,7 @@ export class OrdersPage {
   }
 
   protected when(order: Order): string {
-    return formatDateTime(order.created_at, this.lang());
+    return DateFormat.formatDateTime(order.created_at, this.lang());
   }
 
   protected explore(): void {

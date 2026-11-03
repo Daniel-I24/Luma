@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, input, output } from '@angu
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LumaBusinessCard } from '@design-system';
-import { categoryIcon } from '@shared/business/utils/category-icon.util';
+import { CategoryIcons } from '@shared/business/utils/category-icons';
 import { DistancePipe } from '@shared/geo/distance.pipe';
 import type { RecommendedBusiness } from '@shared/recommendations/recommendation.model';
 
@@ -20,9 +20,9 @@ export class RecommendationList {
   protected readonly lang = toSignal(this.transloco.langChanges$, {
     initialValue: this.transloco.getActiveLang(),
   });
-  protected readonly icon = categoryIcon;
+  protected readonly icon = CategoryIcons.categoryIcon;
 
-  readonly picks = input.required<readonly RecommendedBusiness[]>();
+  public readonly picks = input.required<readonly RecommendedBusiness[]>();
   /** Emits the business id to open its profile. */
-  readonly open = output<string>();
+  public readonly open = output<string>();
 }

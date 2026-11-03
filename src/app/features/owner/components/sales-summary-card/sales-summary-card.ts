@@ -4,6 +4,7 @@ import { LumaButton, LumaSkeleton } from '@design-system';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
 import type { SalesRange } from '../../services/sales-summary.repository';
 import { type SalesBar, type SalesMeasure, SalesSummaryStore } from '../../state/sales-summary.store';
+import { SALES_RANGES } from '../../state/sales-summary.store';
 
 /**
  * SalesSummaryCard — one series of daily bars (orders or revenue) for the
@@ -22,12 +23,12 @@ export class SalesSummaryCard {
   protected readonly sales = inject(SalesSummaryStore);
   public readonly businessId = input.required<string>();
 
-  protected readonly ranges: readonly SalesRange[] = [7, 30];
+  protected readonly ranges: readonly SalesRange[] = SALES_RANGES;
   protected readonly measures: readonly SalesMeasure[] = ['orders', 'revenue'];
   protected readonly selected = signal<SalesBar | null>(null);
   protected readonly empty = computed(() => this.sales.totals().orders === 0);
 
-  public constructor() {
+  constructor() {
     effect(() => {
       const id = this.businessId();
       untracked(() => void this.sales.load(id));

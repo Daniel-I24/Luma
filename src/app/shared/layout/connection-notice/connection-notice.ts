@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, isDevMode } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
-import { usesPlaceholderConfig } from '@core/config/environment-check';
+import { EnvironmentCheck } from '@core/config/environment-check';
 import { ConnectivityService } from '@core/network/connectivity.service';
 
 /**
@@ -35,5 +35,5 @@ import { ConnectivityService } from '@core/network/connectivity.service';
 })
 export class ConnectionNotice {
   protected readonly online = inject(ConnectivityService).online;
-  protected readonly placeholderConfig = isDevMode() && usesPlaceholderConfig();
+  protected readonly placeholderConfig = isDevMode() && EnvironmentCheck.usesPlaceholderConfig();
 }

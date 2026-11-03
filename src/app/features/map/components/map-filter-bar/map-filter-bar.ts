@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaChip } from '@design-system';
 import { NearbyBusinessesStore } from '../../state/nearby-businesses.store';
-import { type MapFilters, toggleCategory } from '../../utils/map-filters.util';
+import { type MapFilters, MapFilterRules } from '../../utils/map-filter-rules';
 import { MapFilterSheet } from '../map-filter-sheet/map-filter-sheet';
 
 /** One active filter as a removable chip. */
@@ -33,7 +33,7 @@ export class MapFilterBar {
   protected readonly chips = computed<ActiveChip[]>(() => {
     const f = this.store.filters();
     const chips: ActiveChip[] = [];
-    const flag = (id: 'openNow' | 'withPromotion' | 'goodRating') =>
+    const flag = (id: 'openNow' | 'withPromotion' | 'goodRating'): number =>
       chips.push({
         id,
         key: `map.filters.${id}`,
@@ -59,7 +59,7 @@ export class MapFilterBar {
         key: null,
         text: category,
         params: {},
-        remove: (x) => toggleCategory(x, category),
+        remove: (x) => MapFilterRules.toggleCategory(x, category),
       });
     }
     return chips;

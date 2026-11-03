@@ -30,7 +30,7 @@ export class NotifyFollowers {
   private readonly repo = inject(PromotionWriteRepository);
   private readonly toast = inject(ToastService);
 
-  readonly promotion = input.required<Promotion>();
+  public readonly promotion = input.required<Promotion>();
 
   protected readonly busy = signal(false);
   private readonly sentNow = signal(false);

@@ -10,16 +10,16 @@ import { NotificationRepository } from './notification.repository';
 export class UnreadNotifications {
   private readonly repo = inject(NotificationRepository);
   private readonly _count = signal(0);
-  readonly count = this._count.asReadonly();
+  public readonly count = this._count.asReadonly();
 
   /** Re-reads the count; a failed refresh keeps the last value. */
-  async refresh(): Promise<void> {
+  public async refresh(): Promise<void> {
     const result = await this.repo.unreadCount();
     if (result.data !== null) this._count.set(result.data);
   }
 
   /** After the user opened the notifications. */
-  clear(): void {
+  public clear(): void {
     this._count.set(0);
   }
 }

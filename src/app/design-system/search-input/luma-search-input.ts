@@ -14,13 +14,13 @@ import { LumaIcon } from '../icon/luma-icon';
   host: { class: 'block' },
 })
 export class LumaSearchInput {
-  readonly inputId = input('luma-search');
+  public readonly inputId = input('luma-search');
   /** Accessible label (visually hidden). */
-  readonly label = input.required<string>();
-  readonly placeholder = input('');
-  readonly clearLabel = input.required<string>();
+  public readonly label = input.required<string>();
+  public readonly placeholder = input('');
+  public readonly clearLabel = input.required<string>();
 
-  readonly value = model('');
+  public readonly value = model('');
 
   protected onInput(event: Event): void {
     this.value.set((event.target as HTMLInputElement).value);

@@ -1,5 +1,10 @@
 import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RADIX_36 } from '@core/config/units';
+
+/** Six random characters after "0.". */
+const ID_START = 2;
+const ID_END = 8;
 
 export type InputType =
   'text' | 'email' | 'password' | 'search' | 'tel' | 'url' | 'number' | 'time' | 'datetime-local';
@@ -19,23 +24,23 @@ export type InputType =
   styleUrl: './luma-input.css',
 })
 export class LumaInput {
-  readonly inputId = input<string>(`luma-input-${Math.random().toString(36).slice(2, 8)}`);
-  readonly label = input<string | undefined>(undefined);
-  readonly placeholder = input<string>('');
-  readonly type = input<InputType>('text');
-  readonly hint = input<string | undefined>(undefined);
-  readonly errorMessage = input<string | undefined>(undefined);
-  readonly disabled = input<boolean>(false);
-  readonly required = input<boolean>(false);
+  public readonly inputId = input<string>(`luma-input-${Math.random().toString(RADIX_36).slice(ID_START, ID_END)}`);
+  public readonly label = input<string | undefined>(undefined);
+  public readonly placeholder = input<string>('');
+  public readonly type = input<InputType>('text');
+  public readonly hint = input<string | undefined>(undefined);
+  public readonly errorMessage = input<string | undefined>(undefined);
+  public readonly disabled = input<boolean>(false);
+  public readonly required = input<boolean>(false);
   /** Native maxlength; pair it with a counter in the hint. */
-  readonly maxLength = input<number | null>(null);
+  public readonly maxLength = input<number | null>(null);
   /** Virtual keyboard hint, e.g. 'numeric' for codes. */
-  readonly inputMode = input<string | null>(null);
+  public readonly inputMode = input<string | null>(null);
   /** e.g. 'one-time-code', 'email', 'new-password', 'current-password'. */
-  readonly autocomplete = input<string | null>(null);
+  public readonly autocomplete = input<string | null>(null);
 
   /** Two-way bindable value. */
-  readonly value = model<string>('');
+  public readonly value = model<string>('');
 
   protected get hasError(): boolean {
     return !!this.errorMessage();

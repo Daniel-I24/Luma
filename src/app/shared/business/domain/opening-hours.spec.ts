@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import shared from '../../../../../supabase/tests/fixtures/opening_hours_cases.json';
 import type { BusinessHours, BusinessStatus } from '../models/business.model';
-import { getBusinessStatus, isOpenStatus } from '../utils/business-status.util';
+import { BusinessStatusRules } from '../utils/business-status-rules';
 import { OpeningHours } from './opening-hours';
 
 interface SharedCase {
@@ -37,8 +37,8 @@ describe('OpeningHours (cases shared with the SQL business_open_at)', () => {
       const hours = OpeningHours.from(rows(c));
       const moment = at(c.at.day, c.at.time);
       expect(hours.isOpenAt(moment)).toBe(c.open);
-      expect(getBusinessStatus(rows(c), moment)).toBe(c.status);
-      expect(isOpenStatus(hours.statusAt(moment))).toBe(c.open);
+      expect(BusinessStatusRules.getBusinessStatus(rows(c), moment)).toBe(c.status);
+      expect(BusinessStatusRules.isOpenStatus(hours.statusAt(moment))).toBe(c.open);
     });
   }
 });
@@ -59,7 +59,7 @@ describe('OpeningHours windows', () => {
 
   it('honours a custom soon window', () => {
     const hours = [row(1, '08:00', '18:00')];
-    expect(getBusinessStatus(hours, at(1, '17:00'), 90)).toBe('closing-soon');
-    expect(getBusinessStatus(hours, at(1, '17:00'), 30)).toBe('open');
+    expect(BusinessStatusRules.getBusinessStatus(hours, at(1, '17:00'), 90)).toBe('closing-soon');
+    expect(BusinessStatusRules.getBusinessStatus(hours, at(1, '17:00'), 30)).toBe('open');
   });
 });

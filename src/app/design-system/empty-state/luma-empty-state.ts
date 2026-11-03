@@ -23,10 +23,10 @@ const TONE_CLASS: Record<EmptyStateTone, string> = {
   host: { class: 'flex flex-col items-center px-5 py-8 text-center animate-fade-in' },
 })
 export class LumaEmptyState {
-  readonly icon = input.required<IconName>();
-  readonly heading = input.required<string>();
-  readonly description = input<string | null>(null);
-  readonly tone = input<EmptyStateTone>('neutral');
+  public readonly icon = input.required<IconName>();
+  public readonly heading = input.required<string>();
+  public readonly description = input<string | null>(null);
+  public readonly tone = input<EmptyStateTone>('neutral');
 
   protected readonly iconClass = computed(
     () =>

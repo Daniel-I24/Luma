@@ -40,7 +40,7 @@ export class ResidencePicker {
     this.departmentCode() && !this.municipality() ? this.catalog.search(this.departmentCode(), this.query()) : [],
   );
 
-  public constructor() {
+  constructor() {
     void this.load();
   }
 
@@ -51,7 +51,7 @@ export class ResidencePicker {
     const current = this.value();
     const code = current?.daneCode ?? this.initialCode();
     if (ok && code) {
-      this.departmentCode.set(code.slice(0, 2));
+      this.departmentCode.set(Residence.departmentOf(code));
       this.municipality.set(this.catalog.municipality(code));
       this.neighborhood.set(current?.neighborhood ?? '');
       if (!current) this.emit();

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
-import type { TodayStats } from '../../utils/today-stats.util';
+import type { TodayStats } from '../../utils/today-stats';
 
 /** TodayStatsView — today's orders by stage and the total sold; links to the orders tab. */
 @Component({
@@ -35,8 +35,8 @@ import type { TodayStats } from '../../utils/today-stats.util';
   `,
 })
 export class TodayStatsView {
-  readonly stats = input.required<TodayStats>();
-  readonly ordersLink = input.required<readonly string[]>();
+  public readonly stats = input.required<TodayStats>();
+  public readonly ordersLink = input.required<readonly string[]>();
 
   protected readonly figures = computed(() => [
     { key: 'new', value: this.stats().newOrders },

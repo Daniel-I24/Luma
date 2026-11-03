@@ -3,7 +3,10 @@ import { AuthService } from '@core/auth/auth.service';
 import { ACCOUNT_ERROR_PATH, ACCOUNT_HOMES } from './account-homes';
 import { type AccountProfile, AccountProfileRepository, type ProfileDetails } from './account-profile.repository';
 import type { AccountType } from './account-type';
-import { ONBOARDING_PATH, ONBOARDING_VERSION, needsOnboarding } from './onboarding';
+import { ONBOARDING_PATH, ONBOARDING_VERSION, Onboarding } from './onboarding';
+
+/** Same minimum as is_profile_complete() in the database. */
+const MIN_FULL_NAME = 3;
 
 /**
  * SessionProfileStore — the signed-in user's account profile next to the
@@ -22,17 +25,17 @@ export class SessionProfileStore {
   private readonly _failed = signal(false);
   private loading: Promise<void> | null = null;
 
-  readonly profile = this._profile.asReadonly();
+  public readonly profile = this._profile.asReadonly();
   /** Null while unknown (signed out or still loading). */
-  readonly accountType = computed<AccountType | null>(() => this._profile()?.accountType ?? null);
-  readonly isBusinessOwner = computed(() => this.accountType()?.isBusinessOwner ?? false);
-  readonly loaded = this._loaded.asReadonly();
+  public readonly accountType = computed<AccountType | null>(() => this._profile()?.accountType ?? null);
+  public readonly isBusinessOwner = computed(() => this.accountType()?.isBusinessOwner ?? false);
+  public readonly loaded = this._loaded.asReadonly();
   /** True when a signed-in user's profile could not be read. */
-  readonly failed = this._failed.asReadonly();
+  public readonly failed = this._failed.asReadonly();
   /** Mirrors is_profile_complete(): name, +57 mobile and municipality of residence. */
-  readonly profileComplete = computed(() => {
+  public readonly profileComplete = computed(() => {
     const p = this._profile();
-    return !!p && (p.fullName?.trim().length ?? 0) >= 3 && p.phone !== null && !!p.residence;
+    return !!p && (p.fullName?.trim().length ?? 0) >= MIN_FULL_NAME && p.phone !== null && !!p.residence;
   });
 
   constructor() {
@@ -43,32 +46,32 @@ export class SessionProfileStore {
   }
 
   /** Resolves once the profile of the current user has been read (or failed). */
-  async whenLoaded(): Promise<void> {
+  public async whenLoaded(): Promise<void> {
     await this.auth.ready;
     if (!this._loaded()) await (this.loading ?? this.reload(this.auth.user()?.id ?? null));
   }
 
   /** Where the current account lands: /map for customers, the panel for owners. */
-  async homePath(): Promise<string> {
+  public async homePath(): Promise<string> {
     await this.whenLoaded();
     const type = this.accountType();
     return type ? ACCOUNT_HOMES[type.value] : ACCOUNT_ERROR_PATH;
   }
 
   /** Reads the profile again; true when it is now known. */
-  async retry(): Promise<boolean> {
+  public async retry(): Promise<boolean> {
     await this.reload(this.auth.user()?.id ?? null);
     return !this._failed();
   }
 
   /** Where to go right after signing in: the tutorial once per version, then home. */
-  async landingPath(): Promise<string> {
+  public async landingPath(): Promise<string> {
     const home = await this.homePath();
-    return needsOnboarding(this._profile()) ? ONBOARDING_PATH : home;
+    return Onboarding.needsOnboarding(this._profile()) ? ONBOARDING_PATH : home;
   }
 
   /** Records that the tutorial was seen (or skipped); false when it could not be saved. */
-  async markOnboardingSeen(): Promise<boolean> {
+  public async markOnboardingSeen(): Promise<boolean> {
     const userId = this.auth.user()?.id;
     if (!userId) return false;
     const result = await this.repo.setOnboardingSeen(userId, ONBOARDING_VERSION);
@@ -78,7 +81,7 @@ export class SessionProfileStore {
   }
 
   /** Saves name, mobile and residence; resolves to an error key, or null when saved. */
-  async saveDetails(details: ProfileDetails): Promise<string | null> {
+  public async saveDetails(details: ProfileDetails): Promise<string | null> {
     const userId = this.auth.user()?.id;
     if (!userId) return 'auth.errors.sessionExpired';
     const result = await this.repo.saveDetails(userId, details);
@@ -88,7 +91,7 @@ export class SessionProfileStore {
   }
 
   /** customer → business_owner; resolves to true when the account is an owner. */
-  async becomeBusinessOwner(): Promise<boolean> {
+  public async becomeBusinessOwner(): Promise<boolean> {
     const result = await this.repo.becomeBusinessOwner();
     if (!result.data) return false;
     const userId = this.auth.user()?.id ?? null;
@@ -96,7 +99,7 @@ export class SessionProfileStore {
     return this.isBusinessOwner();
   }
 
-  reload(userId: string | null): Promise<void> {
+  public reload(userId: string | null): Promise<void> {
     if (!userId) {
       this._profile.set(null);
       this._failed.set(false);

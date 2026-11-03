@@ -3,17 +3,17 @@ import { BusinessHighlightsRepository } from '@shared/business/data/business-hig
 import { BusinessRepository } from '@shared/business/data/business.repository';
 import { MenuRepository } from '@shared/business/data/menu.repository';
 import type { Business, BusinessHours } from '@shared/business/models/business.model';
-import { getBusinessStatus } from '@shared/business/utils/business-status.util';
+import { BusinessStatusRules } from '@shared/business/utils/business-status-rules';
 import { FavoritesStore } from '@shared/favorites/favorites.store';
 import { GeolocationService } from '@shared/geo/geolocation.service';
-import { haversineKm } from '@shared/geo/haversine.util';
+import { Haversine } from '@shared/geo/haversine';
 import { RECOMMENDATION_ENGINE } from '@shared/recommendations/recommendation-engine';
 import type {
   DayMoment,
   Recommendation,
   RecommendationCandidate,
 } from '@shared/recommendations/recommendation.model';
-import { momentForHour } from '@shared/recommendations/rules-recommendation.engine';
+import { RecommendationScoring } from '@shared/recommendations/rules-recommendation.engine';
 
 export const AI_RADIUS_KM = 10;
 export type AiState = 'loading' | 'ready' | 'error';
@@ -32,18 +32,18 @@ export class AiStore {
   private readonly favorites = inject(FavoritesStore);
   private readonly engine = inject(RECOMMENDATION_ENGINE);
 
-  private readonly _moment = signal<DayMoment>(momentForHour(new Date().getHours()));
+  private readonly _moment = signal<DayMoment>(RecommendationScoring.momentForHour(new Date().getHours()));
   private readonly _state = signal<AiState>('loading');
   private readonly _result = signal<Recommendation | null>(null);
   private candidates: RecommendationCandidate[] = [];
   /** Businesses already shown, left out by "Otra opción". */
   private readonly shown = new Set<string>();
 
-  readonly moment = this._moment.asReadonly();
-  readonly state = this._state.asReadonly();
-  readonly result = this._result.asReadonly();
+  public readonly moment = this._moment.asReadonly();
+  public readonly state = this._state.asReadonly();
+  public readonly result = this._result.asReadonly();
 
-  async load(): Promise<void> {
+  public async load(): Promise<void> {
     this._state.set('loading');
     const { lat, lng } = this.geo.coords();
     const nearby = await this.businesses.getNearby(lat, lng, AI_RADIUS_KM);
@@ -62,7 +62,7 @@ export class AiStore {
     const promoted = new Set(promotions.data?.map((p) => p.business_id));
     this.candidates = nearby.data.map((business) => ({
       business,
-      status: getBusinessStatus(hoursOf(hours.data ?? [], business)),
+      status: BusinessStatusRules.getBusinessStatus(hoursOf(hours.data ?? [], business)),
       distanceKm: this.distanceKm(business),
       rating: ratings.data?.get(business.id)?.rating ?? null,
       hasPromotion: promoted.has(business.id),
@@ -72,14 +72,14 @@ export class AiStore {
     await this.recommend();
   }
 
-  async selectMoment(moment: DayMoment): Promise<void> {
+  public async selectMoment(moment: DayMoment): Promise<void> {
     this._moment.set(moment);
     this.shown.clear();
     if (this._state() === 'ready') await this.recommend();
   }
 
   /** "Otra opción": the next best places, without the ones already shown (then from the start). */
-  async another(): Promise<void> {
+  public async another(): Promise<void> {
     for (const pick of this._result()?.businesses ?? []) this.shown.add(pick.candidate.business.id);
     if (this.candidates.every((c) => this.shown.has(c.business.id))) this.shown.clear();
     await this.recommend();
@@ -102,7 +102,7 @@ export class AiStore {
   private distanceKm(business: Business): number | null {
     if (!this.geo.hasRealLocation()) return null;
     const { lat, lng } = this.geo.coords();
-    return haversineKm(lat, lng, business.latitude, business.longitude);
+    return Haversine.haversineKm(lat, lng, business.latitude, business.longitude);
   }
 }
 

@@ -74,14 +74,14 @@ const KIND_ICON: Record<Place['kind'], IconName> = {
   `,
 })
 export class PlaceResults {
-  readonly places = input<readonly Place[] | null>(null);
-  readonly loading = input(false);
-  readonly errorKey = input<string | null>(null);
-  readonly attribution = input<PlaceAttribution>(null);
+  public readonly places = input<readonly Place[] | null>(null);
+  public readonly loading = input(false);
+  public readonly errorKey = input<string | null>(null);
+  public readonly attribution = input<PlaceAttribution>(null);
   protected readonly locationIqUrl = ExternalUrls.LOCATIONIQ;
 
-  readonly choose = output<Place>();
-  readonly dismiss = output<void>();
+  public readonly choose = output<Place>();
+  public readonly dismiss = output<void>();
 
   protected icon(place: Place): IconName {
     return KIND_ICON[place.kind];

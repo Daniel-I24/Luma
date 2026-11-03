@@ -17,6 +17,6 @@ import { PublishStore } from '../../state/publish.store';
 })
 export class PublishCard {
   protected readonly publish = inject(PublishStore);
-  readonly business = input.required<Pick<Business, 'is_active'>>();
-  readonly toggled = output<boolean>();
+  public readonly business = input.required<Pick<Business, 'is_active'>>();
+  public readonly toggled = output<boolean>();
 }

@@ -30,7 +30,11 @@ const ORDER_ERROR_KEYS: Readonly<Record<string, string>> = {
 /** The error that the customer fixes by completing their profile. */
 export const PROFILE_INCOMPLETE_KEY = 'orders.errors.profileIncomplete';
 
-/** Translation key for a database error message; a generic one otherwise. */
-export function mapOrderError(message: string | undefined, fallback: string): string {
-  return (message && ORDER_ERROR_KEYS[message.trim()]) || fallback;
+/** OrderErrors — maps order errors to translation keys. */
+export class OrderErrors {
+  /** Translation key for a database error message; a generic one otherwise. */
+  public static mapOrderError(message: string | undefined, fallback: string): string {
+    return (message && ORDER_ERROR_KEYS[message.trim()]) || fallback;
+  }
 }
+

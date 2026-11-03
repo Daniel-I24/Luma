@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { arrangeDeals, NO_DEAL_FILTERS } from './deal-list.util';
-import { type PromotionDeal, endsIn, promotionPrice } from './promotion-deal';
+import { NO_DEAL_FILTERS, DealList } from './deal-list';
+import { type PromotionDeal, PromotionPricing } from './promotion-deal';
 import type { DealWithHours } from './promotion-deal.repository';
 
 const open24 = [0, 1, 2, 3, 4, 5, 6].map((day) => ({
@@ -34,9 +34,9 @@ function deal(
 
 describe('promotionPrice', () => {
   it('rounds to the nearest peso with halves up, like the database', () => {
-    expect(promotionPrice(9990, 15)).toBe(8492);
-    expect(promotionPrice(1001, 50)).toBe(501);
-    expect(promotionPrice(2000, null)).toBe(2000);
+    expect(PromotionPricing.promotionPrice(9990, 15)).toBe(8492);
+    expect(PromotionPricing.promotionPrice(1001, 50)).toBe(501);
+    expect(PromotionPricing.promotionPrice(2000, null)).toBe(2000);
   });
 });
 
@@ -45,9 +45,9 @@ describe('endsIn', () => {
   const now = new Date('2026-10-19T02:00:00Z');
 
   it('counts days in Colombia', () => {
-    expect(endsIn('2026-10-19T04:00:00Z', now)).toEqual({ key: 'endsToday' });
-    expect(endsIn('2026-10-19T15:00:00Z', now)).toEqual({ key: 'endsTomorrow' });
-    expect(endsIn('2026-10-21T15:00:00Z', now)).toEqual({ key: 'endsInDays', days: 3 });
+    expect(PromotionPricing.endsIn('2026-10-19T04:00:00Z', now)).toEqual({ key: 'endsToday' });
+    expect(PromotionPricing.endsIn('2026-10-19T15:00:00Z', now)).toEqual({ key: 'endsTomorrow' });
+    expect(PromotionPricing.endsIn('2026-10-21T15:00:00Z', now)).toEqual({ key: 'endsInDays', days: 3 });
   });
 });
 
@@ -60,7 +60,7 @@ describe('arrangeDeals', () => {
     deal('closed', { lat: 1.22, endsAt: '2026-10-20T00:00:00Z' }),
   ];
   const ids = (sort: 'distance' | 'discount' | 'ending', filters = NO_DEAL_FILTERS) =>
-    arrangeDeals(deals, { sort, filters, origin, now }).map((d) => d.deal.id);
+    DealList.arrangeDeals(deals, { sort, filters, origin, now }).map((d) => d.deal.id);
 
   it('sorts by distance, discount or closest end', () => {
     expect(ids('distance')).toEqual(['near', 'closed', 'far']);

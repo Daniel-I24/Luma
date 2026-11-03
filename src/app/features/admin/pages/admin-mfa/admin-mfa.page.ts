@@ -24,7 +24,7 @@ export class AdminMfaPage {
   private readonly toast = inject(ToastService);
   protected readonly code = signal('');
 
-  public constructor() {
+  constructor() {
     void this.mfa.start();
   }
 

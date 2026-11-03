@@ -31,8 +31,8 @@ type IdeasState = 'loading' | 'ready' | 'error';
 export class IdeasCard {
   private readonly advisor = inject(PROMOTION_ADVISOR);
 
-  readonly businessId = input.required<string>();
-  readonly create = output<PromotionIdea>();
+  public readonly businessId = input.required<string>();
+  public readonly create = output<PromotionIdea>();
 
   protected readonly state = signal<IdeasState>('loading');
   protected readonly result = signal<IdeasResult | null>(null);

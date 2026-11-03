@@ -15,10 +15,15 @@ export interface TabItem {
   label: string;
 }
 
-/** Id of the tab button for `tabId`; panels use it in aria-labelledby. */
-export const tabElementId = (prefix: string, tabId: string): string => `${prefix}-tab-${tabId}`;
-/** Id of the panel for `tabId`; render it with role="tabpanel". */
-export const tabPanelId = (prefix: string, tabId: string): string => `${prefix}-panel-${tabId}`;
+/** TabIds — element ids that tie a tab to its panel. */
+export class TabIds {
+  /** Id of the tab button for `tabId`; panels use it in aria-labelledby. */
+  public static readonly tabElementId = (prefix: string, tabId: string): string => `${prefix}-tab-${tabId}`;
+
+  /** Id of the panel for `tabId`; render it with role="tabpanel". */
+  public static readonly tabPanelId = (prefix: string, tabId: string): string => `${prefix}-panel-${tabId}`;
+}
+
 
 /**
  * LumaTabs — accessible tablist (WAI-ARIA tabs pattern): roving tabindex,
@@ -35,11 +40,11 @@ export const tabPanelId = (prefix: string, tabId: string): string => `${prefix}-
   host: { class: 'block' },
 })
 export class LumaTabs {
-  readonly tabs = input.required<readonly TabItem[]>();
-  readonly idPrefix = input.required<string>();
+  public readonly tabs = input.required<readonly TabItem[]>();
+  public readonly idPrefix = input.required<string>();
   /** Accessible name of the tablist. */
-  readonly label = input.required<string>();
-  readonly selected = model.required<string>();
+  public readonly label = input.required<string>();
+  public readonly selected = model.required<string>();
 
   private readonly buttons = viewChildren<ElementRef<HTMLButtonElement>>('tabButton');
   private readonly indicator = viewChild.required<ElementRef<HTMLElement>>('indicator');
@@ -58,8 +63,8 @@ export class LumaTabs {
     });
   }
 
-  protected readonly tabElementId = tabElementId;
-  protected readonly tabPanelId = tabPanelId;
+  protected readonly tabElementId = TabIds.tabElementId;
+  protected readonly tabPanelId = TabIds.tabPanelId;
 
   protected onKeydown(event: KeyboardEvent): void {
     const tabs = this.tabs();

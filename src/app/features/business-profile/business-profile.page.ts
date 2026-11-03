@@ -12,17 +12,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { map } from 'rxjs';
 import {
+  TabIds,
   LumaButton,
   LumaEmptyState,
   LumaIcon,
   LumaSkeleton,
   LumaTabs,
-  tabElementId,
-  tabPanelId,
 } from '@design-system';
 import type { TabItem } from '@design-system';
 import { AuthService } from '@core/auth/auth.service';
-import { categoryIcon } from '@shared/business/utils/category-icon.util';
+import { CategoryIcons } from '@shared/business/utils/category-icons';
 import { InfoTab } from './components/info-tab/info-tab';
 import { MenuTab } from './components/menu-tab/menu-tab';
 import { ProfileHero } from './components/profile-hero/profile-hero';
@@ -84,9 +83,9 @@ export class BusinessProfilePage {
       label: this.transloco.translate(`businessProfile.tabs.${id}`),
     }));
   });
-  protected readonly tabElementId = tabElementId;
-  protected readonly tabPanelId = tabPanelId;
-  protected readonly categoryIcon = categoryIcon;
+  protected readonly tabElementId = TabIds.tabElementId;
+  protected readonly tabPanelId = TabIds.tabPanelId;
+  protected readonly categoryIcon = CategoryIcons.categoryIcon;
 
   constructor() {
     effect(() => {

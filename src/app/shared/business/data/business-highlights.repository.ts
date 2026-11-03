@@ -21,7 +21,7 @@ export class BusinessHighlightsRepository {
   private readonly db = inject(SupabaseService).client;
 
   /** Active, time-valid promotions of the given businesses. */
-  async getActivePromotions(businessIds: readonly string[]): Promise<RepoResult<Promotion[]>> {
+  public async getActivePromotions(businessIds: readonly string[]): Promise<RepoResult<Promotion[]>> {
     if (businessIds.length === 0) return { data: [], errorKey: null };
     const now = new Date().toISOString();
     const { data, error } = await this.db
@@ -37,7 +37,7 @@ export class BusinessHighlightsRepository {
   }
 
   /** Ratings by business id; businesses without reviews are absent. */
-  async getRatings(
+  public async getRatings(
     businessIds: readonly string[],
   ): Promise<RepoResult<Map<string, BusinessRating>>> {
     if (businessIds.length === 0) return { data: new Map(), errorKey: null };

@@ -4,16 +4,16 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaInput, ToastService } from '@design-system';
 import { type BusinessInfoInput, businessInfoSchema } from '@shared/business/data/business-write.schemas';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
-import { type FieldErrors, fieldErrors, focusFirstError, withoutErrors } from '@shared/forms/form-errors';
+import { type FieldErrors, FormErrors } from '@shared/forms/form-errors';
 import { BusinessBasicsFields } from '../../components/business-basics-fields/business-basics-fields';
 import { BusinessImages } from '../../components/business-images/business-images';
 import { PanelHeader } from '../../components/panel-header/panel-header';
 import { PanelStateView } from '../../components/panel-state/panel-state';
 import { ReReviewSheet } from '../../components/re-review-sheet/re-review-sheet';
 import { PanelBusinessStore } from '../../state/panel-business.store';
-import { EMPTY_DRAFT, draftFrom, draftValues, infoFieldOrder } from '../../utils/business-draft.util';
-import { changesNeedReReview } from '../../utils/re-review.util';
-import { routeBusinessId } from '../../utils/route-business-id';
+import { EMPTY_DRAFT, BusinessDrafts } from '../../utils/business-draft';
+import { ReReview } from '../../utils/re-review';
+import { RouteBusinessId } from '../../utils/route-business-id';
 import { SetupReturn } from '../../components/setup-return/setup-return';
 
 const ID_PREFIX = 'info';
@@ -44,7 +44,7 @@ export class BusinessInfoPage {
   private readonly repo = inject(OwnedBusinessRepository);
   private readonly toast = inject(ToastService);
   private readonly document = inject(DOCUMENT);
-  protected readonly id = routeBusinessId();
+  protected readonly id = RouteBusinessId.routeBusinessId();
 
   protected readonly idPrefix = ID_PREFIX;
   protected readonly descriptionMax = DESCRIPTION_MAX;
@@ -68,39 +68,39 @@ export class BusinessInfoPage {
     await this.panel.load(id);
     const business = this.panel.business();
     if (!business) return;
-    this.draft.set(draftFrom(business));
+    this.draft.set(BusinessDrafts.draftFrom(business));
     this.description.set(business.description ?? '');
     this.prepMinutes.set(String(business.prep_minutes));
   }
 
   protected onDescription(event: Event): void {
     this.description.set((event.target as HTMLTextAreaElement).value);
-    this.errors.update((errors) => withoutErrors(errors, 'description'));
+    this.errors.update((errors) => FormErrors.withoutErrors(errors, 'description'));
   }
 
   protected onPrepMinutes(value: string): void {
     this.prepMinutes.set(value);
-    this.errors.update((errors) => withoutErrors(errors, 'prep_minutes'));
+    this.errors.update((errors) => FormErrors.withoutErrors(errors, 'prep_minutes'));
   }
 
   protected async save(event: Event): Promise<void> {
     event.preventDefault();
     if (this.saving()) return;
     const parsed = businessInfoSchema.safeParse({
-      ...draftValues(this.draft()),
+      ...BusinessDrafts.draftValues(this.draft()),
       description: this.description().trim() || null,
       prep_minutes: Number(this.prepMinutes()),
     });
     if (!parsed.success) {
-      this.errors.set(fieldErrors(parsed.error.issues));
+      this.errors.set(FormErrors.fieldErrors(parsed.error.issues));
       this.errorKey.set('businessPanel.form.fixErrors');
-      focusFirstError(this.document, infoFieldOrder(ID_PREFIX), this.errors());
+      FormErrors.focusFirstError(this.document, BusinessDrafts.infoFieldOrder(ID_PREFIX), this.errors());
       return;
     }
     this.errors.set({});
     this.errorKey.set(null);
     const business = this.panel.business();
-    if (business && changesNeedReReview(business, parsed.data)) {
+    if (business && ReReview.changesNeedReReview(business, parsed.data)) {
       this.pendingSave.set(parsed.data);
       return;
     }

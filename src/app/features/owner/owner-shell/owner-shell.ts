@@ -12,7 +12,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { filter, map } from 'rxjs';
 import { LumaIcon, LumaTabBar, type TabBarItem } from '@design-system';
 import { OWNER_SECTIONS, type OwnerSection, ownerPaths } from '@shared/account/owner-paths';
-import { pollWhileVisible } from '@shared/ui/poll-while-visible';
+import { PollWhileVisible } from '@shared/ui/poll-while-visible';
 import { ORDER_ALERT_POLL_MS, OrderAlertsStore } from '../state/order-alerts.store';
 import { OwnerContextStore } from '../state/owner-context.store';
 
@@ -24,12 +24,15 @@ const TAB_ICONS = {
   business: 'store',
 } as const satisfies Record<OwnerSection, TabBarItem['icon']>;
 
-/** The business id and tab of a /owner/:id/:section/... URL (null elsewhere, e.g. /owner/new). */
-export function ownerLocation(url: string): { id: string; section: OwnerSection } | null {
-  const [owner, id, section] = url.split(/[?#]/)[0].split('/').filter(Boolean);
-  if (owner !== 'owner' || !id || id === 'new') return null;
-  const known = (OWNER_SECTIONS as readonly string[]).includes(section);
-  return { id, section: known ? (section as OwnerSection) : 'summary' };
+/** OwnerLocation — which business and section the owner URL points to. */
+export class OwnerLocation {
+  /** The business id and tab of a /owner/:id/:section/... URL (null elsewhere, e.g. /owner/new). */
+  public static ownerLocation(url: string): { id: string; section: OwnerSection } | null {
+    const [owner, id, section] = url.split(/[?#]/)[0].split('/').filter(Boolean);
+    if (owner !== 'owner' || !id || id === 'new') return null;
+    const known = (OWNER_SECTIONS as readonly string[]).includes(section);
+    return { id, section: known ? (section as OwnerSection) : 'summary' };
+  }
 }
 
 /**
@@ -59,7 +62,7 @@ export class OwnerShell {
     ),
     { initialValue: this.router.url },
   );
-  protected readonly location = computed(() => ownerLocation(this.url()));
+  protected readonly location = computed(() => OwnerLocation.ownerLocation(this.url()));
   protected readonly tabs = computed<readonly TabBarItem[]>(() => {
     const id = this.location()?.id;
     if (!id) return [];
@@ -86,7 +89,7 @@ export class OwnerShell {
           void this.alerts.watch(id);
         });
     });
-    pollWhileVisible(() => void this.alerts.refresh(), ORDER_ALERT_POLL_MS);
+    PollWhileVisible.pollWhileVisible(() => void this.alerts.refresh(), ORDER_ALERT_POLL_MS);
   }
 
   /** Same tab, other business. */

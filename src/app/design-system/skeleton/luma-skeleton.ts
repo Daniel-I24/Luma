@@ -21,5 +21,5 @@ export type SkeletonShape = 'text' | 'rect' | 'circle';
   },
 })
 export class LumaSkeleton {
-  readonly shape = input<SkeletonShape>('text');
+  public readonly shape = input<SkeletonShape>('text');
 }

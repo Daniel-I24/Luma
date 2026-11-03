@@ -18,7 +18,7 @@ export class MapMarkerSyncService {
   private selectedId: string | null = null;
 
   /** Aligns on-map markers with `items`; removed businesses lose their marker. */
-  syncMarkers(
+  public syncMarkers(
     map: maplibregl.Map,
     items: readonly MarkerItem[],
     onClick: (biz: Business) => void,
@@ -48,14 +48,14 @@ export class MapMarkerSyncService {
   }
 
   /** Highlights one marker (or none). */
-  select(businessId: string | null): void {
+  public select(businessId: string | null): void {
     this.selectedId = businessId;
     this.markers.forEach((marker, id) =>
       this.markerFactory.setSelected(marker.getElement(), id === businessId),
     );
   }
 
-  clear(): void {
+  public clear(): void {
     this.markers.forEach((marker) => marker.remove());
     this.markers.clear();
   }

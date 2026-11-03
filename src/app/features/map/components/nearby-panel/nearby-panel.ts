@@ -13,6 +13,8 @@ import { DistancePipe } from '@shared/geo/distance.pipe';
 import type { Promotion } from '@shared/business/models/business.model';
 import type { NearbyBusiness } from '../../state/nearby-businesses.store';
 
+const SKELETON_ROWS = 3;
+
 /**
  * NearbyPanel — "Cercanos a ti" below the map: compact business cards with
  * designed loading (skeleton), error, empty and no-results states.
@@ -39,20 +41,20 @@ export class NearbyPanel {
   protected readonly lang = toSignal(this.transloco.langChanges$, {
     initialValue: this.transloco.getActiveLang(),
   });
-  protected readonly skeletons = [0, 1, 2];
+  protected readonly skeletons = Array.from({ length: SKELETON_ROWS }, (_, i) => i);
   /** Only the first cards enter one after another; the rest just appear. */
   protected readonly staggerLimit = 6;
 
-  readonly items = input.required<readonly NearbyBusiness[]>();
-  readonly loading = input(false);
-  readonly errorKey = input<string | null>(null);
-  readonly filtersActive = input(false);
-  readonly selectedId = input<string | null>(null);
+  public readonly items = input.required<readonly NearbyBusiness[]>();
+  public readonly loading = input(false);
+  public readonly errorKey = input<string | null>(null);
+  public readonly filtersActive = input(false);
+  public readonly selectedId = input<string | null>(null);
 
-  readonly selectBusiness = output<NearbyBusiness>();
-  readonly retry = output<void>();
-  readonly clearFilters = output<void>();
-  readonly openAi = output<void>();
+  public readonly selectBusiness = output<NearbyBusiness>();
+  public readonly retry = output<void>();
+  public readonly clearFilters = output<void>();
+  public readonly openAi = output<void>();
 
   /** "-25 % · Title" for discounts, the title otherwise. */
   protected promoLabel(promotion: Promotion): string {

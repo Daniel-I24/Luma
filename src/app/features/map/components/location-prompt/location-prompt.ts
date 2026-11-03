@@ -16,6 +16,6 @@ import { LumaButton, LumaIcon } from '@design-system';
   host: { class: 'absolute inset-x-4 bottom-12 z-30 block animate-fade-in' },
 })
 export class LocationPrompt {
-  readonly allow = output<void>();
-  readonly skip = output<void>();
+  public readonly allow = output<void>();
+  public readonly skip = output<void>();
 }

@@ -3,7 +3,7 @@ import { BusinessRepository } from '@shared/business/data/business.repository';
 import { MenuRepository } from '@shared/business/data/menu.repository';
 import { BusinessPause } from '@shared/business/models/business-pause';
 import { CartStore } from '@shared/cart/cart.store';
-import { type CartNotice, reviewCart } from '../utils/cart-review.util';
+import { type CartNotice, CartReviewer } from '../utils/cart-reviewer';
 
 export type CartReviewState = 'idle' | 'checking' | 'checked' | 'failed';
 
@@ -23,12 +23,12 @@ export class CartReviewStore {
   private readonly _notices = signal<readonly CartNotice[]>([]);
   private readonly _paused = signal(false);
 
-  readonly state = this._state.asReadonly();
-  readonly notices = this._notices.asReadonly();
+  public readonly state = this._state.asReadonly();
+  public readonly notices = this._notices.asReadonly();
   /** The business paused new orders: "Continuar" is disabled. */
-  readonly paused = this._paused.asReadonly();
+  public readonly paused = this._paused.asReadonly();
 
-  async check(): Promise<void> {
+  public async check(): Promise<void> {
     const items = this.cart.items();
     if (items.length === 0) return;
     this._state.set('checking');
@@ -42,7 +42,7 @@ export class CartReviewStore {
       this._state.set('failed');
       return;
     }
-    const review = reviewCart(items, result.data);
+    const review = CartReviewer.reviewCart(items, result.data);
     this._notices.set(review.notices);
     this.cart.reconcile(review.prices);
     this._state.set('checked');

@@ -2,6 +2,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { MenuRepository } from '@shared/business/data/menu.repository';
 import { MenuWriteRepository } from '@shared/business/data/menu-write.repository';
 import { type DraftItem, MenuScanRepository } from '../services/menu-scan.repository';
+import { MAX_SORT_ORDER } from '@shared/business/data/business-write.schemas';
 
 /** One line of the draft as the owner reviews it (texts as typed). */
 export interface ReviewItem {
@@ -25,10 +26,13 @@ const toReview = (item: DraftItem, key: number): ReviewItem => ({
   selected: item.price_cop !== null,
 });
 
-/** A whole, positive price in COP from what the owner typed ("12.500" → 12500). */
-export function priceOf(text: string): number | null {
-  const digits = text.replace(/[.\s$]/g, '');
-  return /^\d{1,9}$/.test(digits) && Number(digits) > 0 ? Number(digits) : null;
+/** ScanPrices — reads prices from scanned menu text. */
+export class ScanPrices {
+  /** A whole, positive price in COP from what the owner typed ("12.500" → 12500). */
+  public static priceOf(text: string): number | null {
+    const digits = text.replace(/[.\s$]/g, '');
+    return /^\d{1,9}$/.test(digits) && Number(digits) > 0 ? Number(digits) : null;
+  }
 }
 
 /** MenuScanStore — photos → draft → review → the chosen items saved to the menu. */
@@ -43,13 +47,13 @@ export class MenuScanStore {
   private readonly _errorKey = signal<string | null>(null);
   private readonly _saved = signal(0);
 
-  readonly phase = this._phase.asReadonly();
-  readonly items = this._items.asReadonly();
-  readonly errorKey = this._errorKey.asReadonly();
-  readonly saved = this._saved.asReadonly();
-  readonly chosen = computed(() => this._items().filter((i) => i.selected && i.name.trim() && priceOf(i.price)));
+  public readonly phase = this._phase.asReadonly();
+  public readonly items = this._items.asReadonly();
+  public readonly errorKey = this._errorKey.asReadonly();
+  public readonly saved = this._saved.asReadonly();
+  public readonly chosen = computed(() => this._items().filter((i) => i.selected && i.name.trim() && ScanPrices.priceOf(i.price)));
 
-  async read(businessId: string, files: readonly File[]): Promise<void> {
+  public async read(businessId: string, files: readonly File[]): Promise<void> {
     if (!files.length) return;
     this._phase.set('reading');
     this._errorKey.set(null);
@@ -64,12 +68,12 @@ export class MenuScanStore {
     if (result.items.length === 0) this._errorKey.set('owner.menuScan.nothingFound');
   }
 
-  edit(key: number, changes: Partial<Omit<ReviewItem, 'key'>>): void {
+  public edit(key: number, changes: Partial<Omit<ReviewItem, 'key'>>): void {
     this._items.update((items) => items.map((i) => (i.key === key ? { ...i, ...changes } : i)));
   }
 
   /** Saves the chosen items after the current menu, one by one; stops at the first refusal. */
-  async save(businessId: string): Promise<void> {
+  public async save(businessId: string): Promise<void> {
     const chosen = this.chosen();
     if (!chosen.length) return;
     this._phase.set('saving');
@@ -81,9 +85,9 @@ export class MenuScanStore {
       const result = await this.writer.create(businessId, {
         name: item.name.trim(),
         description: item.description,
-        price_cop: priceOf(item.price) ?? 0,
+        price_cop: ScanPrices.priceOf(item.price) ?? 0,
         section: item.section.trim() || null,
-        sort_order: Math.min(order++, 9999),
+        sort_order: Math.min(order++, MAX_SORT_ORDER),
         is_available: true,
         image_url: null,
       });
@@ -98,7 +102,7 @@ export class MenuScanStore {
     this._phase.set(this._errorKey() ? 'review' : 'done');
   }
 
-  restart(): void {
+  public restart(): void {
     this._items.set([]);
     this._errorKey.set(null);
     this._saved.set(0);

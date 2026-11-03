@@ -1,6 +1,7 @@
+import type { Type } from '@angular/core';
 import type { Routes } from '@angular/router';
 
-const page = () => import('./legal-document.page').then((m) => m.LegalDocumentPage);
+const page = (): Promise<Type<unknown>> => import('./legal-document.page').then((m) => m.LegalDocumentPage);
 
 /** /legal/** — public: readable before signing up. */
 export const legalRoutes: Routes = [

@@ -3,7 +3,8 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { LumaInput } from '@design-system';
 import type { MenuItem } from '@shared/business/models/menu.model';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
-import { promotionPrice } from '@shared/promotions/promotion-deal';
+import { PromotionPricing } from '@shared/promotions/promotion-deal';
+import { MAX_DISCOUNT_PERCENT, MIN_DISCOUNT_PERCENT } from '@shared/business/data/business-write.schemas';
 
 /**
  * DiscountFields — optional product of the promotion and its percent off,
@@ -17,12 +18,12 @@ import { promotionPrice } from '@shared/promotions/promotion-deal';
   templateUrl: './discount-fields.html',
 })
 export class DiscountFields {
-  readonly items = input.required<readonly MenuItem[]>();
+  public readonly items = input.required<readonly MenuItem[]>();
   /** Already translated errors of menu_item_id and discount_percent. */
-  readonly itemError = input<string | undefined>(undefined);
-  readonly percentError = input<string | undefined>(undefined);
-  readonly itemId = model<string | null>(null);
-  readonly percent = model('');
+  public readonly itemError = input<string | undefined>(undefined);
+  public readonly percentError = input<string | undefined>(undefined);
+  public readonly itemId = model<string | null>(null);
+  public readonly percent = model('');
 
   protected readonly item = computed(
     () => this.items().find((i) => i.id === this.itemId()) ?? null,
@@ -30,8 +31,8 @@ export class DiscountFields {
   protected readonly preview = computed(() => {
     const item = this.item();
     const percent = Number(this.percent());
-    if (!item || !Number.isInteger(percent) || percent < 5 || percent > 90) return null;
-    return { list: item.price_cop, final: promotionPrice(item.price_cop, percent) };
+    if (!item || !Number.isInteger(percent) || percent < MIN_DISCOUNT_PERCENT || percent > MAX_DISCOUNT_PERCENT) return null;
+    return { list: item.price_cop, final: PromotionPricing.promotionPrice(item.price_cop, percent) };
   });
 
   protected onItem(event: Event): void {

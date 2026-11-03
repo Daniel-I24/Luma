@@ -24,9 +24,9 @@ import { OwnerContextStore } from '../../state/owner-context.store';
 import { PanelBusinessStore } from '../../state/panel-business.store';
 import { PublishStore } from '../../state/publish.store';
 import { VerificationStore } from '../../state/verification.store';
-import { missingForReview } from '../../utils/review-checklist.util';
-import { routeBusinessId } from '../../utils/route-business-id';
-import { todayStats } from '../../utils/today-stats.util';
+import { ReviewChecklist } from '../../utils/review-checklist';
+import { RouteBusinessId } from '../../utils/route-business-id';
+import { TodayStatsCalculator } from '../../utils/today-stats';
 
 /**
  * OwnerSummaryPage — /owner/:id/summary ("Resumen"): verification state,
@@ -59,12 +59,12 @@ export class OwnerSummaryPage {
   private readonly context = inject(OwnerContextStore);
   private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
-  protected readonly id = routeBusinessId();
+  protected readonly id = RouteBusinessId.routeBusinessId();
 
   protected readonly missing = computed(() => {
     const business = this.panel.business();
     if (!business) return [];
-    return missingForReview({
+    return ReviewChecklist.missingForReview({
       business,
       hours: this.publish.hours(),
       items: this.publish.items(),
@@ -72,7 +72,7 @@ export class OwnerSummaryPage {
       docs: this.verification.docs(),
     });
   });
-  protected readonly stats = computed(() => todayStats(this.orders.orders(), new Date()));
+  protected readonly stats = computed(() => TodayStatsCalculator.todayStats(this.orders.orders(), new Date()));
   protected readonly ordersLink = computed(() => ownerPaths.section(this.id(), 'orders'));
 
   constructor() {

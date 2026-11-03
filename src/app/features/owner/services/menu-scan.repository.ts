@@ -1,11 +1,20 @@
 import { Injectable, inject } from '@angular/core';
 import { FunctionsFetchError, FunctionsHttpError } from '@supabase/supabase-js';
 import * as z from 'zod/mini';
-import { networkErrorKey } from '@core/auth/auth-error';
+import { AuthErrors } from '@core/auth/auth-error';
 import { ConnectivityService } from '@core/network/connectivity.service';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import { IMAGE_ENCODER, ImageEncodeError } from '@shared/media/image-encoder';
-import { checkImageFile } from '@shared/media/image-file.util';
+import { ImageFiles } from '@shared/media/image-files';
+import { HTTP_STATUS } from '@core/config/http-status';
+
+// Same bounds as the extract-menu function and menu_items.
+const MAX_SCANNED_NAME = 80;
+const MAX_SCANNED_DESCRIPTION = 300;
+const MAX_SCANNED_SECTION = 40;
+const MAX_SCANNED_ITEMS = 200;
+/** Bytes per String.fromCharCode call (stays under the argument limit). */
+const BASE64_CHUNK = 32_768;
 
 /** At most 4 photos per scan (the function's limit). */
 export const MAX_SCAN_PHOTOS = 4;
@@ -13,12 +22,12 @@ export const MAX_SCAN_PHOTOS = 4;
 const SCAN_SIDE = 1600;
 
 const draftItemSchema = z.object({
-  name: z.string().check(z.minLength(1), z.maxLength(80)),
-  description: z.nullable(z.string().check(z.maxLength(300))),
+  name: z.string().check(z.minLength(1), z.maxLength(MAX_SCANNED_NAME)),
+  description: z.nullable(z.string().check(z.maxLength(MAX_SCANNED_DESCRIPTION))),
   price_cop: z.nullable(z.int().check(z.minimum(0))),
-  section: z.nullable(z.string().check(z.maxLength(40))),
+  section: z.nullable(z.string().check(z.maxLength(MAX_SCANNED_SECTION))),
 });
-const draftSchema = z.object({ items: z.array(draftItemSchema).check(z.maxLength(200)) });
+const draftSchema = z.object({ items: z.array(draftItemSchema).check(z.maxLength(MAX_SCANNED_ITEMS)) });
 export type DraftItem = z.infer<typeof draftItemSchema>;
 
 export type ScanResult =
@@ -28,7 +37,7 @@ export type ScanResult =
 async function toBase64(blob: Blob): Promise<string> {
   const bytes = new Uint8Array(await blob.arrayBuffer());
   let binary = '';
-  for (let i = 0; i < bytes.length; i += 0x8000) binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  for (let i = 0; i < bytes.length; i += BASE64_CHUNK) binary += String.fromCharCode(...bytes.subarray(i, i + BASE64_CHUNK));
   return btoa(binary);
 }
 
@@ -43,10 +52,10 @@ export class MenuScanRepository {
   private readonly online = inject(ConnectivityService).online;
   private readonly encode = inject(IMAGE_ENCODER);
 
-  async scan(businessId: string, files: readonly File[]): Promise<ScanResult> {
+  public async scan(businessId: string, files: readonly File[]): Promise<ScanResult> {
     const images: string[] = [];
     for (const file of files.slice(0, MAX_SCAN_PHOTOS)) {
-      const invalid = checkImageFile(file);
+      const invalid = ImageFiles.checkImageFile(file);
       if (invalid) return { items: null, errorKey: invalid };
       try {
         images.push(await toBase64((await this.encode(file, SCAN_SIDE)).blob));
@@ -65,20 +74,20 @@ export class MenuScanRepository {
         ? { items: parsed.data.items, errorKey: null }
         : { items: null, errorKey: 'owner.menuScan.unavailable' };
     } catch {
-      return { items: null, errorKey: networkErrorKey(this.online()) };
+      return { items: null, errorKey: AuthErrors.networkErrorKey(this.online()) };
     }
   }
 
   private async errorKey(error: unknown): Promise<string> {
-    if (error instanceof FunctionsFetchError) return networkErrorKey(this.online());
+    if (error instanceof FunctionsFetchError) return AuthErrors.networkErrorKey(this.online());
     if (error instanceof FunctionsHttpError && error.context instanceof Response) {
       const status = error.context.status;
-      if (status === 429) return (await this.errorCode(error.context)) === 'rate_limited'
+      if (status === HTTP_STATUS.tooManyRequests) return (await this.errorCode(error.context)) === 'rate_limited'
         ? 'owner.menuScan.rateLimited'
         : 'owner.menuScan.quota';
-      if (status === 400) return 'owner.menuScan.tooBig';
-      if (status === 401) return 'auth.errors.sessionExpired';
-      if (status === 403) return 'businessPanel.errors.forbidden';
+      if (status === HTTP_STATUS.badRequest) return 'owner.menuScan.tooBig';
+      if (status === HTTP_STATUS.unauthorized) return 'auth.errors.sessionExpired';
+      if (status === HTTP_STATUS.forbidden) return 'businessPanel.errors.forbidden';
     }
     return 'owner.menuScan.unavailable';
   }

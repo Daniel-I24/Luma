@@ -6,7 +6,7 @@ import { BusinessRepository } from '@shared/business/data/business.repository';
 import type { Business } from '@shared/business/models/business.model';
 import { BusinessHoursCacheService } from '../services/business-hours-cache.service';
 import { GeolocationService } from '@shared/geo/geolocation.service';
-import { NO_FILTERS } from '../utils/map-filters.util';
+import { NO_FILTERS } from '../utils/map-filter-rules';
 import { NearbyBusinessesStore } from './nearby-businesses.store';
 import { useFixedClock } from '../../../../testing/fixed-clock';
 

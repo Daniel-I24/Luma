@@ -24,7 +24,7 @@ export class PushRegistration {
 
   private readonly _permission = signal<PushPermission>('prompt');
   private token: string | null = null;
-  readonly permission = this._permission.asReadonly();
+  public readonly permission = this._permission.asReadonly();
 
   constructor() {
     inject(SignOutHooks).add(() => this.forget());
@@ -38,13 +38,13 @@ export class PushRegistration {
   }
 
   /** Called once at start-up (app initializer). */
-  async init(): Promise<void> {
+  public async init(): Promise<void> {
     this._permission.set(await this.platform.permission());
     await this.platform.onAction((action) => void this.open(action));
   }
 
   /** From a user action: asks for permission and registers. Resolves to the permission. */
-  async enable(): Promise<PushPermission> {
+  public async enable(): Promise<PushPermission> {
     let permission = await this.platform.permission();
     if (permission === 'prompt') permission = await this.platform.requestPermission();
     this._permission.set(permission);

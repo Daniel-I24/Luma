@@ -22,10 +22,10 @@ export class ToastService {
   private readonly _toasts = signal<Toast[]>([]);
   private nextId = 1;
 
-  readonly toasts = computed(() => this._toasts());
+  public readonly toasts = computed(() => this._toasts());
 
   /** Shows a toast and returns its id. */
-  show({
+  public show({
     messageKey,
     params = {},
     tone = 'info',
@@ -37,7 +37,7 @@ export class ToastService {
     return id;
   }
 
-  dismiss(id: number): void {
+  public dismiss(id: number): void {
     this._toasts.update((list) => list.filter((toast) => toast.id !== id));
   }
 }

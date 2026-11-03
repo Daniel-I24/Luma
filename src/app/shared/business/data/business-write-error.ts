@@ -20,11 +20,15 @@ const CODE_KEYS: Readonly<Record<string, string>> = {
   '42501': 'businessPanel.errors.forbidden',
 };
 
-/** Maps a PostgREST error to a translation key; never exposes its text. */
-export function mapWriteError(
-  error: { code?: string; message?: string } | null | undefined,
-  fallback: string,
-): string {
-  if (!error) return fallback;
-  return MESSAGE_KEYS[error.message?.trim() ?? ''] ?? CODE_KEYS[error.code ?? ''] ?? fallback;
+/** BusinessWriteErrors — maps business write errors to translation keys. */
+export class BusinessWriteErrors {
+  /** Maps a PostgREST error to a translation key; never exposes its text. */
+  public static mapWriteError(
+    error: { code?: string; message?: string } | null | undefined,
+    fallback: string,
+  ): string {
+    if (!error) return fallback;
+    return MESSAGE_KEYS[error.message?.trim() ?? ''] ?? CODE_KEYS[error.code ?? ''] ?? fallback;
+  }
 }
+

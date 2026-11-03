@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaSkeleton } from '@design-system';
 import { type AndroidRelease, ReleaseRepository } from './release.repository';
+import { BYTES_PER_MB } from '@core/config/units';
 
 /**
  * DownloadPage — /download (public): the signed Android APK announced in
@@ -52,12 +53,12 @@ export class DownloadPage implements OnInit {
   protected readonly release = signal<AndroidRelease | null>(null);
   protected readonly loading = signal(true);
 
-  async ngOnInit(): Promise<void> {
+  public async ngOnInit(): Promise<void> {
     this.release.set(await this.repo.latest());
     this.loading.set(false);
   }
 
   protected megabytes(bytes: number): string {
-    return (bytes / 1_048_576).toFixed(1);
+    return (bytes / BYTES_PER_MB).toFixed(1);
   }
 }

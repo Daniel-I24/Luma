@@ -13,11 +13,11 @@ export const SIGN_OUT_HOOK_TIMEOUT_MS = 3000;
 export class SignOutHooks {
   private readonly hooks = new Set<() => Promise<unknown>>();
 
-  add(hook: () => Promise<unknown>): void {
+  public add(hook: () => Promise<unknown>): void {
     this.hooks.add(hook);
   }
 
-  async run(): Promise<void> {
+  public async run(): Promise<void> {
     const all = Promise.allSettled([...this.hooks].map((hook) => hook()));
     let timer: ReturnType<typeof setTimeout> | undefined;
     const timeout = new Promise<void>((resolve) => (timer = setTimeout(resolve, SIGN_OUT_HOOK_TIMEOUT_MS)));

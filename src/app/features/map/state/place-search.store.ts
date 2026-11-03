@@ -20,20 +20,20 @@ export class PlaceSearchStore {
   private readonly _searched = signal('');
   private request = 0;
 
-  readonly places = this._places.asReadonly();
+  public readonly places = this._places.asReadonly();
   /** Credit shown under the results when the provider's terms ask for it. */
-  readonly attribution = this._attribution.asReadonly();
-  readonly loading = this._loading.asReadonly();
-  readonly errorKey = this._errorKey.asReadonly();
+  public readonly attribution = this._attribution.asReadonly();
+  public readonly loading = this._loading.asReadonly();
+  public readonly errorKey = this._errorKey.asReadonly();
   /** The query the shown results belong to. */
-  readonly searched = this._searched.asReadonly();
-  readonly open = computed(() => this._loading() || this._places() !== null || this._errorKey() !== null);
+  public readonly searched = this._searched.asReadonly();
+  public readonly open = computed(() => this._loading() || this._places() !== null || this._errorKey() !== null);
 
-  canSearch(query: string): boolean {
+  public canSearch(query: string): boolean {
     return query.trim().length >= MIN_PLACE_QUERY;
   }
 
-  async search(query: string, near: { lat: number; lng: number }): Promise<void> {
+  public async search(query: string, near: { lat: number; lng: number }): Promise<void> {
     const q = query.trim();
     if (!this.canSearch(q) || (q === this._searched() && this._places() !== null)) return;
     const id = ++this.request;
@@ -49,7 +49,7 @@ export class PlaceSearchStore {
   }
 
   /** Closes the results (a place was chosen, or the query changed or was cleared). */
-  close(): void {
+  public close(): void {
     this.request++;
     this._places.set(null);
     this._errorKey.set(null);

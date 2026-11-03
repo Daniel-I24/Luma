@@ -1,5 +1,5 @@
 import type { Promotion } from '@shared/business/models/business.model';
-import { toLocalInput } from '../../utils/promotion-phase.util';
+import { PromotionPhases } from '../../utils/promotion-phase';
 
 const DAY_MS = 86_400_000;
 
@@ -22,29 +22,51 @@ export interface PromotionPrefill {
   readonly durationDays: number;
 }
 
-export function draftOf(
-  promotion: Promotion | null,
-  now: Date,
-  prefill: PromotionPrefill | null,
-): PromoDraft {
-  if (!promotion && prefill) {
+/** A new promotion lasts a week unless Luma IA suggested otherwise. */
+const DEFAULT_DURATION_DAYS = 7;
+
+/** PromotionDrafts — the editable draft of a promotion. */
+export class PromotionDrafts {
+  public static draftOf(
+    promotion: Promotion | null,
+    now: Date,
+    prefill: PromotionPrefill | null,
+  ): PromoDraft {
+    if (promotion) return PromotionDrafts.fromPromotion(promotion);
+    return prefill ? PromotionDrafts.fromPrefill(prefill, now) : PromotionDrafts.empty(now);
+  }
+
+  private static fromPromotion(promotion: Promotion): PromoDraft {
     return {
+      title: promotion.title,
+      description: promotion.description ?? '',
+      startsAt: PromotionPhases.toLocalInput(promotion.starts_at),
+      endsAt: PromotionPhases.toLocalInput(promotion.ends_at),
+      imageUrl: promotion.image_url ?? null,
+      menuItemId: promotion.menu_item_id ?? null,
+      discount: promotion.discount_percent?.toString() ?? '',
+    };
+  }
+
+  private static fromPrefill(prefill: PromotionPrefill, now: Date): PromoDraft {
+    return {
+      ...PromotionDrafts.empty(now, prefill.durationDays),
       title: prefill.title,
-      description: '',
-      startsAt: toLocalInput(now.toISOString()),
-      endsAt: toLocalInput(new Date(now.getTime() + prefill.durationDays * DAY_MS).toISOString()),
-      imageUrl: null,
       menuItemId: prefill.menuItemId,
       discount: String(prefill.discountPercent),
     };
   }
-  return {
-    title: promotion?.title ?? '',
-    description: promotion?.description ?? '',
-    startsAt: toLocalInput(promotion?.starts_at ?? now.toISOString()),
-    endsAt: toLocalInput(promotion?.ends_at ?? new Date(now.getTime() + 7 * DAY_MS).toISOString()),
-    imageUrl: promotion?.image_url ?? null,
-    menuItemId: promotion?.menu_item_id ?? null,
-    discount: promotion?.discount_percent?.toString() ?? '',
-  };
+
+  private static empty(now: Date, durationDays = DEFAULT_DURATION_DAYS): PromoDraft {
+    return {
+      title: '',
+      description: '',
+      startsAt: PromotionPhases.toLocalInput(now.toISOString()),
+      endsAt: PromotionPhases.toLocalInput(new Date(now.getTime() + durationDays * DAY_MS).toISOString()),
+      imageUrl: null,
+      menuItemId: null,
+      discount: '',
+    };
+  }
 }
+

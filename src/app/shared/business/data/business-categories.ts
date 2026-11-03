@@ -24,8 +24,12 @@ export const BUSINESS_CATEGORY_VALUES = BUSINESS_CATEGORIES.map((c) => c.value) 
   ...BusinessCategory[],
 ];
 
-/** Translation key of a stored category, or null for legacy free-text values. */
-export function categoryLabelKey(value: string): string | null {
-  const category = BUSINESS_CATEGORIES.find((c) => c.value === value);
-  return category ? `businessCategories.${category.key}` : null;
+/** BusinessCategories — translation keys of the business categories. */
+export class BusinessCategories {
+  /** Translation key of a stored category, or null for legacy free-text values. */
+  public static categoryLabelKey(value: string): string | null {
+    const category = BUSINESS_CATEGORIES.find((c) => c.value === value);
+    return category ? `businessCategories.${category.key}` : null;
+  }
 }
+

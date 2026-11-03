@@ -6,6 +6,8 @@ import { PromotionCard } from '@shared/promotions/promotion-card/promotion-card'
 import { PromotionFilters } from './components/promotion-filters/promotion-filters';
 import { PromotionsStore } from './state/promotions.store';
 
+const SKELETON_ROWS = 3;
+
 /**
  * PromotionsPage — /promotions: current deals near the user, ordered by
  * distance, discount or closest end, with filters (category, minimum
@@ -31,7 +33,7 @@ import { PromotionsStore } from './state/promotions.store';
 export class PromotionsPage {
   protected readonly store = inject(PromotionsStore);
   private readonly router = inject(Router);
-  protected readonly skeletons = [0, 1, 2];
+  protected readonly skeletons = Array.from({ length: SKELETON_ROWS }, (_, i) => i);
 
   constructor() {
     void this.store.load();

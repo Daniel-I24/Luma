@@ -12,7 +12,7 @@ export class MenuRepository {
   private readonly db = inject(SupabaseService).client;
 
   /** Menu of a business, grouped by section then in the owner's order. */
-  async getMenu(businessId: string): Promise<RepoResult<MenuItem[]>> {
+  public async getMenu(businessId: string): Promise<RepoResult<MenuItem[]>> {
     const { data, error } = await this.db
       .from('menu_items')
       .select('*')
@@ -28,7 +28,7 @@ export class MenuRepository {
    * Current rows of the given items in one query. Items no longer sold are
    * absent (RLS only returns available items of active businesses).
    */
-  async getItemsByIds(ids: readonly string[]): Promise<RepoResult<MenuItem[]>> {
+  public async getItemsByIds(ids: readonly string[]): Promise<RepoResult<MenuItem[]>> {
     if (ids.length === 0) return { data: [], errorKey: null };
     const { data, error } = await this.db
       .from('menu_items')
@@ -41,7 +41,7 @@ export class MenuRepository {
   }
 
   /** Available items of many businesses in one query, in each owner's order. */
-  async getAvailableFor(businessIds: readonly string[]): Promise<RepoResult<MenuItem[]>> {
+  public async getAvailableFor(businessIds: readonly string[]): Promise<RepoResult<MenuItem[]>> {
     if (businessIds.length === 0) return { data: [], errorKey: null };
     const { data, error } = await this.db
       .from('menu_items')

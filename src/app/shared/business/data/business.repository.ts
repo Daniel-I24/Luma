@@ -1,7 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { SupabaseService } from '@core/supabase/supabase.service';
-import { haversineKm } from '@shared/geo/haversine.util';
+import { Haversine } from '@shared/geo/haversine';
 import type { Business, BusinessHours } from '../models/business.model';
+
+/** One degree of latitude is about 111 km. */
+const KM_PER_DEGREE = 111;
 
 /** Generic result wrapper — keeps Supabase errors out of the rest of the app. */
 export interface RepoResult<T> {
@@ -26,8 +29,8 @@ export class BusinessRepository {
    * Returns active businesses within radiusKm of the given coordinates.
    * Uses a lat/lng bounding box in SQL, then filters by true distance.
    */
-  async getNearby(lat: number, lng: number, radiusKm: number): Promise<RepoResult<Business[]>> {
-    const delta = radiusKm / 111; // ~1° ≈ 111 km
+  public async getNearby(lat: number, lng: number, radiusKm: number): Promise<RepoResult<Business[]>> {
+    const delta = radiusKm / KM_PER_DEGREE;
     const { data, error } = await this.db
       .from('businesses')
       .select('*')
@@ -40,14 +43,14 @@ export class BusinessRepository {
     if (error) return { data: null, errorKey: 'businesses.errors.loadFailed' };
 
     const nearby = (data as Business[]).filter(
-      (b) => haversineKm(lat, lng, b.latitude, b.longitude) <= radiusKm,
+      (b) => Haversine.haversineKm(lat, lng, b.latitude, b.longitude) <= radiusKm,
     );
 
     return { data: nearby, errorKey: null };
   }
 
   /** Returns a single active business by id, or null if not found. */
-  async getById(id: string): Promise<RepoResult<Business | null>> {
+  public async getById(id: string): Promise<RepoResult<Business | null>> {
     const { data, error } = await this.db
       .from('businesses')
       .select('*')
@@ -60,7 +63,7 @@ export class BusinessRepository {
   }
 
   /** Active businesses with the given ids, in one query (order not guaranteed). */
-  async getByIds(ids: readonly string[]): Promise<RepoResult<Business[]>> {
+  public async getByIds(ids: readonly string[]): Promise<RepoResult<Business[]>> {
     if (ids.length === 0) return { data: [], errorKey: null };
     const { data, error } = await this.db
       .from('businesses')
@@ -73,7 +76,7 @@ export class BusinessRepository {
   }
 
   /** Returns the full weekly schedule for a business. */
-  async getHours(businessId: string): Promise<RepoResult<BusinessHours[]>> {
+  public async getHours(businessId: string): Promise<RepoResult<BusinessHours[]>> {
     const { data, error } = await this.db
       .from('business_hours')
       .select('*')
@@ -85,7 +88,7 @@ export class BusinessRepository {
   }
 
   /** Weekly schedules of many businesses in one query. */
-  async getHoursFor(businessIds: readonly string[]): Promise<RepoResult<BusinessHours[]>> {
+  public async getHoursFor(businessIds: readonly string[]): Promise<RepoResult<BusinessHours[]>> {
     if (businessIds.length === 0) return { data: [], errorKey: null };
     const { data, error } = await this.db
       .from('business_hours')

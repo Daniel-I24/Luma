@@ -31,7 +31,7 @@ export class AccountDetailsPage {
   private readonly toast = inject(ToastService);
   protected readonly loaded = signal(false);
 
-  public constructor() {
+  constructor() {
     void this.form.load().then(() => this.loaded.set(true));
   }
 

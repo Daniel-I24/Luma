@@ -21,7 +21,7 @@ export class ReportSheet {
   private readonly repo = inject(ReportRepository);
   private readonly toast = inject(ToastService);
 
-  readonly businessId = input.required<string>();
+  public readonly businessId = input.required<string>();
 
   protected readonly reasons = REPORT_REASONS;
   protected readonly commentMax = REPORT_COMMENT_MAX;

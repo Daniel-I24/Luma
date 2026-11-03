@@ -3,11 +3,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LumaButton, LumaEmptyState, LumaIcon, LumaIconButton, LumaSkeleton } from '@design-system';
-import { formatDateTime } from '@shared/format/date-format.util';
+import { DateFormat } from '@shared/format/date-format';
 import type { AppNotification } from '@shared/notifications/notification.repository';
-import { pollWhileVisible } from '@shared/ui/poll-while-visible';
+import { PollWhileVisible } from '@shared/ui/poll-while-visible';
 import { NotificationsStore } from './state/notifications.store';
-import { notificationKey, notificationLink } from './utils/notification-view.util';
+import { NotificationView } from './utils/notification-view';
 
 /** Refresh period while the screen is visible. */
 export const NOTIFICATIONS_REFRESH_MS = 30_000;
@@ -32,23 +32,23 @@ export class NotificationsPage {
   private readonly lang = toSignal(this.transloco.langChanges$, {
     initialValue: this.transloco.getActiveLang(),
   });
-  protected readonly textKey = notificationKey;
+  protected readonly textKey = NotificationView.notificationKey;
 
   constructor() {
     void this.store.load();
-    pollWhileVisible(() => void this.store.refresh(), NOTIFICATIONS_REFRESH_MS);
+    PollWhileVisible.pollWhileVisible(() => void this.store.refresh(), NOTIFICATIONS_REFRESH_MS);
   }
 
   protected when(notification: AppNotification): string {
-    return formatDateTime(notification.created_at, this.lang());
+    return DateFormat.formatDateTime(notification.created_at, this.lang());
   }
 
   protected canOpen(notification: AppNotification): boolean {
-    return notificationLink(notification) !== null;
+    return NotificationView.notificationLink(notification) !== null;
   }
 
   protected open(notification: AppNotification): void {
-    const link = notificationLink(notification);
+    const link = NotificationView.notificationLink(notification);
     if (link) void this.router.navigate(link);
   }
 

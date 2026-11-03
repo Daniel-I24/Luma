@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
+const DEFAULT_SIZE = 24;
+
 /**
  * LumaCheckmark — success mark whose check draws itself once (motion-draw,
  * 340 ms; shown complete under reduced motion). Decorative: the text next to
@@ -20,5 +22,5 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 })
 export class LumaCheckmark {
   /** Size in px (16 inside a badge, 24 inline, 48 on a result screen). */
-  public readonly size = input(24);
+  public readonly size = input(DEFAULT_SIZE);
 }

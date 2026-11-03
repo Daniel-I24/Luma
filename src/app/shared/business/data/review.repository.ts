@@ -24,7 +24,7 @@ export class ReviewRepository {
   private readonly db = inject(SupabaseService).client;
 
   /** Latest reviews of a business with the author's display name. */
-  async getReviews(
+  public async getReviews(
     businessId: string,
     limit = DEFAULT_PAGE_SIZE,
   ): Promise<RepoResult<ReviewWithAuthor[]>> {
@@ -40,7 +40,7 @@ export class ReviewRepository {
   }
 
   /** The signed-in user's review of a business, or null if they wrote none. */
-  async getOwnReview(businessId: string): Promise<RepoResult<ReviewWithAuthor | null>> {
+  public async getOwnReview(businessId: string): Promise<RepoResult<ReviewWithAuthor | null>> {
     const { data, error } = await this.db
       .from('reviews_with_author')
       .select(REVIEW_WITH_AUTHOR_COLUMNS)
@@ -52,7 +52,7 @@ export class ReviewRepository {
     return { data: (data as ReviewWithAuthor | null) ?? null, errorKey: null };
   }
 
-  async create(businessId: string, input: ReviewInput): Promise<RepoResult<Review>> {
+  public async create(businessId: string, input: ReviewInput): Promise<RepoResult<Review>> {
     const parsed = reviewInputSchema.safeParse(input);
     if (!parsed.success) return { data: null, errorKey: parsed.error.issues[0].message };
 
@@ -66,7 +66,7 @@ export class ReviewRepository {
     return { data: data as Review, errorKey: null };
   }
 
-  async update(reviewId: string, input: ReviewInput): Promise<RepoResult<Review>> {
+  public async update(reviewId: string, input: ReviewInput): Promise<RepoResult<Review>> {
     const parsed = reviewInputSchema.safeParse(input);
     if (!parsed.success) return { data: null, errorKey: parsed.error.issues[0].message };
 
@@ -81,7 +81,7 @@ export class ReviewRepository {
     return { data: data as Review, errorKey: null };
   }
 
-  async remove(reviewId: string): Promise<RepoResult<true>> {
+  public async remove(reviewId: string): Promise<RepoResult<true>> {
     const { error } = await this.db.from('reviews').delete().eq('id', reviewId);
     if (error) return { data: null, errorKey: 'businesses.errors.reviewDeleteFailed' };
     return { data: true, errorKey: null };

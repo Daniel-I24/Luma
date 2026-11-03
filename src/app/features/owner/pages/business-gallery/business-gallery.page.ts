@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, Component, effect, inject, signal, untracked }
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaIconButton, LumaImage, LumaSkeleton } from '@design-system';
 import { type BusinessPhoto, MAX_CAPTION, MAX_PHOTOS } from '@shared/business/data/business-photo.repository';
-import { ACCEPTED_IMAGE_TYPES } from '@shared/media/image-file.util';
+import { ACCEPTED_IMAGE_TYPES } from '@shared/media/image-files';
 import { PanelHeader } from '../../components/panel-header/panel-header';
 import { GalleryStore } from '../../state/gallery.store';
-import { routeBusinessId } from '../../utils/route-business-id';
+import { RouteBusinessId } from '../../utils/route-business-id';
 
 /**
  * BusinessGalleryPage — /owner/:id/business/gallery: up to 8 photos of the
@@ -23,7 +23,7 @@ import { routeBusinessId } from '../../utils/route-business-id';
 })
 export class BusinessGalleryPage {
   protected readonly gallery = inject(GalleryStore);
-  protected readonly id = routeBusinessId();
+  protected readonly id = RouteBusinessId.routeBusinessId();
   protected readonly accept = ACCEPTED_IMAGE_TYPES.join(',');
   protected readonly max = MAX_PHOTOS;
   protected readonly maxCaption = MAX_CAPTION;

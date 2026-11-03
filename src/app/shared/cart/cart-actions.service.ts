@@ -17,14 +17,14 @@ export class CartActions {
   private readonly _pending = signal<readonly CartProduct[] | null>(null);
 
   /** Products waiting for the user to confirm emptying the cart. */
-  readonly pendingConflict = this._pending.asReadonly();
+  public readonly pendingConflict = this._pending.asReadonly();
 
-  add(product: CartProduct): void {
+  public add(product: CartProduct): void {
     this.addAll([product]);
   }
 
   /** Adds several products of one business (e.g. a combo) as one action. */
-  addAll(products: readonly CartProduct[]): void {
+  public addAll(products: readonly CartProduct[]): void {
     const businessId = this.cart.businessId();
     if (businessId && products.some((p) => p.businessId !== businessId)) {
       this._pending.set(products);
@@ -33,7 +33,7 @@ export class CartActions {
     this.addEach(products);
   }
 
-  confirmReplace(): void {
+  public confirmReplace(): void {
     const products = this._pending();
     this._pending.set(null);
     if (!products) return;
@@ -41,7 +41,7 @@ export class CartActions {
     this.addEach(products);
   }
 
-  cancelReplace(): void {
+  public cancelReplace(): void {
     this._pending.set(null);
   }
 

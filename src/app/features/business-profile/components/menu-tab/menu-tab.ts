@@ -4,7 +4,7 @@ import { LumaButton, LumaEmptyState, LumaImage } from '@design-system';
 import type { IconName } from '@design-system';
 import type { MenuItem } from '@shared/business/models/menu.model';
 import { AddToCart } from '@shared/cart/add-to-cart/add-to-cart';
-import { toCartProduct } from '@shared/cart/cart.model';
+import { CartMath } from '@shared/cart/cart.model';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
 
 export interface MenuSection {
@@ -13,15 +13,19 @@ export interface MenuSection {
   items: MenuItem[];
 }
 
-/** Groups menu items by section, keeping the order in which sections appear. */
-export function groupBySection(items: readonly MenuItem[]): MenuSection[] {
-  const sections = new Map<string | null, MenuItem[]>();
-  for (const item of items) {
-    const key = item.section?.trim() || null;
-    sections.set(key, [...(sections.get(key) ?? []), item]);
+/** MenuSections — groups menu items by section, in menu order. */
+export class MenuSections {
+  /** Groups menu items by section, keeping the order in which sections appear. */
+  public static groupBySection(items: readonly MenuItem[]): MenuSection[] {
+    const sections = new Map<string | null, MenuItem[]>();
+    for (const item of items) {
+      const key = item.section?.trim() || null;
+      sections.set(key, [...(sections.get(key) ?? []), item]);
+    }
+    return [...sections].map(([name, list]) => ({ name, items: list }));
   }
-  return [...sections].map(([name, list]) => ({ name, items: list }));
 }
+
 
 /**
  * MenuTab — the business menu grouped by section, with prices in COP and
@@ -37,14 +41,14 @@ export function groupBySection(items: readonly MenuItem[]): MenuSection[] {
 })
 export class MenuTab {
   /** Null when the menu failed to load. */
-  readonly items = input.required<readonly MenuItem[] | null>();
-  readonly placeholderIcon = input<IconName>('store');
-  readonly businessName = input.required<string>();
+  public readonly items = input.required<readonly MenuItem[] | null>();
+  public readonly placeholderIcon = input<IconName>('store');
+  public readonly businessName = input.required<string>();
 
-  readonly retry = output<void>();
+  public readonly retry = output<void>();
 
-  protected readonly sections = computed(() => groupBySection(this.items() ?? []));
+  protected readonly sections = computed(() => MenuSections.groupBySection(this.items() ?? []));
   protected readonly products = computed(
-    () => new Map((this.items() ?? []).map((i) => [i.id, toCartProduct(i, this.businessName())])),
+    () => new Map((this.items() ?? []).map((i) => [i.id, CartMath.toCartProduct(i, this.businessName())])),
   );
 }

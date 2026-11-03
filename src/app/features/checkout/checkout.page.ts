@@ -16,7 +16,7 @@ import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
 import { PROFILE_INCOMPLETE_KEY } from '@shared/orders/order-error';
 import { CheckoutStore, NOTES_MAX_LENGTH } from './state/checkout.store';
 import { PickupScheduleStore } from './state/pickup-schedule.store';
-import type { PickupOption } from './utils/pickup-time.util';
+import type { PickupOption } from './utils/pickup-time';
 
 /**
  * CheckoutPage — /checkout: cart summary, "¿Cuándo recoges?" (now while the

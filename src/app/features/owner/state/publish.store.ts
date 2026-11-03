@@ -4,7 +4,7 @@ import { MenuRepository } from '@shared/business/data/menu.repository';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
 import type { BusinessHours } from '@shared/business/models/business.model';
 import type { MenuItem } from '@shared/business/models/menu.model';
-import { missingRequirements } from '../utils/publish-requirements.util';
+import { PublishRequirements } from '../utils/publish-requirements';
 import { PanelBusinessStore } from './panel-business.store';
 
 /**
@@ -20,19 +20,19 @@ export class PublishStore {
 
   private readonly _hours = signal<readonly BusinessHours[]>([]);
   private readonly _items = signal<readonly MenuItem[]>([]);
-  readonly hours = this._hours.asReadonly();
-  readonly items = this._items.asReadonly();
+  public readonly hours = this._hours.asReadonly();
+  public readonly items = this._items.asReadonly();
   private readonly _busy = signal(false);
   private readonly _errorKey = signal<string | null>(null);
-  readonly busy = this._busy.asReadonly();
-  readonly errorKey = this._errorKey.asReadonly();
+  public readonly busy = this._busy.asReadonly();
+  public readonly errorKey = this._errorKey.asReadonly();
 
-  readonly missing = computed(() => {
+  public readonly missing = computed(() => {
     const business = this.panel.business();
-    return business ? missingRequirements(business, this.hours(), this.items()) : [];
+    return business ? PublishRequirements.missingRequirements(business, this.hours(), this.items()) : [];
   });
 
-  async load(id: string): Promise<void> {
+  public async load(id: string): Promise<void> {
     const [hours, items] = await Promise.all([
       this.businesses.getHours(id),
       this.menus.getMenu(id),
@@ -43,7 +43,7 @@ export class PublishStore {
   }
 
   /** Resolves to true when the change was saved. */
-  async setPublished(published: boolean): Promise<boolean> {
+  public async setPublished(published: boolean): Promise<boolean> {
     const business = this.panel.business();
     if (!business || this._busy() || (published && this.missing().length > 0)) return false;
     this._busy.set(true);

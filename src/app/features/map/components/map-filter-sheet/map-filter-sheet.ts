@@ -3,13 +3,7 @@ import { ChangeDetectionStrategy, Component, inject, model } from '@angular/core
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaBottomSheet, LumaButton, LumaChip } from '@design-system';
 import { NearbyBusinessesStore } from '../../state/nearby-businesses.store';
-import {
-  DISTANCE_OPTIONS,
-  type DistanceOption,
-  type MapFilters,
-  NO_FILTERS,
-  toggleCategory,
-} from '../../utils/map-filters.util';
+import { DISTANCE_OPTIONS, type DistanceOption, type MapFilters, NO_FILTERS, MapFilterRules } from '../../utils/map-filter-rules';
 
 type Flag = 'openNow' | 'withPromotion' | 'goodRating';
 
@@ -28,7 +22,7 @@ type Flag = 'openNow' | 'withPromotion' | 'goodRating';
 export class MapFilterSheet {
   protected readonly store = inject(NearbyBusinessesStore);
   private readonly document = inject(DOCUMENT);
-  readonly open = model(false);
+  public readonly open = model(false);
 
   protected readonly flags: readonly Flag[] = ['openNow', 'withPromotion', 'goodRating'];
   protected readonly distances = DISTANCE_OPTIONS;
@@ -42,7 +36,7 @@ export class MapFilterSheet {
   }
 
   protected toggle(category: string): void {
-    this.update((f) => toggleCategory(f, category));
+    this.update((f) => MapFilterRules.toggleCategory(f, category));
   }
 
   protected clear(): void {

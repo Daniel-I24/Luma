@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import { AuthCodeService } from './auth-code.service';
-import { normalizeCode } from './auth.schemas';
+import { AuthCode } from './auth.schemas';
 
 describe('AuthCodeService', () => {
   const auth = {
@@ -93,7 +93,7 @@ describe('AuthCodeService', () => {
   });
 
   it('keeps only the digits of a pasted code', () => {
-    expect(normalizeCode(' 123 456 ')).toBe('123456');
-    expect(normalizeCode('12-34-56-78')).toBe('123456');
+    expect(AuthCode.normalizeCode(' 123 456 ')).toBe('123456');
+    expect(AuthCode.normalizeCode('12-34-56-78')).toBe('123456');
   });
 });

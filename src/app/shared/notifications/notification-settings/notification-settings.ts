@@ -30,7 +30,7 @@ export class NotificationSettings implements OnInit {
   protected readonly errorKey = signal<string | null>(null);
   protected readonly saving = signal(false);
 
-  async ngOnInit(): Promise<void> {
+  public async ngOnInit(): Promise<void> {
     const result = await this.repo.get();
     this.preferences.set(result.data);
     this.errorKey.set(result.errorKey);

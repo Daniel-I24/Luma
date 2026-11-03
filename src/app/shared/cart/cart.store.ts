@@ -2,16 +2,7 @@ import { Injectable, computed, effect, inject, signal, untracked } from '@angula
 import { AuthService } from '@core/auth/auth.service';
 import { type UserScopedState, UserDataRegistry } from '@core/auth/user-data-registry';
 import { CartStorage } from './cart-storage';
-import {
-  type CartItem,
-  type CartProduct,
-  type CartSnapshot,
-  EMPTY_CART,
-  MAX_CART_UNITS,
-  MAX_PER_ITEM,
-  cartTotal,
-  cartUnits,
-} from './cart.model';
+import { type CartItem, type CartProduct, type CartSnapshot, EMPTY_CART, MAX_CART_UNITS, MAX_PER_ITEM, CartMath } from './cart.model';
 
 /** added · conflict: the cart holds another business · limit: 20 per item or 50 in total. */
 export type AddOutcome = 'added' | 'conflict' | 'limit';
@@ -28,12 +19,12 @@ export class CartStore implements UserScopedState {
   private readonly _cart = signal<CartSnapshot>(EMPTY_CART);
   private owner: string | null = null;
 
-  readonly items = computed(() => this._cart().items);
-  readonly businessName = computed(() => this._cart().businessName);
-  readonly businessId = computed(() => this._cart().items[0]?.businessId ?? null);
-  readonly units = computed(() => cartUnits(this.items()));
-  readonly totalCop = computed(() => cartTotal(this.items()));
-  readonly isEmpty = computed(() => this.items().length === 0);
+  public readonly items = computed(() => this._cart().items);
+  public readonly businessName = computed(() => this._cart().businessName);
+  public readonly businessId = computed(() => this._cart().items[0]?.businessId ?? null);
+  public readonly units = computed(() => CartMath.cartUnits(this.items()));
+  public readonly totalCop = computed(() => CartMath.cartTotal(this.items()));
+  public readonly isEmpty = computed(() => this.items().length === 0);
 
   constructor() {
     inject(UserDataRegistry).register(this);
@@ -43,11 +34,11 @@ export class CartStore implements UserScopedState {
     });
   }
 
-  quantityOf(menuItemId: string): number {
+  public quantityOf(menuItemId: string): number {
     return this.items().find((item) => item.menuItemId === menuItemId)?.quantity ?? 0;
   }
 
-  add(product: CartProduct): AddOutcome {
+  public add(product: CartProduct): AddOutcome {
     const businessId = this.businessId();
     if (businessId && businessId !== product.businessId) return 'conflict';
     const current = this.quantityOf(product.menuItemId);
@@ -62,14 +53,14 @@ export class CartStore implements UserScopedState {
   }
 
   /** Empties the cart and adds the product (answer to a conflict). */
-  replaceWith(product: CartProduct): AddOutcome {
+  public replaceWith(product: CartProduct): AddOutcome {
     this.commit(EMPTY_CART);
     return this.add(product);
   }
 
   /** Sets a line's quantity within the limits; 0 removes it. */
-  setQuantity(menuItemId: string, quantity: number): void {
-    const others = cartUnits(this.items().filter((i) => i.menuItemId !== menuItemId));
+  public setQuantity(menuItemId: string, quantity: number): void {
+    const others = CartMath.cartUnits(this.items().filter((i) => i.menuItemId !== menuItemId));
     const allowed = Math.max(0, Math.min(Math.trunc(quantity), MAX_PER_ITEM, MAX_CART_UNITS - others));
     const items = this.items()
       .map((item) => (item.menuItemId === menuItemId ? { ...item, quantity: allowed } : item))
@@ -77,23 +68,23 @@ export class CartStore implements UserScopedState {
     this.commit({ businessName: items.length ? this.businessName() : null, items });
   }
 
-  remove(menuItemId: string): void {
+  public remove(menuItemId: string): void {
     this.setQuantity(menuItemId, 0);
   }
 
   /** Applies the server's current prices and drops lines no longer sold. */
-  reconcile(prices: ReadonlyMap<string, number>): void {
+  public reconcile(prices: ReadonlyMap<string, number>): void {
     const items: CartItem[] = this.items()
       .filter((item) => prices.has(item.menuItemId))
       .map((item) => ({ ...item, priceCop: prices.get(item.menuItemId) ?? item.priceCop }));
     this.commit({ businessName: items.length ? this.businessName() : null, items });
   }
 
-  clear(): void {
+  public clear(): void {
     this.commit(EMPTY_CART);
   }
 
-  clearUserData(): void {
+  public clearUserData(): void {
     if (this.owner) this.storage.remove(this.owner);
     this.owner = null;
     this._cart.set(EMPTY_CART);

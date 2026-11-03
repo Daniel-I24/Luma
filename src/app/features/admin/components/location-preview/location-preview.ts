@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import * as maplibregl from 'maplibre-gl';
-import { createBaseMap } from '@shared/map/map-base';
+import { BaseMap } from '@shared/map/map-base';
 import { MapStylesLoader } from '@shared/map/map-styles.loader';
 
 const PREVIEW_ZOOM = 16;
@@ -42,8 +42,8 @@ export class LocationPreview {
   private readonly styles = inject(MapStylesLoader);
   private readonly container = viewChild.required<ElementRef<HTMLElement>>('map');
 
-  readonly lat = input.required<number>();
-  readonly lng = input.required<number>();
+  public readonly lat = input.required<number>();
+  public readonly lng = input.required<number>();
   protected readonly failed = signal(false);
   private map: maplibregl.Map | null = null;
 
@@ -52,7 +52,7 @@ export class LocationPreview {
       try {
         this.styles.ensureLoaded();
         const centre = { lat: this.lat(), lng: this.lng() };
-        this.map = createBaseMap(this.container().nativeElement, centre, PREVIEW_ZOOM);
+        this.map = BaseMap.createBaseMap(this.container().nativeElement, centre, PREVIEW_ZOOM);
         this.map.scrollZoom.disable();
         new maplibregl.Marker().setLngLat([centre.lng, centre.lat]).addTo(this.map);
       } catch {

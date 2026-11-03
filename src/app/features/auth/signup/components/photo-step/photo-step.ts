@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton } from '@design-system';
-import { ACCEPTED_IMAGE_TYPES, checkImageFile } from '@shared/media/image-file.util';
+import { ACCEPTED_IMAGE_TYPES, ImageFiles } from '@shared/media/image-files';
 import { SignupDraftStore } from '../../signup-draft.store';
 
 /**
@@ -22,7 +22,7 @@ export class PhotoStep {
   protected readonly preview = signal<string | null>(null);
   protected readonly fileError = signal<string | null>(null);
 
-  public constructor() {
+  constructor() {
     const file = this.store.draft().avatar;
     if (file) this.preview.set(URL.createObjectURL(file));
     inject(DestroyRef).onDestroy(() => this.revoke());
@@ -33,7 +33,7 @@ export class PhotoStep {
     const file = input.files?.[0] ?? null;
     input.value = '';
     if (!file) return;
-    const invalid = checkImageFile(file);
+    const invalid = ImageFiles.checkImageFile(file);
     this.fileError.set(invalid);
     if (invalid) return;
     this.revoke();

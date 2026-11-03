@@ -15,11 +15,11 @@ export interface UserScopedState {
 export class UserDataRegistry {
   private readonly states = new Set<UserScopedState>();
 
-  register(state: UserScopedState): void {
+  public register(state: UserScopedState): void {
     this.states.add(state);
   }
 
-  clearAll(): void {
+  public clearAll(): void {
     this.states.forEach((state) => state.clearUserData());
   }
 }

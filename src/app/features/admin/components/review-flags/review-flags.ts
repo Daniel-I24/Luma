@@ -41,7 +41,7 @@ export class ReviewFlagsView {
   protected readonly newAccountDays = NEW_ACCOUNT_DAYS;
   protected readonly raisedSignals = computed(() => SIGNALS.filter((name) => this.flags()?.[name]));
 
-  public constructor() {
+  constructor() {
     effect(() => {
       const id = this.businessId();
       untracked(() => void this.repo.reviewFlags(id).then((result) => {

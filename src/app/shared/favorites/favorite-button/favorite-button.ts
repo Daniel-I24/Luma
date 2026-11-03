@@ -26,8 +26,8 @@ type Feedback = 'pop' | 'shake';
 export class FavoriteButton {
   private readonly favorites = inject(FavoritesStore);
 
-  readonly businessId = input.required<string>();
-  readonly variant = input<IconButtonVariant>('ghost');
+  public readonly businessId = input.required<string>();
+  public readonly variant = input<IconButtonVariant>('ghost');
 
   protected readonly isFavorite = computed(() => this.favorites.ids().has(this.businessId()));
   protected readonly feedback = signal<Feedback | null>(null);

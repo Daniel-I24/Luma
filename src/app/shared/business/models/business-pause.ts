@@ -5,6 +5,7 @@
  */
 export class BusinessPause {
   /** Minutes the owner can choose; -1 is "until I resume". */
+  // eslint-disable-next-line @typescript-eslint/no-magic-numbers -- data table: pause lengths in minutes (-1 until reopened)
   public static readonly OPTIONS = [15, 30, 60, 120, -1] as const;
   public static readonly UNTIL_RESUMED = -1;
   private static readonly INFINITY = 'infinity';

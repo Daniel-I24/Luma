@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { NotificationRepository } from '@shared/notifications/notification.repository';
 import { UnreadNotifications } from '@shared/notifications/unread-notifications';
 import { NOTIFICATIONS_REFRESH_MS, NotificationsPage } from './notifications.page';
-import { notificationKey, notificationLink } from './utils/notification-view.util';
+import { NotificationView } from './utils/notification-view';
 
 const flush = () => new Promise((resolve) => setTimeout(resolve));
 const base = { created_at: '2026-10-14T12:00:00Z', business_id: null };
@@ -103,17 +103,17 @@ describe('NotificationsPage', () => {
 
 describe('notification view', () => {
   it('maps every status to a key and links owners to their board', () => {
-    expect(notificationKey({ type: 'order_status', status: 'cancelled' })).toBe(
+    expect(NotificationView.notificationKey({ type: 'order_status', status: 'cancelled' })).toBe(
       'notifications.text.status.cancelled',
     );
-    expect(notificationKey({ type: 'order_status', status: null })).toBe(
+    expect(NotificationView.notificationKey({ type: 'order_status', status: null })).toBe(
       'notifications.text.status.unknown',
     );
-    expect(notificationKey({ type: 'order_cancelled', status: 'cancelled' })).toBe(
+    expect(NotificationView.notificationKey({ type: 'order_cancelled', status: 'cancelled' })).toBe(
       'notifications.text.orderCancelled',
     );
     expect(
-      notificationLink({
+      NotificationView.notificationLink({
         ...base,
         id: 'c',
         type: 'order_cancelled',
@@ -131,7 +131,7 @@ describe('notification view', () => {
       status: null,
       read_at: null,
     } as const;
-    expect(notificationLink(orphan)).toEqual(['/owner']);
-    expect(notificationLink({ ...orphan, type: 'order_status', order_id: null })).toBeNull();
+    expect(NotificationView.notificationLink(orphan)).toEqual(['/owner']);
+    expect(NotificationView.notificationLink({ ...orphan, type: 'order_status', order_id: null })).toBeNull();
   });
 });

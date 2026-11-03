@@ -7,7 +7,7 @@ import {
   RulesPromotionAdvisor,
 } from './promotion-advisor';
 import type { SalesSummary } from './promotion-idea';
-import { ruleIdeas } from './rules-promotion-ideas';
+import { RulePromotionIdeas } from './rules-promotion-ideas';
 
 const summary: SalesSummary = {
   orders: 4,
@@ -25,7 +25,7 @@ const summary: SalesSummary = {
 
 describe('ruleIdeas (same rules as suggest-promotions below 10 orders)', () => {
   it('suggests unsold, new and quiet-moment items with server-like prices', () => {
-    const ideas = ruleIdeas(summary, new Set());
+    const ideas = RulePromotionIdeas.ruleIdeas(summary, new Set());
     expect(ideas.map((i) => [i.menu_item_id, i.reason, i.discount_percent, i.final_cop])).toEqual([
       ['slow', 'slow_item', 15, 8492],
       ['new', 'new_item', 10, 4500],
@@ -35,7 +35,7 @@ describe('ruleIdeas (same rules as suggest-promotions below 10 orders)', () => {
   });
 
   it('skips items that already have a running promotion', () => {
-    expect(ruleIdeas(summary, new Set(['slow', 'top'])).map((i) => i.menu_item_id)).toEqual([
+    expect(RulePromotionIdeas.ruleIdeas(summary, new Set(['slow', 'top'])).map((i) => i.menu_item_id)).toEqual([
       'new',
     ]);
   });

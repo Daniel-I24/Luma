@@ -19,21 +19,21 @@ export class PromotionsPanelStore {
   private readonly _promotions = signal<readonly Promotion[]>([]);
   private readonly _busy = signal(false);
   private readonly _errorKey = signal<string | null>(null);
-  readonly promotions = this._promotions.asReadonly();
-  readonly busy = this._busy.asReadonly();
-  readonly errorKey = this._errorKey.asReadonly();
+  public readonly promotions = this._promotions.asReadonly();
+  public readonly busy = this._busy.asReadonly();
+  public readonly errorKey = this._errorKey.asReadonly();
   private readonly _items = signal<readonly MenuItem[]>([]);
   /** Products a discount can apply to. */
-  readonly items = this._items.asReadonly();
-  readonly maxActive = MAX_ACTIVE_PROMOTIONS;
+  public readonly items = this._items.asReadonly();
+  public readonly maxActive = MAX_ACTIVE_PROMOTIONS;
   /** Active and not ended yet: what counts towards the limit. */
-  readonly activeCount = computed(
+  public readonly activeCount = computed(
     () =>
       this._promotions().filter((p) => p.is_active && Date.parse(p.ends_at) > Date.now()).length,
   );
-  readonly canAdd = computed(() => this.activeCount() < MAX_ACTIVE_PROMOTIONS);
+  public readonly canAdd = computed(() => this.activeCount() < MAX_ACTIVE_PROMOTIONS);
 
-  async load(businessId: string): Promise<boolean> {
+  public async load(businessId: string): Promise<boolean> {
     const [result, items] = await Promise.all([
       this.repo.listForOwner(businessId),
       this.menus.getMenu(businessId),
@@ -44,7 +44,7 @@ export class PromotionsPanelStore {
   }
 
   /** Creates (no id) or updates a promotion; a replaced picture is deleted once saved. */
-  async save(businessId: string, id: string | null, input: PromotionInput): Promise<boolean> {
+  public async save(businessId: string, id: string | null, input: PromotionInput): Promise<boolean> {
     return this.run(async () => {
       const result = id
         ? await this.repo.update(id, input)
@@ -63,7 +63,7 @@ export class PromotionsPanelStore {
     });
   }
 
-  async end(promotion: Promotion, now: Date = new Date()): Promise<boolean> {
+  public async end(promotion: Promotion, now: Date = new Date()): Promise<boolean> {
     return this.run(async () => {
       const result = await this.repo.end(promotion, now);
       if (result.data) {
@@ -79,7 +79,7 @@ export class PromotionsPanelStore {
     });
   }
 
-  clearError(): void {
+  public clearError(): void {
     this._errorKey.set(null);
   }
 
