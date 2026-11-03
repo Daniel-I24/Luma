@@ -84,16 +84,23 @@ SQL suites, Deno 2.5.6 in Docker for the functions.
   124 Deno tests + type check, interactive, hard-coded URLs, secret scan,
   npm audit 0. knip: no unused files or dependencies.
 
-- FASE 4 in progress (2026-10-26): 4.1 palette done (docs/brand/palette-
-  options.md, three directions with computed AA; chosen "Cielo andino y
-  ají"), themes renamed sky/night/lacquer/maize (all 28 pairs AA, npm run
-  check:contrast), fonts Bricolage Grotesque + Figtree self-hosted Latin
-  WOFF2 in public/fonts (Inter removed). Left in FASE 4: logo concepts and
-  the chosen SVG mark (geometry: pin with crescent hole O(512,440,r136) minus
-  I(566,400,r116), ají dot), icon/splash generation with npx
-  @capacitor/assets, ic_stat_luma vector, Luma IA icon, 4.2 button
-  variants and the destructive-action script, 4.3 motion, 4.4 animated
-  entry, 4.5 screen review. Then FASES 5, 6 and 7.
+- FASE 4 done (2026-10-26): palette "Cielo andino y ají" in four AA
+  themes (sky/night/lacquer/maize, check:contrast 33 pairs each), Bricolage
+  Grotesque + Figtree self-hosted; pin-luna mark, wordmark, vector launcher,
+  themed, notification and Android 12 splash icons, Luma IA icon
+  (docs/brand/logo.md); buttons by function with loading state and
+  check:buttons (docs/brand/button-semantics.md); motion tokens with one
+  enter and one exit curve, fling-speed sheets, cart flight, advancing order
+  line, drawn check, logo view transition (docs/brand/motion.md); app entry
+  continuing the native splash (MainActivity holds it until the page loads,
+  AppEntry capped 1.8 s / 0.9 s, ends when session and first navigation are
+  ready, tap skips); screen review at 360/412/768 px in four themes with an
+  offline Playwright harness and check:tokens (docs/brand/screen-review.md).
+  Closed green: build, lint, 735 app tests, 74 script tests, 630 SQL
+  checks, Deno unchanged (124), interactive, hard-coded URLs, buttons,
+  contrast, tokens, secret scan, npm audit --omit=dev 0. knip: no unused
+  files or dependencies (82 unused exports left for FASE 6). Dev-only audit
+  advisories (fast-uri, undici, uuid via @capacitor/cli) noted for FASE 5.
 
 ## Done (round 1)
 
