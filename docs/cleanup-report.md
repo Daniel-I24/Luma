@@ -127,3 +127,13 @@ tooling read through config files).
   NotificationSettings (moved to the admin `DeviceTest`).
 - Removed the key `owner.menuScan.aiUnavailable` (replaced by
   `owner.menuScan.errors.*`).
+
+## Round 8 — phase 2 (2026-11-02)
+
+- Deleted `src/app/shared/tutorial/tutorial-settings.ts` and
+  `src/app/features/profile/components/help-links/` (replaced by
+  `HelpEntries` and the Tutoriales screen); their keys
+  `profile.help.tutorial|terms|privacy|refunds|allTutorials` and
+  `owner.myBusiness.help` were removed after checking nothing used them.
+- `scripts/screens/capture.mjs` shares its static server
+  (`scripts/screens/server.mjs`) with `check-responsive`.

@@ -22,9 +22,9 @@
     </h3>
     <ul class="m-0 list-none p-0">
       @for (item of section.items; track item.id) {
-      <li class="flex items-center gap-3 border-b border-border-subtle px-4 py-3">
+      <li class="@container flex items-center gap-3 border-b border-border-subtle px-4 py-3">
         <span
-          class="flex size-17 shrink-0 items-center justify-center overflow-hidden rounded-md bg-canvas-subtle text-fg-subtle"
+          class="flex size-17 shrink-0 items-center justify-center overflow-hidden rounded-md bg-canvas-subtle text-fg-subtle @max-xs:size-12"
         >
           <app-luma-image
             [src]="item.image_url"

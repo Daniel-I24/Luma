@@ -821,3 +821,33 @@ alternative that was not taken. The safest, most reversible option wins.
   document; the contact e-mail is `{{email}}` (LEGAL_CONTACT_EMAIL). Short
   URLs in vercel.json before the SPA fallback.
 - **Why**: Meta and the stores need public URLs; one source avoids two texts.
+
+## 2026-11-02 — Round 8, phase 2: fluid layout checked by a browser
+
+- **What**: type tokens in rem with clamp() (never below their phone size)
+  so Android's font size scales them; fluid base rules (overflow-wrap,
+  media max-width, balanced headings); container queries where a row
+  adapts to its own width. `npm run check:responsive` drives the screens
+  build (fixtures, no backend) at 8 sizes and with 200 % text and fails on
+  side scroll, text cut sideways or targets under 44 px. It uses the
+  existing dev dependency `playwright-core` (no new package): the system
+  Edge locally, Chromium installed in CI (`playwright-core install`).
+- **Found and fixed**: the owner menu row image took the whole row (name 0
+  px wide, price outside the card) because `LumaImage`'s host is
+  `display: contents` and its size classes were ignored — the image is now
+  sized by a wrapper (also the owner hero and the gallery); tab labels cut
+  with large text (they wrap and stop growing at what five tabs fit);
+  32 px chips, links and the "Añadir" icon under 44 px.
+- **Why**: real renders at real sizes are the only reliable check.
+
+## 2026-11-02 — Verification in three steps; help in two entries
+
+- **What**: Resumen shows "Verifica tu negocio, paso N de 3" with a
+  progress bar; each step (data, hours and menu, legal data and documents)
+  is one tappable row with why it matters and "Completar"; privacy note,
+  time, pending/rejected/approved states; a disabled "Enviar a revisión"
+  says which steps are missing. "Ayuda y legal" has two entries in the
+  Profile and Mi negocio: "Tutoriales" (/tutorials, /owner/:id/tutorials:
+  welcome, guides with a seen mark, "Repetir", "Reiniciar todas") and
+  "Legal" (tabs Términos, Privacidad, Reembolsos; each tab keeps its
+  /legal/<doc> address, so deep links work).

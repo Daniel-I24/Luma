@@ -77,20 +77,27 @@ describe('OwnerSummaryPage', () => {
     return { fixture, el, button };
   }
 
-  it('lists what a draft still needs, each linked to its step, and blocks submitting', async () => {
+  it('"Verifica tu negocio, paso 1 de 3": three tappable steps with why, what is missing and "Completar" to the exact screen', async () => {
     const { el, button } = await render({ phone: null });
 
-    const links = Array.from(el.querySelectorAll('#review-missing a')).map((a) => [
-      a.textContent?.trim(),
+    expect(el.querySelector('#verification-title')?.textContent).toContain('owner.verification.progress');
+    expect(el.querySelector('[role="progressbar"]')?.getAttribute('aria-valuenow')).toBe('1');
+    const steps = Array.from(el.querySelectorAll<HTMLAnchorElement>('#review-missing a')).map((a) => [
+      a.dataset['step'],
       a.getAttribute('href'),
+      a.textContent?.includes('owner.verification.complete') ? 'completar' : 'listo',
     ]);
-    expect(links).toEqual([
-      ['owner.verification.requirements.phone', '/owner/b1/business/info'],
-      ['owner.verification.requirements.legal', '/owner/b1/business/verification'],
-      ['owner.verification.requirements.doc_rut', '/owner/b1/business/verification'],
-      ['owner.verification.requirements.doc_facade', '/owner/b1/business/verification'],
+    expect(steps).toEqual([
+      ['business', '/owner/b1/business/info', 'completar'],
+      ['operation', '/owner/b1/business/hours', 'listo'],
+      ['legal', '/owner/b1/business/verification', 'completar'],
     ]);
+    expect(el.textContent).toContain('owner.verification.requirements.phone');
+    expect(el.textContent).toContain('owner.verification.steps.business.why');
+    expect(el.textContent).toContain('owner.verification.privacy');
+    expect(el.textContent).toContain('owner.verification.time');
     expect(button('owner.verification.submit')?.disabled).toBe(true);
+    expect(el.querySelector('#review-blocked')?.textContent).toContain('owner.verification.submitBlocked');
     expect(el.textContent).not.toContain('businessPanel.dashboard.publishTitle');
   });
 

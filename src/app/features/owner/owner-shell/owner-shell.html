@@ -2,7 +2,7 @@
   <header
     class="flex flex-wrap items-center gap-2 border-b border-border-subtle bg-surface px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-3))] pb-3"
   >
-    <p class="m-0 flex flex-1 items-center gap-2 text-title text-fg">
+    <p class="m-0 flex flex-1 items-center gap-2 text-title whitespace-nowrap text-fg">
       <app-luma-icon name="store" class="text-fg-brand" />
       {{ t('owner.brand') }}
     </p>
@@ -30,7 +30,7 @@
     </span>
     @if (context.canAddMore()) {
     <a
-      class="inline-flex min-h-11 items-center gap-1 rounded-md px-2 text-body-sm font-semibold text-fg-brand"
+      class="inline-flex min-h-11 min-w-11 items-center justify-center gap-1 rounded-md px-2 text-body-sm font-semibold text-fg-brand"
       [routerLink]="registerLink"
       [attr.aria-label]="t('owner.addBusiness')"
     >

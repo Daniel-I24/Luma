@@ -26,6 +26,26 @@ body {
   color: var(--color-fg);
 }
 
+/* Fluid by default (round 8, npm run check:responsive): long words wrap
+   instead of leaving their box, media never overflow, headings balance. */
+body {
+  overflow-wrap: break-word;
+  -webkit-text-size-adjust: 100%;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
 /* Headings use the display family; sizes and weights stay in the type tokens. */
 h1,
 h2,

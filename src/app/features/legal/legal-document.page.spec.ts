@@ -25,7 +25,11 @@ describe('LegalDocumentPage', () => {
       await harness.navigateByUrl(`/legal/${document}`);
       const el = harness.routeNativeElement!;
 
-      expect(el.querySelector('h1')?.textContent).toContain(`legal.${document}.title`);
+      // One "Legal" screen: the document is its selected tab (round 8).
+      expect(el.querySelector('h1')?.textContent).toContain('profile.help.legal');
+      const tabs = Array.from(el.querySelectorAll('[role="tab"]'));
+      expect(tabs.map((tab) => tab.id)).toEqual(['legal-tab-terms', 'legal-tab-privacy', 'legal-tab-refunds']);
+      expect(el.querySelector(`#legal-tab-${document}`)?.getAttribute('aria-selected')).toBe('true');
       expect(el.querySelector('[role="note"]')?.textContent).toContain('legal.draftNotice');
       expect(
         Array.from(el.querySelectorAll('section h2')).map((h) => h.textContent?.trim()),

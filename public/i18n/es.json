@@ -290,12 +290,9 @@
     },
     "help": {
       "section": "Ayuda y legal",
-      "tutorial": "Ver el tutorial",
-      "terms": "Términos y condiciones",
-      "privacy": "Política de privacidad",
-      "refunds": "Política de reembolsos",
-      "allTutorials": "Ver todos los tutoriales",
-      "allTutorialsReset": "Listo: cada pantalla volverá a mostrar su guía."
+      "allTutorialsReset": "Listo: cada pantalla volverá a mostrar su guía.",
+      "tutorials": "Tutoriales",
+      "legal": "Legal"
     },
     "ownerAppHint": "Gestiona tus negocios, pedidos y promociones."
   },
@@ -1551,7 +1548,29 @@
       "fix": "Corregir los datos y documentos",
       "submit": "Enviar a revisión",
       "resubmit": "Reenviar a revisión",
-      "submitted": "Enviado. Te avisaremos cuando lo revisemos."
+      "submitted": "Enviado. Te avisaremos cuando lo revisemos.",
+      "progress": "Verifica tu negocio, paso {{step}} de {{total}}",
+      "progressLabel": "Pasos completos de la verificación",
+      "time": "Completarlo toma unos 10 minutos. La revisión tarda hasta 2 días hábiles.",
+      "steps": {
+        "business": {
+          "title": "Datos de tu negocio",
+          "why": "Para que tus clientes te encuentren y sepan que eres real."
+        },
+        "operation": {
+          "title": "Horario y menú",
+          "why": "Para que puedan ver qué vendes y pedirte cuando estás abierto."
+        },
+        "legal": {
+          "title": "Datos legales y documentos",
+          "why": "Para que el equipo confirme que tu negocio existe."
+        }
+      },
+      "complete": "Completar",
+      "stepDone": "Listo",
+      "privacy": "Tu NIT y tu RUT solo los ve el equipo de Luma; los clientes nunca.",
+      "pendingWhat": "Qué pasa ahora: el equipo revisa tus datos y documentos. Tarda hasta 2 días hábiles y te avisamos con una notificación.",
+      "submitBlocked": "Para enviarlo a revisión, completa: {{steps}}."
     },
     "publish": {
       "published": "Publicado",
@@ -1590,8 +1609,7 @@
       "contact": "Contacto y redes",
       "contactHint": "WhatsApp, Instagram, Facebook y sitio web",
       "gallery": "Fotos del lugar",
-      "galleryHint": "Hasta 8 fotos para tu perfil público",
-      "help": "Ayuda"
+      "galleryHint": "Hasta 8 fotos para tu perfil público"
     },
     "verificationPage": {
       "title": "Datos legales y documentos",
@@ -1796,7 +1814,10 @@
         "approved": "Verificado",
         "rejected": "Cambios solicitados",
         "suspended": "Suspendido"
-      }
+      },
+      "addLogo": "Añadir el logo de tu negocio",
+      "logoShort": "Logo",
+      "addCover": "Añadir portada"
     },
     "technical": {
       "title": "Información técnica",
@@ -1816,6 +1837,10 @@
         "failed": "No se pudo copiar en este dispositivo."
       },
       "aiMode": "Modo de Luma IA"
+    },
+    "customerView": {
+      "banner": "Estás viendo Luma como cliente",
+      "back": "Volver"
     }
   },
   "promotions": {
@@ -2361,5 +2386,28 @@
     "datesOrder": "La fecha de fin debe ser posterior a la de inicio.",
     "datesTooLong": "Una promoción puede durar hasta un año.",
     "datesPast": "La fecha de fin ya pasó."
+  },
+  "tutorials": {
+    "title": "Tutoriales",
+    "welcome": "Tutorial de bienvenida",
+    "welcomeHint": "Las pantallas que viste al entrar por primera vez.",
+    "guides": "Guías por sección",
+    "seen": "Vista",
+    "notSeen": "Sin ver",
+    "repeat": "Repetir",
+    "resetAll": "Reiniciar todas",
+    "sections": {
+      "map": "Mapa",
+      "discover": "Descubrir",
+      "orders": "Pedidos",
+      "ai": "Luma IA",
+      "profile": "Perfil",
+      "checkout": "Confirmar pedido",
+      "owner-summary": "Resumen",
+      "owner-orders": "Pedidos del negocio",
+      "owner-menu": "Menú",
+      "owner-promotions": "Promociones",
+      "owner-business": "Mi negocio"
+    }
   }
 }

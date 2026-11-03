@@ -26,9 +26,9 @@ const QUESTIONS = ['order', 'pay', 'cancel', 'business', 'review', 'notification
         </app-luma-disclosure>
       }
       <nav class="mt-2 flex flex-wrap gap-4 text-body-sm" [attr.aria-label]="t('help.legal')">
-        <a routerLink="/legal/terms" class="inline-flex min-h-11 items-center text-fg-brand">{{ t('profile.help.terms') }}</a>
-        <a routerLink="/legal/privacy" class="inline-flex min-h-11 items-center text-fg-brand">{{ t('profile.help.privacy') }}</a>
-        <a routerLink="/legal/refunds" class="inline-flex min-h-11 items-center text-fg-brand">{{ t('profile.help.refunds') }}</a>
+        <a routerLink="/legal/terms" class="inline-flex min-h-11 items-center text-fg-brand">{{ t('legal.terms.title') }}</a>
+        <a routerLink="/legal/privacy" class="inline-flex min-h-11 items-center text-fg-brand">{{ t('legal.privacy.title') }}</a>
+        <a routerLink="/legal/refunds" class="inline-flex min-h-11 items-center text-fg-brand">{{ t('legal.refunds.title') }}</a>
       </nav>
       <p class="m-0 text-caption text-fg-subtle">{{ t('help.version', { version }) }}</p>
       <app-luma-button variant="ghost" (clicked)="back()">{{ t('common.back') }}</app-luma-button>

@@ -39,10 +39,7 @@
       <app-luma-icon name="map" class="text-fg-brand" />
       <span class="flex-1 text-body font-medium">{{ t('owner.myBusiness.customerView') }}</span>
     </a>
-    <h2 class="m-0 px-1 pt-4 pb-2 text-label tracking-wide text-fg-subtle uppercase">
-      {{ t('owner.myBusiness.help') }}
-    </h2>
-    <app-tutorial-settings />
+    <app-help-entries [tutorialsLink]="'/owner/' + id() + '/tutorials'" />
     <app-technical-info />
 
     <div class="mt-4" data-tour="business-appearance">

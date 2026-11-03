@@ -40,6 +40,11 @@ jobs:
         run: npm run check:validation
       - name: Public legal pages match the app texts
         run: node scripts/build-legal.mjs --check
+      - name: Every screen at 8 sizes and with 200 % text (no side scroll, no cut text, 44 px targets)
+        run: |
+          npx ng build --configuration screens
+          npx playwright-core install --with-deps chromium
+          node scripts/check-responsive.mjs --browser=chromium
       - name: No URL outside the config modules
         run: npm run check:hardcoded-urls
       - name: Destructive actions use the danger button

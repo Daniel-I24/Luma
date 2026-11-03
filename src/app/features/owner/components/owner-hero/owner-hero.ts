@@ -35,6 +35,8 @@ export class OwnerHero {
   public readonly business = input.required<Business>();
 
   protected readonly statusClass = computed(() => STATUS_CLASS[this.business().verification_status]);
+  /** Where the logo and the cover are added (Información → Imágenes). */
+  protected readonly imagesLink = computed(() => ownerPaths.screen(this.business().id, 'info'));
   protected readonly actions = computed<readonly QuickAction[]>(() => {
     const id = this.business().id;
     return [

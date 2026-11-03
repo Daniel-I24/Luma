@@ -1,22 +1,40 @@
 <section *transloco="let t" class="flex flex-col gap-3" [attr.aria-label]="business().name">
   <div class="relative overflow-hidden rounded-2xl bg-linear-to-br from-primary to-accent">
     @if (business().cover_url) {
-    <app-luma-image class="block h-32 w-full opacity-90" [src]="business().cover_url" [alt]="''" [width]="640" [height]="256" />
+    <span class="block h-32 w-full opacity-90">
+      <app-luma-image [src]="business().cover_url" [alt]="''" [width]="640" [height]="256" />
+    </span>
     } @else {
-    <div class="h-32 w-full" aria-hidden="true"></div>
+    <a
+      class="flex h-32 w-full items-start justify-end p-3 text-caption font-semibold text-primary-fg no-underline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-border-focus"
+      [routerLink]="imagesLink()"
+    >
+      <span class="inline-flex min-h-11 items-center gap-1 rounded-full bg-overlay px-3"><app-luma-icon name="image" size="sm" /> {{ t('owner.hero.addCover') }}</span>
+    </a>
     }
     <div class="absolute inset-x-0 bottom-0 flex items-end gap-3 bg-linear-to-t from-overlay to-transparent p-3">
-      <app-luma-image
-        class="size-16 shrink-0 overflow-hidden rounded-xl border-2 border-surface bg-surface"
-        [src]="business().logo_url"
-        [alt]="t('owner.hero.logo', { name: business().name })"
-        [width]="64"
-        [height]="64"
-        fallbackIcon="store"
-        iconSize="md"
-      />
+      @if (business().logo_url) {
+      <span class="size-16 shrink-0 overflow-hidden rounded-xl border-2 border-surface bg-surface">
+        <app-luma-image
+          [src]="business().logo_url"
+          [alt]="t('owner.hero.logo', { name: business().name })"
+          [width]="64"
+          [height]="64"
+          fallbackIcon="store"
+          iconSize="md"
+        />
+      </span>
+      } @else {
+      <a
+        class="pressable flex size-16 shrink-0 flex-col items-center justify-center rounded-xl border-2 border-dashed border-surface bg-surface/80 text-caption font-semibold text-fg-brand no-underline focus-visible:outline-2 focus-visible:outline-border-focus"
+        [routerLink]="imagesLink()"
+        [attr.aria-label]="t('owner.hero.addLogo')"
+      >
+        <app-luma-icon name="plus" size="sm" /> {{ t('owner.hero.logoShort') }}
+      </a>
+      }
       <div class="flex min-w-0 flex-1 flex-col gap-1">
-        <h1 class="m-0 truncate text-h3 text-primary-fg">{{ business().name }}</h1>
+        <h1 class="m-0 text-h3 wrap-anywhere text-primary-fg">{{ business().name }}</h1>
         <span class="w-fit rounded-full px-2 py-0.5 text-caption font-semibold" [class]="statusClass()">
           {{ t('owner.hero.status.' + business().verification_status) }}
         </span>
@@ -26,7 +44,7 @@
   <nav class="grid grid-cols-4 gap-2" [attr.aria-label]="t('owner.hero.quickActions')">
     @for (action of actions(); track action.key) {
     <a
-      class="pressable flex min-h-16 flex-col items-center justify-center gap-1 rounded-xl border border-border-subtle bg-surface p-2 text-center text-caption font-semibold text-fg no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+      class="pressable flex min-h-16 min-w-0 flex-col items-center justify-center gap-1 rounded-xl border border-border-subtle bg-surface p-2 text-center text-caption font-semibold wrap-break-word hyphens-auto text-fg no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
       [routerLink]="action.link"
     >
       <app-luma-icon class="text-fg-brand" [name]="action.icon" />

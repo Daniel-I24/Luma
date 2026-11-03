@@ -3,19 +3,37 @@
   class="flex flex-col gap-3 rounded-xl border border-border-subtle bg-surface p-4"
   aria-labelledby="verification-title"
 >
-  <div class="flex items-center justify-between gap-2">
-    <h2 id="verification-title" class="m-0 text-title text-fg">
+  <div class="flex flex-wrap items-center justify-between gap-2">
+    <h2 id="verification-title" class="m-0 min-w-0 text-title text-fg">
+      @if (editable()) {
+      {{ t('owner.verification.progress', { step: current(), total: steps().length }) }}
+      } @else {
       {{ t('owner.verification.title') }}
+      }
     </h2>
-    <span
-      class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-caption"
-      [class]="look().tone"
-    >
+    <span class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-caption" [class]="look().tone">
       <app-luma-icon [name]="look().icon" size="sm" />
       {{ t('verification.status.' + status()) }}
     </span>
   </div>
+
+  @if (editable()) {
+  <div
+    class="h-2 overflow-hidden rounded-full bg-canvas-muted"
+    role="progressbar"
+    [attr.aria-label]="t('owner.verification.progressLabel')"
+    aria-valuemin="0"
+    [attr.aria-valuemax]="steps().length"
+    [attr.aria-valuenow]="doneCount()"
+  >
+    <div class="h-full rounded-full bg-primary transition-[width] duration-(--duration-normal)" [style.width.%]="(doneCount() / steps().length) * 100"></div>
+  </div>
+  <p class="m-0 text-body-sm text-fg-muted">{{ t('owner.verification.time') }}</p>
+  } @else {
   <p class="m-0 text-body-sm text-fg-muted">{{ t('owner.verification.hint.' + status()) }}</p>
+  } @if (status() === 'pending') {
+  <p class="m-0 rounded-md bg-info-bg p-3 text-body-sm text-info-fg" role="status">{{ t('owner.verification.pendingWhat') }}</p>
+  }
 
   @if (business().verification_note && (status() === 'rejected' || status() === 'suspended')) {
   <div class="rounded-md bg-canvas-subtle p-3">
@@ -24,28 +42,47 @@
       {{ business().verification_note === 'owner_correction' ? t('owner.verificationPage.ownerCorrectionNote') : business().verification_note }}
     </p>
   </div>
-  } @if (status() === 'draft' || status() === 'rejected') { @if (missing().length) {
-  <div id="review-missing">
-    <p class="m-0 text-label text-fg">{{ t('owner.verification.missingTitle') }}</p>
-    <ul class="m-0 mt-1 flex list-none flex-col p-0">
-      @for (requirement of missing(); track requirement) {
-      <li>
-        <a
-          class="flex min-h-11 items-center gap-2 text-body-sm font-medium text-fg-brand"
-          [routerLink]="stepLink(requirement)"
+  } @if (editable()) {
+  <ol id="review-missing" class="m-0 flex list-none flex-col gap-2 p-0">
+    @for (step of steps(); track step.id; let i = $index) {
+    <li>
+      <a
+        class="pressable flex min-h-11 items-center gap-3 rounded-lg border p-3 text-left no-underline focus-visible:outline-2 focus-visible:outline-border-focus"
+        [class.border-success]="step.done"
+        [class.border-border-subtle]="!step.done"
+        [routerLink]="stepLink(step)"
+        [attr.data-step]="step.id"
+      >
+        <span
+          class="inline-flex size-8 shrink-0 items-center justify-center rounded-full text-label"
+          [class]="step.done ? 'bg-success-bg text-success-fg' : 'bg-canvas-muted text-fg'"
+          aria-hidden="true"
         >
-          <app-luma-icon name="alert" size="sm" />
-          {{ t('owner.verification.requirements.' + requirement) }}
-        </a>
-      </li>
-      }
-    </ul>
-  </div>
-  } @else {
-  <p id="review-missing" class="m-0 text-body-sm text-success-fg">
-    {{ t('owner.verification.readyToSubmit') }}
+          @if (step.done) { <app-luma-icon name="check" size="sm" /> } @else { {{ i + 1 }} }
+        </span>
+        <span class="flex min-w-0 flex-1 flex-col">
+          <span class="text-body font-semibold text-fg">{{ t('owner.verification.steps.' + step.id + '.title') }}</span>
+          <span class="text-body-sm text-fg-muted">{{ t('owner.verification.steps.' + step.id + '.why') }}</span>
+          @if (!step.done) {
+          <span class="text-caption text-fg-subtle">
+            {{ t('owner.verification.missingTitle') }}
+            @for (requirement of step.missing; track requirement; let last = $last) {
+            {{ t('owner.verification.requirements.' + requirement) }}{{ last ? '' : ', ' }}
+            }
+          </span>
+          }
+        </span>
+        <span class="shrink-0 text-body-sm font-semibold" [class]="step.done ? 'text-success-fg' : 'text-fg-brand'">
+          {{ t(step.done ? 'owner.verification.stepDone' : 'owner.verification.complete') }}
+        </span>
+      </a>
+    </li>
+    }
+  </ol>
+  <p class="m-0 flex items-center gap-2 text-caption text-fg-subtle">
+    <app-luma-icon name="eye-off" size="sm" /> {{ t('owner.verification.privacy') }}
   </p>
-  } @if (status() === 'rejected') {
+  @if (status() === 'rejected') {
   <a
     class="inline-flex min-h-11 items-center text-body-sm font-semibold text-fg-brand"
     [routerLink]="verificationLink()"
@@ -54,12 +91,15 @@
   }
   <app-luma-button
     [fullWidth]="true"
-    describedBy="review-missing"
+    describedBy="review-blocked"
     [disabled]="busy() || !canSubmit()"
     (clicked)="submitted.emit()"
-    >{{ t(status() === 'rejected' ? 'owner.verification.resubmit' : 'owner.verification.submit')
-    }}</app-luma-button
+    >{{ t(status() === 'rejected' ? 'owner.verification.resubmit' : 'owner.verification.submit') }}</app-luma-button
   >
+  <p id="review-blocked" class="m-0 text-body-sm" [class]="canSubmit() ? 'text-success-fg' : 'text-fg-muted'">
+    @if (canSubmit()) { {{ t('owner.verification.readyToSubmit') }} } @else {
+    {{ t('owner.verification.submitBlocked', { steps: blockedSteps() }) }} }
+  </p>
   } @if (errorKey(); as key) {
   <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
     {{ t(key) }}

@@ -48,6 +48,9 @@
 
 .luma-input__field {
   flex: 1;
+  /* The whole 44 px row is the field, not only the line of text. */
+  align-self: stretch;
+  min-height: var(--spacing-11);
   border: none;
   outline: none;
   background: transparent;

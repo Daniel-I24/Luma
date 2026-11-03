@@ -189,6 +189,13 @@ Phase 1 (fallos y legal público):
 - Public legal pages (`npm run build:legal`), data deletion page,
   vercel.json short URLs, docs/vercel-setup.md, docs/meta-live.md, app icon.
 
+Phase 2 (cualquier pantalla y claridad):
+- Type in rem with clamp(); fluid base rules; `npm run check:responsive`
+  (8 sizes × normal and 200 % text) in CI; fixes: menu row image
+  (LumaImage contents host), tab labels, 44 px targets, hero name.
+- Verification card in three steps; Tutoriales and Legal (tabs) screens;
+  compact customer-view banner and hero invitations.
+
 ## Round 7 (2026-10-31)
 
 - Migration 54 `20261104000000_round7` (pending review; 52 and 53 applied):

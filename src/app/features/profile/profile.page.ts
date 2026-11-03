@@ -8,7 +8,7 @@ import { AccountActions } from '@shared/account/account-actions/account-actions'
 import { SessionProfileStore } from '@shared/account/session-profile.store';
 import { AdminEntry } from './components/admin-entry/admin-entry';
 import { BecomeOwnerEntry } from './components/become-owner-entry/become-owner-entry';
-import { HelpLinks } from './components/help-links/help-links';
+import { HelpEntries } from '@shared/tutorial/help-entries';
 import { AppearanceSettings } from '@shared/appearance/appearance-settings/appearance-settings';
 import { BusinessEntry } from './components/business-entry/business-entry';
 import { NotificationsEntry } from './components/notifications-entry/notifications-entry';
@@ -35,7 +35,7 @@ import { TrustStatusCard } from './components/trust-status-card/trust-status-car
     AccountActions,
     AdminEntry,
     BecomeOwnerEntry,
-    HelpLinks,
+    HelpEntries,
     AppearanceSettings,
     BusinessEntry,
     DisplayNameField,

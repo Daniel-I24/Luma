@@ -12,7 +12,7 @@
   <article class="flex flex-col gap-2 rounded-lg border border-border-subtle p-3">
     <p class="m-0 flex flex-wrap items-center gap-2">
       <span class="text-body font-medium text-fg">{{ t('contactVerification.kind.' + row.kind) }}</span>
-      <span class="min-w-0 flex-1 truncate text-body-sm text-fg-muted">{{ row.value }}</span>
+      <span class="min-w-0 flex-1 text-body-sm wrap-anywhere text-fg-muted">{{ row.value }}</span>
       @if (row.verified) {
       <span class="inline-flex items-center gap-1 rounded-full bg-success-bg px-2 py-0.5 text-caption font-semibold text-success-fg">
         <app-luma-icon name="check" size="sm" /> {{ t('contactVerification.verified') }}

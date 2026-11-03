@@ -290,12 +290,9 @@
     },
     "help": {
       "section": "Help and legal",
-      "tutorial": "Watch the tutorial",
-      "terms": "Terms and conditions",
-      "privacy": "Privacy policy",
-      "refunds": "Refund policy",
-      "allTutorials": "Show every tutorial again",
-      "allTutorialsReset": "Done: every screen will show its guide again."
+      "allTutorialsReset": "Done: every screen will show its guide again.",
+      "tutorials": "Tutorials",
+      "legal": "Legal"
     },
     "ownerAppHint": "Manage your businesses, orders and deals."
   },
@@ -1551,7 +1548,29 @@
       "fix": "Fix the data and documents",
       "submit": "Send for review",
       "resubmit": "Send for review again",
-      "submitted": "Sent. We will let you know once it is reviewed."
+      "submitted": "Sent. We will let you know once it is reviewed.",
+      "progress": "Verify your business, step {{step}} of {{total}}",
+      "progressLabel": "Verification steps done",
+      "time": "It takes about 10 minutes. The review takes up to 2 business days.",
+      "steps": {
+        "business": {
+          "title": "Your business data",
+          "why": "So your customers find you and know you are real."
+        },
+        "operation": {
+          "title": "Hours and menu",
+          "why": "So they see what you sell and order while you are open."
+        },
+        "legal": {
+          "title": "Legal data and documents",
+          "why": "So the team confirms your business exists."
+        }
+      },
+      "complete": "Complete",
+      "stepDone": "Done",
+      "privacy": "Only the Luma team sees your NIT and RUT; customers never do.",
+      "pendingWhat": "What happens now: the team reviews your data and documents. It takes up to 2 business days and we notify you.",
+      "submitBlocked": "To send it to review, complete: {{steps}}."
     },
     "publish": {
       "published": "Published",
@@ -1590,8 +1609,7 @@
       "contact": "Contact and social",
       "contactHint": "WhatsApp, Instagram, Facebook and website",
       "gallery": "Photos of the place",
-      "galleryHint": "Up to 8 photos for your public profile",
-      "help": "Help"
+      "galleryHint": "Up to 8 photos for your public profile"
     },
     "verificationPage": {
       "title": "Legal data and documents",
@@ -1796,7 +1814,10 @@
         "approved": "Verified",
         "rejected": "Changes requested",
         "suspended": "Suspended"
-      }
+      },
+      "addLogo": "Add your business logo",
+      "logoShort": "Logo",
+      "addCover": "Add a cover"
     },
     "technical": {
       "title": "Technical information",
@@ -1816,6 +1837,10 @@
         "failed": "It could not be copied on this device."
       },
       "aiMode": "Luma IA mode"
+    },
+    "customerView": {
+      "banner": "You are seeing Luma as a customer",
+      "back": "Back"
     }
   },
   "promotions": {
@@ -2361,5 +2386,28 @@
     "datesOrder": "The end date must be after the start date.",
     "datesTooLong": "A promotion can last up to a year.",
     "datesPast": "The end date has already passed."
+  },
+  "tutorials": {
+    "title": "Tutorials",
+    "welcome": "Welcome tutorial",
+    "welcomeHint": "The screens you saw the first time.",
+    "guides": "Guides per section",
+    "seen": "Seen",
+    "notSeen": "Not seen",
+    "repeat": "Repeat",
+    "resetAll": "Reset all",
+    "sections": {
+      "map": "Map",
+      "discover": "Discover",
+      "orders": "Orders",
+      "ai": "Luma IA",
+      "profile": "Profile",
+      "checkout": "Confirm order",
+      "owner-summary": "Summary",
+      "owner-orders": "Business orders",
+      "owner-menu": "Menu",
+      "owner-promotions": "Promotions",
+      "owner-business": "My business"
+    }
   }
 }

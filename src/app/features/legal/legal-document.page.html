@@ -9,8 +9,11 @@
       [label]="t('common.back')"
       (clicked)="back()"
     />
-    <h1 class="m-0 text-title text-fg">{{ t('legal.' + document() + '.title') }}</h1>
+    <h1 class="m-0 text-title text-fg">{{ t(tabbed() ? 'profile.help.legal' : 'legal.' + document() + '.title') }}</h1>
   </header>
+  @if (tabbed()) {
+  <app-luma-tabs idPrefix="legal" [label]="t('profile.help.legal')" [tabs]="tabs()" [selected]="document()" (selectedChange)="selectTab($event)" />
+  }
 
   <p
     class="m-0 rounded-md bg-warning-bg p-3 text-body-sm font-semibold text-warning-fg"
@@ -20,6 +23,7 @@
   </p>
   <p class="m-0 text-body-sm text-fg-muted">{{ t('legal.version', { version: version() }) }}</p>
 
+  <div class="flex flex-col gap-5" [id]="'legal-panel-' + document()" [attr.role]="tabbed() ? 'tabpanel' : null" [attr.aria-labelledby]="tabbed() ? 'legal-tab-' + document() : null">
   @for (section of sections(); track section) {
   <section class="flex flex-col gap-2" [attr.aria-labelledby]="'legal-' + section">
     <h2 [id]="'legal-' + section" class="m-0 text-label-lg text-fg">
@@ -30,4 +34,5 @@
     </p>
   </section>
   }
+  </div>
 </article>

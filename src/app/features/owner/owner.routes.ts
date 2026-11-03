@@ -33,6 +33,10 @@ export const ownerRoutes: Routes = [
               import('./pages/business-setup/business-setup.page').then((m) => m.BusinessSetupPage),
           },
           {
+            path: 'tutorials',
+            loadComponent: () => import('@shared/tutorial/tutorials-panel').then((m) => m.TutorialsPanel),
+          },
+          {
             path: 'summary',
             loadComponent: () =>
               import('./pages/owner-summary/owner-summary.page').then((m) => m.OwnerSummaryPage),

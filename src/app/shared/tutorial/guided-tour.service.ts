@@ -81,7 +81,13 @@ export class GuidedTour {
     this._welcomeOpen.set(false);
   }
 
-  /** Settings → "Ver todos los tutoriales": every guide and the welcome show again. */
+  /** "Repetir" in Tutoriales: that guide shows again on its next visit. */
+  public forget(id: TourId): void {
+    const key = this.key(id);
+    if (key) this.storage.remove(key);
+  }
+
+  /** Tutoriales → "Reiniciar todas": every guide and the welcome show again. */
   public resetAll(): void {
     const userId = this.auth.user()?.id;
     if (userId) for (const key of this.storage.keys(`${SEEN_PREFIX}${userId}.`)) this.storage.remove(key);

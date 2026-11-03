@@ -19,15 +19,9 @@
     >
       <app-luma-icon name="grip" />
     </span>
-    <app-luma-image
-      class="size-14 shrink-0 overflow-hidden rounded-md"
-      [src]="item().image_url"
-      [alt]="item().name"
-      [width]="56"
-      [height]="56"
-      fallbackIcon="utensils"
-      iconSize="md"
-    />
+    <span class="size-14 shrink-0 overflow-hidden rounded-md bg-canvas-subtle text-fg-subtle">
+      <app-luma-image [src]="item().image_url" [alt]="item().name" [width]="56" [height]="56" fallbackIcon="utensils" iconSize="md" />
+    </span>
     <div class="flex min-w-0 flex-1 flex-col gap-1">
       <label class="sr-only" [for]="'menu-name-' + item().id">{{ t('businessPanel.menu.name') }}</label>
       <input

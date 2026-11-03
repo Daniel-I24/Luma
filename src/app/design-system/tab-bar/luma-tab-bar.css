@@ -120,11 +120,14 @@
   transform: scale(var(--motion-active-scale));
 }
 
+/* Never cut: with Android's largest font the label stops growing at what five
+   tabs fit on the screen (vw) and wraps if it still has to. */
 .luma-tab-bar__label {
   max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font-size: min(var(--text-caption), 3.4vw);
+  line-height: 1.15;
+  text-align: center;
+  overflow-wrap: anywhere;
 }
 
 @media (prefers-reduced-motion: reduce) {

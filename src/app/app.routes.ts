@@ -5,12 +5,10 @@ import { DETAIL_ROUTE_DATA } from '@core/navigation/route-transition';
 import { accountHomeGuard, accountReadyGuard, ownerChildGuard, ownerGuard } from '@shared/account/account.guards';
 import { DEV_ONLY_ROUTES } from './dev-routes';
 
-
 export const routes: Routes = [
   {
     // Each account type has its own home (customers: /map).
-    path: '',
-    pathMatch: 'full',
+    path: '', pathMatch: 'full',
     canActivate: [authGuard, accountHomeGuard],
     children: [],
   },
@@ -31,6 +29,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/download/download.page').then((m) => m.DownloadPage),
   },
   {
+    path: 'tutorials',
+    canActivate: [authGuard],
+    loadComponent: () => import('./shared/tutorial/tutorials-panel').then((m) => m.TutorialsPanel),
+  },
+  {
     // Frequent questions and the app version: public.
     path: 'help',
     loadComponent: () => import('./features/help/help.page').then((m) => m.HelpPage),
@@ -38,22 +41,19 @@ export const routes: Routes = [
   {
     path: 'account/password',
     canActivate: [authGuard],
-    loadComponent: () =>
-      import('./features/account-password/account-password.page').then((m) => m.AccountPasswordPage),
+    loadComponent: () => import('./features/account-password/account-password.page').then((m) => m.AccountPasswordPage),
   },
   {
     // Name, mobile and residence ("Completa tu perfil"); checkout links here.
     path: 'account/details',
     canActivate: [authGuard],
-    loadComponent: () =>
-      import('./features/account-details/account-details.page').then((m) => m.AccountDetailsPage),
+    loadComponent: () => import('./features/account-details/account-details.page').then((m) => m.AccountDetailsPage),
   },
   {
     // The account type could not be read: "Reintentar", never a guess.
     path: 'account-error',
     canActivate: [authGuard],
-    loadComponent: () =>
-      import('./features/account-error/account-error.page').then((m) => m.AccountErrorPage),
+    loadComponent: () => import('./features/account-error/account-error.page').then((m) => m.AccountErrorPage),
   },
   {
     // Terms and privacy: public, linked from the sign-up and the Profile.
@@ -92,8 +92,7 @@ export const routes: Routes = [
       {
         path: 'businesses/:id',
         data: DETAIL_ROUTE_DATA,
-        loadComponent: () =>
-          import('./features/business-profile/business-profile.page').then(
+        loadComponent: () => import('./features/business-profile/business-profile.page').then(
             (m) => m.BusinessProfilePage,
           ),
       },
@@ -104,8 +103,7 @@ export const routes: Routes = [
       {
         path: 'promotions',
         data: DETAIL_ROUTE_DATA,
-        loadComponent: () =>
-          import('./features/promotions/promotions.page').then((m) => m.PromotionsPage),
+        loadComponent: () => import('./features/promotions/promotions.page').then((m) => m.PromotionsPage),
       },
       {
         path: 'ai',
@@ -113,8 +111,7 @@ export const routes: Routes = [
       },
       {
         path: 'favorites',
-        loadComponent: () =>
-          import('./features/favorites/favorites.page').then((m) => m.FavoritesPage),
+        loadComponent: () => import('./features/favorites/favorites.page').then((m) => m.FavoritesPage),
       },
       {
         path: 'cart',
@@ -122,8 +119,7 @@ export const routes: Routes = [
       },
       {
         path: 'checkout',
-        loadComponent: () =>
-          import('./features/checkout/checkout.page').then((m) => m.CheckoutPage),
+        loadComponent: () => import('./features/checkout/checkout.page').then((m) => m.CheckoutPage),
       },
       {
         path: 'orders',
@@ -131,14 +127,12 @@ export const routes: Routes = [
       },
       {
         path: 'notifications',
-        loadComponent: () =>
-          import('./features/notifications/notifications.page').then((m) => m.NotificationsPage),
+        loadComponent: () => import('./features/notifications/notifications.page').then((m) => m.NotificationsPage),
       },
       {
         path: 'orders/:id',
         data: DETAIL_ROUTE_DATA,
-        loadComponent: () =>
-          import('./features/orders/order-detail.page').then((m) => m.OrderDetailPage),
+        loadComponent: () => import('./features/orders/order-detail.page').then((m) => m.OrderDetailPage),
       },
     ],
   },

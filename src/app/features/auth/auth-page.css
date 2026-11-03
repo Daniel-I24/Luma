@@ -70,6 +70,9 @@
 }
 
 .auth-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--spacing-11);
   color: var(--color-primary);
   font-size: var(--text-body);
   font-weight: 500;

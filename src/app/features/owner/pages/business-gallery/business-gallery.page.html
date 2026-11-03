@@ -36,14 +36,15 @@
     <ul class="m-0 flex list-none flex-col gap-3 p-0">
       @for (photo of gallery.photos(); track photo.id; let first = $first, last = $last, i = $index) {
         <li class="flex gap-3 rounded-xl border border-border-subtle bg-surface p-2">
-          <app-luma-image
-            class="shrink-0 overflow-hidden rounded-md"
-            [src]="photo.url"
-            [alt]="photo.caption ?? t('businessPanel.gallery.photo', { n: i + 1 })"
-            [width]="96"
-            [height]="96"
-            fallbackIcon="image"
-          />
+          <span class="size-24 shrink-0 overflow-hidden rounded-md">
+            <app-luma-image
+              [src]="photo.url"
+              [alt]="photo.caption ?? t('businessPanel.gallery.photo', { n: i + 1 })"
+              [width]="96"
+              [height]="96"
+              fallbackIcon="image"
+            />
+          </span>
           <div class="flex min-w-0 flex-1 flex-col gap-2">
             <label class="text-caption text-fg-muted" [for]="'caption-' + photo.id">{{ t('businessPanel.gallery.caption') }}</label>
             <input

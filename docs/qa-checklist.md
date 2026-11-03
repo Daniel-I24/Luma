@@ -169,3 +169,19 @@ and `npm run check:interactive`.
   rejecting it hides it; a draft never shows. Back to 0: hidden.
 - Open /terminos, /privacidad, /reembolsos and /eliminacion-datos signed
   out: plain pages with the app texts and the contact e-mail.
+
+## Round 8 — phase 2 (2026-11-02)
+
+- `npx ng build --configuration screens && npm run check:responsive`: ok.
+- On a 320 px phone and on a tablet, with Android's largest font: no side
+  scroll on any screen; tab labels whole; the owner menu shows the product
+  name and price inside each card.
+- Resumen of a draft: "Verifica tu negocio, paso 1 de 3", the bar, three
+  rows with "Completar" to the exact screen; "Enviar a revisión" disabled
+  says what is missing. Pending: what happens now and how long; rejected:
+  the note and "Corregir"; approved: verified.
+- Perfil and Mi negocio → Ayuda y legal: only "Tutoriales" and "Legal".
+  Tutoriales: seen marks, "Repetir" opens that screen with its guide,
+  "Reiniciar todas". Legal: three tabs; /legal/privacy opens its tab.
+- "Ver como cliente": one line "Estás viendo Luma como cliente" + "Volver".
+  Portada without logo or cover invites to add them.

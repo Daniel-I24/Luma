@@ -41,3 +41,5 @@ in `scripts/`. Status as of 2026-10-27; all listed tests are green.
 | R32 | Round 8: build flags (AI, push, support WhatsApp, legal e-mail) | `scripts/build-flags.mjs`, `core/config/ai-mode.ts`, `push-enabled.ts`, `support.ts` | `build-flags.test.mjs`, `menu-scan.repository.spec.ts` |
 | R33 | Round 8: pending businesses visibility | migration `20261105000000_round8`; `checkout.store`, business card, profile hero | SQL `round8.sql`; `checkout.store.spec.ts` |
 | R34 | Round 8: public legal pages | `scripts/build-legal.mjs`, `public/legal/`, `vercel.json` | `build-legal.test.mjs`, `vercel-config.test.mjs` |
+| R35 | Round 8: any screen and font size | `src/styles/scale.css`, `base.css`, `scripts/check-responsive.mjs` | `check-responsive.test.mjs`; CI `check:responsive` |
+| R36 | Round 8: verification in three steps, Tutoriales, Legal tabs, compact headers | `owner/components/verification-card`, `shared/tutorial/tutorials-panel`, `help-entries`, `legal-document.page` | `owner-summary.page.spec.ts`, `tutorials-panel.spec.ts`, `legal-document.page.spec.ts`, `owner-hero.spec.ts` |

@@ -13,6 +13,9 @@ import type { IconName } from '../icon/luma-icons';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LumaIcon],
   templateUrl: './luma-image.html',
+  // `contents`: the image fills its parent, so size the PARENT (a span with
+  // size-14…); classes on <app-luma-image> itself are ignored (round 8 bug:
+  // the menu row image took the whole row).
   host: { class: 'contents' },
 })
 export class LumaImage {

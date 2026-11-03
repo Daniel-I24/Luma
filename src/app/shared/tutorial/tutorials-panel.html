@@ -1,0 +1,34 @@
+<main
+  *transloco="let t"
+  class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-4))] pb-[calc(env(safe-area-inset-bottom)+var(--spacing-8))]"
+>
+  <header class="flex items-center gap-2">
+    <app-luma-icon-button icon="arrow-left" variant="ghost" [label]="t('common.back')" (clicked)="back()" />
+    <h1 class="m-0 text-title text-fg">{{ t('tutorials.title') }}</h1>
+  </header>
+
+  <section class="flex flex-col gap-2 rounded-xl border border-border-subtle bg-surface p-4" aria-labelledby="tutorials-welcome">
+    <h2 id="tutorials-welcome" class="m-0 text-body font-semibold text-fg">{{ t('tutorials.welcome') }}</h2>
+    <p class="m-0 text-body-sm text-fg-muted">{{ t('tutorials.welcomeHint') }}</p>
+    <app-luma-button variant="secondary" (clicked)="welcome()">{{ t('tutorials.repeat') }}</app-luma-button>
+  </section>
+
+  <section class="flex flex-col gap-2" aria-labelledby="tutorials-guides">
+    <h2 id="tutorials-guides" class="m-0 px-1 text-label tracking-wide text-fg-subtle uppercase">{{ t('tutorials.guides') }}</h2>
+    <ul class="m-0 flex list-none flex-col gap-2 p-0">
+      @for (guide of guides(); track guide.id) {
+      <li class="flex flex-wrap items-center gap-3 rounded-xl border border-border-subtle bg-surface p-3">
+        <span class="flex min-w-0 flex-1 flex-col">
+          <span class="text-body font-medium text-fg">{{ t('tutorials.sections.' + guide.id) }}</span>
+          <span class="inline-flex items-center gap-1 text-caption" [class]="guide.seen ? 'text-success-fg' : 'text-fg-subtle'">
+            @if (guide.seen) { <app-luma-icon name="check" size="sm" /> {{ t('tutorials.seen') }} } @else { {{ t('tutorials.notSeen') }} }
+          </span>
+        </span>
+        <app-luma-button variant="ghost" size="sm" (clicked)="repeat(guide.id, guide.path)">{{ t('tutorials.repeat') }}</app-luma-button>
+      </li>
+      }
+    </ul>
+  </section>
+
+  <app-luma-button variant="secondary" [fullWidth]="true" (clicked)="resetAll()">{{ t('tutorials.resetAll') }}</app-luma-button>
+</main>
