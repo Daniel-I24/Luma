@@ -57,8 +57,11 @@ Removed: nothing. The design preview is no longer bundled in production
   classes: e.g. `pickup-slots.util.ts` → `pickup-slots.ts`,
   `sheet-drag.util.ts` → `sheet-drag-math.ts`, `combo.util.ts` →
   `combo-builder.ts`, `normalize-text.util.ts` → `text-normalizer.ts`.
-- `export` removed from 48 symbols used only inside their own file
-  (knip "unused exports"); the constant `HOURS_PER_DAY` deleted (unused).
+- `export` removed from 45 symbols used only inside their own file
+  (knip "unused exports"); deleted as unused: the constant `HOURS_PER_DAY`
+  and the class `BusinessCategories` (`categoryLabelKey`, no caller). The
+  `*_STATUSES` and `ACCOUNT_TYPES` lists stay exported: their types derive
+  from them.
 - `LumaToastHost` removed from the design-system barrel (imported by path
   so it stays out of the barrel's eager graph).
 - Kept on purpose: the design-system barrel's type re-exports (its public

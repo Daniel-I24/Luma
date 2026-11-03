@@ -1,5 +1,5 @@
 /** Review state of a business (businesses_verification_status_valid). */
-const VERIFICATION_STATUSES = [
+export const VERIFICATION_STATUSES = [
   'draft',
   'pending',
   'approved',
