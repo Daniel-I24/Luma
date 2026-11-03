@@ -1,0 +1,57 @@
+<fieldset *transloco="let t" class="m-0 flex min-w-0 flex-col gap-3 border-0 p-0">
+  <legend class="mb-1 p-0 text-title text-fg">{{ t('residence.legend') }}</legend>
+  <p class="m-0 text-body-sm text-fg-muted">{{ t('residence.purpose') }}</p>
+
+  @switch (state()) { @case ('loading') {
+  <app-luma-skeleton shape="rect" class="block h-24" />
+  } @case ('error') {
+  <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+    {{ t('residence.loadFailed') }}
+  </p>
+  <app-luma-button variant="secondary" (clicked)="load()">{{ t('common.retry') }}</app-luma-button>
+  } @default {
+  <app-luma-select
+    selectId="residence-department"
+    [label]="t('residence.department')"
+    [placeholder]="t('residence.departmentPlaceholder')"
+    [options]="departmentOptions()"
+    [required]="true"
+    [value]="departmentCode()"
+    (valueChange)="chooseDepartment($event)"
+  />
+
+  @if (departmentCode()) { @if (municipality(); as town) {
+  <div class="flex items-center justify-between gap-3 rounded-md border border-border-subtle bg-surface p-3">
+    <span class="text-body text-fg">{{ town.name }}</span>
+    <app-luma-button variant="ghost" size="sm" (clicked)="changeMunicipality()">{{ t('residence.change') }}</app-luma-button>
+  </div>
+  } @else {
+  <app-luma-input
+    inputId="residence-city"
+    [label]="t('residence.city')"
+    [placeholder]="t('residence.cityPlaceholder')"
+    [required]="true"
+    [value]="query()"
+    (valueChange)="query.set($event)"
+  />
+  <ul class="m-0 flex list-none flex-col gap-1 p-0" [attr.aria-label]="t('residence.results')">
+    @for (option of results(); track option.code) {
+    <li>
+      <app-luma-button variant="secondary" [fullWidth]="true" (clicked)="choose(option)">{{ option.name }}</app-luma-button>
+    </li>
+    } @empty {
+    <li class="text-body-sm text-fg-muted">{{ t('residence.noResults') }}</li>
+    }
+  </ul>
+  } }
+
+  <app-luma-input
+    inputId="residence-neighborhood"
+    [label]="t('residence.neighborhood')"
+    [hint]="t('residence.neighborhoodHint')"
+    [maxLength]="neighborhoodMax"
+    [value]="neighborhood()"
+    (valueChange)="setNeighborhood($event)"
+  />
+  } }
+</fieldset>

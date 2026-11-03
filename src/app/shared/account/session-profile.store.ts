@@ -1,7 +1,7 @@
 import { Injectable, computed, effect, inject, signal, untracked } from '@angular/core';
 import { AuthService } from '@core/auth/auth.service';
 import { ACCOUNT_ERROR_PATH, ACCOUNT_HOMES } from './account-homes';
-import { type AccountProfile, AccountProfileRepository } from './account-profile.repository';
+import { type AccountProfile, AccountProfileRepository, type ProfileDetails } from './account-profile.repository';
 import type { AccountType } from './account-type';
 import { ONBOARDING_PATH, ONBOARDING_VERSION, needsOnboarding } from './onboarding';
 
@@ -29,6 +29,11 @@ export class SessionProfileStore {
   readonly loaded = this._loaded.asReadonly();
   /** True when a signed-in user's profile could not be read. */
   readonly failed = this._failed.asReadonly();
+  /** Mirrors is_profile_complete(): name, +57 mobile and municipality of residence. */
+  readonly profileComplete = computed(() => {
+    const p = this._profile();
+    return !!p && (p.fullName?.trim().length ?? 0) >= 3 && p.phone !== null && !!p.residence;
+  });
 
   constructor() {
     effect(() => {
@@ -70,6 +75,16 @@ export class SessionProfileStore {
     if (!result.data) return false;
     this._profile.update((p) => (p ? { ...p, onboardingSeenVersion: ONBOARDING_VERSION } : p));
     return true;
+  }
+
+  /** Saves name, mobile and residence; resolves to an error key, or null when saved. */
+  async saveDetails(details: ProfileDetails): Promise<string | null> {
+    const userId = this.auth.user()?.id;
+    if (!userId) return 'auth.errors.sessionExpired';
+    const result = await this.repo.saveDetails(userId, details);
+    if (result.errorKey) return result.errorKey;
+    this._profile.update((p) => (p ? { ...p, ...details } : p));
+    return null;
   }
 
   /** customer → business_owner; resolves to true when the account is an owner. */

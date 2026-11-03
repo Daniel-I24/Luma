@@ -1670,5 +1670,34 @@
         "description": "Promotions from the businesses you saved as favourites."
       }
     }
+  },
+  "accountDetails": {
+    "title": "My details",
+    "intro": "To order we need your name, your mobile and where you live. Only you see them; businesses see your public name.",
+    "fullName": "Full name",
+    "phone": "Mobile",
+    "phonePurpose": "We use it to verify your account and prevent fake orders. Businesses never see it.",
+    "save": "Save",
+    "saved": "Your details were saved.",
+    "completeAction": "Complete my details",
+    "errors": {
+      "name": "Type your full name (3 to 80 characters).",
+      "phone": "Type a valid Colombian mobile, for example 300 123 4567.",
+      "residence": "Choose your department and municipality."
+    }
+  },
+  "residence": {
+    "legend": "Where do you live?",
+    "purpose": "We centre the map on your municipality when we do not have your location and tell you when you order in another department.",
+    "department": "Department",
+    "departmentPlaceholder": "Choose your department",
+    "city": "Municipality",
+    "cityPlaceholder": "Type to search",
+    "results": "Municipalities found",
+    "noResults": "We did not find that municipality in the department.",
+    "change": "Change",
+    "neighborhood": "Neighbourhood (optional)",
+    "neighborhoodHint": "Up to 60 characters.",
+    "loadFailed": "Could not load the list of municipalities."
   }
 }

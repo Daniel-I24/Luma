@@ -1670,5 +1670,34 @@
         "description": "Promociones de los negocios que guardaste como favoritos."
       }
     }
+  },
+  "accountDetails": {
+    "title": "Mis datos",
+    "intro": "Para pedir necesitamos tu nombre, tu celular y dónde vives. Solo tú los ves; el negocio ve tu nombre público.",
+    "fullName": "Nombre completo",
+    "phone": "Celular",
+    "phonePurpose": "Lo usamos para verificar tu cuenta y evitar pedidos falsos. Nunca lo mostramos a los negocios.",
+    "save": "Guardar",
+    "saved": "Tus datos quedaron guardados.",
+    "completeAction": "Completar mis datos",
+    "errors": {
+      "name": "Escribe tu nombre completo (de 3 a 80 caracteres).",
+      "phone": "Escribe un celular colombiano válido, por ejemplo 300 123 4567.",
+      "residence": "Elige tu departamento y municipio."
+    }
+  },
+  "residence": {
+    "legend": "¿Dónde vives?",
+    "purpose": "Centramos el mapa en tu municipio cuando no tenemos tu ubicación y te avisamos si pides en otro departamento.",
+    "department": "Departamento",
+    "departmentPlaceholder": "Elige tu departamento",
+    "city": "Municipio",
+    "cityPlaceholder": "Escribe para buscar",
+    "results": "Municipios encontrados",
+    "noResults": "No encontramos ese municipio en el departamento.",
+    "change": "Cambiar",
+    "neighborhood": "Barrio (opcional)",
+    "neighborhoodHint": "Hasta 60 caracteres.",
+    "loadFailed": "No se pudo cargar la lista de municipios."
   }
 }

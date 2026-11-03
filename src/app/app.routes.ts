@@ -48,6 +48,13 @@ export const routes: Routes = [
       import('./features/account-password/account-password.page').then((m) => m.AccountPasswordPage),
   },
   {
+    // Name, mobile and residence ("Completa tu perfil"); checkout links here.
+    path: 'account/details',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/account-details/account-details.page').then((m) => m.AccountDetailsPage),
+  },
+  {
     // The account type could not be read: "Reintentar", never a guess.
     path: 'account-error',
     canActivate: [authGuard],

@@ -13,6 +13,7 @@ import {
 } from '@design-system';
 import { CartStore } from '@shared/cart/cart.store';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
+import { PROFILE_INCOMPLETE_KEY } from '@shared/orders/order-error';
 import { CheckoutStore, NOTES_MAX_LENGTH } from './state/checkout.store';
 import { PickupScheduleStore } from './state/pickup-schedule.store';
 import type { PickupOption } from './utils/pickup-time.util';
@@ -48,6 +49,12 @@ export class CheckoutPage {
   private readonly router = inject(Router);
 
   protected readonly options: readonly PickupOption[] = ['now', 'later', 'tomorrow'];
+  /** create_order answered profile_incomplete: offer "Completar perfil". */
+  protected readonly profileIncompleteKey = PROFILE_INCOMPLETE_KEY;
+
+  protected completeProfile(): void {
+    void this.router.navigate(['/account/details'], { queryParams: { next: '/checkout' } });
+  }
   protected readonly notesMax = NOTES_MAX_LENGTH;
   protected readonly slotOptions = computed<SelectOption[]>(() =>
     this.schedule.slots().map((time) => ({ value: time, label: time })),
