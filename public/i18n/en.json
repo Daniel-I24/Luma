@@ -1586,6 +1586,29 @@
       "errors": {
         "failed": "Could not change the pause. Try again."
       }
+    },
+    "sales": {
+      "title": {
+        "orders": "Orders per day",
+        "revenue": "Sales per day"
+      },
+      "range": "Period",
+      "measure": "What to show",
+      "days": "{{count}} days",
+      "measures": {
+        "orders": "Orders",
+        "revenue": "Sales"
+      },
+      "totals": "{{orders}} orders",
+      "empty": "No sales in this period yet.",
+      "tapHint": "Tap a bar to see the day.",
+      "ordersValue": "{{count}} orders",
+      "day": "Day",
+      "topItems": "Most ordered",
+      "units": "{{count}} units",
+      "errors": {
+        "loadFailed": "Could not load the sales summary."
+      }
     }
   },
   "promotions": {

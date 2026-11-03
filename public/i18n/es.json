@@ -1586,6 +1586,29 @@
       "errors": {
         "failed": "No se pudo cambiar la pausa. Intenta de nuevo."
       }
+    },
+    "sales": {
+      "title": {
+        "orders": "Pedidos por día",
+        "revenue": "Ventas por día"
+      },
+      "range": "Periodo",
+      "measure": "Qué mostrar",
+      "days": "{{count}} días",
+      "measures": {
+        "orders": "Pedidos",
+        "revenue": "Ventas"
+      },
+      "totals": "{{orders}} pedidos",
+      "empty": "Todavía no hay ventas en este periodo.",
+      "tapHint": "Toca una barra para ver el día.",
+      "ordersValue": "{{count}} pedidos",
+      "day": "Día",
+      "topItems": "Lo más pedido",
+      "units": "{{count}} unidades",
+      "errors": {
+        "loadFailed": "No se pudo cargar el resumen de ventas."
+      }
     }
   },
   "promotions": {

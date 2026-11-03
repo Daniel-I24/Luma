@@ -16,6 +16,7 @@ import { OrderPauseCard } from '../../components/order-pause-card/order-pause-ca
 import { PanelHeader } from '../../components/panel-header/panel-header';
 import { PanelStateView } from '../../components/panel-state/panel-state';
 import { PublishCard } from '../../components/publish-card/publish-card';
+import { SalesSummaryCard } from '../../components/sales-summary-card/sales-summary-card';
 import { TodayStatsView } from '../../components/today-stats/today-stats';
 import { VerificationCard } from '../../components/verification-card/verification-card';
 import { BusinessOrdersStore } from '../../state/business-orders.store';
@@ -42,6 +43,7 @@ import { todayStats } from '../../utils/today-stats.util';
     PanelHeader,
     PanelStateView,
     PublishCard,
+    SalesSummaryCard,
     TodayStatsView,
     VerificationCard,
   ],

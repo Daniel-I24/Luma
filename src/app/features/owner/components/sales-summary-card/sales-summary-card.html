@@ -1,0 +1,64 @@
+<section *transloco="let t" class="flex flex-col gap-3 rounded-xl border border-border-subtle bg-surface p-4" aria-labelledby="sales-title">
+  <div class="flex items-center justify-between gap-2">
+    <h2 id="sales-title" class="m-0 text-title text-fg">{{ t('owner.sales.title.' + sales.measure()) }}</h2>
+    <div class="flex gap-1" role="radiogroup" [attr.aria-label]="t('owner.sales.range')">
+      @for (range of ranges; track range) {
+      <app-luma-button size="sm" role="radio" [variant]="sales.range() === range ? 'primary' : 'ghost'"
+        [attr.aria-checked]="sales.range() === range" (clicked)="setRange(range)">{{ t('owner.sales.days', { count: range }) }}</app-luma-button>
+      }
+    </div>
+  </div>
+  <div class="flex gap-1" role="radiogroup" [attr.aria-label]="t('owner.sales.measure')">
+    @for (measure of measures; track measure) {
+    <app-luma-button size="sm" role="radio" [variant]="sales.measure() === measure ? 'secondary' : 'ghost'"
+      [attr.aria-checked]="sales.measure() === measure" (clicked)="setMeasure(measure)">{{ t('owner.sales.measures.' + measure) }}</app-luma-button>
+    }
+  </div>
+
+  @switch (sales.state()) { @case ('loading') {
+  <app-luma-skeleton shape="rect" class="block h-32" />
+  } @case ('error') {
+  <p class="m-0 text-body-sm text-danger-fg" role="alert">{{ t('owner.sales.errors.loadFailed') }}</p>
+  } @default {
+  <p class="m-0 text-body text-fg">
+    {{ t('owner.sales.totals', { orders: sales.totals().orders }) }} · <strong>{{ sales.totals().revenueCop | cop }}</strong>
+  </p>
+  @if (empty()) {
+  <p class="m-0 text-body-sm text-fg-muted">{{ t('owner.sales.empty') }}</p>
+  } @else {
+  <div class="flex h-32 items-end gap-0.5 border-b border-border-subtle" aria-hidden="true">
+    @for (bar of sales.bars(); track bar.day) {
+    <button
+      type="button"
+      tabindex="-1"
+      class="flex h-full min-w-0 flex-1 items-end"
+      (click)="selected.set(bar)"
+    >
+      <span
+        class="block w-full rounded-t-xs bg-primary"
+        [class.opacity-60]="selected() !== null && selected()!.day !== bar.day"
+        [style.height.%]="bar.share * 100"
+      ></span>
+    </button>
+    }
+  </div>
+  <p class="m-0 min-h-5 text-body-sm text-fg-muted" aria-live="polite">
+    @if (selected(); as bar) { {{ shortDay(bar.day) }}: @if (sales.measure() === 'orders') { {{ t('owner.sales.ordersValue', { count: bar.value }) }} } @else { {{ bar.value | cop }} } } @else { {{ t('owner.sales.tapHint') }} }
+  </p>
+  <table class="sr-only">
+    <caption>{{ t('owner.sales.title.' + sales.measure()) }}</caption>
+    <tr><th scope="col">{{ t('owner.sales.day') }}</th><th scope="col">{{ t('owner.sales.measures.orders') }}</th><th scope="col">{{ t('owner.sales.measures.revenue') }}</th></tr>
+    @for (day of sales.summary()?.days ?? []; track day.day) {
+    <tr><td>{{ shortDay(day.day) }}</td><td>{{ day.orders }}</td><td>{{ day.revenueCop | cop }}</td></tr>
+    }
+  </table>
+  @if (sales.summary()?.topItems?.length) {
+  <h3 class="m-0 text-label text-fg-subtle uppercase">{{ t('owner.sales.topItems') }}</h3>
+  <ol class="m-0 flex list-decimal flex-col gap-1 pl-5 text-body text-fg">
+    @for (item of sales.summary()!.topItems; track item.name) {
+    <li><span>{{ item.name }}</span> <span class="text-fg-muted">· {{ t('owner.sales.units', { count: item.quantity }) }}</span></li>
+    }
+  </ol>
+  } } }
+  }
+</section>

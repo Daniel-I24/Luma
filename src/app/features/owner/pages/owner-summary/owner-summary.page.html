@@ -20,6 +20,9 @@
     }
 
     <app-today-stats [stats]="stats()" [ordersLink]="ordersLink()" />
+    @if (business.verification_status === 'approved') {
+    <app-sales-summary-card [businessId]="business.id" />
+    }
     }
   </app-panel-state>
 </div>
