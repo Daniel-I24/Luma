@@ -254,3 +254,37 @@ the secret. Only "OK: the documented algorithm … matches" allows going on
 with docs/payments-checklist.md; any other answer means a wrong secret,
 the wrong environment, or a change in Wompi's algorithm to investigate
 before enabling payments.
+
+## Round 4 safeguards (migration `20261101000000_round4_hardening`)
+
+- **One attempt at a time.** `prepare_payment` refuses `attempt_in_progress`
+  while the latest attempt is `pending` and younger than
+  `app_settings.payment_retry_wait_seconds` (180); the error hint carries
+  the seconds left, create-payment answers 409 with `retry_after_seconds`
+  and `Retry-After`, and the app disables "Reintentar pago" with "Podrás
+  reintentar en m:ss". The order lock serialises two attempts prepared at
+  the same time. Expired, no attempts left and already paid also disable
+  the button with their cause.
+- **Duplicate charge.** If an order already has an approved payment and
+  the approval of ANOTHER attempt arrives, that payment becomes
+  `refund_required` through `private.flag_payment_refund` (the same
+  per-payment step `mark_refund_required` uses), the order keeps its
+  status and payment status, the customer gets `duplicate_charge` and every
+  admin `refund_pending_admin`. Voiding or refunding the duplicate never
+  touches the order; `admin_mark_refund_done` sets the order to `refunded`
+  only when no payment of it is left approved or to refund.
+- **Lock order.** Every path that changes a payment locks the order first
+  and then the payment: `apply_payment_event` resolves `order_id` from the
+  reference without a lock (both columns are immutable), then locks the
+  order, then the payment; cancellations lock the order (their UPDATE) and
+  the `orders_paid_cancelled` trigger then locks the payments. The SQL
+  harness runs one session, so this is checked by the code path, not by a
+  concurrent test.
+- **Closed table.** `payments` has no grant for `service_role` either; only
+  SECURITY DEFINER functions read or write it.
+- **Void** (`admin_request_void`) only for `refund_required` payments or
+  approved payments of cancelled orders.
+- **Reconciliation** also lists pending attempts without a redirect id
+  (older than 3 minutes) with a null transaction id. Wompi documents no
+  search by reference, so `reconcile-payments` skips them (see
+  docs/payments-checklist.md, question 4).

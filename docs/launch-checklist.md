@@ -16,11 +16,12 @@ values; never paste the service_role key anywhere in the app.
 2. **Prerequisites** in the dashboard: Authentication → Multi-Factor →
    TOTP **on**; Database → Extensions → `pg_trgm` **on** (optional:
    `pg_cron`, `pg_net`).
-3. **Check what is applied** (should list 1 to 28 as applied):
+3. **Check what is applied** (should list 1 to 50 as applied):
    ```powershell
    npx supabase migration list
    ```
-4. **Apply migrations 29 to 50** after your review (docs/migrations.md):
+4. **Apply migration 51** (`20261101000000_round4_hardening.sql`) after your
+   review (docs/migrations.md):
    ```powershell
    npx supabase db push
    ```
@@ -34,6 +35,8 @@ values; never paste the service_role key anywhere in the app.
    $env:SUPABASE_ANON_KEY = "<anon key>"
    $env:APP_ORIGIN = "https://<dominio>"
    npm run verify:backend
+   # after step 9, also require the two free functions:
+   npm run verify:backend -- --expect-deployed=delete-account,geocode
    ```
 7. **Auth settings and e-mails** (docs/auth-emails.md): paste the three
    templates (Confirm signup, Reset password, Reauthentication); 6-digit

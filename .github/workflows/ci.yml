@@ -87,6 +87,9 @@ jobs:
             echo "== $dir"
             (cd "supabase/functions/$dir" && deno test --no-lock --config deno.json -A)
           done
+      - name: Lint (warning mode, same limits as the app; scripts/lint-functions.mjs)
+        continue-on-error: true
+        run: cd supabase/functions && deno lint --config deno.lint.json
       - name: Type check entry points
         run: |
           for dir in delete-account recommend suggest-promotions extract-menu geocode push-dispatch create-payment wompi-webhook reconcile-payments void-payment; do

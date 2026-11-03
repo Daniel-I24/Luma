@@ -143,6 +143,34 @@ SQL suites, Deno 2.5.6 in Docker for the functions.
   npm audit --omit=dev 0, knip without unused files or dependencies.
   Round 2 closed.
 
+## Round 4 (2026-10-28)
+
+- Migration 51 `20261101000000_round4_hardening` (1 to 50 applied, not
+  touched): attempt_in_progress (180 s, seconds left in the hint),
+  duplicate charge -> refund_required via private.flag_payment_refund
+  (duplicate_charge / refund_pending_admin), order locked before payment,
+  reconcile list with pending attempts without id, void only for refunds,
+  payments closed to service_role, business_order_items without unpaid
+  orders, NIT blocks only against approved businesses of another owner
+  (also in review_business), set_updated_at / rls_auto_enable not RPCs.
+  SQL suites payments_round4, review_tax_id, function_privileges; updated
+  payments_flow and business_signals.
+- Edge Functions: create-payment answers retry_after_seconds; reconciler
+  skips attempts without id (Wompi documents no search by reference);
+  push texts (duplicate charge, admin refund, "El negocio ya recibió tu
+  pedido"); Deno lint in warning mode (deno.lint.json, CI, lint:functions).
+- App: "Reintentar pago" disabled with its cause and a countdown;
+  'infinity' pauses; notification texts and admin link; tax_id_in_use
+  messages for owner and admin.
+- verify-backend: placeholder arguments, protected vs missing, private
+  buckets, --expect-deployed, failing vs not deployed, migration 50
+  required. docs/payments-checklist.md (sandbox questions, GitHub Pages
+  plan B), docs/payments.md, migrations, launch checklist, threat model
+  T18-T20, traceability R20-R21, DECISIONS.
+- DoD: build, lint, 751 app tests, 89 script tests, 674 SQL checks, 125
+  Deno tests, type check and lint of the functions, every check, secret
+  scan, audit 0, knip (no unused files or dependencies).
+
 ## Round 3 (2026-10-28, closing)
 
 - docs/round2-status.md (phases 4-7: all done except the screen pass with

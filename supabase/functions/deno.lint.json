@@ -1,0 +1,9 @@
+{
+  "lint": {
+    "include": ["./"],
+    "rules": {
+      "tags": ["recommended"],
+      "include": ["eqeqeq", "no-explicit-any", "no-eval", "no-throw-literal", "prefer-const"]
+    }
+  }
+}

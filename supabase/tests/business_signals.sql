@@ -1,5 +1,5 @@
 -- -----------------------------------------------------------------------------
--- Business anti-fraud and sales: tax_id_in_use on submit, business_review_flags
+-- Business anti-fraud and sales: tax_id_in_use on submit (approved NIT of another owner), business_review_flags
 -- (admin with aal2), owner_sales_daily (owner only). Roles: owner (v1, pub),
 -- another owner (eve), customer (cus), admin (adm) with aal1 and aal2, anon.
 -- Rolled back at the end.
@@ -26,8 +26,10 @@ select tests.expect_true('authenticated', tests.id('owner'),
   'a NIT used only by a draft of another user does not block');
 update public.businesses set verification_status = 'draft' where id = tests.id('v1');
 update public.businesses set verification_status = 'pending' where id = tests.id('e1');
-select tests.expect_error('authenticated', tests.id('owner'),
-  $$select public.submit_business_for_review(tests.id('v1'))$$, 'tax_id_in_use');
+select tests.expect_true('authenticated', tests.id('owner'),
+  $$select (public.submit_business_for_review(tests.id('v1')) ->> 'ok')::boolean$$,
+  'a NIT of a pending business of another user does not block either (only a review flag)');
+update public.businesses set verification_status = 'draft' where id = tests.id('v1');
 update public.businesses set verification_status = 'approved' where id = tests.id('e1');
 select tests.expect_error('authenticated', tests.id('owner'),
   $$select public.submit_business_for_review(tests.id('v1'))$$, 'tax_id_in_use');

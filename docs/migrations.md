@@ -35,39 +35,40 @@ category names (`Cafetería`), and the Supabase SQL editor and CLI are UTF-8.
 | 27 | `20261027000100_push_dispatch.sql` | `private.push_settings`, pg_net poke trigger, pg_cron fallback, `claim_push_batch`, `remove_device_tokens` | Applied |
 | 28 | `20261028000000_export_my_data.sql` | `export_my_data` (habeas data, 3 a day) | Applied |
 
-### Round 2 and 3 (29 to 50, pending review)
+### Rounds 2 to 4 (29 to 51)
 
-Status on 2026-10-28: **1 to 28 applied, 29 to 50 pending** (in review by
-the owner). Applied migrations and 29 to 49 (under review) are never
-edited again. Round 2 adds new files only, all later than
-`20261028000000`; a changed function is redefined with `create or replace`
-keeping its arguments and grants (a changed return type needs a drop and a
-create in the same file, noted in the file header).
+Status on 2026-10-28: **1 to 50 applied** in production after the owner's
+review; **51 (`20261101000000_round4_hardening.sql`) pending review**.
+Applied migrations are never edited again. Each round adds new files only,
+later than the last applied one; a changed function is redefined with
+`create or replace` keeping its arguments and grants (a changed return type
+needs a drop and a create in the same file, noted in the file header).
 
 | # | File | What it does | Status |
 | --- | --- | --- | --- |
-| 29 | `20261029000000_push_business_id.sql` | `claim_push_batch` also returns `business_id` (drop + create: new return column; same arguments and grants) | Pending review |
-| 30 | `20261029000100_round1_hardening.sql` | `notify_promotion` capped at `promotion_notify_max_recipients` (500); `handle_new_user` compares jsonb instead of casting; `register_device_token` needs a confirmed email | Pending review |
-| 31 | `20261029000200_rate_limits.sql` | Closed `rate_limit_hits`, `hit_rate_limit(bucket)` with buckets defined in `app_settings` (`menu_scan`: 6 per 10 minutes) | Pending review |
-| 32 | `20261030000000_admin_mfa_audit.sql` | `is_admin()` needs aal2 (TOTP); `admin_access()`; append-only `admin_audit_log`, `log_admin_action`, `admin_recent_audit` | Pending review |
-| 33 | `20261030000010_review_business_audit.sql` | `review_business` unchanged, plus one audit row per decision | Pending review |
-| 34 | `20261030000100_customer_profile.sql` | Residence (department, municipality, DANE code, neighbourhood), avatar columns, `is_profile_complete`, `is_phone_verified`, `phone_check_passed` (`require_phone_verification` 0), `become_business_owner` needs a complete profile | Pending review |
-| 35 | `20261030000110_avatars.sql` | Private `avatars` bucket (2 MB, one per user), Storage policies, `can_view_customer_avatar`, `set_avatar` with consent | Pending review |
-| 36 | `20261030000200_trust_tiers.sql` | `cancel_reason`, `ready_at`, `cancelled_at`; `set_order_status(order, status, reason)` (2-argument version dropped); `customer_strikes` | Pending review |
-| 37 | `20261030000210_trust_status.sql` | `customer_trust_tier`, `my_trust_status`, `admin_strikes`, `admin_clear_strikes` | Pending review |
-| 38 | `20261030000300_payments_schema.sql` | `orders.payment_method` 'online', status 'awaiting_payment', `payment_status`; closed `payments` with an immutability trigger; payment settings (off by default) | Pending review |
-| 39 | `20261030000310_payment_events.sql` | `payment_transition_allowed` (state machine), status guard, append-only `payment_events` | Pending review |
-| 40 | `20261030000320_prepare_payment.sql` | `payment_config`, `prepare_payment` (3 attempts), `my_order_payment`, `record_payment_redirect` | Pending review |
-| 41 | `20261030000330_apply_payment_event.sql` | `mark_refund_required`, `apply_payment_event` (service_role, idempotent), `payments_to_reconcile` | Pending review |
-| 42 | `20261030000340_payment_admin.sql` | Paid and cancelled orders become refund_required; `cancel_order` also while awaiting payment; `admin_payment_issues`, `admin_request_void`, `admin_mark_refund_done` | Pending review |
-| 43 | `20261030000400_business_operations.sql` | `orders_paused_until`, `set_orders_paused`, `business_paused`; owner-chosen `department` and `city_dane_code` | Pending review |
-| 44 | `20261030000500_create_order_final.sql` | The single final `create_order` (5 arguments, 4-argument version dropped) with every protection | Pending review |
-| 45 | `20261030000510_order_lifecycle.sql` | Notifications for paid orders and review invitations, `business_orders` without unpaid orders (payment, reason, avatar columns), `expire_stale_orders` also for unpaid online orders | Pending review |
-| 46 | `20261030000600_business_signals.sql` | `pg_trgm`, `digits_only`, `phone_keys`, `tax_id_taken`, `business_review_flags` | Pending review |
-| 47 | `20261030000610_submit_tax_id.sql` | `submit_business_for_review` refuses `tax_id_in_use` | Pending review |
-| 48 | `20261030000620_owner_sales_daily.sql` | `owner_sales_daily(business, 7 or 30)` | Pending review |
-| 49 | `20261030000700_payment_service.sql` | `payment_event_seen`, `payment_attempt`, `admin_note_reconcile`, `private.payments_cron` and the reconciliation cron (only when pg_cron exists) | Pending review |
-| 50 | `20261031000000_phone_verification.sql` | Round 3: `submit_business_for_review` also checks `phone_check_passed`; `profiles_phone_guard` (phone changes only to the confirmed number while required); `verified_auth_phone`, `sync_verified_phone` | Pending review |
+| 29 | `20261029000000_push_business_id.sql` | `claim_push_batch` also returns `business_id` (drop + create: new return column; same arguments and grants) | Applied |
+| 30 | `20261029000100_round1_hardening.sql` | `notify_promotion` capped at `promotion_notify_max_recipients` (500); `handle_new_user` compares jsonb instead of casting; `register_device_token` needs a confirmed email | Applied |
+| 31 | `20261029000200_rate_limits.sql` | Closed `rate_limit_hits`, `hit_rate_limit(bucket)` with buckets defined in `app_settings` (`menu_scan`: 6 per 10 minutes) | Applied |
+| 32 | `20261030000000_admin_mfa_audit.sql` | `is_admin()` needs aal2 (TOTP); `admin_access()`; append-only `admin_audit_log`, `log_admin_action`, `admin_recent_audit` | Applied |
+| 33 | `20261030000010_review_business_audit.sql` | `review_business` unchanged, plus one audit row per decision | Applied |
+| 34 | `20261030000100_customer_profile.sql` | Residence (department, municipality, DANE code, neighbourhood), avatar columns, `is_profile_complete`, `is_phone_verified`, `phone_check_passed` (`require_phone_verification` 0), `become_business_owner` needs a complete profile | Applied |
+| 35 | `20261030000110_avatars.sql` | Private `avatars` bucket (2 MB, one per user), Storage policies, `can_view_customer_avatar`, `set_avatar` with consent | Applied |
+| 36 | `20261030000200_trust_tiers.sql` | `cancel_reason`, `ready_at`, `cancelled_at`; `set_order_status(order, status, reason)` (2-argument version dropped); `customer_strikes` | Applied |
+| 37 | `20261030000210_trust_status.sql` | `customer_trust_tier`, `my_trust_status`, `admin_strikes`, `admin_clear_strikes` | Applied |
+| 38 | `20261030000300_payments_schema.sql` | `orders.payment_method` 'online', status 'awaiting_payment', `payment_status`; closed `payments` with an immutability trigger; payment settings (off by default) | Applied |
+| 39 | `20261030000310_payment_events.sql` | `payment_transition_allowed` (state machine), status guard, append-only `payment_events` | Applied |
+| 40 | `20261030000320_prepare_payment.sql` | `payment_config`, `prepare_payment` (3 attempts), `my_order_payment`, `record_payment_redirect` | Applied |
+| 41 | `20261030000330_apply_payment_event.sql` | `mark_refund_required`, `apply_payment_event` (service_role, idempotent), `payments_to_reconcile` | Applied |
+| 42 | `20261030000340_payment_admin.sql` | Paid and cancelled orders become refund_required; `cancel_order` also while awaiting payment; `admin_payment_issues`, `admin_request_void`, `admin_mark_refund_done` | Applied |
+| 43 | `20261030000400_business_operations.sql` | `orders_paused_until`, `set_orders_paused`, `business_paused`; owner-chosen `department` and `city_dane_code` | Applied |
+| 44 | `20261030000500_create_order_final.sql` | The single final `create_order` (5 arguments, 4-argument version dropped) with every protection | Applied |
+| 45 | `20261030000510_order_lifecycle.sql` | Notifications for paid orders and review invitations, `business_orders` without unpaid orders (payment, reason, avatar columns), `expire_stale_orders` also for unpaid online orders | Applied |
+| 46 | `20261030000600_business_signals.sql` | `pg_trgm`, `digits_only`, `phone_keys`, `tax_id_taken`, `business_review_flags` | Applied |
+| 47 | `20261030000610_submit_tax_id.sql` | `submit_business_for_review` refuses `tax_id_in_use` | Applied |
+| 48 | `20261030000620_owner_sales_daily.sql` | `owner_sales_daily(business, 7 or 30)` | Applied |
+| 49 | `20261030000700_payment_service.sql` | `payment_event_seen`, `payment_attempt`, `admin_note_reconcile`, `private.payments_cron` and the reconciliation cron (only when pg_cron exists) | Applied |
+| 50 | `20261031000000_phone_verification.sql` | Round 3: `submit_business_for_review` also checks `phone_check_passed`; `profiles_phone_guard` (phone changes only to the confirmed number while required); `verified_auth_phone`, `sync_verified_phone` | Applied |
+| 51 | `20261101000000_round4_hardening.sql` | Round 4: one payment attempt at a time (`attempt_in_progress`), duplicate charge → `refund_required` (`private.flag_payment_refund`, `duplicate_charge` / `refund_pending_admin`), lock order then payment, reconcile attempts without id, void only for refunds, `payments` closed to service_role, `business_order_items` without unpaid orders, NIT blocks only against approved businesses (also on approval), trigger functions not executable by anon | Pending review |
 
 **Database freeze (2026-10-19)**: the list above is final for the launch.
 After the freeze, migrations and functions change only to fix real bugs
@@ -207,6 +208,9 @@ transaction that is rolled back.
 | `payments_flow.sql` | state machine vectors, `prepare_payment`, `apply_payment_event` (mismatch, duplicates, retries, late events), reconcile list |
 | `payments_admin.sql` | immutable attempts, append-only events, expiry, refunds, admin tools with aal1 and aal2, review invitation |
 | `business_signals.sql` | `tax_id_in_use`, review flags, daily sales |
+| `payments_round4.sql` | `attempt_in_progress` and its hint, two approved attempts (duplicate charge, paid once), refund notifications, void and refund rules, reconcile without id, `payments` closed to service_role, `business_order_items` |
+| `review_tax_id.sql` | NIT with two owners: pending is a flag, approval refused with `tax_id_in_use` |
+| `function_privileges.sql` | anon executes only `is_business_public(uuid)` (plus a commented allow-list); `set_updated_at` triggers still run |
 
 `scripts/db-drift.test.mjs` (`npm run test:scripts`) checks without a
 database: Storage folders vs delete-account, functions in config.toml, and

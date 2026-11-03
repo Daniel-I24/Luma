@@ -22,10 +22,13 @@ export interface ConfirmedEvent {
 
 export type ApplyOutcome = 'applied' | 'ignored' | 'mismatch' | 'unknown_reference' | 'duplicate';
 
-/** An open attempt with a transaction id to ask Wompi about (payments_to_reconcile). */
+/**
+ * An open attempt to ask Wompi about (payments_to_reconcile). transactionId
+ * is null for a pending attempt without a redirect id.
+ */
 export interface ReconcileItem {
   readonly reference: string;
-  readonly transactionId: string;
+  readonly transactionId: string | null;
   readonly environment: WompiEnvironment;
 }
 
@@ -74,8 +77,8 @@ export class SupabasePaymentRepository implements PaymentRepository {
 
   public async toReconcile(): Promise<readonly ReconcileItem[]> {
     const rows = await this.call('payments_to_reconcile', {});
-    return (Array.isArray(rows) ? rows : []).map((row: Record<string, string>) => ({
-      reference: row['reference'], transactionId: row['transaction_id'],
+    return (Array.isArray(rows) ? rows : []).map((row: Record<string, string | null>) => ({
+      reference: String(row['reference']), transactionId: row['transaction_id'] ?? null,
       environment: row['environment'] === 'prod' ? 'prod' : 'test',
     }));
   }

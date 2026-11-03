@@ -35,12 +35,18 @@ const REVIEW: Record<string, (b: string) => PushText> = {
 };
 
 const PAYMENT: Record<string, (b: string) => PushText> = {
-  approved: (b) => ({ title: 'Pago aprobado', body: `Tu pago en ${b} fue aprobado. Tu pedido ya está en camino.` }),
+  approved: (b) => ({ title: 'Pago aprobado', body: `Tu pago en ${b} fue aprobado. El negocio ya recibió tu pedido.` }),
   declined: (b) => ({ title: 'Pago rechazado', body: `Tu pago en ${b} no fue aprobado. Puedes intentarlo de nuevo.` }),
   error: (b) => ({ title: 'Pago no completado', body: `Hubo un problema con tu pago en ${b}. Puedes intentarlo de nuevo.` }),
   voided: (b) => ({ title: 'Pago anulado', body: `Tu pago en ${b} fue anulado.` }),
   refund_required: (b) => ({ title: 'Reembolso en proceso', body: `Tu pedido en ${b} se canceló. Vamos a devolverte el pago.` }),
   refunded: (b) => ({ title: 'Reembolso hecho', body: `Te devolvimos el pago de tu pedido en ${b}.` }),
+  duplicate_charge: (b) => ({
+    title: 'Cobro duplicado',
+    body: `Detectamos un cobro duplicado de tu pedido en ${b}. Te lo devolveremos.`,
+  }),
+  // Sent to the admins: a payment is waiting to be refunded (Operaciones).
+  refund_pending_admin: () => ({ title: 'Reembolso pendiente', body: 'Hay un reembolso pendiente de hacer.' }),
 };
 
 /**

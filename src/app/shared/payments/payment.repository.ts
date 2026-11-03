@@ -20,9 +20,13 @@ export interface OrderPayment {
   readonly expiresAt: string | null;
 }
 
+/** The checkout link, or why not; attempt_in_progress also says how long to wait. */
+type CheckoutLink = RepoResult<string> & { readonly retryAfterSeconds?: number };
+
 const checkoutSchema = z.object({ checkout_url: z.string(), expires_at: z.string(), sandbox: z.boolean() });
 const CHECKOUT_ERRORS: Readonly<Record<string, string>> = {
   too_many_attempts: 'payments.errors.tooManyAttempts',
+  attempt_in_progress: 'payments.errors.attemptInProgress',
   payment_expired: 'payments.errors.expired',
   already_paid: 'payments.errors.alreadyPaid',
   order_not_payable: 'payments.errors.notPayable',
@@ -66,10 +70,10 @@ export class PaymentRepository {
   }
 
   /** The signed Wompi checkout URL for a new attempt. */
-  public async checkoutUrl(orderId: string): Promise<RepoResult<string>> {
+  public async checkoutUrl(orderId: string): Promise<CheckoutLink> {
     try {
       const { data, error } = await this.db.functions.invoke('create-payment', { method: 'POST', body: { order_id: orderId } });
-      if (error) return { data: null, errorKey: await this.errorKey(error) };
+      if (error) return { data: null, ...(await this.refusal(error)) };
       const parsed = checkoutSchema.safeParse(data);
       return parsed.success ? { data: parsed.data.checkout_url, errorKey: null } : { data: null, errorKey: 'payments.errors.unavailable' };
     } catch {
@@ -82,10 +86,15 @@ export class PaymentRepository {
     await this.db.rpc('record_payment_redirect', { p_order_id: orderId, p_transaction_id: transactionId });
   }
 
-  private async errorKey(error: unknown): Promise<string> {
-    if (!(error instanceof FunctionsHttpError) || !(error.context instanceof Response)) return 'payments.errors.unavailable';
+  private async refusal(error: unknown): Promise<{ errorKey: string; retryAfterSeconds?: number }> {
+    const unavailable = { errorKey: 'payments.errors.unavailable' };
+    if (!(error instanceof FunctionsHttpError) || !(error.context instanceof Response)) return unavailable;
     const body: unknown = await error.context.json().catch(() => null);
-    const code = typeof body === 'object' && body !== null ? (body as Record<string, unknown>)['error'] : null;
-    return (typeof code === 'string' && CHECKOUT_ERRORS[code]) || 'payments.errors.unavailable';
+    const fields = typeof body === 'object' && body !== null ? (body as Record<string, unknown>) : {};
+    const code = fields['error'];
+    const errorKey = typeof code === 'string' ? CHECKOUT_ERRORS[code] : undefined;
+    if (!errorKey) return unavailable;
+    const wait = fields['retry_after_seconds'];
+    return typeof wait === 'number' && Number.isFinite(wait) && wait > 0 ? { errorKey, retryAfterSeconds: wait } : { errorKey };
   }
 }

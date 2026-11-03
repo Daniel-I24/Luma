@@ -936,7 +936,8 @@
       "promotionItemMismatch": "Ese producto no es de este negocio.",
       "underReview": "Tu negocio está en revisión: el nombre, la dirección y la ubicación no se pueden cambiar hasta que el equipo termine.",
       "galleryLimit": "Ya tienes 8 fotos. Elimina una para agregar otra.",
-      "menuLimit": "Tu menú llegó al máximo de 200 productos."
+      "menuLimit": "Tu menú llegó al máximo de 200 productos.",
+      "taxIdInUse": "Este NIT ya pertenece a un negocio aprobado de otra cuenta. Escríbenos si es tuyo."
     },
     "images": {
       "logo": "Logo",
@@ -1078,13 +1079,15 @@
       "reviewInvite": "¿Qué tal tu pedido? Cuéntanos cómo te fue y califica el negocio",
       "promotion": "Un negocio que guardaste tiene una promoción nueva",
       "payment": {
-        "approved": "Tu pago fue aprobado",
+        "approved": "Tu pago fue aprobado. El negocio ya recibió tu pedido",
         "declined": "Tu pago fue rechazado: puedes intentarlo de nuevo",
         "error": "Tu pago no se completó",
         "voided": "Tu pago fue anulado",
         "refund_required": "Tu pedido se canceló: vamos a devolverte el pago",
         "refunded": "Te devolvimos el pago",
-        "unknown": "El estado de tu pago cambió"
+        "unknown": "El estado de tu pago cambió",
+        "duplicate_charge": "Detectamos un cobro duplicado de tu pedido. Te lo devolveremos",
+        "refund_pending_admin": "Hay un reembolso pendiente de hacer"
       },
       "businessReview": {
         "approved": "Tu negocio fue aprobado y ya es visible",
@@ -1142,7 +1145,8 @@
       "reviewFailed": "No se pudo guardar la decisión. Intenta de nuevo.",
       "docFailed": "No se pudo abrir el documento.",
       "docsDeleteFailed": "La decisión se guardó, pero no se pudieron borrar los documentos.",
-      "staleReview": "El negocio cambió mientras lo revisabas. Recarga para ver la versión actual antes de decidir."
+      "staleReview": "El negocio cambió mientras lo revisabas. Recarga para ver la versión actual antes de decidir.",
+      "taxIdInUse": "Otro negocio aprobado de otro dueño ya usa este NIT. Recházalo o pide aclaración."
     },
     "title": "Revisión de negocios",
     "entry": "Equipo de revisión",
@@ -1919,7 +1923,8 @@
       "alreadyPaid": "Este pedido ya está pagado.",
       "notPayable": "Este pedido ya no espera un pago.",
       "rateLimited": "Hiciste muchos intentos seguidos. Espera unos minutos.",
-      "browser": "No se pudo abrir la página de pago."
+      "browser": "No se pudo abrir la página de pago.",
+      "attemptInProgress": "Ya hay un pago en proceso para este pedido. Podrás reintentar en {{time}}."
     }
   },
   "trust": {

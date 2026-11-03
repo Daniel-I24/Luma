@@ -7,7 +7,7 @@ import type { PaymentLog } from '../_shared/payments/payment-log.ts';
 /** prepare_payment's answer, or the error code it raised. */
 export type Prepared =
   | { readonly reference: string; readonly amountInCents: number; readonly expiresAt: string; readonly attempt: number }
-  | { readonly error: string };
+  | { readonly error: string; readonly retryAfterSeconds?: number };
 
 /** What the function may do as the customer (their JWT: RLS and the RPCs decide). */
 export interface CustomerPayments {
@@ -32,7 +32,7 @@ const UUID = /^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
 /** prepare_payment errors and their HTTP status. */
 const PREPARE_ERRORS: Readonly<Record<string, number>> = {
   order_not_found: 404, order_not_payable: 409, already_paid: 409, payment_expired: 409,
-  too_many_attempts: 409, payments_disabled: 503, payments_misconfigured: 503, email_not_confirmed: 403,
+  too_many_attempts: 409, attempt_in_progress: 409, payments_disabled: 503, payments_misconfigured: 503, email_not_confirmed: 403,
 };
 
 /**
@@ -64,7 +64,12 @@ export function createHandler(deps: CreatePaymentDeps): (req: Request) => Promis
       const prepared = await customer.prepare(orderId, deps.credentials.environment);
       if ('error' in prepared) {
         deps.log.info('checkout_refused', { outcome: prepared.error, source: 'checkout' });
-        return json(PREPARE_ERRORS[prepared.error] ?? 503, { error: prepared.error in PREPARE_ERRORS ? prepared.error : 'payments_unavailable' }, cors);
+        const error = prepared.error in PREPARE_ERRORS ? prepared.error : 'payments_unavailable';
+        // attempt_in_progress: the latest attempt is still open; the app shows how long to wait.
+        const wait = prepared.retryAfterSeconds;
+        return wait === undefined
+          ? json(PREPARE_ERRORS[prepared.error] ?? 503, { error }, cors)
+          : json(409, { error, retry_after_seconds: wait }, { ...cors, 'Retry-After': String(wait) });
       }
       const url = await new CheckoutUrlBuilder(deps.credentials)
         .withReference(prepared.reference)

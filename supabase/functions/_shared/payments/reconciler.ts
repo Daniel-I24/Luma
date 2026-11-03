@@ -14,7 +14,9 @@ export interface ReconcileReport {
  * Reconciler — asks the Wompi API about open attempts that have a
  * transaction id (payments_to_reconcile) and applies what it confirms. The
  * redirect id is untrusted, so a transaction with another reference is
- * skipped. One failing attempt never stops the rest.
+ * skipped. Attempts without an id are skipped too: Wompi documents no search
+ * by reference (docs/payments.md), so the webhook settles them. One failing
+ * attempt never stops the rest.
  */
 export class Reconciler {
   public constructor(
@@ -30,7 +32,9 @@ export class Reconciler {
     const items = await this.repository.toReconcile();
     for (const item of items) {
       try {
-        const tx = item.environment === this.environment ? await this.api.transaction(item.transactionId) : null;
+        const tx = item.environment === this.environment && item.transactionId !== null
+          ? await this.api.transaction(item.transactionId)
+          : null;
         if (!tx || tx.reference !== item.reference) {
           skipped++;
           continue;

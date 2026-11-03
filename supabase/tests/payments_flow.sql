@@ -42,8 +42,18 @@ select tests.expect_true('authenticated', tests.id('bob'), $$
      and expires_at > now()
   from public.prepare_payment(tests.order_id('pay-1'), 'test')$$,
   'the amount comes from orders.total_cop, in cents, with an unpredictable reference');
+-- A new attempt waits while the latest one is pending and younger than 3 minutes (attempt_in_progress).
+create function tests.age_attempts() returns void language plpgsql as $$
+begin
+  alter table public.payments disable trigger payments_guard;
+  update public.payments set created_at = created_at - interval '4 minutes' where order_id = tests.order_id('pay-1');
+  alter table public.payments enable trigger payments_guard;
+end $$;
+select tests.age_attempts();
 select tests.exec_as('authenticated', tests.id('bob'), $$select * from public.prepare_payment(tests.order_id('pay-1'), 'test')$$);
+select tests.age_attempts();
 select tests.exec_as('authenticated', tests.id('bob'), $$select * from public.prepare_payment(tests.order_id('pay-1'), 'test')$$);
+select tests.age_attempts();
 select tests.expect_error('authenticated', tests.id('bob'),
   $$select * from public.prepare_payment(tests.order_id('pay-1'), 'test')$$, 'too_many_attempts');
 select tests.expect_true('postgres', null,

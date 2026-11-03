@@ -54,3 +54,87 @@ What must hold before and after turning on online payments
 - [ ] Watch /admin/operations daily during the first week.
 - [ ] Rotate Wompi secrets if they were ever shared outside the
       dashboard and the Supabase secrets.
+
+## Sandbox questions to settle (round 4)
+
+Each point has what the Wompi docs say (docs.wompi.co, read 2026-10-28)
+and a **Result** line to fill in during the sandbox run. Until a result is
+written, the app keeps the current, safe behaviour shown here.
+
+1. **`luma://` as redirect-url, and how Wompi adds the id when the URL
+   already has `?order=`.** create-payment sends
+   `redirect-url=luma://payments/return?order=<uuid>`. The docs only show an
+   https URL "que debe pertenecer a tu sitio web" and the id appended as
+   `?id=<transaction>`; custom schemes and URLs that already carry a query
+   are not mentioned. Check: pay in the sandbox from the APK and look at
+   the URL the app receives (`adb logcat | Select-String "luma://"`).
+   Expected: `luma://payments/return?order=<uuid>&id=<tx>` (PaymentReturn
+   reads both). If Wompi refuses the scheme or breaks the query, use plan B
+   below.
+   **Result:** pending.
+2. **Void: request body and response.** Documented:
+   `POST /v1/transactions/{id}/void` with the private key, cards only, "solo
+   disponible para ciertos estados". No body and no response shape are
+   documented; `WompiApi.void` sends no body and treats any 2xx as accepted,
+   then re-reads the transaction (`GET /v1/transactions/{id}`) and only a
+   `VOIDED` status changes anything. Check: void an approved sandbox card
+   payment from /admin/operations and write down the status code and body.
+   **Result:** pending.
+3. **Minimum amount.** Not documented (the docs only require a positive
+   integer `amount_in_cents`). Nothing was added: if the sandbox refuses a
+   small amount, add `app_settings.payments_min_total_cop` with that value
+   in a new migration and make `create_order` refuse online orders below it
+   (`payment_below_minimum`). Check: an online order of $1.000 COP.
+   **Result:** pending.
+4. **Reconciliation by reference.** Not documented: the only query is
+   `GET /v1/transactions/{id}` (private key). So `payments_to_reconcile`
+   lists pending attempts without a redirect id (older than 3 minutes) with
+   `transaction_id = null`, and `reconcile-payments` skips them: the
+   webhook settles them, and after an hour they appear in
+   /admin/operations as "stuck_pending". If Wompi confirms a search by
+   reference (for example `GET /v1/transactions?reference=`), use it in
+   `Reconciler` and keep the check that the returned reference equals the
+   attempt's.
+   **Result:** pending.
+
+Also check in the sandbox: two attempts paid for one order (pay, close
+the checkout before the redirect, wait 3 minutes, retry and pay again):
+the second becomes `refund_required`, the customer gets "Detectamos un
+cobro duplicado…" and the admins "Hay un reembolso pendiente de hacer".
+
+### Plan B: an https return page on GitHub Pages (free)
+
+If Wompi only accepts https redirect URLs, publish this page (for example
+`https://<usuario>.github.io/luma-pago/`) and set `APP_PAYMENT_RETURN_URL`
+in `supabase/functions/_shared/config/app-links.ts` to it. The page only
+forwards the query to the app; it never reads or stores anything.
+
+```html
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>Volver a Luma</title>
+</head>
+<body>
+  <p>Volviendo a Luma… <a id="open" href="luma://payments/return">Abrir Luma</a></p>
+  <script>
+    // Keeps order and id (only these, only safe characters) and opens the app.
+    var q = new URLSearchParams(location.search), out = new URLSearchParams();
+    ['order', 'id'].forEach(function (k) {
+      var v = q.get(k);
+      if (v && /^[0-9A-Za-z_-]{1,64}$/.test(v)) out.set(k, v);
+    });
+    var target = 'luma://payments/return' + (out.toString() ? '?' + out.toString() : '');
+    document.getElementById('open').href = target;
+    location.replace(target);
+  </script>
+</body>
+</html>
+```
+
+Steps: new public repository → add it as `index.html` → Settings → Pages
+→ deploy from the main branch → use the https URL as the redirect. The
+app already accepts `luma://payments/return?order=…&id=…` (PaymentReturn).

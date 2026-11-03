@@ -98,7 +98,12 @@ checks the session too, but the gateway check is the first line of
 defence. Never deploy `push-dispatch` without the flag either: the
 database pokes it without a user JWT, so every poke would be refused.
 
-Then check everything with `npm run verify:backend` (anon key only).
+Then check everything with `npm run verify:backend` (anon key only). RPCs
+are called with placeholder arguments: "ok (protected)" is the expected
+answer for anon, "missing" means the migration is not applied. Private
+buckets pass on "not found"/"forbidden". Edge Functions that are not
+deployed only fail when listed in `--expect-deployed=delete-account,geocode`;
+"deployed but failing" (5xx) always fails.
 
 Vercel preview URLs are not covered (no wildcards); add a preview origin
 explicitly if you need to test these functions there.

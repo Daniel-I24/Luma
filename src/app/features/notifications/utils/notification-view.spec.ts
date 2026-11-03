@@ -22,5 +22,7 @@ describe('notification view', () => {
     expect(NotificationView.notificationLink(notice({ type: 'business_review', order_id: null }))).toEqual(['/owner', 'b1', 'summary']);
     expect(NotificationView.notificationLink(notice({ type: 'payment', status: 'declined' }))).toEqual(['/orders', 'o1']);
     expect(NotificationView.notificationLink(notice({ type: 'order_new' }))).toEqual(['/owner', 'b1', 'orders']);
+    expect(NotificationView.notificationLink(notice({ type: 'payment', status: 'refund_pending_admin' }))).toEqual(['/admin', 'operations']);
+    expect(NotificationView.notificationKey(notice({ type: 'payment', status: 'duplicate_charge' }))).toBe('notifications.text.payment.duplicate_charge');
   });
 });

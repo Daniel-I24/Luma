@@ -66,3 +66,10 @@ Removed: nothing. The design preview is no longer bundled in production
   so it stays out of the barrel's eager graph).
 - Kept on purpose: the design-system barrel's type re-exports (its public
   API) and the Edge Function exports (Deno modules, outside this pass).
+
+## Round 4 (2026-10-28)
+
+- Nothing deleted: knip reports no unused files or dependencies; the
+  remaining unused exports are the ones kept on purpose (Edge Function
+  module exports and types used by specs). The new `CheckoutLink` type
+  stays private to `payment.repository.ts`.

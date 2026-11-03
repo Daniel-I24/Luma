@@ -8,16 +8,19 @@ export class BusinessPause {
   // eslint-disable-next-line @typescript-eslint/no-magic-numbers -- data table: pause lengths in minutes (-1 until reopened)
   public static readonly OPTIONS = [15, 30, 60, 120, -1] as const;
   public static readonly UNTIL_RESUMED = -1;
-  private static readonly INFINITY = 'infinity';
+  /** PostgREST sends timestamptz 'infinity' as text (also '+infinity' from some clients). */
+  private static readonly INFINITY = /^\+?infinity$/i;
 
   /** True while orders are paused. */
   public static isPaused(pausedUntil: string | null | undefined, now = Date.now()): boolean {
     if (!pausedUntil) return false;
-    return pausedUntil === BusinessPause.INFINITY || Date.parse(pausedUntil) > now;
+    if (BusinessPause.isIndefinite(pausedUntil)) return true;
+    const end = Date.parse(pausedUntil);
+    return Number.isFinite(end) && end > now;
   }
 
-  /** True when the pause has no end time. */
+  /** True when the pause has no end time ("hasta que se reanude"). */
   public static isIndefinite(pausedUntil: string | null | undefined): boolean {
-    return pausedUntil === BusinessPause.INFINITY;
+    return typeof pausedUntil === 'string' && BusinessPause.INFINITY.test(pausedUntil.trim());
   }
 }

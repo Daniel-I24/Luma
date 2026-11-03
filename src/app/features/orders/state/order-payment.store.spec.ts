@@ -48,4 +48,37 @@ describe('OrderPaymentStore', () => {
     await store.pay();
     expect(store.errorKey()).toBeNull();
   });
+
+  it('disables "Reintentar pago" with its cause: paid, no attempts left or expired', async () => {
+    const store = TestBed.inject(OrderPaymentStore);
+    repo.orderPayment.mockResolvedValueOnce(payment(1, future, 'approved'));
+    await store.load('o1');
+    expect(store.blockedKey()).toBe('payments.errors.alreadyPaid');
+    repo.orderPayment.mockResolvedValueOnce(payment(3));
+    await store.load('o1');
+    expect(store.blockedKey()).toBe('payments.errors.tooManyAttempts');
+    repo.orderPayment.mockResolvedValueOnce(payment(1, '2000-01-01T00:00:00Z'));
+    await store.load('o1');
+    expect(store.blockedKey()).toBe('payments.errors.expired');
+    await store.pay();
+    expect(online.start).not.toHaveBeenCalled();
+  });
+
+  it('an attempt still in progress counts down the time left and then allows a retry', async () => {
+    vi.useFakeTimers();
+    try {
+      const store = TestBed.inject(OrderPaymentStore);
+      repo.orderPayment.mockResolvedValue(payment(1, future, 'pending'));
+      await store.load('o1');
+      online.start.mockResolvedValueOnce({ kind: 'failed', errorKey: 'payments.errors.attemptInProgress', retryAfterSeconds: 95 });
+      await store.pay();
+      expect([store.blockedKey(), store.waitLabel(), store.errorKey()]).toEqual(['payments.errors.attemptInProgress', '1:35', null]);
+      vi.advanceTimersByTime(35_000);
+      expect(store.waitLabel()).toBe('1:00');
+      vi.advanceTimersByTime(60_000);
+      expect([store.waitSeconds(), store.blockedKey()]).toEqual([0, null]);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
 });

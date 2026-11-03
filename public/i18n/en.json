@@ -936,7 +936,8 @@
       "promotionItemMismatch": "That product does not belong to this business.",
       "underReview": "Your business is under review: the name, address and location cannot change until the team finishes.",
       "galleryLimit": "You already have 8 photos. Delete one to add another.",
-      "menuLimit": "Your menu reached the maximum of 200 products."
+      "menuLimit": "Your menu reached the maximum of 200 products.",
+      "taxIdInUse": "This NIT already belongs to an approved business of another account. Write to us if it is yours."
     },
     "images": {
       "logo": "Logo",
@@ -1078,13 +1079,15 @@
       "reviewInvite": "How was your order? Tell us and rate the business",
       "promotion": "A business you saved has a new promotion",
       "payment": {
-        "approved": "Your payment was approved",
+        "approved": "Your payment was approved. The business has received your order",
         "declined": "Your payment was declined: you can try again",
         "error": "Your payment was not completed",
         "voided": "Your payment was voided",
         "refund_required": "Your order was cancelled: we will refund your payment",
         "refunded": "We refunded your payment",
-        "unknown": "Your payment status changed"
+        "unknown": "Your payment status changed",
+        "duplicate_charge": "We detected a duplicate charge for your order. We will refund it",
+        "refund_pending_admin": "There is a refund waiting to be made"
       },
       "businessReview": {
         "approved": "Your business was approved and is now visible",
@@ -1142,7 +1145,8 @@
       "reviewFailed": "The decision could not be saved. Try again.",
       "docFailed": "The document could not be opened.",
       "docsDeleteFailed": "The decision was saved, but the documents could not be deleted.",
-      "staleReview": "The business changed while you were reviewing it. Reload to see the current version before deciding."
+      "staleReview": "The business changed while you were reviewing it. Reload to see the current version before deciding.",
+      "taxIdInUse": "Another approved business of another owner already uses this NIT. Reject it or ask for clarification."
     },
     "title": "Business review",
     "entry": "Review team",
@@ -1914,12 +1918,13 @@
     "errors": {
       "loadFailed": "Could not read the payment status.",
       "unavailable": "Online payment is not available right now. Try again in a moment.",
-      "tooManyAttempts": "You already used the 3 payment attempts of this order.",
-      "expired": "The time to pay this order is over.",
+      "tooManyAttempts": "You already used the 3 payment attempts for this order.",
+      "expired": "The time to pay for this order is over.",
       "alreadyPaid": "This order is already paid.",
       "notPayable": "This order no longer waits for a payment.",
       "rateLimited": "You made many attempts in a row. Wait a few minutes.",
-      "browser": "Could not open the payment page."
+      "browser": "Could not open the payment page.",
+      "attemptInProgress": "A payment for this order is already in progress. You can retry in {{time}}."
     }
   },
   "trust": {

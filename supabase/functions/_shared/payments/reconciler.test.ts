@@ -29,7 +29,8 @@ Deno.test('applies what the API confirms and skips what does not belong to the a
     { reference: 'luma_ref', transactionId: 'tx-down', environment: 'test' },
     { reference: 'luma_ref', transactionId: 'tx-missing', environment: 'test' },
     { reference: 'luma_ref', transactionId: 'tx-ok', environment: 'prod' },
+    { reference: 'luma_ref', transactionId: null, environment: 'test' },
   ];
-  assertEquals(await reconciler.run(), { checked: 5, applied: 1, skipped: 4 });
+  assertEquals(await reconciler.run(), { checked: 6, applied: 1, skipped: 5 });
   assertEquals(repository.applied.map((e) => [e.transactionId, e.source]), [['tx-ok', 'reconcile']]);
 });

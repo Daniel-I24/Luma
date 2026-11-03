@@ -85,3 +85,9 @@ Deno.test('prepare_payment rules map to stable codes; missing secrets are 503', 
   assertEquals([odd.status, await odd.json()], [503, { error: 'payments_unavailable' }]);
   assertEquals((await setup({ credentials: false }).handler(post({ order_id: ORDER }))).status, 503);
 });
+
+Deno.test('an attempt still in progress answers 409 with the seconds left', async () => {
+  const res = await setup({ prepared: { error: 'attempt_in_progress', retryAfterSeconds: 95 } }).handler(post({ order_id: ORDER }));
+  assertEquals([res.status, res.headers.get('Retry-After'), await res.json()],
+    [409, '95', { error: 'attempt_in_progress', retry_after_seconds: 95 }]);
+});

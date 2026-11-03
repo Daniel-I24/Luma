@@ -13,10 +13,17 @@ if (!url || !anonKey) {
 }
 const noSession = { auth: { persistSession: false, autoRefreshToken: false } };
 
-/** prepare_payment raises its rule as the message ("too_many_attempts", ...). */
-const errorCode = (error: unknown): string => {
-  const message = (error as { message?: unknown } | null)?.message;
-  return typeof message === 'string' && /^[a-z_]{1,40}$/.test(message) ? message : 'payments_unavailable';
+const MAX_WAIT_SECONDS = 600;
+
+/**
+ * prepare_payment raises its rule as the message ("too_many_attempts", ...);
+ * attempt_in_progress carries the seconds left in its hint.
+ */
+const refusal = (error: unknown): Prepared => {
+  const { message, hint } = (error ?? {}) as { message?: unknown; hint?: unknown };
+  const code = typeof message === 'string' && /^[a-z_]{1,40}$/.test(message) ? message : 'payments_unavailable';
+  const wait = typeof hint === 'string' && /^\d{1,4}$/.test(hint) ? Math.min(Number(hint), MAX_WAIT_SECONDS) : null;
+  return code === 'attempt_in_progress' && wait !== null ? { error: code, retryAfterSeconds: wait } : { error: code };
 };
 
 // Only the caller's JWT: the order, the attempts and the amount are decided by RLS and prepare_payment.
@@ -35,7 +42,7 @@ async function authenticate(token: string): Promise<CustomerPayments | null> {
     },
     prepare: async (orderId, environment): Promise<Prepared> => {
       const { data: rows, error: rpcError } = await db.rpc('prepare_payment', { p_order_id: orderId, p_environment: environment });
-      if (rpcError) return { error: errorCode(rpcError) };
+      if (rpcError) return refusal(rpcError);
       const row = Array.isArray(rows) ? rows[0] : null;
       if (!row) return { error: 'payments_unavailable' };
       return { reference: row.reference, amountInCents: Number(row.amount_in_cents), expiresAt: row.expires_at, attempt: row.attempt };

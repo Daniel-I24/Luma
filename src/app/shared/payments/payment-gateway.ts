@@ -9,7 +9,7 @@ export type PaymentMethod = 'pay_at_pickup' | 'online';
 export type PaymentStart =
   | { readonly kind: 'pay_at_pickup' }
   | { readonly kind: 'redirected' }
-  | { readonly kind: 'failed'; readonly errorKey: string };
+  | { readonly kind: 'failed'; readonly errorKey: string; readonly retryAfterSeconds?: number };
 
 /** How an order is paid (Strategy). The app never handles card data. */
 export interface PaymentGateway {
@@ -46,7 +46,10 @@ class WompiGateway implements PaymentGateway {
   /** Prepares the attempt on the server and opens Wompi's checkout in the browser. */
   public async start(orderId: string): Promise<PaymentStart> {
     const link = await this.payments.checkoutUrl(orderId);
-    if (!link.data) return { kind: 'failed', errorKey: link.errorKey ?? 'payments.errors.unavailable' };
+    if (!link.data) {
+      const failed = { kind: 'failed', errorKey: link.errorKey ?? 'payments.errors.unavailable' } as const;
+      return link.retryAfterSeconds ? { ...failed, retryAfterSeconds: link.retryAfterSeconds } : failed;
+    }
     if (!link.data.startsWith(ExternalUrls.WOMPI_CHECKOUT)) return { kind: 'failed', errorKey: 'payments.errors.unavailable' };
     try {
       await this.browser.open(link.data);

@@ -38,6 +38,10 @@ describe('payments in the app', () => {
     expect(await online.start(ORDER)).toEqual({ kind: 'failed', errorKey: 'payments.errors.unavailable' });
     repo.checkoutUrl.mockResolvedValueOnce({ data: null, errorKey: 'payments.errors.tooManyAttempts' });
     expect(await online.start(ORDER)).toEqual({ kind: 'failed', errorKey: 'payments.errors.tooManyAttempts' });
+    repo.checkoutUrl.mockResolvedValueOnce({ data: null, errorKey: 'payments.errors.attemptInProgress', retryAfterSeconds: 40 });
+    expect(await online.start(ORDER)).toEqual({
+      kind: 'failed', errorKey: 'payments.errors.attemptInProgress', retryAfterSeconds: 40,
+    });
     expect(browser.open).toHaveBeenCalledTimes(1);
   });
 

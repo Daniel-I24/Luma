@@ -43,6 +43,9 @@ design).
 | T14 | Webhook/cron endpoints called by anyone | `verify_jwt = false` only with a secret or signature; others need a JWT | handler tests per function |
 | T15 | Stolen phone with an open session | Session in app-private storage; sign out everywhere; no card data stored | DECISIONS (SecureSessionStorage) |
 | T16 | Push notification spoofing or leaks | Only `push-dispatch` sends (secret); texts carry no personal data | `push-dispatch` tests |
+| T18 | Double charge: two checkout attempts of one order both approved | One open attempt at a time (`attempt_in_progress`, 3 min); a second approval becomes `refund_required` (`duplicate_charge`), the order is paid once; order locked before payment everywhere | SQL `payments_round4.sql` |
+| T19 | Function callable as an RPC by anon by mistake (trigger helpers, new functions) | EXECUTE revoked from PUBLIC/anon; a suite fails if anon can execute anything but `is_business_public(uuid)` | SQL `function_privileges.sql` |
+| T20 | NIT squatting: a pending business blocks the real owner | Only approved businesses of another owner block (submit and approval); pending duplicates are a review flag | SQL `review_tax_id.sql`, `business_signals.sql` |
 
 ## Residual risks
 

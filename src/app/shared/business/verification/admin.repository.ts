@@ -16,6 +16,7 @@ const ADMIN_ERRORS: Readonly<Record<string, string>> = {
   invalid_transition: 'admin.errors.invalidTransition',
   not_admin: 'admin.errors.notAdmin',
   stale_review: 'admin.errors.staleReview',
+  tax_id_in_use: 'admin.errors.taxIdInUse',
 };
 
 /** admin_access(): not an admin, an admin who still has to pass MFA (aal2), or ready. */

@@ -478,3 +478,81 @@ alternative that was not taken. The safest, most reversible option wins.
   number and then type another; with it off nothing changes.
 - **Alternative**: a separate `verified_phone` column (more migration
   work, two sources of truth).
+
+## 2026-10-28 — Round 4: one migration, the order before the payment
+
+- **What**: `20261101000000_round4_hardening` (migration 51) replaces, with
+  the same signatures, return types and grants, `prepare_payment`,
+  `apply_payment_event`, `mark_refund_required`, `payments_to_reconcile`,
+  `admin_request_void`, `admin_mark_refund_done`, `tax_id_taken`,
+  `review_business` and the view `business_order_items`; adds
+  `private.flag_payment_refund`; widens `notifications_status_valid`.
+  No DROP was needed (no return type changed).
+- **Why**: migrations 1 to 50 are applied and frozen; one reviewable file.
+  Locking the order first everywhere removes the deadlock between a late
+  approval (payment then order before) and a cancellation (order then
+  payment).
+- **Alternative**: one migration per point (more files to review and apply).
+
+## 2026-10-28 — A duplicate charge leaves the order as it was
+
+- **What**: the second approved attempt of a paid order becomes
+  `refund_required` with `duplicate_charge` for the customer; the order
+  keeps `payment_status = 'approved'`, also after the duplicate is voided
+  or refunded. `admin_mark_refund_done` marks the order `refunded` only
+  when no payment of it is left approved or to refund.
+- **Why**: the order was paid once; overwriting its payment status would
+  hide that and could cancel the pickup.
+- **Alternative**: a separate `duplicate` payment status (one more state
+  in the shared 49-vector state machine).
+
+## 2026-10-28 — No reconciliation by reference, no minimum amount
+
+- **What**: `reconcile-payments` skips attempts without a transaction id;
+  no `payments_min_total_cop` was added.
+- **Why**: docs.wompi.co (read 2026-10-28) documents neither a search of
+  transactions by reference nor a minimum amount; using an undocumented
+  endpoint or inventing a minimum is not reversible in production. Both
+  are questions in docs/payments-checklist.md for the sandbox run.
+- **Alternative**: `GET /v1/transactions?reference=` (undocumented).
+
+## 2026-10-28 — rls_auto_enable() revoked only when the role may
+
+- **What**: the migration revokes EXECUTE on `rls_auto_enable()` inside a
+  block that turns `insufficient_privilege` into a notice; the function
+  is in the commented allow-list of `supabase/tests/function_privileges.sql`.
+- **Why**: Supabase creates it in hosted projects (owned by another role)
+  and it does not exist in the local harness; a hard REVOKE could make
+  `db push` fail.
+- **Alternative**: ask Supabase support to change its grants.
+
+## 2026-10-28 — NIT: pending duplicates are a flag, approved ones block
+
+- **What**: `tax_id_taken` (submit and approval) only blocks against an
+  approved business of another owner; a pending one with the same NIT is
+  shown as `duplicate_tax_id` in the review flags.
+- **Why**: a pending squatter could otherwise block the real owner from
+  even submitting; the admin decides with the flag in view.
+- **Alternative**: block on pending too (the round 2 rule).
+
+## 2026-10-28 — Deno lint in warning mode, no camelcase rule
+
+- **What**: `supabase/functions/deno.lint.json` (recommended rules plus
+  no-explicit-any, eqeqeq, no-eval, no-throw-literal, prefer-const), run
+  by CI with `continue-on-error` and by `npm run lint:functions` (also
+  the 150-line limit, exit 0 unless `--strict`).
+- **Why**: same limits as the app without a mass refactor; `camelcase`
+  flags the snake_case keys of the database and Wompi payloads (46 hits),
+  which the app's naming rule also allows for object properties.
+- **Alternative**: errors from day one (would block CI on style).
+
+## 2026-10-28 — verify-backend: protected is not missing
+
+- **What**: RPCs are called with placeholder arguments for their required
+  parameters (checked against the migrations by the test); 401/403/42501
+  is "protected", PGRST202 with those arguments "missing". Private buckets
+  pass on "not found" or "forbidden"; Edge Functions split "not deployed"
+  (fails only for `--expect-deployed`) from "deployed but failing" (5xx).
+- **Why**: against the real project the old checks reported protected RPCs
+  with required arguments and private buckets as missing.
+- **Alternative**: a service-role check (would need a secret on the PC).

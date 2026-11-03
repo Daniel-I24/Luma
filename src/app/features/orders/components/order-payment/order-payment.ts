@@ -33,10 +33,8 @@ export class OrderPayment {
   protected readonly awaiting = computed(() => this.order().status === 'awaiting_payment');
   protected readonly status = computed(() => this.order().payment_status);
   protected readonly tone = computed(() => TONE[this.status()] ?? 'bg-warning-bg text-warning-fg');
-  /** "Pagar" before any attempt, "Reintentar pago" after a failed one. */
-  protected readonly payKey = computed(() =>
-    this.status() === 'declined' || this.status() === 'error' ? 'payments.retry' : 'payments.pay',
-  );
+  /** "Pagar" before any attempt, "Reintentar pago" after one (failed or still open). */
+  protected readonly payKey = computed(() => (this.status() === 'none' ? 'payments.pay' : 'payments.retry'));
 
   constructor() {
     // Re-read attempts whenever the order (re-fetched on resume or by polling) changes.
