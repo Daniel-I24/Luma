@@ -1777,14 +1777,17 @@
   "account": {
     "password": {
       "title": "Change password",
-      "intro": "For security, confirm your current password first.",
+      "intro": "For security, confirm your current password and then the code we will email you.",
       "current": "Current password",
       "next": "New password",
       "rules": "At least 8 characters, with letters and numbers.",
       "save": "Save password",
       "saved": "Done: your password changed.",
       "wrongCurrent": "The current password is not correct.",
-      "same": "The new password must be different from the current one."
+      "same": "The new password must be different from the current one.",
+      "sendCode": "Send code",
+      "codeSent": "We emailed you a 6-digit code. Enter it to save the new password.",
+      "code": "6-digit code"
     }
   },
   "help": {

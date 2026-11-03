@@ -1777,14 +1777,17 @@
   "account": {
     "password": {
       "title": "Cambiar contraseña",
-      "intro": "Por seguridad, primero confirma tu contraseña actual.",
+      "intro": "Por seguridad, confirma tu contraseña actual y luego el código que te enviaremos por correo.",
       "current": "Contraseña actual",
       "next": "Nueva contraseña",
       "rules": "Mínimo 8 caracteres, con letras y números.",
       "save": "Guardar contraseña",
       "saved": "Listo: tu contraseña cambió.",
       "wrongCurrent": "La contraseña actual no es correcta.",
-      "same": "La nueva contraseña debe ser distinta de la actual."
+      "same": "La nueva contraseña debe ser distinta de la actual.",
+      "sendCode": "Enviar código",
+      "codeSent": "Te enviamos un código de 6 dígitos a tu correo. Escríbelo para guardar la nueva contraseña.",
+      "code": "Código de 6 dígitos"
     }
   },
   "help": {

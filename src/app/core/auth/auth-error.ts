@@ -5,10 +5,12 @@ import { HTTP_STATUS } from '@core/config/http-status';
 const AUTH_ERROR_RULES: readonly (readonly [readonly string[], string])[] = [
   [['invalid login credentials', 'invalid credentials'], 'auth.errors.invalidCredentials'],
   [['user already registered', 'already been registered'], 'auth.errors.emailAlreadyRegistered'],
-  [['token has expired or is invalid', 'otp_expired'], 'auth.errors.codeInvalid'],
+  // Supabase answers the same error for a wrong and an expired code.
+  [['token has expired or is invalid', 'otp_expired', 'reauthentication', 'nonce'], 'auth.errors.codeInvalid'],
   [['email not confirmed'], 'auth.errors.emailNotConfirmed'],
   [['password should be at least'], 'auth.errors.passwordTooShort'],
-  [['rate limit', 'too many requests'], 'auth.errors.tooManyRequests'],
+  [['rate limit', 'too many requests', 'for security purposes'], 'auth.errors.tooManyRequests'],
+  [['should be different from the old password'], 'account.password.same'],
 ];
 
 /** AuthErrors — maps Supabase auth errors to translation keys. */

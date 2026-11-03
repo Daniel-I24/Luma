@@ -11,6 +11,7 @@ Supabase puts in `{{ .Token }}`:
 | Resend the sign-up code (every 60 s) | `/auth/verify` | `resend({ type: 'signup', email })` |
 | Sign in with an unconfirmed email | `/auth/login` → "Verificar mi correo" | `resend` then `/auth/verify` |
 | Reset the password | `/auth/forgot-password` | `resetPasswordForEmail(email)`, then `verifyOtp({ type: 'recovery' })` and `updateUser({ password })` |
+| Change the password (signed in) | `/account/password` | current password checked with `signInWithPassword`, then `reauthenticate()` e-mails a code and `updateUser({ password, nonce: code })` saves it |
 
 The client keeps `detectSessionInUrl: false` and sends no `emailRedirectTo`;
 there are no callback routes. Messages never reveal whether an email has an
@@ -19,8 +20,8 @@ rate-limit and network errors are shown).
 
 ## Where to paste the templates
 
-Supabase Dashboard → **Authentication → Emails → Templates** (same texts in
-`supabase/config.toml` if you use the CLI locally). Make sure **Confirm email**
+Supabase Dashboard → **Authentication → Emails → Templates**.
+Make sure **Confirm email**
 is enabled (Authentication → Sign In / Providers → Email).
 
 ### Confirm signup
@@ -31,7 +32,7 @@ Subject: `Tu código de Luma: {{ .Token }}`
 <h2>Confirma tu cuenta de Luma</h2>
 <p>Escribe este código en la app para terminar tu registro:</p>
 <p style="font-size:28px;font-weight:700;letter-spacing:6px">{{ .Token }}</p>
-<p>Caduca en una hora. Si no creaste una cuenta en Luma, ignora este correo.</p>
+<p>Caduca en 10 minutos. Si no creaste una cuenta en Luma, ignora este correo.</p>
 ```
 
 ### Reset password
@@ -42,12 +43,42 @@ Subject: `Código para cambiar tu contraseña de Luma: {{ .Token }}`
 <h2>Cambia tu contraseña de Luma</h2>
 <p>Escribe este código en la app junto a tu nueva contraseña:</p>
 <p style="font-size:28px;font-weight:700;letter-spacing:6px">{{ .Token }}</p>
-<p>Caduca en una hora. Si no lo pediste, ignora este correo: tu contraseña no cambia.</p>
+<p>Caduca en 10 minutos. Si no lo pediste, ignora este correo: tu contraseña no cambia.</p>
 ```
 
-Neither template may contain `{{ .ConfirmationURL }}`. Keep the OTP length at
-6 digits (Authentication → Emails → "Email OTP length") and the expiry at one
-hour or less.
+### Reauthentication
+
+Subject: `Código para confirmar el cambio de contraseña: {{ .Token }}`
+
+```html
+<h2>Confirma que eres tú</h2>
+<p>Pediste cambiar la contraseña de tu cuenta de Luma. Escribe este código en la app:</p>
+<p style="font-size:28px;font-weight:700;letter-spacing:6px">{{ .Token }}</p>
+<p>Caduca en 10 minutos. Si no fuiste tú, cambia tu contraseña y no compartas este código.</p>
+```
+
+No template may contain `{{ .ConfirmationURL }}`.
+
+## Supabase settings
+
+| Setting | Where | Value |
+| --- | --- | --- |
+| Email OTP length | Authentication → Emails (or Providers → Email) | 6 digits |
+| Email OTP expiration | same | 600 seconds |
+| Confirm email | Authentication → Sign In / Providers → Email | on |
+| Secure password change | Authentication → Sign In / Providers → Email | on (the app always sends the reauthentication code) |
+| Minimum password length | Authentication → Sign In / Providers → Email → Password | 8 |
+| Password requirements | same | letters and digits (matches the app: 8+ with letters and numbers) |
+| TOTP (MFA) | Authentication → Multi-Factor | enabled (admins enrol at `/admin/mfa`) |
+| Limit AAL1 sessions / enforce MFA for enrolled users | Authentication → Multi-Factor (or Sessions) | on: a user with a factor cannot keep a session without the second step |
+
+## Error messages in the app
+
+Supabase answers the same error for a wrong and for an expired code, so the
+app shows one message for both ("El código es incorrecto o ya caducó…");
+rate limits and "only request this after N seconds" show "Demasiados
+intentos…"; a malformed code is refused before any request ("Escribe los 6
+dígitos del código"). Mapping: `src/app/core/auth/auth-error.ts`.
 
 ## Important: the default email sender is for testing only
 
