@@ -495,7 +495,8 @@
       "preparing": "Preparing",
       "ready": "Ready for pick-up",
       "picked_up": "Picked up",
-      "cancelled": "Cancelled"
+      "cancelled": "Cancelled",
+      "awaiting_payment": "Waiting for payment"
     },
     "detail": {
       "title": "Your order",
@@ -533,7 +534,17 @@
       "tooManyPending": "You have too many pending orders. Wait for them to progress or cancel one.",
       "notFound": "Order not found",
       "invalidTransition": "The order already changed status and cannot be cancelled.",
-      "businessClosed": "The business is closed at that time. Choose another pick-up time."
+      "businessClosed": "The business is closed at that time. Choose another pick-up time.",
+      "tooManyOrders": "You placed many orders in a short time. Wait a while and try again.",
+      "profileIncomplete": "Complete your profile (name, mobile and municipality) to place orders.",
+      "phoneNotVerified": "Verify your mobile number to place orders.",
+      "businessPaused": "This business paused orders for a moment. Try again later.",
+      "accountRestricted": "Because of orders that were not picked up, for now you can only pay online.",
+      "trustPendingLimit": "You already have an order to pay at pick-up. Pick it up or pay this one online.",
+      "trustDailyLimit": "You reached today's order limit for new accounts. Come back tomorrow.",
+      "paymentsDisabled": "Online payment is not available right now. Choose pay at pick-up.",
+      "reasonRequired": "Choose why the order is cancelled.",
+      "noShowTooEarly": "You can mark \"Did not come\" only 15 minutes after the order is ready."
     }
   },
   "reviews": {
@@ -992,7 +1003,9 @@
       "reject": "Reject",
       "preparing": "Preparing",
       "ready": "Ready",
-      "deliver": "Picked up"
+      "deliver": "Picked up",
+      "cancel": "Cancel",
+      "noShow": "Did not come"
     },
     "rejectTitle": "Reject the order?",
     "rejectDescription": "The customer will see the order as cancelled.",
@@ -1002,7 +1015,21 @@
     "errors": {
       "loadFailed": "The orders could not be loaded.",
       "updateFailed": "The order could not be updated. Try again."
-    }
+    },
+    "paidOnline": "Paid online",
+    "cancelReason": "Reason: {{reason}}",
+    "reasons": {
+      "out_of_stock": "An item ran out",
+      "closed": "We had to close",
+      "no_show": "The customer did not come",
+      "other": "Other reason"
+    },
+    "cancelTitle": "Why are you cancelling the order?",
+    "cancelDescription": "We will tell the customer the reason. If they paid online, the money will be refunded.",
+    "cancelConfirm": "Cancel order",
+    "noShowTitle": "The customer did not come?",
+    "noShowDescription": "The order will be cancelled. Three orders not picked up in 30 days limit the customer's account.",
+    "noShowConfirm": "Yes, they did not come"
   },
   "notifications": {
     "title": "Notifications",

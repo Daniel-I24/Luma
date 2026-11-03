@@ -25,14 +25,25 @@ export interface BusinessOrder {
   updated_at: string;
   /** The customer's public display name, or null ("Cliente"). */
   customer_label: string | null;
+  payment_method: 'pay_at_pickup' | 'online';
+  /** 'approved' for orders paid online ("Pagado en línea"). */
+  payment_status: string;
+  cancel_reason: CancelReason | null;
+  /** When the order became ready (the no-show wait starts there). */
+  ready_at: string | null;
+  /** Private avatar object, only while serving and if the customer shares it. */
+  customer_avatar_path: string | null;
   items: BusinessOrderItem[];
 }
+
+/** Why an owner cancels an order after accepting it (set_order_status p_reason). */
+export type CancelReason = 'out_of_stock' | 'closed' | 'no_show' | 'other';
 
 /** Statuses an owner can move an order to (set_order_status). */
 export type OwnerOrderAction = 'accepted' | 'cancelled' | 'preparing' | 'ready' | 'picked_up';
 
 const ORDER_COLUMNS =
-  'id, business_id, status, pickup_at, total_cop, notes, created_at, updated_at, customer_label';
+  'id, business_id, status, pickup_at, total_cop, notes, created_at, updated_at, customer_label, payment_method, payment_status, cancel_reason, ready_at, customer_avatar_path';
 const LIST_LIMIT = 100;
 
 /**
@@ -85,11 +96,16 @@ export class BusinessOrderRepository {
     };
   }
 
-  /** Moves an order forward; the server accepts only valid transitions. */
-  async setStatus(orderId: string, status: OwnerOrderAction): Promise<RepoResult<true>> {
+  /** Moves an order forward; the server accepts only valid transitions and checks the reason. */
+  async setStatus(
+    orderId: string,
+    status: OwnerOrderAction,
+    reason: CancelReason | null = null,
+  ): Promise<RepoResult<true>> {
     const { error } = await this.db.rpc('set_order_status', {
       p_order_id: orderId,
       p_status: status,
+      p_reason: reason,
     });
     if (error)
       return {

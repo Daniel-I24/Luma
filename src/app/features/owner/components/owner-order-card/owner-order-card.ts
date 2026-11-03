@@ -30,7 +30,8 @@ export class OwnerOrderCard {
   readonly busy = input(false);
   readonly action = output<OrderAction>();
 
-  protected readonly actions = computed(() => nextActions(this.order().status));
+  protected readonly actions = computed(() => nextActions(this.order()));
+  protected readonly paidOnline = computed(() => this.order().payment_status === 'approved');
   protected readonly placedAt = computed(() => formatTime(this.order().created_at, this.lang()));
   protected readonly pickupAt = computed(() => {
     const pickup = this.order().pickup_at;

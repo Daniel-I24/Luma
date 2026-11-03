@@ -46,7 +46,9 @@ describe('BusinessOrderRepository', () => {
 
     expect(await repo.setStatus('o1', 'accepted')).toEqual({ data: true, errorKey: null });
     expect(fake.rpcCalls).toEqual([
-      ['set_order_status', { p_order_id: 'o1', p_status: 'accepted' }],
+      ['set_order_status', { p_order_id: 'o1', p_status: 'accepted', p_reason: null }],
     ]);
+    await repo.setStatus('o1', 'cancelled', 'no_show');
+    expect(fake.rpcCalls[1]).toEqual(['set_order_status', { p_order_id: 'o1', p_status: 'cancelled', p_reason: 'no_show' }]);
   });
 });

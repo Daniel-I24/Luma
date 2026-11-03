@@ -3,6 +3,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 import type { OrderStatus } from './order.model';
 
 const TONE: Record<OrderStatus, string> = {
+  awaiting_payment: 'bg-warning-bg text-warning-fg',
   pending: 'bg-warning-bg text-warning-fg',
   accepted: 'bg-info-bg text-info-fg',
   preparing: 'bg-info-bg text-info-fg',

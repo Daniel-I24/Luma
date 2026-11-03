@@ -18,7 +18,7 @@ import {
   ToastService,
   tabPanelId,
 } from '@design-system';
-import type { BusinessOrder } from '@shared/orders/business-order.repository';
+import type { BusinessOrder, CancelReason } from '@shared/orders/business-order.repository';
 import { pollWhileVisible } from '@shared/ui/poll-while-visible';
 import { OwnerOrderCard } from '../../components/owner-order-card/owner-order-card';
 import { PanelHeader } from '../../components/panel-header/panel-header';
@@ -32,6 +32,9 @@ import {
   ordersOfTab,
 } from '../../utils/order-board.util';
 import { routeBusinessId } from '../../utils/route-business-id';
+
+/** Reasons the owner can pick when cancelling after accepting ("No llegó" has its own button). */
+const CANCEL_REASONS = ['out_of_stock', 'closed', 'other'] as const;
 
 /** Refresh period while the screen is visible. */
 export const BOARD_REFRESH_MS = 15_000;
@@ -67,6 +70,12 @@ export class BusinessOrdersPage {
 
   protected readonly tab = signal<OrderTab>('new');
   protected readonly rejecting = signal<BusinessOrder | null>(null);
+  /** Order being cancelled after accepting: a reason is required. */
+  protected readonly cancelling = signal<BusinessOrder | null>(null);
+  protected readonly reason = signal<Exclude<CancelReason, 'no_show'> | null>(null);
+  /** Order whose customer did not come. */
+  protected readonly noShow = signal<BusinessOrder | null>(null);
+  protected readonly reasons = CANCEL_REASONS;
   protected readonly panelId = tabPanelId;
 
   protected readonly tabs = computed<TabItem[]>(() => {
@@ -94,7 +103,11 @@ export class BusinessOrdersPage {
   }
 
   protected onAction(order: BusinessOrder, action: OrderAction): void {
-    if (action.confirm) this.rejecting.set(order);
+    if (action.confirm === 'reject') this.rejecting.set(order);
+    else if (action.confirm === 'cancel') {
+      this.reason.set(null);
+      this.cancelling.set(order);
+    } else if (action.confirm === 'no_show') this.noShow.set(order);
     else void this.apply(order, action.status);
   }
 
@@ -104,8 +117,22 @@ export class BusinessOrdersPage {
     if (order) void this.apply(order, 'cancelled');
   }
 
-  private async apply(order: BusinessOrder, status: OrderAction['status']): Promise<void> {
-    if (await this.board.act(order, status)) {
+  protected confirmCancel(): void {
+    const order = this.cancelling();
+    const reason = this.reason();
+    if (!order || !reason) return;
+    this.cancelling.set(null);
+    void this.apply(order, 'cancelled', reason);
+  }
+
+  protected confirmNoShow(): void {
+    const order = this.noShow();
+    this.noShow.set(null);
+    if (order) void this.apply(order, 'cancelled', 'no_show');
+  }
+
+  private async apply(order: BusinessOrder, status: OrderAction['status'], reason: CancelReason | null = null): Promise<void> {
+    if (await this.board.act(order, status, reason)) {
       this.toast.show({ messageKey: 'businessOrders.updated', tone: 'success' });
     }
   }

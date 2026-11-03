@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { BusinessOrder } from '@shared/orders/business-order.repository';
-import { nextActions, orderTab, ordersOfTab } from './order-board.util';
+import { nextActions, noShowAllowed, orderTab, ordersOfTab } from './order-board.util';
 
 const order = (id: string, status: BusinessOrder['status'], created_at: string) =>
   ({ id, status, created_at }) as BusinessOrder;
@@ -16,13 +16,22 @@ describe('order board', () => {
   });
 
   it('offers only the transitions set_order_status allows', () => {
-    expect(nextActions('pending').map((a) => a.status)).toEqual(['accepted', 'cancelled']);
-    expect(nextActions('pending')[1].confirm).toBe(true);
-    expect(nextActions('accepted').map((a) => a.status)).toEqual(['preparing']);
-    expect(nextActions('preparing').map((a) => a.status)).toEqual(['ready']);
-    expect(nextActions('ready').map((a) => a.status)).toEqual(['picked_up']);
-    expect(nextActions('picked_up')).toEqual([]);
-    expect(nextActions('cancelled')).toEqual([]);
+    const at = (status: BusinessOrder['status'], readyAt: string | null = null) =>
+      nextActions({ status, ready_at: readyAt }, Date.parse('2026-10-14T12:30:00Z'));
+    expect(at('pending').map((a) => [a.key, a.confirm])).toEqual([['accept', null], ['reject', 'reject']]);
+    expect(at('accepted').map((a) => [a.status, a.confirm])).toEqual([['preparing', null], ['cancelled', 'cancel']]);
+    expect(at('preparing').map((a) => a.key)).toEqual(['ready', 'cancel']);
+    expect(at('picked_up')).toEqual([]);
+    expect(at('cancelled')).toEqual([]);
+  });
+
+  it('"No llegó" appears only 15 minutes after the order is ready', () => {
+    const now = Date.parse('2026-10-14T12:30:00Z');
+    expect(nextActions({ status: 'ready', ready_at: '2026-10-14T12:20:00Z' }, now).map((a) => a.key))
+      .toEqual(['deliver', 'cancel']);
+    expect(nextActions({ status: 'ready', ready_at: '2026-10-14T12:15:00Z' }, now).map((a) => [a.key, a.confirm]))
+      .toEqual([['deliver', null], ['noShow', 'no_show']]);
+    expect(noShowAllowed(null, now)).toBe(false);
   });
 
   it('serves active orders oldest first and shows history newest first', () => {

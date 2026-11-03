@@ -1,5 +1,7 @@
 /** Lifecycle of a pick-up order (public.orders.status). */
 export const ORDER_STATUSES = [
+  // Online orders until their payment is approved (never shown to the business).
+  'awaiting_payment',
   'pending',
   'accepted',
   'preparing',
@@ -8,6 +10,10 @@ export const ORDER_STATUSES = [
   'cancelled',
 ] as const;
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
+
+/** public.orders.payment_status (written only by the payment functions). */
+export type PaymentStatus =
+  | 'none' | 'pending' | 'approved' | 'declined' | 'voided' | 'refund_required' | 'refunded' | 'error';
 
 /** Steps shown on the timeline, in order (cancelled is shown apart). */
 export const ORDER_PROGRESS: readonly OrderStatus[] = [
@@ -49,7 +55,11 @@ export interface Order {
   pickup_at: string | null;
   total_cop: number;
   notes: string | null;
-  payment_method: 'pay_at_pickup';
+  payment_method: 'pay_at_pickup' | 'online';
+  /** none, pending, approved, declined, voided, refund_required, refunded or error. */
+  payment_status: PaymentStatus;
+  /** Why the business cancelled it, when it did after accepting. */
+  cancel_reason: 'out_of_stock' | 'closed' | 'no_show' | 'other' | null;
   created_at: string;
   updated_at: string;
   business: OrderBusiness | null;

@@ -2,6 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import {
   type BusinessOrder,
   BusinessOrderRepository,
+  type CancelReason,
   type OwnerOrderAction,
 } from '@shared/orders/business-order.repository';
 
@@ -44,12 +45,12 @@ export class BusinessOrdersStore {
   }
 
   /** Resolves to true when the status changed. */
-  async act(order: BusinessOrder, status: OwnerOrderAction): Promise<boolean> {
+  async act(order: BusinessOrder, status: OwnerOrderAction, reason: CancelReason | null = null): Promise<boolean> {
     if (this._busyId()) return false;
     this._busyId.set(order.id);
     this._errorKey.set(null);
     try {
-      const result = await this.repo.setStatus(order.id, status);
+      const result = await this.repo.setStatus(order.id, status, reason);
       this._errorKey.set(result.errorKey);
       await this.refresh();
       return result.errorKey === null;

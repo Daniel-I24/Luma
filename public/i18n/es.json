@@ -495,7 +495,8 @@
       "preparing": "En preparación",
       "ready": "Listo para recoger",
       "picked_up": "Recogido",
-      "cancelled": "Cancelado"
+      "cancelled": "Cancelado",
+      "awaiting_payment": "Esperando el pago"
     },
     "detail": {
       "title": "Tu pedido",
@@ -533,7 +534,17 @@
       "tooManyPending": "Tienes demasiados pedidos pendientes. Espera a que avancen o cancela alguno.",
       "notFound": "Pedido no encontrado",
       "invalidTransition": "El pedido ya cambió de estado y no se puede cancelar.",
-      "businessClosed": "El negocio está cerrado a esa hora. Elige otra hora de recogida."
+      "businessClosed": "El negocio está cerrado a esa hora. Elige otra hora de recogida.",
+      "tooManyOrders": "Hiciste muchos pedidos en poco tiempo. Espera un rato e inténtalo de nuevo.",
+      "profileIncomplete": "Completa tu perfil (nombre, celular y municipio) para hacer pedidos.",
+      "phoneNotVerified": "Verifica tu número de celular para hacer pedidos.",
+      "businessPaused": "Este negocio pausó los pedidos por un momento. Inténtalo más tarde.",
+      "accountRestricted": "Por pedidos que no se recogieron, por ahora solo puedes pagar en línea.",
+      "trustPendingLimit": "Ya tienes un pedido para pagar al recoger. Recógelo o paga este en línea.",
+      "trustDailyLimit": "Llegaste al límite de pedidos de hoy para cuentas nuevas. Vuelve mañana.",
+      "paymentsDisabled": "El pago en línea no está disponible ahora. Elige pagar al recoger.",
+      "reasonRequired": "Elige el motivo de la cancelación.",
+      "noShowTooEarly": "Solo puedes marcar «No llegó» 15 minutos después de que el pedido esté listo."
     }
   },
   "reviews": {
@@ -992,7 +1003,9 @@
       "reject": "Rechazar",
       "preparing": "Preparando",
       "ready": "Listo",
-      "deliver": "Entregado"
+      "deliver": "Entregado",
+      "cancel": "Cancelar",
+      "noShow": "No llegó"
     },
     "rejectTitle": "¿Rechazar el pedido?",
     "rejectDescription": "El cliente verá el pedido como cancelado.",
@@ -1002,7 +1015,21 @@
     "errors": {
       "loadFailed": "No se pudieron cargar los pedidos.",
       "updateFailed": "No se pudo actualizar el pedido. Intenta de nuevo."
-    }
+    },
+    "paidOnline": "Pagado en línea",
+    "cancelReason": "Motivo: {{reason}}",
+    "reasons": {
+      "out_of_stock": "Se agotó un producto",
+      "closed": "Tuvimos que cerrar",
+      "no_show": "El cliente no llegó",
+      "other": "Otro motivo"
+    },
+    "cancelTitle": "¿Por qué cancelas el pedido?",
+    "cancelDescription": "Le avisaremos al cliente con el motivo. Si pagó en línea, se le devolverá el dinero.",
+    "cancelConfirm": "Cancelar pedido",
+    "noShowTitle": "¿El cliente no llegó?",
+    "noShowDescription": "El pedido se cancelará. Tres pedidos sin recoger en 30 días limitan la cuenta del cliente.",
+    "noShowConfirm": "Sí, no llegó"
   },
   "notifications": {
     "title": "Notificaciones",
