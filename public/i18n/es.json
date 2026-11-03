@@ -1516,5 +1516,23 @@
     "retry": "Reintentar",
     "stillFailing": "Sigue sin funcionar. Si la base de datos de Luma se está actualizando, espera unos minutos.",
     "signOut": "Cerrar sesión"
+  },
+  "notificationSettings": {
+    "title": "Notificaciones",
+    "orders": "Pedidos y revisiones",
+    "ordersHint": "Cambios de tus pedidos y, si tienes negocio, pedidos nuevos y la revisión.",
+    "promotions": "Promociones de mis favoritos",
+    "promotionsHint": "Cuando un negocio que guardaste avisa de una promoción. Puedes quitarlo cuando quieras.",
+    "phone": {
+      "granted": "Este teléfono recibe notificaciones.",
+      "denied": "Las notificaciones de Luma están bloqueadas en los ajustes del teléfono. Actívalas allí si quieres recibirlas.",
+      "prompt": "Para recibir avisos aunque no tengas Luma abierta, permite las notificaciones en este teléfono.",
+      "enable": "Permitir notificaciones",
+      "web": "En la web verás tus avisos en la lista de notificaciones."
+    },
+    "errors": {
+      "load": "No pudimos cargar tus preferencias de notificaciones.",
+      "save": "No pudimos guardar el cambio. Intenta de nuevo."
+    }
   }
 }

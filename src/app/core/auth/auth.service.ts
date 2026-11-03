@@ -6,6 +6,7 @@ import { SupabaseService } from '@core/supabase/supabase.service';
 import { mapAuthError, mapDeleteAccountError } from './auth-error';
 import { signInSchema, signUpSchema } from './auth.schemas';
 import { type SignUpProfile, signUpMetadata } from './sign-up-profile';
+import { SignOutHooks } from './sign-out-hooks';
 import { UserDataRegistry } from './user-data-registry';
 
 /** Shape of an operation result returned by every auth method. */
@@ -36,6 +37,7 @@ export class AuthService {
   private readonly supabase = inject(SupabaseService).client;
   private readonly router = inject(Router);
   private readonly userData = inject(UserDataRegistry);
+  private readonly signOutHooks = inject(SignOutHooks);
   private readonly online = inject(ConnectivityService).online;
 
   private readonly _session = signal<Session | null>(null);
@@ -86,6 +88,7 @@ export class AuthService {
 
   signOut(): Promise<AuthResult> {
     return this.withLoading(async () => {
+      await this.signOutHooks.run();
       const { error } = await this.supabase.auth.signOut();
       if (error) return fail(mapAuthError(error.message, this.online()));
       this.userData.clearAll();

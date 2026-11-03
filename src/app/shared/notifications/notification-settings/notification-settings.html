@@ -1,0 +1,46 @@
+<section
+  *transloco="let t"
+  class="flex flex-col gap-3 rounded-xl border border-border-subtle bg-surface p-4"
+  aria-labelledby="notification-settings-title"
+>
+  <h2 id="notification-settings-title" class="m-0 text-title text-fg">{{ t('notificationSettings.title') }}</h2>
+
+  @for (key of keys; track key) {
+    <label class="flex min-h-11 items-center justify-between gap-3">
+      <span class="flex flex-col">
+        <span class="text-body font-medium text-fg">{{ t('notificationSettings.' + key) }}</span>
+        <span class="text-caption text-fg-muted">{{ t('notificationSettings.' + key + 'Hint') }}</span>
+      </span>
+      <input
+        type="checkbox"
+        role="switch"
+        class="size-6 shrink-0 accent-primary"
+        [checked]="preferences()?.[key] ?? false"
+        [disabled]="!preferences() || saving()"
+        (change)="toggle(key, $event)"
+      />
+    </label>
+  }
+
+  @if (errorKey(); as key) {
+    <p class="m-0 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
+  }
+
+  <div class="border-t border-border-subtle pt-3" aria-live="polite">
+    @switch (push.permission()) {
+      @case ('granted') {
+        <p class="m-0 text-body-sm text-fg-muted">{{ t('notificationSettings.phone.granted') }}</p>
+      }
+      @case ('denied') {
+        <p class="m-0 text-body-sm text-fg-muted">{{ t('notificationSettings.phone.denied') }}</p>
+      }
+      @case ('prompt') {
+        <p class="m-0 mb-2 text-body-sm text-fg-muted">{{ t('notificationSettings.phone.prompt') }}</p>
+        <app-luma-button variant="secondary" (clicked)="enable()">{{ t('notificationSettings.phone.enable') }}</app-luma-button>
+      }
+      @default {
+        <p class="m-0 text-body-sm text-fg-muted">{{ t('notificationSettings.phone.web') }}</p>
+      }
+    }
+  </div>
+</section>

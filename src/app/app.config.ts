@@ -12,6 +12,7 @@ import { provideTransloco } from '@jsverse/transloco';
 import { LanguageService } from '@core/i18n/language.service';
 import { ConnectivityService } from '@core/network/connectivity.service';
 import { NativeShell } from '@core/native/native-shell';
+import { PushRegistration } from '@core/push/push-registration.service';
 import { AppErrorHandler } from '@shared/errors/app-error-handler';
 import { onRouteTransitionCreated } from '@core/navigation/route-transition';
 import { routes } from './app.routes';
@@ -50,6 +51,10 @@ export const appConfig: ApplicationConfig = {
         .catch(() => undefined);
       inject(ConnectivityService)
         .watchNative()
+        .catch(() => undefined);
+      // Push: never asks for permission here, only refreshes a granted token.
+      inject(PushRegistration)
+        .init()
         .catch(() => undefined);
     }),
   ],

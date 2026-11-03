@@ -1516,5 +1516,23 @@
     "retry": "Retry",
     "stillFailing": "Still not working. If Luma's database is being updated, wait a few minutes.",
     "signOut": "Sign out"
+  },
+  "notificationSettings": {
+    "title": "Notifications",
+    "orders": "Orders and reviews",
+    "ordersHint": "Updates of your orders and, if you have a business, new orders and its review.",
+    "promotions": "Promotions of my favourites",
+    "promotionsHint": "When a business you saved announces a promotion. You can turn it off any time.",
+    "phone": {
+      "granted": "This phone receives notifications.",
+      "denied": "Luma notifications are blocked in the phone settings. Turn them on there if you want them.",
+      "prompt": "To get notices even when Luma is closed, allow notifications on this phone.",
+      "enable": "Allow notifications",
+      "web": "On the web you'll see your notices in the notification list."
+    },
+    "errors": {
+      "load": "We couldn't load your notification preferences.",
+      "save": "We couldn't save the change. Please try again."
+    }
   }
 }

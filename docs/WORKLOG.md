@@ -127,6 +127,11 @@ agent's sessions).
 - FASE 2.4 public profile: photo strip (hidden when empty or unreadable) and
   contact links (wa.me, instagram.com, facebook.com, https web; new tab with
   noopener; malformed values never linked) in the Info tab.
+- FASE 2.5 push in the app: @capacitor/push-notifications 8.1.3 (Android),
+  PUSH_ENABLED gate, PushRegistration (refresh on sign-in when granted,
+  enable() from a user action, token removed via SignOutHooks before
+  sign-out, tap opens the order or /notifications), NotificationSettings in
+  Profile and Mi negocio (orders on, promotions opt-in), POST_NOTIFICATIONS.
 
 - Block D done: migration 20261021000000 (discounts, trigger, server prices in
   create_order; 23 SQL checks), customer /promotions (sort, filters, states,

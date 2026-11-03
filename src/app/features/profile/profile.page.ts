@@ -11,6 +11,7 @@ import { HelpLinks } from './components/help-links/help-links';
 import { AppearanceSettings } from './components/appearance-settings/appearance-settings';
 import { BusinessEntry } from './components/business-entry/business-entry';
 import { NotificationsEntry } from './components/notifications-entry/notifications-entry';
+import { NotificationSettings } from '@shared/notifications/notification-settings/notification-settings';
 import { DisplayNameField } from './components/display-name-field/display-name-field';
 
 /**
@@ -35,6 +36,7 @@ import { DisplayNameField } from './components/display-name-field/display-name-f
     BusinessEntry,
     DisplayNameField,
     NotificationsEntry,
+    NotificationSettings,
   ],
   templateUrl: './profile.page.html',
 })

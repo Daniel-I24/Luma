@@ -183,3 +183,14 @@ alternative that was not taken. The safest, most reversible option wins.
   is explicit.
 - **Alternative**: Supabase database webhooks with the service role key, or
   retries with attempts (in docs/db-followups.md).
+
+## 2026-10-19 — Push: Android only, behind PUSH_ENABLED, permission on demand
+
+- **What**: @capacitor/push-notifications 8.1.3 (official plugin, same major
+  as Capacitor, published 2026-10-02; npm audit clean); `PUSH_ENABLED`
+  false until google-services.json exists; permission asked only when the
+  user turns a notification on; the token is removed before sign-out.
+- **Why**: registering without Firebase crashes the APK; asking at start-up
+  gets denied; shared phones must not receive the previous user's notices.
+- **Alternative**: web push with the Firebase SDK and a service worker
+  (bigger bundle, VAPID keys); left for later.

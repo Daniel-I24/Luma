@@ -68,3 +68,13 @@ To rotate the secret: set the new value in both places, Edge secret first.
   `notify_promotion` rule, claim at most once, poke with a stubbed pg_net).
 - Deno: `supabase/functions/push-dispatch` (RS256 assertion verified with a
   generated key, token reuse, dead tokens, secret check, batches, texts).
+
+## Turning it on in the app
+
+`src/app/core/config/push-enabled.ts` (`PUSH_ENABLED`) is `false` by
+default: without `google-services.json` the Android app would crash when
+registering. After steps 1-5, set it to `true`, rebuild the APK
+(`npm run apk:release`) and check on a phone: Profile > Notificaciones >
+"Permitir notificaciones", place an order from another account, and the
+phone shows "Nuevo pedido". On the web the settings only show the in-app
+list (no web push).

@@ -11,6 +11,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { type IconName, LumaIcon } from '@design-system';
 import { AccountActions } from '@shared/account/account-actions/account-actions';
 import { ONBOARDING_PATH } from '@shared/account/onboarding';
+import { NotificationSettings } from '@shared/notifications/notification-settings/notification-settings';
 import { type OwnerBusinessScreen, ownerPaths } from '@shared/account/owner-paths';
 import { PanelHeader } from '../../components/panel-header/panel-header';
 import { PanelStateView } from '../../components/panel-state/panel-state';
@@ -35,7 +36,15 @@ const SCREENS: readonly { screen: OwnerBusinessScreen; icon: IconName; key: stri
   selector: 'app-my-business-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, RouterLink, LumaIcon, AccountActions, PanelHeader, PanelStateView],
+  imports: [
+    TranslocoModule,
+    RouterLink,
+    LumaIcon,
+    AccountActions,
+    NotificationSettings,
+    PanelHeader,
+    PanelStateView,
+  ],
   providers: [PanelBusinessStore],
   templateUrl: './my-business.page.html',
   host: { class: 'block' },
