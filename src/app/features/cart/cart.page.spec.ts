@@ -4,6 +4,7 @@ import { Router, provideRouter } from '@angular/router';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '@core/auth/auth.service';
+import { BusinessRepository } from '@shared/business/data/business.repository';
 import { MenuRepository } from '@shared/business/data/menu.repository';
 import { CartStore } from '@shared/cart/cart.store';
 import { CartPage } from './cart.page';
@@ -19,10 +20,12 @@ const ES = {
 
 describe('CartPage', () => {
   const menu = { getItemsByIds: vi.fn() };
+  const businesses = { getById: vi.fn() };
 
   beforeEach(() => {
     localStorage.clear();
     vi.clearAllMocks();
+    businesses.getById.mockResolvedValue({ data: { orders_paused_until: null }, errorKey: null });
     TestBed.configureTestingModule({
       imports: [
         CartPage,
@@ -35,6 +38,7 @@ describe('CartPage', () => {
         provideRouter([]),
         { provide: AuthService, useValue: { user: signal({ id: 'u1' }) } },
         { provide: MenuRepository, useValue: menu },
+        { provide: BusinessRepository, useValue: businesses },
       ],
     });
     const cart = TestBed.inject(CartStore);
@@ -48,6 +52,7 @@ describe('CartPage', () => {
     const fixture = TestBed.createComponent(CartPage);
     fixture.detectChanges();
     await fixture.whenStable();
+    await new Promise((resolve) => setTimeout(resolve));
     fixture.detectChanges();
     return fixture.nativeElement as HTMLElement;
   }
@@ -78,5 +83,14 @@ describe('CartPage', () => {
 
     expect(navigate).toHaveBeenCalledWith(['/checkout']);
     expect(el.querySelectorAll('li app-add-to-cart')).toHaveLength(2);
+  });
+
+  it('a paused business shows "Pedidos en pausa" and cannot continue', async () => {
+    menu.getItemsByIds.mockResolvedValue({ data: null, errorKey: 'x' });
+    businesses.getById.mockResolvedValueOnce({ data: { orders_paused_until: 'infinity' }, errorKey: null });
+    const el = await render();
+    expect(el.textContent).toContain('cart.paused');
+    const buttons = Array.from(el.querySelectorAll<HTMLButtonElement>('app-luma-button button'));
+    expect(buttons.find((b) => b.textContent?.includes('Continuar'))!.disabled).toBe(true);
   });
 });

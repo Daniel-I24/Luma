@@ -34,6 +34,8 @@ export interface Business {
   verified_at: string | null;
   created_at: string;
   updated_at: string;
+  /** No new orders until then ('infinity': until resumed); see BusinessPause. */
+  orders_paused_until?: string | null;
   /** Public contact (migration business_showcase; absent before it is applied). */
   whatsapp?: string | null;
   instagram?: string | null;

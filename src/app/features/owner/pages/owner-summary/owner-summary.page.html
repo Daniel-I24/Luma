@@ -13,6 +13,9 @@
 
     @if (business.verification_status === 'approved') {
     <app-publish-card [business]="business" (toggled)="setPublished($event)" />
+    @if (business.is_active) {
+    <app-order-pause-card [business]="business" />
+    }
     <app-ideas-card [businessId]="business.id" (create)="createFromIdea($event)" />
     }
 

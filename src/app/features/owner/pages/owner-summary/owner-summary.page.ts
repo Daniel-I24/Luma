@@ -12,6 +12,7 @@ import { ToastService } from '@design-system';
 import { ownerPaths } from '@shared/account/owner-paths';
 import type { PromotionIdea } from '@shared/promotions/advisor/promotion-idea';
 import { IdeasCard } from '../../components/ideas-card/ideas-card';
+import { OrderPauseCard } from '../../components/order-pause-card/order-pause-card';
 import { PanelHeader } from '../../components/panel-header/panel-header';
 import { PanelStateView } from '../../components/panel-state/panel-state';
 import { PublishCard } from '../../components/publish-card/publish-card';
@@ -37,6 +38,7 @@ import { todayStats } from '../../utils/today-stats.util';
   imports: [
     TranslocoModule,
     IdeasCard,
+    OrderPauseCard,
     PanelHeader,
     PanelStateView,
     PublishCard,

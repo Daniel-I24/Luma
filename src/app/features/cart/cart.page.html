@@ -62,10 +62,13 @@
     <span class="text-price text-fg">{{ cart.totalCop() | cop }}</span>
   </div>
   <p class="m-0 text-caption text-fg-subtle">{{ t('cart.pricesNote') }}</p>
+  @if (review.paused()) {
+  <p class="m-0 rounded-md bg-warning-bg p-3 text-body-sm text-warning-fg" role="status">{{ t('cart.paused') }}</p>
+  }
   <app-luma-button
     size="lg"
     [fullWidth]="true"
-    [disabled]="review.state() === 'checking'"
+    [disabled]="review.state() === 'checking' || review.paused()"
     (clicked)="go('/checkout')"
     >{{ t('cart.continue') }}</app-luma-button
   >

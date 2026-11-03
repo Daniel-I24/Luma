@@ -681,7 +681,8 @@
     },
     "errors": {
       "limit": "Llegaste al máximo: 20 por producto y 50 en total."
-    }
+    },
+    "paused": "Pedidos en pausa: este negocio no está recibiendo pedidos por un momento."
   },
   "checkout": {
     "title": "Confirmar pedido",
@@ -1573,6 +1574,18 @@
     },
     "orderAlerts": {
       "new": "Tienes {{count}} pedido(s) nuevo(s). Revísalos en Pedidos."
+    },
+    "pause": {
+      "title": "Pausar pedidos",
+      "intro": "¿Mucha demanda o falta algo? Deja de recibir pedidos nuevos un rato; los que ya tienes siguen igual.",
+      "minutes": "{{minutes}} min",
+      "untilResumed": "Hasta reanudar",
+      "pausedUntil": "Pedidos en pausa hasta las {{time}}.",
+      "pausedIndefinitely": "Pedidos en pausa hasta que los reanudes.",
+      "resume": "Reanudar pedidos",
+      "errors": {
+        "failed": "No se pudo cambiar la pausa. Intenta de nuevo."
+      }
     }
   },
   "promotions": {

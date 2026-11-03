@@ -681,7 +681,8 @@
     },
     "errors": {
       "limit": "You reached the limit: 20 per item and 50 in total."
-    }
+    },
+    "paused": "Orders paused: this business is not taking orders for a moment."
   },
   "checkout": {
     "title": "Confirm order",
@@ -1573,6 +1574,18 @@
     },
     "orderAlerts": {
       "new": "You have {{count}} new order(s). Check them in Orders."
+    },
+    "pause": {
+      "title": "Pause orders",
+      "intro": "Too busy or out of something? Stop new orders for a while; the ones you have go on.",
+      "minutes": "{{minutes}} min",
+      "untilResumed": "Until I resume",
+      "pausedUntil": "Orders paused until {{time}}.",
+      "pausedIndefinitely": "Orders paused until you resume them.",
+      "resume": "Resume orders",
+      "errors": {
+        "failed": "Could not change the pause. Try again."
+      }
     }
   },
   "promotions": {
