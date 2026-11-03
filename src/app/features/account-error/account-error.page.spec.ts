@@ -9,11 +9,13 @@ import { SessionProfileStore } from '@shared/account/session-profile.store';
 import { AccountErrorPage } from './account-error.page';
 
 describe('AccountErrorPage', () => {
-  const store = { retry: vi.fn(), landingPath: vi.fn() };
+  const failureKey = signal<string | null>(null);
+  const store = { retry: vi.fn(), landingPath: vi.fn(), failureKey };
   const auth = { signOut: vi.fn() };
 
   beforeEach(() => {
     vi.clearAllMocks();
+    failureKey.set(null);
     TestBed.configureTestingModule({
       imports: [AccountErrorPage, TranslocoTestingModule.forRoot({ langs: { es: {} } })],
       providers: [
@@ -58,5 +60,11 @@ describe('AccountErrorPage', () => {
     signOut.click();
     await fixture.whenStable();
     expect(navigate).toHaveBeenCalledWith(['/auth/login']);
+  });
+
+  it("says clearly when the server lacks this version's migrations (never a blank screen)", () => {
+    failureKey.set('accountError.outdated');
+    const { fixture } = buttons();
+    expect(fixture.nativeElement.textContent).toContain('accountError.outdated');
   });
 });

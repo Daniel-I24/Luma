@@ -1754,7 +1754,8 @@
     "description": "We don't know yet whether your account is a customer or a business one, so we won't show you the wrong screens. Please try again in a moment.",
     "retry": "Retry",
     "stillFailing": "Still not working. If Luma's database is being updated, wait a few minutes.",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "outdated": "Luma's server does not have the update this app version needs yet. Try again later or tell the Luma team."
   },
   "notificationSettings": {
     "title": "Notifications",

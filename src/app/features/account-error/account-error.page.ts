@@ -49,9 +49,10 @@ export class AccountErrorPage {
 
   protected readonly busy = signal(false);
   protected readonly stillFailing = signal(false);
-  protected readonly descriptionKey = computed(() =>
-    this.online() ? 'accountError.description' : 'errors.offline',
-  );
+  protected readonly descriptionKey = computed(() => {
+    if (!this.online()) return 'errors.offline';
+    return this.store.failureKey() === 'accountError.outdated' ? 'accountError.outdated' : 'accountError.description';
+  });
 
   protected async retry(): Promise<void> {
     this.busy.set(true);

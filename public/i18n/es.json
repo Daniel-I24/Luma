@@ -1754,7 +1754,8 @@
     "description": "No sabemos aún si tu cuenta es de cliente o de negocio, así que no te mostramos ninguna pantalla por error. Intenta de nuevo en un momento.",
     "retry": "Reintentar",
     "stillFailing": "Sigue sin funcionar. Si la base de datos de Luma se está actualizando, espera unos minutos.",
-    "signOut": "Cerrar sesión"
+    "signOut": "Cerrar sesión",
+    "outdated": "El servidor de Luma aún no tiene la actualización que necesita esta versión de la app. Intenta más tarde o avísale al equipo de Luma."
   },
   "notificationSettings": {
     "title": "Notificaciones",

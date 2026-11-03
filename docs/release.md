@@ -40,6 +40,50 @@ To rehearse the whole path without your keystore: `npm run apk:demo` (a
 throwaway key in a temporary folder; the demo APK is deleted at the end and
 must never be published).
 
+## Test APK (debug), PowerShell, JDK 21
+
+Checked on 2026-10-28: JDK 21 (Eclipse Adoptium), Android SDK 36, no
+`google-services.json` → `android/app/build/outputs/apk/debug/app-debug.apk`,
+package `com.lumapasto.app`, version 1.0.0 (code 10000).
+
+```powershell
+$env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot"   # your JDK 21 folder
+$env:SUPABASE_URL = "https://<ref>.supabase.co"
+$env:SUPABASE_ANON_KEY = "<anon key>"            # the public anon key, never service_role
+npm ci
+npm run apk:debug
+adb install -r androidppuild\outputspk\debugpp-debug.apk   # phone with USB debugging
+```
+
+`apk:debug` writes `src/environments/environment.deploy.ts` from the two
+variables (gitignored), builds `production,deploy`, runs `npx cap sync
+android` and `gradlew assembleDebug`.
+
+What the test APK does without optional services:
+
+- **No `google-services.json`**: Gradle skips the Google Services plugin
+  (a log line says so) and push stays off (`PUSH_ENABLED = false`); the app
+  never initialises Firebase, so it cannot crash on it.
+- **Database without the round 2 migrations**: the profile read fails with
+  a missing column and the app shows "El servidor de Luma aún no tiene la
+  actualización…" with Reintentar / Cerrar sesión (`/account-error`),
+  never a blank screen.
+- **Entry animation**: ends as soon as the session and first screen are
+  ready (at most 1.8 s the first time, 0.9 s later; a tap skips it); the
+  native splash waits for the page at most 1.5 s.
+
+Typical errors:
+
+| Message | Fix |
+| --- | --- |
+| `No JDK 17-24 found: set JAVA_HOME` | Install JDK 21 (Adoptium) and set `$env:JAVA_HOME` as above |
+| `Unsupported class file major version 69` / Gradle fails to start | JAVA_HOME points to JDK 25; use 21 |
+| `SDK location not found` | Create `android\local.properties` with `sdk.dir=C:\Users\<you>\AppData\Local\Android\Sdk`, or open the `android` folder once in Android Studio |
+| `SUPABASE_URL and SUPABASE_ANON_KEY are required.` | Set both variables in the same PowerShell window |
+| `'.\gradlew.bat' is not recognized` | Run from the repository root (`npm run apk:debug`), not from `android` |
+| `INSTALL_FAILED_UPDATE_INCOMPATIBLE` on `adb install` | An APK signed with another key is installed: `adb uninstall com.lumapasto.app` |
+| White screen after install | Old web assets: run `npx cap sync android` again (apk:debug already does) |
+
 ## 4. Publish the APK
 
 - [ ] Upload `android/app/build/outputs/apk/release/app-release.apk` as

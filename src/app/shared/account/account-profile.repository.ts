@@ -56,6 +56,12 @@ export abstract class AccountProfileRepository {
   public abstract setShowAvatar(userId: string, show: boolean): Promise<RepoResult<true>>;
 }
 
+/**
+ * PostgREST/Postgres codes of a missing column, table or function: the
+ * database does not have this app version's migrations yet.
+ */
+const OUTDATED_SCHEMA_CODES = new Set(['42703', 'PGRST204', '42P01', 'PGRST205', '42883', 'PGRST202']);
+
 /** SupabaseAccountProfileRepository — profiles through RLS and SECURITY DEFINER functions. */
 class SupabaseAccountProfileRepository extends AccountProfileRepository {
   private readonly db = inject(SupabaseService).client;
@@ -67,6 +73,7 @@ class SupabaseAccountProfileRepository extends AccountProfileRepository {
       .select('account_type, display_name, full_name, phone, onboarding_seen_version, residence_department, residence_city, residence_dane_code, residence_neighborhood, avatar_path, show_avatar_to_business')
       .eq('id', userId)
       .maybeSingle();
+    if (error && OUTDATED_SCHEMA_CODES.has(error.code)) return { data: null, errorKey: 'accountError.outdated' };
     if (error || !data) return { data: null, errorKey: 'profile.errors.load' };
     const row = data as ProfileRow;
     return {

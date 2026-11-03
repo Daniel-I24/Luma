@@ -23,6 +23,7 @@ export class SessionProfileStore {
   private readonly _profile = signal<AccountProfile | null>(null);
   private readonly _loaded = signal(false);
   private readonly _failed = signal(false);
+  private readonly _failureKey = signal<string | null>(null);
   private loading: Promise<void> | null = null;
 
   public readonly profile = this._profile.asReadonly();
@@ -32,6 +33,8 @@ export class SessionProfileStore {
   public readonly loaded = this._loaded.asReadonly();
   /** True when a signed-in user's profile could not be read. */
   public readonly failed = this._failed.asReadonly();
+  /** Why the last read failed (translation key), or null. */
+  public readonly failureKey = this._failureKey.asReadonly();
   /** Mirrors is_profile_complete(): name, +57 mobile and municipality of residence. */
   public readonly profileComplete = computed(() => {
     const p = this._profile();
@@ -111,6 +114,7 @@ export class SessionProfileStore {
     this.loading = this.repo.getMine(userId).then((result) => {
       this._profile.set(result.data);
       this._failed.set(result.data === null);
+      this._failureKey.set(result.data === null ? result.errorKey : null);
       this._loaded.set(true);
       this.loading = null;
     });
