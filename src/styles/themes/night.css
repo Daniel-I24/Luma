@@ -1,0 +1,52 @@
+/* ─────────────────────────────────────────────
+   THEME: Night (dark): the Andes after sunset.
+   Applied when <html data-theme="night">
+───────────────────────────────────────────── */
+[data-theme='night'] {
+  --color-canvas: #0e1419;
+  --color-canvas-subtle: #121a20;
+  --color-canvas-muted: #172129;
+  --color-surface: #1a242c;
+  --color-surface-elevated: #202c35;
+  --color-surface-selected: #26343f;
+  --color-overlay: rgb(0 0 0 / 0.6);
+  --color-map-canvas: #1a242c;
+
+  --color-fg: #eef2f4;
+  --color-fg-muted: #b3bec7;
+  --color-fg-subtle: #94a1ac;
+  --color-fg-disabled: #3a4752;
+  --color-fg-brand: #7cc3e6;
+  --color-fg-accent: #ff8f62;
+  --color-fg-inverse: #0e1419;
+
+  --color-border: #2a3741;
+  --color-border-strong: #6a7a87;
+  --color-border-subtle: #1e2a33;
+  --color-border-focus: #7cc3e6;
+
+  --color-primary: #1a6c99;
+  --color-primary-hover: #165d84;
+  --color-primary-pressed: #124d6e;
+  --color-primary-fg: #ffffff;
+  --color-secondary: #26343f;
+  --color-secondary-fg: #7cc3e6;
+
+  --color-nav: #121a20;
+  --color-nav-active: #7cc3e6;
+  --color-nav-active-bg: #26343f;
+  --color-nav-inactive: #94a1ac;
+
+  --color-success-fg: #8fd694;
+  --color-warning-fg: #f5c863;
+  --color-danger-fg: #ff9aa5;
+  --color-info-fg: #7fd3da;
+  --color-status-open-fg: #8fd694;
+  --color-status-closing-soon-fg: #f5c863;
+  --color-status-closed-fg: #ff9aa5;
+  --color-status-opening-soon-fg: #7fd3da;
+
+  --shadow-card: 0 2px 10px rgb(0 0 0 / 0.45), 0 1px 2px rgb(0 0 0 / 0.3);
+  --shadow-sheet: 0 -4px 28px rgb(0 0 0 / 0.55);
+  --shadow-float: 0 4px 16px rgb(0 0 0 / 0.4);
+}

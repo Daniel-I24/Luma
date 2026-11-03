@@ -16,6 +16,16 @@ body {
   color: var(--color-fg);
 }
 
+/* Headings use the display family; sizes and weights stay in the type tokens. */
+h1,
+h2,
+.text-display,
+.text-h1,
+.text-h2,
+.text-h3 {
+  font-family: var(--font-display);
+}
+
 /* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,

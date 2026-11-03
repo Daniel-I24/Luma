@@ -84,6 +84,17 @@ SQL suites, Deno 2.5.6 in Docker for the functions.
   124 Deno tests + type check, interactive, hard-coded URLs, secret scan,
   npm audit 0. knip: no unused files or dependencies.
 
+- FASE 4 in progress (2026-10-26): 4.1 palette done (docs/brand/palette-
+  options.md, three directions with computed AA; chosen "Cielo andino y
+  ají"), themes renamed sky/night/lacquer/maize (all 28 pairs AA, npm run
+  check:contrast), fonts Bricolage Grotesque + Figtree self-hosted Latin
+  WOFF2 in public/fonts (Inter removed). Left in FASE 4: logo concepts and
+  the chosen SVG mark (geometry: pin with crescent hole O(512,440,r136) minus
+  I(566,400,r116), ají dot), icon/splash generation with npx
+  @capacitor/assets, ic_stat_luma vector, Luma IA icon, 4.2 button
+  variants and the destructive-action script, 4.3 motion, 4.4 animated
+  entry, 4.5 screen review. Then FASES 5, 6 and 7.
+
 ## Done (round 1)
 
 - PARTE 0 — history cleaned (`backup-before-temp-cleanup` and

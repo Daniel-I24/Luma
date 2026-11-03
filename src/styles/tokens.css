@@ -1,89 +1,92 @@
 /* ─────────────────────────────────────────────
-   LUMA COLOR TOKENS — source: docs/design-prototype/css/tokens.css
-   With scale.css, the single source of truth for all visual values.
-   Components use only these tokens (Tailwind utilities or var()).
-   Values below are the Indigo theme (default).
+   LUMA COLOR TOKENS — identity of round 2 (docs/brand/palette-options.md,
+   direction "Cielo andino y ají"). With scale.css, the single source of
+   truth for all visual values. Components use only these tokens (Tailwind
+   utilities or var()). Values below are the Sky theme (default).
+   Contrast: npm run check:contrast (scripts/brand-contrast.mjs).
 ───────────────────────────────────────────── */
 
 @theme static {
   /* Only Luma's semantic colors exist: no default Tailwind palette. */
   --color-*: initial;
 
-  /* === Backgrounds and surfaces === */
-  --color-canvas: #f2f2f7;
-  --color-canvas-subtle: #eaeaf2;
-  --color-canvas-muted: #e0e0ec;
+  /* === Backgrounds and surfaces (paper and corn husk, never pure grey) === */
+  --color-canvas: #f6f3ec;
+  --color-canvas-subtle: #efeae0;
+  --color-canvas-muted: #e6dfd2;
   --color-surface: #ffffff;
   --color-surface-elevated: #ffffff;
-  --color-surface-selected: #ecedf5;
-  --color-overlay: rgb(0 0 0 / 0.4);
+  --color-surface-selected: #e4eef4;
+  --color-overlay: rgb(16 24 32 / 0.45);
+
   /* Theme swatches for the theme picker (same in every theme) */
-  --color-swatch-indigo: #14174a;
-  --color-swatch-midnight: #1a1c34;
-  --color-swatch-pearl: #e4e4e7;
-  --color-swatch-sunset: #c2410c;
-  --color-map-canvas: #e6e7e0;
+  --color-swatch-sky: #0d4a6b;
+  --color-swatch-night: #101a22;
+  --color-swatch-lacquer: #7a3b16;
+  --color-swatch-maize: #8a5a00;
+
+  --color-map-canvas: #ece8dd;
 
   /* === Text === */
-  --color-fg: #0a0b1a;
-  --color-fg-muted: #3d4268;
-  --color-fg-subtle: #636882; /* prototype #8a90b4, darkened for AA */
-  --color-fg-disabled: #c4c7dc;
-  --color-fg-brand: #14174a;
-  --color-fg-accent: #4e5ed6; /* prototype #5c6efc, darkened for AA */
+  --color-fg: #15202b;
+  --color-fg-muted: #3e4c59;
+  --color-fg-subtle: #586572;
+  --color-fg-disabled: #b8bfc6;
+  --color-fg-brand: #0d4a6b;
+  --color-fg-accent: #b23a0c;
   --color-fg-inverse: #ffffff;
 
   /* === Borders === */
-  --color-border: #d8daea;
-  --color-border-strong: #a8adc8;
-  --color-border-subtle: #ebebf4;
-  --color-border-focus: #5c6efc;
+  --color-border: #ddd6c8;
+  --color-border-strong: #857a69;
+  --color-border-subtle: #ece6da;
+  --color-border-focus: #0d6e9a;
 
-  /* === Actions === */
-  --color-primary: #14174a;
-  --color-primary-hover: #2d3285;
-  --color-primary-pressed: #0e1036;
+  /* === Actions: Andean sky (brand), ají (accent: AI and highlights) === */
+  --color-primary: #0d4a6b;
+  --color-primary-hover: #0b3d59;
+  --color-primary-pressed: #082e43;
   --color-primary-fg: #ffffff;
-  --color-secondary: #5465ec;
-  --color-secondary-fg: #ffffff;
-  --color-accent: #5465ec; /* prototype #5c6efc; white text needs AA */
-  --color-accent-hover: #3a4de8;
+  --color-secondary: #e4eef4;
+  --color-secondary-fg: #0d4a6b;
+  --color-accent: #b23a0c;
+  --color-accent-hover: #93300a;
   --color-accent-fg: #ffffff;
-  --color-rating: #f59e0b;
+  --color-rating: #d99a0e;
 
   /* === Navigation === */
   --color-nav: #ffffff;
-  --color-nav-active: #14174a;
-  --color-nav-active-bg: #ecedf5;
-  --color-nav-inactive: #707592;
+  --color-nav-active: #0d4a6b;
+  --color-nav-active-bg: #e4eef4;
+  --color-nav-inactive: #586572;
 
-  /* === Feedback === */
-  --color-success: #22c55e;
-  --color-success-bg: rgb(34 197 94 / 0.12);
-  --color-success-fg: #157839;
-  --color-warning: #f59e0b;
-  --color-warning-bg: rgb(245 158 11 / 0.12);
-  --color-warning-fg: #915d06;
-  --color-danger: #d73d3d; /* prototype #ef4444; white text needs AA */
-  --color-danger-hover: #b83434;
-  --color-danger-bg: rgb(239 68 68 / 0.12);
-  --color-danger-fg: #b83434;
+  /* === Feedback: cilantro, maize, crimson, Andean teal (never the brand blue) === */
+  --color-success: #2e7d32;
+  --color-success-bg: rgb(46 125 50 / 0.12);
+  --color-success-fg: #1d5c21;
+  --color-warning: #d99a0e;
+  --color-warning-bg: rgb(217 154 14 / 0.16);
+  --color-warning-fg: #6e4a00;
+  --color-danger: #c42839;
+  --color-danger-hover: #a21f2e;
+  --color-danger-bg: rgb(196 40 57 / 0.12);
+  --color-danger-fg: #a21f2e;
   --color-danger-fg-on: #ffffff;
-  --color-info: #3b82f6;
-  --color-info-bg: rgb(59 130 246 / 0.12);
-  --color-info-fg: #2d63bb;
+  --color-info: #0e7c86;
+  --color-info-bg: rgb(14 124 134 / 0.12);
+  --color-info-fg: #095a61;
 
-  /* === Business status === */
-  --color-status-open: #22c55e;
-  --color-status-open-bg: rgb(34 197 94 / 0.12);
-  --color-status-open-fg: #157839;
-  --color-status-closing-soon: #f59e0b;
-  --color-status-closing-soon-bg: rgb(245 158 11 / 0.12);
-  --color-status-closing-soon-fg: #915d06;
-  --color-status-closed: #ef4444;
-  --color-status-closed-bg: rgb(239 68 68 / 0.12);
-  --color-status-closed-fg: #b83434;
-  --color-status-opening-soon: #3b82f6;
-  --color-status-opening-soon-bg: rgb(59 130 246 / 0.12);
-  --color-status-opening-soon-fg: #2d63bb;
+  /* === Business status: open = cilantro, closing soon = maize, closed = crimson, opening soon = teal === */
+  --color-status-open: #2e7d32;
+  --color-status-open-bg: rgb(46 125 50 / 0.12);
+  --color-status-open-fg: #1d5c21;
+  --color-status-closing-soon: #d99a0e;
+  --color-status-closing-soon-bg: rgb(217 154 14 / 0.16);
+  --color-status-closing-soon-fg: #6e4a00;
+  --color-status-closed: #c42839;
+  --color-status-closed-bg: rgb(196 40 57 / 0.12);
+  --color-status-closed-fg: #a21f2e;
+  --color-status-opening-soon: #0e7c86;
+  --color-status-opening-soon-bg: rgb(14 124 134 / 0.12);
+  --color-status-opening-soon-fg: #095a61;
 }

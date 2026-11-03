@@ -3,7 +3,7 @@ import { ThemeService } from '@core/theme/theme.service';
 import type { Theme } from '@core/theme/theme.service';
 import { NativeStatusBar } from './native-status-bar';
 
-const DARK_THEMES: readonly Theme[] = ['midnight'];
+const DARK_THEMES: readonly Theme[] = ['night'];
 
 /**
  * StatusBarThemeService — on native platforms, draws the app under the

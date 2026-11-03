@@ -37,10 +37,10 @@ export class DesignPreviewPage {
   protected readonly themeService = inject(ThemeService);
 
   protected readonly themes: ThemeOption[] = [
-    { value: 'indigo', labelKey: 'designPreview.themeSelector.indigo' },
-    { value: 'midnight', labelKey: 'designPreview.themeSelector.midnight' },
-    { value: 'pearl', labelKey: 'designPreview.themeSelector.pearl' },
-    { value: 'sunset', labelKey: 'designPreview.themeSelector.sunset' },
+    { value: 'sky', labelKey: 'designPreview.themeSelector.sky' },
+    { value: 'night', labelKey: 'designPreview.themeSelector.night' },
+    { value: 'lacquer', labelKey: 'designPreview.themeSelector.lacquer' },
+    { value: 'maize', labelKey: 'designPreview.themeSelector.maize' },
   ];
 
   protected readonly sheetOpen = signal(false);

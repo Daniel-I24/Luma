@@ -10,10 +10,10 @@
     "subtitle": "Componentes base y tokens de diseño",
     "themeSelector": {
       "label": "Tema activo",
-      "indigo": "Índigo (defecto)",
-      "midnight": "Medianoche",
-      "pearl": "Perla",
-      "sunset": "Atardecer"
+      "sky": "Cielo andino",
+      "night": "Noche",
+      "lacquer": "Barniz",
+      "maize": "Maíz"
     },
     "sections": {
       "buttons": "Botones",
@@ -236,21 +236,21 @@
       "theme": "Tema visual",
       "language": "Idioma",
       "themes": {
-        "indigo": {
-          "name": "Indigo",
-          "description": "Principal"
+        "sky": {
+          "name": "Cielo andino",
+          "description": "Principal: cielo de Pasto y ají"
         },
-        "midnight": {
-          "name": "Midnight",
-          "description": "Oscuro"
+        "night": {
+          "name": "Noche",
+          "description": "Oscuro, para la noche"
         },
-        "pearl": {
-          "name": "Pearl",
-          "description": "Minimalista"
+        "lacquer": {
+          "name": "Barniz",
+          "description": "Madera y laca del barniz de Pasto"
         },
-        "sunset": {
-          "name": "Sunset",
-          "description": "Energético"
+        "maize": {
+          "name": "Maíz",
+          "description": "Dorado y cálido"
         }
       },
       "languages": {

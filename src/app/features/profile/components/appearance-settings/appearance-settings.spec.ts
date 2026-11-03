@@ -16,10 +16,10 @@ const ES = {
       theme: 'Tema visual',
       language: 'Idioma',
       themes: {
-        indigo: theme('Indigo', 'Principal'),
-        midnight: theme('Midnight', 'Oscuro'),
-        pearl: theme('Pearl', 'Minimalista'),
-        sunset: theme('Sunset', 'Energético'),
+        sky: theme('Indigo', 'Principal'),
+        night: theme('Midnight', 'Oscuro'),
+        lacquer: theme('Pearl', 'Minimalista'),
+        maize: theme('Sunset', 'Energético'),
       },
       languages: { es: 'Español', en: 'English' },
     },
@@ -28,7 +28,7 @@ const ES = {
 
 describe('AppearanceSettings', () => {
   const languageService = { language: signal<Language>('es'), setLanguage: vi.fn() };
-  const themeService = { theme: signal<Theme>('indigo'), setTheme: vi.fn() };
+  const themeService = { theme: signal<Theme>('sky'), setTheme: vi.fn() };
   let el: HTMLElement;
 
   beforeEach(() => {
@@ -63,13 +63,13 @@ describe('AppearanceSettings', () => {
 
   it('offers the four themes and checks the active one', () => {
     expect(el.querySelectorAll('input[name="theme"]')).toHaveLength(4);
-    expect(radio('theme', 'indigo').checked).toBe(true);
+    expect(radio('theme', 'sky').checked).toBe(true);
   });
 
   it('applies a theme when its option is chosen', () => {
-    radio('theme', 'sunset').click();
+    radio('theme', 'maize').click();
 
-    expect(themeService.setTheme).toHaveBeenCalledWith('sunset');
+    expect(themeService.setTheme).toHaveBeenCalledWith('maize');
   });
 
   it('switches the language when its option is chosen', () => {

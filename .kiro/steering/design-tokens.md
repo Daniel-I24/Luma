@@ -7,8 +7,8 @@ Luma debe sentirse moderna, elegante, limpia y profesional; mobile-first, poco r
 Referencia visual: `docs/design-prototype/` (prototipo HTML; solo referencia, no código para copiar).
 
 ## Identidad
-- Color de marca: `#14174A` (azul profundo). Acento: `#5C6EFC` (IA y elementos interactivos). Tipografía: Inter (autoalojada con `@fontsource-variable/inter`).
-- Temas (todos con la misma estructura de tokens): **Indigo** (por defecto), **Midnight**, **Pearl**, **Sunset**. El usuario elige en Perfil → Apariencia; se persiste.
+- Color de marca: `#0D4A6B` (azul cielo andino). Acento: `#B23A0C` (ají; IA y realces). Tipografías: Bricolage Grotesque (títulos y logotipo) y Figtree (texto), autoalojadas en `public/fonts` (subconjunto latino). Identidad de la ronda 2: `docs/brand/`.
+- Temas (todos con la misma estructura de tokens): **Cielo andino** (`sky`, por defecto), **Noche** (`night`), **Barniz** (`lacquer`) y **Maíz** (`maize`). El usuario elige en Perfil → Apariencia; se persiste.
 
 ## Tokens (CSS variables en `src/styles/tokens.css` dentro de `@theme`; temas en `src/styles/themes/*.css`)
 Tailwind v4 genera utilidades a partir de ellos (`bg-surface`, `text-fg-muted`, `border-border`, `rounded-lg`, `shadow-card`, `text-h3`). La paleta por defecto de Tailwind está desactivada (`--color-*: initial`): solo existen colores semánticos.

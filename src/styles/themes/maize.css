@@ -1,0 +1,40 @@
+/* ─────────────────────────────────────────────
+   THEME: Maize (accent): golden corn with Andean sky.
+   Applied when <html data-theme="maize">
+───────────────────────────────────────────── */
+[data-theme='maize'] {
+  --color-canvas: #fbf6e7;
+  --color-canvas-subtle: #f5edd4;
+  --color-canvas-muted: #ece0bb;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #fffdf6;
+  --color-surface-selected: #f6ecd0;
+  --color-map-canvas: #efe9d6;
+
+  --color-fg: #221a05;
+  --color-fg-muted: #544521;
+  --color-fg-subtle: #685934;
+  --color-fg-brand: #7a5000;
+  --color-fg-accent: #0d5f86;
+
+  --color-border: #eadfbd;
+  --color-border-strong: #8d7c4f;
+  --color-border-subtle: #f5edd4;
+  --color-border-focus: #0d5f86;
+
+  --color-primary: #7a5000;
+  --color-primary-hover: #664300;
+  --color-primary-pressed: #523600;
+  --color-secondary: #f6ecd0;
+  --color-secondary-fg: #7a5000;
+  --color-accent: #0d5f86;
+  --color-accent-hover: #0a4e6f;
+
+  --color-nav-active: #7a5000;
+  --color-nav-active-bg: #f6ecd0;
+  --color-nav-inactive: #685934;
+
+  --shadow-card: 0 1px 6px rgb(122 80 0 / 0.08), 0 1px 2px rgb(0 0 0 / 0.05);
+  --shadow-sheet: 0 -4px 20px rgb(122 80 0 / 0.1);
+  --shadow-float: 0 4px 14px rgb(122 80 0 / 0.18);
+}

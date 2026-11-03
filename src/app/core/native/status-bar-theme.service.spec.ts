@@ -6,7 +6,7 @@ import type { Theme } from '@core/theme/theme.service';
 import { NativeStatusBar } from './native-status-bar';
 import { StatusBarThemeService } from './status-bar-theme.service';
 
-async function setup(native: boolean, initialTheme: Theme = 'indigo') {
+async function setup(native: boolean, initialTheme: Theme = 'sky') {
   const theme = signal<Theme>(initialTheme);
   const statusBar = {
     isAvailable: () => Promise.resolve(native),
@@ -34,7 +34,7 @@ describe('StatusBarThemeService', () => {
   });
 
   it('draws under the status bar with dark icons on light themes', async () => {
-    const { statusBar } = await setup(true, 'pearl');
+    const { statusBar } = await setup(true, 'lacquer');
 
     expect(statusBar.overlayWebView).toHaveBeenCalledOnce();
     expect(statusBar.setContent).toHaveBeenCalledWith('dark-content');
@@ -43,7 +43,7 @@ describe('StatusBarThemeService', () => {
   it('switches to light icons for the Midnight theme', async () => {
     const { statusBar, theme } = await setup(true);
 
-    theme.set('midnight');
+    theme.set('night');
     TestBed.flushEffects();
 
     expect(statusBar.setContent).toHaveBeenLastCalledWith('light-content');
@@ -53,7 +53,7 @@ describe('StatusBarThemeService', () => {
     const { statusBar, theme } = await setup(true);
     statusBar.setContent.mockRejectedValue(new Error('not implemented'));
 
-    theme.set('sunset');
+    theme.set('maize');
     TestBed.flushEffects();
     await Promise.resolve();
 

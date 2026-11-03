@@ -6,7 +6,10 @@
 
 @theme static {
   /* === Typography === */
-  --font-sans: 'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif;
+  /* Text and controls (src/styles/fonts.css). */
+  --font-sans: 'Figtree', system-ui, -apple-system, sans-serif;
+  /* Headings and the wordmark: the family with character. */
+  --font-display: 'Bricolage Grotesque', 'Figtree', system-ui, sans-serif;
 
   --text-display: 32px;
   --text-display--line-height: 1.2;

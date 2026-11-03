@@ -10,10 +10,10 @@
     "subtitle": "Base components and design tokens",
     "themeSelector": {
       "label": "Active theme",
-      "indigo": "Indigo (default)",
-      "midnight": "Midnight",
-      "pearl": "Pearl",
-      "sunset": "Sunset"
+      "sky": "Andean sky",
+      "night": "Night",
+      "lacquer": "Lacquer",
+      "maize": "Maize"
     },
     "sections": {
       "buttons": "Buttons",
@@ -236,21 +236,21 @@
       "theme": "Visual theme",
       "language": "Language",
       "themes": {
-        "indigo": {
-          "name": "Indigo",
-          "description": "Main"
+        "sky": {
+          "name": "Andean sky",
+          "description": "Main: Pasto sky and chili"
         },
-        "midnight": {
-          "name": "Midnight",
-          "description": "Dark"
+        "night": {
+          "name": "Night",
+          "description": "Dark, for the evening"
         },
-        "pearl": {
-          "name": "Pearl",
-          "description": "Minimal"
+        "lacquer": {
+          "name": "Lacquer",
+          "description": "Wood and lacquer of the barniz de Pasto"
         },
-        "sunset": {
-          "name": "Sunset",
-          "description": "Energetic"
+        "maize": {
+          "name": "Maize",
+          "description": "Golden and warm"
         }
       },
       "languages": {

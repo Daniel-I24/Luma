@@ -1,17 +1,17 @@
 @import 'tailwindcss';
 
-/* Inter variable font, self-hosted (no CDN) */
-@import '@fontsource-variable/inter';
+/* Bricolage Grotesque and Figtree, self-hosted Latin subsets (no CDN) */
+@import './styles/fonts.css';
 
 /* Design tokens: scale (type, spacing, radii, shadows, motion) and colors
-   (Indigo is the default theme) */
+   (Sky is the default theme) */
 @import './styles/scale.css';
 @import './styles/tokens.css';
 
 /* Alternative themes, applied via <html data-theme="..."> */
-@import './styles/themes/midnight.css';
-@import './styles/themes/pearl.css';
-@import './styles/themes/sunset.css';
+@import './styles/themes/night.css';
+@import './styles/themes/lacquer.css';
+@import './styles/themes/maize.css';
 
 @import './styles/base.css';
 @import './styles/motion.css';

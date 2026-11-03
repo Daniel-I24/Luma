@@ -2,14 +2,14 @@ import { Injectable, signal, computed, effect, PLATFORM_ID, inject } from '@angu
 import { isPlatformBrowser } from '@angular/common';
 
 /** Supported visual themes. */
-export type Theme = 'indigo' | 'midnight' | 'pearl' | 'sunset';
+export type Theme = 'sky' | 'night' | 'lacquer' | 'maize';
 
 const STORAGE_KEY = 'luma-theme';
 /** Class that crossfades colours while the theme changes (styles/motion.css). */
 export const THEME_TRANSITION_CLASS = 'theme-transition';
 const THEME_DURATION_TOKEN = '--duration-theme';
-const DEFAULT_THEME: Theme = 'indigo';
-export const THEMES: readonly Theme[] = ['indigo', 'midnight', 'pearl', 'sunset'];
+const DEFAULT_THEME: Theme = 'sky';
+export const THEMES: readonly Theme[] = ['sky', 'night', 'lacquer', 'maize'];
 
 function isValidTheme(value: unknown): value is Theme {
   return THEMES.includes(value as Theme);
