@@ -395,3 +395,19 @@ alternative that was not taken. The safest, most reversible option wins.
   architecture; leaving the old names would mislead the next session.
 - **Alternative**: keep the steering text and only document the change in
   `docs/brand/` (two sources that disagree).
+
+## 2026-10-26 — App entry ends when the first screen is ready, capped at 1.8 s / 0.9 s
+
+- **What**: the native splash stays until `index.html` has loaded (at most
+  1.5 s), the page paints the same mark (`#luma-entry`) and `AppEntry`
+  plays it until the session is restored and the first navigation settles,
+  at most 1.8 s the first time and 0.9 s afterwards; a tap skips it. Its
+  colours follow the system light/dark mode, like the native splash, not
+  the app theme. It runs on the web too (there it is the loading screen).
+- **Why**: "nunca retrasa más de lo que tarda en estar lista la sesión"
+  read literally: the entry never holds a ready app, so on fast devices the
+  choreography is cut short by a fade. Matching the native colours avoids a
+  jump at the hand-over.
+- **Alternative**: always play the full 0.9–1.8 s (a fixed delay on every
+  start), or colour the entry with the user's theme (a visible colour jump
+  from the native splash).

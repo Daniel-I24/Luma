@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { StatusBarThemeService } from '@core/native/status-bar-theme.service';
+import { AppEntry } from '@core/startup/app-entry';
 import { ThemeService } from '@core/theme/theme.service';
 // Direct path, not the '@design-system' barrel: the barrel would pull every
 // component into the initial bundle.
@@ -23,4 +24,9 @@ export class App {
   // Eager injection — constructor + effect run at app startup.
   readonly themeService = inject(ThemeService);
   private readonly statusBarTheme = inject(StatusBarThemeService);
+
+  constructor() {
+    // Continues the native splash until the first screen is ready (index.html).
+    inject(AppEntry).start();
+  }
 }

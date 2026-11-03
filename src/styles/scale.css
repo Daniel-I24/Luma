@@ -105,6 +105,9 @@
   --motion-press-scale: 0.97;
   --motion-active-scale: 1.1; /* active tab icon */
   --motion-highlight-scale: 1.15; /* selected map marker */
+  --motion-entry-scale: 0.92; /* app entry: the mark settles before the first screen */
+  /* App entry: the Android 12+ splash icon area (288 dp = 288 CSS px in the WebView). */
+  --size-splash-icon: 288px;
   --animate-shimmer: shimmer var(--duration-shimmer) var(--ease-enter) infinite;
   --animate-fade-in: fade-in var(--duration-fast) var(--ease-enter) both;
 }

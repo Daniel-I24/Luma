@@ -1,0 +1,76 @@
+/* ─────────────────────────────────────────────
+   APP ENTRY — continues the native splash (docs/brand/motion.md).
+   index.html paints .app-entry before Angular boots, with the mark at the
+   size and place of the Android 12+ splash icon; AppEntry takes over, lets
+   the mark settle while a halo draws, and fades out to the first screen.
+   The choreography lasts --entry-duration (1.8 s the first time, 0.9 s
+   later) and ends earlier when the app is ready. Reduced motion: the mark
+   stays still and the halo is not drawn.
+───────────────────────────────────────────── */
+
+.app-entry {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--color-entry-canvas);
+  cursor: default;
+}
+
+.app-entry__mark {
+  width: var(--size-splash-icon);
+  height: var(--size-splash-icon);
+}
+
+/* Until AppEntry adds --play the entry is the static native splash. */
+.app-entry--play .app-entry__mark {
+  animation: entry-settle var(--entry-duration) var(--ease-enter) both;
+}
+
+.app-entry__body {
+  fill: var(--color-entry-mark);
+}
+
+.app-entry__star {
+  fill: var(--color-entry-accent);
+}
+
+.app-entry__halo {
+  fill: none;
+  stroke: var(--color-entry-accent);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.app-entry--play .app-entry__halo {
+  animation: draw var(--entry-duration) var(--ease-enter) forwards;
+}
+
+.app-entry--leave {
+  animation: entry-leave var(--duration-normal) var(--ease-exit) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-entry--play .app-entry__mark,
+  .app-entry--play .app-entry__halo {
+    animation: none;
+  }
+}
+
+@keyframes entry-settle {
+  to {
+    transform: scale(var(--motion-entry-scale));
+  }
+}
+
+@keyframes entry-leave {
+  to {
+    opacity: 0;
+  }
+}

@@ -17,5 +17,23 @@
   </head>
   <body>
     <app-root></app-root>
+    <!--
+      App entry: the native splash continued (same colours, mark, size and
+      place). Painted before Angular boots; AppEntry animates and removes it.
+      Geometry mirrors android/app/src/main/res/drawable/ic_splash_mark.xml.
+    -->
+    <div id="luma-entry" class="app-entry" aria-hidden="true">
+      <svg class="app-entry__mark" viewBox="0 0 1024 1024" focusable="false">
+        <circle class="app-entry__halo" cx="512" cy="512" r="232" pathLength="1" transform="rotate(-90 512 512)" />
+        <g transform="translate(0 -28) translate(512 540) scale(0.6) translate(-512 -540)">
+          <path
+            class="app-entry__body"
+            fill-rule="evenodd"
+            d="M512 880C400 760 272 620 272 440A240 240 0 1 1 752 440C752 620 624 760 512 880Z M500.1 304.5A136 136 0 1 0 638.1 490.8A116 116 0 1 1 500.1 304.5Z"
+          />
+          <circle class="app-entry__star" cx="596" cy="382" r="34" />
+        </g>
+      </svg>
+    </div>
   </body>
 </html>

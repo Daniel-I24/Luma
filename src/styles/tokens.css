@@ -97,3 +97,22 @@
   --color-status-opening-soon-bg: rgb(14 124 134 / 0.12);
   --color-status-opening-soon-fg: #095a61;
 }
+
+/*
+ * App entry (styles/entry.css): the exact colours of the native splash
+ * (android/app/src/main/res/values{,-night}/luma_colors.xml), which follows
+ * the system light/dark mode and not the app theme, so the hand-over from
+ * the native splash to the web entry has no jump.
+ */
+:root {
+  --color-entry-canvas: #f6f3ec;
+  --color-entry-mark: #0d4a6b;
+  --color-entry-accent: #b23a0c;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-entry-canvas: #0e1419;
+    --color-entry-mark: #f6f3ec;
+  }
+}

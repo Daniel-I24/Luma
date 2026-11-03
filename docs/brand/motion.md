@@ -58,6 +58,25 @@ Tokens live in `src/styles/scale.css`, utilities and keyframes in
 | Changing tabs and routes | View Transitions, 340 ms fade |
 | Theme change | 200 ms colour crossfade, only while `ThemeService` sets the class |
 
+## App entry
+
+The Android 12+ splash (`ic_splash_mark` on `luma_splash_background`) stays
+until `index.html` has loaded (`MainActivity`, at most 1.5 s); the WebView
+has the same background, so nothing flashes. The page paints `#luma-entry`
+with the mark at the size and place of the native icon
+(`--size-splash-icon`, colours `--color-entry-*`, which follow the system
+light/dark mode like the native splash). `AppEntry`
+(`core/startup/app-entry.ts`) then lets the mark settle to
+`--motion-entry-scale` while an ají halo draws around it, and fades out
+(`--duration-normal`, `--ease-exit`) to sign-in or the home screen:
+
+- only on a cold start (the element exists once per page load);
+- at most 1.8 s the first time, 0.9 s afterwards (`EntryPolicy`);
+- it ends as soon as the session is restored and the first navigation has
+  settled (`AppReadiness`), so it never holds a ready app;
+- a tap skips it;
+- reduced motion: the mark stays still and the halo is not drawn.
+
 ## Rules for new motion
 
 - Use the tokens; never a literal duration or curve in a component.

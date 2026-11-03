@@ -17,7 +17,7 @@
     <!--
       Native splash (Android 12+ SplashScreen API, androidx core-splashscreen below
       12): brand background and mark. The web app continues it with the same mark
-      (LumaEntry) while the session is restored.
+      (AppEntry, #luma-entry in index.html) while the app gets ready.
     -->
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/luma_splash_background</item>
