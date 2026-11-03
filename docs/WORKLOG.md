@@ -166,6 +166,11 @@ agent's sessions).
   /download page (APK from version.json apk {url, sha256, size}); vercel.json:
   frame-src none, upgrade-insecure-requests, COOP, X-Frame-Options,
   version.json no-store + CORS for the APK; scripts/vercel-config.test.mjs.
+- FASE 3 CI: ubuntu-24.04; secret scan (scripts/secret-scan.mjs: private keys,
+  service_role JWTs, sb_secret_, provider keys, keystores, Firebase files,
+  environment.ts); check:interactive; database job (postgres:17 service, SQL
+  suites + rehearsal); functions job (deno 2.5.6 image, tests + type check);
+  keepalive.yml (twice a week, anon read of one row, skips without secrets).
 
 - Block D done: migration 20261021000000 (discounts, trigger, server prices in
   create_order; 23 SQL checks), customer /promotions (sort, filters, states,
