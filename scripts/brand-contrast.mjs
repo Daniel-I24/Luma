@@ -27,6 +27,8 @@ export const PAIRS = [
   ['status-closing-soon-fg', 'status-closing-soon-bg', TEXT], ['status-closed-fg', 'status-closed-bg', TEXT],
   ['status-opening-soon-fg', 'status-opening-soon-bg', TEXT],
   ['nav-active', 'nav', TEXT], ['nav-inactive', 'nav', TEXT], ['nav-active', 'nav-active-bg', TEXT],
+  ['confirm-fg', 'confirm', TEXT], ['confirm-fg', 'confirm-hover', TEXT],
+  ['warning-fg-on', 'warning-strong', TEXT], ['warning-fg-on', 'warning-strong-hover', TEXT], ['danger-fg-on', 'danger-hover', TEXT],
   ['border-focus', 'surface', UI], ['border-strong', 'surface', UI],
 ];
 

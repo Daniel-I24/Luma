@@ -58,7 +58,7 @@
               <app-luma-icon-button icon="chevron-up" variant="ghost" [label]="t('businessPanel.gallery.earlier')" [disabled]="first || gallery.busy()" (clicked)="gallery.move(photo, -1)" />
               <app-luma-icon-button icon="chevron-down" variant="ghost" [label]="t('businessPanel.gallery.later')" [disabled]="last || gallery.busy()" (clicked)="gallery.move(photo, 1)" />
               <span class="flex-1"></span>
-              <app-luma-button variant="ghost" size="sm" [disabled]="gallery.busy()" (clicked)="remove(photo)">{{
+              <app-luma-button variant="danger" size="sm" [disabled]="gallery.busy()" (clicked)="remove(photo)">{{
                 t(confirming() === photo.id ? 'businessPanel.gallery.confirmDelete' : 'businessPanel.gallery.delete')
               }}</app-luma-button>
             </div>

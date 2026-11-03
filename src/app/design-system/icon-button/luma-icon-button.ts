@@ -2,12 +2,16 @@ import { ChangeDetectionStrategy, Component, computed, input, output } from '@an
 import { LumaIcon } from '../icon/luma-icon';
 import type { IconName } from '../icon/luma-icons';
 
-export type IconButtonVariant = 'surface' | 'ghost' | 'primary';
+/** Same functions as LumaButton (docs/brand/button-semantics.md); surface floats over the map. */
+export type IconButtonVariant = 'surface' | 'ghost' | 'primary' | 'confirm' | 'danger' | 'warning';
 
 const VARIANT_CLASS: Record<IconButtonVariant, string> = {
   surface: 'bg-surface-elevated text-fg shadow-md hover:bg-canvas-subtle',
   ghost: 'border border-border bg-transparent text-fg-brand hover:bg-surface-selected',
   primary: 'bg-primary text-primary-fg hover:bg-primary-hover',
+  confirm: 'bg-confirm text-confirm-fg hover:bg-confirm-hover',
+  danger: 'bg-danger text-danger-fg-on hover:bg-danger-hover',
+  warning: 'bg-warning-strong text-warning-fg-on hover:bg-warning-strong-hover',
 };
 
 /**

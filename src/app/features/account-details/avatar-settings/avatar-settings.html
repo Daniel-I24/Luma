@@ -8,7 +8,7 @@
     <input type="checkbox" class="mt-1 size-5 accent-primary" [checked]="avatar.shared()" [disabled]="avatar.busy()" (change)="setShared($event)" />
     <span>{{ t('avatar.share') }}</span>
   </label>
-  <app-luma-button variant="danger-outline" [disabled]="avatar.busy()" (clicked)="avatar.remove()">{{ t('auth.signup.photo.remove') }}</app-luma-button>
+  <app-luma-button variant="danger" [disabled]="avatar.busy()" (clicked)="avatar.remove()">{{ t('auth.signup.photo.remove') }}</app-luma-button>
   } @else {
   <label class="flex min-h-11 items-start gap-3 text-body text-fg">
     <input type="checkbox" class="mt-1 size-5 accent-primary" [checked]="consent()" (change)="setConsent($event)" />

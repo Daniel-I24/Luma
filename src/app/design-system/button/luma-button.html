@@ -1,12 +1,16 @@
 <button
-  [class]="hostClasses"
+  [class]="hostClasses()"
   [type]="type()"
   [attr.id]="buttonId()"
   [attr.aria-describedby]="describedBy()"
-  [disabled]="disabled()"
+  [disabled]="inactive()"
   [attr.aria-label]="ariaLabel() ?? null"
-  [attr.aria-disabled]="disabled() ? 'true' : null"
+  [attr.aria-disabled]="inactive() ? 'true' : null"
+  [attr.aria-busy]="loading() ? 'true' : null"
   (click)="handleClick()"
 >
   <ng-content />
+  @if (loading()) {
+  <span class="luma-btn__dots" aria-hidden="true"><span></span><span></span><span></span></span>
+  }
 </button>

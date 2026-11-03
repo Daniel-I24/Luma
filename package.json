@@ -17,7 +17,8 @@
     "apk:verify": "node scripts/apk-verify.mjs",
     "apk:demo": "node scripts/apk-demo.mjs",
     "check:hardcoded-urls": "node scripts/check-hardcoded-urls.mjs",
-    "check:contrast": "node scripts/brand-contrast.mjs"
+    "check:contrast": "node scripts/brand-contrast.mjs",
+    "check:buttons": "node scripts/check-destructive-buttons.mjs"
   },
   "private": true,
   "packageManager": "npm@11.21.0",

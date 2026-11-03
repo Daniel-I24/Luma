@@ -106,7 +106,7 @@
   <div class="flex flex-col gap-2">
     @for (action of actions(); track action) {
     <app-luma-button
-      [variant]="action === 'approved' ? 'primary' : 'danger'"
+      [variant]="action === 'approved' ? 'confirm' : action === 'suspended' ? 'warning' : 'danger'"
       [fullWidth]="true"
       [disabled]="store.busy()"
       (clicked)="decision.set(action)"

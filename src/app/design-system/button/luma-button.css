@@ -1,4 +1,4 @@
-/* LumaButton styles — tokens only, no hardcoded values */
+/* LumaButton styles — tokens only, no hardcoded values (docs/brand/button-semantics.md) */
 
 .luma-btn {
   display: inline-flex;
@@ -55,15 +55,19 @@
   border-radius: var(--radius-lg);
 }
 
-/* Variants */
+/* Variants, one per function */
 .luma-btn--primary {
   background-color: var(--color-primary);
   color: var(--color-primary-fg);
-  box-shadow: var(--shadow-brand);
 }
 
 .luma-btn--primary:active:not(:disabled) {
   background-color: var(--color-primary-pressed);
+}
+
+.luma-btn--confirm {
+  background-color: var(--color-confirm);
+  color: var(--color-confirm-fg);
 }
 
 .luma-btn--secondary {
@@ -78,33 +82,75 @@
   border-color: var(--color-border);
 }
 
-.luma-btn--accent {
-  background-color: var(--color-accent);
-  color: var(--color-accent-fg);
-}
-
 .luma-btn--danger {
   background-color: var(--color-danger);
   color: var(--color-danger-fg-on);
 }
 
-.luma-btn--danger-outline {
-  background-color: transparent;
-  color: var(--color-danger-fg);
-  border-color: var(--color-danger-fg);
+.luma-btn--warning {
+  background-color: var(--color-warning-strong);
+  color: var(--color-warning-fg-on);
 }
 
-/* Disabled state */
+.luma-btn--link {
+  min-width: var(--spacing-11);
+  padding-inline: var(--spacing-2);
+  background-color: transparent;
+  color: var(--color-fg-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Disabled and loading */
 .luma-btn--disabled,
 .luma-btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
-  box-shadow: none;
+}
+
+.luma-btn--loading,
+.luma-btn--loading:disabled {
+  opacity: 0.85;
+  cursor: progress;
+}
+
+.luma-btn__dots {
+  display: inline-flex;
+  gap: var(--spacing-1);
+}
+
+.luma-btn__dots > span {
+  width: var(--spacing-1);
+  height: var(--spacing-1);
+  border-radius: var(--radius-full);
+  background-color: currentColor;
+  animation: luma-btn-dot var(--duration-slow) var(--ease-standard) infinite alternate;
+}
+
+.luma-btn__dots > span:nth-child(2) {
+  animation-delay: var(--duration-fast);
+}
+
+.luma-btn__dots > span:nth-child(3) {
+  animation-delay: var(--duration-normal);
+}
+
+@keyframes luma-btn-dot {
+  from {
+    opacity: 0.25;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @media (hover: hover) {
   .luma-btn--primary:hover:not(:disabled) {
     background-color: var(--color-primary-hover);
+  }
+
+  .luma-btn--confirm:hover:not(:disabled) {
+    background-color: var(--color-confirm-hover);
   }
 
   .luma-btn--secondary:hover:not(:disabled) {
@@ -116,21 +162,26 @@
     background-color: var(--color-surface-selected);
   }
 
-  .luma-btn--accent:hover:not(:disabled) {
-    background-color: var(--color-accent-hover);
-  }
-
   .luma-btn--danger:hover:not(:disabled) {
     background-color: var(--color-danger-hover);
   }
 
-  .luma-btn--danger-outline:hover:not(:disabled) {
-    background-color: var(--color-danger-bg);
+  .luma-btn--warning:hover:not(:disabled) {
+    background-color: var(--color-warning-strong-hover);
+  }
+
+  .luma-btn--link:hover:not(:disabled) {
+    color: var(--color-fg);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .luma-btn:active:not(:disabled) {
     transform: none;
+  }
+
+  .luma-btn__dots > span {
+    animation: none;
+    opacity: 0.7;
   }
 }

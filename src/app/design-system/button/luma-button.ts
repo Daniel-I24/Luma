@@ -1,15 +1,20 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
-export type ButtonVariant =
-  'primary' | 'secondary' | 'ghost' | 'accent' | 'danger' | 'danger-outline';
+/**
+ * One variant per function (docs/brand/button-semantics.md):
+ * primary: the main action of the screen (Pedir, Pagar, Guardar);
+ * confirm: accept or finish something (Aceptar, Listo, Entregado);
+ * secondary: an alternative action; ghost: a low-emphasis action (Volver);
+ * danger: cancel, reject, delete, remove; warning: pause or suspend;
+ * link: an action that reads as text (Cambiar).
+ */
+export type ButtonVariant = 'primary' | 'confirm' | 'secondary' | 'ghost' | 'danger' | 'warning' | 'link';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 /**
- * LumaButton — base interactive button for the Luma design system.
- *
- * Variants: primary | secondary | ghost | accent | danger | danger-outline
- * (danger-outline: discreet destructive action, e.g. deleting the account)
- * Sizes:    sm | md | lg (all keep the 44px touch target)
+ * LumaButton — the base button. States: rest, hover, pressed, visible focus,
+ * disabled and loading (busy: it ignores clicks and says so to screen
+ * readers). Every size keeps the 44 px touch target.
  */
 @Component({
   selector: 'app-luma-button',
@@ -20,34 +25,36 @@ export type ButtonSize = 'sm' | 'md' | 'lg';
   host: { '[class.block]': 'fullWidth()', '[class.flex-1]': 'fullWidth()' },
 })
 export class LumaButton {
-  readonly variant = input<ButtonVariant>('primary');
-  readonly size = input<ButtonSize>('md');
-  readonly fullWidth = input<boolean>(false);
-  readonly disabled = input<boolean>(false);
-  readonly type = input<'button' | 'submit' | 'reset'>('button');
-  readonly ariaLabel = input<string | undefined>(undefined);
+  public readonly variant = input<ButtonVariant>('primary');
+  public readonly size = input<ButtonSize>('md');
+  public readonly fullWidth = input<boolean>(false);
+  public readonly disabled = input<boolean>(false);
+  /** Work in progress: the button stays visible but cannot be pressed again. */
+  public readonly loading = input<boolean>(false);
+  public readonly type = input<'button' | 'submit' | 'reset'>('button');
+  public readonly ariaLabel = input<string | undefined>(undefined);
   /** id of the native button, e.g. to move the focus to it. */
-  readonly buttonId = input<string | null>(null);
+  public readonly buttonId = input<string | null>(null);
   /** id of an element that describes the button (aria-describedby). */
-  readonly describedBy = input<string | null>(null);
+  public readonly describedBy = input<string | null>(null);
 
-  readonly clicked = output<void>();
+  public readonly clicked = output<void>();
 
-  protected get hostClasses(): string {
-    return [
+  protected readonly inactive = computed(() => this.disabled() || this.loading());
+  protected readonly hostClasses = computed(() =>
+    [
       'luma-btn',
       `luma-btn--${this.variant()}`,
       `luma-btn--${this.size()}`,
       this.fullWidth() ? 'luma-btn--full' : '',
       this.disabled() ? 'luma-btn--disabled' : '',
+      this.loading() ? 'luma-btn--loading' : '',
     ]
       .filter(Boolean)
-      .join(' ');
-  }
+      .join(' '),
+  );
 
   protected handleClick(): void {
-    if (!this.disabled()) {
-      this.clicked.emit();
-    }
+    if (!this.inactive()) this.clicked.emit();
   }
 }

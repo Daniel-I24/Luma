@@ -26,8 +26,8 @@
       </p>
       @if (issue.issue === 'refund_required') {
       <div class="flex gap-2">
-        <app-luma-button size="sm" variant="danger-outline" [disabled]="ops.busy()" (clicked)="ops.voidPayment(issue)">{{ t('admin.operations.voidAction') }}</app-luma-button>
-        <app-luma-button size="sm" variant="secondary" [disabled]="ops.busy()" (clicked)="ops.markRefundDone(issue)">{{ t('admin.operations.markRefunded') }}</app-luma-button>
+        <app-luma-button size="sm" variant="danger" [disabled]="ops.busy()" (clicked)="ops.voidPayment(issue)">{{ t('admin.operations.voidAction') }}</app-luma-button>
+        <app-luma-button size="sm" variant="confirm" [disabled]="ops.busy()" (clicked)="ops.markRefundDone(issue)">{{ t('admin.operations.markRefunded') }}</app-luma-button>
       </div>
       }
     </article>

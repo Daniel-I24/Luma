@@ -41,7 +41,7 @@ const ROLES: readonly ComboRole[] = ['main', 'side', 'drink'];
         <span class="text-title text-fg">{{ t('ai.combo.total') }}</span>
         <span class="text-price text-fg">{{ combo().totalCop | cop }}</span>
       </p>
-      <app-luma-button variant="accent" [fullWidth]="true" (clicked)="addToCart()">{{
+      <app-luma-button variant="primary" [fullWidth]="true" (clicked)="addToCart()">{{
         t('ai.combo.add')
       }}</app-luma-button>
     </section>

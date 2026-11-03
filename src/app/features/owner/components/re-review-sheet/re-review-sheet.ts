@@ -18,7 +18,7 @@ import { LumaBottomSheet, LumaButton } from '@design-system';
     >
       <div class="flex flex-col gap-3">
         <p class="m-0 text-body text-fg">{{ t('owner.reReview.body') }}</p>
-        <app-luma-button [fullWidth]="true" (clicked)="confirmed.emit()">
+        <app-luma-button variant="warning" [fullWidth]="true" (clicked)="confirmed.emit()">
           {{ t('owner.reReview.confirm') }}
         </app-luma-button>
         <app-luma-button variant="ghost" [fullWidth]="true" (clicked)="cancelled.emit()">

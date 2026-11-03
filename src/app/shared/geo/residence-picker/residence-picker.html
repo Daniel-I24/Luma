@@ -23,7 +23,7 @@
   @if (departmentCode()) { @if (municipality(); as town) {
   <div class="flex items-center justify-between gap-3 rounded-md border border-border-subtle bg-surface p-3">
     <span class="text-body text-fg">{{ town.name }}</span>
-    <app-luma-button variant="ghost" size="sm" (clicked)="changeMunicipality()">{{ t('residence.change') }}</app-luma-button>
+    <app-luma-button variant="link" size="sm" (clicked)="changeMunicipality()">{{ t('residence.change') }}</app-luma-button>
   </div>
   } @else {
   <app-luma-input

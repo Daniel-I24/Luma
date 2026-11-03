@@ -19,7 +19,7 @@
   @if (store.errors().avatarConsent; as key) {
   <p class="m-0 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
   }
-  <app-luma-button variant="danger-outline" (clicked)="remove()">{{ t('auth.signup.photo.remove') }}</app-luma-button>
+  <app-luma-button variant="danger" (clicked)="remove()">{{ t('auth.signup.photo.remove') }}</app-luma-button>
   } @else {
   <label
     class="pressable flex min-h-11 cursor-pointer items-center justify-center rounded-xl border border-dashed border-border-strong bg-surface px-4 text-body font-medium text-fg"

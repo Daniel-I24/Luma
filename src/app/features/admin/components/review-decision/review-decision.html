@@ -27,7 +27,7 @@
     </p>
     } }
     <app-luma-button
-      [variant]="decision() === 'approved' ? 'primary' : 'danger'"
+      [variant]="decision() === 'approved' ? 'confirm' : decision() === 'suspended' ? 'warning' : 'danger'"
       [fullWidth]="true"
       [disabled]="busy()"
       (clicked)="confirm()"

@@ -53,6 +53,13 @@
   --color-accent-hover: #93300a;
   --color-accent-fg: #ffffff;
   --color-rating: #d99a0e;
+  /* Confirm (accept, ready) and warning (pause, suspend) buttons. */
+  --color-confirm: #2e7d32;
+  --color-confirm-hover: #256b29;
+  --color-confirm-fg: #ffffff;
+  --color-warning-strong: #f2b33d;
+  --color-warning-strong-hover: #e0a22c;
+  --color-warning-fg-on: #2b1d00;
 
   /* === Navigation === */
   --color-nav: #ffffff;

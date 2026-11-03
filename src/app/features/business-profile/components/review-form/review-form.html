@@ -69,7 +69,7 @@
       >{{ t('reviews.form.cancel') }}</app-luma-button
     >
     } @else {
-    <app-luma-button variant="ghost" [disabled]="saving()" (clicked)="confirmingDelete.set(true)"
+    <app-luma-button variant="danger" [disabled]="saving()" (clicked)="confirmingDelete.set(true)"
       >{{ t('reviews.form.delete') }}</app-luma-button
     >
     } }

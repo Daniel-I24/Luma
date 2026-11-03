@@ -24,7 +24,7 @@ export interface OrderAction {
   readonly status: OwnerOrderAction;
   /** Translation key under businessOrders.actions. */
   readonly key: string;
-  readonly variant: 'primary' | 'secondary' | 'danger-outline';
+  readonly variant: 'confirm' | 'danger';
   /** Which confirmation sheet opens first, or null to act right away. */
   readonly confirm: 'reject' | 'cancel' | 'no_show' | null;
 }
@@ -40,22 +40,22 @@ export function noShowAllowed(readyAt: string | null, now: number): boolean {
 
 /** What the owner can do next; mirrors the transitions set_order_status allows. */
 export function nextActions(order: Pick<BusinessOrder, 'status' | 'ready_at'>, now = Date.now()): OrderAction[] {
-  const cancel: OrderAction = { status: 'cancelled', key: 'cancel', variant: 'danger-outline', confirm: 'cancel' };
+  const cancel: OrderAction = { status: 'cancelled', key: 'cancel', variant: 'danger', confirm: 'cancel' };
   switch (order.status) {
     case 'pending':
       return [
-        { status: 'accepted', key: 'accept', variant: 'primary', confirm: null },
-        { status: 'cancelled', key: 'reject', variant: 'danger-outline', confirm: 'reject' },
+        { status: 'accepted', key: 'accept', variant: 'confirm', confirm: null },
+        { status: 'cancelled', key: 'reject', variant: 'danger', confirm: 'reject' },
       ];
     case 'accepted':
-      return [{ status: 'preparing', key: 'preparing', variant: 'primary', confirm: null }, cancel];
+      return [{ status: 'preparing', key: 'preparing', variant: 'confirm', confirm: null }, cancel];
     case 'preparing':
-      return [{ status: 'ready', key: 'ready', variant: 'primary', confirm: null }, cancel];
+      return [{ status: 'ready', key: 'ready', variant: 'confirm', confirm: null }, cancel];
     case 'ready':
       return [
-        { status: 'picked_up', key: 'deliver', variant: 'primary', confirm: null },
+        { status: 'picked_up', key: 'deliver', variant: 'confirm', confirm: null },
         noShowAllowed(order.ready_at, now)
-          ? { status: 'cancelled', key: 'noShow', variant: 'danger-outline', confirm: 'no_show' }
+          ? { status: 'cancelled', key: 'noShow', variant: 'danger', confirm: 'no_show' }
           : cancel,
       ];
     default:

@@ -69,7 +69,7 @@
         (clicked)="scan.save(id())">{{
         t(scan.phase() === 'saving' ? 'businessPanel.form.saving' : 'owner.menuScan.add', { count: scan.chosen().length })
       }}</app-luma-button>
-      <app-luma-button variant="ghost" [disabled]="scan.phase() === 'saving'" (clicked)="scan.restart()">{{ t('owner.menuScan.discard') }}</app-luma-button>
+      <app-luma-button variant="danger" [disabled]="scan.phase() === 'saving'" (clicked)="scan.restart()">{{ t('owner.menuScan.discard') }}</app-luma-button>
     }
   }
 </div>
