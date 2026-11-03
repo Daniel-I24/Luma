@@ -38,7 +38,8 @@ describe('MenuScanRepository: every failure has its own message', () => {
       [http(503, { error: 'ai_unavailable', reason: 'not_configured' }), 'owner.menuScan.errors.notConfigured'],
       [http(503, { error: 'ai_unavailable', reason: 'provider_auth' }), 'owner.menuScan.errors.providerKey'],
       [http(503, { error: 'ai_unavailable', reason: 'provider_model' }), 'owner.menuScan.errors.providerModel'],
-      [http(503, { error: 'ai_unavailable', reason: 'provider_rate_limit' }), 'owner.menuScan.errors.providerBusy'],
+      [http(503, { error: 'ai_unavailable', reason: 'provider_rate_limit' }), 'owner.menuScan.errors.providerQuota'],
+      [http(503, { error: 'ai_unavailable', reason: 'provider_unavailable' }), 'owner.menuScan.errors.providerSaturated'],
       [http(503, { error: 'ai_unavailable', reason: 'timeout' }), 'owner.menuScan.errors.slow'],
       [http(503, { error: 'ai_unavailable' }), 'owner.menuScan.unavailable'],
     ];

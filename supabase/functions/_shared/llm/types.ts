@@ -29,7 +29,9 @@ export interface LlmRequest {
  * Why a call failed. Callers answer ai_unavailable; extract-menu also says
  * the reason (never a key or a provider message) so the owner gets a useful
  * message: provider_auth (key refused, 401/403), provider_model (model
- * unknown, 404), provider_rate_limit (429), http_error (other statuses).
+ * unknown, 404), provider_rate_limit (429, quota), provider_unavailable
+ * (500/502/503/504/529 or "overloaded" after the retries and the fallback
+ * model), http_error (other statuses).
  */
 export type LlmFailureReason =
   | 'timeout'
@@ -38,6 +40,7 @@ export type LlmFailureReason =
   | 'provider_auth'
   | 'provider_model'
   | 'provider_rate_limit'
+  | 'provider_unavailable'
   | 'refused'
   | 'invalid_json'
   | 'invalid_shape';
@@ -67,4 +70,6 @@ export interface ProviderOptions {
   readonly fetch?: FetchLike;
   /** Per attempt; default 10 s. */
   readonly timeoutMs?: number;
+  /** First wait before a retry (default 500 ms; tests use 0). */
+  readonly retryDelayMs?: number;
 }

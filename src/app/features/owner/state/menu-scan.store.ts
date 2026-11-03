@@ -37,6 +37,8 @@ export class ScanPrices {
   }
 }
 
+const SATURATED_KEY = 'owner.menuScan.errors.providerSaturated';
+
 /**
  * MenuScanStore — photos (Luma IA) or pasted text (MenuTextParser, free and
  * local) → draft → review → the chosen items saved to the menu.
@@ -51,16 +53,21 @@ export class MenuScanStore {
   private readonly _items = signal<readonly ReviewItem[]>([]);
   private readonly _errorKey = signal<string | null>(null);
   private readonly _saved = signal(0);
+  /** The last photos read, for "Reintentar" when Luma IA was saturated. */
+  private last: { readonly businessId: string; readonly files: readonly File[] } | null = null;
 
   public readonly phase = this._phase.asReadonly();
   public readonly items = this._items.asReadonly();
   public readonly errorKey = this._errorKey.asReadonly();
   public readonly saved = this._saved.asReadonly();
+  /** The provider was saturated: the same photos can be tried again in a moment. */
+  public readonly retryable = computed(() => this._errorKey() === SATURATED_KEY);
   public readonly chosen = computed(() => this._items().filter((i) => i.selected && i.name.trim() && ScanPrices.priceOf(i.price)));
 
   /** Reads menu photos into reviewable items. */
   public async read(businessId: string, files: readonly File[]): Promise<void> {
     if (!files.length) return;
+    this.last = { businessId, files };
     this._phase.set('reading');
     this._errorKey.set(null);
     const result = await this.scanner.scan(businessId, files);
@@ -72,6 +79,11 @@ export class MenuScanStore {
     this._items.set(result.items.map(toReview));
     this._phase.set('review');
     if (result.items.length === 0) this._errorKey.set('owner.menuScan.nothingFound');
+  }
+
+  /** Reads the last photos again (after a saturated provider). */
+  public async retry(): Promise<void> {
+    if (this.last) await this.read(this.last.businessId, this.last.files);
   }
 
   /** Plan B without Luma IA: the menu pasted as text goes to the same review. */

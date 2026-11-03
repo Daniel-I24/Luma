@@ -758,7 +758,6 @@
       "publishTitle": "Publicación",
       "ready": "Todo listo para publicar.",
       "missingTitle": "Para publicar falta:",
-      "publish": "Publicar",
       "publishedToast": "Tu negocio ya es visible en Luma.",
       "visible": "Visible en el mapa y el feed.",
       "hidden": "Solo tú lo ves."
@@ -883,7 +882,7 @@
       "galleryLimit": "Ya tienes 8 fotos. Elimina una para agregar otra.",
       "menuLimit": "Tu menú llegó al máximo de 200 productos.",
       "taxIdInUse": "Este NIT ya pertenece a un negocio aprobado de otra cuenta. Escríbenos si es tuyo.",
-      "businessDailyLimit": "Ya creaste 3 negocios hoy. Podrás crear otro mañana."
+      "businessDailyLimit": "No pudimos crear el negocio en este momento. Inténtalo de nuevo más tarde."
     },
     "images": {
       "logo": "Logo",
@@ -1515,7 +1514,9 @@
       "published": "Publicado",
       "paused": "Pausado",
       "pause": "Pausar",
-      "pausedToast": "Tu negocio quedó en pausa y ya no aparece a los clientes."
+      "pausedToast": "Tu negocio quedó en pausa y ya no aparece a los clientes.",
+      "approvedHidden": "Tu negocio está aprobado pero aún no se ve.",
+      "publishNow": "Publicar ahora"
     },
     "today": {
       "title": "Hoy",
@@ -1667,7 +1668,8 @@
         "notConfigured": "Luma IA no tiene configurado su proveedor en el servidor. Pega tu menú como texto mientras el equipo lo activa.",
         "providerKey": "El proveedor de Luma IA rechazó la clave del servidor. Avisamos al equipo; pega tu menú como texto mientras tanto.",
         "providerModel": "El proveedor de Luma IA no reconoce el modelo configurado. Pega tu menú como texto mientras el equipo lo corrige.",
-        "providerBusy": "El proveedor de Luma IA está saturado. Espera unos minutos e inténtalo de nuevo, o pega tu menú como texto.",
+        "providerQuota": "Luma IA llegó por ahora al límite de uso de su proveedor. Inténtalo más tarde o pega tu menú como texto.",
+        "providerSaturated": "Luma IA está saturada en este momento. Pulsa Reintentar en unos segundos o pega tu menú como texto.",
         "slow": "Luma IA tardó demasiado en leer las fotos. Prueba con menos fotos o pega tu menú como texto."
       }
     },

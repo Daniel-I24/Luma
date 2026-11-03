@@ -43,8 +43,11 @@ app ──JWT──▶ recommend / suggest-promotions (Edge Functions)
 ```
 
 - `supabase/functions/_shared/llm/`: provider-neutral gateway
-  (`generateJson` → validated object or `ai_unavailable`), 10 s timeout, one
-  retry (timeouts, network, 429, 5xx), JSON-only modes, nothing logged. No
+  (`generateJson` → validated object or `ai_unavailable`), 10 s timeout;
+  a saturated provider (500, 502, 503, 504, 529 or "overloaded") gets two
+  retries with growing waits and jitter, a timeout or network error one, a
+  429 (quota) none; then `LLM_FALLBACK_MODEL` (same provider, key and
+  contract) when set. JSON-only modes, nothing logged. No
   Luma imports: copy the folder to reuse it (`_shared/llm/README.md`).
 - `recommend`: POST, CORS allow list, JWT, body ≤ 2 KB (moment, location,
   radius ≤ 10 km). Candidates are public businesses open at that time
@@ -130,7 +133,13 @@ supabase functions deploy suggest-promotions
 supabase functions deploy extract-menu
 # optional, a model that reads images for extract-menu:
 supabase secrets set LLM_VISION_MODEL=<vision-model-id>
+# optional, a second model when the first is saturated (e.g. gemini-3.1-flash-lite):
+supabase secrets set LLM_FALLBACK_MODEL=<fallback-model-id>
 ```
+
+`recommend` and `suggest-promotions` get the same retries and fallback; if
+both models fail, the app answers with its rules and says nothing (the
+customer and the owner still get suggestions).
 
 Check the deployment with `node scripts/ai-smoke.mjs` (see its header):
 it calls each function with a test account and prints only status codes
@@ -156,7 +165,8 @@ con su estado y códigos, nunca una clave ni un texto del proveedor).
 | "Luma IA no tiene configurado su proveedor" | 503 `not_configured`: faltan `LLM_PROVIDER` / `LLM_API_KEY` | `supabase secrets list` (solo nombres). |
 | "El proveedor de Luma IA rechazó la clave" | 503 `provider_auth`: el proveedor respondió 401/403 | Revisa `LLM_API_KEY` (Gemini: clave de AI Studio activa). |
 | "El proveedor no reconoce el modelo" | 503 `provider_model`: 404 del proveedor | `LLM_VISION_MODEL` / `LLM_MODEL` (debe leer imágenes). |
-| "El proveedor de Luma IA está saturado" | 503 `provider_rate_limit`: 429 del proveedor | Espera o cambia de plan/modelo. |
+| "Luma IA llegó por ahora al límite de uso de su proveedor" | 503 `provider_rate_limit`: 429 del proveedor (cupo) | Espera o cambia de plan/modelo. |
+| "Luma IA está saturada en este momento" + Reintentar | 503 `provider_unavailable`: 500/502/503/504/529 u "overloaded" tras 2 reintentos y el modelo de respaldo | Pulsa Reintentar; configura `LLM_FALLBACK_MODEL`. |
 | "Luma IA tardó demasiado" | 503 `timeout` | Menos fotos, o un modelo más rápido. |
 
 En todos los casos el botón de elegir o tomar fotos sigue visible y "Pegar

@@ -25,14 +25,19 @@ account are **gitignored and never committed**.
 
 ## 3. Secrets and function
 
-On Windows, `scripts/setup-push.ps1` does this whole step and writes the
-SQL of step 4, printing no secret:
+On Windows, option 2 of `scripts/luma.ps1` (or `scripts/setup-push.ps1`,
+the same code) does this whole step and writes the SQL of step 4, printing
+no secret. It uses `npx supabase` (no global install) and deploys with
+`--use-api` (no Docker):
 
 ```powershell
-# the service account in C:\Users\ivan2\luma-secrets\firebase-service-account.json
-powershell -ExecutionPolicy Bypass -File scripts\setup-push.ps1
-# then paste C:\Users\ivan2\luma-secrets\push-settings.sql in the SQL editor
+# the service account in %USERPROFILE%\luma-secrets\firebase-service-account.json
+powershell -ExecutionPolicy Bypass -File scripts\luma.ps1
+# then paste %USERPROFILE%\luma-secrets\push-settings.sql in the SQL editor
 ```
+
+Repeating it keeps the shared secret already in push-settings.sql, so the
+SQL only has to be pasted once.
 
 By hand:
 

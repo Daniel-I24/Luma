@@ -17,7 +17,11 @@
     {{ t(business().is_active ? 'businessPanel.dashboard.visible' :
     'businessPanel.dashboard.hidden') }}
   </p>
-  @if (!business().is_active) { @if (publish.missing().length) {
+  @if (!business().is_active) {
+  <p class="m-0 rounded-md bg-info-bg p-3 text-body-sm font-semibold text-info-fg" role="status">
+    {{ t('owner.publish.approvedHidden') }}
+  </p>
+  @if (publish.missing().length) {
   <div id="publish-missing" class="rounded-md bg-warning-bg p-3 text-body-sm text-warning-fg">
     <p class="m-0 font-semibold">{{ t('businessPanel.dashboard.missingTitle') }}</p>
     <ul class="m-0 mt-1 ps-5">
@@ -36,7 +40,7 @@
     describedBy="publish-missing"
     [disabled]="publish.busy() || publish.missing().length > 0"
     (clicked)="toggled.emit(true)"
-    >{{ t('businessPanel.dashboard.publish') }}</app-luma-button
+    >{{ t('owner.publish.publishNow') }}</app-luma-button
   >
   } @else {
   <app-luma-button

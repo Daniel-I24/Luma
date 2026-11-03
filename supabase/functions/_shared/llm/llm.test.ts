@@ -42,7 +42,7 @@ const pickId = (value: unknown) =>
   typeof value === 'object' && value !== null && 'id' in value && (value.id === 'a' || value.id === 'b')
     ? (value.id as string)
     : null;
-const options = (fetchFn: FetchLike) => ({ apiKey: 'k', model: 'm', fetch: fetchFn, timeoutMs: 50 });
+const options = (fetchFn: FetchLike) => ({ apiKey: 'k', model: 'm', fetch: fetchFn, timeoutMs: 50, retryDelayMs: 0 });
 
 Deno.test('gemini: REST generateContent with the key header and JSON mode', async () => {
   const { fetchFn, calls } = fakeFetch(json({ candidates: [{ content: { parts: [{ text: '{"id":"a"}' }] } }] }));
@@ -106,7 +106,7 @@ Deno.test('a timeout is retried once, then reported', async () => {
   assertEquals(calls.length, 2);
 });
 
-Deno.test('5xx and 429 are retried once; other 4xx are not', async () => {
+Deno.test('a saturated provider is retried; a refused key is not', async () => {
   const retried = fakeFetch(json({}, 503), json({ choices: [{ message: { content: '{"id":"a"}' } }] }));
   assertEquals(
     (await createOpenAiCompatibleProvider(options(retried.fetchFn)).generateJson(request, pickId)).ok,
@@ -123,9 +123,10 @@ Deno.test('the provider status tells key, model and rate limit apart', async () 
     const result = await createOpenAiCompatibleProvider(options(fakeFetch(json({}, status)).fetchFn)).generateJson(request, pickId);
     assertEquals(result, { ok: false, error: 'ai_unavailable', reason });
   }
-  const limited = fakeFetch(json({}, 429), json({}, 429));
+  const limited = fakeFetch(json({}, 429), json({}, 200));
   assertEquals(await createOpenAiCompatibleProvider(options(limited.fetchFn)).generateJson(request, pickId),
     { ok: false, error: 'ai_unavailable', reason: 'provider_rate_limit' });
+  assertEquals(limited.calls.length, 1, 'a quota (429) is not retried: it will not get better in a second');
 });
 
 Deno.test('the provider comes from secrets only, and nothing without them', () => {

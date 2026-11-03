@@ -118,8 +118,8 @@ and `npm run check:interactive`.
   Moto shows "Tiempo aproximado". Reload: the last mode stays chosen.
 - Luma Negocios: "N de 3 negocios"; with 3, "Añadir" is disabled with the
   reason. A fourth business (also through the API) says "Llegaste al
-  máximo…"; deleting one and creating again on the same day after 3
-  creations says "Ya creaste 3 negocios hoy".
+  máximo…". (An internal guard of 10 creations a day answers a generic
+  "No pudimos crear el negocio en este momento"; it is not a visible rule.)
 - A customer account opening /owner/<id> lands on Perfil with "Registra tu
   negocio" open; signing out of an owner and in as a customer on the same
   device never shows the panel.
@@ -160,7 +160,7 @@ and `npm run check:interactive`.
   mi dispositivo": the notice arrives with the app closed (APK built with
   google-services.json, "PUSH_ENABLED: true" in its output).
 - `scripts/setup-push.ps1`: prints no secret; leaves
-  `C:\Users\ivan2\luma-secrets\push-settings.sql`.
+  `%USERPROFILE%\luma-secrets\push-settings.sql`.
 - Contact verification: without SUPPORT_WHATSAPP, with the automatic mode
   off, after 2 minutes without the message, and with a landline: each one
   says why and what happens next (pending review by the team).

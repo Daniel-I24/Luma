@@ -26,7 +26,8 @@
     "check:placeholders": "node scripts/check-placeholders.mjs",
     "scan:history": "node scripts/secret-scan-history.mjs",
     "check:wompi-event": "node scripts/check-wompi-event.mjs",
-    "lint:functions": "node scripts/lint-functions.mjs"
+    "lint:functions": "node scripts/lint-functions.mjs",
+    "doctor": "node scripts/doctor.mjs"
   },
   "private": true,
   "packageManager": "npm@11.21.0",

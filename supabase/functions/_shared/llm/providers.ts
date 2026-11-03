@@ -36,6 +36,7 @@ export function createGeminiProvider(options: ProviderOptions): LlmProvider {
             },
           },
           options.timeoutMs,
+          options.retryDelayMs,
         );
         const text = at(body, 'candidates', 0, 'content', 'parts', 0, 'text');
         return parseAnswer(typeof text === 'string' ? text : null, validate);
@@ -67,6 +68,7 @@ export function createOpenAiCompatibleProvider(options: ProviderOptions): LlmPro
             ],
           },
           options.timeoutMs,
+          options.retryDelayMs,
         );
         const text = at(body, 'choices', 0, 'message', 'content');
         return parseAnswer(typeof text === 'string' ? text : null, validate);
@@ -93,6 +95,7 @@ export function createAnthropicProvider(options: ProviderOptions): LlmProvider {
             output_config: { format: { type: 'json_schema', schema: request.schema } },
           },
           options.timeoutMs,
+          options.retryDelayMs,
         );
         if (at(body, 'stop_reason') === 'refusal') return fail('refused');
         const blocks = at(body, 'content');

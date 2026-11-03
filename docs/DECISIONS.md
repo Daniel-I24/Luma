@@ -887,3 +887,19 @@ alternative that was not taken. The safest, most reversible option wins.
   tests and required JSDoc; deleting them or reformatting would lower
   quality without changing behaviour. Files −10.1 %, bundle smaller
   (docs/optimization-report.md).
+
+## 2026-11-03 — Round 9, phase 1 (in progress)
+
+- **Approving publishes only from review**: pending → approved sets
+  is_active when there is an open day and an available product; a
+  re-approval after a suspension never touches is_active (the owner's
+  pause stays).
+- **AI retries**: 5xx and "overloaded" get 2 retries with backoff and
+  jitter; timeouts and network errors 1 (vision calls take up to 30 s);
+  a 429 (quota) none. LLM_FALLBACK_MODEL answers after provider_unavailable
+  or timeout only.
+- **Doctor via the Management API** with a personal token kept in the
+  secrets folder (clients cannot read app_settings); a token with an
+  expiry date is recommended.
+- **Sandbox payments stay off**: payments-settings.sql leaves the
+  payments_enabled line commented out.

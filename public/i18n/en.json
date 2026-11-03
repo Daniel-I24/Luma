@@ -758,7 +758,6 @@
       "publishTitle": "Publishing",
       "ready": "Everything is ready to publish.",
       "missingTitle": "To publish, you still need:",
-      "publish": "Publish",
       "publishedToast": "Your business is now visible on Luma.",
       "visible": "Visible on the map and the feed.",
       "hidden": "Only you can see it."
@@ -883,7 +882,7 @@
       "galleryLimit": "You already have 8 photos. Delete one to add another.",
       "menuLimit": "Your menu reached the maximum of 200 products.",
       "taxIdInUse": "This NIT already belongs to an approved business of another account. Write to us if it is yours.",
-      "businessDailyLimit": "You already created 3 businesses today. You can create another tomorrow."
+      "businessDailyLimit": "We could not create the business right now. Please try again later."
     },
     "images": {
       "logo": "Logo",
@@ -1515,7 +1514,9 @@
       "published": "Published",
       "paused": "Paused",
       "pause": "Pause",
-      "pausedToast": "Your business is paused and no longer shown to customers."
+      "pausedToast": "Your business is paused and no longer shown to customers.",
+      "approvedHidden": "Your business is approved but not visible yet.",
+      "publishNow": "Publish now"
     },
     "today": {
       "title": "Today",
@@ -1667,7 +1668,8 @@
         "notConfigured": "Luma IA has no provider set up on the server. Paste your menu as text while the team turns it on.",
         "providerKey": "The Luma IA provider refused the server key. The team is told; paste your menu as text meanwhile.",
         "providerModel": "The Luma IA provider does not know the configured model. Paste your menu as text while the team fixes it.",
-        "providerBusy": "The Luma IA provider is overloaded. Wait a few minutes and try again, or paste your menu as text.",
+        "providerQuota": "Luma AI has reached its provider usage limit for now. Try again later or paste your menu as text.",
+        "providerSaturated": "Luma AI is overloaded right now. Tap Retry in a few seconds or paste your menu as text.",
         "slow": "Luma IA took too long to read the photos. Try fewer photos or paste your menu as text."
       }
     },

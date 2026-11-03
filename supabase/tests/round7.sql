@@ -128,6 +128,8 @@ select tests.expect_true('postgres', null, $$
   'another phone is not verified any more');
 
 -- 4. Businesses per owner -------------------------------------------------------------------
+-- The daily guard is 10 since round 9; at 3 here so deleting and creating again reaches it.
+update public.app_settings set int_value = 3 where key = 'rate_business_create_max';
 insert into auth.users (id, email) values (tests.id('o3'), 'o3@test.local'), (tests.id('o4'), 'o4@test.local'), (tests.id('o5'), 'o5@test.local');
 select tests.complete_profile(n) from unnest(array['o3', 'o4', 'o5']) n;
 update public.profiles set account_type = 'business_owner' where id in (tests.id('o3'), tests.id('o4'), tests.id('o5'));

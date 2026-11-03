@@ -75,6 +75,17 @@ describe('MenuScanStore', () => {
     expect([store.phase(), store.errorKey()]).toEqual(['pick', 'owner.menuScan.quota']);
   });
 
+  it('a saturated Luma IA offers "Reintentar", which reads the same photos again', async () => {
+    const saturated = { items: null, errorKey: 'owner.menuScan.errors.providerSaturated' };
+    scanner.scan.mockResolvedValueOnce(saturated).mockResolvedValueOnce({ items: draft, errorKey: null });
+    const photos = [file()];
+    await store.read('b', photos);
+    expect(store.retryable()).toBe(true);
+    await store.retry();
+    expect(scanner.scan).toHaveBeenLastCalledWith('b', photos);
+    expect([store.phase(), store.retryable()]).toEqual(['review', false]);
+  });
+
   it('parses prices typed by owners', () => {
     expect(['12.500', '$ 8000', '0', 'doce', '-5'].map(ScanPrices.priceOf)).toEqual([12500, 8000, null, null, null]);
   });
