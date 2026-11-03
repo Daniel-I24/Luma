@@ -1,4 +1,5 @@
 import { Phone } from '@shared/account/phone';
+import { ExternalUrls } from '@core/config/external-urls';
 
 /** The public contact of a business, as stored (mirrors the business_showcase CHECKs). */
 export interface BusinessContact {
@@ -64,12 +65,12 @@ export interface ContactLink {
 export function contactLinks(contact: Partial<BusinessContact>): ContactLink[] {
   const links: ContactLink[] = [];
   const phone = Phone.parse(contact.whatsapp);
-  if (phone) links.push({ field: 'whatsapp', href: `https://wa.me/${phone.e164.slice(1)}`, text: phone.display });
+  if (phone) links.push({ field: 'whatsapp', href: ExternalUrls.whatsapp(phone.e164.slice(1)), text: phone.display });
   if (contact.instagram && INSTAGRAM.test(contact.instagram)) {
-    links.push({ field: 'instagram', href: `https://instagram.com/${contact.instagram}`, text: `@${contact.instagram}` });
+    links.push({ field: 'instagram', href: ExternalUrls.instagram(contact.instagram), text: `@${contact.instagram}` });
   }
   if (contact.facebook && FACEBOOK.test(contact.facebook)) {
-    links.push({ field: 'facebook', href: `https://facebook.com/${contact.facebook}`, text: contact.facebook });
+    links.push({ field: 'facebook', href: ExternalUrls.facebook(contact.facebook), text: contact.facebook });
   }
   if (contact.website && WEBSITE.test(contact.website)) {
     links.push({ field: 'website', href: contact.website, text: contact.website.replace(/^https:\/\//i, '').replace(/\/$/, '') });

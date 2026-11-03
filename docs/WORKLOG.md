@@ -44,6 +44,24 @@ SQL suites, Deno 2.5.6 in Docker for the functions.
   send a reason when cancelling after accepting (reason_required), and
   admins need the TOTP screen (is_admin needs aal2).
 
+- FASE 2 done (2026-10-24): _shared/payments (Money, PaymentStateMachine
+  with the shared vectors, IntegritySignature with the documented vector,
+  CheckoutUrlBuilder, MerchantCredentials Strategy/Factory, WompiApi
+  adapter, WompiEventParser + EventChecksum, PaymentEventVerifier chain,
+  PaymentApplier, Reconciler, SupabasePaymentRepository, typed PaymentLog);
+  functions create-payment, wompi-webhook (verify_jwt false), reconcile-
+  payments (verify_jwt false, cron secret or admin aal2), void-payment;
+  migration 49 (payment_event_seen, payment_attempt, admin_note_reconcile,
+  private.payments_cron + conditional cron); provider URLs in
+  _shared/config/provider-urls.ts, app URLs in core/config/external-urls.ts,
+  npm run check:hardcoded-urls (in CI); push texts for payment and
+  review_invite. Closed green: build, lint, 673 app tests, 61 script tests,
+  630 SQL checks, 123 Deno tests + type check of 10 functions, interactive,
+  hard-coded URLs, secret scan, npm audit 0. Cleanup: nothing to remove.
+  Incident: one grep for URLs matched src/environments/environment.ts and
+  printed its Supabase URL line (project reference, not a key); every scan
+  now excludes src/environments.
+
 ## Done (round 1)
 
 - PARTE 0 — history cleaned (`backup-before-temp-cleanup` and

@@ -25,3 +25,9 @@ Findings kept, with the reason:
 Removed: nothing. knip reports no unused files or dependencies; the unused
 exports list is unchanged in kind (phase 6). No migration of round 1 was
 touched; redefinitions live in new files.
+
+## Round 2, phase 2 (2026-10-24)
+
+Removed: nothing. Hard-coded provider URLs moved into named constants
+(`_shared/config/provider-urls.ts`, `core/config/external-urls.ts`); no
+file became unused.

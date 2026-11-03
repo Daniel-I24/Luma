@@ -15,7 +15,8 @@
     "check:interactive": "node scripts/check-interactive.mjs",
     "verify:backend": "node scripts/verify-backend.mjs",
     "apk:verify": "node scripts/apk-verify.mjs",
-    "apk:demo": "node scripts/apk-demo.mjs"
+    "apk:demo": "node scripts/apk-demo.mjs",
+    "check:hardcoded-urls": "node scripts/check-hardcoded-urls.mjs"
   },
   "private": true,
   "packageManager": "npm@11.21.0",

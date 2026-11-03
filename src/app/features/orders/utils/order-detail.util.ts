@@ -1,4 +1,5 @@
 import { ORDER_PROGRESS, type OrderBusiness, type OrderStatus } from '@shared/orders/order.model';
+import { ExternalUrls } from '@core/config/external-urls';
 
 /** The estimate only matters while the order is still being prepared. */
 export function showsEstimate(status: OrderStatus): boolean {
@@ -26,5 +27,5 @@ export function timelineSteps(status: OrderStatus): { status: OrderStatus; state
 /** Directions to the business in the user's maps app. */
 export function directionsUrl(business: Pick<OrderBusiness, 'latitude' | 'longitude'>): string {
   const destination = `${business.latitude},${business.longitude}`;
-  return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`;
+  return ExternalUrls.directions(destination);
 }

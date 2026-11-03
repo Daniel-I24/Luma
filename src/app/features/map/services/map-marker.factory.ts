@@ -2,8 +2,9 @@ import { DOCUMENT } from '@angular/common';
 import { Injectable, inject } from '@angular/core';
 import { LUMA_ICONS } from '@design-system/icon/luma-icons';
 import type { BusinessStatus } from '@shared/business/models/business.model';
+import { ExternalUrls } from '@core/config/external-urls';
 
-const SVG_NS = 'http://www.w3.org/2000/svg';
+const SVG_NS = ExternalUrls.SVG_NAMESPACE;
 const STATUS_CLASSES = ['open', 'closed', 'opening-soon', 'closing-soon'].map(
   (status) => `luma-marker--${status}`,
 );

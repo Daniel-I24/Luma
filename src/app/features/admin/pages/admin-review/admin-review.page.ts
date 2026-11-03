@@ -10,9 +10,10 @@ import type {
 import { LocationPreview } from '../../components/location-preview/location-preview';
 import { ReviewDecisionSheet } from '../../components/review-decision/review-decision';
 import { AdminReviewStore } from '../../state/admin-review.store';
+import { ExternalUrls } from '@core/config/external-urls';
 
 /** Public business registry, to check the legal data by hand. */
-export const RUES_URL = 'https://www.rues.org.co/';
+export const RUES_URL = ExternalUrls.RUES;
 
 /** AdminReviewPage — /admin/businesses/:id: review one business and decide. */
 @Component({

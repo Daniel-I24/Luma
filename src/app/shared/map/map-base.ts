@@ -1,7 +1,8 @@
 import * as maplibregl from 'maplibre-gl';
+import { ExternalUrls } from '@core/config/external-urls';
 
 /** Vector style shared by every map in the app. */
-export const MAP_STYLE = 'https://tiles.openfreemap.org/styles/liberty';
+export const MAP_STYLE = ExternalUrls.MAP_STYLE;
 /** MapLibre web worker, copied next to index.html by angular.json (assets). */
 export const MAP_WORKER_PATH = 'maplibre-gl-worker.mjs';
 
