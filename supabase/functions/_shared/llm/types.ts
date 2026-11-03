@@ -3,6 +3,14 @@
  * Luma: copy the whole `_shared/llm` folder to reuse it in another project.
  */
 
+export type LlmImageType = 'image/jpeg' | 'image/png' | 'image/webp';
+
+/** An image for multimodal models (base64, already checked by the caller). */
+export interface LlmImage {
+  readonly mimeType: LlmImageType;
+  readonly base64: string;
+}
+
 /** One request: fixed instructions, untrusted data, and the JSON wanted back. */
 export interface LlmRequest {
   /** Instructions (trusted, written by the server). */
@@ -11,6 +19,8 @@ export interface LlmRequest {
   readonly user: string;
   /** JSON Schema of the answer; providers that support it constrain the output. */
   readonly schema: Readonly<Record<string, unknown>>;
+  /** Untrusted images that go with the data (e.g. photos of a menu). */
+  readonly images?: readonly LlmImage[];
   /** Output cap; small answers need little. */
   readonly maxTokens?: number;
 }

@@ -54,9 +54,27 @@ app ──JWT──▶ recommend / suggest-promotions (Edge Functions)
   3 ideas `{item, 5–30 %, 1–14 days, reason}`; ideas on items with a running
   promotion are dropped; prices and figures computed on the server. Below 10
   orders in 60 days a rules advisor answers instead of the model. Cache 24 h.
+  When the model is not configured or fails, it answers 200 with the rules
+  (`source: "rules"`); the cases shared with the app's rules live in
+  `src/app/shared/promotions/advisor/rule-ideas.cases.json`.
+- `extract-menu`: POST, JWT, only the owner of the business (any status, so
+  a draft can fill its menu). Body: `{ business_id, images: [base64] }`, 1
+  to 4 photos, 8 MB per request (rejected by `Content-Length` before
+  reading), 2 MB per decoded image, JPEG/PNG/WebP checked by magic bytes.
+  Only the photos reach the model (no business or owner data). Answer: a
+  draft `{ items: [{ name, description, price_cop, section }] }` (at most
+  200, plain text cut to the `menu_items` limits, prices such as "$12.500"
+  parsed to whole COP or null). Nothing is saved: the owner reviews the
+  draft and the app writes the accepted items through RLS. Quota
+  `consume_menu_scan_quota`: `menu_scan_daily_per_business` (5), also
+  counted in the user and global limits. Uses `LLM_VISION_MODEL` when set
+  (a model that reads images), `LLM_MODEL` otherwise; 30 s timeout.
 - Quotas (`consume_ai_quota`, `app_settings`): `ai_daily_per_user` (20),
   `ai_daily_per_business` (10), `ai_daily_global` (500); over the limit →
-  429 and the app uses its rules.
+  429 and the app uses its rules. The quota is spent only right before a
+  model call: cached answers, empty candidate lists and rules are free.
+  The recommend cache key includes the area (coordinates rounded to about
+  1 km) and the 20-minute window.
 
 ### Security
 
@@ -100,9 +118,16 @@ supabase secrets set LLM_PROVIDER=gemini LLM_MODEL=<model-id> LLM_API_KEY=<key>
 supabase secrets set ALLOWED_ORIGINS="https://localhost,https://<vercel-domain>"
 supabase functions deploy recommend
 supabase functions deploy suggest-promotions
+supabase functions deploy extract-menu
+# optional, a model that reads images for extract-menu:
+supabase secrets set LLM_VISION_MODEL=<vision-model-id>
 ```
 
-Apply migrations `20261021000000` and `20261022000000` first. Then set
+Check the deployment with `node scripts/ai-smoke.mjs` (see its header):
+it calls each function with a test account and prints only status codes
+and shapes, never keys or answers.
+
+Apply migrations `20261021000000`, `20261022000000` and `20261025000000` first. Then set
 `AI_MODE` to `'remote'` and deploy the app. Changing provider is only
 `supabase secrets set ...` (no redeploy of the app). To limit spend, lower
 the quotas in `app_settings`.
@@ -112,6 +137,7 @@ the quotas in `app_settings`.
 - `supabase/functions/_shared`: `deno test --no-lock --config deno.json`
   (gateway), and the same in `recommend/` and `suggest-promotions/`
   (injection text in names, ids outside the set, timeouts, quota, cache,
-  403 for another owner's business).
-- SQL: `supabase/tests/ai_gateway.sql`.
+  403 for another owner's business), and `extract-menu/` (magic bytes,
+  size limits, price parsing, sanitising, quota only before the model).
+- SQL: `supabase/tests/ai_gateway.sql`, `supabase/tests/menu_scan_quota.sql`.
 - App: engines, advisors and UI specs (`npm test`).

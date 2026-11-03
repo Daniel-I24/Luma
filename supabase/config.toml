@@ -8,3 +8,6 @@ verify_jwt = true
 
 [functions.suggest-promotions]
 verify_jwt = true
+
+[functions.extract-menu]
+verify_jwt = true

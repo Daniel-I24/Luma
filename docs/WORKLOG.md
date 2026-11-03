@@ -83,7 +83,11 @@ agent's sessions).
   while pending, stale_review check, pending->suspended and reactivation.
   1.4 public contact columns, business_photos gallery (8), menu cap 200,
   80 files per business folder in Storage (definer count helper), gallery
-  in delete-account cleanup. 346 SQL checks.
+  in delete-account cleanup. 1.5 multimodal gateway (images, LLM_VISION_MODEL),
+  extract-menu (draft only, 8 MB/2 MB, magic bytes, COP parsing, quota
+  consume_menu_scan_quota), quota only before model calls, suggest-promotions
+  rules fallback (200), recommend cache key with area, bounded readJson,
+  shared rule cases (Deno + Vitest), scripts/ai-smoke.mjs.
 
 - Block D done: migration 20261021000000 (discounts, trigger, server prices in
   create_order; 23 SQL checks), customer /promotions (sort, filters, states,

@@ -1,3 +1,4 @@
+import { anthropicContent, geminiParts, openAiContent } from './content.ts';
 import { at, guard, parseAnswer, fail, postJson } from './http.ts';
 import type { FetchLike, LlmProvider, LlmRequest, LlmValidator, ProviderOptions } from './types.ts';
 
@@ -27,7 +28,7 @@ export function createGeminiProvider(options: ProviderOptions): LlmProvider {
           { 'x-goog-api-key': options.apiKey },
           {
             systemInstruction: { parts: [{ text: withSchema(request) }] },
-            contents: [{ role: 'user', parts: [{ text: request.user }] }],
+            contents: [{ role: 'user', parts: geminiParts(request) }],
             generationConfig: {
               responseMimeType: 'application/json',
               maxOutputTokens: request.maxTokens ?? DEFAULT_MAX_TOKENS,
@@ -61,7 +62,7 @@ export function createOpenAiCompatibleProvider(options: ProviderOptions): LlmPro
             response_format: { type: 'json_object' },
             messages: [
               { role: 'system', content: withSchema(request) },
-              { role: 'user', content: request.user },
+              { role: 'user', content: openAiContent(request) },
             ],
           },
           options.timeoutMs,
@@ -87,7 +88,7 @@ export function createAnthropicProvider(options: ProviderOptions): LlmProvider {
             model: options.model,
             max_tokens: request.maxTokens ?? DEFAULT_MAX_TOKENS,
             system: request.system,
-            messages: [{ role: 'user', content: request.user }],
+            messages: [{ role: 'user', content: anthropicContent(request) }],
             output_config: { format: { type: 'json_schema', schema: request.schema } },
           },
           options.timeoutMs,

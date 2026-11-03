@@ -22,6 +22,11 @@ if (!result.ok) return unavailable(); // result.reason is for tests, never shown
 | `LLM_MODEL` | model id of that provider (never hard-coded here) |
 | `LLM_API_KEY` | the provider key |
 | `LLM_BASE_URL` | optional; for `openai` e.g. `https://api.groq.com/openai/v1` (default) or `https://openrouter.ai/api/v1` |
+| `LLM_VISION_MODEL` | optional; used by `providerFromEnv(get, fetch, 'vision')` for requests with images (30 s timeout) |
+
+Images: `LlmRequest.images` (`{ mimeType, base64 }`, checked by the caller)
+travel as Gemini `inlineData`, OpenAI-compatible `image_url` data URLs or
+Anthropic base64 `image` blocks. Text-only requests are unchanged.
 
 Behaviour:
 
