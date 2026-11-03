@@ -445,3 +445,14 @@ alternative that was not taken. The safest, most reversible option wins.
   official plugin if Capacitor ships one), plugged in `SupabaseService`
   only on native platforms; revisit if the app starts storing anything
   more sensitive than the session, or before an iOS release.
+
+## 2026-10-28 — ESLint: errors only for any, naming and 150 lines
+
+- **What**: complexity, function length, depth, params, magic numbers,
+  accessibility, return types, prefer-readonly, layer boundaries, loose
+  functions and JSDoc are warnings; `no-explicit-any`, naming and
+  `max-lines` (150) stay errors.
+- **Why**: round 3 asked for warning mode; the code has zero warnings today
+  and the Definition of Done forbids new ones, so nothing is lost.
+- **Alternative**: keep every rule as an error (stricter, but a single
+  long function would block CI).

@@ -53,6 +53,10 @@ aliases and relative paths.
 
 ## Rules (CI: `npx ng lint`)
 
+Since round 3 only `no-explicit-any`, `naming-convention` and `max-lines`
+(150) are errors; every other rule below is a warning. Warnings are kept
+at zero by convention (Definition of Done: no new warnings).
+
 | Rule | Limit |
 | --- | --- |
 | `complexity` | 10 |
@@ -69,6 +73,17 @@ aliases and relative paths.
 
 Specs relax size, literal and documentation limits; types and layers still
 apply. The local rules are tested in `scripts/eslint-rules.test.mjs`.
+
+## Exceptions
+
+- Angular functional factories stay functions (`*Fn` guards, resolvers,
+  interceptors, `provide*`), as thin adapters that delegate to classes.
+- Data tables (DIAN weights, option lists, encoder qualities) keep literal
+  numbers with a justified `eslint-disable-next-line`.
+- Module-private helpers (not exported) may be plain functions or arrows
+  next to the class that uses them.
+- Edge Functions (`supabase/functions`) follow Deno conventions and are not
+  covered by these ESLint rules; their own tests and `deno check` apply.
 
 ## Naming
 
