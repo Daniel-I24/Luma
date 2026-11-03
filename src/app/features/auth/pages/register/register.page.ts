@@ -11,7 +11,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
 import { PendingVerification } from '@core/auth/pending-verification';
 import { Phone } from '@shared/account/phone';
-import { TERMS_VERSION } from '@shared/legal/legal-version';
+import { LEGAL_VERSIONS } from '@shared/legal/legal-version';
 import { LumaButton, LumaCard } from '@design-system';
 import { AuthFormSubmission } from '../../forms/auth-form-submission';
 import { AccountTypeStep } from '../../signup/components/account-type-step/account-type-step';
@@ -78,8 +78,11 @@ export class RegisterPage {
           accountType: draft.accountType ?? 'customer',
           fullName: draft.fullName,
           phone: Phone.parse(draft.phone)?.e164 ?? null,
-          acceptedTerms: draft.acceptedTerms && draft.acceptedPrivacy && draft.isAdult,
-          termsVersion: TERMS_VERSION,
+          acceptedTerms: draft.acceptedTerms,
+          acceptedPrivacy: draft.acceptedPrivacy,
+          confirmedAge: draft.isAdult,
+          termsVersion: LEGAL_VERSIONS.terms,
+          privacyVersion: LEGAL_VERSIONS.privacy,
         }),
       () => this.onRegistered(draft.email),
     );

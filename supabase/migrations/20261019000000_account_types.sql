@@ -4,7 +4,7 @@
 --
 --   - profiles gets account_type ('customer' | 'business_owner'), full_name
 --     and phone (private: only the user reads them; no public or business
---     view exposes them), consented_at and terms_version (set by the server
+--     view exposes them), terms, privacy and age consents with their versions (set by the server
 --     from the sign-up metadata) and onboarding_seen_version.
 --   - handle_new_user copies and validates the sign-up metadata. It never
 --     blocks a sign-up: anything invalid is ignored and safe defaults apply.
@@ -23,9 +23,13 @@ alter table public.profiles
     constraint profiles_full_name_length check (full_name is null or char_length(btrim(full_name)) between 1 and 80),
   add column if not exists phone text
     constraint profiles_phone_co_mobile check (phone is null or phone ~ '^\+573[0-9]{9}$'),
-  add column if not exists consented_at timestamptz,
+  add column if not exists terms_accepted_at timestamptz,
   add column if not exists terms_version text
     constraint profiles_terms_version_length check (terms_version is null or char_length(terms_version) <= 20),
+  add column if not exists privacy_accepted_at timestamptz,
+  add column if not exists privacy_version text
+    constraint profiles_privacy_version_length check (privacy_version is null or char_length(privacy_version) <= 20),
+  add column if not exists age_confirmed_at timestamptz,
   add column if not exists onboarding_seen_version smallint not null default 0
     constraint profiles_onboarding_version_range check (onboarding_seen_version between 0 and 1000);
 
@@ -71,17 +75,27 @@ declare
   v_type text := case when v_meta ->> 'account_type' = 'business_owner'
                       then 'business_owner' else 'customer' end;
   v_name text := nullif(btrim(v_meta ->> 'full_name'), '');
-  v_consent boolean := jsonb_typeof(v_meta -> 'accepted_terms') = 'boolean'
-                       and (v_meta ->> 'accepted_terms')::boolean;
+  -- Each consent is recorded only when its own flag is the boolean true.
+  v_terms boolean := coalesce(jsonb_typeof(v_meta -> 'accepted_terms') = 'boolean'
+                              and (v_meta ->> 'accepted_terms')::boolean, false);
+  v_privacy boolean := coalesce(jsonb_typeof(v_meta -> 'accepted_privacy') = 'boolean'
+                                and (v_meta ->> 'accepted_privacy')::boolean, false);
+  v_age boolean := coalesce(jsonb_typeof(v_meta -> 'confirmed_age') = 'boolean'
+                            and (v_meta ->> 'confirmed_age')::boolean, false);
 begin
   if char_length(v_name) > 80 then
     v_name := null;
   end if;
   begin
-    insert into public.profiles (id, email, account_type, full_name, phone, consented_at, terms_version)
+    insert into public.profiles (id, email, account_type, full_name, phone,
+                                 terms_accepted_at, terms_version, privacy_accepted_at,
+                                 privacy_version, age_confirmed_at)
     values (new.id, new.email, v_type, v_name, public.normalize_co_mobile(v_meta ->> 'phone'),
-            case when v_consent then now() end,
-            case when v_consent then left(v_meta ->> 'terms_version', 20) end);
+            case when v_terms then now() end,
+            case when v_terms then left(v_meta ->> 'terms_version', 20) end,
+            case when v_privacy then now() end,
+            case when v_privacy then left(v_meta ->> 'privacy_version', 20) end,
+            case when v_age then now() end);
   exception when others then
     -- Never block a sign-up: fall back to the bare profile.
     insert into public.profiles (id, email) values (new.id, new.email)
@@ -97,6 +111,47 @@ revoke execute on function public.handle_new_user() from public, anon, authentic
 revoke update on public.profiles from authenticated;
 grant update (display_name, full_name, phone, onboarding_seen_version) on public.profiles to authenticated;
 
+-- 4b. Confirmed email ------------------------------------------------------------
+-- Every write that matters (orders, businesses, reviews, reports, AI, devices)
+-- needs a confirmed email, whatever the Auth project settings allow.
+create or replace function public.is_email_confirmed()
+returns boolean
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select exists (select 1 from auth.users u
+                 where u.id = (select auth.uid()) and u.email_confirmed_at is not null)
+$$;
+
+revoke execute on function public.is_email_confirmed() from public, anon;
+grant execute on function public.is_email_confirmed() to authenticated;
+
+-- Inserts by API users (reviews, reports) need a confirmed email; the SQL
+-- editor and seeds (no JWT role) are not affected.
+create or replace function public.require_confirmed_email()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if coalesce(nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'role', '') = 'authenticated'
+     and not public.is_email_confirmed() then
+    raise exception using errcode = 'P0001', message = 'email_not_confirmed';
+  end if;
+  return new;
+end;
+$$;
+
+revoke execute on function public.require_confirmed_email() from public, anon, authenticated;
+
+drop trigger if exists reviews_require_confirmed_email on public.reviews;
+create trigger reviews_require_confirmed_email
+  before insert on public.reviews
+  for each row execute function public.require_confirmed_email();
+
 -- 5. Customer -> business owner (one way) ---------------------------------------
 create or replace function public.become_business_owner()
 returns text
@@ -109,6 +164,9 @@ declare
 begin
   if auth.uid() is null then
     raise exception using errcode = '28000', message = 'not_authenticated';
+  end if;
+  if not public.is_email_confirmed() then
+    raise exception using errcode = 'P0001', message = 'email_not_confirmed';
   end if;
   update public.profiles set account_type = 'business_owner'
   where id = auth.uid() and account_type = 'customer';
@@ -133,6 +191,9 @@ begin
   if coalesce(nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'role', '')
      not in ('anon', 'authenticated') then
     return new;
+  end if;
+  if not public.is_email_confirmed() then
+    raise exception using errcode = 'P0001', message = 'email_not_confirmed';
   end if;
   if not exists (select 1 from public.profiles p
                  where p.id = new.owner_id and p.account_type = 'business_owner') then

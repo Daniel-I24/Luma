@@ -18,7 +18,7 @@
   >
     {{ t('legal.draftNotice') }}
   </p>
-  <p class="m-0 text-body-sm text-fg-muted">{{ t('legal.version', { version: version }) }}</p>
+  <p class="m-0 text-body-sm text-fg-muted">{{ t('legal.version', { version: version() }) }}</p>
 
   @for (section of sections(); track section) {
   <section class="flex flex-col gap-2" [attr.aria-labelledby]="'legal-' + section">

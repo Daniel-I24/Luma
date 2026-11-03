@@ -114,4 +114,9 @@ revoke all on public.reports from public, anon, authenticated;
 grant select on public.reports to authenticated;
 grant insert (business_id, reason, comment) on public.reports to authenticated;
 
+drop trigger if exists reports_require_confirmed_email on public.reports;
+create trigger reports_require_confirmed_email
+  before insert on public.reports
+  for each row execute function public.require_confirmed_email();
+
 notify pgrst, 'reload schema';

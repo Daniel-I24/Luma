@@ -4,7 +4,7 @@ import { TranslocoTestingModule } from '@jsverse/transloco';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '@core/auth/auth.service';
 import { PendingVerification } from '@core/auth/pending-verification';
-import { TERMS_VERSION } from '@shared/legal/legal-version';
+import { LEGAL_VERSIONS } from '@shared/legal/legal-version';
 import { SignupDraftStore } from '../../signup/signup-draft.store';
 import { RegisterPage } from './register.page';
 
@@ -82,7 +82,10 @@ describe('RegisterPage (stepped sign-up)', () => {
       fullName: 'Ana Pérez',
       phone: '+573001234567',
       acceptedTerms: true,
-      termsVersion: TERMS_VERSION,
+      acceptedPrivacy: true,
+      confirmedAge: true,
+      termsVersion: LEGAL_VERSIONS.terms,
+      privacyVersion: LEGAL_VERSIONS.privacy,
     });
     expect(TestBed.inject(PendingVerification).email()).toBe('ana@example.com');
     expect(TestBed.inject(SignupDraftStore).draft().password).toBe('');

@@ -13,7 +13,9 @@
 --      round(list * (100 - percent) / 100) to the nearest peso, halves up
 --      (e.g. 9990 at 15% = 8491.5 -> 8492). Prices sent by the app are never
 --      read: the client only sends item ids and quantities.
---   4. create_order uses it for the total and the lines.
+--   4. create_order uses it for the total and the lines. This is the final
+--      definition of create_order: it also requires a confirmed email and
+--      caps orders per hour (per user, and per user and business).
 -- NOT APPLIED YET.
 -- -----------------------------------------------------------------------------
 
@@ -165,6 +167,9 @@ begin
   if v_user is null then
     raise exception using errcode = '28000', message = 'not_authenticated';
   end if;
+  if not public.is_email_confirmed() then
+    raise exception using errcode = 'P0001', message = 'email_not_confirmed';
+  end if;
   -- Only public businesses (published and verified) take orders.
   select b.name, b.address into v_business
   from public.businesses b
@@ -219,6 +224,16 @@ begin
   if (select count(*) from public.orders o where o.user_id = v_user and o.status = 'pending')
      >= coalesce((select s.int_value from public.app_settings s where s.key = 'order_max_pending_per_user'), 5) then
     raise exception using errcode = 'P0001', message = 'too_many_pending';
+  end if;
+  -- Hourly caps count every order, cancelled ones too (no create/cancel loops).
+  if (select count(*) from public.orders o
+      where o.user_id = v_user and o.created_at > v_now - interval '1 hour')
+     >= coalesce((select s.int_value from public.app_settings s where s.key = 'order_max_per_hour_per_user'), 6)
+     or (select count(*) from public.orders o
+         where o.user_id = v_user and o.business_id = p_business_id
+           and o.created_at > v_now - interval '1 hour')
+     >= coalesce((select s.int_value from public.app_settings s where s.key = 'order_max_per_hour_per_business'), 2) then
+    raise exception using errcode = 'P0001', message = 'too_many_orders';
   end if;
 
   -- Name and address are copied so the order survives the business.

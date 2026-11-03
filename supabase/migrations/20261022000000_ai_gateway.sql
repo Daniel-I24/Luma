@@ -59,6 +59,9 @@ begin
   if v_user is null then
     raise exception using errcode = '28000', message = 'not_authenticated';
   end if;
+  if not public.is_email_confirmed() then
+    raise exception using errcode = 'P0001', message = 'email_not_confirmed';
+  end if;
   if p_business_id is not null and not public.owns_business(p_business_id) then
     raise exception using errcode = '42501', message = 'not_business_owner';
   end if;

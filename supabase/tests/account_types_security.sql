@@ -9,20 +9,23 @@ begin;
 insert into auth.users (id, email, raw_user_meta_data) values
   (tests.id('own'), 'own@test.local',
    '{"account_type": "business_owner", "full_name": "  Ana Pérez ", "phone": "+57 300 123 4567",
-     "accepted_terms": true, "terms_version": "2026-10"}'),
-  (tests.id('cus'), 'cus@test.local', '{"account_type": "admin", "phone": "12345", "accepted_terms": "yes"}'),
+     "accepted_terms": true, "terms_version": "2026-10", "accepted_privacy": true,
+     "privacy_version": "2026-10p", "confirmed_age": true}'),
+  (tests.id('cus'), 'cus@test.local', '{"account_type": "admin", "phone": "12345", "accepted_terms": "yes", "accepted_privacy": true, "privacy_version": "p1"}'),
   (tests.id('long'), 'long@test.local', jsonb_build_object('full_name', repeat('x', 81), 'phone', '3001234567')),
   (tests.id('none'), 'none@test.local', null),
   (tests.id('junk'), 'junk@test.local', '[1, 2, 3]');
 
 select tests.expect_true('authenticated', tests.id('own'),
   $$select account_type = 'business_owner' and full_name = 'Ana Pérez' and phone = '+573001234567'
-       and consented_at is not null and terms_version = '2026-10'
+       and terms_accepted_at is not null and terms_version = '2026-10'
+       and privacy_accepted_at is not null and privacy_version = '2026-10p' and age_confirmed_at is not null
     from public.profiles where id = tests.id('own')$$, 'valid metadata is copied and normalised');
 select tests.expect_true('authenticated', tests.id('cus'),
-  $$select account_type = 'customer' and phone is null and consented_at is null
+  $$select account_type = 'customer' and phone is null and terms_accepted_at is null and terms_version is null
+       and privacy_accepted_at is not null and privacy_version = 'p1' and age_confirmed_at is null
     from public.profiles where id = tests.id('cus')$$,
-  'unknown type, bad phone and non-boolean consent fall back to safe defaults');
+  'unknown type, bad phone and non-boolean consent fall back to safe defaults; each consent stands alone');
 select tests.expect_true('authenticated', tests.id('long'),
   $$select full_name is null and phone = '+573001234567' from public.profiles where id = tests.id('long')$$,
   'a too long name is ignored, a bare mobile is normalised');
@@ -41,7 +44,11 @@ select tests.expect_true('authenticated', tests.id('cus'),
 select tests.expect_error('authenticated', tests.id('cus'),
   $$update public.profiles set account_type = 'business_owner' where id = tests.id('cus')$$, 'permission denied');
 select tests.expect_error('authenticated', tests.id('cus'),
-  $$update public.profiles set consented_at = now() where id = tests.id('cus')$$, 'permission denied');
+  $$update public.profiles set terms_accepted_at = now() where id = tests.id('cus')$$, 'permission denied');
+select tests.expect_error('authenticated', tests.id('cus'),
+  $$update public.profiles set privacy_accepted_at = now(), privacy_version = 'x' where id = tests.id('cus')$$, 'permission denied');
+select tests.expect_error('authenticated', tests.id('cus'),
+  $$update public.profiles set age_confirmed_at = now() where id = tests.id('cus')$$, 'permission denied');
 select tests.expect_error('authenticated', tests.id('cus'),
   $$update public.profiles set terms_version = 'x' where id = tests.id('cus')$$, 'permission denied');
 select tests.expect_error('authenticated', tests.id('cus'),

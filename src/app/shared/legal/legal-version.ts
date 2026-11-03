@@ -1,6 +1,9 @@
 /**
- * Version of the terms and privacy policy the user accepts at sign-up
- * (profiles.terms_version, at most 20 characters). Change it whenever the
- * texts change; the pages are still drafts pending legal review.
+ * Versions of the legal texts accepted at sign-up (profiles.terms_version and
+ * privacy_version, at most 20 characters each), shown on /legal. Change one
+ * whenever its text changes; the pages are still drafts pending legal review.
  */
-export const TERMS_VERSION = '2026-10-draft';
+export const LEGAL_VERSIONS = {
+  terms: '2026-10-draft',
+  privacy: '2026-10-draft',
+} as const;

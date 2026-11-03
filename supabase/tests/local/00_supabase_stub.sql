@@ -21,3 +21,4 @@ alter default privileges in schema public grant all on functions to anon, authen
 alter default privileges in schema public grant all on sequences to anon, authenticated, service_role;
 -- Columns of auth.users the migrations and functions read.
 alter table auth.users add column if not exists raw_user_meta_data jsonb;
+alter table auth.users add column if not exists email_confirmed_at timestamptz default now();  -- stub: confirmed unless a test sets null

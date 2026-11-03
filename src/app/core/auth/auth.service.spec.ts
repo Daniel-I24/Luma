@@ -4,8 +4,6 @@ import { AuthService } from './auth.service';
 import { signUpMetadata } from './sign-up-profile';
 import { SupabaseService } from '@core/supabase/supabase.service';
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
 /** Creates a minimal SupabaseService stub with controllable auth responses. */
 function makeSupabaseStub(overrides: Record<string, unknown> = {}) {
   return {
@@ -27,8 +25,6 @@ function makeSupabaseStub(overrides: Record<string, unknown> = {}) {
     },
   };
 }
-
-// ── Test suite ────────────────────────────────────────────────────────────────
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -93,15 +89,16 @@ describe('AuthService', () => {
   it('signUp: sends the profile as the metadata handle_new_user reads', async () => {
     const signUp = vi.fn().mockResolvedValue({ error: null });
     setup({ signUp });
-
     const profile = {
       accountType: 'customer',
       fullName: 'Ana',
       phone: null,
       acceptedTerms: true,
+      acceptedPrivacy: true,
+      confirmedAge: true,
       termsVersion: 'v1',
+      privacyVersion: 'p1',
     } as const;
-
     await service.signUp('ana@example.com', 'password123', profile);
 
     expect(signUp).toHaveBeenCalledWith({

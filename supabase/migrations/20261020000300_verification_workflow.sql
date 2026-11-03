@@ -16,6 +16,9 @@ declare
   b public.businesses;
   v_missing text[] := '{}';
 begin
+  if not public.is_email_confirmed() then
+    raise exception using errcode = 'P0001', message = 'email_not_confirmed';
+  end if;
   select * into b from public.businesses
   where id = p_business_id and owner_id = (select auth.uid())
   for update;

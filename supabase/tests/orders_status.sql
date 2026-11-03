@@ -44,7 +44,7 @@ select tests.expect_error('authenticated', tests.id('ana'),
 select tests.expect_error('authenticated', tests.id('owner'),
   $$select public.set_order_status(tests.order_id('ana-2'), 'picked_up')$$, 'invalid_transition');
 select tests.expect_error('authenticated', tests.id('owner'),
-  $$select public.set_order_status(tests.order_id('ana-2'), 'cancelled')$$, 'invalid_transition');
+  $$select public.set_order_status(tests.order_id('ana-2'), 'pending')$$, 'invalid_transition');
 select tests.expect_error('authenticated', tests.id('owner'),
   $$select public.set_order_status(tests.order_id('ana-2'), 'nonsense')$$, 'invalid_transition');
 select tests.exec_as('authenticated', tests.id('owner'), $$
@@ -58,6 +58,10 @@ select tests.expect_error('authenticated', tests.id('owner'),
   $$select public.set_order_status(tests.order_id('ana-2'), 'cancelled')$$, 'invalid_transition');
 select tests.expect_error('authenticated', tests.id('owner'),
   $$select public.set_order_status(tests.order_id('ana-1'), 'accepted')$$, 'invalid_transition');
+
+-- Hourly caps are tested in email_and_order_safeguards.sql; lift them here.
+update public.app_settings set int_value = 100
+where key in ('order_max_per_hour_per_user', 'order_max_per_hour_per_business');
 
 -- ── at most 5 pending orders per user ───────────────────────────────────────
 select tests.exec_as('authenticated', tests.id('bob'), format($$

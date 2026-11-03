@@ -50,7 +50,9 @@ begin
   end if;
   if (v_status, p_status) not in (
     ('pending', 'accepted'), ('pending', 'cancelled'), ('accepted', 'preparing'),
-    ('preparing', 'ready'), ('ready', 'picked_up')
+    ('preparing', 'ready'), ('ready', 'picked_up'),
+    -- The owner may still cancel after accepting (e.g. the customer never came).
+    ('accepted', 'cancelled'), ('preparing', 'cancelled'), ('ready', 'cancelled')
   ) then
     raise exception using errcode = 'P0001', message = 'invalid_transition';
   end if;

@@ -75,6 +75,12 @@ agent's sessions).
 
 ## In progress
 
+- Launch brief (2026-10-19), FASE 1 (database): 1.1 separate consents
+  (terms, privacy, age with versions) and  required on
+  orders, owner upgrade, business creation, review submission, reviews,
+  reports and AI quota; 1.3 hourly order caps, owner cancellation after
+  accepting,  (pg_cron when enabled). 317 SQL checks.
+
 - Block D done: migration 20261021000000 (discounts, trigger, server prices in
   create_order; 23 SQL checks), customer /promotions (sort, filters, states,
   Pedir), shared PromotionCard reused by the restaurant Promos tab, links from
