@@ -13,22 +13,49 @@
     <p class="m-0 flex flex-wrap items-center gap-2">
       <span class="text-body font-medium text-fg">{{ t('contactVerification.kind.' + row.kind) }}</span>
       <span class="min-w-0 flex-1 truncate text-body-sm text-fg-muted">{{ row.value }}</span>
-      @if (row.verifiedAt) {
+      @if (row.verified) {
       <span class="inline-flex items-center gap-1 rounded-full bg-success-bg px-2 py-0.5 text-caption font-semibold text-success-fg">
         <app-luma-icon name="check" size="sm" /> {{ t('contactVerification.verified') }}
       </span>
-      } @else {
+      } @else if (!row.landline) {
       <span class="rounded-full bg-warning-bg px-2 py-0.5 text-caption font-semibold text-warning-fg">
         {{ t('contactVerification.pendingBadge') }}
       </span>
       }
     </p>
-    @if (!row.verifiedAt) { @if (row.pending; as request) {
+    @if (!row.verified) { @if (row.landline) {
+    <p class="m-0 rounded-md bg-info-bg p-3 text-body-sm text-info-fg" role="note">{{ t('contactVerification.steps.landline') }}</p>
+    } @else if (row.pending; as request) {
     <p class="m-0 text-body-sm text-fg">
       {{ t('contactVerification.yourCode') }}
       <strong class="font-mono tracking-wider">{{ request.code }}</strong>
     </p>
-    @switch (step[row.kind]) { @case ('message') { @if (support) {
+    @switch (row.verifier.strategy) { @case ('whatsapp') { @if (support) {
+    <p class="m-0 text-body-sm text-fg-muted">{{ t('contactVerification.steps.whatsappAuto', { value: row.value }) }}</p>
+    <a
+      class="pressable inline-flex min-h-11 items-center justify-center rounded-md bg-primary px-4 text-body font-semibold text-primary-fg no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+      target="_blank"
+      rel="noopener noreferrer"
+      [href]="supportLink(request.code)"
+      (click)="watch(row.kind)"
+      >{{ t('contactVerification.verifyWithWhatsapp') }}</a
+    >
+    @if (watching() === row.kind) {
+    <p class="m-0 text-caption text-fg-muted" role="status" aria-live="polite">{{ t('contactVerification.watching') }}</p>
+    } } @else {
+    <p class="m-0 rounded-md bg-info-bg p-3 text-body-sm text-info-fg" role="note">{{ t('contactVerification.steps.noSupport') }}</p>
+    } } @case ('website') {
+    <p class="m-0 text-body-sm text-fg-muted">{{ t('contactVerification.steps.websiteAuto', { code: request.code, url: fileUrl(row.value) }) }}</p>
+    <app-luma-button variant="secondary" size="sm" [disabled]="busy() !== null" (clicked)="checkWebsite()">
+      {{ t(busy() === 'website' ? 'contactVerification.website.checking' : 'contactVerification.website.check') }}
+    </app-luma-button>
+    @if (websiteKey(); as key) {
+    <p class="m-0 text-body-sm text-fg" role="status" aria-live="polite">{{ t(key) }}</p>
+    } } @default { @if (row.kind === 'instagram' || row.kind === 'facebook') {
+    <p class="m-0 text-body-sm text-fg-muted">{{ t('contactVerification.steps.social', { code: request.code }) }}</p>
+    } @else if (row.kind === 'website') {
+    <p class="m-0 text-body-sm text-fg-muted">{{ t('contactVerification.steps.website', { code: request.code, url: fileUrl(row.value) }) }}</p>
+    } @else if (support) {
     <p class="m-0 text-body-sm text-fg-muted">{{ t('contactVerification.steps.message', { value: row.value, code: request.code }) }}</p>
     <a
       class="pressable inline-flex min-h-11 items-center justify-center rounded-md bg-primary px-4 text-body font-semibold text-primary-fg no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
@@ -39,12 +66,9 @@
     >
     } @else {
     <p class="m-0 rounded-md bg-info-bg p-3 text-body-sm text-info-fg" role="note">{{ t('contactVerification.steps.noSupport') }}</p>
-    } } @case ('social') {
-    <p class="m-0 text-body-sm text-fg-muted">{{ t('contactVerification.steps.social', { code: request.code }) }}</p>
-    } @case ('website') {
-    <p class="m-0 text-body-sm text-fg-muted">{{ t('contactVerification.steps.website', { code: request.code, url: fileUrl(row.value) }) }}</p>
-    } }
+    }
     <p class="m-0 text-caption text-fg-subtle">{{ t('contactVerification.steps.review') }}</p>
+    } }
     } @else {
     <app-luma-button variant="secondary" size="sm" [disabled]="busy() !== null" (clicked)="request(row.kind)">
       {{ t(busy() === row.kind ? 'contactVerification.requesting' : 'contactVerification.request') }}

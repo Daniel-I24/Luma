@@ -3,6 +3,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { ExternalUrls } from '@core/config/external-urls';
 import { LumaButton } from '@design-system';
 import type { PendingContactVerification } from '@shared/business/verification/contact-verification';
+import { ContactVerifiers } from '@shared/business/verification/contact-verifier';
 import { ContactVerificationRepository } from '@shared/business/verification/contact-verification.repository';
 
 /**
@@ -52,7 +53,7 @@ export class ContactQueue {
       case 'facebook':
         return ExternalUrls.facebook(item.value);
       case 'website':
-        return `${item.value.replace(/\/+$/, '')}/luma-verificacion.txt`;
+        return ContactVerifiers.fileUrl(item.value);
       default:
         return null;
     }

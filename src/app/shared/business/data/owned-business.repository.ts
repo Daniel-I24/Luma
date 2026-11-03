@@ -4,6 +4,7 @@ import { SupabaseService } from '@core/supabase/supabase.service';
 import type { Business } from '../models/business.model';
 import type { BusinessContact } from '../models/business-contact';
 import type { RepoResult } from './business.repository';
+import { PanelQueryLog } from '../diagnostics/panel-query-log';
 import { BusinessWriteErrors } from './business-write-error';
 import {
   type BusinessImagesInput,
@@ -29,6 +30,7 @@ const INVALID = 'businessPanel.errors.invalidData';
 export class OwnedBusinessRepository {
   private readonly db = inject(SupabaseService).client;
   private readonly auth = inject(AuthService);
+  private readonly log = inject(PanelQueryLog);
 
   /** The user's businesses, published or not, oldest first. */
   public async listMine(): Promise<RepoResult<OwnedBusinessSummary[]>> {
@@ -39,6 +41,7 @@ export class OwnedBusinessRepository {
       .select('id, name, category, is_active, owner_id')
       .eq('owner_id', userId)
       .order('created_at');
+    this.log.record('businesses', PanelQueryLog.filter('owner_id', userId), error ? null : (data?.length ?? 0));
     if (error) return { data: null, errorKey: 'businessPanel.errors.loadFailed' };
     // The filter above is the rule; this second check keeps another owner's row out even if a query changes.
     const rows = (data as (OwnedBusinessSummary & { owner_id: string })[]).filter((row) => row.owner_id === userId);
@@ -55,6 +58,7 @@ export class OwnedBusinessRepository {
       .eq('id', id)
       .eq('owner_id', userId)
       .maybeSingle();
+    this.log.record('businesses', `${PanelQueryLog.filter('id', id)}, ${PanelQueryLog.filter('owner_id', userId)}`, error ? null : data ? 1 : 0);
     if (error) return { data: null, errorKey: 'businessPanel.errors.loadFailed' };
     return { data: data as Business | null, errorKey: null };
   }

@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { PanelQueryLog } from '@shared/business/diagnostics/panel-query-log';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import type { RepoResult } from '@shared/business/data/business.repository';
 import { OrderErrors } from './order-error';
@@ -53,6 +54,7 @@ const LIST_LIMIT = 100;
 @Injectable({ providedIn: 'root' })
 export class BusinessOrderRepository {
   private readonly db = inject(SupabaseService).client;
+  private readonly log = inject(PanelQueryLog);
 
   /** Ids of the orders waiting for the business to accept them (light, for alerts). */
   public async pendingIds(businessId: string): Promise<RepoResult<string[]>> {
@@ -62,6 +64,7 @@ export class BusinessOrderRepository {
       .eq('business_id', businessId)
       .eq('status', 'pending')
       .limit(LIST_LIMIT);
+    this.log.record('business_orders', PanelQueryLog.filter('business_id', businessId), error ? null : (data?.length ?? 0));
     if (error) return { data: null, errorKey: 'businessOrders.errors.loadFailed' };
     return { data: (data as { id: string }[]).map((row) => row.id), errorKey: null };
   }

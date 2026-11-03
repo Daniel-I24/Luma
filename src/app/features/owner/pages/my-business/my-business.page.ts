@@ -8,6 +8,7 @@ import { TutorialSettings } from '@shared/tutorial/tutorial-settings';
 import { NotificationSettings } from '@shared/notifications/notification-settings/notification-settings';
 import { type OwnerBusinessScreen, ownerPaths } from '@shared/account/owner-paths';
 import { PanelHeader } from '../../components/panel-header/panel-header';
+import { TechnicalInfo } from '../../components/technical-info/technical-info';
 import { PanelStateView } from '../../components/panel-state/panel-state';
 import { PanelBusinessStore } from '../../state/panel-business.store';
 import { EDITABLE_STATUSES } from '../../utils/review-checklist';
@@ -32,7 +33,7 @@ const SCREENS: readonly { screen: OwnerBusinessScreen; icon: IconName; key: stri
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     TranslocoModule, RouterLink, LumaIcon, AccountActions, AppearanceSettings, NotificationSettings, PanelHeader,
-    PanelStateView, TutorialSettings,
+    PanelStateView, TutorialSettings, TechnicalInfo,
   ],
   providers: [PanelBusinessStore],
   templateUrl: './my-business.page.html',

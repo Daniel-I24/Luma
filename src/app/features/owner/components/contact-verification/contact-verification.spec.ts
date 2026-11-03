@@ -1,22 +1,25 @@
 import { TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { SUPPORT_WHATSAPP } from '@core/config/support';
 import type { Business } from '@shared/business/models/business.model';
 import { ContactVerificationRepository } from '@shared/business/verification/contact-verification.repository';
-import { ContactVerificationCard } from './contact-verification';
+import { ContactVerifiers } from '@shared/business/verification/contact-verifier';
+import { ContactVerificationCard, WATCH_EVERY_MS, WATCH_FOR_MS } from './contact-verification';
 
 const business = {
   id: 'b1',
-  phone: '+573001112233',
-  phone_verified_at: '2026-10-01T00:00:00Z',
+  phone: '+57 601 234 5678',
   whatsapp: '+573004445566',
   instagram: 'cafe.publico',
-  website: 'https://cafe.co/',
+  website: 'https://cafe.co/menu',
 } as Business;
+const pending = (kind: string, value: string, code: string, status = 'pending') =>
+  ({ id: `r-${kind}`, kind, value, code, status, requested_at: 'x' });
+const AUTO = { phone: 'whatsapp', whatsapp: 'whatsapp', website: 'website', instagram: 'manual', facebook: 'manual' };
 
-describe('ContactVerificationCard', () => {
-  const repo = { listMine: vi.fn(), request: vi.fn() };
+describe('ContactVerificationCard with the automatic strategies', () => {
+  const repo = { listMine: vi.fn(), request: vi.fn(), config: vi.fn(), checkWebsite: vi.fn() };
 
   function setup(support = '573009990000') {
     TestBed.configureTestingModule({
@@ -37,49 +40,103 @@ describe('ContactVerificationCard', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    return fixture.nativeElement as HTMLElement;
+    const el = fixture.nativeElement as HTMLElement;
+    const row = (kind: string) => Array.from(el.querySelectorAll('article')).find((a) => a.textContent?.includes(`kind.${kind}`))!;
+    return { fixture, el, row };
   }
 
   beforeEach(() => {
     vi.clearAllMocks();
+    repo.config.mockResolvedValue(AUTO);
     repo.listMine.mockResolvedValue({
       data: [
-        { id: 'r1', kind: 'whatsapp', value: '+573004445566', code: 'LUMA-AB12CD', status: 'pending', requested_at: 'x' },
-        { id: 'r2', kind: 'instagram', value: 'old.handle', code: 'LUMA-000000', status: 'pending', requested_at: 'x' },
+        pending('whatsapp', '+573004445566', 'LUMA-AB12CD'),
+        pending('instagram', 'cafe.publico', 'LUMA-IG0001'),
+        pending('website', 'https://cafe.co/menu', 'LUMA-WEB001'),
       ],
       errorKey: null,
     });
-    repo.request.mockResolvedValue({ data: 'LUMA-FF00AA', errorKey: null });
+    repo.checkWebsite.mockResolvedValue({ verified: false, reasonKey: 'contactVerification.website.mismatch' });
   });
+  afterEach(() => vi.useRealTimers());
 
-  it('shows each contact verified or pending, with the code and its steps', async () => {
+  it('WhatsApp: "Verificar con WhatsApp" opens the support chat with the code and watches the state', async () => {
     setup();
-    const el = await render();
-    const rows = Array.from(el.querySelectorAll('article'));
+    const { fixture, row } = await render();
+    vi.useFakeTimers();
+    const link = row('whatsapp').querySelector('a')!;
+    expect(link.textContent).toContain('contactVerification.verifyWithWhatsapp');
+    expect(link.getAttribute('href')).toBe('https://wa.me/573009990000?text=LUMA-AB12CD');
+    expect(row('whatsapp').textContent).toContain('contactVerification.steps.whatsappAuto');
 
-    expect(rows).toHaveLength(4);
-    expect(rows[0].textContent).toContain('contactVerification.verified');
-    expect(rows[1].textContent).toContain('LUMA-AB12CD');
-    expect(rows[1].querySelector('a')?.getAttribute('href')).toBe('https://wa.me/573009990000?text=LUMA-AB12CD');
-    // A request for an old value does not count: the owner asks again.
-    expect(rows[2].textContent).toContain('contactVerification.request');
-    expect(rows[3].textContent).toContain('contactVerification.request');
+    link.dispatchEvent(new MouseEvent('click', { cancelable: true }));
+    repo.listMine.mockResolvedValue({ data: [pending('whatsapp', '+573004445566', 'LUMA-AB12CD', 'verified')], errorKey: null });
+    await vi.advanceTimersByTimeAsync(WATCH_EVERY_MS);
+    fixture.detectChanges();
+    expect(row('whatsapp').textContent).toContain('contactVerification.verified');
+    const reads = repo.listMine.mock.calls.length;
+    await vi.advanceTimersByTimeAsync(WATCH_FOR_MS);
+    expect(repo.listMine.mock.calls.length).toBe(reads);
   });
 
-  it('without SUPPORT_WHATSAPP the step says it is not configured yet', async () => {
-    setup('');
-    const el = await render();
-
-    expect(el.textContent).toContain('contactVerification.steps.noSupport');
-    expect(el.querySelector('a[href^="https://wa.me"]')).toBeNull();
-  });
-
-  it('asks for a code and reloads the requests', async () => {
+  it('stops watching after 2 minutes without an answer', async () => {
     setup();
-    const el = await render();
-    const button = Array.from(el.querySelectorAll('button')).find((b) => b.textContent?.includes('contactVerification.request'))!;
-    button.click();
-    await vi.waitFor(() => expect(repo.request).toHaveBeenCalledWith('b1', 'instagram'));
-    expect(repo.listMine).toHaveBeenCalledTimes(2);
+    const { row } = await render();
+    vi.useFakeTimers();
+    row('whatsapp').querySelector('a')!.dispatchEvent(new MouseEvent('click', { cancelable: true }));
+    await vi.advanceTimersByTimeAsync(WATCH_FOR_MS + WATCH_EVERY_MS);
+    const reads = repo.listMine.mock.calls.length;
+    await vi.advanceTimersByTimeAsync(WATCH_FOR_MS);
+    expect(repo.listMine.mock.calls.length).toBe(reads);
+  });
+
+  it('a landline is explained, without a request button nor a badge', async () => {
+    setup();
+    const { row } = await render();
+    expect(row('phone').textContent).toContain('contactVerification.steps.landline');
+    expect(row('phone').querySelector('button')).toBeNull();
+    expect(row('phone').textContent).not.toContain('contactVerification.pendingBadge');
+  });
+
+  it('website: the file at /.well-known and "Comprobar ahora" with its answer', async () => {
+    setup();
+    const { fixture, row } = await render();
+    expect(row('website').textContent).toContain('contactVerification.steps.websiteAuto');
+    row('website').querySelector('button')!.click();
+    await vi.waitFor(() => expect(repo.checkWebsite).toHaveBeenCalledWith('b1'));
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(row('website').textContent).toContain('contactVerification.website.mismatch');
+  });
+
+  it('Instagram stays with the admin queue while the automatic strategies are on', async () => {
+    setup();
+    const { row } = await render();
+    expect(row('instagram').textContent).toContain('contactVerification.steps.social');
+    expect(row('instagram').textContent).toContain('contactVerification.steps.review');
+  });
+
+  it('with the automatic strategies off (or no answer) everything falls back to the queue', async () => {
+    repo.config.mockResolvedValue({});
+    setup();
+    const { row } = await render();
+    expect(row('whatsapp').textContent).toContain('contactVerification.openWhatsapp');
+    expect(row('website').textContent).toContain('contactVerification.steps.website');
+    expect(row('website').querySelector('button')).toBeNull();
+  });
+});
+
+describe('ContactVerifiers', () => {
+  it('only allowed strategies per kind; anything else is manual', () => {
+    expect(ContactVerifiers.for('phone', { phone: 'whatsapp' }).strategy).toBe('whatsapp');
+    expect(ContactVerifiers.for('instagram', { instagram: 'whatsapp' }).strategy).toBe('manual');
+    expect(ContactVerifiers.for('website', { website: 'whatsapp' }).strategy).toBe('manual');
+    expect(ContactVerifiers.for('website', {}).automatic).toBe(false);
+  });
+
+  it('landlines and the verification file', () => {
+    expect(ContactVerifiers.isLandline('+57 601 234 5678')).toBe(true);
+    expect(ContactVerifiers.isLandline('+57 300 111 2233')).toBe(false);
+    expect(ContactVerifiers.fileUrl('https://cafe.co/menu?x=1')).toBe('https://cafe.co/.well-known/luma-verification.txt');
   });
 });

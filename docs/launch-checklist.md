@@ -105,3 +105,10 @@ values; never paste the service_role key anywhere in the app.
   (docs/route.md); without them the app shows a straight-line estimate.
 - Push: docs/push-setup.md, then "Enviar notificación de prueba".
 - Payments in sandbox: docs/payments-setup.md.
+
+## Round 6 additions (optional)
+
+- Migration 53 (`20261103000000_round6.sql`) after 52; until then
+  verify-backend reports its RPCs as "[migration 53]: missing" without failing.
+- Automatic contact verification: docs/whatsapp-setup.md (Meta app, webhook,
+  secrets, `SUPPORT_WHATSAPP`, then the two flags).

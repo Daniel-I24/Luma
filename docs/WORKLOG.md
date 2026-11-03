@@ -171,6 +171,25 @@ SQL suites, Deno 2.5.6 in Docker for the functions.
   Deno tests, type check and lint of the functions, every check, secret
   scan, audit 0, knip (no unused files or dependencies).
 
+## Round 6 (2026-10-29)
+
+- Migration 53 `20261103000000_round6` (pending review, depends on 52):
+  strategy per contact kind, WhatsApp inbound verification for
+  service_role, website checks; supabase/tests/round6.sql (22 checks).
+- Edge Functions `whatsapp-webhook` (Meta subscription, HMAC of the raw body,
+  idempotent ids, no number stored, never replies) and `verify-website`
+  (SSRF rules); both inert until configured. verify-backend knows them and
+  reports migration 53 RPCs as pending.
+- App: `ContactVerifier` strategies (WhatsApp inbound, website file, manual
+  admin), "Verificar con WhatsApp" with a 3 s / 2 min watch, landlines
+  explained, "Comprobar ahora" for websites; Instagram and Facebook stay
+  manual. Mi negocio → Ayuda → "Información técnica" (PanelQueryLog).
+- docs/whatsapp-setup.md (Spanish, step by step).
+- DoD: build (667 kB initial), lint, 823 app tests, 92 script tests, 723
+  SQL checks, 146 Deno tests and type check of 13 functions, Deno lint,
+  every check, secret scan, audit 0, knip and depcheck (known false
+  positives only).
+
 ## Round 5 (2026-10-28)
 
 - Block A: owner list filtered and re-checked by owner_id, keyed by user,

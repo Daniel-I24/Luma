@@ -96,3 +96,9 @@ to `shared/appearance/` (shared with "Mi negocio"); the delete sheet of
 knip: no unused files or dependencies; the new exports that nothing used
 were made private. depcheck: only the known false positives (path aliases,
 tooling read through config files).
+
+## Round 6 (2026-10-29)
+
+- Nothing deleted. The website code path `/luma-verificacion.txt` (round 5,
+  only in texts and the admin link) is now `/.well-known/luma-verification.txt`
+  through `ContactVerifiers.fileUrl`.

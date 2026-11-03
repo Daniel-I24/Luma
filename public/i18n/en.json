@@ -1591,7 +1591,8 @@
       "contact": "Contact and social",
       "contactHint": "WhatsApp, Instagram, Facebook and website",
       "gallery": "Photos of the place",
-      "galleryHint": "Up to 8 photos for your public profile"
+      "galleryHint": "Up to 8 photos for your public profile",
+      "help": "Help"
     },
     "verificationPage": {
       "title": "Legal data and documents",
@@ -1788,6 +1789,24 @@
         "approved": "Verified",
         "rejected": "Changes requested",
         "suspended": "Suspended"
+      }
+    },
+    "technical": {
+      "title": "Technical information",
+      "hint": "To send to support if something looks wrong",
+      "email": "E-mail",
+      "user": "User",
+      "businesses": "Businesses in the panel",
+      "queries": "Panel reads (newest first)",
+      "table": "Table",
+      "filter": "Filter",
+      "rows": "Rows",
+      "failed": "error",
+      "empty": "No reads yet: open a section of the panel.",
+      "copy": "Copy information",
+      "copied": {
+        "ok": "Copied. Paste it in your message to support.",
+        "failed": "It could not be copied on this device."
       }
     }
   },
@@ -2237,7 +2256,10 @@
       "noSupport": "Luma's support WhatsApp is not configured yet (SUPPORT_WHATSAPP). Come back later to verify this number.",
       "social": "Post the code {{code}} in the bio or in a public post of this account. Once verified you can remove it.",
       "website": "Publish a file at {{url}} containing {{code}}.",
-      "review": "A person of the team checks it and we let you know with a notification."
+      "review": "A person of the team checks it and we let you know with a notification.",
+      "whatsappAuto": "Send the message exactly as it is, from this number ({{value}}). Luma verifies it by itself in a few seconds.",
+      "landline": "This looks like a landline: it cannot send WhatsApp, so it is not verified and gets no badge. You can add a mobile with WhatsApp to verify it.",
+      "websiteAuto": "Publish a text file at {{url}} with one line saying exactly {{code}} and tap \"Check now\"."
     },
     "errors": {
       "tooMany": "You already asked for 3 verifications today for this business. Try tomorrow.",
@@ -2245,7 +2267,24 @@
       "changed": "The owner changed that contact after asking for the verification: it cannot be verified.",
       "notPending": "That request was already reviewed.",
       "load": "The verifications could not be loaded.",
-      "failed": "The verification could not be completed. Try again."
+      "failed": "The verification could not be completed. Try again.",
+      "tooManyChecks": "You already checked 3 times today. Try tomorrow.",
+      "noPending": "First ask for a code for your website (valid for 24 hours).",
+      "autoOff": "Automatic checking is off: the team will review it by hand."
+    },
+    "verifyWithWhatsapp": "Verify with WhatsApp",
+    "watching": "Waiting for your message… it is verified as soon as it arrives (up to 2 minutes).",
+    "website": {
+      "check": "Check now",
+      "checking": "Checking…",
+      "verified": "Done: your website is verified.",
+      "mismatch": "We found the file, but it does not have the exact code on one line.",
+      "not_found": "We could not find the file at that address.",
+      "too_large": "The file is too big: leave only the code.",
+      "blocked": "That address cannot be checked: it must be https and point to a public server.",
+      "unreachable": "Your site did not answer in time. Try again in a while.",
+      "changed": "The website changed after asking for the code: ask for a new one.",
+      "failed": "The site could not be checked. Try again."
     }
   },
   "route": {

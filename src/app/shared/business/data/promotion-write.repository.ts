@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { PanelQueryLog } from '../diagnostics/panel-query-log';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import type { Promotion } from '../models/business.model';
 import type { RepoResult } from './business.repository';
@@ -15,6 +16,7 @@ const SAVE_FAILED = 'businessPanel.errors.saveFailed';
 @Injectable({ providedIn: 'root' })
 export class PromotionWriteRepository {
   private readonly db = inject(SupabaseService).client;
+  private readonly log = inject(PanelQueryLog);
 
   /** All promotions of the business, newest start first. */
   public async listForOwner(businessId: string): Promise<RepoResult<Promotion[]>> {
@@ -23,6 +25,7 @@ export class PromotionWriteRepository {
       .select('*')
       .eq('business_id', businessId)
       .order('starts_at', { ascending: false });
+    this.log.record('promotions', PanelQueryLog.filter('business_id', businessId), error ? null : (data?.length ?? 0));
     if (error) return { data: null, errorKey: 'businessPanel.errors.loadFailed' };
     return { data: data as Promotion[], errorKey: null };
   }

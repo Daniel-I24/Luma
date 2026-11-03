@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { SupabaseService } from '@core/supabase/supabase.service';
+import { PanelQueryLog } from '../diagnostics/panel-query-log';
 import type { MenuItem } from '../models/menu.model';
 import type { RepoResult } from './business.repository';
 
@@ -10,6 +11,7 @@ import type { RepoResult } from './business.repository';
 @Injectable({ providedIn: 'root' })
 export class MenuRepository {
   private readonly db = inject(SupabaseService).client;
+  private readonly log = inject(PanelQueryLog);
 
   /** Menu of a business, grouped by section then in the owner's order. */
   public async getMenu(businessId: string): Promise<RepoResult<MenuItem[]>> {
@@ -20,6 +22,7 @@ export class MenuRepository {
       .order('section', { nullsFirst: false })
       .order('sort_order');
 
+    this.log.record('menu_items', PanelQueryLog.filter('business_id', businessId), error ? null : (data?.length ?? 0));
     if (error) return { data: null, errorKey: 'businesses.errors.menuFailed' };
     return { data: data as MenuItem[], errorKey: null };
   }

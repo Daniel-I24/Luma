@@ -85,7 +85,7 @@ jobs:
       - uses: actions/checkout@v7
       - name: Edge Function tests (fake fetch, no network to providers)
         run: |
-          for dir in _shared delete-account recommend suggest-promotions extract-menu geocode push-dispatch create-payment wompi-webhook reconcile-payments void-payment route; do
+          for dir in _shared delete-account recommend suggest-promotions extract-menu geocode push-dispatch create-payment wompi-webhook reconcile-payments void-payment route verify-website whatsapp-webhook; do
             echo "== $dir"
             (cd "supabase/functions/$dir" && deno test --no-lock --config deno.json -A)
           done
@@ -94,6 +94,6 @@ jobs:
         run: cd supabase/functions && deno lint --config deno.lint.json
       - name: Type check entry points
         run: |
-          for dir in delete-account recommend suggest-promotions extract-menu geocode push-dispatch create-payment wompi-webhook reconcile-payments void-payment route; do
+          for dir in delete-account recommend suggest-promotions extract-menu geocode push-dispatch create-payment wompi-webhook reconcile-payments void-payment route verify-website whatsapp-webhook; do
             (cd "supabase/functions/$dir" && deno check --no-lock --config deno.json index.ts)
           done

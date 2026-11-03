@@ -18,6 +18,13 @@ verify_jwt = true
 [functions.route]
 verify_jwt = true
 
+[functions.verify-website]
+verify_jwt = true
+
+# Called by Meta with an X-Hub-Signature-256 HMAC, not by users.
+[functions.whatsapp-webhook]
+verify_jwt = false
+
 # Called by the database with a shared secret (x-push-secret), not by users.
 [functions.push-dispatch]
 verify_jwt = false

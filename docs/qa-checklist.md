@@ -76,7 +76,7 @@ and `npm run check:interactive`.
 - Trust limit message: without payments it never mentions paying online
   and links to the pending order.
 - Contacts: ask for a code, follow the steps (WhatsApp to support, bio,
-  /luma-verificacion.txt); the admin verifies it in /admin; the customer sees
+  /.well-known/luma-verification.txt); the admin verifies it in /admin; the customer sees
   only verified contacts with the badge; changing a value removes the badge.
 - Business screen → Información: trust card without NIT or legal data.
 - Approved business → "Solicitar corrección de datos legales": warning,
@@ -91,3 +91,22 @@ and `npm run check:interactive`.
 - Resumen: cover and logo with the verification state, cards with the trend
   against yesterday, quick actions; empty states with illustrations; order
   cards with their state colour; success toasts draw a check.
+
+## Round 6 (2026-10-29)
+
+- With `contact_auto_whatsapp = 1` and the webhook set up: "Verificar con
+  WhatsApp" opens WhatsApp with the code; sent from that number, the badge
+  appears within seconds while the screen shows "Esperando tu mensaje…"
+  (it stops after 2 minutes). From another number, an invented code, an
+  expired code (over 24 h) or someone else's code: nothing is verified.
+- A landline (60…) is explained, with no request button and no badge.
+- With `contact_auto_website = 1`: publish
+  `/.well-known/luma-verification.txt` with the code and "Comprobar ahora"
+  verifies; a wrong code, a missing file or the fourth check of the day says
+  why.
+- Instagram and Facebook still show the manual steps and are verified from
+  /admin while the automatic strategies are on.
+- Both flags at 0: every contact shows the manual steps again.
+- Mi negocio → Ayuda → "Información técnica": masked e-mail, short user id,
+  businesses in the panel and each read (table, filter, rows); "Copiar
+  información" copies the same text; nothing personal appears.

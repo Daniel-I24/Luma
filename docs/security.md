@@ -81,6 +81,17 @@ event bodies.
 | NIT, legal name, legal representative, documents | Only the owner and the review team (RLS, private bucket); never in the trust summary |
 | Customers' names, phones and avatars | Never public; a business sees only what an order of theirs needs |
 
+## Automatic contact verification (round 6)
+
+- `whatsapp-webhook` (`verify_jwt = false`): the HMAC SHA-256 of the raw
+  body (`X-Hub-Signature-256`, App Secret) is checked in constant time
+  before parsing; only text messages with a strict `LUMA-XXXXXX`; only
+  `service_role` may call `verify_contact_from_whatsapp`; no number or text
+  stored (id for 7 days, sender HMAC for the limits).
+- `verify-website`: SSRF rules in `supabase/functions/verify-website/ssrf.ts`;
+  residual DNS rebinding risk in docs/whatsapp-setup.md.
+- Both are inert until their flags are on and their secrets set.
+
 ## Related documents
 
 - [Threat model](threat-model.md)

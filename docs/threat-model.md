@@ -50,6 +50,8 @@ design).
 | T22 | Impersonated contacts: a business shows someone else's phone or Instagram | Contacts shown only after a person of the team checks a LUMA code; owners cannot write `<kind>_verified_at`; a changed value loses its badge; 3 requests a day | SQL `round5.sql`; `contact-verification.spec.ts`, `info-tab.spec.ts` |
 | T23 | Account takeover deletes the account | Deleting needs a fresh e-mail code (`verifyOtp`) and delete-account still requires a sign-in younger than 10 minutes | `delete-account-sheet.spec.ts`; Deno `delete-account` |
 | T24 | Routing key leaked or abused | Key only in the Edge Function (Authorization header, never a URL), JWT, 60 calls a day per user, cache | Deno `route/handler.test.ts` |
+| T25 | Forged WhatsApp webhook verifies someone's phone | HMAC of the raw body before parsing, constant-time compare, service_role-only function, the sender must equal the request's value, codes expire in 24 h, idempotent ids, 10 attempts a day per sender hash | Deno `whatsapp-webhook/handler.test.ts`; SQL `round6.sql` |
+| T26 | SSRF through verify-website | https/443 only, DNS checked against private/loopback/link-local/metadata ranges, again after each of at most 2 same-host redirections, 5 s, 4 KB, no user headers; residual DNS rebinding | Deno `verify-website/handler.test.ts` |
 
 ## Residual risks
 

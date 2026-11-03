@@ -1,7 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import type { RepoResult } from '../data/business.repository';
-import type { ContactKind, ContactVerification, PendingContactVerification } from './contact-verification';
+import { CONTACT_KINDS, type ContactKind, type ContactVerification, type PendingContactVerification } from './contact-verification';
+import type { VerifierStrategy } from './contact-verifier';
+
+/** verify-website answers; reason when not verified. */
+export type WebsiteCheck = { readonly verified: true } | { readonly verified: false; readonly reasonKey: string };
 
 /** Messages of the round5 contact functions and their translation keys. */
 const CONTACT_ERRORS: Readonly<Record<string, string>> = {
@@ -12,7 +16,11 @@ const CONTACT_ERRORS: Readonly<Record<string, string>> = {
   not_admin: 'admin.errors.notAdmin',
   contact_changed: 'contactVerification.errors.changed',
   verification_not_pending: 'contactVerification.errors.notPending',
+  too_many_checks: 'contactVerification.errors.tooManyChecks',
+  no_pending_request: 'contactVerification.errors.noPending',
+  auto_disabled: 'contactVerification.errors.autoOff',
 };
+const STRATEGIES = new Set<string>(['whatsapp', 'website', 'manual']);
 
 const fail = (message: string | undefined, fallback: string): RepoResult<never> => ({
   data: null,
@@ -59,4 +67,48 @@ export class ContactVerificationRepository {
     if (error) return fail(error.message, 'contactVerification.errors.failed');
     return { data: true, errorKey: null };
   }
+
+  /** Strategy per kind; on any error every kind is manual (the queue always works). */
+  public async config(): Promise<Partial<Record<ContactKind, VerifierStrategy>>> {
+    const { data, error } = await this.db.rpc('contact_verifier_config');
+    if (error || !Array.isArray(data)) return {};
+    const rows = data as { kind: string; strategy: string }[];
+    return Object.fromEntries(
+      rows.filter((r) => (CONTACT_KINDS as readonly string[]).includes(r.kind) && STRATEGIES.has(r.strategy))
+        .map((r) => [r.kind, r.strategy]),
+    );
+  }
+
+  /** verify-website: Luma looks for the code in the website's file now (3 checks a day). */
+  public async checkWebsite(businessId: string): Promise<WebsiteCheck> {
+    try {
+      const { data, error } = await this.db.functions.invoke('verify-website', { method: 'POST', body: { business_id: businessId } });
+      const body = (error ? await readError(error) : data) as WebsiteAnswer | null;
+      return websiteResult(body);
+    } catch {
+      return { verified: false, reasonKey: 'contactVerification.website.failed' };
+    }
+  }
 }
+
+interface WebsiteAnswer {
+  readonly verified?: boolean;
+  readonly reason?: string;
+  readonly error?: string;
+}
+
+/** The answer of verify-website as the owner reads it. */
+const websiteResult = (body: WebsiteAnswer | null): WebsiteCheck => {
+  if (body?.verified === true) return { verified: true };
+  const reason = body?.reason ?? body?.error ?? 'failed';
+  const own = `contactVerification.website.${WEBSITE_REASONS.has(reason) ? reason : 'failed'}`;
+  return { verified: false, reasonKey: CONTACT_ERRORS[reason] ?? own };
+};
+
+const WEBSITE_REASONS = new Set(['mismatch', 'not_found', 'too_large', 'blocked', 'unreachable', 'changed']);
+
+/** The JSON body of a FunctionsHttpError, if any. */
+const readError = async (error: unknown): Promise<unknown> => {
+  const context = (error as { context?: unknown }).context;
+  return context instanceof Response ? context.json().catch(() => null) : null;
+};

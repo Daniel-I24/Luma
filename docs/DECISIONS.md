@@ -652,3 +652,51 @@ alternative that was not taken. The safest, most reversible option wins.
 - **What**: every icon is Lucide 0.468.0 path data in the registry (ISC
   licence in docs/brand/icons.md), no npm package; `luma-ai` stays ours.
 - **Why**: only ~40 icons are used; a package would add tooling for nothing.
+
+## 2026-10-29 — Round 6: automatic contact verification, off by default
+
+- **What**: migration 53 (`20261103000000_round6.sql`) adds
+  `contact_verifier_config()`; `contact_auto_whatsapp` and
+  `contact_auto_website` start at 0. Phone and WhatsApp use
+  `WhatsAppInboundVerifier`, the website `WebsiteFileVerifier`, Instagram and
+  Facebook always `ManualAdminVerifier`. With a flag off, an unknown answer
+  or no secrets, that kind falls back to the admin queue (the queue still
+  lists every pending request, so the team can always finish one by hand).
+- **Why**: nothing changes until the owner configures Meta and turns it on.
+
+## 2026-10-29 — whatsapp-webhook keeps no number
+
+- **What**: only the message id (7 days) and an HMAC of the sender keyed with
+  the App Secret (attempt limit, 10 a day) are stored; the number is passed
+  to the database only to compare it with the request and is never saved;
+  the text is never logged. The function never answers messages. It returns
+  200 after the signature check and processes in `EdgeRuntime.waitUntil`
+  when available; a bad signature is 401.
+- **Why**: Meta retries non-200 answers for up to 7 days (duplicates are
+  expected, hence the idempotency by id).
+- **Alternative**: a separate salt secret; the App Secret already is one and
+  never leaves the server.
+
+## 2026-10-29 — Website file moves to /.well-known
+
+- **What**: the website code lives at `/.well-known/luma-verification.txt`
+  (manual and automatic), one line exactly equal to the code. verify-website
+  allows https on 443 only, resolves A and AAAA and refuses private,
+  loopback, link-local, CGNAT, metadata and reserved addresses, again after
+  each of at most 2 same-host redirections; 5 s, 4 KB, no user headers.
+- **Why**: a standard place; the residual DNS rebinding risk is documented in
+  docs/whatsapp-setup.md.
+
+## 2026-10-29 — Landlines are explained, not verified
+
+- **What**: numbers starting with 60 (Colombian landlines) under the
+  WhatsApp strategy show an explanation and no request button nor badge.
+- **Why**: they cannot send a WhatsApp from the number itself.
+
+## 2026-10-29 — Owner diagnostics in memory only
+
+- **What**: `PanelQueryLog` keeps the last 30 reads of the panel (table,
+  filter with ids cut to 8 characters, row count) in memory, wiped at
+  sign-out; "Información técnica" shows the masked e-mail and short user id.
+- **Why**: enough to see if the business list arrives with another owner's
+  rows or with the wrong filter, without personal data or a server log.

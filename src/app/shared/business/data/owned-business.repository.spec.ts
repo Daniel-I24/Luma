@@ -6,6 +6,7 @@ import { SupabaseService } from '@core/supabase/supabase.service';
 import { createFakeSupabase, ok } from '../../../../testing/fake-supabase';
 import type { FakeResponse } from '../../../../testing/fake-supabase';
 import type { NewBusinessInput } from './business-write.schemas';
+import { PanelQueryLog } from '../diagnostics/panel-query-log';
 import { OwnedBusinessRepository } from './owned-business.repository';
 
 const draft: NewBusinessInput = {
@@ -48,6 +49,13 @@ describe('OwnedBusinessRepository', () => {
     TestBed.resetTestingModule();
     const second = setup({ businesses: ok(rows) }, 'u2');
     expect((await second.repo.listMine()).data?.map((b) => b.id)).toEqual(['b1', 'b2']);
+  });
+
+  it('records each read for "Información técnica": table, filter and rows, never the rows themselves', async () => {
+    const { repo } = setup({ businesses: ok([row('a1', 'u1'), row('x9', 'u2')]) }, 'u1');
+    await repo.listMine();
+
+    expect(TestBed.inject(PanelQueryLog).entries()[0]).toMatchObject({ table: 'businesses', filter: 'owner_id = u1…', rows: 2 });
   });
 
   it('scopes every panel write to the owner', async () => {

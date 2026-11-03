@@ -1591,7 +1591,8 @@
       "contact": "Contacto y redes",
       "contactHint": "WhatsApp, Instagram, Facebook y sitio web",
       "gallery": "Fotos del lugar",
-      "galleryHint": "Hasta 8 fotos para tu perfil público"
+      "galleryHint": "Hasta 8 fotos para tu perfil público",
+      "help": "Ayuda"
     },
     "verificationPage": {
       "title": "Datos legales y documentos",
@@ -1788,6 +1789,24 @@
         "approved": "Verificado",
         "rejected": "Cambios solicitados",
         "suspended": "Suspendido"
+      }
+    },
+    "technical": {
+      "title": "Información técnica",
+      "hint": "Para enviarla a soporte si algo se ve mal",
+      "email": "Correo",
+      "user": "Usuario",
+      "businesses": "Negocios en el panel",
+      "queries": "Consultas del panel (las más recientes primero)",
+      "table": "Tabla",
+      "filter": "Filtro",
+      "rows": "Filas",
+      "failed": "error",
+      "empty": "Aún no hay consultas: abre una sección del panel.",
+      "copy": "Copiar información",
+      "copied": {
+        "ok": "Copiada. Pégala en tu mensaje a soporte.",
+        "failed": "No se pudo copiar en este dispositivo."
       }
     }
   },
@@ -2237,7 +2256,10 @@
       "noSupport": "El WhatsApp de soporte de Luma aún no está configurado (SUPPORT_WHATSAPP). Vuelve más tarde para verificar este número.",
       "social": "Publica el código {{code}} en la biografía o en una publicación pública de esta cuenta. Cuando quede verificado puedes quitarlo.",
       "website": "Publica un archivo en {{url}} que contenga {{code}}.",
-      "review": "Una persona del equipo lo revisa y te avisamos con una notificación."
+      "review": "Una persona del equipo lo revisa y te avisamos con una notificación.",
+      "whatsappAuto": "Envía el mensaje tal cual, desde este número ({{value}}). Luma lo verifica sola en unos segundos.",
+      "landline": "Este parece un número fijo: no puede enviar WhatsApp, así que no se verifica ni lleva insignia. Puedes añadir un celular con WhatsApp para verificarlo.",
+      "websiteAuto": "Publica un archivo de texto en {{url}} con una línea que diga exactamente {{code}} y toca \"Comprobar ahora\"."
     },
     "errors": {
       "tooMany": "Ya pediste 3 verificaciones hoy para este negocio. Intenta mañana.",
@@ -2245,7 +2267,24 @@
       "changed": "El dueño cambió ese contacto después de pedir la verificación: no se puede verificar.",
       "notPending": "Esa solicitud ya se revisó.",
       "load": "No se pudieron cargar las verificaciones.",
-      "failed": "No se pudo completar la verificación. Intenta de nuevo."
+      "failed": "No se pudo completar la verificación. Intenta de nuevo.",
+      "tooManyChecks": "Ya comprobaste 3 veces hoy. Intenta mañana.",
+      "noPending": "Pide primero un código para tu sitio web (vale 24 horas).",
+      "autoOff": "La comprobación automática está apagada: el equipo lo revisará a mano."
+    },
+    "verifyWithWhatsapp": "Verificar con WhatsApp",
+    "watching": "Esperando tu mensaje… se verifica solo en cuanto llegue (hasta 2 minutos).",
+    "website": {
+      "check": "Comprobar ahora",
+      "checking": "Comprobando…",
+      "verified": "Listo: tu sitio web quedó verificado.",
+      "mismatch": "Encontramos el archivo, pero no tiene el código exacto en una línea.",
+      "not_found": "No encontramos el archivo en esa dirección.",
+      "too_large": "El archivo es demasiado grande: deja solo el código.",
+      "blocked": "Esa dirección no se puede comprobar: debe ser https y apuntar a un servidor público.",
+      "unreachable": "Tu sitio no respondió a tiempo. Intenta de nuevo en un rato.",
+      "changed": "El sitio web cambió después de pedir el código: pide uno nuevo.",
+      "failed": "No se pudo comprobar el sitio. Intenta de nuevo."
     }
   },
   "route": {
