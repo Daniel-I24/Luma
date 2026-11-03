@@ -3,14 +3,8 @@ import { authGuard } from '@core/auth/auth.guard';
 import { guestGuard } from '@core/auth/guest.guard';
 import { DETAIL_ROUTE_DATA } from '@core/navigation/route-transition';
 import { accountHomeGuard, accountReadyGuard, ownerGuard } from '@shared/account/account.guards';
+import { DEV_ONLY_ROUTES } from './dev-routes';
 
-const DEV_ONLY_ROUTES: Routes = [
-  {
-    path: 'design-preview',
-    loadComponent: () =>
-      import('./features/design-preview/design-preview').then((m) => m.DesignPreviewPage),
-  },
-];
 
 export const routes: Routes = [
   {
@@ -66,9 +60,9 @@ export const routes: Routes = [
     path: 'legal',
     loadChildren: () => import('./features/legal/legal.routes').then((m) => m.legalRoutes),
   },
-  // Design system showcase: development builds only. The production build
-  // defines ngDevMode as false, so the route and its chunk are dropped.
-  ...(typeof ngDevMode === 'undefined' || ngDevMode ? DEV_ONLY_ROUTES : []),
+  // Design system showcase: development builds only (dev-routes.ts is
+  // replaced by an empty list in production and deploy builds).
+  ...DEV_ONLY_ROUTES,
   {
     // Luma Negocios: business-owner accounts, with their own shell and tabs.
     path: 'owner',
