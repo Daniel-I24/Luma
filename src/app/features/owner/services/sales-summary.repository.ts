@@ -27,6 +27,7 @@ const schema = z.object({
 export class SalesSummaryRepository {
   private readonly db = inject(SupabaseService).client;
 
+  /** Daily sales of a business over the range. */
   public async daily(businessId: string, range: SalesRange): Promise<RepoResult<SalesSummary>> {
     const { data, error } = await this.db.rpc('owner_sales_daily', { p_business_id: businessId, p_days: range });
     const parsed = schema.safeParse(data);

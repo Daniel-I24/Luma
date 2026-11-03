@@ -34,6 +34,7 @@ export class PromotionsStore {
     }),
   );
 
+  /** Loads the current promotions. */
   public async load(): Promise<void> {
     this._state.set('loading');
     const result = await this.repo.listCurrent();
@@ -46,10 +47,12 @@ export class PromotionsStore {
     this._state.set('ready');
   }
 
+  /** Changes one filter. */
   public setFilter<K extends keyof DealFilters>(key: K, value: DealFilters[K]): void {
     this.filters.update((filters) => ({ ...filters, [key]: value }));
   }
 
+  /** Removes every filter. */
   public clearFilters(): void {
     this.filters.set(NO_DEAL_FILTERS);
   }

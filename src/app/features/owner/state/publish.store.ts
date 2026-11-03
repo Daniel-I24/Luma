@@ -32,6 +32,7 @@ export class PublishStore {
     return business ? PublishRequirements.missingRequirements(business, this.hours(), this.items()) : [];
   });
 
+  /** Loads what a business still needs before publishing. */
   public async load(id: string): Promise<void> {
     const [hours, items] = await Promise.all([
       this.businesses.getHours(id),

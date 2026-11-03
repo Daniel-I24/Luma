@@ -28,6 +28,7 @@ export class ReviewsStore {
   public readonly saving = this._saving.asReadonly();
   public readonly formErrorKey = this._formErrorKey.asReadonly();
 
+  /** Loads the reviews of a business and the user's own one. */
   public async load(businessId: string): Promise<void> {
     this._loading.set(true);
     this._errorKey.set(null);
@@ -54,6 +55,7 @@ export class ReviewsStore {
     return done;
   }
 
+  /** Deletes the user's review; true when it was deleted. */
   public async remove(businessId: string): Promise<boolean> {
     const own = this._ownReview();
     if (!own) return false;

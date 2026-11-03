@@ -31,22 +31,30 @@ const EXTENSIONS: Record<string, string> = {
 /** Contract: an owner's verification data (Supabase is one implementation). */
 @Injectable({ providedIn: 'root', useFactory: () => new SupabaseVerificationRepository() })
 export abstract class VerificationRepository {
+  /** Legal data of a business, or null when not saved yet. */
   public abstract getLegal(businessId: string): Promise<RepoResult<LegalInfo | null>>;
+  /** Saves NIT, legal name and legal representative. */
   public abstract saveLegal(
     businessId: string,
     taxId: string,
     legalName: string,
     legalRep: string,
   ): Promise<RepoResult<true>>;
+  /** Uploaded verification documents. */
   public abstract listDocs(businessId: string): Promise<RepoResult<VerificationDoc[]>>;
+  /** Uploads a verification document to private Storage. */
   public abstract uploadDoc(businessId: string, kind: DocKind, file: File): Promise<RepoResult<true>>;
+  /** Deletes a verification document. */
   public abstract deleteDoc(doc: VerificationDoc): Promise<RepoResult<true>>;
+  /** Sends the business to review. */
   public abstract submit(businessId: string): Promise<RepoResult<SubmitResult>>;
 }
 
+/** SupabaseVerificationRepository — legal data and documents through RLS and Storage. */
 export class SupabaseVerificationRepository extends VerificationRepository {
   private readonly db = inject(SupabaseService).client;
 
+  /** @inheritdoc */
   public async getLegal(businessId: string): Promise<RepoResult<LegalInfo | null>> {
     const { data, error } = await this.db
       .from('business_legal')
@@ -57,6 +65,7 @@ export class SupabaseVerificationRepository extends VerificationRepository {
     return { data: data as LegalInfo | null, errorKey: null };
   }
 
+  /** @inheritdoc */
   public async saveLegal(
     businessId: string,
     taxId: string,
@@ -83,6 +92,7 @@ export class SupabaseVerificationRepository extends VerificationRepository {
       : { data: true, errorKey: null };
   }
 
+  /** @inheritdoc */
   public async listDocs(businessId: string): Promise<RepoResult<VerificationDoc[]>> {
     const { data, error } = await this.db
       .from('business_verification_docs')
@@ -113,6 +123,7 @@ export class SupabaseVerificationRepository extends VerificationRepository {
     return { data: true, errorKey: null };
   }
 
+  /** @inheritdoc */
   public async deleteDoc(doc: VerificationDoc): Promise<RepoResult<true>> {
     const removed = await this.db.storage.from(VERIFICATION_BUCKET).remove([doc.storage_path]);
     if (removed.error) return { data: null, errorKey: 'verification.errors.deleteFailed' };
@@ -122,6 +133,7 @@ export class SupabaseVerificationRepository extends VerificationRepository {
       : { data: true, errorKey: null };
   }
 
+  /** @inheritdoc */
   public async submit(businessId: string): Promise<RepoResult<SubmitResult>> {
     const { data, error } = await this.db.rpc('submit_business_for_review', {
       p_business_id: businessId,

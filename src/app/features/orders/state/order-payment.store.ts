@@ -26,6 +26,7 @@ export class OrderPaymentStore {
     return payment ? Math.max(payment.attemptsMax - payment.attemptsUsed, 0) : 0;
   });
 
+  /** Loads the payment attempts of an order. */
   public async load(orderId: string): Promise<void> {
     this.orderId = orderId;
     const result = await this.payments.orderPayment(orderId);

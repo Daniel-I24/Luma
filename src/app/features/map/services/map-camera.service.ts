@@ -13,6 +13,7 @@ export class MapCameraService {
   private userMarker: maplibregl.Marker | null = null;
   private placeMarker: maplibregl.Marker | null = null;
 
+  /** The MapLibre map; throws if it was not created. */
   public get instance(): maplibregl.Map {
     return this.map;
   }
@@ -26,6 +27,7 @@ export class MapCameraService {
     this.map.on('moveend', () => this.onMoveEnd(onMovedFar));
   }
 
+  /** Removes the map and frees its WebGL context. */
   public destroy(): void {
     if (this.moveDebounce) clearTimeout(this.moveDebounce);
     this.userMarker = null;
@@ -33,6 +35,7 @@ export class MapCameraService {
     this.map?.remove();
   }
 
+  /** Moves the camera to a point. */
   public flyTo(lat: number, lng: number): void {
     this.map.flyTo({ center: [lng, lat], zoom: DEFAULT_ZOOM });
   }
@@ -67,18 +70,22 @@ export class MapCameraService {
     this.map.flyTo({ center: [lng, lat], zoom: PLACE_ZOOM });
   }
 
+  /** Zooms in one level. */
   public zoomIn(): void {
     this.map.zoomIn();
   }
 
+  /** Zooms out one level. */
   public zoomOut(): void {
     this.map.zoomOut();
   }
 
+  /** Records where businesses were last fetched. */
   public markFetched(lat: number, lng: number): void {
     this.lastFetchCentre = { lat, lng };
   }
 
+  /** Centre of the current view. */
   public currentCenter(): { lat: number; lng: number } {
     const c = this.map.getCenter();
     return { lat: c.lat, lng: c.lng };

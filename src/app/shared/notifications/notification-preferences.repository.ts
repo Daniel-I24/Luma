@@ -22,6 +22,7 @@ export class NotificationPreferencesRepository {
   private readonly db = inject(SupabaseService).client;
   private readonly auth = inject(AuthService);
 
+  /** The user's notification preferences. */
   public async get(): Promise<RepoResult<NotificationPreferences>> {
     const userId = this.auth.user()?.id;
     if (!userId) return { data: null, errorKey: 'notificationSettings.errors.load' };
@@ -35,6 +36,7 @@ export class NotificationPreferencesRepository {
     return { data: { orders: row.notify_orders, promotions: row.notify_promotions }, errorKey: null };
   }
 
+  /** Saves the user's notification preferences. */
   public async set(preferences: NotificationPreferences): Promise<RepoResult<true>> {
     const userId = this.auth.user()?.id;
     if (!userId) return { data: null, errorKey: 'notificationSettings.errors.save' };

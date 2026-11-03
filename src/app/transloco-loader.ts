@@ -8,6 +8,7 @@ import type { Observable } from 'rxjs';
 export class TranslocoHttpLoader implements TranslocoLoader {
   private readonly http = inject(HttpClient);
 
+  /** The translation file of a language. */
   public getTranslation(lang: string): Observable<Translation> {
     return this.http.get<Translation>(`/i18n/${lang}.json`);
   }

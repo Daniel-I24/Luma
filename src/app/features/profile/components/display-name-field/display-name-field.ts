@@ -36,6 +36,7 @@ export class DisplayNameField implements OnInit {
   protected readonly errorKey = signal<string | null>(null);
   protected readonly unchanged = computed(() => this.value().trim() === this.saved());
 
+  /** Loads the current display name. */
   public async ngOnInit(): Promise<void> {
     const userId = this.auth.user()?.id;
     if (!userId) return;

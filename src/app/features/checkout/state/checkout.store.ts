@@ -66,6 +66,7 @@ export class CheckoutStore {
     this.otherDepartment.set(!!home && !!there && home !== there);
   }
 
+  /** Creates the order and starts the chosen payment, then opens the order. */
   public async confirm(): Promise<void> {
     const businessId = this.readyToSubmit();
     if (!businessId) return;

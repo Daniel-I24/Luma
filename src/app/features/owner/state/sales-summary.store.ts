@@ -41,6 +41,7 @@ export class SalesSummaryStore {
     return days.map((d) => ({ day: d.day, value: value(d), share: value(d) / max }));
   });
 
+  /** Loads the sales summary for a range. */
   public async load(businessId: string, range: SalesRange = this.range()): Promise<void> {
     this.businessId = businessId;
     this.range.set(range);
@@ -50,6 +51,7 @@ export class SalesSummaryStore {
     this._state.set(result.data ? 'ready' : 'error');
   }
 
+  /** Switches the range and reloads. */
   public setRange(range: SalesRange): Promise<void> {
     return this.businessId ? this.load(this.businessId, range) : Promise.resolve();
   }

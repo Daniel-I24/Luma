@@ -44,18 +44,23 @@ interface ProfileRow {
 /** Contract of the account profile data (Supabase is one implementation). */
 @Injectable({ providedIn: 'root', useFactory: () => new SupabaseAccountProfileRepository() })
 export abstract class AccountProfileRepository {
+  /** The signed-in user's profile. */
   public abstract getMine(userId: string): Promise<RepoResult<AccountProfile>>;
   /** customer → business_owner (one way); resolves to the resulting type. */
   public abstract becomeBusinessOwner(): Promise<RepoResult<AccountType>>;
+  /** Records that the user saw the tutorial version. */
   public abstract setOnboardingSeen(userId: string, version: number): Promise<RepoResult<true>>;
   /** Name, mobile and residence (column grants; the server checks every value again). */
   public abstract saveDetails(userId: string, details: ProfileDetails): Promise<RepoResult<true>>;
+  /** Shows or hides the user's photo to businesses. */
   public abstract setShowAvatar(userId: string, show: boolean): Promise<RepoResult<true>>;
 }
 
+/** SupabaseAccountProfileRepository — profiles through RLS and SECURITY DEFINER functions. */
 export class SupabaseAccountProfileRepository extends AccountProfileRepository {
   private readonly db = inject(SupabaseService).client;
 
+  /** @inheritdoc */
   public async getMine(userId: string): Promise<RepoResult<AccountProfile>> {
     const { data, error } = await this.db
       .from('profiles')
@@ -80,12 +85,14 @@ export class SupabaseAccountProfileRepository extends AccountProfileRepository {
     };
   }
 
+  /** Turns a customer account into a business-owner account. */
   public async becomeBusinessOwner(): Promise<RepoResult<AccountType>> {
     const { data, error } = await this.db.rpc('become_business_owner');
     if (error) return { data: null, errorKey: 'profile.errors.becomeOwner' };
     return { data: AccountType.parse(data), errorKey: null };
   }
 
+  /** @inheritdoc */
   public async setOnboardingSeen(userId: string, version: number): Promise<RepoResult<true>> {
     const { error } = await this.db
       .from('profiles')
@@ -95,11 +102,13 @@ export class SupabaseAccountProfileRepository extends AccountProfileRepository {
     return { data: true, errorKey: null };
   }
 
+  /** @inheritdoc */
   public async setShowAvatar(userId: string, show: boolean): Promise<RepoResult<true>> {
     const { error } = await this.db.from('profiles').update({ show_avatar_to_business: show }).eq('id', userId);
     return error ? { data: null, errorKey: 'profile.errors.save' } : { data: true, errorKey: null };
   }
 
+  /** Saves full name, mobile and residence. */
   public async saveDetails(userId: string, details: ProfileDetails): Promise<RepoResult<true>> {
     const { error } = await this.db
       .from('profiles')

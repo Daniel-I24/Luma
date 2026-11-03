@@ -28,6 +28,7 @@ export class CartReviewStore {
   /** The business paused new orders: "Continuar" is disabled. */
   public readonly paused = this._paused.asReadonly();
 
+  /** Compares the cart with the current menu (prices, availability, pause). */
   public async check(): Promise<void> {
     const items = this.cart.items();
     if (items.length === 0) return;

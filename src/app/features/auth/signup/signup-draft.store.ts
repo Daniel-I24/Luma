@@ -57,6 +57,7 @@ export class SignupDraftStore {
     return true;
   }
 
+  /** Forgets the sign-up draft. */
   public reset(): void {
     this._draft.set(EMPTY_SIGNUP_DRAFT);
     this._errors.set({});

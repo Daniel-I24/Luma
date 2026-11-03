@@ -1,7 +1,7 @@
 <section *transloco="let t" class="flex flex-col gap-3 rounded-xl border border-border-subtle bg-surface p-4" aria-labelledby="avatar-title">
   <h2 id="avatar-title" class="m-0 text-title text-fg">{{ t('avatar.title') }}</h2>
   @if (avatar.url(); as url) {
-  <img [src]="url" [alt]="t('avatar.alt')" class="size-24 self-center rounded-full border border-border-subtle object-cover" />
+  <img loading="lazy" decoding="async" [src]="url" [alt]="t('avatar.alt')" class="size-24 self-center rounded-full border border-border-subtle object-cover" />
   }
   @if (avatar.hasPhoto()) {
   <label class="flex min-h-11 items-start gap-3 text-body text-fg">

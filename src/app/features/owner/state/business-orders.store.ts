@@ -26,6 +26,7 @@ export class BusinessOrdersStore {
   /** Error of the last action; loading errors use `state`. */
   public readonly errorKey = this._errorKey.asReadonly();
 
+  /** Loads the orders of a business. */
   public async load(businessId: string): Promise<void> {
     this.businessId = businessId;
     this._state.set('loading');

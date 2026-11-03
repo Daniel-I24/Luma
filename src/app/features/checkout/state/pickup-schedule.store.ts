@@ -76,6 +76,7 @@ export class PickupScheduleStore {
     });
   }
 
+  /** Loads the opening hours that define the pick-up times. */
   public async load(businessId: string): Promise<void> {
     this._state.set('loading');
     const result = await this.businesses.getHours(businessId);

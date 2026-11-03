@@ -13,6 +13,7 @@ const TAP_VIBRATION_MS = 10;
 export class NativeHaptics {
   private readonly navigator = inject(DOCUMENT).defaultView?.navigator;
 
+  /** A light tap of haptic feedback (vibration fallback on the web). */
   public async tap(): Promise<void> {
     try {
       const { Capacitor } = await import('@capacitor/core');

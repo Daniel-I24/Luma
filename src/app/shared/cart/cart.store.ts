@@ -34,10 +34,12 @@ export class CartStore implements UserScopedState {
     });
   }
 
+  /** Units of a menu item in the cart. */
   public quantityOf(menuItemId: string): number {
     return this.items().find((item) => item.menuItemId === menuItemId)?.quantity ?? 0;
   }
 
+  /** Adds one unit; reports when the item limit was reached. */
   public add(product: CartProduct): AddOutcome {
     const businessId = this.businessId();
     if (businessId && businessId !== product.businessId) return 'conflict';
@@ -68,6 +70,7 @@ export class CartStore implements UserScopedState {
     this.commit({ businessName: items.length ? this.businessName() : null, items });
   }
 
+  /** Removes a line. */
   public remove(menuItemId: string): void {
     this.setQuantity(menuItemId, 0);
   }
@@ -80,10 +83,12 @@ export class CartStore implements UserScopedState {
     this.commit({ businessName: items.length ? this.businessName() : null, items });
   }
 
+  /** Empties the cart. */
   public clear(): void {
     this.commit(EMPTY_CART);
   }
 
+  /** Empties the cart and its storage (sign-out). */
   public clearUserData(): void {
     if (this.owner) this.storage.remove(this.owner);
     this.owner = null;

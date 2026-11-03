@@ -10,6 +10,7 @@ export class BusinessPause {
   public static readonly UNTIL_RESUMED = -1;
   private static readonly INFINITY = 'infinity';
 
+  /** True while orders are paused. */
   public static isPaused(pausedUntil: string | null | undefined, now = Date.now()): boolean {
     if (!pausedUntil) return false;
     return pausedUntil === BusinessPause.INFINITY || Date.parse(pausedUntil) > now;

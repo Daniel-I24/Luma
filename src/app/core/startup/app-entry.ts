@@ -20,6 +20,7 @@ export class AppEntry {
   private readonly injector = inject(Injector);
   private element: HTMLElement | null = null;
 
+  /** Plays the entry painted by index.html and schedules its end (cap, readiness or a tap). */
   public start(): void {
     const element = this.document.getElementById(ENTRY_ID);
     if (!element || this.element) return;

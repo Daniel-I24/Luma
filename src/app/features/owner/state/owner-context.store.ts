@@ -40,6 +40,7 @@ export class OwnerContextStore implements UserScopedState {
     return this._businesses();
   }
 
+  /** Selects the business the owner works on. */
   public select(id: string): void {
     this._selectedId.set(id);
   }
@@ -57,6 +58,7 @@ export class OwnerContextStore implements UserScopedState {
     );
   }
 
+  /** Forgets the owner's businesses (sign-out). */
   public clearUserData(): void {
     this._businesses.set(null);
     this._selectedId.set(null);

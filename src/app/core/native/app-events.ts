@@ -23,6 +23,7 @@ export class AppEvents {
     return () => this.urlListeners.delete(listener);
   }
 
+  /** Starts listening to deep links and app resume (native only). */
   public async init(): Promise<void> {
     const { Capacitor } = await import('@capacitor/core');
     if (!Capacitor.isNativePlatform()) return;

@@ -12,6 +12,7 @@ const MAP_STYLESHEET = 'map.css';
 export class MapStylesLoader {
   private readonly document = inject(DOCUMENT);
 
+  /** Loads the MapLibre stylesheet once. */
   public ensureLoaded(): void {
     if (this.document.head.querySelector(`link[href="${MAP_STYLESHEET}"]`)) return;
     const link = this.document.createElement('link');

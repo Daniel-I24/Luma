@@ -25,6 +25,7 @@ export class PasswordChangeService {
   private readonly _busy = signal(false);
   public readonly busy = this._busy.asReadonly();
 
+  /** Changes the password after re-checking the current one. */
   public async change(current: string, next: string): Promise<AuthResult> {
     const parsed = changeSchema.safeParse({ current, next });
     if (!parsed.success) return AuthResults.fail(parsed.error.issues[0].message);

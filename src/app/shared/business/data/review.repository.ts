@@ -52,6 +52,7 @@ export class ReviewRepository {
     return { data: (data as ReviewWithAuthor | null) ?? null, errorKey: null };
   }
 
+  /** Creates the user's review of a business. */
   public async create(businessId: string, input: ReviewInput): Promise<RepoResult<Review>> {
     const parsed = reviewInputSchema.safeParse(input);
     if (!parsed.success) return { data: null, errorKey: parsed.error.issues[0].message };
@@ -66,6 +67,7 @@ export class ReviewRepository {
     return { data: data as Review, errorKey: null };
   }
 
+  /** Updates the user's review. */
   public async update(reviewId: string, input: ReviewInput): Promise<RepoResult<Review>> {
     const parsed = reviewInputSchema.safeParse(input);
     if (!parsed.success) return { data: null, errorKey: parsed.error.issues[0].message };
@@ -81,6 +83,7 @@ export class ReviewRepository {
     return { data: data as Review, errorKey: null };
   }
 
+  /** Deletes the user's review. */
   public async remove(reviewId: string): Promise<RepoResult<true>> {
     const { error } = await this.db.from('reviews').delete().eq('id', reviewId);
     if (error) return { data: null, errorKey: 'businesses.errors.reviewDeleteFailed' };

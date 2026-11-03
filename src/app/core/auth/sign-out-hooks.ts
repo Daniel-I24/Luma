@@ -13,10 +13,12 @@ export const SIGN_OUT_HOOK_TIMEOUT_MS = 3000;
 export class SignOutHooks {
   private readonly hooks = new Set<() => Promise<unknown>>();
 
+  /** Registers work to run before signing out (e.g. unregistering the push token). */
   public add(hook: () => Promise<unknown>): void {
     this.hooks.add(hook);
   }
 
+  /** Runs every hook; a failing hook never blocks signing out. */
   public async run(): Promise<void> {
     const all = Promise.allSettled([...this.hooks].map((hook) => hook()));
     let timer: ReturnType<typeof setTimeout> | undefined;

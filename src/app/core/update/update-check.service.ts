@@ -55,6 +55,7 @@ export class UpdateCheck {
     return this.site ? `${this.site.replace(/\/$/, '')}/download` : null;
   }
 
+  /** Compares the running version with the published one; never throws. */
   public async check(): Promise<UpdateState> {
     const base = this.native ? this.site : this.location?.origin;
     if (!base) return this._state();

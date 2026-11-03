@@ -27,6 +27,7 @@ const DEFAULT_DURATION_DAYS = 7;
 
 /** PromotionDrafts — the editable draft of a promotion. */
 export class PromotionDrafts {
+  /** The form draft for an existing promotion, a Luma IA idea or a new one. */
   public static draftOf(
     promotion: Promotion | null,
     now: Date,

@@ -24,12 +24,14 @@ export class FavoriteRepository {
     };
   }
 
+  /** Adds a business to the user's favourites. */
   public async add(businessId: string): Promise<RepoResult<true>> {
     const { error } = await this.db.from('favorites').insert({ business_id: businessId });
     if (error) return { data: null, errorKey: 'businesses.errors.favoriteSaveFailed' };
     return { data: true, errorKey: null };
   }
 
+  /** Removes a business from the user's favourites. */
   public async remove(businessId: string): Promise<RepoResult<true>> {
     const { error } = await this.db.from('favorites').delete().eq('business_id', businessId);
     if (error) return { data: null, errorKey: 'businesses.errors.favoriteSaveFailed' };

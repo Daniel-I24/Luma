@@ -61,6 +61,7 @@ export class AuthService {
 
   // ── Public API ────────────────────────────────────────────────────
 
+  /** Signs in with e-mail and password; unconfirmed accounts never get a session. */
   public signIn(email: string, password: string): Promise<AuthResult> {
     const parsed = signInSchema.safeParse({ email, password });
     if (!parsed.success) return Promise.resolve(AuthResults.fail(parsed.error.issues[0].message));
@@ -90,6 +91,7 @@ export class AuthService {
     });
   }
 
+  /** Signs out on this device and clears every user-scoped state. */
   public signOut(): Promise<AuthResult> {
     return this.withLoading(async () => {
       await this.signOutHooks.run();

@@ -38,6 +38,7 @@ export class FavoritesStore implements UserScopedState {
     });
   }
 
+  /** Forgets the favourites (sign-out). */
   public clearUserData(): void {
     this.loadedFor = null;
     this.pending.clear();
@@ -53,6 +54,7 @@ export class FavoritesStore implements UserScopedState {
     await this.onUserChange(userId);
   }
 
+  /** True when the business is a favourite. */
   public isFavorite(businessId: string): boolean {
     return this._ids().has(businessId);
   }

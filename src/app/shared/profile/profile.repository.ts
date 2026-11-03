@@ -23,6 +23,7 @@ const displayNameSchema = z.pipe(
 export class ProfileRepository {
   private readonly db = inject(SupabaseService).client;
 
+  /** The user's public display name. */
   public async getDisplayName(userId: string): Promise<RepoResult<string | null>> {
     const { data, error } = await this.db
       .from('profiles')

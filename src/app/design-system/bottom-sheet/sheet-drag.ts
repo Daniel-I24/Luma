@@ -19,6 +19,7 @@ export class SheetDrag {
     private readonly close: () => void,
   ) {}
 
+  /** Starts a drag from the handle. */
   public onPointerDown(event: PointerEvent): void {
     if (event.button !== 0) return;
     this.start = this.previous = this.latest = { y: event.clientY, time: event.timeStamp };
@@ -26,6 +27,7 @@ export class SheetDrag {
     (event.currentTarget as HTMLElement | null)?.setPointerCapture?.(event.pointerId);
   }
 
+  /** Follows the finger and samples its velocity. */
   public onPointerMove(event: PointerEvent): void {
     if (!this.start) return;
     const delta = event.clientY - this.start.y;
@@ -39,6 +41,7 @@ export class SheetDrag {
     this.panel().style.transform = `translateY(${SheetDragMath.sheetDragOffset(delta)}px)`;
   }
 
+  /** Ends the drag: closes on a fast fling or a long pull, otherwise springs back. */
   public onPointerUp(): void {
     if (!this.start || !this.latest || !this.previous) return;
     const wasDragging = this.moved;

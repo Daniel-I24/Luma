@@ -15,10 +15,12 @@ export interface UserScopedState {
 export class UserDataRegistry {
   private readonly states = new Set<UserScopedState>();
 
+  /** Registers a state that holds user data and must be cleared on sign-out. */
   public register(state: UserScopedState): void {
     this.states.add(state);
   }
 
+  /** Clears every registered user-scoped state. */
   public clearAll(): void {
     this.states.forEach((state) => state.clearUserData());
   }

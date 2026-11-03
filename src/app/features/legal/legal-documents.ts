@@ -35,6 +35,7 @@ export type LegalDocument = keyof typeof LEGAL_DOCUMENTS;
 
 /** LegalDocuments — the legal documents the app can show. */
 export class LegalDocuments {
+  /** True for a known legal document id. */
   public static isLegalDocument(value: unknown): value is LegalDocument {
     return value === 'terms' || value === 'privacy' || value === 'refunds';
   }

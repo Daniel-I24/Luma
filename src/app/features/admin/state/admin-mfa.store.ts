@@ -23,6 +23,7 @@ export class AdminMfaStore {
   public readonly errorKey = this._errorKey.asReadonly();
   public readonly busy = this._busy.asReadonly();
 
+  /** Reads the MFA state: enrol, verify or already at aal2. */
   public async start(): Promise<void> {
     this._phase.set('loading');
     this._errorKey.set(null);

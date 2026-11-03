@@ -60,6 +60,7 @@ export class BusinessProfileStore {
     return Haversine.haversineKm(lat, lng, business.latitude, business.longitude);
   });
 
+  /** Loads a business with its menu, promotions, hours and photos. */
   public async load(id: string): Promise<void> {
     if (!UUID.test(id)) {
       this._state.set('notFound');

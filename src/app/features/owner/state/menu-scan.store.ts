@@ -53,6 +53,7 @@ export class MenuScanStore {
   public readonly saved = this._saved.asReadonly();
   public readonly chosen = computed(() => this._items().filter((i) => i.selected && i.name.trim() && ScanPrices.priceOf(i.price)));
 
+  /** Reads menu photos into reviewable items. */
   public async read(businessId: string, files: readonly File[]): Promise<void> {
     if (!files.length) return;
     this._phase.set('reading');
@@ -68,6 +69,7 @@ export class MenuScanStore {
     if (result.items.length === 0) this._errorKey.set('owner.menuScan.nothingFound');
   }
 
+  /** Edits one scanned item before saving. */
   public edit(key: number, changes: Partial<Omit<ReviewItem, 'key'>>): void {
     this._items.update((items) => items.map((i) => (i.key === key ? { ...i, ...changes } : i)));
   }
@@ -102,6 +104,7 @@ export class MenuScanStore {
     this._phase.set(this._errorKey() ? 'review' : 'done');
   }
 
+  /** Starts a new scan. */
   public restart(): void {
     this._items.set([]);
     this._errorKey.set(null);

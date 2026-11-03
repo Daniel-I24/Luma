@@ -67,6 +67,7 @@ export class OrderRepository {
     return { data: data as unknown as OrderWithItems | null, errorKey: null };
   }
 
+  /** Cancels a pending order. */
   public async cancel(id: string): Promise<RepoResult<true>> {
     const { error } = await this.db.rpc('cancel_order', { p_order_id: id });
     if (error)

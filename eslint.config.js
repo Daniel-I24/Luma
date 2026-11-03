@@ -78,7 +78,11 @@ module.exports = defineConfig([
   {
     files: ['src/app/**/*.ts'],
     plugins: { luma },
-    rules: { 'luma/layer-boundaries': 'error', 'luma/no-loose-functions': 'error' },
+    rules: {
+      'luma/layer-boundaries': 'error',
+      'luma/no-loose-functions': 'error',
+      'luma/require-jsdoc': 'error',
+    },
   },
   {
     // Specs describe behaviour in long, literal scenarios: size and literal
@@ -94,6 +98,7 @@ module.exports = defineConfig([
       'max-depth': 'off',
       complexity: 'off',
       'luma/no-loose-functions': 'off',
+      'luma/require-jsdoc': 'off',
     },
   },
   {

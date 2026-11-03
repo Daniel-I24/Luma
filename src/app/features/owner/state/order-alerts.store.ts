@@ -33,6 +33,7 @@ export class OrderAlertsStore {
     return this.refresh();
   }
 
+  /** Re-reads how many orders wait for the owner. */
   public async refresh(): Promise<void> {
     const id = this.businessId;
     if (!id) return;

@@ -72,6 +72,7 @@ export class OwnedBusinessRepository {
     return { data: (data as { id: string }).id, errorKey: null };
   }
 
+  /** Saves the information of an owned business. */
   public async updateInfo(id: string, input: BusinessInfoInput): Promise<RepoResult<true>> {
     const parsed = businessInfoSchema.safeParse(input);
     if (!parsed.success) return { data: null, errorKey: INVALID };

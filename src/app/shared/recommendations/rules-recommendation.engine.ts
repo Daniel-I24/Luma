@@ -33,6 +33,7 @@ export class RecommendationScoring {
     return started.at(-1) ?? 'night';
   }
 
+  /** True when a category fits the moment of the day. */
   public static suitsMoment(category: string, moment: DayMoment): boolean {
     const words = TextNormalizer.normalizeText(category).split(/\s+/);
     return MOMENT_CATEGORIES[moment].some((keyword) => words.some((w) => w.startsWith(keyword)));
@@ -70,6 +71,7 @@ export class RecommendationScoring {
 
 /** Recommender v1: deterministic rules, no external services. */
 export class RulesRecommendationEngine implements RecommendationEngine {
+  /** @inheritdoc */
   public recommend({ moment, candidates }: RecommendationRequest): Promise<Recommendation> {
     const businesses = candidates
       .filter((c) => RECOMMENDABLE_STATUSES.includes(c.status))

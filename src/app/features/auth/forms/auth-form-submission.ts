@@ -16,6 +16,7 @@ export class AuthFormSubmission {
   public readonly submitting = this._submitting.asReadonly();
   public readonly errorKey = this._errorKey.asReadonly();
 
+  /** Runs an auth action once at a time, exposing its submitting state and error key. */
   public async run(
     form: Pick<AbstractControl, 'invalid'>,
     action: () => Promise<AuthResult>,

@@ -39,6 +39,7 @@ export class AuthCodeService {
     });
   }
 
+  /** Sends a new sign-up confirmation code to the e-mail (neutral answer if the address is unknown). */
   public resendSignupCode(email: string): Promise<AuthResult> {
     return this.neutral(email, (address) => this.auth.resend({ type: 'signup', email: address }));
   }

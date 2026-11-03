@@ -100,6 +100,7 @@ export class NearbyBusinessesStore {
     }
   }
 
+  /** Removes every map filter. */
   public clearFilters(): void {
     this.query.set('');
     this.filters.set(NO_FILTERS);

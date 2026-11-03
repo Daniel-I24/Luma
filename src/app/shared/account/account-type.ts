@@ -14,10 +14,12 @@ export class AccountType {
     return value === 'business_owner' ? AccountType.businessOwner : AccountType.customer;
   }
 
+  /** True for business-owner accounts. */
   public get isBusinessOwner(): boolean {
     return this.value === 'business_owner';
   }
 
+  /** Value equality. */
   public equals(other: AccountType): boolean {
     return this.value === other.value;
   }

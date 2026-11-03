@@ -22,6 +22,7 @@ export class GalleryStore {
   public readonly errorKey = this._errorKey.asReadonly();
   public readonly free = computed(() => MAX_PHOTOS - this._photos().length);
 
+  /** Loads the gallery of a business. */
   public async load(businessId: string): Promise<void> {
     this.businessId = businessId;
     this._loading.set(true);
@@ -45,6 +46,7 @@ export class GalleryStore {
     });
   }
 
+  /** Saves a photo caption. */
   public async caption(photo: BusinessPhoto, caption: string): Promise<void> {
     if ((photo.caption ?? '') === caption.trim()) return;
     await this.run(async () => {
@@ -73,6 +75,7 @@ export class GalleryStore {
     });
   }
 
+  /** Deletes a photo from the gallery and Storage. */
   public async remove(photo: BusinessPhoto): Promise<void> {
     await this.run(async () => {
       const result = await this.repo.remove(photo);

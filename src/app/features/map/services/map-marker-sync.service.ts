@@ -55,6 +55,7 @@ export class MapMarkerSyncService {
     );
   }
 
+  /** Removes every marker. */
   public clear(): void {
     this.markers.forEach((marker) => marker.remove());
     this.markers.clear();

@@ -4,6 +4,7 @@ import { Distance } from './distance';
 /** Formats a distance in km for a language; null stays null (unknown). */
 @Pipe({ name: 'distance', standalone: true })
 export class DistancePipe implements PipeTransform {
+  /** A readable distance ("350 m", "1,2 km"), or null when unknown. */
   public transform(km: number | null, lang: string): string | null {
     return km === null ? null : Distance.formatDistance(km, lang);
   }

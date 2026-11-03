@@ -12,6 +12,7 @@ export class NativeShell {
   private readonly location = inject(Location);
   private readonly document = inject(DOCUMENT);
 
+  /** Wires the Android back button and keyboard behaviour (native only). */
   public async init(): Promise<void> {
     const { Capacitor } = await import('@capacitor/core');
     if (!Capacitor.isNativePlatform()) return;

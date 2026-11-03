@@ -30,14 +30,17 @@ export interface PushChannel {
  */
 @Injectable({ providedIn: 'root', useFactory: () => new CapacitorPushPlatform(inject(PUSH_ENABLED)) })
 export abstract class PushPlatform {
+  /** Current notification permission. */
   public abstract permission(): Promise<PushPermission>;
   /** Asks the user (Android 13+ shows the system dialog). */
   public abstract requestPermission(): Promise<PushPermission>;
   /** Registers with FCM and resolves to the device token. */
   public abstract register(): Promise<string>;
+  /** Stops receiving pushes on this device. */
   public abstract unregister(): Promise<void>;
   /** Creates (or renames) the Android channels; a no-op elsewhere. */
   public abstract createChannels(channels: readonly PushChannel[]): Promise<void>;
+  /** Calls `listener` when the user taps a notification. */
   public abstract onAction(listener: (action: PushAction) => void): Promise<void>;
 }
 
@@ -46,6 +49,7 @@ const LOCK_SCREEN_PRIVATE = 0;
 
 const text = (value: unknown): string | null => (typeof value === 'string' && value ? value : null);
 
+/** CapacitorPushPlatform — push notifications through FCM on Android. */
 export class CapacitorPushPlatform extends PushPlatform {
   /** False until Firebase is configured (PUSH_ENABLED): then push is "unavailable". */
   constructor(private readonly enabled: boolean) {
@@ -59,6 +63,7 @@ export class CapacitorPushPlatform extends PushPlatform {
     return (await import('@capacitor/push-notifications')).PushNotifications;
   }
 
+  /** @inheritdoc */
   public async permission(): Promise<PushPermission> {
     const push = await this.plugin();
     if (!push) return 'unavailable';
@@ -66,6 +71,7 @@ export class CapacitorPushPlatform extends PushPlatform {
     return receive === 'granted' ? 'granted' : receive === 'denied' ? 'denied' : 'prompt';
   }
 
+  /** @inheritdoc */
   public async requestPermission(): Promise<PushPermission> {
     const push = await this.plugin();
     if (!push) return 'unavailable';
@@ -73,6 +79,7 @@ export class CapacitorPushPlatform extends PushPlatform {
     return receive === 'granted' ? 'granted' : 'denied';
   }
 
+  /** @inheritdoc */
   public async register(): Promise<string> {
     const push = await this.plugin();
     if (!push) throw new Error('push_unavailable');
@@ -89,11 +96,13 @@ export class CapacitorPushPlatform extends PushPlatform {
     }
   }
 
+  /** @inheritdoc */
   public async unregister(): Promise<void> {
     const push = await this.plugin();
     if (push) await push.unregister();
   }
 
+  /** @inheritdoc */
   public async createChannels(channels: readonly PushChannel[]): Promise<void> {
     const push = await this.plugin();
     if (!push) return;
@@ -102,6 +111,7 @@ export class CapacitorPushPlatform extends PushPlatform {
 
   private actionListener: ((action: PushAction) => void) | null = null;
 
+  /** @inheritdoc */
   public async onAction(listener: (action: PushAction) => void): Promise<void> {
     this.actionListener = listener;
     await this.listenActions();

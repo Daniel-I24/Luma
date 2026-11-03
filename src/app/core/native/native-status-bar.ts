@@ -7,6 +7,7 @@ import { Injectable } from '@angular/core';
  */
 @Injectable({ providedIn: 'root' })
 export class NativeStatusBar {
+  /** True when the status bar plugin can be used. */
   public async isAvailable(): Promise<boolean> {
     const { Capacitor } = await import('@capacitor/core');
     return Capacitor.isNativePlatform();

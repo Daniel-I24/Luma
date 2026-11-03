@@ -33,6 +33,7 @@ export class AdminReviewStore {
   public readonly busy = this._busy.asReadonly();
   public readonly errorKey = this._errorKey.asReadonly();
 
+  /** Loads a business under review with its documents and warning signs. */
   public async load(id: string): Promise<void> {
     this._state.set('loading');
     const [business, legal, docs] = await Promise.all([

@@ -19,6 +19,7 @@ export class CartActions {
   /** Products waiting for the user to confirm emptying the cart. */
   public readonly pendingConflict = this._pending.asReadonly();
 
+  /** Adds one product (asks first when the cart holds another business). */
   public add(product: CartProduct): void {
     this.addAll([product]);
   }
@@ -33,6 +34,7 @@ export class CartActions {
     this.addEach(products);
   }
 
+  /** Empties the cart and adds the waiting products. */
   public confirmReplace(): void {
     const products = this._pending();
     this._pending.set(null);
@@ -41,6 +43,7 @@ export class CartActions {
     this.addEach(products);
   }
 
+  /** Keeps the cart and drops the waiting products. */
   public cancelReplace(): void {
     this._pending.set(null);
   }

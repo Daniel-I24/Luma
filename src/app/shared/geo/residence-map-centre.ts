@@ -14,6 +14,7 @@ export class ResidenceMapCentre {
   private readonly catalog = inject(ResidenceCatalog);
   private readonly geo = inject(GeolocationService);
 
+  /** Centres the map on the user's municipality when no location is known. */
   public async apply(): Promise<void> {
     if (this.geo.hasRealLocation()) return;
     await this.session.whenLoaded();

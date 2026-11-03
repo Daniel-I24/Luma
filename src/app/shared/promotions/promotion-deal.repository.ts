@@ -62,16 +62,20 @@ export interface DealWithHours {
 export abstract class PromotionDealRepository {
   /** Current promotions of public businesses (RLS decides what is public). */
   public abstract listCurrent(): Promise<RepoResult<DealWithHours[]>>;
+  /** Current deals of one business. */
   public abstract listForBusiness(businessId: string): Promise<RepoResult<DealWithHours[]>>;
 }
 
+/** SupabasePromotionDealRepository — current deals through RLS. */
 export class SupabasePromotionDealRepository extends PromotionDealRepository {
   private readonly db = inject(SupabaseService).client;
 
+  /** @inheritdoc */
   public listCurrent(): Promise<RepoResult<DealWithHours[]>> {
     return this.read();
   }
 
+  /** @inheritdoc */
   public listForBusiness(businessId: string): Promise<RepoResult<DealWithHours[]>> {
     return this.read(businessId);
   }

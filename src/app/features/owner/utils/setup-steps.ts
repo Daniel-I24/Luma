@@ -29,6 +29,7 @@ export class SetupSteps {
     { id: 'menu', requirements: ['available_item'], optional: false, link: (id) => ownerPaths.section(id, 'menu') },
   ];
 
+  /** Done, current or pending, from what is still missing. */
   public static status(step: SetupStep, missing: ReadonlySet<ReviewRequirement>): StepStatus {
     if (step.optional) return 'optional';
     return step.requirements.some((r) => missing.has(r)) ? 'todo' : 'done';

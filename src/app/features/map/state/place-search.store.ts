@@ -29,10 +29,12 @@ export class PlaceSearchStore {
   public readonly searched = this._searched.asReadonly();
   public readonly open = computed(() => this._loading() || this._places() !== null || this._errorKey() !== null);
 
+  /** True when the query is long enough to search places. */
   public canSearch(query: string): boolean {
     return query.trim().length >= MIN_PLACE_QUERY;
   }
 
+  /** Searches neighbourhoods, addresses and places near a point. */
   public async search(query: string, near: { lat: number; lng: number }): Promise<void> {
     const q = query.trim();
     if (!this.canSearch(q) || (q === this._searched() && this._places() !== null)) return;

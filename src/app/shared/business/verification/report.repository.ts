@@ -14,6 +14,7 @@ const reportSchema = z.object({
 /** Contract: a user's reports about a business (Supabase is one implementation). */
 @Injectable({ providedIn: 'root', useFactory: () => new SupabaseReportRepository() })
 export abstract class ReportRepository {
+  /** Reports a business to the admins. */
   public abstract create(
     businessId: string,
     reason: ReportReason,
@@ -21,9 +22,11 @@ export abstract class ReportRepository {
   ): Promise<RepoResult<true>>;
 }
 
+/** SupabaseReportRepository — reports through RLS. */
 export class SupabaseReportRepository extends ReportRepository {
   private readonly db = inject(SupabaseService).client;
 
+  /** @inheritdoc */
   public async create(
     businessId: string,
     reason: ReportReason,

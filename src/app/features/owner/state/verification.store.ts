@@ -36,6 +36,7 @@ export class VerificationStore {
     return !!status && EDITABLE_STATUSES.includes(status);
   });
 
+  /** Loads the legal data and documents of a business. */
   public async load(businessId: string): Promise<void> {
     const [legal, docs] = await Promise.all([
       this.repo.getLegal(businessId),
@@ -46,14 +47,17 @@ export class VerificationStore {
     this._errorKey.set(legal.errorKey ?? docs.errorKey);
   }
 
+  /** Saves the legal data; true when saved. */
   public saveLegal(taxId: string, legalName: string, legalRep: string): Promise<boolean> {
     return this.run((id) => this.repo.saveLegal(id, taxId, legalName, legalRep));
   }
 
+  /** Uploads a verification document; true when uploaded. */
   public uploadDoc(kind: DocKind, file: File): Promise<boolean> {
     return this.run((id) => this.repo.uploadDoc(id, kind, file));
   }
 
+  /** Deletes a verification document; true when deleted. */
   public deleteDoc(doc: VerificationDoc): Promise<boolean> {
     return this.run(() => this.repo.deleteDoc(doc));
   }

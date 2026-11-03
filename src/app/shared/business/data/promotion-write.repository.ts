@@ -27,6 +27,7 @@ export class PromotionWriteRepository {
     return { data: data as Promotion[], errorKey: null };
   }
 
+  /** Creates a promotion. */
   public async create(businessId: string, input: PromotionInput): Promise<RepoResult<Promotion>> {
     const parsed = promotionSchema.safeParse(input);
     if (!parsed.success) return { data: null, errorKey: INVALID };
@@ -39,6 +40,7 @@ export class PromotionWriteRepository {
     return { data: data as Promotion, errorKey: null };
   }
 
+  /** Updates a promotion. */
   public async update(id: string, input: PromotionInput): Promise<RepoResult<Promotion>> {
     const parsed = promotionSchema.safeParse(input);
     if (!parsed.success) return { data: null, errorKey: INVALID };

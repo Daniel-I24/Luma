@@ -49,28 +49,34 @@ const FAILED = 'admin.operations.errors.failed';
 export class AdminOperationsRepository {
   private readonly db = inject(SupabaseService).client;
 
+  /** Warning signs of a business under review. */
   public async reviewFlags(businessId: string): Promise<RepoResult<ReviewFlags>> {
     const { data, error } = await this.db.rpc('business_review_flags', { p_business_id: businessId });
     const row = Array.isArray(data) ? (data[0] as ReviewFlags | undefined) : undefined;
     return error || !row ? { data: null, errorKey: FAILED } : { data: row, errorKey: null };
   }
 
+  /** Payments that need an admin (refunds, failures, pending too long). */
   public paymentIssues(): Promise<RepoResult<PaymentIssue[]>> {
     return this.list<PaymentIssue>('admin_payment_issues', {});
   }
 
+  /** Customers with strikes. */
   public strikes(): Promise<RepoResult<CustomerStrikes[]>> {
     return this.list<CustomerStrikes>('admin_strikes', {});
   }
 
+  /** Latest admin actions from the audit log. */
   public recentAudit(): Promise<RepoResult<AuditEntry[]>> {
     return this.list<AuditEntry>('admin_recent_audit', { p_limit: 30 });
   }
 
+  /** Clears a customer's strikes (audited). */
   public async clearStrikes(userId: string): Promise<RepoResult<true>> {
     return this.done(await this.db.rpc('admin_clear_strikes', { p_user_id: userId }));
   }
 
+  /** Marks a refund as done in Wompi's dashboard (audited). */
   public async markRefundDone(paymentId: string): Promise<RepoResult<true>> {
     return this.done(await this.db.rpc('admin_mark_refund_done', { p_payment_id: paymentId }));
   }
@@ -82,6 +88,7 @@ export class AdminOperationsRepository {
     return error || typeof result !== 'string' ? { data: null, errorKey: FAILED } : { data: result, errorKey: null };
   }
 
+  /** Runs payment reconciliation now; returns how many payments changed. */
   public async reconcile(): Promise<RepoResult<number>> {
     const { data, error } = await this.db.functions.invoke('reconcile-payments', { method: 'POST' });
     const applied = (data as { applied?: unknown } | null)?.applied;

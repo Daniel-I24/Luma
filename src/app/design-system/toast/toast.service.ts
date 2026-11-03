@@ -37,6 +37,7 @@ export class ToastService {
     return id;
   }
 
+  /** Removes a toast before its timeout. */
   public dismiss(id: number): void {
     this._toasts.update((list) => list.filter((toast) => toast.id !== id));
   }

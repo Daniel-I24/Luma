@@ -32,6 +32,7 @@ export class BusinessSelectionStore {
     this.markerSync.select(item.business.id);
   }
 
+  /** Closes the business sheet. */
   public close(): void {
     this._open.set(false);
     this.markerSync.select(null);

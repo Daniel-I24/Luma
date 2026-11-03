@@ -60,6 +60,7 @@ export class MenuPanelStore {
     });
   }
 
+  /** Marks a menu item available or sold out; true when saved. */
   public async setAvailable(item: MenuItem, available: boolean): Promise<boolean> {
     return this.run(async () => {
       const result = await this.writer.setAvailable(item.id, available);
@@ -81,6 +82,7 @@ export class MenuPanelStore {
     });
   }
 
+  /** Clears the last error. */
   public clearError(): void {
     this._errorKey.set(null);
   }

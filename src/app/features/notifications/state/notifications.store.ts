@@ -25,6 +25,7 @@ export class NotificationsStore {
   public readonly items = this._items.asReadonly();
   public readonly fresh = this._fresh.asReadonly();
 
+  /** Loads the user's notifications. */
   public async load(): Promise<void> {
     this._state.set('loading');
     await this.refresh();

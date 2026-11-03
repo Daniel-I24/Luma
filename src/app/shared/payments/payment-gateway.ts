@@ -24,6 +24,7 @@ export class PayAtPickupGateway implements PaymentGateway {
   public readonly method = 'pay_at_pickup';
   public readonly labelKey = 'checkout.payment.payAtPickup';
 
+  /** Nothing to open: the customer pays at pick-up. */
   public start(): Promise<PaymentStart> {
     return Promise.resolve({ kind: 'pay_at_pickup' });
   }
@@ -42,6 +43,7 @@ export class WompiGateway implements PaymentGateway {
     private readonly browser: ExternalBrowser,
   ) {}
 
+  /** Prepares the attempt on the server and opens Wompi's checkout in the browser. */
   public async start(orderId: string): Promise<PaymentStart> {
     const link = await this.payments.checkoutUrl(orderId);
     if (!link.data) return { kind: 'failed', errorKey: link.errorKey ?? 'payments.errors.unavailable' };
@@ -63,6 +65,7 @@ export class PaymentGatewayFactory {
     ['online', new WompiGateway(inject(PaymentRepository), inject(ExternalBrowser))],
   ]);
 
+  /** The gateway of a payment method. */
   public for(method: PaymentMethod): PaymentGateway {
     return this.gateways.get(method)!;
   }

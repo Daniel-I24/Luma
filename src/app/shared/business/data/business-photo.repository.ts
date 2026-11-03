@@ -36,6 +36,7 @@ export class BusinessPhotoRepository {
   private readonly db = inject(SupabaseService).client;
   private readonly images = inject(BusinessImageRepository);
 
+  /** Photos of a business gallery, in order. */
   public async list(businessId: string): Promise<RepoResult<BusinessPhoto[]>> {
     const { data, error } = await this.db
       .from('business_photos')
@@ -63,6 +64,7 @@ export class BusinessPhotoRepository {
     return { data: this.toPhoto(data as PhotoRow), errorKey: null };
   }
 
+  /** Changes the caption or order of a photo. */
   public async update(id: string, changes: { caption?: string | null; sortOrder?: number }): Promise<RepoResult<true>> {
     const caption = changes.caption === undefined ? undefined : changes.caption?.trim().slice(0, MAX_CAPTION) || null;
     const { error } = await this.db

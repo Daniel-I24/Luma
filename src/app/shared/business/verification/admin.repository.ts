@@ -26,8 +26,11 @@ export type AdminAccess = 'none' | 'needs_mfa' | 'ok';
 export abstract class AdminRepository {
   /** 'none' also when the server cannot be reached: never a guess in favour of access. */
   public abstract access(): Promise<AdminAccess>;
+  /** Businesses waiting for review. */
   public abstract pendingBusinesses(): Promise<RepoResult<Business[]>>;
+  /** One business, or null when it does not exist. */
   public abstract business(id: string): Promise<RepoResult<Business | null>>;
+  /** A short-lived URL to read a verification document. */
   public abstract signedDocUrl(doc: VerificationDoc): Promise<RepoResult<string>>;
   /** seenUpdatedAt: businesses.updated_at as shown; a newer one is stale_review. */
   public abstract review(
@@ -38,18 +41,23 @@ export abstract class AdminRepository {
   ): Promise<RepoResult<true>>;
   /** Removes every document of a business (after approval). */
   public abstract deleteDocs(docs: readonly VerificationDoc[]): Promise<RepoResult<true>>;
+  /** Reports not yet resolved. */
   public abstract openReports(): Promise<RepoResult<OpenReport[]>>;
+  /** Closes a report. */
   public abstract resolveReport(id: string, status: 'reviewed' | 'dismissed'): Promise<RepoResult<true>>;
 }
 
+/** SupabaseAdminRepository — admin reads and decisions (aal2 checked in SQL). */
 export class SupabaseAdminRepository extends AdminRepository {
   private readonly db = inject(SupabaseService).client;
 
+  /** Whether the user is an admin and has a verified second factor. */
   public async access(): Promise<AdminAccess> {
     const { data, error } = await this.db.rpc('admin_access');
     return !error && (data === 'ok' || data === 'needs_mfa') ? data : 'none';
   }
 
+  /** @inheritdoc */
   public async pendingBusinesses(): Promise<RepoResult<Business[]>> {
     const { data, error } = await this.db
       .from('businesses')
@@ -60,12 +68,14 @@ export class SupabaseAdminRepository extends AdminRepository {
     return { data: data as Business[], errorKey: null };
   }
 
+  /** @inheritdoc */
   public async business(id: string): Promise<RepoResult<Business | null>> {
     const { data, error } = await this.db.from('businesses').select('*').eq('id', id).maybeSingle();
     if (error) return { data: null, errorKey: 'admin.errors.loadFailed' };
     return { data: data as Business | null, errorKey: null };
   }
 
+  /** @inheritdoc */
   public async signedDocUrl(doc: VerificationDoc): Promise<RepoResult<string>> {
     const { data, error } = await this.db.storage
       .from(VERIFICATION_BUCKET)
@@ -74,6 +84,7 @@ export class SupabaseAdminRepository extends AdminRepository {
     return { data: data.signedUrl, errorKey: null };
   }
 
+  /** Approves, rejects or suspends a business with a note (audited). */
   public async review(
     id: string,
     decision: ReviewDecision,
@@ -91,6 +102,7 @@ export class SupabaseAdminRepository extends AdminRepository {
     return { data: true, errorKey: null };
   }
 
+  /** Deletes reviewed verification documents from Storage. */
   public async deleteDocs(docs: readonly VerificationDoc[]): Promise<RepoResult<true>> {
     if (docs.length === 0) return { data: true, errorKey: null };
     const removed = await this.db.storage
@@ -109,12 +121,14 @@ export class SupabaseAdminRepository extends AdminRepository {
       : { data: true, errorKey: null };
   }
 
+  /** @inheritdoc */
   public async openReports(): Promise<RepoResult<OpenReport[]>> {
     const { data, error } = await this.db.rpc('admin_open_reports');
     if (error) return { data: null, errorKey: 'admin.errors.loadFailed' };
     return { data: data as OpenReport[], errorKey: null };
   }
 
+  /** @inheritdoc */
   public async resolveReport(id: string, status: 'reviewed' | 'dismissed'): Promise<RepoResult<true>> {
     const { error } = await this.db.rpc('resolve_report', { p_report_id: id, p_status: status });
     return error

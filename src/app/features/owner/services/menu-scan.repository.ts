@@ -52,6 +52,7 @@ export class MenuScanRepository {
   private readonly online = inject(ConnectivityService).online;
   private readonly encode = inject(IMAGE_ENCODER);
 
+  /** Sends menu photos to the extract-menu function and returns the draft items. */
   public async scan(businessId: string, files: readonly File[]): Promise<ScanResult> {
     const images: string[] = [];
     for (const file of files.slice(0, MAX_SCAN_PHOTOS)) {

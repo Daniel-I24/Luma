@@ -27,6 +27,7 @@ export class SignupCompletion {
   private readonly avatars = inject(AvatarRepository);
   private pending: PendingDetails | null = null;
 
+  /** Keeps the sign-up details until the code is confirmed, then saves them. */
   public hold(details: PendingDetails): void {
     this.pending = details;
   }

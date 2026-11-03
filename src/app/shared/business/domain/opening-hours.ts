@@ -36,6 +36,7 @@ export class ClockTime {
 export class OpeningHours {
   private constructor(private readonly rows: readonly HoursRow[]) {}
 
+  /** Opening hours from the stored rows. */
   public static from(rows: readonly HoursRow[]): OpeningHours {
     return new OpeningHours(
       rows.filter(
@@ -62,6 +63,7 @@ export class OpeningHours {
     return windows;
   }
 
+  /** True when the business is open at that instant (device clock, as the app shows it). */
   public isOpenAt(at: Date): boolean {
     return this.minutesUntilClose(at) !== null;
   }

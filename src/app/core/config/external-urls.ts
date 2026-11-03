@@ -25,10 +25,12 @@ export class ExternalUrls {
     return `https://wa.me/${encodeURIComponent(digits)}`;
   }
 
+  /** Instagram profile URL of a handle. */
   public static instagram(handle: string): string {
     return `https://instagram.com/${encodeURIComponent(handle)}`;
   }
 
+  /** Facebook page URL of a page name. */
   public static facebook(page: string): string {
     return `https://facebook.com/${encodeURIComponent(page)}`;
   }

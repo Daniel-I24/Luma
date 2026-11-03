@@ -17,6 +17,7 @@ const SAVE_FAILED = 'businessPanel.errors.saveFailed';
 export class MenuWriteRepository {
   private readonly db = inject(SupabaseService).client;
 
+  /** Creates a menu item. */
   public async create(businessId: string, input: MenuItemInput): Promise<RepoResult<MenuItem>> {
     const parsed = menuItemSchema.safeParse(input);
     if (!parsed.success) return { data: null, errorKey: INVALID };
@@ -29,6 +30,7 @@ export class MenuWriteRepository {
     return { data: data as MenuItem, errorKey: null };
   }
 
+  /** Updates a menu item. */
   public async update(id: string, input: MenuItemInput): Promise<RepoResult<MenuItem>> {
     const parsed = menuItemSchema.safeParse(input);
     if (!parsed.success) return { data: null, errorKey: INVALID };
@@ -42,6 +44,7 @@ export class MenuWriteRepository {
     return { data: data as MenuItem, errorKey: null };
   }
 
+  /** Marks a menu item available or sold out. */
   public async setAvailable(id: string, available: boolean): Promise<RepoResult<true>> {
     const { error } = await this.db
       .from('menu_items')
@@ -51,6 +54,7 @@ export class MenuWriteRepository {
     return { data: true, errorKey: null };
   }
 
+  /** Deletes a menu item. */
   public async remove(id: string): Promise<RepoResult<true>> {
     const { error } = await this.db.from('menu_items').delete().eq('id', id);
     if (error)

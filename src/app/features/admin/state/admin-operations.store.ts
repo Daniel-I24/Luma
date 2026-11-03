@@ -30,6 +30,7 @@ export class AdminOperationsStore {
   /** Translation key of the outcome of the last action. */
   public readonly notice = this._notice.asReadonly();
 
+  /** Loads payment issues, strikes and the audit log. */
   public async load(): Promise<void> {
     const [issues, strikes, audit] = await Promise.all([
       this.repo.paymentIssues(), this.repo.strikes(), this.repo.recentAudit(),
@@ -44,6 +45,7 @@ export class AdminOperationsStore {
     this._state.set('ready');
   }
 
+  /** Voids a card payment in Wompi and reloads. */
   public voidPayment(issue: PaymentIssue): Promise<void> {
     return this.act(async () => {
       const result = await this.repo.voidPayment(issue.payment_id);
@@ -51,14 +53,17 @@ export class AdminOperationsStore {
     });
   }
 
+  /** Marks a refund as done and reloads. */
   public markRefundDone(issue: PaymentIssue): Promise<void> {
     return this.act(async () => (await this.repo.markRefundDone(issue.payment_id)).errorKey ?? 'admin.operations.refundMarked');
   }
 
+  /** Clears a customer's strikes and reloads. */
   public clearStrikes(customer: CustomerStrikes): Promise<void> {
     return this.act(async () => (await this.repo.clearStrikes(customer.user_id)).errorKey ?? 'admin.operations.strikesCleared');
   }
 
+  /** Runs reconciliation and reloads. */
   public reconcile(): Promise<void> {
     return this.act(async () => {
       const result = await this.repo.reconcile();

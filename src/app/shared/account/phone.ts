@@ -24,6 +24,7 @@ export class Phone {
     return `${COUNTRY_PREFIX} ${d.slice(0, GROUP)} ${d.slice(GROUP, GROUP + GROUP)} ${d.slice(GROUP + GROUP)}`;
   }
 
+  /** Value equality (E.164). */
   public equals(other: Phone): boolean {
     return this.e164 === other.e164;
   }

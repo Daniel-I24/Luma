@@ -53,6 +53,7 @@ export class DownloadPage implements OnInit {
   protected readonly release = signal<AndroidRelease | null>(null);
   protected readonly loading = signal(true);
 
+  /** Loads the latest published APK. */
   public async ngOnInit(): Promise<void> {
     this.release.set(await this.repo.latest());
     this.loading.set(false);

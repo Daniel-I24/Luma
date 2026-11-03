@@ -14,6 +14,7 @@ export class PanelBusinessStore {
   public readonly state = this._state.asReadonly();
   public readonly business = this._business.asReadonly();
 
+  /** Loads the business shown in the owner panel. */
   public async load(id: string): Promise<void> {
     this._state.set('loading');
     const result = await this.repo.getMine(id);

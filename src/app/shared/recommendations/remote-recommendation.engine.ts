@@ -44,6 +44,7 @@ const answerSchema = z.object({
 export class RemoteRecommendationEngine implements RecommendationEngine {
   constructor(private readonly db: SupabaseClient) {}
 
+  /** @inheritdoc */
   public async recommend(request: RecommendationRequest): Promise<Recommendation> {
     if (!request.origin) throw new Error('location_required');
     const { data, error } = await this.db.functions.invoke('recommend', {
@@ -106,6 +107,7 @@ export class FallbackRecommendationEngine implements RecommendationEngine {
     private readonly fallback: RecommendationEngine,
   ) {}
 
+  /** @inheritdoc */
   public async recommend(request: RecommendationRequest): Promise<Recommendation> {
     try {
       return await this.primary.recommend(request);

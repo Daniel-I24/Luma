@@ -33,6 +33,7 @@ export const COMMON_PASSWORDS: ReadonlySet<string> = new Set([
 
 /** CommonPasswords — rejects passwords from the common list. */
 export class CommonPasswords {
+  /** True when the password is on the common-password list (case-insensitive). */
   public static isCommonPassword(password: string): boolean {
     return COMMON_PASSWORDS.has(password.trim().toLowerCase());
   }

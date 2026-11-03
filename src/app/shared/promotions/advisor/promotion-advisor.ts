@@ -17,6 +17,7 @@ type Db = SupabaseService['client'];
 export class RulesPromotionAdvisor implements PromotionAdvisor {
   constructor(private readonly sales: OwnerSalesRepository) {}
 
+  /** @inheritdoc */
   public async suggest(businessId: string): Promise<IdeasResult> {
     const [summary, promoted] = await Promise.all([
       this.sales.summary(businessId),
@@ -31,6 +32,7 @@ export class RulesPromotionAdvisor implements PromotionAdvisor {
 export class RemotePromotionAdvisor implements PromotionAdvisor {
   constructor(private readonly db: Db) {}
 
+  /** @inheritdoc */
   public async suggest(businessId: string): Promise<IdeasResult> {
     const { data, error } = await this.db.functions.invoke('suggest-promotions', {
       method: 'POST',
@@ -49,6 +51,7 @@ export class FallbackPromotionAdvisor implements PromotionAdvisor {
     private readonly fallback: PromotionAdvisor,
   ) {}
 
+  /** @inheritdoc */
   public async suggest(businessId: string): Promise<IdeasResult> {
     try {
       return await this.primary.suggest(businessId);

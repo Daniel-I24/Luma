@@ -21,6 +21,7 @@ export interface AndroidRelease {
 /** ReleaseRepository — reads /version.json of this site (same origin, no credentials). */
 @Injectable({ providedIn: 'root' })
 export class ReleaseRepository {
+  /** The latest Android release, or null when none is published. */
   public async latest(): Promise<AndroidRelease | null> {
     try {
       const response = await fetch('/version.json', { cache: 'no-store', credentials: 'omit' });

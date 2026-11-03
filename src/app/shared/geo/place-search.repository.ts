@@ -41,10 +41,12 @@ export abstract class PlaceSearchRepository {
   public abstract search(query: string, near: { lat: number; lng: number }): Promise<PlaceSearchResult>;
 }
 
+/** GeocodePlaceSearchRepository — place search through the geocode Edge Function. */
 export class GeocodePlaceSearchRepository extends PlaceSearchRepository {
   private readonly db = inject(SupabaseService).client;
   private readonly online = inject(ConnectivityService).online;
 
+  /** @inheritdoc */
   public async search(query: string, near: { lat: number; lng: number }): Promise<PlaceSearchResult> {
     try {
       const { data, error } = await this.db.functions.invoke('geocode', {

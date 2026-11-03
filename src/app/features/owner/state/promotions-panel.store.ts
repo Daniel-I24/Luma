@@ -33,6 +33,7 @@ export class PromotionsPanelStore {
   );
   public readonly canAdd = computed(() => this.activeCount() < MAX_ACTIVE_PROMOTIONS);
 
+  /** Loads the promotions of a business; true on success. */
   public async load(businessId: string): Promise<boolean> {
     const [result, items] = await Promise.all([
       this.repo.listForOwner(businessId),
@@ -63,6 +64,7 @@ export class PromotionsPanelStore {
     });
   }
 
+  /** Ends a promotion now; true when saved. */
   public async end(promotion: Promotion, now: Date = new Date()): Promise<boolean> {
     return this.run(async () => {
       const result = await this.repo.end(promotion, now);
@@ -79,6 +81,7 @@ export class PromotionsPanelStore {
     });
   }
 
+  /** Clears the last error. */
   public clearError(): void {
     this._errorKey.set(null);
   }

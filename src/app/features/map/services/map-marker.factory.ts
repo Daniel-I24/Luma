@@ -20,6 +20,7 @@ const SELECTED_CLASS = 'luma-marker--selected';
 export class MapMarkerFactory {
   private readonly document = inject(DOCUMENT);
 
+  /** A marker button for a business status, labelled for screen readers. */
   public create(status: BusinessStatus, label: string): HTMLButtonElement {
     const button = this.document.createElement('button');
     button.type = 'button';
@@ -36,6 +37,7 @@ export class MapMarkerFactory {
     element.setAttribute('aria-label', label);
   }
 
+  /** Highlights or un-highlights a marker. */
   public setSelected(element: HTMLElement, selected: boolean): void {
     element.classList.toggle(SELECTED_CLASS, selected);
     element.setAttribute('aria-pressed', String(selected));

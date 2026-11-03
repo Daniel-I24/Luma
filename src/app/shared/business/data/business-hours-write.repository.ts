@@ -20,6 +20,7 @@ const weekSchema = z.array(dayHoursSchema).check(
 export class BusinessHoursWriteRepository {
   private readonly db = inject(SupabaseService).client;
 
+  /** Replaces the weekly hours of a business (seven days). */
   public async saveWeek(businessId: string, week: readonly DayHoursInput[]): Promise<RepoResult<true>> {
     const parsed = weekSchema.safeParse(week);
     if (!parsed.success) return { data: null, errorKey: 'businessPanel.errors.invalidData' };

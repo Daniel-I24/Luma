@@ -44,3 +44,32 @@ test('no-loose-functions: only Angular *Fn factories and provide* functions may 
     ],
   });
 });
+
+test('require-jsdoc: classes and public methods are documented', () => {
+  tester.run('require-jsdoc', rules['require-jsdoc'], {
+    valid: [
+      `/** Money. */
+export class Money {
+  /** Cents. */
+  public cents(): number { return 1; }
+  private helper(): void {}
+}`,
+      `/** A. */
+@Component({})
+export class A {
+  /** @inheritdoc */
+  public run(): void {}
+}`,
+    ],
+    invalid: [
+      { code: 'export class Money {}', errors: [{ messageId: 'missing' }] },
+      {
+        code: `/** M. */
+class M {
+  public run(): void {}
+}`,
+        errors: [{ messageId: 'missing' }],
+      },
+    ],
+  });
+});

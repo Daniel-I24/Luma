@@ -99,6 +99,7 @@ export class SessionProfileStore {
     return this.isBusinessOwner();
   }
 
+  /** Reloads the profile of a user (null clears it). */
   public reload(userId: string | null): Promise<void> {
     if (!userId) {
       this._profile.set(null);

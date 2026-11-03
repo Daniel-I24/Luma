@@ -46,6 +46,7 @@ export class ResidenceCatalog {
     return this.loading;
   }
 
+  /** Every department of the catalogue. */
   public departments(): readonly Department[] {
     return this.departmentList;
   }
@@ -55,10 +56,12 @@ export class ResidenceCatalog {
     return text.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase().trim();
   }
 
+  /** A municipality by DANE code, or null. */
   public municipality(code: string): Municipality | null {
     return this.byCode.get(code) ?? null;
   }
 
+  /** A department by code, or null. */
   public department(code: string): Department | null {
     return this.departmentList.find((d) => d.code === code) ?? null;
   }

@@ -49,6 +49,7 @@ export class PaymentRepository {
     return { enabled: row['enabled'] === true, sandbox: row['sandbox'] === true };
   }
 
+  /** Payment state and attempts of an order. */
   public async orderPayment(orderId: string): Promise<RepoResult<OrderPayment>> {
     const { data, error } = await this.db.rpc('my_order_payment', { p_order_id: orderId });
     const row = Array.isArray(data) ? (data[0] as Record<string, unknown> | undefined) : undefined;

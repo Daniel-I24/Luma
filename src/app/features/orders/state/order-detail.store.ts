@@ -21,6 +21,7 @@ export class OrderDetailStore {
   /** Error of the last action (cancelling); loading errors use `state`. */
   public readonly errorKey = this._errorKey.asReadonly();
 
+  /** Loads an order with its items. */
   public async load(id: string): Promise<void> {
     this.id = id;
     this._state.set('loading');
@@ -39,6 +40,7 @@ export class OrderDetailStore {
     this._state.set(result.data ? 'ready' : 'notFound');
   }
 
+  /** Cancels the order while it is still pending. */
   public async cancel(): Promise<void> {
     if (!this.id || this._cancelling()) return;
     this._cancelling.set(true);

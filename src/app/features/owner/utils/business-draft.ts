@@ -27,6 +27,7 @@ export const EMPTY_DRAFT: BusinessDraft = {
 
 /** BusinessDrafts — the editable draft of a business and its field order. */
 export class BusinessDrafts {
+  /** The editable draft of a stored business. */
   public static draftFrom(business: Business): BusinessDraft {
     return {
       name: business.name,

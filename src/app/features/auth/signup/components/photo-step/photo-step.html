@@ -1,7 +1,7 @@
 <div *transloco="let t" class="flex flex-col gap-3">
   <p class="m-0 text-body-sm text-fg-muted">{{ t('auth.signup.photo.intro') }}</p>
   @if (preview(); as url) {
-  <img
+  <img loading="lazy" decoding="async"
     [src]="url"
     [alt]="t('auth.signup.photo.previewAlt')"
     class="size-32 self-center rounded-full border border-border-subtle object-cover"

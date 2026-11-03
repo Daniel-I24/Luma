@@ -8,14 +8,17 @@ import { Injectable, inject } from '@angular/core';
  */
 @Injectable({ providedIn: 'root', useFactory: () => new CapacitorExternalBrowser(inject(DOCUMENT)) })
 export abstract class ExternalBrowser {
+  /** Opens a URL outside the app (system browser or new tab). */
   public abstract open(url: string): Promise<void>;
 }
 
+/** CapacitorExternalBrowser — the system browser on Android, a new tab on the web. */
 export class CapacitorExternalBrowser extends ExternalBrowser {
   constructor(private readonly document: Document) {
     super();
   }
 
+  /** @inheritdoc */
   public async open(url: string): Promise<void> {
     const { Capacitor } = await import('@capacitor/core');
     if (Capacitor.isNativePlatform()) {

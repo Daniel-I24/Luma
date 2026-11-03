@@ -18,6 +18,7 @@ const TAB_OF: Record<OrderStatus, OrderTab> = {
 
 /** OrderBoard — tabs and allowed actions of the owner's order board. */
 export class OrderBoard {
+  /** The board tab an order status belongs to. */
   public static orderTab(status: OrderStatus): OrderTab {
     return TAB_OF[status];
   }

@@ -11,14 +11,17 @@ export class BusinessHoursCacheService {
   private readonly repo = inject(BusinessRepository);
   private readonly cache = new Map<string, BusinessHours[]>();
 
+  /** True when the hours of the business are cached. */
   public has(businessId: string): boolean {
     return this.cache.has(businessId);
   }
 
+  /** Cached hours of a business (empty when unknown). */
   public get(businessId: string): BusinessHours[] {
     return this.cache.get(businessId) ?? [];
   }
 
+  /** A copy of the whole cache. */
   public snapshot(): Map<string, BusinessHours[]> {
     return this.cache;
   }

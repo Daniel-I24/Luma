@@ -19,6 +19,7 @@ export class AdminQueueStore {
   public readonly reports = this._reports.asReadonly();
   public readonly errorKey = this._errorKey.asReadonly();
 
+  /** Loads businesses waiting for review and open reports. */
   public async load(): Promise<void> {
     this._state.set('loading');
     const [pending, reports] = await Promise.all([
@@ -34,6 +35,7 @@ export class AdminQueueStore {
     this._state.set('ready');
   }
 
+  /** Closes a report as reviewed or dismissed. */
   public async resolve(report: OpenReport, status: 'reviewed' | 'dismissed'): Promise<void> {
     this._errorKey.set(null);
     const result = await this.repo.resolveReport(report.id, status);

@@ -43,6 +43,7 @@ export class AiStore {
   public readonly state = this._state.asReadonly();
   public readonly result = this._result.asReadonly();
 
+  /** Loads recommendations for the selected moment of the day. */
   public async load(): Promise<void> {
     this._state.set('loading');
     const { lat, lng } = this.geo.coords();
@@ -72,6 +73,7 @@ export class AiStore {
     await this.recommend();
   }
 
+  /** Switches the moment of the day and reloads. */
   public async selectMoment(moment: DayMoment): Promise<void> {
     this._moment.set(moment);
     this.shown.clear();

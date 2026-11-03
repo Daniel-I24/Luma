@@ -75,6 +75,7 @@ export class BusinessImageRepository {
     return this.removePath(ImageFiles.imagePathFromUrl(url));
   }
 
+  /** Deletes an image from Storage (no-op for null). */
   public async removePath(path: string | null): Promise<RepoResult<true>> {
     if (!path) return { data: true, errorKey: null };
     const { error } = await this.storage.from(BUSINESS_IMAGES_BUCKET).remove([path]);

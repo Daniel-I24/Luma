@@ -16,8 +16,10 @@ export class CopFormat {
 }
 
 
+/** CopCurrencyPipe — `{{ amount | cop }}`: whole Colombian pesos. */
 @Pipe({ name: 'cop', standalone: true })
 export class CopCurrencyPipe implements PipeTransform {
+  /** Formats whole Colombian pesos for display. */
   public transform(amount: number): string {
     return CopFormat.formatCop(amount);
   }

@@ -11,6 +11,7 @@ export const ONBOARDING_PATH = '/welcome';
 
 /** Onboarding — whether a profile still has to see the tutorial. */
 export class Onboarding {
+  /** True when the profile has not seen the current tutorial. */
   public static needsOnboarding(profile: AccountProfile | null): boolean {
     return !!profile && profile.onboardingSeenVersion < ONBOARDING_VERSION;
   }

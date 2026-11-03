@@ -26,20 +26,24 @@ export class AvatarSettingsStore {
   public readonly hasPhoto = computed(() => !!this.session.profile()?.avatarPath);
   public readonly shared = computed(() => this.session.profile()?.showAvatarToBusiness === true);
 
+  /** Loads the current photo (signed URL) and the sharing choice. */
   public async load(): Promise<void> {
     await this.session.whenLoaded();
     const path = this.session.profile()?.avatarPath;
     this._url.set(path ? await this.avatars.signedUrl(path) : null);
   }
 
+  /** Uploads a new photo; requires the user's consent. */
   public upload(file: File, consent: boolean): Promise<void> {
     return this.run(async (userId) => (await this.avatars.upload(userId, file, consent)).errorKey);
   }
 
+  /** Deletes the photo. */
   public remove(): Promise<void> {
     return this.run(async (userId) => (await this.avatars.clear(userId)).errorKey);
   }
 
+  /** Shows or hides the photo to the businesses that prepare the user's orders. */
   public setShared(show: boolean): Promise<void> {
     return this.run(async (userId) => (await this.profiles.setShowAvatar(userId, show)).errorKey);
   }

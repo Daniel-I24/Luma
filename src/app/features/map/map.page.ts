@@ -85,11 +85,13 @@ export class MapPage implements OnInit, OnDestroy {
     });
   }
 
+  /** Creates the map and starts locating the user. */
   public ngOnInit(): void {
     this.styles.ensureLoaded();
     this.startMap();
   }
 
+  /** Releases the map and its markers. */
   public ngOnDestroy(): void {
     this.markerSync.clear();
     if (this.mapReady()) this.camera.destroy();
