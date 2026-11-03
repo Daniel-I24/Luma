@@ -67,15 +67,28 @@ default.
 
 ```sh
 supabase secrets set ALLOWED_ORIGINS=https://localhost,https://<vercel-domain>
-supabase functions deploy delete-account
-supabase functions deploy geocode          # docs/geocode.md for its secrets
-# Luma IA (optional, docs/ai.md): secrets first, then
-supabase functions deploy recommend
-supabase functions deploy suggest-promotions
-supabase functions deploy extract-menu
-# Push (optional, docs/push.md):
-supabase functions deploy push-dispatch --no-verify-jwt
 ```
+
+Deploy each function with its JWT flag. The flag must match
+`supabase/config.toml` (`verify_jwt`), which `scripts/db-drift.test.mjs`
+keeps in sync with the folders. Functions called with a user session keep
+the gateway JWT check **on** (no flag); functions called by the database or
+by a payment provider have it **off** and authenticate each request with a
+shared secret or a signature instead.
+
+| Function | Command | `verify_jwt` | Authenticated by |
+| --- | --- | --- | --- |
+| `delete-account` | `supabase functions deploy delete-account` | true | user JWT |
+| `geocode` | `supabase functions deploy geocode` | true | user JWT (docs/geocode.md for its secrets) |
+| `recommend` | `supabase functions deploy recommend` | true | user JWT (docs/ai.md) |
+| `suggest-promotions` | `supabase functions deploy suggest-promotions` | true | user JWT (docs/ai.md) |
+| `extract-menu` | `supabase functions deploy extract-menu` | true | user JWT (docs/ai.md) |
+| `push-dispatch` | `supabase functions deploy push-dispatch --no-verify-jwt` | **false** | `x-push-secret` (`PUSH_DISPATCH_SECRET`, docs/push.md) |
+
+Never deploy a JWT function with `--no-verify-jwt`: the function code
+checks the session too, but the gateway check is the first line of
+defence. Never deploy `push-dispatch` without the flag either: the
+database pokes it without a user JWT, so every poke would be refused.
 
 Then check everything with `npm run verify:backend` (anon key only).
 
