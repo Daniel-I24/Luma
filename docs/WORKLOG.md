@@ -116,6 +116,24 @@ SQL suites, Deno 2.5.6 in Docker for the functions.
   tests, 76 script tests, all checks, secret scan, audit 0; SQL and Deno
   unchanged in this phase. Magic numbers go to FASE 6 (lint rule).
 
+- FASE 6 done (2026-10-27): ESLint in CI now enforces naming,
+  complexity 10, 40 lines per function, 150 per file, depth 3, 4 params,
+  no magic numbers (0, 1, -1), explicit accessibility and return types,
+  prefer-readonly, no any, plus local rules (eslint/plugin.js, tested):
+  layer boundaries, no exported free functions, JSDoc on classes and
+  public methods. 115 free functions became static class members (AST
+  codemod), every .util.ts renamed, complex functions split, numbers named
+  (core/config/units.ts, http-status.ts, schema limits; data tables carry a
+  justified disable), 740 accessibility modifiers, 235 JSDoc blocks.
+  docs/architecture/patterns.md, a README in each of the 23 features,
+  conventions updated. Performance: budgets already in angular.json,
+  every component OnPush, maps in lazy chunks and removed on exit, images
+  lazy. Cleanup recorded in docs/cleanup-report.md. Closed green: build
+  (650 kB initial), lint, 735 app tests, 79 script tests, all checks,
+  secret scan, audit 0, knip without unused files or dependencies; SQL and
+  Deno unchanged in this phase. Edge Functions are outside the new ESLint
+  rules (Deno lint is a follow-up).
+
 ## Done (round 1)
 
 - PARTE 0 — history cleaned (`backup-before-temp-cleanup` and
