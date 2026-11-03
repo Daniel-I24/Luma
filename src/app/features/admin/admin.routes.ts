@@ -19,6 +19,11 @@ export const adminRoutes: Routes = [
           import('./pages/admin-queue/admin-queue.page').then((m) => m.AdminQueuePage),
       },
       {
+        path: 'operations',
+        loadComponent: () =>
+          import('./pages/admin-operations/admin-operations.page').then((m) => m.AdminOperationsPage),
+      },
+      {
         path: 'businesses/:id',
         data: DETAIL_ROUTE_DATA,
         loadComponent: () =>

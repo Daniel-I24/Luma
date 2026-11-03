@@ -10,6 +10,7 @@
       (clicked)="back()"
     />
     <h1 class="m-0 text-h3 text-fg">{{ t('admin.title') }}</h1>
+    <a routerLink="/admin/operations" class="text-body-sm text-fg-accent">{{ t('admin.operations.entry') }}</a>
   </header>
 
   @switch (store.state()) { @case ('loading') {

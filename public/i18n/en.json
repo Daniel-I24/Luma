@@ -1204,6 +1204,57 @@
         "invalidCode": "The code is wrong or expired. Use the current code from the app.",
         "codeShape": "Type the 6 digits of the code."
       }
+    },
+    "flags": {
+      "title": "Warning signs",
+      "none": "No signs: nothing repeats with other businesses.",
+      "duplicate_tax_id": "The NIT already appears in another business.",
+      "duplicate_phone": "The phone or WhatsApp is used by another owner's business.",
+      "near_duplicate_location": "There is another owner's business within 50 m.",
+      "similar_name": "The name is very similar to an approved business.",
+      "account": "Owner account created {{days}} days ago; {{count}} business(es)."
+    },
+    "operations": {
+      "entry": "Payments, strikes and log",
+      "back": "Back to the queue",
+      "title": "Operations",
+      "payments": "Payments with problems",
+      "reconcile": "Reconcile now",
+      "noIssues": "No payments to review.",
+      "paymentMeta": "Order {{order}} · {{method}} · {{when}}",
+      "issue": {
+        "refund_required": "Refund pending",
+        "mismatch": "The payment does not match the order",
+        "error": "Payment with an error",
+        "stuck_pending": "Payment without an answer for over an hour"
+      },
+      "voidAction": "Void in Wompi",
+      "markRefunded": "Mark refunded",
+      "void": {
+        "voided": "Payment voided in Wompi.",
+        "manual": "This method cannot be voided by API: refund it in the Wompi dashboard and mark it here.",
+        "pending": "Wompi received the void; the status will update soon."
+      },
+      "refundMarked": "Refund marked as done.",
+      "reconciled": "Reconciliation done.",
+      "strikesCleared": "Strikes cleared.",
+      "strikes": "No-show strikes",
+      "strikeLine": "Customer {{id}} · {{count}} strikes · last {{when}}",
+      "clear": "Clear",
+      "noStrikes": "No customer has strikes.",
+      "audit": "Recent log",
+      "noAudit": "No actions logged yet.",
+      "actions": {
+        "review_business": "Business review",
+        "void_payment": "Payment void",
+        "mark_refund_done": "Refund marked",
+        "clear_strikes": "Strikes cleared",
+        "reconcile_payments": "Payment reconciliation"
+      },
+      "errors": {
+        "load": "Could not load the operations.",
+        "failed": "The action could not be completed."
+      }
     }
   },
   "reports": {

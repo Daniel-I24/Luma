@@ -1204,6 +1204,57 @@
         "invalidCode": "El código no es correcto o ya venció. Usa el código actual de la app.",
         "codeShape": "Escribe los 6 dígitos del código."
       }
+    },
+    "flags": {
+      "title": "Señales de alerta",
+      "none": "Sin señales: nada se repite con otros negocios.",
+      "duplicate_tax_id": "El NIT ya aparece en otro negocio.",
+      "duplicate_phone": "El teléfono o WhatsApp lo usa un negocio de otro dueño.",
+      "near_duplicate_location": "Hay un negocio de otro dueño a menos de 50 m.",
+      "similar_name": "El nombre se parece mucho al de un negocio aprobado.",
+      "account": "Cuenta del dueño creada hace {{days}} días; tiene {{count}} negocio(s)."
+    },
+    "operations": {
+      "entry": "Pagos, avisos y registro",
+      "back": "Volver a la cola",
+      "title": "Operaciones",
+      "payments": "Pagos con problemas",
+      "reconcile": "Conciliar ahora",
+      "noIssues": "No hay pagos que revisar.",
+      "paymentMeta": "Pedido {{order}} · {{method}} · {{when}}",
+      "issue": {
+        "refund_required": "Reembolso pendiente",
+        "mismatch": "El pago no coincide con el pedido",
+        "error": "Pago con error",
+        "stuck_pending": "Pago sin respuesta hace más de una hora"
+      },
+      "voidAction": "Anular en Wompi",
+      "markRefunded": "Marcar reembolsado",
+      "void": {
+        "voided": "Pago anulado en Wompi.",
+        "manual": "Este medio no se anula por API: reembólsalo en el panel de Wompi y márcalo aquí.",
+        "pending": "Wompi recibió la anulación; el estado se actualizará pronto."
+      },
+      "refundMarked": "Reembolso marcado como hecho.",
+      "reconciled": "Conciliación hecha.",
+      "strikesCleared": "Avisos limpiados.",
+      "strikes": "Avisos por no recoger",
+      "strikeLine": "Cliente {{id}} · {{count}} avisos · último {{when}}",
+      "clear": "Limpiar",
+      "noStrikes": "Ningún cliente tiene avisos.",
+      "audit": "Registro reciente",
+      "noAudit": "Todavía no hay acciones registradas.",
+      "actions": {
+        "review_business": "Revisión de negocio",
+        "void_payment": "Anulación de pago",
+        "mark_refund_done": "Reembolso marcado",
+        "clear_strikes": "Avisos limpiados",
+        "reconcile_payments": "Conciliación de pagos"
+      },
+      "errors": {
+        "load": "No se pudieron cargar las operaciones.",
+        "failed": "La acción no se pudo completar."
+      }
     }
   },
   "reports": {

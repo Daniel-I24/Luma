@@ -11,6 +11,7 @@ import { LocationPreview } from '../../components/location-preview/location-prev
 import { ReviewDecisionSheet } from '../../components/review-decision/review-decision';
 import { AdminReviewStore } from '../../state/admin-review.store';
 import { ExternalUrls } from '@core/config/external-urls';
+import { ReviewFlagsView } from '../../components/review-flags/review-flags';
 
 /** Public business registry, to check the legal data by hand. */
 export const RUES_URL = ExternalUrls.RUES;
@@ -21,6 +22,7 @@ export const RUES_URL = ExternalUrls.RUES;
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ReviewFlagsView,
     TranslocoModule,
     LumaButton,
     LumaEmptyState,

@@ -1,0 +1,62 @@
+<div *transloco="let t" class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6">
+  <a routerLink="/admin" class="text-body-sm text-fg-accent">{{ t('admin.operations.back') }}</a>
+  <h1 class="m-0 text-h3 text-fg">{{ t('admin.operations.title') }}</h1>
+  @if (ops.notice(); as key) {
+  <p class="m-0 rounded-md bg-info-bg p-3 text-body-sm text-info-fg" role="status">{{ t(key) }}</p>
+  }
+
+  @switch (ops.state()) { @case ('loading') {
+  <app-luma-skeleton shape="rect" class="block h-40" />
+  } @case ('error') {
+  <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">{{ t('admin.operations.errors.load') }}</p>
+  <app-luma-button variant="secondary" (clicked)="ops.load()">{{ t('common.retry') }}</app-luma-button>
+  } @default {
+  <section class="flex flex-col gap-2" aria-labelledby="ops-payments">
+    <div class="flex items-center justify-between gap-2">
+      <h2 id="ops-payments" class="m-0 text-title text-fg">{{ t('admin.operations.payments') }}</h2>
+      <app-luma-button size="sm" variant="secondary" [disabled]="ops.busy()" (clicked)="ops.reconcile()">{{ t('admin.operations.reconcile') }}</app-luma-button>
+    </div>
+    @for (issue of ops.issues(); track issue.payment_id) {
+    <article class="flex flex-col gap-2 rounded-xl border border-border-subtle bg-surface p-3">
+      <p class="m-0 flex justify-between gap-2 text-body text-fg">
+        <span>{{ t('admin.operations.issue.' + issue.issue) }}</span><span class="font-semibold">{{ pesos(issue.amount_in_cents) | cop }}</span>
+      </p>
+      <p class="m-0 text-caption text-fg-muted">
+        {{ t('admin.operations.paymentMeta', { order: short(issue.order_id), method: issue.payment_method_type ?? '-', when: when(issue.created_at) }) }}
+      </p>
+      @if (issue.issue === 'refund_required') {
+      <div class="flex gap-2">
+        <app-luma-button size="sm" variant="danger-outline" [disabled]="ops.busy()" (clicked)="ops.voidPayment(issue)">{{ t('admin.operations.voidAction') }}</app-luma-button>
+        <app-luma-button size="sm" variant="secondary" [disabled]="ops.busy()" (clicked)="ops.markRefundDone(issue)">{{ t('admin.operations.markRefunded') }}</app-luma-button>
+      </div>
+      }
+    </article>
+    } @empty {
+    <p class="m-0 text-body-sm text-fg-muted">{{ t('admin.operations.noIssues') }}</p>
+    }
+  </section>
+
+  <section class="flex flex-col gap-2" aria-labelledby="ops-strikes">
+    <h2 id="ops-strikes" class="m-0 text-title text-fg">{{ t('admin.operations.strikes') }}</h2>
+    @for (customer of ops.strikes(); track customer.user_id) {
+    <article class="flex items-center justify-between gap-2 rounded-xl border border-border-subtle bg-surface p-3">
+      <span class="text-body-sm text-fg">{{ t('admin.operations.strikeLine', { id: short(customer.user_id), count: customer.strikes, when: when(customer.last_strike_at) }) }}</span>
+      <app-luma-button size="sm" variant="secondary" [disabled]="ops.busy()" (clicked)="ops.clearStrikes(customer)">{{ t('admin.operations.clear') }}</app-luma-button>
+    </article>
+    } @empty {
+    <p class="m-0 text-body-sm text-fg-muted">{{ t('admin.operations.noStrikes') }}</p>
+    }
+  </section>
+
+  <section class="flex flex-col gap-2" aria-labelledby="ops-audit">
+    <h2 id="ops-audit" class="m-0 text-title text-fg">{{ t('admin.operations.audit') }}</h2>
+    <ul class="m-0 flex list-none flex-col gap-1 p-0">
+      @for (entry of ops.audit(); track entry.id) {
+      <li class="text-body-sm text-fg-muted">{{ when(entry.created_at) }} · {{ t('admin.operations.actions.' + entry.action) }}@if (entry.detail) { ({{ entry.detail }}) }</li>
+      } @empty {
+      <li class="text-body-sm text-fg-muted">{{ t('admin.operations.noAudit') }}</li>
+      }
+    </ul>
+  </section>
+  } }
+</div>

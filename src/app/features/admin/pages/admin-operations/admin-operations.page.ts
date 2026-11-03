@@ -1,0 +1,44 @@
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
+import { LumaButton, LumaSkeleton } from '@design-system';
+import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
+import { formatDateTime } from '@shared/format/date-format.util';
+import { AdminOperationsStore } from '../../state/admin-operations.store';
+
+const CENTS_PER_PESO = 100;
+/** Short ids on screen: enough to search them in Wompi or Supabase. */
+const SHORT_ID = 8;
+
+/** AdminOperationsPage — /admin/operations: payments, strikes and the audit log. */
+@Component({
+  selector: 'app-admin-operations-page',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [TranslocoModule, RouterLink, LumaButton, LumaSkeleton, CopCurrencyPipe],
+  providers: [AdminOperationsStore],
+  templateUrl: './admin-operations.page.html',
+  host: { class: 'block' },
+})
+export class AdminOperationsPage {
+  protected readonly ops = inject(AdminOperationsStore);
+  private readonly transloco = inject(TranslocoService);
+  private readonly lang = toSignal(this.transloco.langChanges$, { initialValue: this.transloco.getActiveLang() });
+
+  public constructor() {
+    void this.ops.load();
+  }
+
+  protected pesos(cents: number): number {
+    return Math.trunc(cents / CENTS_PER_PESO);
+  }
+
+  protected short(id: string): string {
+    return id.slice(0, SHORT_ID);
+  }
+
+  protected when(iso: string | null): string {
+    return iso ? formatDateTime(iso, this.lang()) : '';
+  }
+}
