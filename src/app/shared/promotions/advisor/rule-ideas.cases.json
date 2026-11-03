@@ -1,0 +1,73 @@
+{
+  "about": "Shared cases for the rules advisor: suggest-promotions/ideas.ts (Deno) and rules-promotion-ideas.ts (app) must give the same ideas.",
+  "cases": [
+    {
+      "name": "unsold, new and best seller at the quietest moment",
+      "summary": {
+        "orders": 4,
+        "cancel_rate": 0,
+        "items": [
+          { "menu_item_id": "slow", "name": "Empanada", "price_cop": 9990, "days_listed": 40, "units": 0 },
+          { "menu_item_id": "new", "name": "Jugo", "price_cop": 5000, "days_listed": 3, "units": 1 },
+          { "menu_item_id": "top", "name": "Tinto", "price_cop": 2000, "days_listed": 90, "units": 30 }
+        ],
+        "slots": [
+          { "dow": 5, "slot": "evening", "orders": 8 },
+          { "dow": 2, "slot": "afternoon", "orders": 1 }
+        ]
+      },
+      "promoted": [],
+      "expected": [
+        ["slow", "slow_item", 15, 8492, null],
+        ["new", "new_item", 10, 4500, null],
+        ["top", "quiet_slot", 10, 1800, { "dow": 2, "slot": "afternoon" }]
+      ]
+    },
+    {
+      "name": "items with a running promotion are skipped",
+      "summary": {
+        "orders": 4,
+        "cancel_rate": 0,
+        "items": [
+          { "menu_item_id": "slow", "name": "Empanada", "price_cop": 9990, "days_listed": 40, "units": 0 },
+          { "menu_item_id": "new", "name": "Jugo", "price_cop": 5000, "days_listed": 3, "units": 1 },
+          { "menu_item_id": "top", "name": "Tinto", "price_cop": 2000, "days_listed": 90, "units": 30 }
+        ],
+        "slots": [{ "dow": 2, "slot": "afternoon", "orders": 1 }]
+      },
+      "promoted": ["slow", "top"],
+      "expected": [["new", "new_item", 10, 4500, null]]
+    },
+    {
+      "name": "no slots: no quiet-moment idea; at most 3 ideas; halves round up",
+      "summary": {
+        "orders": 0,
+        "cancel_rate": 0,
+        "items": [
+          { "menu_item_id": "a", "name": "A", "price_cop": 1010, "days_listed": 20, "units": 0 },
+          { "menu_item_id": "b", "name": "B", "price_cop": 1500, "days_listed": 30, "units": 0 },
+          { "menu_item_id": "c", "name": "C", "price_cop": 2500, "days_listed": 2, "units": 0 },
+          { "menu_item_id": "d", "name": "D", "price_cop": 3000, "days_listed": 1, "units": 2 }
+        ],
+        "slots": []
+      },
+      "promoted": [],
+      "expected": [
+        ["a", "slow_item", 15, 859, null],
+        ["b", "slow_item", 15, 1275, null],
+        ["c", "new_item", 10, 2250, null]
+      ]
+    },
+    {
+      "name": "nothing to suggest",
+      "summary": {
+        "orders": 0,
+        "cancel_rate": 0,
+        "items": [{ "menu_item_id": "x", "name": "X", "price_cop": 2000, "days_listed": 30, "units": 0 }],
+        "slots": []
+      },
+      "promoted": ["x"],
+      "expected": []
+    }
+  ]
+}

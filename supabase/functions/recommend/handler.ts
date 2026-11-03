@@ -43,7 +43,6 @@ export function createHandler(deps: RecommendDeps): (req: Request) => Promise<Re
       const caller = token ? await deps.authenticate(token) : null;
       if (!caller) return json(401, { error: 'unauthorized' }, cors);
       if (!deps.llm) return unavailable();
-      if (!(await caller.consumeQuota())) return json(429, { error: 'quota_exceeded' }, cors);
 
       const candidates = await caller.candidates(input.lat, input.lng, input.radiusKm, input.at);
       if (!candidates) return unavailable();
@@ -52,6 +51,8 @@ export function createHandler(deps: RecommendDeps): (req: Request) => Promise<Re
       const key = `recommend:${await sha256(cacheMaterial(input, candidates))}`;
       const cached = await deps.cache.get(key).catch(() => null);
       if (cached) return json(200, cached, cors);
+      // The quota pays for model calls only: cached and empty answers are free.
+      if (!(await caller.consumeQuota())) return json(429, { error: 'quota_exceeded' }, cors);
 
       const answer = await deps.llm.generateJson(buildPrompt(input, candidates), answerValidator(candidates));
       if (!answer.ok) return unavailable();

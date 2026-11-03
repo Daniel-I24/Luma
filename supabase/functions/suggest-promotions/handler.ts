@@ -43,24 +43,24 @@ export function createHandler(deps: SuggestDeps): (req: Request) => Promise<Resp
       const owner = token ? await deps.authenticate(token) : null;
       if (!owner) return json(401, { error: 'unauthorized' }, cors);
       if (!(await owner.ownsApprovedBusiness(businessId))) return json(403, { error: 'forbidden' }, cors);
-      if (!(await owner.consumeQuota(businessId))) return json(429, { error: 'quota_exceeded' }, cors);
 
       const [summary, promoted] = await Promise.all([
         owner.salesSummary(businessId),
         owner.promotedItems(businessId),
       ]);
       if (!summary || !promoted) return unavailable();
-      if (summary.orders < MIN_ORDERS_FOR_AI) {
-        const ideas = finalizeIdeas(ruleIdeas(summary, promoted), summary, promoted);
-        return json(200, { source: 'rules', ideas } satisfies IdeasResponse, cors);
-      }
-      if (!deps.llm) return unavailable();
+      // The rules always answer: few orders, no model configured or a model failure.
+      const rules = () =>
+        json(200, { source: 'rules', ideas: finalizeIdeas(ruleIdeas(summary, promoted), summary, promoted) } satisfies IdeasResponse, cors);
+      if (summary.orders < MIN_ORDERS_FOR_AI || !deps.llm) return rules();
 
       const key = `suggest:${await sha256(JSON.stringify([businessId, summary, [...promoted].sort()]))}`;
       const cached = await deps.cache.get(key).catch(() => null);
       if (cached) return json(200, cached, cors);
+      // The quota pays for model calls only.
+      if (!(await owner.consumeQuota(businessId))) return json(429, { error: 'quota_exceeded' }, cors);
       const answer = await deps.llm.generateJson(buildPrompt(summary), ideasValidator(summary));
-      if (!answer.ok) return unavailable();
+      if (!answer.ok) return rules();
       const result: IdeasResponse = { source: 'ai', ideas: finalizeIdeas(answer.value, summary, promoted) };
       await deps.cache.put(key, result, CACHE_TTL_SECONDS).catch(() => undefined);
       return json(200, result, cors);

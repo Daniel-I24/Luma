@@ -62,8 +62,12 @@ export function buildPrompt(input: RecommendInput, candidates: readonly Candidat
   return { system: SYSTEM, user: JSON.stringify(data), schema: ANSWER_SCHEMA, maxTokens: 512 };
 }
 
-/** Same candidates, same moment and same 20-minute window give the same cached answer. */
+/**
+ * Same moment, same 20-minute window, same area (about 1 km: coordinates
+ * rounded to 2 decimals) and same candidates give the same cached answer.
+ */
 export function cacheMaterial(input: RecommendInput, candidates: readonly Candidate[]): string {
   const window = Math.floor(Date.parse(input.at) / (20 * 60_000));
-  return JSON.stringify([input.moment, window, candidates.map((c) => [c.id, c.items.map((i) => [i.id, i.price_cop]), c.promotions])]);
+  const area = [Math.round(input.lat * 100) / 100, Math.round(input.lng * 100) / 100];
+  return JSON.stringify([input.moment, window, area, candidates.map((c) => [c.id, c.items.map((i) => [i.id, i.price_cop]), c.promotions])]);
 }

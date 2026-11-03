@@ -37,12 +37,46 @@ export function preflight(
   return { cors };
 }
 
+/**
+ * Reads at most maxBytes of the body: rejects by Content-Length first, then
+ * stops reading the stream past the limit (a missing or false length cannot
+ * make the function buffer more).
+ */
+export async function readBody(req: Request, maxBytes: number): Promise<Uint8Array | null> {
+  const declared = Number(req.headers.get('Content-Length') ?? '0');
+  if (!Number.isFinite(declared) || declared > maxBytes) {
+    await req.body?.cancel();
+    return null;
+  }
+  if (!req.body) return new Uint8Array();
+  const reader = req.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    size += value.byteLength;
+    if (size > maxBytes) {
+      await reader.cancel();
+      return null;
+    }
+    chunks.push(value);
+  }
+  const body = new Uint8Array(size);
+  let offset = 0;
+  for (const chunk of chunks) {
+    body.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return body;
+}
+
 /** Reads a JSON body of at most maxBytes; null when too big or not JSON. */
 export async function readJson(req: Request, maxBytes = MAX_BODY_BYTES): Promise<unknown> {
-  const text = await req.text();
-  if (new TextEncoder().encode(text).length > maxBytes) return null;
+  const body = await readBody(req, maxBytes);
+  if (!body) return null;
   try {
-    return JSON.parse(text);
+    return JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(body));
   } catch {
     return null;
   }

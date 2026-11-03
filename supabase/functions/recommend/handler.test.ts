@@ -117,9 +117,9 @@ Deno.test('a model failure or timeout is 503 ai_unavailable', async () => {
   assertEquals(res.status, 503);
 });
 
-Deno.test('a cached answer skips the model', async () => {
+Deno.test('a cached answer skips the model and spends no quota', async () => {
   const cached = { businesses: [{ id: 'b2', reason: 'nearby' }], combo: null };
-  const { handler, requests } = setup({ cached });
+  const { handler, requests } = setup({ cached, quota: false });
   const res = await handler(post());
   assertEquals(await res.json(), cached);
   assertEquals(requests.length, 0);
