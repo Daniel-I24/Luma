@@ -88,6 +88,9 @@ agent's sessions).
   consume_menu_scan_quota), quota only before model calls, suggest-promotions
   rules fallback (200), recommend cache key with area, bounded readJson,
   shared rule cases (Deno + Vitest), scripts/ai-smoke.mjs.
+  1.6 geocode function (photon, nominatim, locationiq, maptiler by secret;
+  Colombia only, Nariño bias, rounded bias point, 7-day cache, quota
+  consume_geocode_quota 200/user and 5000/day global).
 
 - Block D done: migration 20261021000000 (discounts, trigger, server prices in
   create_order; 23 SQL checks), customer /promotions (sort, filters, states,

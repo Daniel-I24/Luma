@@ -153,3 +153,22 @@ alternative that was not taken. The safest, most reversible option wins.
 - **Why**: a policy on `storage.objects` reading `storage.objects` recurses.
 - **Alternative**: a trigger on `storage.objects`, which Supabase manages and
   may not allow.
+
+## 2026-10-19 — Geocoding on submit only, provider by secret
+
+- **What**: the app calls `geocode` when the user submits the search; the
+  provider (photon, nominatim, locationiq, maptiler) is chosen by secrets and
+  missing secrets answer `geocode_unavailable` (businesses-only search).
+- **Why**: respects the strictest policy (Nominatim forbids autocomplete),
+  keeps the free quotas, and no key ever reaches the client.
+- **Alternative**: search-as-you-type with a paid provider; possible later by
+  changing only the app's trigger.
+
+## 2026-10-19 — AI quota spent only on model calls
+
+- **What**: recommend, suggest-promotions, extract-menu and geocode consume
+  quota after the cache check, right before the provider call; suggest-
+  promotions answers the rules (200) when the model is missing or fails.
+- **Why**: cached and rule answers cost nothing; users should not lose quota
+  for them.
+- **Alternative**: count every request (simpler, but punishes cache hits).

@@ -5,7 +5,8 @@
 --   2. consume_ai_quota: daily limits per user, per business and global
 --      (app_settings), counted only when every limit still has room.
 --   3. ai_cache_get / ai_cache_put: service_role only, so a client can never
---      plant an answer for other users; TTL capped at 24 h.
+--      plant an answer for other users; TTL capped at 24 h (7 days for
+--      geocode: keys, places change slowly).
 --   4. ai_recommend_candidates: public businesses open at a time near a point
 --      (rounded coordinates), with rating, current promotions and up to 4
 --      available items. Public data only.
@@ -114,7 +115,8 @@ as $$
 begin
   delete from public.ai_cache where expires_at <= now();
   insert into public.ai_cache (key, value, expires_at)
-  values (p_key, p_value, now() + make_interval(secs => least(greatest(p_ttl_seconds, 60), 86400)))
+  values (p_key, p_value, now() + make_interval(secs => least(greatest(p_ttl_seconds, 60),
+          case when p_key like 'geocode:%' then 604800 else 86400 end)))
   on conflict (key) do update set value = excluded.value, expires_at = excluded.expires_at;
 end;
 $$;
