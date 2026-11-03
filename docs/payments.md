@@ -227,3 +227,30 @@ going live; not legal advice):
 - Owners see "Pagado en línea" on the order card and never mark a payment.
 - Legal drafts: `/legal/refunds` (payments and refunds policy) and Wompi as
   processor in the privacy draft.
+
+## Before enabling: validate one real sandbox event
+
+Online payments stay off (`payments_enabled = 0`) until a **real event
+from Wompi's sandbox** has been checked against our checksum algorithm:
+
+1. In the sandbox, pay a test order (test card) with the events URL
+   pointing to `wompi-webhook`.
+2. Wompi dashboard (sandbox) → Eventos: copy the JSON of the
+   `transaction.updated` event into a file, e.g. `event.json` (outside the
+   repository). Note the `X-Event-Checksum` header if the dashboard shows it.
+3. In PowerShell:
+
+   ```powershell
+   $env:WOMPI_EVENTS_SECRET = Read-Host "Sandbox events secret"
+   npm run check:wompi-event -- C:\ruta\event.json
+   # or, with the header: npm run check:wompi-event -- C:\ruta\event.json --checksum <X-Event-Checksum>
+   Remove-Item Env:WOMPI_EVENTS_SECRET
+   ```
+
+The script computes the documented checksum (values of
+`signature.properties` in order, then `timestamp`, then the secret,
+SHA-256) and a few variants, marks the one that matches and never prints
+the secret. Only "OK: the documented algorithm … matches" allows going on
+with docs/payments-checklist.md; any other answer means a wrong secret,
+the wrong environment, or a change in Wompi's algorithm to investigate
+before enabling payments.

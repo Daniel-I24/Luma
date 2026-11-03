@@ -20,7 +20,8 @@
     "check:contrast": "node scripts/brand-contrast.mjs",
     "check:buttons": "node scripts/check-destructive-buttons.mjs",
     "check:tokens": "node scripts/check-design-tokens.mjs",
-    "scan:history": "node scripts/secret-scan-history.mjs"
+    "scan:history": "node scripts/secret-scan-history.mjs",
+    "check:wompi-event": "node scripts/check-wompi-event.mjs"
   },
   "private": true,
   "packageManager": "npm@11.21.0",
