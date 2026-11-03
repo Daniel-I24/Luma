@@ -9,6 +9,16 @@ export const OVERDRAG_RESISTANCE = 0.25;
 /** Movement that turns a press on the handle into a drag (no click). */
 export const DRAG_SLOP_PX = 6;
 
+/** A flicked sheet keeps the finger's speed, within the motion range for screens (ms). */
+export const FLING_MIN_MS = 120;
+export const FLING_MAX_MS = 340;
+
+/** Time to travel the rest of the way at the release speed (inertia), clamped. */
+export function flingDurationMs(remainingPx: number, velocityPxPerMs: number): number {
+  if (velocityPxPerMs <= 0) return FLING_MAX_MS;
+  return Math.round(Math.min(FLING_MAX_MS, Math.max(FLING_MIN_MS, remainingPx / velocityPxPerMs)));
+}
+
 export type SheetDragOutcome = 'close' | 'restore';
 
 export interface SheetDragRelease {

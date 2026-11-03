@@ -1,20 +1,21 @@
 /* ─────────────────────────────────────────────
-   MOTION — reusable motion utilities and keyframes. Durations and curves
-   are the tokens in scale.css. Only transform and opacity are animated
-   (panels expand with grid-template-rows). Hover lives inside
-   @media (hover: hover); press feedback always applies.
-   Reduced motion: base.css turns animations and transitions into nothing,
-   and press scales are disabled here.
+   MOTION — reusable utilities and keyframes (docs/brand/motion.md).
+   One curve to enter (--ease-enter) and one to leave (--ease-exit);
+   controls 120-240 ms, screens 340 ms. Only transform and opacity are
+   animated (panels expand with grid-template-rows). No overshoot, no
+   bounce, no pulsing. Hover lives inside @media (hover: hover); press
+   feedback always applies. Reduced motion: base.css turns animations and
+   transitions into nothing, and press scales are disabled here.
 ───────────────────────────────────────────── */
 
-/* Press feedback (scale 0.97 in 100 ms) plus colour transitions. */
+/* Press feedback (scale 0.97 in 120 ms) plus colour transitions. */
 @utility pressable {
   transition:
-    transform var(--duration-instant) var(--ease-standard),
-    background-color var(--duration-fast) var(--ease-standard),
-    border-color var(--duration-fast) var(--ease-standard),
-    color var(--duration-fast) var(--ease-standard),
-    box-shadow var(--duration-fast) var(--ease-standard);
+    transform var(--duration-instant) var(--ease-enter),
+    background-color var(--duration-fast) var(--ease-enter),
+    border-color var(--duration-fast) var(--ease-enter),
+    color var(--duration-fast) var(--ease-enter),
+    box-shadow var(--duration-fast) var(--ease-enter);
 
   &:active:not(:disabled) {
     transform: scale(var(--motion-press-scale));
@@ -29,44 +30,65 @@
 
 /* Icons fill (favourite heart, rating stars) with a short crossfade. */
 app-luma-icon svg {
-  transition: fill-opacity var(--duration-fast) var(--ease-standard);
+  transition: fill-opacity var(--duration-fast) var(--ease-enter);
 }
 
-/* List entrance: set --stagger-index (0, 1, 2…) on each item. */
+/*
+ * List entrance: set --stagger-index (0, 1, 2…) on each item. A plain fade,
+ * and only the first 4 items are delayed; the rest appear with the 4th.
+ */
 @utility motion-stagger {
-  animation: var(--animate-fade-in-up);
-  animation-delay: calc(var(--stagger-index, 0) * var(--duration-stagger));
+  animation: var(--animate-fade-in);
+  animation-delay: calc(min(var(--stagger-index, 0), 3) * var(--duration-stagger));
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
   }
 }
 
-/* Favourite marked. */
+/* Favourite marked: a short scale, no overshoot. */
 @utility motion-pop {
-  animation: pop var(--duration-normal) var(--ease-bounce);
+  animation: pop var(--duration-normal) var(--ease-enter);
 }
 
 /* A change was reverted (e.g. saving failed). */
 @utility motion-shake {
-  animation: shake var(--duration-slow) var(--ease-standard);
+  animation: shake var(--duration-slow) var(--ease-enter);
 }
 
 /* Angular animate.enter / animate.leave classes. */
 @utility motion-enter-fade {
-  animation: fade-in var(--duration-normal) var(--ease-decelerate) both;
+  animation: fade-in var(--duration-normal) var(--ease-enter) both;
 }
 
 @utility motion-leave-fade {
-  animation: fade-out var(--duration-normal) var(--ease-accelerate) both;
+  animation: fade-out var(--duration-fast) var(--ease-exit) both;
 }
 
 @utility motion-enter-down {
-  animation: slide-in-down var(--duration-normal) var(--ease-decelerate) both;
+  animation: slide-in-down var(--duration-normal) var(--ease-enter) both;
 }
 
 @utility motion-leave-up {
-  animation: slide-out-up var(--duration-fast) var(--ease-accelerate) both;
+  animation: slide-out-up var(--duration-fast) var(--ease-exit) both;
+}
+
+/* Success: the check of LumaCheckmark draws itself (stroke). */
+@utility motion-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw var(--duration-slow) var(--ease-enter) forwards;
+
+  @media (prefers-reduced-motion: reduce) {
+    stroke-dashoffset: 0;
+    animation: none;
+  }
+}
+
+/* Order status line: the filled part grows to the new step (the element sets
+   its own transform-origin and scale). */
+@utility motion-advance {
+  transition: transform var(--duration-slow) var(--ease-enter);
 }
 
 @keyframes fade-out {
@@ -77,7 +99,7 @@ app-luma-icon svg {
 
 @keyframes pop {
   50% {
-    transform: scale(1.25);
+    transform: scale(var(--motion-active-scale));
   }
 }
 
@@ -118,14 +140,9 @@ app-luma-icon svg {
   }
 }
 
-@keyframes pulse-ring {
-  from {
-    opacity: 0.6;
-    transform: scale(1);
-  }
+@keyframes draw {
   to {
-    opacity: 0;
-    transform: scale(2.5);
+    stroke-dashoffset: 0;
   }
 }
 
@@ -136,5 +153,5 @@ html.theme-transition *::before,
 html.theme-transition *::after {
   transition-property: background-color, border-color, color, fill, stroke !important;
   transition-duration: var(--duration-theme) !important;
-  transition-timing-function: var(--ease-standard) !important;
+  transition-timing-function: var(--ease-enter) !important;
 }

@@ -13,7 +13,7 @@ import { LumaButton, LumaIcon } from '@design-system';
   imports: [TranslocoModule, LumaButton, LumaIcon],
   templateUrl: './location-prompt.html',
   // Above the map attribution (bottom-left), which must stay reachable.
-  host: { class: 'absolute inset-x-4 bottom-12 z-30 block animate-fade-in-up' },
+  host: { class: 'absolute inset-x-4 bottom-12 z-30 block animate-fade-in' },
 })
 export class LocationPrompt {
   readonly allow = output<void>();

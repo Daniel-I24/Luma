@@ -6,6 +6,7 @@
     @for (pick of picks(); track pick.candidate.business.id) {
     <li class="motion-stagger flex flex-col gap-1" [style.--stagger-index]="$index">
       <app-luma-business-card
+        [transitionId]="pick.candidate.business.id"
         variant="list"
         [name]="pick.candidate.business.name"
         [status]="pick.candidate.status"

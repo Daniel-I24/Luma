@@ -4,6 +4,7 @@ import {
   FLING_VELOCITY,
   MIN_FLING_DISTANCE_PX,
   OVERDRAG_RESISTANCE,
+  flingDurationMs,
   resolveSheetDrag,
   sampleVelocity,
   sheetDragOffset,
@@ -94,5 +95,14 @@ describe('SheetDrag', () => {
     expect(panel.style.transform).toBe('');
     expect(close).not.toHaveBeenCalled();
     expect(drag.consumeDrag()).toBe(false);
+  });
+});
+
+describe('flingDurationMs', () => {
+  it('keeps the release speed within 120-340 ms', () => {
+    expect(flingDurationMs(300, 1.5)).toBe(200);
+    expect(flingDurationMs(300, 10)).toBe(120);
+    expect(flingDurationMs(300, 0.2)).toBe(340);
+    expect(flingDurationMs(300, 0)).toBe(340);
   });
 });

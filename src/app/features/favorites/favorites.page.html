@@ -45,6 +45,7 @@
     @for (item of store.items(); track item.business.id) {
     <li class="motion-stagger flex items-center gap-2" [style.--stagger-index]="$index">
       <app-luma-business-card
+        [transitionId]="item.business.id"
         class="min-w-0 flex-1"
         variant="list"
         [name]="item.business.name"

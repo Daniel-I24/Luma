@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { filter, map } from 'rxjs';
 import { LumaIcon } from '@design-system';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
+import { CartFlight } from '../cart-flight.service';
 import { CartStore } from '../cart.store';
 
 /** Screens that already show the cart, where the bar would be redundant. */
@@ -33,4 +34,11 @@ export class CartBar {
   protected readonly visible = computed(
     () => !this.cart.isEmpty() && !HIDDEN_ON.some((path) => this.url().startsWith(path)),
   );
+
+  constructor() {
+    // The bar is where an added dish flies to (CartFlight).
+    const flight = inject(CartFlight);
+    flight.setTarget(inject<ElementRef<HTMLElement>>(ElementRef).nativeElement);
+    inject(DestroyRef).onDestroy(() => flight.setTarget(null));
+  }
 }

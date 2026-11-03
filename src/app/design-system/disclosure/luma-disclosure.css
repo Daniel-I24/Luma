@@ -7,7 +7,7 @@
   grid-template-rows: 0fr;
   visibility: hidden;
   transition:
-    grid-template-rows var(--duration-normal) var(--ease-accelerate),
+    grid-template-rows var(--duration-normal) var(--ease-exit),
     visibility 0s linear var(--duration-normal);
 }
 
@@ -15,7 +15,7 @@
   grid-template-rows: 1fr;
   visibility: visible;
   transition:
-    grid-template-rows var(--duration-normal) var(--ease-decelerate),
+    grid-template-rows var(--duration-normal) var(--ease-enter),
     visibility 0s;
 }
 

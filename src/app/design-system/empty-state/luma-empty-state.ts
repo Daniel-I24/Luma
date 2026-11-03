@@ -20,7 +20,7 @@ const TONE_CLASS: Record<EmptyStateTone, string> = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LumaIcon],
   templateUrl: './luma-empty-state.html',
-  host: { class: 'flex flex-col items-center px-5 py-8 text-center animate-fade-in-up' },
+  host: { class: 'flex flex-col items-center px-5 py-8 text-center animate-fade-in' },
 })
 export class LumaEmptyState {
   readonly icon = input.required<IconName>();

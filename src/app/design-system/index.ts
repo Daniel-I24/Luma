@@ -30,7 +30,7 @@ export { LumaIcon } from './icon/luma-icon';
 export type { IconSize } from './icon/luma-icon';
 export type { IconName } from './icon/luma-icons';
 
-export { LumaBusinessCard } from './business-card/luma-business-card';
+export { BusinessTransition, LumaBusinessCard } from './business-card/luma-business-card';
 export type { BusinessCardVariant } from './business-card/luma-business-card';
 
 export { LumaEmptyState } from './empty-state/luma-empty-state';
@@ -61,3 +61,5 @@ export { LumaSelect } from './select/luma-select';
 export type { SelectOption } from './select/luma-select';
 
 export { LumaImage } from './image/luma-image';
+
+export { LumaCheckmark } from './checkmark/luma-checkmark';

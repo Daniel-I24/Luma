@@ -58,6 +58,7 @@
       [style.--stagger-index]="$index"
     >
       <app-luma-business-card
+        [transitionId]="item.business.id"
         [name]="item.business.name"
         [status]="item.status"
         [category]="item.business.category"

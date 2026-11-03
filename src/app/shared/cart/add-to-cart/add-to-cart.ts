@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, computed, inject, input } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton, LumaIconButton } from '@design-system';
 import { CartActions } from '../cart-actions.service';
+import { CartFlight } from '../cart-flight.service';
 import { MAX_PER_ITEM, type CartProduct } from '../cart.model';
 import { CartStore } from '../cart.store';
 
@@ -20,6 +21,8 @@ import { CartStore } from '../cart.store';
 export class AddToCart {
   private readonly cart = inject(CartStore);
   private readonly actions = inject(CartActions);
+  private readonly flight = inject(CartFlight);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
   readonly product = input.required<CartProduct>();
 
@@ -27,7 +30,9 @@ export class AddToCart {
   protected readonly atLimit = computed(() => this.quantity() >= MAX_PER_ITEM);
 
   protected add(): void {
+    const before = this.quantity();
     this.actions.add(this.product());
+    if (this.quantity() > before) this.flight.fly(this.host.nativeElement);
   }
 
   protected decrease(): void {

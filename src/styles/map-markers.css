@@ -28,10 +28,10 @@
   box-shadow: var(--shadow-md);
   color: var(--color-fg-inverse);
   transform: rotate(-45deg);
-  animation: marker-in var(--duration-normal) var(--ease-bounce) both;
+  animation: marker-in var(--duration-normal) var(--ease-enter) both;
   transition:
-    transform var(--duration-normal) var(--ease-bounce),
-    box-shadow var(--duration-fast) var(--ease-standard);
+    transform var(--duration-normal) var(--ease-enter),
+    box-shadow var(--duration-fast) var(--ease-enter);
 }
 
 .luma-marker__pin svg {
@@ -98,16 +98,14 @@
   box-shadow: var(--shadow-md);
 }
 
-/* Soft pulse around the position dot (continuous, so it keeps will-change). */
+/* A still halo around the position dot (no pulsing: docs/brand/motion.md). */
 .luma-user-dot::after {
   content: '';
   position: absolute;
-  inset: 0;
+  inset: calc(var(--spacing-2) * -1);
   z-index: -1;
   border-radius: var(--radius-full);
-  background-color: var(--color-info);
-  animation: pulse-ring var(--duration-pulse) var(--ease-decelerate) infinite;
-  will-change: transform, opacity;
+  background-color: var(--color-info-bg);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -138,7 +136,7 @@
   background: var(--color-primary);
   box-shadow: var(--shadow-md);
   transform: rotate(-45deg);
-  animation: marker-in var(--duration-normal) var(--ease-bounce) both;
+  animation: marker-in var(--duration-normal) var(--ease-enter) both;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { LumaAvatar } from '../avatar/luma-avatar';
 import type { IconName } from '../icon/luma-icons';
 import { LumaRatingStars } from '../rating-stars/luma-rating-stars';
@@ -6,6 +6,14 @@ import { StatusBadge } from '../status-badge/status-badge';
 import type { BusinessStatus } from '../status-badge/status-badge';
 
 export type BusinessCardVariant = 'compact' | 'list';
+
+/** View-transition names shared by a business card and the business profile. */
+export class BusinessTransition {
+  /** CSS custom identifiers cannot start with a digit, so ids get a prefix. */
+  public static logoName(businessId: string | null | undefined): string | null {
+    return businessId ? `business-logo-${businessId}` : null;
+  }
+}
 
 /**
  * LumaBusinessCard — tappable business summary. `compact` fits horizontal
@@ -26,6 +34,9 @@ export class LumaBusinessCard {
   readonly status = input.required<BusinessStatus>();
   readonly category = input<string | null>(null);
   readonly logoUrl = input<string | null>(null);
+  /** Business id: the logo then flies to the profile (shared view-transition name). */
+  readonly transitionId = input<string | null>(null);
+  protected readonly transitionName = computed(() => BusinessTransition.logoName(this.transitionId()));
   /** Shown on a token background when there is no logo (e.g. the category icon). */
   readonly logoIcon = input<IconName>('store');
   readonly rating = input<number | null>(null);

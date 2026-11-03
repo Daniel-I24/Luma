@@ -28,10 +28,12 @@ import { timelineSteps } from '../../utils/order-detail.util';
               }
             </span>
             @if (!last) {
-              <span
-                class="min-h-6 w-0.5 flex-1"
-                [class]="step.state === 'done' ? 'bg-primary' : 'bg-border'"
-              ></span>
+              <span class="relative min-h-6 w-0.5 flex-1 overflow-hidden bg-border">
+                <span
+                  class="motion-advance absolute inset-0 origin-top bg-primary"
+                  [style.transform]="step.state === 'done' ? 'scaleY(1)' : 'scaleY(0)'"
+                ></span>
+              </span>
             }
           </span>
           <span

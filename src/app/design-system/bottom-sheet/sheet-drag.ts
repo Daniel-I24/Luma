@@ -1,6 +1,7 @@
 import {
   DRAG_SLOP_PX,
   type PointerSample,
+  flingDurationMs,
   resolveSheetDrag,
   sampleVelocity,
   sheetDragOffset,
@@ -61,7 +62,8 @@ export class SheetDrag {
       sheetHeightPx: panel.offsetHeight,
     });
     if (outcome === 'close') {
-      // Keep going down from where the finger left it; reset() clears it on reopen.
+      // Keep going down at the finger's speed (inertia); reset() clears it on reopen.
+      panel.style.transitionDuration = `${flingDurationMs(panel.offsetHeight - offsetPx, velocityPxPerMs)}ms`;
       panel.style.transform = 'translateY(100%)';
       this.close();
       return;
@@ -77,6 +79,7 @@ export class SheetDrag {
   reset(): void {
     const panel = this.panel();
     panel.style.transform = '';
+    panel.style.transitionDuration = '';
     panel.classList.remove(DRAGGING_CLASS, RETURNING_CLASS);
   }
 

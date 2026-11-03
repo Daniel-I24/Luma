@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, untracked } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaButton } from '@design-system';
+import { LumaButton, LumaCheckmark } from '@design-system';
 import type { OrderWithItems } from '@shared/orders/order.model';
 import { OrderPaymentStore } from '../../state/order-payment.store';
 
@@ -21,7 +21,7 @@ const TONE: Readonly<Record<string, string>> = {
   selector: 'app-order-payment',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton],
+  imports: [TranslocoModule, LumaButton, LumaCheckmark],
   providers: [OrderPaymentStore],
   templateUrl: './order-payment.html',
 })

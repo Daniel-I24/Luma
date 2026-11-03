@@ -1,6 +1,9 @@
 <section *transloco="let t" class="flex flex-col gap-3 rounded-xl border border-border-subtle bg-surface p-4" aria-labelledby="order-payment-title">
   <h2 id="order-payment-title" class="m-0 text-title text-fg">{{ t('payments.title') }}</h2>
-  <p class="m-0 self-start rounded-full px-3 py-1 text-label" [class]="tone()" role="status">
+  <p class="m-0 inline-flex items-center gap-1 self-start rounded-full px-3 py-1 text-label" [class]="tone()" role="status">
+    @if (status() === 'approved') {
+    <app-luma-checkmark [size]="16" />
+    }
     {{ t('payments.status.' + status()) }}
   </p>
 

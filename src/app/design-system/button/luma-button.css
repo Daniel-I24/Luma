@@ -17,11 +17,11 @@
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   transition:
-    background-color var(--duration-fast) var(--ease-standard),
-    border-color var(--duration-fast) var(--ease-standard),
-    color var(--duration-fast) var(--ease-standard),
-    transform var(--duration-instant) var(--ease-standard),
-    opacity var(--duration-fast) var(--ease-standard);
+    background-color var(--duration-fast) var(--ease-enter),
+    border-color var(--duration-fast) var(--ease-enter),
+    color var(--duration-fast) var(--ease-enter),
+    transform var(--duration-instant) var(--ease-enter),
+    opacity var(--duration-fast) var(--ease-enter);
 }
 
 .luma-btn:active:not(:disabled) {
@@ -124,7 +124,7 @@
   height: var(--spacing-1);
   border-radius: var(--radius-full);
   background-color: currentColor;
-  animation: luma-btn-dot var(--duration-slow) var(--ease-standard) infinite alternate;
+  animation: luma-btn-dot var(--duration-slow) var(--ease-enter) infinite alternate;
 }
 
 .luma-btn__dots > span:nth-child(2) {

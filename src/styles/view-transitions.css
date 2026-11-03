@@ -8,25 +8,25 @@
 
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: var(--duration-fast);
-  animation-timing-function: var(--ease-standard);
+  animation-duration: var(--duration-slow);
+  animation-timing-function: var(--ease-enter);
 }
 
 html.vt-push::view-transition-new(root) {
-  animation: slide-in-right var(--duration-normal) var(--ease-decelerate) both;
+  animation: slide-in-right var(--duration-slow) var(--ease-enter) both;
 }
 
 html.vt-push::view-transition-old(root) {
-  animation: fade-out var(--duration-normal) var(--ease-standard) both;
+  animation: fade-out var(--duration-slow) var(--ease-exit) both;
 }
 
 html.vt-pop::view-transition-old(root) {
   z-index: 1;
-  animation: slide-out-right var(--duration-normal) var(--ease-accelerate) both;
+  animation: slide-out-right var(--duration-slow) var(--ease-exit) both;
 }
 
 html.vt-pop::view-transition-new(root) {
-  animation: fade-in var(--duration-normal) var(--ease-standard) both;
+  animation: fade-in var(--duration-slow) var(--ease-enter) both;
 }
 
 /* Reduced motion: a 100 ms fade, never a slide. */

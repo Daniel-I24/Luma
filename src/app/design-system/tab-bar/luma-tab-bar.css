@@ -6,7 +6,7 @@
   background-color: var(--color-nav);
   border-top: 1px solid var(--color-border-subtle);
   padding: 0 var(--spacing-1) env(safe-area-inset-bottom);
-  transition: background-color var(--duration-normal) var(--ease-standard);
+  transition: background-color var(--duration-normal) var(--ease-enter);
 }
 
 .luma-tab-bar__track {
@@ -25,8 +25,8 @@
   pointer-events: none;
   transform: translateX(calc(var(--tab-index) * 100%));
   transition:
-    transform var(--duration-normal) var(--ease-emphasized),
-    opacity var(--duration-fast) var(--ease-standard);
+    transform var(--duration-normal) var(--ease-enter),
+    opacity var(--duration-fast) var(--ease-enter);
 }
 
 .luma-tab-bar__indicator::before {
@@ -68,8 +68,8 @@
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
   transition:
-    color var(--duration-fast) var(--ease-standard),
-    transform var(--duration-instant) var(--ease-standard);
+    color var(--duration-fast) var(--ease-enter),
+    transform var(--duration-instant) var(--ease-enter);
 }
 
 .luma-tab-bar__link:active {
@@ -113,7 +113,7 @@
 }
 
 .luma-tab-bar__icon {
-  transition: transform var(--duration-normal) var(--ease-emphasized);
+  transition: transform var(--duration-normal) var(--ease-enter);
 }
 
 .luma-tab-bar__link--active .luma-tab-bar__icon {
