@@ -12,6 +12,8 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { filter, map } from 'rxjs';
 import { LumaIcon, LumaTabBar, type TabBarItem } from '@design-system';
 import { OWNER_SECTIONS, type OwnerSection, ownerPaths } from '@shared/account/owner-paths';
+import { pollWhileVisible } from '@shared/ui/poll-while-visible';
+import { ORDER_ALERT_POLL_MS, OrderAlertsStore } from '../state/order-alerts.store';
 import { OwnerContextStore } from '../state/owner-context.store';
 
 const TAB_ICONS = {
@@ -33,7 +35,8 @@ export function ownerLocation(url: string): { id: string; section: OwnerSection 
 /**
  * OwnerShell — "Luma Negocios": header with the business switcher and
  * "Añadir otro negocio" (at most 3), the screen, and its own tab bar
- * (Resumen, Pedidos, Menú, Promociones, Mi negocio).
+ * (Resumen, Pedidos, Menú, Promociones, Mi negocio). New orders alert on
+ * every screen (badge on Pedidos, toast and vibration).
  */
 @Component({
   selector: 'app-owner-shell',
@@ -41,11 +44,13 @@ export function ownerLocation(url: string): { id: string; section: OwnerSection 
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterOutlet, RouterLink, TranslocoModule, LumaIcon, LumaTabBar],
   templateUrl: './owner-shell.html',
+  providers: [OrderAlertsStore],
   host: { class: 'flex h-dvh flex-col bg-canvas' },
 })
 export class OwnerShell {
   private readonly router = inject(Router);
   protected readonly context = inject(OwnerContextStore);
+  private readonly alerts = inject(OrderAlertsStore);
 
   private readonly url = toSignal(
     this.router.events.pipe(
@@ -65,13 +70,23 @@ export class OwnerShell {
     }));
   });
   protected readonly registerLink = ownerPaths.register();
+  /** Pending orders on the Pedidos tab. */
+  protected readonly badges = computed<Record<string, number>>(() => {
+    const id = this.location()?.id;
+    return id ? { [ownerPaths.section(id, 'orders').join('/')]: this.alerts.pending() } : {};
+  });
 
   constructor() {
     if (this.context.businesses() === null) void this.context.load();
     effect(() => {
       const id = this.location()?.id;
-      if (id) untracked(() => this.context.select(id));
+      if (id)
+        untracked(() => {
+          this.context.select(id);
+          void this.alerts.watch(id);
+        });
     });
+    pollWhileVisible(() => void this.alerts.refresh(), ORDER_ALERT_POLL_MS);
   }
 
   /** Same tab, other business. */

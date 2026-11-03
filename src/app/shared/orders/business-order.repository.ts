@@ -43,6 +43,18 @@ const LIST_LIMIT = 100;
 export class BusinessOrderRepository {
   private readonly db = inject(SupabaseService).client;
 
+  /** Ids of the orders waiting for the business to accept them (light, for alerts). */
+  async pendingIds(businessId: string): Promise<RepoResult<string[]>> {
+    const { data, error } = await this.db
+      .from('business_orders')
+      .select('id')
+      .eq('business_id', businessId)
+      .eq('status', 'pending')
+      .limit(LIST_LIMIT);
+    if (error) return { data: null, errorKey: 'businessOrders.errors.loadFailed' };
+    return { data: (data as { id: string }[]).map((row) => row.id), errorKey: null };
+  }
+
   /** Latest orders of the business with their lines, newest first. */
   async list(businessId: string): Promise<RepoResult<BusinessOrder[]>> {
     const { data, error } = await this.db

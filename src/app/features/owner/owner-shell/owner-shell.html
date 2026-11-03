@@ -54,6 +54,6 @@
   </main>
 
   @if (tabs().length) {
-  <app-luma-tab-bar [items]="tabs()" labelKey="owner.tabs.label" />
+  <app-luma-tab-bar [items]="tabs()" [badges]="badges()" labelKey="owner.tabs.label" />
   }
 </ng-container>

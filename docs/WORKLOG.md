@@ -142,6 +142,9 @@ agent's sessions).
   menu, fixes a price, saves after the current menu and tells followers;
   customer finds a neighbourhood. Real services, fake Supabase client;
   IMAGE_ENCODER token so tests can replace the canvas encoder.
+- FASE 2.6 order alerts: OrderAlertsStore in the owner shell polls pending
+  order ids every 20 s while visible (badge on Pedidos on every screen; toast
+  + vibration for new ones; first read and business switch never alert).
 
 - Block D done: migration 20261021000000 (discounts, trigger, server prices in
   create_order; 23 SQL checks), customer /promotions (sort, filters, states,

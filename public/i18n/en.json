@@ -1454,6 +1454,9 @@
       "quota": "You've used today's scans for this business. Come back tomorrow or add the products by hand.",
       "tooBig": "The photos couldn't be sent (4 at most, 2 MB each). Try fewer photos.",
       "unavailable": "Luma IA couldn't read the menu right now. Try later or add the products by hand."
+    },
+    "orderAlerts": {
+      "new": "You have {{count}} new order(s). Check them in Orders."
     }
   },
   "promotions": {
