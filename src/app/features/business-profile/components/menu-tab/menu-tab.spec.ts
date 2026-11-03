@@ -77,8 +77,15 @@ describe('MenuTab', () => {
 
     const headings = Array.from(el.querySelectorAll('h3')).map((h) => h.textContent?.trim());
     expect(headings).toEqual(['Bebidas', 'Otros']);
-    expect(el.textContent?.replace(/\s/g, ' ')).toContain('$ 18.900');
-    expect(el.textContent?.replace(/\s/g, ' ')).toContain('$ 1.500');
+    expect(el.textContent?.replace(/\s/g, ' ')).toContain('$18.900');
+    expect(el.textContent?.replace(/\s/g, ' ')).toContain('$1.500');
+  });
+
+  it('long names wrap and the price row wraps under the name instead of leaving the card', () => {
+    const el = render([item('1', 'Bebidas', 1250000)]);
+    expect(el.querySelector('li span.text-body')?.className).toContain('wrap-anywhere');
+    expect(el.querySelector('[data-testid="menu-price-row"]')?.className).toContain('flex-wrap');
+    expect(el.querySelector('[data-testid="menu-price-row"]')?.className).toContain('min-w-0');
   });
 
   it('adds an item to the cart with its business and price', () => {

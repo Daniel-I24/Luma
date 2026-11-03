@@ -48,7 +48,7 @@ export class NotificationPreferencesRepository {
     return { data: true, errorKey: null };
   }
 
-  /** send_test_notification: a test notice to this user (3 a day); push-dispatch pushes it to the phone. */
+  /** send_test_notification (admins only): a test notice to themselves (3 a day); push-dispatch pushes it to the phone. */
   public async sendTest(): Promise<RepoResult<true>> {
     const { error } = await this.db.rpc('send_test_notification');
     if (error) {

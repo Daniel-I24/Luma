@@ -8,9 +8,12 @@
 
       <form class="auth-form" [formGroup]="form" (ngSubmit)="onSubmit()">
         <app-luma-input
+          inputId="login-email"
           [label]="t('auth.login.emailLabel')"
           [placeholder]="t('auth.login.emailPlaceholder')"
           type="email"
+          inputMode="email"
+          autocomplete="username"
           [required]="true"
           [value]="form.controls.email.value"
           (valueChange)="form.controls.email.setValue($event); form.controls.email.markAsDirty()"
@@ -19,15 +22,26 @@
         />
 
         <app-luma-input
+          inputId="login-password"
           [label]="t('auth.login.passwordLabel')"
           [placeholder]="t('auth.login.passwordPlaceholder')"
-          type="password"
+          [type]="showPassword() ? 'text' : 'password'"
+          autocomplete="current-password"
           [required]="true"
           [value]="form.controls.password.value"
           (valueChange)="form.controls.password.setValue($event); form.controls.password.markAsDirty()"
           [errorMessage]="form.controls.password.dirty && form.controls.password.invalid
             ? t('auth.validation.passwordRequired') : undefined"
-        />
+        >
+          <app-luma-icon-button
+            slot="trailing"
+            variant="ghost"
+            [icon]="showPassword() ? 'eye-off' : 'eye'"
+            [label]="t(showPassword() ? 'auth.signup.credentials.hidePassword' : 'auth.signup.credentials.showPassword')"
+            [pressed]="showPassword()"
+            (clicked)="showPassword.set(!showPassword())"
+          />
+        </app-luma-input>
 
         @if (submission.errorKey()) {
         <p class="auth-error" role="alert">{{ t(submission.errorKey()!) }}</p>

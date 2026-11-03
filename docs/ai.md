@@ -13,7 +13,12 @@ Two features use it:
 
 ## Two modes
 
-`src/app/core/config/ai-mode.ts` → `AI_MODE`:
+The build sets it (round 8): `AI_MODE=remote` in the environment of
+`npm run build:prod` or `npm run apk:release` becomes
+`ng build --define LUMA_AI_MODE='remote'` (`scripts/build-flags.mjs`), which
+`src/app/core/config/ai-mode.ts` reads. Without it the app is in `rules`.
+Before round 8 nothing read the variable, so every build was in rules mode
+and "Escanear menú" said Luma IA was not available.
 
 | Mode | What runs | Needs |
 | --- | --- | --- |
@@ -131,10 +136,31 @@ Check the deployment with `node scripts/ai-smoke.mjs` (see its header):
 it calls each function with a test account and prints only status codes
 and shapes, never keys or answers.
 
-Apply migrations `20261021000000`, `20261022000000` and `20261025000000` first. Then set
-`AI_MODE` to `'remote'` and deploy the app. Changing provider is only
+Apply migrations `20261021000000`, `20261022000000` and `20261025000000` first. Then build
+with `AI_MODE=remote` (web and APK) and deploy the app. Changing provider is only
 `supabase secrets set ...` (no redeploy of the app). To limit spend, lower
 the quotas in `app_settings`.
+
+## Comprobar cada caso ("Escanear menú")
+
+Cada fallo tiene su mensaje en la app y una línea en Mi negocio → Ayuda →
+"Información técnica" (modo de Luma IA y la última lectura de extract-menu
+con su estado y códigos, nunca una clave ni un texto del proveedor).
+
+| Lo que ves | Causa | Cómo comprobarlo |
+| --- | --- | --- |
+| "Esta versión de la app se compiló en modo reglas" (botón deshabilitado con ese motivo) | La compilación no recibió `AI_MODE=remote` | "Información técnica" → Modo de Luma IA = `rules`. La salida de `npm run apk:release` / `build:prod` imprime `AI_MODE: …`. Vuelve a compilar con `AI_MODE=remote`. |
+| "Ya usaste los escaneos de hoy" / "Enviaste muchos escaneos seguidos" | Cuota diaria (429 `quota_exceeded`) o límite por minutos (429 `rate_limited`) | `app_settings` (`ai_*`, `rate_menu_scan_*`). |
+| "El servicio que lee las fotos no está publicado" | 404: `extract-menu` no desplegada | `supabase functions list`; `supabase functions deploy extract-menu`. |
+| "El servicio que lee las fotos no respondió" | Sin respuesta, función caída (502/504) o CORS (el origen no está en `ALLOWED_ORIGINS`) | Logs de la función; `ALLOWED_ORIGINS` incluye el origen de la web y `capacitor://localhost` / `https://localhost` del APK. |
+| "Luma IA no tiene configurado su proveedor" | 503 `not_configured`: faltan `LLM_PROVIDER` / `LLM_API_KEY` | `supabase secrets list` (solo nombres). |
+| "El proveedor de Luma IA rechazó la clave" | 503 `provider_auth`: el proveedor respondió 401/403 | Revisa `LLM_API_KEY` (Gemini: clave de AI Studio activa). |
+| "El proveedor no reconoce el modelo" | 503 `provider_model`: 404 del proveedor | `LLM_VISION_MODEL` / `LLM_MODEL` (debe leer imágenes). |
+| "El proveedor de Luma IA está saturado" | 503 `provider_rate_limit`: 429 del proveedor | Espera o cambia de plan/modelo. |
+| "Luma IA tardó demasiado" | 503 `timeout` | Menos fotos, o un modelo más rápido. |
+
+En todos los casos el botón de elegir o tomar fotos sigue visible y "Pegar
+mi menú como texto" sigue disponible.
 
 ## Tests
 

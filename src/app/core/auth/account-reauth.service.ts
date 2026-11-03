@@ -21,7 +21,7 @@ export class AccountReauthService {
   public async sendCode(email: string): Promise<AuthResult> {
     try {
       const { error } = await this.auth.signInWithOtp({ email, options: { shouldCreateUser: false } });
-      return error ? AuthResults.fail(AuthErrors.mapAuthError(error.message, this.online())) : OK;
+      return error ? AuthResults.fail(AuthErrors.mapAuthError(error, this.online())) : OK;
     } catch {
       return AuthResults.fail(AuthErrors.networkErrorKey(this.online()));
     }
@@ -33,7 +33,7 @@ export class AccountReauthService {
     if (!parsed.success) return AuthResults.fail(parsed.error.issues[0].message);
     try {
       const { error } = await this.auth.verifyOtp({ email: parsed.data.email, token: parsed.data.code, type: 'email' });
-      return error ? AuthResults.fail(AuthErrors.mapAuthError(error.message, this.online())) : OK;
+      return error ? AuthResults.fail(AuthErrors.mapAuthError(error, this.online())) : OK;
     } catch {
       return AuthResults.fail(AuthErrors.networkErrorKey(this.online()));
     }

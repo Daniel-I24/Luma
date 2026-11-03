@@ -37,3 +37,7 @@ in `scripts/`. Status as of 2026-10-27; all listed tests are green.
 | R28 | Round 7: 3 businesses per owner and 3 creations a day | migration `20261104000000_round7`; `owner-shell` | SQL `round7.sql`; `owned-business.repository.spec.ts`; `owner-shell.spec.ts` |
 | R29 | Round 7: only business owners in /owner | `shared/account/account.guards.ts`, `become-owner-entry` | `owner-guard.spec.ts`, `account.spec.ts`, `become-owner-entry.spec.ts`; SQL `round7.sql` |
 | R30 | Round 7: validation in app and database | `core/validation`, `scripts/check-validation.mjs`, migration `20261104000000_round7`; docs/validation-matrix.md, docs/data-quality.sql | `validation-vectors.spec.ts`, `account-details.store.spec.ts`; SQL `round7.sql`; `check-validation.test.mjs` |
+| R31 | Round 8: login on any phone keyboard | `core/auth/auth.schemas.ts`, `auth-error.ts`, `design-system/input`, `auth/pages/login` | `auth.service.spec.ts`, `login.page.spec.ts` |
+| R32 | Round 8: build flags (AI, push, support WhatsApp, legal e-mail) | `scripts/build-flags.mjs`, `core/config/ai-mode.ts`, `push-enabled.ts`, `support.ts` | `build-flags.test.mjs`, `menu-scan.repository.spec.ts` |
+| R33 | Round 8: pending businesses visibility | migration `20261105000000_round8`; `checkout.store`, business card, profile hero | SQL `round8.sql`; `checkout.store.spec.ts` |
+| R34 | Round 8: public legal pages | `scripts/build-legal.mjs`, `public/legal/`, `vercel.json` | `build-legal.test.mjs`, `vercel-config.test.mjs` |

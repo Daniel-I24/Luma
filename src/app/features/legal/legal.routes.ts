@@ -8,5 +8,6 @@ export const legalRoutes: Routes = [
   { path: 'terms', data: { document: 'terms' }, loadComponent: page },
   { path: 'privacy', data: { document: 'privacy' }, loadComponent: page },
   { path: 'refunds', data: { document: 'refunds' }, loadComponent: page },
+  { path: 'deletion', data: { document: 'deletion' }, loadComponent: page },
   { path: '', redirectTo: 'terms', pathMatch: 'full' },
 ];

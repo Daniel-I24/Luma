@@ -171,6 +171,24 @@ SQL suites, Deno 2.5.6 in Docker for the functions.
   Deno tests, type check and lint of the functions, every check, secret
   scan, audit 0, knip (no unused files or dependencies).
 
+## Round 8 (2026-11-02)
+
+Phase 1 (fallos y legal público):
+- Login: e-mail lower-cased and trimmed, keyboard flags, show/hide password,
+  Supabase error codes mapped.
+- Menu cards wrap; prices "$20.000".
+- Build flags (`scripts/build-flags.mjs`): AI_MODE, PUSH_ENABLED,
+  SUPPORT_WHATSAPP, LEGAL_CONTACT_EMAIL (they were constants before).
+  Menu scan says why it fails; extract-menu answers a reason.
+- Test notification only for admins ("Probar mi dispositivo");
+  scripts/setup-push.ps1.
+- Contact verification explains every block.
+- Migration 55 `20261105000000_round8` (pending review): admins-only test
+  notification, `show_pending_businesses`, pick-up only while in review;
+  supabase/tests/round8.sql.
+- Public legal pages (`npm run build:legal`), data deletion page,
+  vercel.json short URLs, docs/vercel-setup.md, docs/meta-live.md, app icon.
+
 ## Round 7 (2026-10-31)
 
 - Migration 54 `20261104000000_round7` (pending review; 52 and 53 applied):

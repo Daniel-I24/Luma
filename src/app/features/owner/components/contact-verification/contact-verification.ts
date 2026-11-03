@@ -50,6 +50,8 @@ export class ContactVerificationCard {
   private readonly config = signal<Partial<Record<ContactKind, VerifierStrategy>>>({});
   protected readonly busy = signal<ContactKind | null>(null);
   protected readonly watching = signal<ContactKind | null>(null);
+  /** Watched for 2 minutes without the message arriving: the request waits for the team. */
+  protected readonly timedOut = signal<ContactKind | null>(null);
   protected readonly errorKey = signal<string | null>(null);
   protected readonly websiteKey = signal<string | null>(null);
   private timer: ReturnType<typeof setInterval> | null = null;
@@ -97,12 +99,15 @@ export class ContactVerificationCard {
   /** Opened WhatsApp: watch until verified or 2 minutes pass. */
   protected watch(kind: ContactKind): void {
     this.stopWatching();
+    this.timedOut.set(null);
     this.watching.set(kind);
     const until = Date.now() + WATCH_FOR_MS;
     this.timer = setInterval(() => {
       void this.load(this.business().id).then(() => {
-        const row = this.rows().find((r) => r.kind === kind);
-        if (row?.verified || Date.now() >= until) this.stopWatching();
+        const verified = this.rows().find((r) => r.kind === kind)?.verified;
+        if (!verified && Date.now() < until) return;
+        this.stopWatching();
+        if (!verified) this.timedOut.set(kind);
       });
     }, WATCH_EVERY_MS);
   }

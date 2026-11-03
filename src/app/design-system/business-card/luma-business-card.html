@@ -26,6 +26,9 @@
   <span class="flex w-full flex-1 flex-col items-start gap-1 p-2">
     <span class="line-clamp-2 min-h-[2lh] text-label-lg font-bold text-fg">{{ name() }}</span>
     <app-status-badge size="sm" [status]="status()" />
+    @if (reviewLabel(); as review) {
+    <span class="rounded-full bg-info-bg px-2 text-caption font-semibold text-info-fg">{{ review }}</span>
+    }
     <span class="flex w-full flex-wrap items-center gap-x-2">
       @if (rating() !== null) {
       <app-luma-rating-stars [rating]="rating()!" />

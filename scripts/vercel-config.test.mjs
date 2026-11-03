@@ -34,3 +34,13 @@ test('version.json is never cached and the APK may read it', () => {
   assert.equal(version['Cache-Control'], 'no-store');
   assert.equal(version['Access-Control-Allow-Origin'], '*');
 });
+
+test('the public legal pages: short URLs before the SPA fallback, no session needed', () => {
+  const sources = vercel.rewrites.map((r) => r.source);
+  for (const slug of ['terminos', 'privacidad', 'reembolsos', 'eliminacion-datos']) {
+    const rewrite = vercel.rewrites.find((r) => r.source === `/${slug}`);
+    assert.equal(rewrite?.destination, `/legal/${slug}.html`);
+    assert.ok(sources.indexOf(`/${slug}`) < sources.indexOf('/(.*)'), `${slug} before the SPA`);
+  }
+  assert.equal(vercel.rewrites.at(-1).destination, '/index.html');
+});

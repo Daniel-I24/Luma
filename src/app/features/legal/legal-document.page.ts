@@ -1,5 +1,6 @@
 import { Location } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { CONTACT_EMAIL } from '@core/config/support';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
@@ -19,6 +20,8 @@ import { LEGAL_DOCUMENTS, type LegalDocument, LegalDocuments } from './legal-doc
 })
 export class LegalDocumentPage {
   private readonly location = inject(Location);
+  /** The contact e-mail the texts mention (LEGAL_CONTACT_EMAIL at build time). */
+  protected readonly email = inject(CONTACT_EMAIL);
   private readonly router = inject(Router);
 
   protected readonly document = toSignal(

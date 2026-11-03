@@ -141,3 +141,31 @@ and `npm run check:interactive`.
   makes it fail.
 - After migration 54: `docs/data-quality.sql` lists nothing (or the rows to
   fix) before VALIDATE.
+
+## Round 8 — phase 1 (2026-11-02)
+
+- Login on a real phone: type the e-mail with a capital first letter and a
+  trailing space: it signs in. The e-mail keyboard shows "@", no automatic
+  capitals or corrections; the eye shows and hides the password. A wrong
+  password says "Correo o contraseña incorrectos"; airplane mode says there
+  is no connection. "¿Olvidaste tu contraseña?" → code → new password →
+  signed in.
+- Menu of a business with a long product name and a price of $1.250.000 at
+  320 px wide: nothing leaves the card; prices read "$20.000".
+- APK built with `AI_MODE=remote`: "Escanear menú" reads photos; built
+  without it: the button is visible but says why (rules mode) and the text
+  option works. Mi negocio → Ayuda → Información técnica shows the mode and
+  the last extract-menu answer (status and codes only).
+- Perfil → Notificaciones: no test button. /admin → Operaciones → "Probar
+  mi dispositivo": the notice arrives with the app closed (APK built with
+  google-services.json, "PUSH_ENABLED: true" in its output).
+- `scripts/setup-push.ps1`: prints no secret; leaves
+  `C:\Users\ivan2\luma-secrets\push-settings.sql`.
+- Contact verification: without SUPPORT_WHATSAPP, with the automatic mode
+  off, after 2 minutes without the message, and with a landline: each one
+  says why and what happens next (pending review by the team).
+- `show_pending_businesses` = 1: a business in review shows on the map,
+  Descubrir and search with "En verificación" and only "Pagar al recoger";
+  rejecting it hides it; a draft never shows. Back to 0: hidden.
+- Open /terminos, /privacidad, /reembolsos and /eliminacion-datos signed
+  out: plain pages with the app texts and the contact e-mail.

@@ -50,6 +50,7 @@
         variant="list"
         [name]="item.business.name"
         [status]="item.status"
+        [reviewLabel]="item.business.verification_status === 'pending' ? t('verification.inReview') : null"
         [category]="item.business.category"
         [logoUrl]="item.business.logo_url"
         [logoIcon]="icon(item.business.category)"

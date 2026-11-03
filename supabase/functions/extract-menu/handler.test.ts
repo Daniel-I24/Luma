@@ -1,6 +1,6 @@
 import { assertEquals } from '@std/assert';
 
-import type { LlmProvider, LlmRequest, LlmResult, LlmValidator } from '../_shared/llm/types.ts';
+import type { LlmFailureReason, LlmProvider, LlmRequest, LlmResult, LlmValidator } from '../_shared/llm/types.ts';
 import { createHandler, type OwnerApi } from './handler.ts';
 import { MAX_IMAGE_BYTES, parseInput } from './images.ts';
 
@@ -13,7 +13,7 @@ const PNG = b64([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0]);
 const WEBP = btoa('RIFF\u0000\u0000\u0000\u0000WEBPVP8 ');
 const GIF = btoa('GIF89a......');
 
-function setup(options: { answer?: unknown; quota?: boolean; llm?: boolean; rate?: boolean } = {}) {
+function setup(options: { answer?: unknown; quota?: boolean; llm?: boolean; rate?: boolean; failure?: LlmFailureReason } = {}) {
   const requests: LlmRequest[] = [];
   const spent: string[] = [];
   const steps: string[] = [];
@@ -21,6 +21,7 @@ function setup(options: { answer?: unknown; quota?: boolean; llm?: boolean; rate
     name: 'fake',
     generateJson: <T>(request: LlmRequest, validate: LlmValidator<T>): Promise<LlmResult<T>> => {
       requests.push(request);
+      if (options.failure) return Promise.resolve({ ok: false, error: 'ai_unavailable', reason: options.failure });
       const value = validate(options.answer ?? { items: [{ name: 'Tinto', description: null, price: '2.000', section: null }] });
       return Promise.resolve(value === null ? { ok: false, error: 'ai_unavailable', reason: 'invalid_shape' } : { ok: true, value });
     },
@@ -109,4 +110,12 @@ Deno.test('malformed JSON or a wrong shape is 400 before the session is looked u
   assertEquals((await handler(post({ business_id: BIZ, images: [42] }))).status, 400);
   assertEquals((await handler(post({ business_id: BIZ, images: ['A'.repeat(MAX_IMAGE_BYTES * 2)] }))).status, 400);
   assertEquals(steps, []);
+});
+
+Deno.test('503 says why, without secrets: not configured or the provider reason', async () => {
+  const body = { business_id: BIZ, images: [JPEG] };
+  const noLlm = setup({ llm: false });
+  assertEquals(await (await noLlm.handler(post(body))).json(), { error: 'ai_unavailable', reason: 'not_configured' });
+  const refused = setup({ failure: 'provider_auth' });
+  assertEquals(await (await refused.handler(post(body))).json(), { error: 'ai_unavailable', reason: 'provider_auth' });
 });

@@ -67,7 +67,7 @@ export class AuthService {
     if (!parsed.success) return Promise.resolve(AuthResults.fail(parsed.error.issues[0].message));
     return this.withLoading(async () => {
       const { data, error } = await this.supabase.auth.signInWithPassword(parsed.data);
-      if (error) return AuthResults.fail(AuthErrors.mapAuthError(error.message, this.online()));
+      if (error) return AuthResults.fail(AuthErrors.mapAuthError(error, this.online()));
       // Even if the project stops requiring confirmation, an unconfirmed
       // email never gets a session in the app (the database refuses its writes).
       if (!isConfirmed(data.session)) {
@@ -85,7 +85,7 @@ export class AuthService {
     return this.withLoading(async () => {
       const options = profile ? { data: SignUpMetadata.signUpMetadata(profile) } : undefined;
       const { error } = await this.supabase.auth.signUp({ ...parsed.data, options });
-      const errorKey = error ? AuthErrors.mapAuthError(error.message, this.online()) : null;
+      const errorKey = error ? AuthErrors.mapAuthError(error, this.online()) : null;
       // Never reveal that an email is already registered: same next step.
       return errorKey && errorKey !== 'auth.errors.emailAlreadyRegistered' ? AuthResults.fail(errorKey) : OK;
     });
@@ -96,7 +96,7 @@ export class AuthService {
     return this.withLoading(async () => {
       await this.signOutHooks.run();
       const { error } = await this.supabase.auth.signOut();
-      if (error) return AuthResults.fail(AuthErrors.mapAuthError(error.message, this.online()));
+      if (error) return AuthResults.fail(AuthErrors.mapAuthError(error, this.online()));
       this.userData.clearAll();
       return OK;
     });

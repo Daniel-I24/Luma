@@ -9,7 +9,9 @@ export const CODE_LENGTH = 6;
 export const emailSchema = z
   .string()
   .check(
+    // Phone keyboards capitalize the first letter and add a space: an email is compared in lower case.
     z.trim(),
+    z.toLowerCase(),
     z.minLength(1, 'auth.validation.emailRequired'),
     z.email('auth.validation.emailInvalid'),
   );

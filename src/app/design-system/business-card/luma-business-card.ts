@@ -34,6 +34,8 @@ export class LumaBusinessCard {
   public readonly status = input.required<BusinessStatus>();
   public readonly category = input<string | null>(null);
   public readonly logoUrl = input<string | null>(null);
+  /** Translated "En verificación" for a business still in review (shown only when the team allows it). */
+  public readonly reviewLabel = input<string | null>(null);
   /** Business id: the logo then flies to the profile (shared view-transition name). */
   public readonly transitionId = input<string | null>(null);
   protected readonly transitionName = computed(() => BusinessTransition.logoName(this.transitionId()));

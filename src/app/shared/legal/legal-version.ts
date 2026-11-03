@@ -8,4 +8,6 @@ export const LEGAL_VERSIONS = {
   // Round 2: residence, optional photo and Wompi as payment processor.
   privacy: '2026-10-draft-r2',
   refunds: '2026-10-draft',
+  // Round 8: how to delete the account and the data (public page for Meta).
+  deletion: '2026-11-draft',
 } as const;

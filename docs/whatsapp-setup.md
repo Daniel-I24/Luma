@@ -55,13 +55,16 @@ Mientras no hagas estos pasos no pasa nada malo: todo cae a la cola manual.
 
 ## 5. SUPPORT_WHATSAPP en la app
 
-En `src/app/app.config.ts` añade el número de soporte (sin "+"):
+Compila la web y el APK con la variable de entorno `SUPPORT_WHATSAPP`
+(57 y los 10 dígitos, sin "+"), por ejemplo en PowerShell:
 
-```ts
-{ provide: SUPPORT_WHATSAPP, useValue: '573001234567' },
+```powershell
+$env:SUPPORT_WHATSAPP = '573001234567'; npm run apk:release
 ```
 
-Vuelve a compilar y desplegar la web y el APK.
+En Vercel: Settings → Environment Variables → `SUPPORT_WHATSAPP`. Sin ella,
+la app explica que el WhatsApp de soporte no está configurado y la
+solicitud queda pendiente de revisión por el equipo.
 
 ## 6. Encender la verificación automática
 

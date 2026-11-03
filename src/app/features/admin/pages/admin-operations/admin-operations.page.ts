@@ -5,6 +5,7 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LumaButton, LumaSkeleton } from '@design-system';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
 import { DateFormat } from '@shared/format/date-format';
+import { DeviceTest } from '../../components/device-test/device-test';
 import { AdminOperationsStore } from '../../state/admin-operations.store';
 
 const CENTS_PER_PESO = 100;
@@ -16,7 +17,7 @@ const SHORT_ID = 8;
   selector: 'app-admin-operations-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, RouterLink, LumaButton, LumaSkeleton, CopCurrencyPipe],
+  imports: [TranslocoModule, RouterLink, LumaButton, LumaSkeleton, CopCurrencyPipe, DeviceTest],
   providers: [AdminOperationsStore],
   templateUrl: './admin-operations.page.html',
   host: { class: 'block' },

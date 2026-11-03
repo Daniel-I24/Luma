@@ -75,7 +75,8 @@ describe('clickAll', () => {
 
   it('every control of the notification settings works', async () => {
     const result = await report(NotificationSettings);
-    expect(result.clicked.length).toBe(4);
+    // Two switches and the permission button (the test notification moved to the admin panel in round 8).
+    expect(result.clicked.length).toBe(3);
     expect(result.errors).toEqual([]);
   });
 

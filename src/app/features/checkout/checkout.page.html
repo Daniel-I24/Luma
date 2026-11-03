@@ -103,6 +103,9 @@
     </p>
   </section>
 
+  @if (store.inReview()) {
+  <p class="m-0 rounded-md bg-info-bg p-3 text-body-sm text-info-fg" role="note">{{ t('verification.inReviewHint') }}</p>
+  }
   @if (store.onlineAvailable()) {
   <section class="flex flex-col gap-2" data-tour="checkout-payment" aria-labelledby="checkout-payment-title">
     <h2 id="checkout-payment-title" class="m-0 text-title text-fg">{{ t('checkout.payment.title') }}</h2>

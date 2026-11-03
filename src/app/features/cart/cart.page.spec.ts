@@ -67,10 +67,10 @@ describe('CartPage', () => {
     const text = el.textContent?.replace(/\s/g, ' ') ?? '';
 
     expect(menu.getItemsByIds).toHaveBeenCalledWith(['m1', 'm2']);
-    expect(text).toContain('Capuchino cambió de $ 6.500 a $ 7.000.');
+    expect(text).toContain('Capuchino cambió de $6.500 a $7.000.');
     expect(text).toContain('Croissant ya no está disponible.');
     expect(el.querySelectorAll('li app-add-to-cart')).toHaveLength(1);
-    expect(text).toContain('$ 7.000');
+    expect(text).toContain('$7.000');
   });
 
   it('continues to checkout', async () => {

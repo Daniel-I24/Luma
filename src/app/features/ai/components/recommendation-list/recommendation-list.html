@@ -10,6 +10,7 @@
         variant="list"
         [name]="pick.candidate.business.name"
         [status]="pick.candidate.status"
+        [reviewLabel]="pick.candidate.business.verification_status === 'pending' ? t('verification.inReview') : null"
         [category]="pick.candidate.business.category"
         [logoUrl]="pick.candidate.business.logo_url"
         [logoIcon]="icon(pick.candidate.business.category)"

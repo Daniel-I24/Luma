@@ -1,5 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { AI_MODE } from '@core/config/ai-mode';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
 import { APP_VERSION } from '@core/config/app-version';
@@ -33,12 +34,15 @@ export class TechnicalInfo {
   protected readonly email = computed(() => TechnicalInfo.maskEmail(this.auth.user()?.email ?? ''));
   protected readonly userId = computed(() => `${(this.auth.user()?.id ?? '').slice(0, SHORT_ID)}…`);
   protected readonly businesses = computed(() => this.context.count());
+  /** How this build runs Luma IA (AI_MODE at build time; docs/ai.md). */
+  protected readonly aiMode = inject(AI_MODE);
   /** The plain text "Copiar" puts on the clipboard. */
   protected readonly report = computed(() =>
     [
       `Luma ${APP_VERSION}`,
       `user ${this.userId()} ${this.email()}`,
       `businesses in panel: ${this.businesses()}`,
+      `ai mode: ${this.aiMode}`,
       ...this.log.entries().map((q) => `${q.at} ${q.table} [${q.filter}] -> ${q.rows ?? 'error'}`),
     ].join('\n'),
   );

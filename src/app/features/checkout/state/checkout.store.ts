@@ -43,8 +43,10 @@ export class CheckoutStore {
   public readonly submitting = this._submitting.asReadonly();
   public readonly errorKey = this._errorKey.asReadonly();
   public readonly notesTooLong = computed(() => this.notes().length > NOTES_MAX_LENGTH);
-  /** "Pagar en línea" is offered only when the server enables it. */
-  public readonly onlineAvailable = computed(() => this._config().enabled);
+  /** A business still in review takes pick-up payment only (orders_online_needs_approval). */
+  public readonly inReview = signal(false);
+  /** "Pagar en línea" is offered only when the server enables it and the business is approved. */
+  public readonly onlineAvailable = computed(() => this._config().enabled && !this.inReview());
   /** Sandbox: "Modo de pruebas: no se cobra dinero real". */
   public readonly sandbox = computed(() => this._config().enabled && this._config().sandbox);
   public readonly paymentLabelKey = computed(() => this.gateways.for(this.method()).labelKey);
@@ -67,6 +69,8 @@ export class CheckoutStore {
     await this.session.whenLoaded();
     const home = this.session.profile()?.residence?.departmentCode;
     const business = await this.businesses.getById(businessId);
+    this.inReview.set(business.data?.verification_status === 'pending');
+    if (this.inReview()) this.method.set('pay_at_pickup');
     const there = business.data?.city_dane_code ? Residence.departmentOf(business.data.city_dane_code) : null;
     this.otherDepartment.set(!!home && !!there && home !== there);
   }

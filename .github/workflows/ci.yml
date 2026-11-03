@@ -38,6 +38,8 @@ jobs:
         run: npm run check:interactive
       - name: Every form field has a validator
         run: npm run check:validation
+      - name: Public legal pages match the app texts
+        run: node scripts/build-legal.mjs --check
       - name: No URL outside the config modules
         run: npm run check:hardcoded-urls
       - name: Destructive actions use the danger button

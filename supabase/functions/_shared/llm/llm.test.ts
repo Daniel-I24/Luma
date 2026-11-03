@@ -114,8 +114,18 @@ Deno.test('5xx and 429 are retried once; other 4xx are not', async () => {
   );
   const notRetried = fakeFetch(json({}, 401), json({}, 200));
   const result = await createOpenAiCompatibleProvider(options(notRetried.fetchFn)).generateJson(request, pickId);
-  assertEquals(result, { ok: false, error: 'ai_unavailable', reason: 'http_error' });
+  assertEquals(result, { ok: false, error: 'ai_unavailable', reason: 'provider_auth' });
   assertEquals(notRetried.calls.length, 1);
+});
+
+Deno.test('the provider status tells key, model and rate limit apart', async () => {
+  for (const [status, reason] of [[403, 'provider_auth'], [404, 'provider_model'], [400, 'http_error']] as const) {
+    const result = await createOpenAiCompatibleProvider(options(fakeFetch(json({}, status)).fetchFn)).generateJson(request, pickId);
+    assertEquals(result, { ok: false, error: 'ai_unavailable', reason });
+  }
+  const limited = fakeFetch(json({}, 429), json({}, 429));
+  assertEquals(await createOpenAiCompatibleProvider(options(limited.fetchFn)).generateJson(request, pickId),
+    { ok: false, error: 'ai_unavailable', reason: 'provider_rate_limit' });
 });
 
 Deno.test('the provider comes from secrets only, and nothing without them', () => {

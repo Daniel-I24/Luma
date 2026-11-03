@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthCodeService } from '@core/auth/auth-code.service';
 import { AuthService } from '@core/auth/auth.service';
 import { PendingVerification } from '@core/auth/pending-verification';
-import { LumaButton, LumaCard, LumaInput } from '@design-system';
+import { LumaButton, LumaCard, LumaIconButton, LumaInput } from '@design-system';
 import { SessionProfileStore } from '@shared/account/session-profile.store';
 import { AuthFormSubmission } from '../../forms/auth-form-submission';
 
@@ -18,7 +18,7 @@ import { AuthFormSubmission } from '../../forms/auth-form-submission';
   selector: 'app-login-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, RouterLink, TranslocoModule, LumaButton, LumaCard, LumaInput],
+  imports: [ReactiveFormsModule, RouterLink, TranslocoModule, LumaButton, LumaCard, LumaIconButton, LumaInput],
   templateUrl: './login.page.html',
   styleUrl: './login.page.css',
 })
@@ -35,6 +35,8 @@ export class LoginPage {
     password: ['', [Validators.required]],
   });
 
+  /** The password is sent exactly as typed (never trimmed); this only shows it. */
+  protected readonly showPassword = signal(false);
   protected readonly submission = new AuthFormSubmission();
   protected readonly resend = new AuthFormSubmission();
   protected readonly unconfirmed = computed(

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaButton, ToastService } from '@design-system';
+import { LumaButton } from '@design-system';
 import { PushRegistration } from '@core/push/push-registration.service';
 import {
   type NotificationPreferences,
@@ -12,8 +12,8 @@ type PreferenceKey = keyof NotificationPreferences;
 /**
  * NotificationSettings — what the user wants to hear about (orders and
  * reviews; promotions of saved businesses, opt-in) and, on the phone, the
- * system permission, and a test notification (3 a day). Shared by the
- * Profile and Luma Negocios.
+ * system permission. Shared by the Profile and Luma Negocios. The test
+ * notification is an admin tool since round 8 (DeviceTest).
  */
 @Component({
   selector: 'app-notification-settings',
@@ -30,8 +30,6 @@ export class NotificationSettings implements OnInit {
   protected readonly preferences = signal<NotificationPreferences | null>(null);
   protected readonly errorKey = signal<string | null>(null);
   protected readonly saving = signal(false);
-  protected readonly testing = signal(false);
-  private readonly toast = inject(ToastService);
 
   /** Loads the preferences and the push permission. */
   public async ngOnInit(): Promise<void> {
@@ -56,17 +54,6 @@ export class NotificationSettings implements OnInit {
     this.preferences.set(next);
     // Turning something on is the moment to ask the phone for permission.
     if (next[key] && this.push.permission() === 'prompt') await this.push.enable();
-  }
-
-  /** "Enviar notificación de prueba": checks the whole chain up to the phone. */
-  protected async sendTest(): Promise<void> {
-    if (this.testing()) return;
-    this.testing.set(true);
-    const result = await this.repo.sendTest();
-    this.testing.set(false);
-    this.toast.show(result.errorKey
-      ? { messageKey: result.errorKey, tone: 'error' }
-      : { messageKey: 'notificationSettings.test.sent', tone: 'success' });
   }
 
   protected enable(): Promise<unknown> {

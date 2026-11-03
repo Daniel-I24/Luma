@@ -14,7 +14,7 @@
         <app-luma-icon name="luma-ai" size="lg" />
         <span class="flex flex-1 flex-col">
           <span class="text-body font-semibold">{{ t('owner.menuScan.entryAi') }}</span>
-          <span class="text-caption">{{ t(canScan ? 'owner.menuScan.entryHint' : 'owner.menuScan.aiUnavailable') }}</span>
+          <span class="text-caption">{{ t(canScan ? 'owner.menuScan.entryHint' : 'owner.menuScan.errors.buildRules') }}</span>
         </span>
       </a>
       <app-luma-button data-tour="menu-add" variant="secondary" [fullWidth]="true" (clicked)="openForm(null)"

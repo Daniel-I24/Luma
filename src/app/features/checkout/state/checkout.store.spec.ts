@@ -82,6 +82,20 @@ describe('CheckoutStore', () => {
     navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
   });
 
+  it('a business still in review (shown with show_pending_businesses) takes pick-up payment only', async () => {
+    config.config.mockResolvedValue({ enabled: true, sandbox: true });
+    businesses.getById.mockResolvedValue({ data: { city_dane_code: '52001', verification_status: 'pending' }, errorKey: null });
+    const inReview = TestBed.runInInjectionContext(() => new CheckoutStore());
+    inReview.method.set('online');
+    await vi.waitFor(() => expect(inReview.inReview()).toBe(true));
+    expect([inReview.onlineAvailable(), inReview.method()]).toEqual([false, 'pay_at_pickup']);
+
+    businesses.getById.mockResolvedValue({ data: { city_dane_code: '52001', verification_status: 'approved' }, errorKey: null });
+    const approved = TestBed.runInInjectionContext(() => new CheckoutStore());
+    await vi.waitFor(() => expect(approved.onlineAvailable()).toBe(true));
+    config.config.mockResolvedValue({ enabled: false, sandbox: false });
+  });
+
   it('sends only ids and quantities, empties the cart and opens the order', async () => {
     orders.create.mockResolvedValue({ data: 'o1', errorKey: null });
     store.notes.set('  Sin azúcar  ');

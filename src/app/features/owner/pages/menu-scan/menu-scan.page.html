@@ -10,15 +10,15 @@
 
   @switch (scan.phase()) {
     @case ('pick') {
-      @if (aiAvailable) {
-        <p class="m-0 text-body text-fg-muted">{{ t('owner.menuScan.intro', { max: maxPhotos }) }}</p>
-        <input #file id="scan-file" type="file" class="sr-only" multiple [accept]="accept"
-          [attr.aria-label]="t('owner.menuScan.pick')" (change)="onFiles($event)" />
-        <app-luma-button size="lg" [fullWidth]="true" (clicked)="file.click()">{{ t('owner.menuScan.pick') }}</app-luma-button>
-        <p class="m-0 text-caption text-fg-subtle">{{ t('owner.menuScan.privacy') }}</p>
-      } @else {
-        <p class="m-0 rounded-md bg-info-bg p-3 text-body-sm text-info-fg" role="status">{{ t('owner.menuScan.aiUnavailable') }}</p>
+      <p class="m-0 text-body text-fg-muted">{{ t('owner.menuScan.intro', { max: maxPhotos }) }}</p>
+      <input #file id="scan-file" type="file" class="sr-only" multiple [accept]="accept"
+        [attr.aria-label]="t('owner.menuScan.pick')" (change)="onFiles($event)" />
+      <!-- Always shown; in a rules build it says why it cannot read photos (docs/ai.md). -->
+      <app-luma-button size="lg" [fullWidth]="true" [disabled]="!aiAvailable" (clicked)="file.click()">{{ t('owner.menuScan.pick') }}</app-luma-button>
+      @if (!aiAvailable) {
+        <p class="m-0 rounded-md bg-info-bg p-3 text-body-sm text-info-fg" role="status">{{ t('owner.menuScan.errors.buildRules') }}</p>
       }
+      <p class="m-0 text-caption text-fg-subtle">{{ t('owner.menuScan.privacy') }}</p>
       <section class="flex flex-col gap-2 rounded-xl border border-border-subtle bg-surface p-4" aria-labelledby="paste-title">
         <h2 id="paste-title" class="m-0 text-title text-fg">{{ t('owner.menuScan.pasteTitle') }}</h2>
         <p id="paste-help" class="m-0 text-body-sm text-fg-muted">{{ t('owner.menuScan.pasteHelp') }}</p>

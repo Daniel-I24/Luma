@@ -11,6 +11,7 @@
  * Android Studio, or another installed JDK, when its version is compatible.
  * Never prints passwords.
  */
+import { aiMode, defineArgs, pushEnabled } from './build-flags.mjs';
 import { spawnSync } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -119,7 +120,9 @@ function main(mode) {
   const javaHome = resolveJavaHome(process.env, process.platform);
   const env = { ...process.env, JAVA_HOME: javaHome };
   run('node', ['scripts/generate-env.mjs'], { env });
-  run('npx', ['ng', 'build', '--configuration', 'production,deploy'], { env });
+  // AI_MODE=remote turns Luma IA on in this build (scripts/build-flags.mjs, docs/ai.md).
+  process.stdout.write(`AI_MODE: ${aiMode(env)} · PUSH_ENABLED: ${pushEnabled(env)}\n`);
+  run('npx', ['ng', 'build', '--configuration', 'production,deploy', ...defineArgs(env)], { env });
   run('npx', ['cap', 'sync', 'android'], { env });
   // Explicit ".\": cmd may not search the current folder (NoDefaultCurrentDirectoryInExePath).
   const gradlew = process.platform === 'win32' ? '.\\gradlew.bat' : './gradlew';

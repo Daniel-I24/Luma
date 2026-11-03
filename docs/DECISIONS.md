@@ -768,3 +768,56 @@ alternative that was not taken. The safest, most reversible option wins.
   Cloudflare's DNS over HTTPS (JSON, A and AAAA, 3 s); a website must be typed
   with https:// (the app no longer completes it). verify-backend treats 52 and
   53 as applied.
+
+## 2026-11-02 — Round 8, phase 1: build flags instead of constants
+
+- **What**: `AI_MODE`, `PUSH_ENABLED` and `SUPPORT_WHATSAPP` were tokens
+  whose factory returned a constant (`'rules'`, `false`, `''`) and nothing
+  in the build set them: every APK ran Luma IA in rules mode, never
+  registered for push and had no support WhatsApp. They now come from the
+  build environment through `ng build --define`
+  (`scripts/build-flags.mjs`, used by `build:prod` and the APK);
+  `LEGAL_CONTACT_EMAIL` the same way. src/environments is untouched.
+- **Why**: one place, validated (a bad value fails the build), testable.
+  Push turns on by itself when `google-services.json` is in the build (the
+  only way it can work) and `PUSH_ENABLED=0` turns it off.
+
+## 2026-11-02 — Login: e-mail in lower case, codes before messages
+
+- **What**: the e-mail is trimmed and lower-cased before Supabase
+  (`emailSchema`); e-mail and password fields have autocapitalize,
+  autocorrect and spellcheck off; the password is sent exactly as typed,
+  with "ver/ocultar". Supabase errors map by `code` first
+  (invalid_credentials and user_not_found give the same message), then by
+  message; no answer is a network message.
+- **Why**: a phone keyboard capitalizes the first letter; "Ana@…" did not
+  match the account.
+
+## 2026-11-02 — Prices as "$20.000"
+
+- **What**: `CopFormat` removes the space Intl puts after "$".
+- **Why**: requested format; it also never wraps inside a card.
+
+## 2026-11-02 — The test notification is an admin tool
+
+- **What**: migration 55 makes `send_test_notification` admins only (aal2);
+  "Probar mi dispositivo" lives in /admin → Operaciones. `scripts/setup-push.ps1`
+  does the local part of docs/push-setup.md without printing secrets.
+
+## 2026-11-02 — Businesses in review, when the team allows it
+
+- **What**: `app_settings.show_pending_businesses` (0). With 1, a published
+  business in 'pending' (it passed submit_business_for_review) is public with
+  "En verificación", pick-up payment only (`orders_online_needs_approval`
+  trigger; the app hides "Pagar en línea"). A draft never shows; rejected and
+  suspended disappear. Every public read goes through `is_business_public`.
+- **Why**: the safest default is off; turning it on is one update.
+
+## 2026-11-02 — Public legal pages from the app texts
+
+- **What**: `scripts/build-legal.mjs` writes public/legal/*.html from
+  `public/i18n/es.json` (order from legal-documents.ts, versions from
+  legal-version.ts) and CI checks they match; a new "Eliminación de datos"
+  document; the contact e-mail is `{{email}}` (LEGAL_CONTACT_EMAIL). Short
+  URLs in vercel.json before the SPA fallback.
+- **Why**: Meta and the stores need public URLs; one source avoids two texts.

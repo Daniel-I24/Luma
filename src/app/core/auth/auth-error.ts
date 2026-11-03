@@ -1,6 +1,28 @@
 import { FunctionsFetchError, FunctionsHttpError, FunctionsRelayError } from '@supabase/supabase-js';
 import { HTTP_STATUS } from '@core/config/http-status';
 
+/** What Supabase answers: an AuthError (code, status, name) or just its message. */
+export type AuthErrorLike = string | { readonly message?: string; readonly code?: string; readonly status?: number; readonly name?: string };
+
+/**
+ * Supabase error codes (supabase.com/docs/guides/auth/debugging/error-codes)
+ * and their messages. A wrong password and an unknown email give the same
+ * message: the app never tells whether an account exists.
+ */
+const AUTH_ERROR_CODES: Readonly<Record<string, string>> = {
+  invalid_credentials: 'auth.errors.invalidCredentials',
+  user_not_found: 'auth.errors.invalidCredentials',
+  email_not_confirmed: 'auth.errors.emailNotConfirmed',
+  over_request_rate_limit: 'auth.errors.tooManyRequests',
+  over_email_send_rate_limit: 'auth.errors.tooManyRequests',
+  over_sms_send_rate_limit: 'auth.errors.tooManyRequests',
+  otp_expired: 'auth.errors.codeInvalid',
+  user_already_exists: 'auth.errors.emailAlreadyRegistered',
+  email_exists: 'auth.errors.emailAlreadyRegistered',
+  weak_password: 'auth.errors.passwordTooShort',
+  same_password: 'account.password.same',
+};
+
 /** Message fragments (lower case) of Supabase auth errors and their translation keys, in priority order. */
 const AUTH_ERROR_RULES: readonly (readonly [readonly string[], string])[] = [
   [['invalid login credentials', 'invalid credentials'], 'auth.errors.invalidCredentials'],
@@ -46,10 +68,19 @@ export class AuthErrors {
   }
 
   /**
-   * Maps Supabase error messages / codes to Transloco i18n keys.
-   * All user-facing strings live in es.json / en.json under auth.errors.*.
+   * Maps a Supabase auth error (its code first, then its message) to a
+   * Transloco key under auth.errors.*; no answer at all is a network error.
    */
-  public static mapAuthError(message: string, online = true): string {
+  public static mapAuthError(error: AuthErrorLike, online = true): string {
+    const { message = '', code, status, name } = typeof error === 'string' ? { message: error } : error;
+    const byCode = AUTH_ERROR_CODES[code ?? ''];
+    if (byCode) return byCode;
+    if (name === 'AuthRetryableFetchError' || status === 0) return AuthErrors.networkErrorKey(online);
+    return AuthErrors.byMessage(message, online);
+  }
+
+  /** The older errors carry no code: their message decides. */
+  private static byMessage(message: string, online: boolean): string {
     const msg = message.toLowerCase();
     const known = AUTH_ERROR_RULES.find(([fragments]) => fragments.some((fragment) => msg.includes(fragment)));
     if (known) return known[1];

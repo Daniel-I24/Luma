@@ -54,6 +54,10 @@
         >
           <app-luma-icon name="check" size="sm" /> {{ t('verification.badge') }}
         </span>
+        } @else if (business().verification_status === 'pending') {
+        <span class="rounded-full bg-info-bg px-2 text-caption font-semibold text-info-fg" [title]="t('verification.inReviewHint')">
+          {{ t('verification.inReview') }}
+        </span>
         }
         @if (distanceKm() | distance: lang(); as distance) {
         <span class="text-caption text-fg-subtle">{{ distance }}</span>

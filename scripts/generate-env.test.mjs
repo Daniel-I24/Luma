@@ -88,7 +88,7 @@ test('the deploy configuration swaps environment.ts for the generated file', () 
   const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
   assert.match(
     pkg.scripts['build:prod'],
-    /generate-env\.mjs && ng build --configuration production,deploy$/,
+    /generate-env\.mjs && node scripts\/build-legal\.mjs && node scripts\/build-flags\.mjs ng build --configuration production,deploy$/,
   );
   const vercel = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'));
   assert.equal(vercel.buildCommand, 'npm run build:prod');

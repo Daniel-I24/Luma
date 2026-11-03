@@ -40,7 +40,7 @@ export async function postJson(
         }
       }
       await response.body?.cancel();
-      last = new LlmFailure('http_error');
+      last = new LlmFailure(statusReason(response.status));
       if (response.status !== 429 && response.status < 500) break;
     } catch (error) {
       // A body that is not JSON will not get better on a retry.
@@ -51,6 +51,13 @@ export async function postJson(
     }
   }
   throw last;
+}
+
+/** The reason of a provider status (401/403 key, 404 model, 429 limit). */
+function statusReason(status: number): LlmFailureReason {
+  if (status === 401 || status === 403) return 'provider_auth';
+  if (status === 404) return 'provider_model';
+  return status === 429 ? 'provider_rate_limit' : 'http_error';
 }
 
 /** Parses the model's text as JSON (tolerating a ```json fence) and validates it. */

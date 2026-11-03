@@ -566,7 +566,8 @@
       "noShowTooEarly": "Solo puedes marcar «No llegó» 15 minutos después de que el pedido esté listo.",
       "trustPendingLimitOnline": "Ya tienes un pedido para pagar al recoger. Recógelo o paga este en línea.",
       "seePendingOrder": "Ver mi pedido pendiente",
-      "ownBusiness": "Este negocio es tuyo: no puedes pedir en tu propio negocio. Para probarlo, usa una cuenta de cliente."
+      "ownBusiness": "Este negocio es tuyo: no puedes pedir en tu propio negocio. Para probarlo, usa una cuenta de cliente.",
+      "onlineInReview": "Este negocio aún está en verificación: por ahora solo acepta pagar al recoger."
     }
   },
   "reviews": {
@@ -1149,7 +1150,9 @@
       }
     },
     "badge": "Verificado",
-    "badgeHint": "El equipo de Luma revisó los datos de este negocio."
+    "badgeHint": "El equipo de Luma revisó los datos de este negocio.",
+    "inReview": "En verificación",
+    "inReviewHint": "El equipo de Luma aún revisa este negocio. Mientras tanto solo recibe pedidos para pagar al recoger."
   },
   "admin": {
     "errors": {
@@ -1193,7 +1196,7 @@
       "cancel": "Cancelar",
       "actions": {
         "approved": "Aprobar",
-        "rejected": "Rechazar",
+        "rejected": "Rechazar con nota",
         "suspended": "Suspender"
       },
       "confirm": {
@@ -1277,7 +1280,8 @@
       "errors": {
         "load": "No se pudieron cargar las operaciones.",
         "failed": "La acción no se pudo completar."
-      }
+      },
+      "device": "Notificaciones en mi teléfono"
     },
     "contacts": {
       "title": "Contactos por verificar ({{count}})",
@@ -1352,7 +1356,7 @@
         },
         "contact": {
           "title": "Contacto",
-          "body": "Escríbenos a [correo de contacto por definir]."
+          "body": "Escríbenos a {{email}}."
         }
       }
     },
@@ -1385,7 +1389,7 @@
         },
         "exercise": {
           "title": "Cómo ejercerlos",
-          "body": "Desde tu Perfil puedes editar tus datos y eliminar tu cuenta. Para otras solicitudes escribe a [correo de contacto por definir]; respondemos consultas en 10 días hábiles y reclamos en 15."
+          "body": "Desde tu Perfil puedes editar tus datos y eliminar tu cuenta. Para otras solicitudes escribe a {{email}}; respondemos consultas en 10 días hábiles y reclamos en 15."
         },
         "retention": {
           "title": "Cuánto tiempo los guardamos",
@@ -1434,10 +1438,32 @@
         },
         "contact": {
           "title": "Contacto",
-          "body": "Para cualquier reclamo sobre un pago escribe a [correo de soporte por definir] con el número de tu pedido. Esta política se revisará con asesoría legal antes del lanzamiento (Ley 1480 de 2011, Estatuto del Consumidor)."
+          "body": "Para cualquier reclamo sobre un pago escribe a {{email}} con el número de tu pedido. Esta política se revisará con asesoría legal antes del lanzamiento (Ley 1480 de 2011, Estatuto del Consumidor)."
         }
       }
-    }
+    },
+    "deletion": {
+      "title": "Eliminación de datos",
+      "sections": {
+        "how": {
+          "title": "Cómo eliminar tu cuenta",
+          "body": "Abre la app, entra a Perfil y toca \"Eliminar cuenta\". Te enviamos un código a tu correo para confirmar que eres tú; al escribirlo, la cuenta se elimina en ese momento."
+        },
+        "what": {
+          "title": "Qué se borra",
+          "body": "Tu perfil (nombre, celular, residencia y foto), tus favoritos, tus reseñas, tus avisos y los archivos que subiste. Si tienes un negocio, también sus datos, fotos y documentos de verificación."
+        },
+        "kept": {
+          "title": "Qué se conserva",
+          "body": "Los pedidos y pagos se conservan sin tu nombre ni tus datos de contacto, porque el negocio y la ley los necesitan para su contabilidad."
+        },
+        "help": {
+          "title": "Si no puedes entrar a la app",
+          "body": "Escríbenos a {{email}} desde el correo de tu cuenta y la eliminamos por ti en un plazo de 15 días hábiles."
+        }
+      }
+    },
+    "contactPending": "el correo de contacto (por definir)"
   },
   "onboarding": {
     "label": "Tutorial de bienvenida",
@@ -1653,7 +1679,7 @@
       "entry": "Escanear menú con Luma IA",
       "title": "Escanear menú",
       "intro": "Toma o elige hasta {{max}} fotos de tu menú impreso. Luma IA lee los productos y precios, y tú revisas todo antes de agregarlo.",
-      "pick": "Elegir fotos del menú",
+      "pick": "Elegir o tomar fotos del menú",
       "privacy": "Las fotos se reducen y pierden su ubicación GPS antes de enviarse. Solo se usan para leer el menú; no se guardan.",
       "reading": "Leyendo tu menú… puede tardar unos segundos.",
       "review": "Revisa cada producto: corrige lo que haga falta y desmarca lo que no quieras agregar.",
@@ -1671,13 +1697,22 @@
       "tooBig": "Las fotos no se pudieron enviar (máximo 4, de 2 MB cada una). Intenta con menos fotos.",
       "unavailable": "Luma IA no pudo leer el menú ahora. Intenta más tarde o agrega los productos a mano.",
       "rateLimited": "Enviaste muchos escaneos seguidos. Espera unos minutos e inténtalo de nuevo.",
-      "aiUnavailable": "Luma IA no está disponible ahora para leer fotos. Puedes pegar tu menú como texto: es gratis y llega a la misma revisión.",
       "pasteTitle": "Pegar mi menú como texto",
       "pasteHelp": "Una línea por producto con su precio al final. Las secciones van en MAYÚSCULAS o terminan con dos puntos.",
       "pastePlaceholder": "Ej.:\nPLATOS FUERTES\nBandeja paisa ........ 28.000\nBEBIDAS:\nJugo natural - $6.500",
       "pasteReview": "Revisar productos",
       "entryAi": "Escanear mi menú con IA",
-      "entryHint": "Toma fotos de tu carta o pega el texto: creamos los productos por ti y tú los revisas."
+      "entryHint": "Toma fotos de tu carta o pega el texto: creamos los productos por ti y tú los revisas.",
+      "errors": {
+        "buildRules": "Esta versión de la app se compiló en modo reglas (AI_MODE=rules), sin Luma IA para leer fotos. Pega tu menú como texto: llega a la misma revisión.",
+        "notDeployed": "El servicio que lee las fotos (extract-menu) no está publicado. Pega tu menú como texto mientras tanto.",
+        "noResponse": "El servicio que lee las fotos no respondió (red o configuración del servidor). Intenta de nuevo o pega tu menú como texto.",
+        "notConfigured": "Luma IA no tiene configurado su proveedor en el servidor. Pega tu menú como texto mientras el equipo lo activa.",
+        "providerKey": "El proveedor de Luma IA rechazó la clave del servidor. Avisamos al equipo; pega tu menú como texto mientras tanto.",
+        "providerModel": "El proveedor de Luma IA no reconoce el modelo configurado. Pega tu menú como texto mientras el equipo lo corrige.",
+        "providerBusy": "El proveedor de Luma IA está saturado. Espera unos minutos e inténtalo de nuevo, o pega tu menú como texto.",
+        "slow": "Luma IA tardó demasiado en leer las fotos. Prueba con menos fotos o pega tu menú como texto."
+      }
     },
     "orderAlerts": {
       "new": "Tienes {{count}} pedido(s) nuevo(s). Revísalos en Pedidos."
@@ -1779,7 +1814,8 @@
       "copied": {
         "ok": "Copiada. Pégala en tu mensaje a soporte.",
         "failed": "No se pudo copiar en este dispositivo."
-      }
+      },
+      "aiMode": "Modo de Luma IA"
     }
   },
   "promotions": {
@@ -1863,7 +1899,7 @@
       "save": "No pudimos guardar el cambio. Intenta de nuevo."
     },
     "test": {
-      "send": "Enviar notificación de prueba",
+      "send": "Probar mi dispositivo",
       "sending": "Enviando…",
       "hint": "Llega a la lista de avisos y, si el teléfono tiene permiso, como notificación. Hasta 3 al día.",
       "sent": "Listo: revisa tus avisos y tu teléfono.",
@@ -2223,13 +2259,15 @@
     "none": "Añade un teléfono, WhatsApp, Instagram, Facebook o sitio web para verificarlo.",
     "steps": {
       "message": "Desde el número {{value}}, envía el código {{code}} por WhatsApp al soporte de Luma.",
-      "noSupport": "El WhatsApp de soporte de Luma aún no está configurado (SUPPORT_WHATSAPP). Vuelve más tarde para verificar este número.",
+      "noSupport": "El WhatsApp de soporte de Luma no está configurado en esta versión de la app (SUPPORT_WHATSAPP), así que no puedes enviar el código desde aquí. Tu solicitud queda pendiente de revisión: el equipo la verifica a mano y te avisa.",
       "social": "Publica el código {{code}} en la biografía o en una publicación pública de esta cuenta. Cuando quede verificado puedes quitarlo.",
       "website": "Publica un archivo en {{url}} que contenga {{code}}.",
       "review": "Una persona del equipo lo revisa y te avisamos con una notificación.",
       "whatsappAuto": "Envía el mensaje tal cual, desde este número ({{value}}). Luma lo verifica sola en unos segundos.",
       "landline": "Este parece un número fijo: no puede enviar WhatsApp, así que no se verifica ni lleva insignia. Puedes añadir un celular con WhatsApp para verificarlo.",
-      "websiteAuto": "Publica un archivo de texto en {{url}} con una línea que diga exactamente {{code}} y toca \"Comprobar ahora\"."
+      "websiteAuto": "Publica un archivo de texto en {{url}} con una línea que diga exactamente {{code}} y toca \"Comprobar ahora\".",
+      "autoOff": "La verificación automática está apagada: tu solicitud queda pendiente de revisión en la cola del equipo, que te avisa al verificarla.",
+      "watchTimeout": "No recibimos tu mensaje en 2 minutos. Si lo enviaste desde este número, la recepción automática puede no estar configurada todavía: tu solicitud queda pendiente de revisión por el equipo. También puedes volver a intentarlo."
     },
     "errors": {
       "tooMany": "Ya pediste 3 códigos hoy para este contacto. Intenta mañana (cada código nuevo reemplaza al anterior).",

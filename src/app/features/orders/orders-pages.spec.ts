@@ -63,7 +63,7 @@ describe('Orders pages', () => {
     expect(link.getAttribute('href')).toBe('/orders/o1');
     expect(link.textContent).toContain('Fritanga Don Segundo');
     expect(link.querySelector('app-order-status-badge')).not.toBeNull();
-    expect(link.textContent?.replace(/\s/g, ' ')).toContain('$ 14.000');
+    expect(link.textContent?.replace(/\s/g, ' ')).toContain('$14.000');
   });
 
   async function renderDetail(status: string, deleted = false) {

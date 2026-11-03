@@ -31,7 +31,8 @@ export function createHandler(deps: ExtractDeps): (req: Request) => Promise<Resp
     const checked = preflight(req, deps.allowedOrigins);
     if ('response' in checked) return checked.response;
     const { cors } = checked;
-    const unavailable = () => json(503, { error: 'ai_unavailable' }, cors);
+    // The reason helps the owner (docs/ai.md); it never carries a key or a provider message.
+    const unavailable = (reason = 'unknown') => json(503, { error: 'ai_unavailable', reason }, cors);
 
     try {
       const token = bearerToken(req);
@@ -44,12 +45,12 @@ export function createHandler(deps: ExtractDeps): (req: Request) => Promise<Resp
       if (!(await owner.withinRateLimit())) return json(429, { error: 'rate_limited' }, cors);
       const images = decodeImages(envelope.encodedImages);
       if (!images) return json(400, { error: 'invalid_request' }, cors);
-      if (!deps.llm) return unavailable();
+      if (!deps.llm) return unavailable('not_configured');
       // Spent right before the model call only.
       if (!(await owner.consumeQuota(envelope.businessId))) return json(429, { error: 'quota_exceeded' }, cors);
 
       const answer = await deps.llm.generateJson(buildPrompt(images), toDraft);
-      if (!answer.ok) return unavailable();
+      if (!answer.ok) return unavailable(answer.reason);
       return json(200, answer.value satisfies MenuDraft, cors);
     } catch {
       return unavailable();

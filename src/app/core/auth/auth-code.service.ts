@@ -35,7 +35,7 @@ export class AuthCodeService {
         token: parsed.data.code,
         type: 'signup',
       });
-      return error ? AuthResults.fail(AuthErrors.mapAuthError(error.message, this.online())) : OK;
+      return error ? AuthResults.fail(AuthErrors.mapAuthError(error, this.online())) : OK;
     });
   }
 
@@ -59,9 +59,9 @@ export class AuthCodeService {
         token: parsed.data.code,
         type: 'recovery',
       });
-      if (verified.error) return AuthResults.fail(AuthErrors.mapAuthError(verified.error.message, this.online()));
+      if (verified.error) return AuthResults.fail(AuthErrors.mapAuthError(verified.error, this.online()));
       const { error } = await this.auth.updateUser({ password: parsed.data.password });
-      return error ? AuthResults.fail(AuthErrors.mapAuthError(error.message, this.online())) : OK;
+      return error ? AuthResults.fail(AuthErrors.mapAuthError(error, this.online())) : OK;
     });
   }
 
@@ -73,7 +73,7 @@ export class AuthCodeService {
     if (!parsed.success) return Promise.resolve(AuthResults.fail(parsed.error.issues[0].message));
     return this.run(async () => {
       const { error } = await send(parsed.data.email);
-      const key = error ? AuthErrors.mapAuthError(error.message, this.online()) : null;
+      const key = error ? AuthErrors.mapAuthError(error, this.online()) : null;
       return key && NEUTRAL_ERRORS.has(key) ? AuthResults.fail(key) : OK;
     });
   }

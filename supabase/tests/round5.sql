@@ -109,13 +109,13 @@ select tests.expect_true('authenticated', tests.id('owner'), $$
   from public.businesses b where b.id = tests.id('pub')$$,
   'it stops being public and the legal data can be edited until a new review');
 
--- 5. Test push -----------------------------------------------------------------------
-select tests.exec_as('authenticated', tests.id('cus'), $$select public.send_test_notification()$$);
-select tests.exec_as('authenticated', tests.id('cus'), $$select public.send_test_notification()$$);
-select tests.exec_as('authenticated', tests.id('cus'), $$select public.send_test_notification()$$);
-select tests.expect_error('authenticated', tests.id('cus'), $$select public.send_test_notification()$$, 'rate_limited');
+-- 5. Test push (admins only since round 8: the rate limit applies to them) --------------
+select tests.exec_as('authenticated', tests.id('adm'), $$select public.send_test_notification()$$);
+select tests.exec_as('authenticated', tests.id('adm'), $$select public.send_test_notification()$$);
+select tests.exec_as('authenticated', tests.id('adm'), $$select public.send_test_notification()$$);
+select tests.expect_error('authenticated', tests.id('adm'), $$select public.send_test_notification()$$, 'rate_limited');
 select tests.expect_true('postgres', null, $$
-  select count(*) = 3 from public.notifications where user_id = tests.id('cus') and type = 'test'$$,
+  select count(*) = 3 from public.notifications where user_id = tests.id('adm') and type = 'test'$$,
   'at most 3 test notifications a day');
 select tests.expect_error('anon', null, $$select public.send_test_notification()$$, 'permission denied');
 

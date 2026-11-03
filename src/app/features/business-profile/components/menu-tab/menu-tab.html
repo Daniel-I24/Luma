@@ -35,12 +35,12 @@
           />
         </span>
         <div class="flex min-w-0 flex-1 flex-col gap-1">
-          <span class="text-body font-semibold text-fg">{{ item.name }}</span>
+          <span class="text-body font-semibold wrap-anywhere text-fg">{{ item.name }}</span>
           @if (item.description; as description) {
           <span class="line-clamp-2 text-caption text-fg-subtle">{{ description }}</span>
           }
-          <div class="flex items-center justify-between gap-2">
-            <span class="text-title text-fg">{{ item.price_cop | cop }}</span>
+          <div class="flex min-w-0 flex-wrap items-center justify-between gap-2" data-testid="menu-price-row">
+            <span class="text-title whitespace-nowrap text-fg">{{ item.price_cop | cop }}</span>
             <app-add-to-cart [product]="products().get(item.id)!" />
           </div>
         </div>

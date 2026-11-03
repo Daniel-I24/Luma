@@ -21,6 +21,7 @@ const ORDER_ERROR_KEYS: Readonly<Record<string, string>> = {
   trust_pending_limit: 'orders.errors.trustPendingLimit',
   trust_daily_limit: 'orders.errors.trustDailyLimit',
   payments_disabled: 'orders.errors.paymentsDisabled',
+  online_payment_unavailable: 'orders.errors.onlineInReview',
   invalid_payment_method: 'orders.errors.paymentsDisabled',
   reason_required: 'orders.errors.reasonRequired',
   invalid_reason: 'orders.errors.reasonRequired',

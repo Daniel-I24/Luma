@@ -90,6 +90,23 @@ describe('ContactVerificationCard with the automatic strategies', () => {
     expect(repo.listMine.mock.calls.length).toBe(reads);
   });
 
+  it('without the support WhatsApp (SUPPORT_WHATSAPP) the cause and the next step show: it waits for the team', async () => {
+    setup('');
+    const { row } = await render();
+    expect(row('whatsapp').textContent).toContain('contactVerification.steps.noSupport');
+    expect(row('whatsapp').querySelector('a')).toBeNull();
+  });
+
+  it('two minutes without the message: explained (webhook not set up), and the request waits for review', async () => {
+    setup();
+    const { fixture, row } = await render();
+    vi.useFakeTimers();
+    row('whatsapp').querySelector('a')!.dispatchEvent(new MouseEvent('click', { cancelable: true }));
+    await vi.advanceTimersByTimeAsync(WATCH_FOR_MS + WATCH_EVERY_MS);
+    fixture.detectChanges();
+    expect(row('whatsapp').textContent).toContain('contactVerification.steps.watchTimeout');
+  });
+
   it('a landline is explained, without a request button nor a badge', async () => {
     setup();
     const { row } = await render();
@@ -121,6 +138,7 @@ describe('ContactVerificationCard with the automatic strategies', () => {
     setup();
     const { row } = await render();
     expect(row('whatsapp').textContent).toContain('contactVerification.openWhatsapp');
+    expect(row('whatsapp').textContent).toContain('contactVerification.steps.autoOff');
     expect(row('website').textContent).toContain('contactVerification.steps.website');
     expect(row('website').querySelector('button')).toBeNull();
   });

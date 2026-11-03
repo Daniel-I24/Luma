@@ -62,10 +62,10 @@ describe('NotificationSettings', () => {
 
   it('offers the permission button only while the phone has not answered', async () => {
     const { fixture } = await render();
-    // The permission button plus "Enviar notificación de prueba", always there.
-    expect(fixture.nativeElement.querySelectorAll('app-luma-button').length).toBe(2);
+    // Only the permission button (the test notification moved to the admin panel in round 8).
+    expect(fixture.nativeElement.querySelectorAll('app-luma-button').length).toBe(1);
     permission.set('unavailable');
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelectorAll('app-luma-button').length).toBe(1);
+    expect(fixture.nativeElement.querySelectorAll('app-luma-button').length).toBe(0);
   });
 });

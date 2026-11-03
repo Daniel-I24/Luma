@@ -1,6 +1,8 @@
 /**
  * Sections of the legal drafts, in reading order. Texts live under
- * legal.{document}.sections.{id}.{title|body} in the translation files.
+ * legal.{document}.sections.{id}.{title|body} in the translation files, the
+ * one source of the app pages and of the public pages that
+ * scripts/build-legal.mjs writes to public/legal/.
  */
 export const LEGAL_DOCUMENTS = {
   terms: [
@@ -29,6 +31,7 @@ export const LEGAL_DOCUMENTS = {
     'changes',
   ],
   refunds: ['scope', 'processor', 'cancellations', 'refunds', 'timing', 'pickup', 'contact'],
+  deletion: ['how', 'what', 'kept', 'help'],
 } as const;
 
 export type LegalDocument = keyof typeof LEGAL_DOCUMENTS;
@@ -37,7 +40,7 @@ export type LegalDocument = keyof typeof LEGAL_DOCUMENTS;
 export class LegalDocuments {
   /** True for a known legal document id. */
   public static isLegalDocument(value: unknown): value is LegalDocument {
-    return value === 'terms' || value === 'privacy' || value === 'refunds';
+    return typeof value === 'string' && Object.hasOwn(LEGAL_DOCUMENTS, value);
   }
 }
 

@@ -566,7 +566,8 @@
       "noShowTooEarly": "You can mark \"Did not come\" only 15 minutes after the order is ready.",
       "trustPendingLimitOnline": "You already have an order to pay at pick-up. Pick it up or pay this one online.",
       "seePendingOrder": "See my pending order",
-      "ownBusiness": "This business is yours: you cannot order from your own business. To try it, use a customer account."
+      "ownBusiness": "This business is yours: you cannot order from your own business. To try it, use a customer account.",
+      "onlineInReview": "This business is still under review: for now it only takes payment at pick-up."
     }
   },
   "reviews": {
@@ -1149,7 +1150,9 @@
       }
     },
     "badge": "Verified",
-    "badgeHint": "The Luma team reviewed this business's details."
+    "badgeHint": "The Luma team reviewed this business's details.",
+    "inReview": "Under review",
+    "inReviewHint": "The Luma team is still reviewing this business. Meanwhile it only takes orders paid at pick-up."
   },
   "admin": {
     "errors": {
@@ -1193,7 +1196,7 @@
       "cancel": "Cancel",
       "actions": {
         "approved": "Approve",
-        "rejected": "Reject",
+        "rejected": "Reject with a note",
         "suspended": "Suspend"
       },
       "confirm": {
@@ -1277,7 +1280,8 @@
       "errors": {
         "load": "Could not load the operations.",
         "failed": "The action could not be completed."
-      }
+      },
+      "device": "Notifications on my phone"
     },
     "contacts": {
       "title": "Contacts to verify ({{count}})",
@@ -1352,7 +1356,7 @@
         },
         "contact": {
           "title": "Contact",
-          "body": "Write to [contact email to be defined]."
+          "body": "Write to {{email}}."
         }
       }
     },
@@ -1385,7 +1389,7 @@
         },
         "exercise": {
           "title": "How to exercise them",
-          "body": "From your Profile you can edit your data and delete your account. For other requests write to [contact email to be defined]; we answer queries within 10 business days and claims within 15."
+          "body": "From your Profile you can edit your data and delete your account. For other requests write to {{email}}; we answer queries within 10 business days and claims within 15."
         },
         "retention": {
           "title": "How long we keep it",
@@ -1434,10 +1438,32 @@
         },
         "contact": {
           "title": "Contact",
-          "body": "For any claim about a payment write to [support email to be defined] with your order number. This policy will be reviewed with legal advice before launch (Ley 1480 de 2011, Colombian consumer statute)."
+          "body": "For any claim about a payment write to {{email}} with your order number. This policy will be reviewed with legal advice before launch (Ley 1480 de 2011, Colombian consumer statute)."
         }
       }
-    }
+    },
+    "deletion": {
+      "title": "Data deletion",
+      "sections": {
+        "how": {
+          "title": "How to delete your account",
+          "body": "Open the app, go to Profile and tap \"Delete account\". We email you a code to confirm it is you; once you type it, the account is deleted right away."
+        },
+        "what": {
+          "title": "What is deleted",
+          "body": "Your profile (name, mobile, residence and photo), your favourites, your reviews, your notices and the files you uploaded. If you own a business, also its data, photos and verification documents."
+        },
+        "kept": {
+          "title": "What is kept",
+          "body": "Orders and payments are kept without your name or contact details, because the business and the law need them for their accounts."
+        },
+        "help": {
+          "title": "If you cannot open the app",
+          "body": "Write to {{email}} from the e-mail of your account and we delete it for you within 15 business days."
+        }
+      }
+    },
+    "contactPending": "the contact e-mail (to be defined)"
   },
   "onboarding": {
     "label": "Welcome tutorial",
@@ -1653,7 +1679,7 @@
       "entry": "Scan menu with Luma IA",
       "title": "Scan menu",
       "intro": "Take or choose up to {{max}} photos of your printed menu. Luma IA reads the products and prices, and you review everything before adding it.",
-      "pick": "Choose menu photos",
+      "pick": "Choose or take photos of the menu",
       "privacy": "Photos are resized and lose their GPS location before being sent. They're only used to read the menu and aren't stored.",
       "reading": "Reading your menu… this can take a few seconds.",
       "review": "Review each product: fix anything needed and untick what you don't want to add.",
@@ -1671,13 +1697,22 @@
       "tooBig": "The photos couldn't be sent (4 at most, 2 MB each). Try fewer photos.",
       "unavailable": "Luma IA couldn't read the menu right now. Try later or add the products by hand.",
       "rateLimited": "You sent many scans in a row. Wait a few minutes and try again.",
-      "aiUnavailable": "Luma IA cannot read photos right now. You can paste your menu as text: it is free and goes to the same review.",
       "pasteTitle": "Paste my menu as text",
       "pasteHelp": "One line per product with its price at the end. Sections go in CAPITALS or end with a colon.",
       "pastePlaceholder": "E.g.:\nMAIN DISHES\nBandeja paisa ........ 28.000\nDRINKS:\nJugo natural - $6.500",
       "pasteReview": "Review products",
       "entryAi": "Scan my menu with AI",
-      "entryHint": "Take photos of your menu or paste its text: we create the products and you review them."
+      "entryHint": "Take photos of your menu or paste its text: we create the products and you review them.",
+      "errors": {
+        "buildRules": "This version of the app was built in rules mode (AI_MODE=rules), without Luma IA to read photos. Paste your menu as text: it goes to the same review.",
+        "notDeployed": "The service that reads photos (extract-menu) is not published. Paste your menu as text meanwhile.",
+        "noResponse": "The service that reads photos did not answer (network or server settings). Try again or paste your menu as text.",
+        "notConfigured": "Luma IA has no provider set up on the server. Paste your menu as text while the team turns it on.",
+        "providerKey": "The Luma IA provider refused the server key. The team is told; paste your menu as text meanwhile.",
+        "providerModel": "The Luma IA provider does not know the configured model. Paste your menu as text while the team fixes it.",
+        "providerBusy": "The Luma IA provider is overloaded. Wait a few minutes and try again, or paste your menu as text.",
+        "slow": "Luma IA took too long to read the photos. Try fewer photos or paste your menu as text."
+      }
     },
     "orderAlerts": {
       "new": "You have {{count}} new order(s). Check them in Orders."
@@ -1779,7 +1814,8 @@
       "copied": {
         "ok": "Copied. Paste it in your message to support.",
         "failed": "It could not be copied on this device."
-      }
+      },
+      "aiMode": "Luma IA mode"
     }
   },
   "promotions": {
@@ -1863,7 +1899,7 @@
       "save": "We couldn't save the change. Please try again."
     },
     "test": {
-      "send": "Send a test notification",
+      "send": "Test my device",
       "sending": "Sending…",
       "hint": "It reaches your notices and, if the phone allows it, appears as a notification. Up to 3 a day.",
       "sent": "Done: check your notices and your phone.",
@@ -2223,13 +2259,15 @@
     "none": "Add a phone, WhatsApp, Instagram, Facebook or website to verify it.",
     "steps": {
       "message": "From the number {{value}}, send the code {{code}} on WhatsApp to Luma support.",
-      "noSupport": "Luma's support WhatsApp is not configured yet (SUPPORT_WHATSAPP). Come back later to verify this number.",
+      "noSupport": "Luma's support WhatsApp is not set up in this version of the app (SUPPORT_WHATSAPP), so you cannot send the code from here. Your request waits for review: the team checks it by hand and lets you know.",
       "social": "Post the code {{code}} in the bio or in a public post of this account. Once verified you can remove it.",
       "website": "Publish a file at {{url}} containing {{code}}.",
       "review": "A person of the team checks it and we let you know with a notification.",
       "whatsappAuto": "Send the message exactly as it is, from this number ({{value}}). Luma verifies it by itself in a few seconds.",
       "landline": "This looks like a landline: it cannot send WhatsApp, so it is not verified and gets no badge. You can add a mobile with WhatsApp to verify it.",
-      "websiteAuto": "Publish a text file at {{url}} with one line saying exactly {{code}} and tap \"Check now\"."
+      "websiteAuto": "Publish a text file at {{url}} with one line saying exactly {{code}} and tap \"Check now\".",
+      "autoOff": "Automatic verification is off: your request waits in the team queue, and they let you know once it is verified.",
+      "watchTimeout": "We did not get your message in 2 minutes. If you sent it from this number, automatic reception may not be set up yet: your request waits for review by the team. You can also try again."
     },
     "errors": {
       "tooMany": "You already asked for 3 codes today for this contact. Try tomorrow (each new code replaces the previous one).",

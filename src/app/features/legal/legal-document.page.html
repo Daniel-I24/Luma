@@ -26,7 +26,7 @@
       {{ t('legal.' + document() + '.sections.' + section + '.title') }}
     </h2>
     <p class="m-0 text-body text-fg-muted">
-      {{ t('legal.' + document() + '.sections.' + section + '.body') }}
+      {{ t('legal.' + document() + '.sections.' + section + '.body', { email: email || t('legal.contactPending') }) }}
     </p>
   </section>
   }

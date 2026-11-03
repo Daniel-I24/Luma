@@ -25,6 +25,17 @@ account are **gitignored and never committed**.
 
 ## 3. Secrets and function
 
+On Windows, `scripts/setup-push.ps1` does this whole step and writes the
+SQL of step 4, printing no secret:
+
+```powershell
+# the service account in C:\Users\ivan2\luma-secrets\firebase-service-account.json
+powershell -ExecutionPolicy Bypass -File scripts\setup-push.ps1
+# then paste C:\Users\ivan2\luma-secrets\push-settings.sql in the SQL editor
+```
+
+By hand:
+
 ```sh
 openssl rand -hex 32            # the shared secret, used twice below
 supabase secrets set FCM_SERVICE_ACCOUNT="$(tr -d '\n' < service-account.json)"
@@ -52,11 +63,15 @@ To rotate the secret: set the new one in the Edge secret first, then here.
 
 ## 5. The app
 
-1. `src/app/core/config/push-enabled.ts`: `PUSH_ENABLED = true`.
-2. `npm run apk:release` and install the APK (docs/release.md).
+1. Put `google-services.json` in `android/app/`: the build turns push on
+   by itself (`scripts/build-flags.mjs`; `PUSH_ENABLED=0` turns it off).
+   `npm run apk:release` prints `PUSH_ENABLED: true`. Before round 8 the
+   flag was a constant `false`, so no APK ever registered for push.
+2. Install the APK (docs/release.md).
 3. On the phone: Perfil → Notificaciones → "Permitir notificaciones".
-4. Same screen → **"Enviar notificación de prueba"** (migration 52,
-   `send_test_notification`, at most 3 a day). It appears in the in-app
+4. As an admin (MFA): /admin → Operaciones → **"Probar mi dispositivo"**
+   (migration 55: `send_test_notification` is for admins only, at most 3 a
+   day). Customers and owners no longer have a test button. It appears in the in-app
    list and, within a minute at most, as a phone notification: "Notificación
    de prueba". The push goes to the orders channel and follows the
    "Pedidos" preference: with it off, only the in-app list shows it.
@@ -68,5 +83,6 @@ To rotate the secret: set the new one in the Edge secret first, then here.
 | Symptom | Check |
 | --- | --- |
 | In the list but no push | `push-dispatch` logs; `FCM_SERVICE_ACCOUNT` set; `private.push_settings` row and secret equal to `PUSH_DISPATCH_SECRET` |
-| "Permitir" does nothing | `PUSH_ENABLED` and `google-services.json` in the APK you installed |
+| "Permitir" does nothing | `google-services.json` was in `android/app/` when the APK was built (`PUSH_ENABLED: true` in its output) |
+| Nothing with the app closed | the notification channel exists once the app opened after "Permitir"; battery saver of the phone not blocking Luma; the FCM message carries `notification` + `android.priority: high` (push-dispatch does) |
 | Test button says the limit | 3 a day per user (`rate_push_test_*` in `app_settings`) |

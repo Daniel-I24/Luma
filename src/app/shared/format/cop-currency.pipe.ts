@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-/** Colombian pesos without decimals, e.g. "$ 18.900" (prices are whole COP). */
+/** Colombian pesos without decimals, e.g. "$18.900" (prices are whole COP). */
 const COP = new Intl.NumberFormat('es-CO', {
   style: 'currency',
   currency: 'COP',
@@ -11,10 +11,10 @@ const COP = new Intl.NumberFormat('es-CO', {
 export class CopFormat {
   /** Formats a whole number of Colombian pesos for display. */
   public static formatCop(amount: number): string {
-    return COP.format(amount);
+    // Intl puts a (non-breaking) space after "$"; the app writes "$20.000", which also never wraps.
+    return COP.format(amount).replace(/\s/g, '');
   }
 }
-
 
 /** CopCurrencyPipe — `{{ amount | cop }}`: whole Colombian pesos. */
 @Pipe({ name: 'cop', standalone: true })

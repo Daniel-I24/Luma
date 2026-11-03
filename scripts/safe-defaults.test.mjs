@@ -16,9 +16,10 @@ test('database switches start at 0: online payments and phone verification', () 
   assert.doesNotMatch(migrations, /set int_value = 1 where key = '(payments_enabled|require_phone_verification)'/);
 });
 
-test('app switches: push off, AI by rules, phone verification off', () => {
-  assert.match(read('src/app/core/config/push-enabled.ts'), /factory: \(\) => false/);
-  assert.match(read('src/app/core/config/ai-mode.ts'), /factory: \(\) => 'rules'/);
+test('app switches: push off, AI by rules, phone verification off unless the build says otherwise', () => {
+  // Round 8: push and AI come from the build (scripts/build-flags.mjs); without a define they stay off.
+  assert.match(read('src/app/core/config/push-enabled.ts'), /typeof LUMA_PUSH_ENABLED !== 'undefined' && LUMA_PUSH_ENABLED === 'true'/);
+  assert.match(read('src/app/core/config/ai-mode.ts'), /LUMA_AI_MODE === 'remote' \? 'remote' : 'rules'/);
   assert.match(read('src/app/core/config/features.ts'), /factory: \(\) => false/);
 });
 

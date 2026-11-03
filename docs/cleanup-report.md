@@ -120,3 +120,10 @@ tooling read through config files).
   `reports.validation.comment`, `profile.validation.displayNameTooLong`,
   `owner.menuScan.priceNeeded`), checked with git grep before removing.
 - `route.walk` and `route.drive` replaced by `route.modes.*`.
+
+## Round 8 — phase 1 (2026-11-02)
+
+- Removed the "Enviar notificación de prueba" button and its code from
+  NotificationSettings (moved to the admin `DeviceTest`).
+- Removed the key `owner.menuScan.aiUnavailable` (replaced by
+  `owner.menuScan.errors.*`).

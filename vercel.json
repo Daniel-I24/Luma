@@ -4,6 +4,22 @@
   "outputDirectory": "dist/luma/browser",
   "rewrites": [
     {
+      "source": "/terminos",
+      "destination": "/legal/terminos.html"
+    },
+    {
+      "source": "/privacidad",
+      "destination": "/legal/privacidad.html"
+    },
+    {
+      "source": "/reembolsos",
+      "destination": "/legal/reembolsos.html"
+    },
+    {
+      "source": "/eliminacion-datos",
+      "destination": "/legal/eliminacion-datos.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
@@ -74,6 +90,15 @@
         {
           "key": "Access-Control-Allow-Origin",
           "value": "*"
+        }
+      ]
+    },
+    {
+      "source": "/legal/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
         }
       ]
     }

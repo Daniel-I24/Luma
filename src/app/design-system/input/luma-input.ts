@@ -1,6 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, input, model, output } from '@angular/core';
 import { RADIX_36 } from '@core/config/units';
 
+const EXACT_TYPES: ReadonlySet<InputType> = new Set(['email', 'password', 'url']);
+const EXACT_AUTOCOMPLETE: ReadonlySet<string> = new Set(['username', 'email', 'current-password', 'new-password', 'one-time-code', 'url']);
+
 /** Six random characters after "0.". */
 const ID_START = 2;
 const ID_END = 8;
@@ -51,6 +54,14 @@ export class LumaInput {
   public readonly blurred = output<void>();
 
   protected readonly used = computed(() => Array.from(this.value()).length);
+  /**
+   * E-mails, passwords, URLs and codes are typed exactly: the phone keyboard
+   * must not capitalize, correct or underline them (a revealed password is a
+   * text field with a password autocomplete).
+   */
+  protected readonly exact = computed(
+    () => EXACT_TYPES.has(this.type()) || EXACT_AUTOCOMPLETE.has(this.autocomplete() ?? ''),
+  );
 
   protected onInput(field: HTMLInputElement): void {
     const typed = field.value;

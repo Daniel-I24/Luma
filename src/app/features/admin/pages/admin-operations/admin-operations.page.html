@@ -1,6 +1,7 @@
 <div *transloco="let t" class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6">
   <a routerLink="/admin" class="text-body-sm text-fg-accent">{{ t('admin.operations.back') }}</a>
   <h1 class="m-0 text-h3 text-fg">{{ t('admin.operations.title') }}</h1>
+  <app-device-test />
   @if (ops.notice(); as key) {
   <p class="m-0 rounded-md bg-info-bg p-3 text-body-sm text-info-fg" role="status">{{ t(key) }}</p>
   }
