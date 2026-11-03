@@ -22,6 +22,7 @@ const FORBIDDEN_FILES = [
   [/service-account[^/]*\.json$/i, 'service account'],
   [/(^|\/)src\/environments\/environment(\.deploy)?\.ts$/, 'environment file with real keys'],
   [/(^|\/)\.env(\.[a-z]+)?$/, '.env file'],
+  [/(^|\/)supabase\/\.temp\//, 'Supabase CLI link data (project reference)'],
 ];
 
 const PATTERNS = [

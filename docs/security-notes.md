@@ -22,7 +22,22 @@
 | Revisión | Cuando Capacitor publique una CLI con `xcode`/`uuid` actualizados (Dependabot abrirá el PR), o antes de configurar el build de iOS. |
 | Aceptado | 2026-10-14 |
 
+### vite 8.3.0 dentro de @angular/build 22.2.4 (alta, solo desarrollo)
+
+| Campo | Detalle |
+|---|---|
+| Avisos | GHSA-9jrq-w75r-8gcw, GHSA-rq7h-c2jc-7f22, GHSA-vfpm-58rq-9qcg (servidor de desarrollo de Vite) y GHSA-698v-4r3x-3vcv, GHSA-r825-w8mm-5pxw, GHSA-587h-7wmj-h5pm (`launch-editor`) |
+| Cadena | `@angular/build@22.2.4` (la última estable) fija `vite@8.3.0` |
+| Alcance | Solo `ng serve` en la máquina del desarrollador. El build de producción no incluye Vite y `npm audit --omit=dev` da 0. |
+| Por qué no se corrige ya | `npm audit fix --force` bajaría `@angular/build` a 22.1.9 (cambio mayor, desalinea con Angular 22.2). |
+| Mitigación | `ng serve` solo en `localhost` (sin `--host 0.0.0.0`), no abrir enlaces de terceros mientras corre. |
+| Revisión | Con la próxima versión de `@angular/build` (Dependabot). |
+| Aceptado | 2026-10-26 |
+
 ## Historial
+
+- 2026-10-26 — `npm audit fix` (sin `--force`) actualiza `fast-uri` y
+  `undici` (dependencias de desarrollo).
 
 - 2026-10-14 — `maplibre-gl` actualizado de 5.x a 6.14.0 por
   [GHSA-jrc7-96c5-q579](https://github.com/advisories/GHSA-jrc7-96c5-q579)
