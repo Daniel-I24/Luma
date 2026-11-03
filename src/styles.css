@@ -16,3 +16,6 @@
 @import './styles/base.css';
 @import './styles/motion.css';
 @import './styles/view-transitions.css';
+
+/* App entry that continues the native splash (index.html + AppEntry) */
+@import './styles/entry.css';
