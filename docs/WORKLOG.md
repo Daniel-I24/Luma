@@ -154,6 +154,9 @@ agent's sessions).
   default), UpdateBanner (Actualizar / Descargar / Mas tarde; required cannot
   be dismissed). FASE 2 closed: build ok (initial 994.73 kB), lint ok, 666
   app tests, 40 script tests, npm audit --omit=dev 0. No supabase/ changes.
+- FASE 3: scripts/verify-backend.mjs (npm run verify:backend; anon key only,
+  read-only: tables/columns, RPCs, Edge Functions, buckets of the frozen
+  schema; expectations tested against the repository).
 
 - Block D done: migration 20261021000000 (discounts, trigger, server prices in
   create_order; 23 SQL checks), customer /promotions (sort, filters, states,
