@@ -15,17 +15,21 @@
 -- -----------------------------------------------------------------------------
 
 -- 1. Status ----------------------------------------------------------------------
+-- Every business that exists today is demo data and starts approved. The
+-- column defaults fill the existing rows: an UPDATE would re-check them
+-- against the NOT VALID constraints of earlier migrations (old dirty rows
+-- would make this migration fail). New businesses start as draft.
 alter table public.businesses
-  add column if not exists verification_status text not null default 'draft'
+  add column if not exists verification_status text not null default 'approved'
     constraint businesses_verification_status_valid
     check (verification_status in ('draft', 'pending', 'approved', 'rejected', 'suspended')),
   add column if not exists verification_note text
     constraint businesses_verification_note_length
     check (verification_note is null or char_length(verification_note) <= 300),
-  add column if not exists verified_at timestamptz;
-
--- Every business that exists today is demo data.
-update public.businesses set verification_status = 'approved', verified_at = now();
+  add column if not exists verified_at timestamptz default now();
+alter table public.businesses
+  alter column verification_status set default 'draft',
+  alter column verified_at drop default;
 
 -- 2. Admins ------------------------------------------------------------------------
 create table if not exists public.admins (

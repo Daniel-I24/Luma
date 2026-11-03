@@ -94,6 +94,12 @@ agent's sessions).
   1.7 push: device_tokens + RPCs, notify_orders/notify_promotions (opt-in),
   notify_promotion, private.push_settings, pg_net poke + pg_cron fallback,
   claim_push_batch, push-dispatch (FCM v1, RS256), docs/push.md.
+  1.8 drift test (scripts/db-drift.test.mjs: Storage folders vs delete-account,
+  functions in config.toml, grants/search_path/reload/ASCII, every exposed
+  function tested), policy_helpers.sql, production-like rehearsal
+  (tests/local/rehearsal.sh) which found a real bug: business_verification
+  updated legacy rows and NOT VALID checks would reject dirty ones; fixed with
+  column defaults. validate-report.sql. 405 SQL checks.
 
 - Block D done: migration 20261021000000 (discounts, trigger, server prices in
   create_order; 23 SQL checks), customer /promotions (sort, filters, states,
