@@ -10,34 +10,35 @@ category names (`Cafetería`), and the Supabase SQL editor and CLI are UTF-8.
 | 2 | `20240002000000_create_businesses.sql` | `businesses`, `business_hours`, `promotions`, RLS | Applied |
 | 3 | `20261014000000_business_profile.sql` | `menu_items`, `favorites`, `reviews`, rating views | Applied |
 | 4 | `20261015000000_grant_existing_tables.sql` | Explicit column grants for the tables above | Applied |
-| 5 | `20261017000000_orders.sql` | `orders` (with business name/address copies), `order_items`, `app_settings` | Pending review |
-| 6 | `20261017000100_order_functions.sql` | `create_order` | Pending review |
-| 7 | `20261017000200_order_status_functions.sql` | `cancel_order`, `set_order_status` | Pending review |
-| 8 | `20261018000000_business_panel.sql` | `prep_minutes`, CHECKs (NOT VALID), owner reads of hours/promotions, hours upsert, publish guard | Pending review |
-| 9 | `20261018000100_business_images.sql` | `business-images` bucket, Storage policies, https-only image URLs | Pending review |
-| 10 | `20261018000200_business_orders.sql` | Owner views `business_orders`, `business_order_items` | Pending review |
-| 11 | `20261018000300_notifications.sql` | `notifications`, RLS, triggers on `orders` | Pending review |
-| 12 | `20261019000000_account_types.sql` | `account_type`, private `full_name`/`phone`, consent, onboarding version, `become_business_owner`, max 3 businesses | Pending review |
-| 13 | `20261020000000_business_verification.sql` | `verification_status`/`note`/`verified_at`, `admins`, `is_admin`, `am_i_admin`, NIT check digit | Pending review |
-| 14 | `20261020000100_public_visibility.sql` | `is_business_public` in every public policy and view | Pending review |
-| 15 | `20261020000110_create_order_public.sql` | `create_order` only for public businesses | Pending review |
-| 16 | `20261020000200_verification_access.sql` | `business_legal`, `business_verification_docs`, no client writes to `verification_*` | Pending review |
-| 17 | `20261020000300_verification_workflow.sql` | `submit_business_for_review`, `review_business`, re-review trigger, `reports` | Pending review |
-| 18 | `20261020000310_reports_admin.sql` | Admin list of open reports | Pending review |
-| 19 | `20261020000400_verification_storage.sql` | Private `verification-docs` bucket and its Storage policies | Pending review |
-| 20 | `20261021000000_promotion_discounts.sql` | Promotion discounts on one item (5-90 %, same business, max 5 active), list/final price and promotion on order lines, `create_order` prices with the best current discount | Pending review |
-| 21 | `20261022000000_ai_gateway.sql` | Luma IA: closed `ai_usage`/`ai_cache`, `consume_ai_quota`, cache functions (service_role only; 24 h, 7 days for `geocode:`), `ai_recommend_candidates`, `owner_sales_summary` | Pending review |
-| 22 | `20261023000000_order_safeguards.sql` | Hourly order caps, `expire_stale_orders` (pg_cron every 5 min when enabled) | Pending review |
-| 23 | `20261024000000_business_showcase.sql` | Contact columns (WhatsApp, Instagram, Facebook, web), `business_photos` (8), menu cap 200 | Pending review |
-| 24 | `20261025000000_menu_scan_quota.sql` | `consume_menu_scan_quota` (extract-menu, 5 a day per business) | Pending review |
-| 25 | `20261026000000_geocode_quota.sql` | `consume_geocode_quota` (200 a day per user, 5000 global) | Pending review |
-| 26 | `20261027000000_push_notifications.sql` | `device_tokens` + RPCs, notify preferences, `promotion` notifications, `notify_promotion` | Pending review |
-| 27 | `20261027000100_push_dispatch.sql` | `private.push_settings`, pg_net poke trigger, pg_cron fallback, `claim_push_batch`, `remove_device_tokens` | Pending review |
-| 28 | `20261028000000_export_my_data.sql` | `export_my_data` (habeas data, 3 a day) | Pending review |
+| 5 | `20261017000000_orders.sql` | `orders` (with business name/address copies), `order_items`, `app_settings` | Applied |
+| 6 | `20261017000100_order_functions.sql` | `create_order` | Applied |
+| 7 | `20261017000200_order_status_functions.sql` | `cancel_order`, `set_order_status` | Applied |
+| 8 | `20261018000000_business_panel.sql` | `prep_minutes`, CHECKs (NOT VALID), owner reads of hours/promotions, hours upsert, publish guard | Applied |
+| 9 | `20261018000100_business_images.sql` | `business-images` bucket, Storage policies, https-only image URLs | Applied |
+| 10 | `20261018000200_business_orders.sql` | Owner views `business_orders`, `business_order_items` | Applied |
+| 11 | `20261018000300_notifications.sql` | `notifications`, RLS, triggers on `orders` | Applied |
+| 12 | `20261019000000_account_types.sql` | `account_type`, private `full_name`/`phone`, consent, onboarding version, `become_business_owner`, max 3 businesses | Applied |
+| 13 | `20261020000000_business_verification.sql` | `verification_status`/`note`/`verified_at`, `admins`, `is_admin`, `am_i_admin`, NIT check digit | Applied |
+| 14 | `20261020000100_public_visibility.sql` | `is_business_public` in every public policy and view | Applied |
+| 15 | `20261020000110_create_order_public.sql` | `create_order` only for public businesses | Applied |
+| 16 | `20261020000200_verification_access.sql` | `business_legal`, `business_verification_docs`, no client writes to `verification_*` | Applied |
+| 17 | `20261020000300_verification_workflow.sql` | `submit_business_for_review`, `review_business`, re-review trigger, `reports` | Applied |
+| 18 | `20261020000310_reports_admin.sql` | Admin list of open reports | Applied |
+| 19 | `20261020000400_verification_storage.sql` | Private `verification-docs` bucket and its Storage policies | Applied |
+| 20 | `20261021000000_promotion_discounts.sql` | Promotion discounts on one item (5-90 %, same business, max 5 active), list/final price and promotion on order lines, `create_order` prices with the best current discount | Applied |
+| 21 | `20261022000000_ai_gateway.sql` | Luma IA: closed `ai_usage`/`ai_cache`, `consume_ai_quota`, cache functions (service_role only; 24 h, 7 days for `geocode:`), `ai_recommend_candidates`, `owner_sales_summary` | Applied |
+| 22 | `20261023000000_order_safeguards.sql` | Hourly order caps, `expire_stale_orders` (pg_cron every 5 min when enabled) | Applied |
+| 23 | `20261024000000_business_showcase.sql` | Contact columns (WhatsApp, Instagram, Facebook, web), `business_photos` (8), menu cap 200 | Applied |
+| 24 | `20261025000000_menu_scan_quota.sql` | `consume_menu_scan_quota` (extract-menu, 5 a day per business) | Applied |
+| 25 | `20261026000000_geocode_quota.sql` | `consume_geocode_quota` (200 a day per user, 5000 global) | Applied |
+| 26 | `20261027000000_push_notifications.sql` | `device_tokens` + RPCs, notify preferences, `promotion` notifications, `notify_promotion` | Applied |
+| 27 | `20261027000100_push_dispatch.sql` | `private.push_settings`, pg_net poke trigger, pg_cron fallback, `claim_push_batch`, `remove_device_tokens` | Applied |
+| 28 | `20261028000000_export_my_data.sql` | `export_my_data` (habeas data, 3 a day) | Applied |
 
-### Round 2 (2026-10-24, pending review)
+### Round 2 and 3 (29 to 50, pending review)
 
-Migrations 5 to 28 are reviewed and applied by the owner and are never
+Status on 2026-10-28: **1 to 28 applied, 29 to 50 pending** (in review by
+the owner). Applied migrations and 29 to 49 (under review) are never
 edited again. Round 2 adds new files only, all later than
 `20261028000000`; a changed function is redefined with `create or replace`
 keeping its arguments and grants (a changed return type needs a drop and a
@@ -65,6 +66,8 @@ create in the same file, noted in the file header).
 | 46 | `20261030000600_business_signals.sql` | `pg_trgm`, `digits_only`, `phone_keys`, `tax_id_taken`, `business_review_flags` | Pending review |
 | 47 | `20261030000610_submit_tax_id.sql` | `submit_business_for_review` refuses `tax_id_in_use` | Pending review |
 | 48 | `20261030000620_owner_sales_daily.sql` | `owner_sales_daily(business, 7 or 30)` | Pending review |
+| 49 | `20261030000700_payment_service.sql` | `payment_event_seen`, `payment_attempt`, `admin_note_reconcile`, `private.payments_cron` and the reconciliation cron (only when pg_cron exists) | Pending review |
+| 50 | `20261031000000_phone_verification.sql` | Round 3: `submit_business_for_review` also checks `phone_check_passed`; `profiles_phone_guard` (phone changes only to the confirmed number while required); `verified_auth_phone`, `sync_verified_phone` | Pending review |
 
 **Database freeze (2026-10-19)**: the list above is final for the launch.
 After the freeze, migrations and functions change only to fix real bugs
@@ -77,6 +80,9 @@ cancellations after accepting, gallery folder and 80-file cap).
 
 ### Before applying: extensions and secrets
 
+- Authentication > Multi-Factor: **TOTP enabled before migration 32**:
+  from then on `is_admin()` needs an aal2 session, so an admin without a
+  TOTP factor cannot review until they enrol at `/admin/mfa`.
 - Database > Extensions: `pg_trgm` (required by migration 46; it creates it
   in the `extensions` schema if it is allowed, otherwise enable it first).
 - Database > Extensions: `pg_cron` and `pg_net` (optional; without them

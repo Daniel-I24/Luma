@@ -1,90 +1,92 @@
-# Launch checklist
+# Launch checklist (only what the owner does)
 
-Everything the owner does by hand, in order, to put Luma online on Vercel,
-your Supabase project and a signed APK. Nothing in the repository deploys
-by itself. Tick each box; stop at the first failure and see
-[runbook.md](runbook.md).
+In order. Commands are for **PowerShell** in the repository folder
+(`C:\dev\Luma`). Replace `<ref>`, `<anon key>` and `<dominio>` with your
+values; never paste the service_role key anywhere in the app.
 
-## 0. Before touching production
+## Now
 
-- [ ] Supabase Dashboard → Database → Backups: confirm a recent backup exists
-      (or download one with `supabase db dump`).
-- [ ] Pull `main` and run locally: `npm ci`, `npm run build`, `npx ng lint`,
-      `npm test -- --watch=false`, `npm run test:scripts`. All green.
-- [ ] Compare the applied migrations with [migrations.md](migrations.md):
-      `supabase migration list` (or `select version from
-      supabase_migrations.schema_migrations order by 1`). Only the four
-      marked "Applied" should be there.
+1. **Back up the database**: Supabase → Database → Backups (download the
+   latest) or:
+   ```powershell
+   npx supabase login
+   npx supabase link --project-ref <ref>
+   npx supabase db dump -f "$HOME\luma-backup-$(Get-Date -Format yyyyMMdd).sql"
+   ```
+2. **Prerequisites** in the dashboard: Authentication → Multi-Factor →
+   TOTP **on**; Database → Extensions → `pg_trgm` **on** (optional:
+   `pg_cron`, `pg_net`).
+3. **Check what is applied** (should list 1 to 28 as applied):
+   ```powershell
+   npx supabase migration list
+   ```
+4. **Apply migrations 29 to 50** after your review (docs/migrations.md):
+   ```powershell
+   npx supabase db push
+   ```
+5. **Validate the old constraints**: in the SQL editor run
+   `supabase/sql/validate-report.sql`; fix the rows it reports (queries in
+   docs/migrations.md, "After applying everything"), then run the
+   `alter table … validate constraint …` statements listed there.
+6. **Check the backend from your PC**:
+   ```powershell
+   $env:SUPABASE_URL = "https://<ref>.supabase.co"
+   $env:SUPABASE_ANON_KEY = "<anon key>"
+   $env:APP_ORIGIN = "https://<dominio>"
+   npm run verify:backend
+   ```
+7. **Auth settings and e-mails** (docs/auth-emails.md): paste the three
+   templates (Confirm signup, Reset password, Reauthentication); 6-digit
+   codes, 600 s; password 8+ with letters and digits; secure password
+   change on; AAL1 session limit on; **your own SMTP** (the built-in sender
+   only reaches team addresses).
+8. **Admin MFA**: sign in with your admin account, open `/admin/mfa` and
+   enrol the authenticator app.
+9. **Edge Functions that cost nothing** (account deletion and address
+   search with Nominatim):
+   ```powershell
+   npx supabase secrets set ALLOWED_ORIGINS="https://<dominio>,https://localhost" GEOCODE_PROVIDER=nominatim GEOCODE_CONTACT="<tu correo>"
+   npx supabase functions deploy delete-account
+   npx supabase functions deploy geocode
+   ```
+10. **Web**: in Vercel set `SUPABASE_URL` and `SUPABASE_ANON_KEY`
+    (Production and Preview) and redeploy (docs/deploy.md).
+11. **Test APK** (docs/release.md, JDK 21):
+    ```powershell
+    $env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot"
+    npm ci
+    npm run apk:debug
+    adb install -r android\app\build\outputs\apk\debug\app-debug.apk
+    ```
+12. **Try it on the phone**: sign up with the code, complete "Mis datos",
+    register a business, menu, hours, send it to review, approve it in
+    `/admin`, order and pick up; check the screens with real data in the
+    four themes (docs/round2-status.md, "Screen review").
+13. **Signed APK** with your keystore (never in the repository):
+    ```powershell
+    $env:LUMA_KEYSTORE_PATH = "C:\keys\luma-release.jks"
+    $env:LUMA_KEYSTORE_PASSWORD = Read-Host "Keystore password"
+    $env:LUMA_KEY_ALIAS = "luma"
+    $env:LUMA_KEY_PASSWORD = Read-Host "Key password"
+    npm run apk:release
+    ```
+    Publish it as in docs/release.md ("Publish the APK").
 
-## 1. Database
+## Later (each has its own document; all are off by default)
 
-- [ ] Database → Extensions: enable `pg_cron` and `pg_net` (optional but
-      recommended: expiry of stale orders and push notifications).
-- [ ] Apply migrations 5 to 28 in filename order: `supabase db push` with the
-      project linked, or paste each file in the SQL editor (UTF-8). Stop at
-      the first error.
-- [ ] SQL editor: run `supabase/sql/validate-report.sql`. Fix or delete the
-      rows it counts, then run the `validate constraint` commands of
-      [migrations.md](migrations.md).
-- [ ] Create the first admin (your own account, after signing up and
-      confirming it): `insert into public.admins (user_id) select id from
-      auth.users where email = '<your email>';` ([admin.md](admin.md)).
-
-## 2. Auth (fixes the phone finding "link to localhost")
-
-- [ ] Authentication → Sign In / Providers → Email: **Confirm email ON**.
-- [ ] Authentication → Emails → Templates: paste the "Confirm signup" and
-      "Reset password" templates of [auth-emails.md](auth-emails.md). Neither
-      may contain `{{ .ConfirmationURL }}`; OTP length 6, expiry 1 hour.
-- [ ] Authentication → Emails → SMTP Settings: your own SMTP (SES, Brevo,
-      Postmark, Resend…) with SPF, DKIM and DMARC. The built-in sender only
-      reaches team addresses.
-- [ ] Authentication → URL Configuration → Site URL: `https://<vercel-domain>`.
-- [ ] Sign up a test account from a phone: the email shows a **6-digit
-      code**, no link.
-
-## 3. Edge Functions and secrets
-
-- [ ] `supabase secrets set ALLOWED_ORIGINS=https://localhost,https://<vercel-domain>`
-- [ ] Deploy and configure as in [deploy.md](deploy.md#edge-functions):
-      `delete-account`, `geocode` ([geocode.md](geocode.md)), and the
-      optional ones: `recommend`, `suggest-promotions`, `extract-menu`
-      ([ai.md](ai.md)), `push-dispatch` ([push.md](push.md)).
-- [ ] Push only: insert `private.push_settings` (URL + the same secret).
-- [ ] `SUPABASE_URL=… SUPABASE_ANON_KEY=… APP_ORIGIN=https://<vercel-domain> npm run verify:backend`
-      → `verify-backend: ok`.
-- [ ] Luma IA only: `SMOKE_EMAIL=… SMOKE_PASSWORD=… SMOKE_BUSINESS_ID=… node scripts/ai-smoke.mjs --menu`
-      with a confirmed **test** account.
-
-## 4. Web (Vercel)
-
-- [ ] Project → Settings → Environment Variables (Production and Preview):
-      `SUPABASE_URL`, `SUPABASE_ANON_KEY` (anon/publishable key only).
-- [ ] Deploy `main`. Open `https://<vercel-domain>`: the app loads, the map
-      shows tiles, sign-in works.
-- [ ] Response headers (DevTools → Network → document): CSP, HSTS,
-      `X-Frame-Options: DENY`; `/version.json` has `Cache-Control: no-store`.
-- [ ] Optional switches, each a one-line change plus a deploy:
-      `AI_MODE` → `'remote'` (`src/app/core/config/ai-mode.ts`) after step 3.
-
-## 5. Android APK
-
-Follow [release.md](release.md):
-
-- [ ] Your keystore (never in git) and the four `LUMA_KEY*` variables.
-- [ ] `UPDATE_SITE_URL` → `'https://<vercel-domain>'`
-      (`src/app/core/config/update-check-url.ts`) so the APK can see updates.
-- [ ] Push only: `android/app/google-services.json` (never in git) and
-      `PUSH_ENABLED` → `true` (`src/app/core/config/push-enabled.ts`).
-- [ ] `SUPABASE_URL=… SUPABASE_ANON_KEY=… npm run apk:release` → ends with
-      `apk-verify: ok` and the SHA-256.
-- [ ] Publish the APK (e.g. a GitHub Release asset), fill the `apk` entry of
-      `public/version.json`, redeploy the web; `/download` shows it.
-
-## 6. Keep it running
-
-- [ ] GitHub → Settings → Secrets and variables → Actions: `SUPABASE_URL`
-      and `SUPABASE_ANON_KEY` so `keepalive.yml` keeps the free project awake.
-- [ ] Run the manual QA in [qa-checklist.md](qa-checklist.md) on a real
-      phone with the APK and with the browser.
-- [ ] Keep [runbook.md](runbook.md) at hand.
+- **Wompi (online payments)**: secrets, deploy the four payment functions
+  and the cron, validate one real sandbox event with
+  `npm run check:wompi-event`, then the sandbox list in
+  docs/payments-checklist.md, and only then `payments_enabled = 1`.
+- **Firebase (push)**: `google-services.json` in `android/app/`,
+  `FCM_SERVICE_ACCOUNT` and `PUSH_DISPATCH_SECRET`, deploy `push-dispatch`,
+  `PUSH_ENABLED = true` (docs/push.md).
+- **IA (Luma IA remote)**: `LLM_*` secrets, deploy `recommend`,
+  `suggest-promotions` and `extract-menu`, then `AI_MODE = 'remote'`
+  (docs/ai.md). Until then the rules engine works without cost; the menu
+  photo scan needs this step.
+- **SMS (phone verification)**: demo with Supabase test numbers or a paid
+  provider with a spending cap, Colombia only and CAPTCHA
+  (docs/phone-verification.md).
+- **History cleanup** before making the repository public
+  (docs/security-findings.md).

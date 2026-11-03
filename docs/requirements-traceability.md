@@ -23,17 +23,6 @@ in `scripts/`. Status as of 2026-10-27; all listed tests are green.
 | R14 | Animated entry | `index.html` (`#luma-entry`), `styles/entry.css`, `core/startup/` (`AppEntry`, `EntryPolicy`, `AppReadiness`), `android/.../MainActivity.java`, `res/values*/styles.xml` | `core/startup/app-entry.spec.ts`; Android compile (`gradlew :app:compileDebugJavaWithJavac`) |
 | R15 | Visual identity and semantic buttons | `styles/tokens.css`, `styles/themes/*`, `styles/fonts.css`, `design-system/button/`, `design-system/icon-button/`, `design-system/checkmark/`, `docs/brand/` | `luma-button.spec.ts`, `luma-icon-button.spec.ts`, `theme.service.spec.ts`; `scripts/brand-contrast.test.mjs` (AA, 4 themes), `check-destructive-buttons.test.mjs`, `check-design-tokens.test.mjs` |
 | R16 | Installable APK | `scripts/apk.mjs`, `scripts/apk-verify.mjs`, `android/` (package `com.lumapasto.app`, adaptive and themed icons, splash), `docs/android.md` | `scripts/apk.test.mjs`, `apk-verify.test.mjs`, `app-version.test.mjs`; `gradlew :app:processDebugResources` |
-
-## Gaps found and fixed in this pass
-
-- `SignupCompletion` (saving residence, mobile and photo after the code) had
-  no test: `signup-completion.spec.ts`.
-- The sign-up photo step had no test: `photo-step.spec.ts` (valid photo,
-  wrong type, removing drops consent).
-
-## Not verifiable here
-
-- A signed release APK and installation on a phone need the owner's
-  keystore (`LUMA_KEYSTORE_*`) and a device; the debug build compiles.
-- Online payments need the Wompi sandbox keys and deployed functions
-  (docs/payments-checklist.md).
+| R17 | Phone verification (round 3, off by default) | migration `20261031000000_phone_verification`, `core/config/features.ts`, `shared/account/phone-verification*` | SQL `phone_verification.sql`; `phone-verification.spec.ts`; `scripts/safe-defaults.test.mjs` |
+| R18 | Auth e-mails with codes (sign-up, reset, reauthentication) | `core/auth/auth-code.service.ts`, `core/auth/password-change.service.ts`, `core/auth/auth-error.ts`, `docs/auth-emails.md` | `auth-code.service.spec.ts`, `password-change.service.spec.ts` |
+| R19 | Payments validated in sandbox before enabling | `scripts/check-wompi-event.mjs`, docs/payments.md | `scripts/check-wompi-event.test.mjs` |

@@ -143,6 +143,28 @@ SQL suites, Deno 2.5.6 in Docker for the functions.
   npm audit --omit=dev 0, knip without unused files or dependencies.
   Round 2 closed.
 
+## Round 3 (2026-10-28, closing)
+
+- docs/round2-status.md (phases 4-7: all done except the screen pass with
+  real data on a device). ESLint: errors only for any, naming and 150
+  lines; the rest are warnings (zero today).
+- Phone verification, free and off: migration 50
+  (`20261031000000_phone_verification`: submit_business_for_review checks
+  the phone, profiles_phone_guard, sync_verified_phone),
+  PHONE_VERIFICATION_ENABLED token, app flow, docs/phone-verification.md,
+  threat model T17, verify:backend.
+- Password change with Supabase reauthentication code; docs/auth-emails.md
+  with the three templates and settings.
+- Debug APK built with JDK 21 (com.lumapasto.app 1.0.0, no Firebase
+  config) through build + cap sync + assembleDebug (apk:debug's
+  generate-env step writes into src/environments, not run this round);
+  clear "server not updated" screen; docs/release.md.
+- check:wompi-event; safe-defaults script test.
+- docs/migrations.md (1-28 applied, 29-50 pending, TOTP and pg_trgm first),
+  docs/launch-checklist.md rewritten for the owner (PowerShell).
+- DoD green: build, lint, 747 app tests, 85 script tests, 643 SQL checks,
+  124 Deno tests, every check, secret scan, audit 0, knip clean.
+
 ## Done (round 1)
 
 - PARTE 0 — history cleaned (`backup-before-temp-cleanup` and
