@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Brand colours for launcher, splash and notifications (src/styles/tokens.css, theme "sky"). -->
+<resources>
+    <color name="luma_sky">#0D4A6B</color>
+    <color name="luma_paper">#F6F3EC</color>
+    <color name="luma_aji">#B23A0C</color>
+    <color name="luma_splash_background">#F6F3EC</color>
+    <color name="luma_splash_mark">#0D4A6B</color>
+</resources>

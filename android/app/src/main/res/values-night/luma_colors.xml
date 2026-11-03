@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dark splash (theme "night"): night canvas with the paper-coloured mark. -->
+<resources>
+    <color name="luma_splash_background">#0E1419</color>
+    <color name="luma_splash_mark">#F6F3EC</color>
+</resources>

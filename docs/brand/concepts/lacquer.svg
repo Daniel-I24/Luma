@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <title>Luma concept: barniz (not chosen)</title>
+  <rect width="1024" height="1024" fill="#7a3b16"/>
+  <!-- Mopa-mopa lacquer diamonds forming an L. -->
+  <path fill="#e0a526" d="M352 232l80 80-80 80-80-80Z M352 392l80 80-80 80-80-80Z M352 552l80 80-80 80-80-80Z"/>
+  <path fill="#17665a" d="M512 712l80 80-80 80-80-80Z M672 712l80 80-80 80-80-80Z"/>
+  <path fill="#c42839" d="M352 712l80 80-80 80-80-80Z"/>
+</svg>

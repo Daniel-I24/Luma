@@ -15,7 +15,7 @@ export const UNREAD_REFRESH_MS = 30_000;
 const MAIN_TABS: readonly TabBarItem[] = [
   { path: '/map', labelKey: 'tabBar.map', icon: 'map' },
   { path: '/feed', labelKey: 'tabBar.feed', icon: 'compass' },
-  { path: '/ai', labelKey: 'tabBar.ai', icon: 'sparkles' },
+  { path: '/ai', labelKey: 'tabBar.ai', icon: 'luma-ai' },
   { path: '/orders', labelKey: 'tabBar.orders', icon: 'receipt' },
   { path: '/profile', labelKey: 'tabBar.profile', icon: 'user' },
 ];

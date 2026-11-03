@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 512" width="1600" height="512">
+  <title>Luma wordmark</title>
+  <!-- Mark and name. The name uses Bricolage Grotesque 700 (public/fonts); in the app it is HTML text. -->
+  <g transform="translate(0 0) scale(0.5)">
+    <path fill="#0d4a6b" fill-rule="evenodd" d="M512 880C400 760 272 620 272 440A240 240 0 1 1 752 440C752 620 624 760 512 880Z M500.1 304.5A136 136 0 1 0 638.1 490.8A116 116 0 1 1 500.1 304.5Z"/>
+    <circle cx="596" cy="382" r="34" fill="#b23a0c"/>
+  </g>
+  <text x="430" y="330" font-family="'Bricolage Grotesque', sans-serif" font-weight="700" font-size="260" letter-spacing="-6" fill="#15202b">Luma</text>
+</svg>

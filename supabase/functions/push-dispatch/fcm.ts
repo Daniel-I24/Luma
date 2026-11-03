@@ -12,6 +12,10 @@ export interface ServiceAccount {
 
 export type SendResult = 'sent' | 'invalid_token' | 'failed';
 
+/** Monochrome mark in the APK (res/drawable/ic_stat_luma.xml) and the brand blue. */
+const NOTIFICATION_ICON = 'ic_stat_luma';
+const NOTIFICATION_COLOR = '#0D4A6B';
+
 /** What one device receives: visible text, ids for the app, and the Android channel. */
 export interface PushMessage {
   readonly title: string;
@@ -94,7 +98,7 @@ export class FcmClient {
           token,
           notification: { title: message.title, body: message.body },
           data: message.data,
-          android: { priority: 'high', notification: { channel_id: message.channelId } },
+          android: { priority: 'high', notification: { channel_id: message.channelId, icon: NOTIFICATION_ICON, color: NOTIFICATION_COLOR } },
         },
       }),
     });

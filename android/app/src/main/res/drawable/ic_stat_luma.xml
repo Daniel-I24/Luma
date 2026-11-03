@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Notification icon: white on transparent, the system tints it. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="1024" android:viewportHeight="1024">
+    <path android:fillColor="#FFFFFFFF" android:fillType="evenOdd" android:pathData="M512 880C400 760 272 620 272 440A240 240 0 1 1 752 440C752 620 624 760 512 880Z M500.1 304.5A136 136 0 1 0 638.1 490.8A116 116 0 1 1 500.1 304.5Z" />
+</vector>

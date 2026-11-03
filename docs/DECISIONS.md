@@ -373,3 +373,25 @@ alternative that was not taken. The safest, most reversible option wins.
   map search and by the owner's address search.
 - **Why**: features may not import each other (CLAUDE.md).
 - **Alternative**: a second repository in the owner feature (duplicate code).
+
+## 2026-10-26 — Icons as Android vectors instead of @capacitor/assets bitmaps
+
+- **What**: the adaptive launcher icon, the themed (monochrome) icon, the
+  notification icon and the Android 12+ splash icon are vector drawables
+  built from the same path as `assets/logo.svg`; only the legacy launcher
+  PNGs (Android 7) are rendered, with a local Pillow script from the same
+  geometry. The old splash bitmaps and template layers were removed.
+- **Why**: vectors stay sharp at every density and keep one source of truth.
+  Running `npx @capacitor/assets` (an unpinned external package) was refused
+  by the session's permission rules, and it is not needed for vectors.
+- **Alternative**: `npx @capacitor/assets generate --android` once the owner
+  allows it; it would produce PNGs for every density from `assets/`.
+
+## 2026-10-26 — Brand identity changed in the steering files
+
+- **What**: `.kiro/steering/design-tokens.md` and `conventions.md` and
+  `CLAUDE.md` name the new colours, fonts and themes.
+- **Why**: round 2 asked for a new visual identity on the same token
+  architecture; leaving the old names would mislead the next session.
+- **Alternative**: keep the steering text and only document the change in
+  `docs/brand/` (two sources that disagree).

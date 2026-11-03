@@ -21,7 +21,7 @@ const ROLES: readonly ComboRole[] = ['main', 'side', 'drink'];
       aria-labelledby="combo-heading"
     >
       <header class="flex items-center gap-2">
-        <app-luma-icon class="text-fg-accent" name="sparkles" />
+        <app-luma-icon class="text-fg-accent" name="luma-ai" />
         <h2 id="combo-heading" class="m-0 text-title text-fg">
           {{ t('ai.combo.title', { name: combo().business.name }) }}
         </h2>

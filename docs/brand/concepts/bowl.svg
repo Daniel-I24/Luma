@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <title>Luma concept: cuenco (not chosen)</title>
+  <rect width="1024" height="1024" fill="#0d4a6b"/>
+  <!-- A bowl seen from the side; its steam rises as a small map pin. -->
+  <path fill="#f6f3ec" d="M232 520h560c0 170-125 300-280 300S232 690 232 520Z"/>
+  <path fill="#f6f3ec" fill-rule="evenodd" d="M512 470C470 420 430 380 430 330A82 82 0 1 1 594 330C594 380 554 420 512 470Z M512 300a30 30 0 1 0 0.1 0Z"/>
+</svg>

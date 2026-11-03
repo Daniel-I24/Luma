@@ -5,7 +5,7 @@ import { type IconName, LumaIcon } from '@design-system';
 import { ONBOARDING_PATH } from '@shared/account/onboarding';
 
 const LINKS: readonly { path: string; key: string; icon: IconName }[] = [
-  { path: ONBOARDING_PATH, key: 'tutorial', icon: 'sparkles' },
+  { path: ONBOARDING_PATH, key: 'tutorial', icon: 'compass' },
   { path: '/legal/terms', key: 'terms', icon: 'info' },
   { path: '/legal/privacy', key: 'privacy', icon: 'info' },
 ];
