@@ -424,3 +424,24 @@ alternative that was not taken. The safest, most reversible option wins.
   `npm audit --omit=dev` is unchanged (0).
 - **Alternative**: the full `playwright` package (downloads browsers), or a
   manual review on a device only.
+
+## 2026-10-26 — Session storage stays in the WebView (SecureSessionStorage evaluated, not adopted)
+
+- **What**: the Supabase session keeps using the client's default storage
+  (WebView `localStorage`). An encrypted store backed by the Android
+  Keystore (a `storage` adapter for `createClient` over a secure-storage
+  plugin) was evaluated and not added.
+- **Why**: on Android the WebView storage is in the app's private
+  directory; `allowBackup="false"` keeps it out of backups and other apps
+  cannot read it without root, where a Keystore-backed store would not
+  stop an attacker either (the running app decrypts it). The change would
+  add a third-party native plugin, make session reads asynchronous at
+  start, need a migration of existing sessions and bring Keystore failure
+  modes (keys invalidated after a lock-screen change sign everyone out).
+  The access token lives one hour; refresh tokens rotate and are revoked
+  on sign-out.
+- **Alternative**: `SecureSessionStorage` implementing Supabase's
+  `SupportedStorage` over `@aparajita/capacitor-secure-storage` (or the
+  official plugin if Capacitor ships one), plugged in `SupabaseService`
+  only on native platforms; revisit if the app starts storing anything
+  more sensitive than the session, or before an iOS release.
