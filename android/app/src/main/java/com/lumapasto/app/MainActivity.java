@@ -1,4 +1,4 @@
-package com.luma.app;
+package com.lumapasto.app;
 
 import com.getcapacitor.BridgeActivity;
 

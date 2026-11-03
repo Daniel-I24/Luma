@@ -9,10 +9,10 @@ def appVersionCode = versionParts[0] * 10000 + versionParts[1] * 100 + versionPa
 def keystorePath = System.getenv('LUMA_KEYSTORE_PATH')
 
 android {
-    namespace = "com.luma.app"
+    namespace = "com.lumapasto.app"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.luma.app"
+        applicationId "com.lumapasto.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode appVersionCode

@@ -4,6 +4,18 @@ Luma ships to Android with Capacitor 8 (`android/`, `capacitor.config.ts`).
 The APK always loads the bundled web build (no `server.url`, no cleartext:
 the WebView origin is `https://localhost`).
 
+| Setting | Value | Where |
+| --- | --- | --- |
+| Package (applicationId, namespace, appId) | `com.lumapasto.app` | `android/app/build.gradle`, `capacitor.config.ts`, `res/values/strings.xml` |
+| Java package | `com.lumapasto.app` | `android/app/src/main/java/com/lumapasto/app/MainActivity.java` |
+| App name | `Luma` | `strings.xml` (`app_name`) |
+| Deep link | `luma://payments/return` | `AndroidManifest.xml` intent filter (Wompi's return, informative only) |
+
+The package changed from `com.luma.app` in round 2: an APK built before it
+installs as a different app (uninstall the old one), and the Firebase
+Android app must be registered with `com.lumapasto.app` before downloading
+`google-services.json` (docs/push.md).
+
 ## Requirements
 
 - Node 24 and `npm ci`.

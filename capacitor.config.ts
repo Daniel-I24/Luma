@@ -5,7 +5,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
  * the WebView origin is https://localhost and every request uses https.
  */
 const config: CapacitorConfig = {
-  appId: 'com.luma.app',
+  appId: 'com.lumapasto.app',
   appName: 'Luma',
   webDir: 'dist/luma/browser',
   android: {
