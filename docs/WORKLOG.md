@@ -177,6 +177,11 @@ agent's sessions).
   (phone findings 1-5 and every screen), runbook.md (symptoms, checks, fixes,
   rollback), release.md (version bump, apk:release, publish, version.json);
   deploy.md lists the six functions and their fallbacks.
+- FASE 4 bundle: classic zod in two lazy repositories pulled all of zod into
+  the initial bundle through the chunk it shares with zod/mini; both now use
+  zod/mini. Initial 995 kB -> 638 kB (222 -> 161 kB transferred). Budget
+  750 kB warning / 900 kB error; scripts/bundle-rules.test.mjs forbids
+  classic zod and maplibre in the shell and pins the budget.
 
 - Block D done: migration 20261021000000 (discounts, trigger, server prices in
   create_order; 23 SQL checks), customer /promotions (sort, filters, states,

@@ -1,20 +1,21 @@
 import { Injectable, inject } from '@angular/core';
 import { FunctionsFetchError, FunctionsHttpError } from '@supabase/supabase-js';
-import { z } from 'zod';
+// zod/mini like the rest of the app: the classic build would land in the initial bundle.
+import * as z from 'zod/mini';
 import { networkErrorKey } from '@core/auth/auth-error';
 import { ConnectivityService } from '@core/network/connectivity.service';
 import { SupabaseService } from '@core/supabase/supabase.service';
 
 /** A neighbourhood, address or place found by the geocode Edge Function. */
 export const placeSchema = z.object({
-  label: z.string().min(1).max(120),
+  label: z.string().check(z.minLength(1), z.maxLength(120)),
   kind: z.enum(['address', 'street', 'neighbourhood', 'city', 'poi']),
-  lat: z.number().min(-4.3).max(13.6),
-  lng: z.number().min(-81.8).max(-66.8),
+  lat: z.number().check(z.gte(-4.3), z.lte(13.6)),
+  lng: z.number().check(z.gte(-81.8), z.lte(-66.8)),
 });
 export type Place = z.infer<typeof placeSchema>;
 
-const answerSchema = z.object({ places: z.array(placeSchema).max(8) });
+const answerSchema = z.object({ places: z.array(placeSchema).check(z.maxLength(8)) });
 
 export type PlaceSearchResult =
   | { readonly places: readonly Place[]; readonly errorKey: null }

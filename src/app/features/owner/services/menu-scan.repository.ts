@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { FunctionsFetchError, FunctionsHttpError } from '@supabase/supabase-js';
-import { z } from 'zod';
+import * as z from 'zod/mini';
 import { networkErrorKey } from '@core/auth/auth-error';
 import { ConnectivityService } from '@core/network/connectivity.service';
 import { SupabaseService } from '@core/supabase/supabase.service';
@@ -13,12 +13,12 @@ export const MAX_SCAN_PHOTOS = 4;
 const SCAN_SIDE = 1600;
 
 const draftItemSchema = z.object({
-  name: z.string().min(1).max(80),
-  description: z.string().max(300).nullable(),
-  price_cop: z.number().int().min(0).nullable(),
-  section: z.string().max(40).nullable(),
+  name: z.string().check(z.minLength(1), z.maxLength(80)),
+  description: z.nullable(z.string().check(z.maxLength(300))),
+  price_cop: z.nullable(z.int().check(z.minimum(0))),
+  section: z.nullable(z.string().check(z.maxLength(40))),
 });
-const draftSchema = z.object({ items: z.array(draftItemSchema).max(200) });
+const draftSchema = z.object({ items: z.array(draftItemSchema).check(z.maxLength(200)) });
 export type DraftItem = z.infer<typeof draftItemSchema>;
 
 export type ScanResult =
