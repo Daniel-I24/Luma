@@ -725,7 +725,8 @@
       "closedNow": "El negocio está cerrado ahora. Elige una hora de recogida.",
       "outsideHours": "Elige una hora dentro del horario del negocio."
     },
-    "pay": "Pagar"
+    "pay": "Pagar",
+    "otherDepartment": "Este negocio queda en otro departamento distinto al tuyo. Revisa que puedas ir a recoger el pedido."
   },
   "favoritesPage": {
     "title": "Mis favoritos",

@@ -27,6 +27,11 @@ export class GeolocationService {
   /** True only after a successful geolocation response. */
   readonly hasRealLocation = computed(() => this._state() === 'granted');
 
+  /** Centre to use while the real location is unknown (e.g. the municipality of residence). */
+  useFallback(coords: GeoCoords): void {
+    if (this._state() !== 'granted') this._coords.set(coords);
+  }
+
   /**
    * Requests the user's current position.
    * Sets state to 'locating' while waiting; resolves to 'granted' or 'denied'.
@@ -45,7 +50,7 @@ export class GeolocationService {
         this._state.set('granted');
       },
       () => {
-        // Permission denied or any error: keep Pasto centre as fallback.
+        // Permission denied or any error: keep the fallback centre (residence or Pasto).
         this._state.set('denied');
       },
       { timeout: 10_000, maximumAge: 60_000 },

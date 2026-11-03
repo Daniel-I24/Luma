@@ -143,7 +143,9 @@
   </div>
   <p class="m-0 text-caption text-fg-subtle">{{ t('checkout.totalNote') }}</p>
 
-  @if (store.errorKey(); as key) {
+  @if (store.otherDepartment()) {
+  <p class="m-0 rounded-md bg-info-bg p-3 text-body-sm text-info-fg" role="note">{{ t('checkout.otherDepartment') }}</p>
+  } @if (store.errorKey(); as key) {
   <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
     {{ t(key) }}
   </p>

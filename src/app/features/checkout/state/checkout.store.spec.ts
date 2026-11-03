@@ -7,6 +7,8 @@ import { BusinessRepository } from '@shared/business/data/business.repository';
 import type { BusinessHours } from '@shared/business/models/business.model';
 import { CartStore } from '@shared/cart/cart.store';
 import { OrderRepository } from '@shared/orders/order.repository';
+import { SessionProfileStore } from '@shared/account/session-profile.store';
+import { Residence } from '@shared/geo/residence';
 import { PaymentGatewayFactory } from '@shared/payments/payment-gateway';
 import { PaymentRepository } from '@shared/payments/payment.repository';
 import { CheckoutStore } from './checkout.store';
@@ -24,7 +26,8 @@ describe('CheckoutStore', () => {
     closes_at: '22:00:00',
     is_closed: false,
   })) as BusinessHours[];
-  const businesses = { getHours: vi.fn() };
+  const businesses = { getHours: vi.fn(), getById: vi.fn() };
+  const session = { whenLoaded: vi.fn().mockResolvedValue(undefined), profile: vi.fn().mockReturnValue(null) };
   let store: CheckoutStore;
   let schedule: PickupScheduleStore;
   let cart: CartStore;
@@ -41,6 +44,8 @@ describe('CheckoutStore', () => {
     localStorage.clear();
     vi.clearAllMocks();
     businesses.getHours.mockResolvedValue({ data: week, errorKey: null });
+    businesses.getById.mockResolvedValue({ data: { city_dane_code: '52001' }, errorKey: null });
+    session.whenLoaded.mockResolvedValue(undefined);
     TestBed.configureTestingModule({
       providers: [
         CheckoutStore,
@@ -49,6 +54,7 @@ describe('CheckoutStore', () => {
         { provide: BusinessRepository, useValue: businesses },
         { provide: AuthService, useValue: { user: signal({ id: 'u1' }) } },
         { provide: OrderRepository, useValue: orders },
+        { provide: SessionProfileStore, useValue: session },
         { provide: PaymentGatewayFactory, useValue: gateways },
         { provide: PaymentRepository, useValue: config },
       ],
@@ -150,5 +156,15 @@ describe('CheckoutStore', () => {
     expect(orders.create.mock.calls[0][0].paymentMethod).toBe('online');
     expect(online.start).toHaveBeenCalledWith('o4');
     expect(navigate).toHaveBeenCalledWith(['/orders', 'o4']);
+  });
+
+  it('tells the customer when the business is in another department', async () => {
+    session.profile.mockReturnValue({ residence: Residence.of('Valle del Cauca', 'Cali', '76001') });
+    const fresh = TestBed.runInInjectionContext(() => new CheckoutStore());
+    await vi.waitFor(() => expect(fresh.otherDepartment()).toBe(true));
+    session.profile.mockReturnValue({ residence: Residence.of('Nariño', 'Pasto', '52001') });
+    const local = TestBed.runInInjectionContext(() => new CheckoutStore());
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(local.otherDepartment()).toBe(false);
   });
 });

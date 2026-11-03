@@ -1,6 +1,8 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { NativeHaptics } from '@core/native/native-haptics';
+import { SessionProfileStore } from '@shared/account/session-profile.store';
+import { BusinessRepository } from '@shared/business/data/business.repository';
 import { CartStore } from '@shared/cart/cart.store';
 import { OrderRepository } from '@shared/orders/order.repository';
 import { PaymentGatewayFactory, type PaymentMethod } from '@shared/payments/payment-gateway';
@@ -25,6 +27,8 @@ export class CheckoutStore {
   private readonly gateways = inject(PaymentGatewayFactory);
   private readonly payments = inject(PaymentRepository);
   private readonly haptics = inject(NativeHaptics);
+  private readonly businesses = inject(BusinessRepository);
+  private readonly session = inject(SessionProfileStore);
 
   readonly notes = signal('');
   readonly method = signal<PaymentMethod>('pay_at_pickup');
@@ -40,12 +44,25 @@ export class CheckoutStore {
   /** Sandbox: "Modo de pruebas: no se cobra dinero real". */
   readonly sandbox = computed(() => this._config().enabled && this._config().sandbox);
   readonly paymentLabelKey = computed(() => this.gateways.for(this.method()).labelKey);
+  /** The business is in another department than the customer's residence (a heads-up, not a rule). */
+  readonly otherDepartment = signal(false);
 
   constructor() {
     void this.payments.config().then((config) => {
       this._config.set(config);
       if (!config.enabled) this.method.set('pay_at_pickup');
     });
+    void this.checkRegion();
+  }
+
+  private async checkRegion(): Promise<void> {
+    const businessId = this.cart.businessId();
+    if (!businessId) return;
+    await this.session.whenLoaded();
+    const home = this.session.profile()?.residence?.departmentCode;
+    const business = await this.businesses.getById(businessId);
+    const there = business.data?.city_dane_code?.slice(0, 2);
+    this.otherDepartment.set(!!home && !!there && home !== there);
   }
 
   async confirm(): Promise<void> {

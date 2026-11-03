@@ -725,7 +725,8 @@
       "closedNow": "The business is closed right now. Choose a pick-up time.",
       "outsideHours": "Choose a time within the business hours."
     },
-    "pay": "Pay"
+    "pay": "Pay",
+    "otherDepartment": "This business is in a different department from yours. Make sure you can go and pick up the order."
   },
   "favoritesPage": {
     "title": "My favourites",

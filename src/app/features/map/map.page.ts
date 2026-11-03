@@ -27,6 +27,7 @@ import { BusinessSelectionStore } from './state/business-selection.store';
 import { NearbyBusinessesStore, type NearbyBusiness } from './state/nearby-businesses.store';
 import { PlaceSearchStore } from './state/place-search.store';
 import { getZoneLabelKey } from './utils/zone-label.util';
+import { ResidenceMapCentre } from '@shared/geo/residence-map-centre';
 
 /** MapPage — /map: live map, filters, nearby businesses and the business sheet. */
 @Component({
@@ -66,6 +67,8 @@ export class MapPage implements OnInit, OnDestroy {
   protected readonly zoneKey = computed(() => getZoneLabelKey(this.geo.state()));
 
   constructor() {
+    // No device location yet: start at the municipality of residence.
+    void inject(ResidenceMapCentre).apply();
     // Markers follow the filtered list and the active language.
     effect(() => {
       const items = this.store.items();
@@ -84,6 +87,11 @@ export class MapPage implements OnInit, OnDestroy {
       const { lat, lng } = this.geo.coords();
       this.camera.showUser(lat, lng);
       this.camera.flyTo(lat, lng);
+    });
+    // The fallback centre changed (residence read after the map opened).
+    effect(() => {
+      const { lat, lng } = this.geo.coords();
+      if (this.mapReady() && !this.geo.hasRealLocation()) this.camera.flyTo(lat, lng);
     });
   }
 
