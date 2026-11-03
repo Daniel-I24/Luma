@@ -49,7 +49,7 @@ Edge Function that permanently deletes the **caller's own** account
   left on those businesses.
 
 Before that, the function deletes the files of the user's businesses: the
-pictures in `business-images` (`{business_id}/{logo|cover|menu|promotions}/…`)
+pictures in `business-images` (`{business_id}/{logo|cover|menu|promotions|gallery}/…`)
 and the private verification documents in `verification-docs`
 (`{business_id}/{rut|facade|other}/…`), see `storage-cleanup.ts`. If Storage fails, it answers 500
 `delete_failed` and the account is **not** deleted, so the user can retry

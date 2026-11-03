@@ -81,7 +81,9 @@ agent's sessions).
   reports and AI quota; 1.3 hourly order caps, owner cancellation after
   accepting, expire_stale_orders (pg_cron when enabled); 1.2 frozen identity
   while pending, stale_review check, pending->suspended and reactivation.
-  330 SQL checks.
+  1.4 public contact columns, business_photos gallery (8), menu cap 200,
+  80 files per business folder in Storage (definer count helper), gallery
+  in delete-account cleanup. 346 SQL checks.
 
 - Block D done: migration 20261021000000 (discounts, trigger, server prices in
   create_order; 23 SQL checks), customer /promotions (sort, filters, states,

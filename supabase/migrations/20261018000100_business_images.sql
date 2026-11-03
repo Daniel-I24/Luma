@@ -1,10 +1,10 @@
 -- -----------------------------------------------------------------------------
 -- Migration: business_images
--- Public bucket for business pictures (logo, cover, menu, promotions).
+-- Public bucket for business pictures (logo, cover, menu, promotions, gallery).
 -- NOT APPLIED YET: review before running.
 --
 -- Security notes:
---   - Objects live at {business_id}/{kind}/{uuid}.{ext}, kind in logo, cover,
+--   - Objects live at {business_id}/{kind}/{uuid}.{ext}, kind in logo, cover, gallery,
 --     menu, promotions. Only the owner of that business may insert, update
 --     or delete them; the path shape is enforced too.
 --   - 2 MB per file and only JPEG, PNG or WebP (bucket limits, checked by
@@ -33,7 +33,7 @@ stable
 security invoker
 set search_path = ''
 as $$
-  select p_name ~ '^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}/(logo|cover|menu|promotions)/[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}\.(jpg|png|webp)$'
+  select p_name ~ '^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}/(logo|cover|menu|promotions|gallery)/[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}\.(jpg|png|webp)$'
      and exists (
        select 1 from public.businesses b
        where b.id::text = (storage.foldername(p_name))[1]
@@ -43,6 +43,23 @@ $$;
 
 revoke execute on function public.can_write_business_image(text) from public, anon;
 grant execute on function public.can_write_business_image(text) to authenticated;
+
+-- Files already in the business folder of p_name. SECURITY DEFINER: a policy
+-- on storage.objects cannot read storage.objects itself (recursion).
+create or replace function public.business_image_count(p_name text)
+returns integer
+language sql
+stable
+security definer
+set search_path = ''
+as $fn$
+  select count(*)::integer from storage.objects o
+  where o.bucket_id = 'business-images'
+    and (storage.foldername(o.name))[1] = (storage.foldername(p_name))[1]
+$fn$;
+
+revoke execute on function public.business_image_count(text) from public, anon;
+grant execute on function public.business_image_count(text) to authenticated;
 
 drop policy if exists "business-images: public read" on storage.objects;
 create policy "business-images: public read"
@@ -54,7 +71,11 @@ drop policy if exists "business-images: owner insert" on storage.objects;
 create policy "business-images: owner insert"
   on storage.objects for insert
   to authenticated
-  with check (bucket_id = 'business-images' and public.can_write_business_image(name));
+  with check (
+    bucket_id = 'business-images' and public.can_write_business_image(name)
+    -- At most 80 files per business (logo, cover, menu, promotions, gallery).
+    and public.business_image_count(name) < 80
+  );
 
 drop policy if exists "business-images: owner update" on storage.objects;
 create policy "business-images: owner update"

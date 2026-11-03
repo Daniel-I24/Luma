@@ -3,7 +3,7 @@
  * verification_storage migrations): "{business id}/{kind}/{file}".
  */
 export const BUSINESS_FOLDERS = [
-  { bucket: 'business-images', kinds: ['logo', 'cover', 'menu', 'promotions'] },
+  { bucket: 'business-images', kinds: ['logo', 'cover', 'menu', 'promotions', 'gallery'] },
   { bucket: 'verification-docs', kinds: ['rut', 'facade', 'other'] },
 ] as const;
 const PAGE_SIZE = 1000;

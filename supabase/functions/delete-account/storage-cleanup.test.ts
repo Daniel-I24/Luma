@@ -10,15 +10,17 @@ Deno.test('removes every picture of every business the user owns, and nothing el
       'business-images/b1/logo': ['l.webp'],
       'business-images/b1/menu': ['m1.webp', 'm2.jpg'],
       'business-images/b2/promotions': ['p.webp'],
+      'business-images/b2/gallery': ['g.webp'],
       'business-images/b3/logo': ['bob.webp'],
     },
   });
 
-  assertEquals(await removeBusinessFiles(client, 'ana'), 4);
+  assertEquals(await removeBusinessFiles(client, 'ana'), 5);
   assertEquals(removed.sort(), [
     'business-images/b1/logo/l.webp',
     'business-images/b1/menu/m1.webp',
     'business-images/b1/menu/m2.jpg',
+    'business-images/b2/gallery/g.webp',
     'business-images/b2/promotions/p.webp',
   ]);
 });

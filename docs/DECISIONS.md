@@ -135,3 +135,21 @@ alternative that was not taken. The safest, most reversible option wins.
   tile hosts; the APK only loads bundled files over https and blocks
   cleartext.
 - **Alternative**: generate the meta at build time with `generate-env.mjs`.
+
+## 2026-10-19 — Email confirmation checked inside the database
+
+- **What**: `is_email_confirmed()` (account_types) is required by every
+  write RPC; reviews and reports use a trigger so the error is the specific
+  `email_not_confirmed` instead of a generic RLS failure.
+- **Why**: the client can skip the login screen; the database is the
+  authority.
+- **Alternative**: only enforce it in Supabase Auth settings ("confirm
+  email"), which the app cannot verify and the owner may switch off.
+
+## 2026-10-19 — Storage file cap via a definer count
+
+- **What**: `business_image_count(name)` (SECURITY DEFINER) counts files in
+  the business folder; the insert policy requires fewer than 80.
+- **Why**: a policy on `storage.objects` reading `storage.objects` recurses.
+- **Alternative**: a trigger on `storage.objects`, which Supabase manages and
+  may not allow.
