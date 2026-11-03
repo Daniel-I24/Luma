@@ -14,3 +14,7 @@ verify_jwt = true
 
 [functions.geocode]
 verify_jwt = true
+
+# Called by the database with a shared secret (x-push-secret), not by users.
+[functions.push-dispatch]
+verify_jwt = false

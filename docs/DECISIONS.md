@@ -172,3 +172,14 @@ alternative that was not taken. The safest, most reversible option wins.
 - **Why**: cached and rule answers cost nothing; users should not lose quota
   for them.
 - **Alternative**: count every request (simpler, but punishes cache hits).
+
+## 2026-10-19 — Push: at-most-once, secret-poked, Spanish texts
+
+- **What**: push-dispatch is poked by the database (pg_net, pg_cron
+  fallback) with a shared secret, claims each notification once and sends
+  Spanish texts built on the server; promotions are opt-in.
+- **Why**: no service role key stored in the database; no duplicate pushes;
+  the in-app list (translated) stays the source of truth; marketing consent
+  is explicit.
+- **Alternative**: Supabase database webhooks with the service role key, or
+  retries with attempts (in docs/db-followups.md).

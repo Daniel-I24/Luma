@@ -91,6 +91,9 @@ agent's sessions).
   1.6 geocode function (photon, nominatim, locationiq, maptiler by secret;
   Colombia only, Nariño bias, rounded bias point, 7-day cache, quota
   consume_geocode_quota 200/user and 5000/day global).
+  1.7 push: device_tokens + RPCs, notify_orders/notify_promotions (opt-in),
+  notify_promotion, private.push_settings, pg_net poke + pg_cron fallback,
+  claim_push_batch, push-dispatch (FCM v1, RS256), docs/push.md.
 
 - Block D done: migration 20261021000000 (discounts, trigger, server prices in
   create_order; 23 SQL checks), customer /promotions (sort, filters, states,
