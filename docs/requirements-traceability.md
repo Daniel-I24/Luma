@@ -1,0 +1,39 @@
+# Requirements traceability
+
+Each requirement of round 2 with the code that implements it and the tests
+that prove it. App paths are relative to `src/app/`; SQL tests live in
+`supabase/tests/`, Edge Function tests next to each function, script tests
+in `scripts/`. Status as of 2026-10-27; all listed tests are green.
+
+| # | Requirement | Code | Tests |
+| --- | --- | --- | --- |
+| R1 | E-mail confirmation with a 6-digit code | `core/auth/auth-code.service.ts`, `core/auth/auth.schemas.ts` (`AuthCode`), `features/auth/pages/verify-code/`, `core/auth/auth.service.ts` (unconfirmed accounts get no session) | `core/auth/auth-code.service.spec.ts`, `core/auth/auth.service.confirmed.spec.ts`, `features/auth/pages/verify-code/verify-code.page.spec.ts`; SQL `email_and_order_safeguards.sql` |
+| R2 | Renewed sign-up: location, city of residence, optional photo | `features/auth/signup/` (six steps: account type, credentials, personal, residence, photo, consent; `SignupDraftStore`, `SignupValidation`, `SignupCompletion`), `shared/geo/residence*.ts` (DANE catalogue, `public/data/dane-municipalities.json`), `shared/account/avatar.repository.ts`; migrations `20261030000100_customer_profile`, `20261030000110_avatars` | `signup-draft.store.spec.ts`, `signup-validation.spec.ts`, `signup-completion.spec.ts`, `photo-step/photo-step.spec.ts`, `features/auth/pages/register/register.page.spec.ts`, `shared/geo/residence*.spec.ts`, `shared/account/avatar.repository.spec.ts`; SQL `customer_profile.sql`; `scripts/dane-catalog.test.mjs` |
+| R3 | Customer anti-fraud: complete profile, trust tiers, warnings | migrations `..._customer_profile` (`is_profile_complete`, `phone_check_passed`), `..._trust_tiers`, `..._trust_status`, `..._create_order_final`; `features/profile/components/trust-status-card/`, `features/account-details/`, checkout department warning | `trust-status-card.spec.ts`, `account-details.store.spec.ts`, `checkout.store.spec.ts`; SQL `trust_tiers.sql`, `customer_profile.sql`, `create_order_final.sql`, `rate_limits.sql` |
+| R4 | Business anti-fraud: unique NIT and warning signs | migrations `20261030000600_business_signals`, `..._submit_tax_id`; `shared/business/domain/nit.ts`; `features/admin/components/review-flags/` | `shared/business/verification/verification.spec.ts`, `admin-review.store.spec.ts`; SQL `business_signals.sql`, `verification_workflow.sql` |
+| R5 | Customer and business accounts with different interfaces | `shared/account/account-type.ts`, `shared/account/account.guards.ts` (`accountHomeGuard`, `ownerGuard`), `features/owner/owner-shell/`, `shared/layout/tab-layout/` | `shared/account/account.spec.ts`, `features/owner/owner-shell/owner-shell.spec.ts`, `app.routes.spec.ts`; SQL `account_types_security.sql` |
+| R6 | Menu by hand and by photo scan, confirmed by the owner | `features/owner/pages/business-menu/`, `features/owner/state/menu-scan.store.ts`, `features/owner/services/menu-scan.repository.ts`; function `extract-menu` | `business-menu.page.spec.ts`, `menu-scan.store.spec.ts`; `extract-menu/handler.test.ts`, `draft.test.ts`; SQL `menu_scan_quota.sql`, `business_panel_content.sql` |
+| R7 | Dish photos, gallery and contact | `features/owner/components/image-field/`, `features/owner/state/gallery.store.ts`, `shared/media/` (re-encoding without metadata), `shared/business/models/business-contact.ts`, `features/business-profile/components/photo-strip/` | `image-field.spec.ts`, `gallery.store.spec.ts`, `business-contact.spec.ts`, `photo-strip.spec.ts`, `design-system/image/luma-image.spec.ts`; SQL `business_images_security.sql`, `business_showcase.sql` |
+| R8 | Promotions with a real discount and notices with consent | `shared/business/data/promotion-write.repository.ts`, `features/owner/components/promotion-form/`, `discount-fields`, `notify-followers`, `shared/promotions/`; notification preferences (`shared/notifications/`) | `promotion-form.spec.ts`, `notify-followers.spec.ts`, `promotion-deal.spec.ts`, `promotions.page.spec.ts`, `notification-settings.spec.ts`; SQL `promotion_discounts.sql`, `push_notifications.sql` |
+| R9 | Search of neighbourhoods, addresses and places | `shared/geo/place-search.repository.ts`, `features/map/state/place-search.store.ts`, `features/owner/components/address-search/`; function `geocode` (LocationIQ / Nominatim, cache, attribution) | `place-search.store.spec.ts`, `place-results.spec.ts`; `geocode/handler.test.ts`, `providers.test.ts`; SQL `geocode_quota.sql` |
+| R10 | Orders paid at pick-up and online | `features/checkout/`, `shared/payments/payment-gateway.ts` (`PayAtPickupGateway`, `WompiGateway`), `features/orders/`; migrations `..._payments_*`, `..._create_order_final`, `..._order_lifecycle`; functions `create-payment`, `wompi-webhook`, `reconcile-payments`, `void-payment` | `checkout.store.spec.ts`, `pickup-*.spec.ts`, `shared/payments/payments.spec.ts`, `order-payment.store.spec.ts`, `orders-pages.spec.ts`; Deno `payments-core`, `payment-event-verifier`, `reconciler` and handler tests; SQL `payments_flow.sql`, `payments_admin.sql`, `payment_service.sql`, `orders_*.sql` (49 shared transition vectors) |
+| R11 | Notifications to customers and owners | `features/notifications/`, `shared/notifications/`, `core/push/`, `features/owner/state/order-alerts.store.ts`; function `push-dispatch` | `notifications.page.spec.ts`, `notification-view.spec.ts`, `shared/notifications/notifications.spec.ts`, `push-registration.spec.ts`, `push-route.spec.ts`, `order-alerts.store.spec.ts`; `push-dispatch/handler.test.ts`, `fcm.test.ts`; SQL `push_notifications.sql`, `notifications_security.sql` |
+| R12 | Business verification and admin with MFA | `features/owner/pages/business-verification/`, `shared/business/verification/`, `features/admin/` (`adminGuard`, `/admin/mfa`); migrations `20261030000000_admin_mfa_audit`, `..._review_business_audit` | `business-verification.page.spec.ts`, `admin.guard.spec.ts`, `admin-mfa.store.spec.ts`, `admin-operations.store.spec.ts`, `review-decision.spec.ts`; SQL `admin_mfa_audit.sql`, `verification_*.sql` |
+| R13 | Account deletion | `core/auth/auth.service.ts` (`deleteAccount`), `shared/account/account-actions/`; function `delete-account` (Storage cleanup) | `core/auth/auth.service.session-end.spec.ts`; `delete-account/handler.test.ts`, `storage-cleanup.test.ts`; SQL `export_my_data.sql` (data export) |
+| R14 | Animated entry | `index.html` (`#luma-entry`), `styles/entry.css`, `core/startup/` (`AppEntry`, `EntryPolicy`, `AppReadiness`), `android/.../MainActivity.java`, `res/values*/styles.xml` | `core/startup/app-entry.spec.ts`; Android compile (`gradlew :app:compileDebugJavaWithJavac`) |
+| R15 | Visual identity and semantic buttons | `styles/tokens.css`, `styles/themes/*`, `styles/fonts.css`, `design-system/button/`, `design-system/icon-button/`, `design-system/checkmark/`, `docs/brand/` | `luma-button.spec.ts`, `luma-icon-button.spec.ts`, `theme.service.spec.ts`; `scripts/brand-contrast.test.mjs` (AA, 4 themes), `check-destructive-buttons.test.mjs`, `check-design-tokens.test.mjs` |
+| R16 | Installable APK | `scripts/apk.mjs`, `scripts/apk-verify.mjs`, `android/` (package `com.lumapasto.app`, adaptive and themed icons, splash), `docs/android.md` | `scripts/apk.test.mjs`, `apk-verify.test.mjs`, `app-version.test.mjs`; `gradlew :app:processDebugResources` |
+
+## Gaps found and fixed in this pass
+
+- `SignupCompletion` (saving residence, mobile and photo after the code) had
+  no test: `signup-completion.spec.ts`.
+- The sign-up photo step had no test: `photo-step.spec.ts` (valid photo,
+  wrong type, removing drops consent).
+
+## Not verifiable here
+
+- A signed release APK and installation on a phone need the owner's
+  keystore (`LUMA_KEYSTORE_*`) and a device; the debug build compiles.
+- Online payments need the Wompi sandbox keys and deployed functions
+  (docs/payments-checklist.md).
