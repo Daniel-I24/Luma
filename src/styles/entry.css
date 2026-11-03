@@ -21,6 +21,11 @@
   cursor: default;
 }
 
+/* The food doodles follow the system mode, like the rest of the entry. */
+.app-entry.doodles::before {
+  background-color: var(--color-entry-doodle);
+}
+
 .app-entry__mark {
   width: var(--size-splash-icon);
   height: var(--size-splash-icon);

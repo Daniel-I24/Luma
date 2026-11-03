@@ -11,60 +11,65 @@
   --color-*: initial;
 
   /* === Backgrounds and surfaces (paper and corn husk, never pure grey) === */
-  --color-canvas: #f6f3ec;
-  --color-canvas-subtle: #efeae0;
-  --color-canvas-muted: #e6dfd2;
+  --color-canvas: #f7f2e7;
+  --color-canvas-subtle: #f0e9da;
+  --color-canvas-muted: #e7ddc9;
   --color-surface: #ffffff;
   --color-surface-elevated: #ffffff;
-  --color-surface-selected: #e4eef4;
+  --color-surface-selected: #e3eefa;
   --color-overlay: rgb(16 24 32 / 0.45);
 
   /* Theme swatches for the theme picker (same in every theme) */
-  --color-swatch-sky: #0d4a6b;
+  --color-swatch-sky: #0b4f9c;
   --color-swatch-night: #101a22;
   --color-swatch-lacquer: #7a3b16;
   --color-swatch-maize: #8a5a00;
 
-  --color-map-canvas: #ece8dd;
+  /* Food doodles (styles/doodles.css): decoration only, never text. */
+  --color-doodle-line: rgb(11 79 156 / 0.1);
+  --color-doodle-faint: rgb(11 79 156 / 0.05);
+  --color-doodle-on-brand: rgb(255 255 255 / 0.2);
+
+  --color-map-canvas: #eee8da;
 
   /* === Text === */
   --color-fg: #15202b;
   --color-fg-muted: #3e4c59;
   --color-fg-subtle: #586572;
   --color-fg-disabled: #b8bfc6;
-  --color-fg-brand: #0d4a6b;
-  --color-fg-accent: #b23a0c;
+  --color-fg-brand: #0b4f9c;
+  --color-fg-accent: #b8340c;
   --color-fg-inverse: #ffffff;
 
   /* === Borders === */
   --color-border: #ddd6c8;
   --color-border-strong: #857a69;
   --color-border-subtle: #ece6da;
-  --color-border-focus: #0d6e9a;
+  --color-border-focus: #1565c0;
 
   /* === Actions: Andean sky (brand), ají (accent: AI and highlights) === */
-  --color-primary: #0d4a6b;
-  --color-primary-hover: #0b3d59;
-  --color-primary-pressed: #082e43;
+  --color-primary: #0b4f9c;
+  --color-primary-hover: #093f7e;
+  --color-primary-pressed: #072f5e;
   --color-primary-fg: #ffffff;
-  --color-secondary: #e4eef4;
-  --color-secondary-fg: #0d4a6b;
-  --color-accent: #b23a0c;
-  --color-accent-hover: #93300a;
+  --color-secondary: #e3eefa;
+  --color-secondary-fg: #0b4f9c;
+  --color-accent: #c93a0e;
+  --color-accent-hover: #a82f0a;
   --color-accent-fg: #ffffff;
-  --color-rating: #d99a0e;
+  --color-rating: #f5b700;
   /* Confirm (accept, ready) and warning (pause, suspend) buttons. */
   --color-confirm: #2e7d32;
   --color-confirm-hover: #256b29;
   --color-confirm-fg: #ffffff;
-  --color-warning-strong: #f2b33d;
-  --color-warning-strong-hover: #e0a22c;
+  --color-warning-strong: #f5b700;
+  --color-warning-strong-hover: #e0a600;
   --color-warning-fg-on: #2b1d00;
 
   /* === Navigation === */
   --color-nav: #ffffff;
-  --color-nav-active: #0d4a6b;
-  --color-nav-active-bg: #e4eef4;
+  --color-nav-active: #0b4f9c;
+  --color-nav-active-bg: #e3eefa;
   --color-nav-inactive: #586572;
 
   /* === Feedback: cilantro, maize, crimson, Andean teal (never the brand blue) === */
@@ -105,14 +110,16 @@
  * the native splash to the web entry has no jump.
  */
 :root {
-  --color-entry-canvas: #f6f3ec;
-  --color-entry-mark: #0d4a6b;
-  --color-entry-accent: #b23a0c;
+  --color-entry-canvas: #f7f2e7;
+  --color-entry-mark: #0b4f9c;
+  --color-entry-accent: #c93a0e;
+  --color-entry-doodle: rgb(11 79 156 / 0.1);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-entry-canvas: #0e1419;
-    --color-entry-mark: #f6f3ec;
+    --color-entry-canvas: #0b1628;
+    --color-entry-mark: #f7f2e7;
+    --color-entry-doodle: rgb(238 243 250 / 0.1);
   }
 }

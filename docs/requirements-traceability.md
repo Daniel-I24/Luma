@@ -43,3 +43,4 @@ in `scripts/`. Status as of 2026-10-27; all listed tests are green.
 | R34 | Round 8: public legal pages | `scripts/build-legal.mjs`, `public/legal/`, `vercel.json` | `build-legal.test.mjs`, `vercel-config.test.mjs` |
 | R35 | Round 8: any screen and font size | `src/styles/scale.css`, `base.css`, `scripts/check-responsive.mjs` | `check-responsive.test.mjs`; CI `check:responsive` |
 | R36 | Round 8: verification in three steps, Tutoriales, Legal tabs, compact headers | `owner/components/verification-card`, `shared/tutorial/tutorials-panel`, `help-entries`, `legal-document.page` | `owner-summary.page.spec.ts`, `tutorials-panel.spec.ts`, `legal-document.page.spec.ts`, `owner-hero.spec.ts` |
+| R37 | Round 8: palette and food doodles | `src/styles/tokens.css`, `themes/night.css`, `doodles.css`, `public/media/doodles/`, docs/brand/doodles.md | `brand-contrast.test.mjs`; `check:contrast` |

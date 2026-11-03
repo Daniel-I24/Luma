@@ -196,6 +196,13 @@ Phase 2 (cualquier pantalla y claridad):
 - Verification card in three steps; Tutoriales and Legal (tabs) screens;
   compact customer-view banner and hero invitations.
 
+Phase 3 (imagen visual):
+- Saturated palette (deep Andean blue, ají, sun yellow), deep-blue Night;
+  native colours, favicon, theme-color.
+- Food doodles (docs/brand/doodles.md): line and colour tiles, CSS mask by
+  token, drift with reduced motion respected, veils; quiet-doodle check in
+  check:contrast.
+
 ## Round 7 (2026-10-31)
 
 - Migration 54 `20261104000000_round7` (pending review; 52 and 53 applied):

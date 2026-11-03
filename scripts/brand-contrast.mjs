@@ -6,7 +6,8 @@
  *   node scripts/brand-contrast.mjs            report and exit 1 on a failure
  *
  * Text pairs need 4.5:1 (AA, normal text); UI pairs (focus ring, strong
- * borders) need 3:1.
+ * borders) need 3:1. The food doodles (round 8) are the other way round:
+ * decoration that must stay quiet, so they have a maximum.
  */
 import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -31,6 +32,9 @@ export const PAIRS = [
   ['warning-fg-on', 'warning-strong', TEXT], ['warning-fg-on', 'warning-strong-hover', TEXT], ['danger-fg-on', 'danger-hover', TEXT],
   ['border-focus', 'surface', UI], ['border-strong', 'surface', UI],
 ];
+
+/** [doodle token, background token, maximum ratio]: decoration never competes with text. */
+export const QUIET = [['doodle-line', 'canvas', 1.6], ['doodle-faint', 'canvas', 1.3], ['doodle-on-brand', 'primary', 2]];
 
 /** Custom properties of one CSS block: { 'fg': '#123456', ... } (only --color-*). */
 export function colorTokens(css) {
@@ -82,6 +86,10 @@ export function failures(all = themes()) {
       const ratio = contrast(tokens[fg], tokens[bg], tokens.surface);
       if (ratio < min) failed.push([theme, fg, bg, Number(ratio.toFixed(2)), min]);
     }
+    for (const [fg, bg, max] of QUIET) {
+      const ratio = contrast(tokens[fg], tokens[bg], tokens.surface);
+      if (ratio > max) failed.push([theme, fg, bg, Number(ratio.toFixed(2)), `max ${max}`]);
+    }
   }
   return failed;
 }
@@ -90,5 +98,5 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const failed = failures();
   for (const [theme, fg, bg, ratio, min] of failed) process.stderr.write(`${theme}: ${fg} on ${bg} = ${ratio} (< ${min})\n`);
   if (failed.length) process.exit(1);
-  process.stdout.write(`brand-contrast: ok (${Object.keys(themes()).length} themes, ${PAIRS.length} pairs each)\n`);
+  process.stdout.write(`brand-contrast: ok (${Object.keys(themes()).length} themes, ${PAIRS.length} pairs and ${QUIET.length} quiet doodles each)\n`);
 }

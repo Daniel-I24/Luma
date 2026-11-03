@@ -1,6 +1,6 @@
 <section
   *transloco="let t"
-  class="mx-auto flex min-h-dvh max-w-lg flex-col pt-[calc(env(safe-area-inset-top)+var(--spacing-4))] pb-[calc(env(safe-area-inset-bottom)+var(--spacing-6))]"
+  class="doodles doodles--faint doodles--veil mx-auto flex min-h-dvh max-w-lg flex-col pt-[calc(env(safe-area-inset-top)+var(--spacing-4))] pb-[calc(env(safe-area-inset-bottom)+var(--spacing-6))]"
   [attr.aria-label]="t('onboarding.label')"
   aria-roledescription="carousel"
 >
@@ -24,7 +24,7 @@
       [attr.inert]="i !== index() ? '' : null"
     >
       <div
-        class="flex size-40 items-center justify-center rounded-full bg-linear-to-br from-primary to-accent text-primary-fg shadow-lg"
+        class="doodles doodles--on-brand flex size-40 items-center justify-center rounded-full bg-linear-to-br from-primary to-accent text-primary-fg shadow-lg"
         aria-hidden="true"
       >
         <app-luma-icon [name]="slide.icon" size="xl" />

@@ -1,43 +1,45 @@
 /* ─────────────────────────────────────────────
-   THEME: Night (dark): the Andes after sunset.
+   THEME: Night (dark): the Andes after sunset, a deep Andean blue (round 8).
    Applied when <html data-theme="night">
 ───────────────────────────────────────────── */
 [data-theme='night'] {
   /* Native controls (checkboxes, select lists, scrollbars) in dark. */
   color-scheme: dark;
-  --color-canvas: #0e1419;
-  --color-canvas-subtle: #121a20;
-  --color-canvas-muted: #172129;
-  --color-surface: #1a242c;
-  --color-surface-elevated: #202c35;
-  --color-surface-selected: #26343f;
+  --color-canvas: #0b1628;
+  --color-canvas-subtle: #0e1c33;
+  --color-canvas-muted: #12233d;
+  --color-surface: #13233d;
+  --color-surface-elevated: #182b48;
+  --color-surface-selected: #1e3557;
   --color-overlay: rgb(0 0 0 / 0.6);
-  --color-map-canvas: #1a242c;
+  --color-map-canvas: #13233d;
+  --color-doodle-line: rgb(238 243 250 / 0.1);
+  --color-doodle-faint: rgb(238 243 250 / 0.05);
 
-  --color-fg: #eef2f4;
-  --color-fg-muted: #b3bec7;
-  --color-fg-subtle: #94a1ac;
-  --color-fg-disabled: #3a4752;
-  --color-fg-brand: #7cc3e6;
-  --color-fg-accent: #ff8f62;
-  --color-fg-inverse: #0e1419;
+  --color-fg: #eef3fa;
+  --color-fg-muted: #b6c3d6;
+  --color-fg-subtle: #93a3ba;
+  --color-fg-disabled: #33476a;
+  --color-fg-brand: #8ec2ff;
+  --color-fg-accent: #ff8a5c;
+  --color-fg-inverse: #0b1628;
 
-  --color-border: #2a3741;
-  --color-border-strong: #6a7a87;
-  --color-border-subtle: #1e2a33;
-  --color-border-focus: #7cc3e6;
+  --color-border: #253a5a;
+  --color-border-strong: #7d92b3;
+  --color-border-subtle: #172a47;
+  --color-border-focus: #8ec2ff;
 
-  --color-primary: #1a6c99;
-  --color-primary-hover: #165d84;
-  --color-primary-pressed: #124d6e;
+  --color-primary: #2a66c4;
+  --color-primary-hover: #255fb6;
+  --color-primary-pressed: #1f4f98;
   --color-primary-fg: #ffffff;
-  --color-secondary: #26343f;
-  --color-secondary-fg: #7cc3e6;
+  --color-secondary: #1e3557;
+  --color-secondary-fg: #8ec2ff;
 
-  --color-nav: #121a20;
-  --color-nav-active: #7cc3e6;
-  --color-nav-active-bg: #26343f;
-  --color-nav-inactive: #94a1ac;
+  --color-nav: #0e1c33;
+  --color-nav-active: #8ec2ff;
+  --color-nav-active-bg: #1e3557;
+  --color-nav-inactive: #93a3ba;
 
   --color-success-fg: #8fd694;
   --color-warning-fg: #f5c863;

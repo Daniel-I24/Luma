@@ -1,0 +1,74 @@
+/* ─────────────────────────────────────────────
+   FOOD DOODLES (docs/brand/doodles.md): original line drawings of food and
+   drinks of Nariño and Colombia on a repeating 260 px tile
+   (public/media/doodles/). Three looks:
+     .doodles          the line tile as a mask, coloured by
+                       --color-doodle-line (dark low-contrast on cream by
+                       day, light on deep blue at night);
+     .doodles--faint   the same, quieter, for page backgrounds;
+     .doodles--on-brand light lines on the brand gradient (headers);
+     .doodles--color   the multicolour tile (covers).
+   .doodles--veil adds a canvas veil so text over it keeps its contrast.
+   The tile drifts slowly; with reduced motion it stands still.
+───────────────────────────────────────────── */
+
+.doodles {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+}
+
+.doodles::before {
+  content: '';
+  position: absolute;
+  inset: calc(var(--size-doodle-tile) * -1) 0 0 calc(var(--size-doodle-tile) * -1);
+  z-index: -2;
+  pointer-events: none;
+  background-color: var(--color-doodle-line);
+  -webkit-mask-image: url('/media/doodles/line.svg');
+  mask-image: url('/media/doodles/line.svg');
+  -webkit-mask-size: var(--size-doodle-tile);
+  mask-size: var(--size-doodle-tile);
+  animation: doodle-drift var(--duration-doodle) linear infinite;
+}
+
+.doodles--faint::before {
+  background-color: var(--color-doodle-faint);
+}
+
+.doodles--on-brand::before {
+  background-color: var(--color-doodle-on-brand);
+}
+
+.doodles--color::before {
+  -webkit-mask-image: none;
+  mask-image: none;
+  background: url('/media/doodles/color.svg') repeat;
+  background-size: var(--size-doodle-tile);
+  opacity: var(--opacity-doodle-color);
+}
+
+.doodles--veil::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-canvas) 55%, transparent),
+    color-mix(in srgb, var(--color-canvas) 85%, transparent)
+  );
+}
+
+@keyframes doodle-drift {
+  to {
+    transform: translate(var(--size-doodle-tile), var(--size-doodle-tile));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .doodles::before {
+    animation: none;
+  }
+}

@@ -851,3 +851,21 @@ alternative that was not taken. The safest, most reversible option wins.
   welcome, guides with a seen mark, "Repetir", "Reiniciar todas") and
   "Legal" (tabs Términos, Privacidad, Reembolsos; each tab keeps its
   /legal/<doc> address, so deep links work).
+
+## 2026-11-02 — Round 8, phase 3: a livelier palette and food doodles
+
+- **What**: the chosen direction ("Cielo andino y ají") gets saturated:
+  primary `#0b4f9c`, ají `#c93a0e`, sun yellow `#f5b700`, cream `#f7f2e7`;
+  Night becomes a deep Andean blue. Every text and UI pair passes AA in the
+  four themes (`npm run check:contrast`), which now also checks that the
+  doodles stay quiet (a maximum contrast). Native splash, launcher
+  background, favicon and theme-color follow.
+- **Doodles**: original line drawings (empanada, arepa, pan de yuca, café,
+  helado de paila, jugo, bandeja paisa, tamal, papas) on one 260 px tile,
+  used as a CSS mask so tokens colour it (dark low-contrast on cream, light
+  on deep blue), plus a multicolour tile for covers. Entry, welcome,
+  sign-in and sign-up, owner portada, feed posts without photo, empty
+  states, and very faintly behind every screen, always with a veil where
+  text sits on top. They drift one tile in 120 s; still with reduced motion.
+- **Why**: more life without images to license; masks keep one file for
+  every theme. Buttons carry the saturated blue, ají and sun.

@@ -23,8 +23,11 @@ Three concepts, all hand-built SVG on a 1024 grid (`docs/brand/concepts/`).
 - Crescent (a hole, `fill-rule="evenodd"`): circle (512, 440, r 136) minus
   circle (566, 400, r 116); SVG arcs `A136 136 0 1 0` then `A116 116 0 1 1`
   between (500.1, 304.5) and (638.1, 490.8), flags checked numerically.
-- Ají dot: circle (596, 382, r 34), `#b23a0c`.
-- Colours: paper `#f6f3ec` on Andean sky `#0d4a6b` (9.5:1).
+- Ají dot: circle (596, 382, r 34), `#c93a0e` (round 8; was `#b23a0c`).
+- Colours: paper `#f7f2e7` on deep Andean blue `#0b4f9c` (7.2:1; round 8).
+- Store and Meta icon: `store/app-icon-1024.png` (the mark on the deep blue,
+  sun crescent, ring of food doodles; original, generated with Pillow by
+  `store/app-icon-generator.py` from the geometry above).
 
 ## Files
 

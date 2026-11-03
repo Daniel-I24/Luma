@@ -72,12 +72,39 @@ Fresh and appetising, but the brand green collides with "success" and the
   teal `#0e7c86` (never the brand blue).
 - The best margins: 9.51:1 for white on the primary colour.
 
+## Round 8: more life, same direction
+
+The chosen direction keeps its three colours, now more saturated:
+
+| Colour | Before | Round 8 | Use |
+| --- | --- | --- | --- |
+| Azul andino profundo | `#0d4a6b` | `#0b4f9c` | primary, brand text, buttons |
+| Ají | `#b23a0c` | `#c93a0e` (text `#b8340c`) | accent, highlights, Luma IA |
+| Amarillo sol | `#d99a0e` | `#f5b700` | ratings, the strong warning button (dark text), doodles — never text on white |
+| Papel crema | `#f6f3ec` | `#f7f2e7` | canvas |
+
+| Pair (WCAG 2.1, `scripts/brand-contrast.mjs`) | Ratio |
+| --- | --- |
+| White on primary | 8.04 |
+| Primary on canvas | 7.20 |
+| White on ají | 5.13 |
+| Ají text on white | 5.94 |
+| Text `#15202b` on canvas | 14.77 |
+| Sun yellow on white | 1.80 (decoration only) |
+| Night: text `#eef3fa` on canvas `#0b1628` | 16.24 |
+| Night: white on primary `#2a66c4` | 5.53 |
+
+Night is now a deep Andean blue (canvas `#0b1628`, surface `#13233d`)
+instead of a grey blue. Buttons carry the saturated colours: the primary
+blue, ají for accent actions, sun yellow (dark text) for the strong warning.
+The food doodles (docs/brand/doodles.md) bring the rest of the life.
+
 ## Themes (same token structure, `src/styles/`)
 
 | Theme | Id | Kind | Primary | Accent |
 | --- | --- | --- | --- | --- |
-| Cielo andino | `sky` (default, `tokens.css`) | light | `#0d4a6b` | ají `#b23a0c` |
-| Noche | `night` | dark | `#1a6c99` (text `#7cc3e6`) | ají |
+| Cielo andino | `sky` (default, `tokens.css`) | light | `#0b4f9c` | ají `#c93a0e` |
+| Noche | `night` | dark | `#2a66c4` (text `#8ec2ff`) on deep blue | ají `#ff8a5c` |
 | Barniz | `lacquer` | light accent | cinnamon wood `#7a3b16` | lacquer green `#17665a` |
 | Maíz | `maize` | light accent | maize brown `#7a5000` | Andean blue `#0d5f86` |
 
@@ -86,5 +113,6 @@ muted and subtle text on canvas and surface, brand and accent text, every
 filled button, every feedback and status badge, navigation, focus ring and
 strong borders) and fails under AA. All four themes pass.
 
-No gradients, glass cards or diffuse coloured glows: surfaces are flat
-paper and white, and shadows are short and neutral.
+No glass cards or diffuse coloured glows: surfaces are flat paper and
+white, and shadows are short and neutral. The brand gradient (primary to
+ají) is kept for covers and the Luma IA entry, with light doodles over it.

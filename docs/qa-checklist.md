@@ -185,3 +185,13 @@ and `npm run check:interactive`.
   "Reiniciar todas". Legal: three tabs; /legal/privacy opens its tab.
 - "Ver como cliente": one line "Estás viendo Luma como cliente" + "Volver".
   Portada without logo or cover invites to add them.
+
+## Round 8 — phase 3 (2026-11-02)
+
+- The four themes: buttons in the saturated blue (and ají / sun where they
+  apply); Night is deep blue, not grey. `npm run check:contrast` ok.
+- Food doodles on the app entry, welcome, sign-in, sign-up, owner portada,
+  feed posts without a photo and empty states; very faint behind screens;
+  text over them is always readable (veil). They move slowly; with "Reducir
+  movimiento" they stand still.
+- Native splash and launcher show the new blue; the favicon too.
