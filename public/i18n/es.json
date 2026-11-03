@@ -1589,5 +1589,12 @@
         "a": "En Perfil > Cuenta, «Eliminar cuenta». Por seguridad debes haber iniciado sesión hace poco. Se borran tus datos y los de tus negocios."
       }
     }
+  },
+  "update": {
+    "available": "Hay una versión nueva de Luma ({{version}}).",
+    "required": "Esta versión de Luma ya no es compatible. Actualiza a la {{version}} para seguir.",
+    "reload": "Actualizar",
+    "download": "Descargar",
+    "later": "Más tarde"
   }
 }

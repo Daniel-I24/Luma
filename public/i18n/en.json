@@ -1589,5 +1589,12 @@
         "a": "In Profile > Account, “Delete account”. For security you must have signed in recently. Your data and your businesses' data are deleted."
       }
     }
+  },
+  "update": {
+    "available": "A new version of Luma is available ({{version}}).",
+    "required": "This version of Luma is no longer supported. Update to {{version}} to continue.",
+    "reload": "Update",
+    "download": "Download",
+    "later": "Later"
   }
 }

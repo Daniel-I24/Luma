@@ -13,6 +13,7 @@ import { LanguageService } from '@core/i18n/language.service';
 import { ConnectivityService } from '@core/network/connectivity.service';
 import { NativeShell } from '@core/native/native-shell';
 import { PushRegistration } from '@core/push/push-registration.service';
+import { UpdateCheck } from '@core/update/update-check.service';
 import { AppErrorHandler } from '@shared/errors/app-error-handler';
 import { onRouteTransitionCreated } from '@core/navigation/route-transition';
 import { routes } from './app.routes';
@@ -56,6 +57,8 @@ export const appConfig: ApplicationConfig = {
       inject(PushRegistration)
         .init()
         .catch(() => undefined);
+      // Newer version on the site? Never delays or blocks the start.
+      void inject(UpdateCheck).check();
     }),
   ],
 };

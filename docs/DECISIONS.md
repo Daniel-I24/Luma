@@ -194,3 +194,12 @@ alternative that was not taken. The safest, most reversible option wins.
   gets denied; shared phones must not receive the previous user's notices.
 - **Alternative**: web push with the Firebase SDK and a service worker
   (bigger bundle, VAPID keys); left for later.
+
+## 2026-10-19 — Version check without touching the environment files
+
+- **What**: `public/version.json` ({latest, minimum}) checked at start-up;
+  the web reads its own origin, the APK reads `UPDATE_SITE_URL` (null by
+  default, so the APK skips the check until it is set).
+- **Why**: the APK serves its own copy of version.json from https://localhost;
+  environment.ts may not be edited, and a wrong URL must never block the app.
+- **Alternative**: an `apiUrl`/`siteUrl` field generated in environment.deploy.ts.

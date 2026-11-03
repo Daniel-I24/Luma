@@ -6,6 +6,7 @@ import { ThemeService } from '@core/theme/theme.service';
 // component into the initial bundle.
 import { LumaToastHost } from '@design-system/toast/luma-toast-host';
 import { ConnectionNotice } from '@shared/layout/connection-notice/connection-notice';
+import { UpdateBanner } from '@shared/layout/update-banner/update-banner';
 
 /**
  * App root component.
@@ -13,10 +14,10 @@ import { ConnectionNotice } from '@shared/layout/connection-notice/connection-no
  * so its effect applies data-theme on <html> before the first render (no FOUC).
  */
 @Component({
-  imports: [RouterOutlet, LumaToastHost, ConnectionNotice],
+  imports: [RouterOutlet, LumaToastHost, ConnectionNotice, UpdateBanner],
   selector: 'app-root',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<app-connection-notice /><router-outlet /><app-luma-toast-host />`,
+  template: `<app-update-banner /><app-connection-notice /><router-outlet /><app-luma-toast-host />`,
 })
 export class App {
   // Eager injection — constructor + effect run at app startup.

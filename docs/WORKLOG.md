@@ -149,6 +149,11 @@ agent's sessions).
   in again, then updateUser), public /help (FAQ, legal links, version), links
   and APP_VERSION in AccountActions (Profile and Mi negocio); APP_VERSION kept
   equal to package.json by scripts/app-version.test.mjs.
+- FASE 2.8 version check: public/version.json (latest/minimum, drift test),
+  UpdateCheck at start-up (web: own origin; APK: UPDATE_SITE_URL, null by
+  default), UpdateBanner (Actualizar / Descargar / Mas tarde; required cannot
+  be dismissed). FASE 2 closed: build ok (initial 994.73 kB), lint ok, 666
+  app tests, 40 script tests, npm audit --omit=dev 0. No supabase/ changes.
 
 - Block D done: migration 20261021000000 (discounts, trigger, server prices in
   create_order; 23 SQL checks), customer /promotions (sort, filters, states,
