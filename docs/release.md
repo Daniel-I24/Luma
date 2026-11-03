@@ -52,7 +52,7 @@ $env:SUPABASE_URL = "https://<ref>.supabase.co"
 $env:SUPABASE_ANON_KEY = "<anon key>"            # the public anon key, never service_role
 npm ci
 npm run apk:debug
-adb install -r androidppuild\outputspk\debugpp-debug.apk   # phone with USB debugging
+adb install -r android\app\build\outputs\apk\debug\app-debug.apk   # phone with USB debugging
 ```
 
 `apk:debug` writes `src/environments/environment.deploy.ts` from the two
