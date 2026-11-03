@@ -308,8 +308,8 @@
     "mapUnavailable": "The map could not be loaded. Check your connection and try again.",
     "mapUnavailableTitle": "Map unavailable",
     "search": {
-      "label": "Search places",
-      "placeholder": "Restaurants, dishes, cuisines…",
+      "label": "Search businesses, neighbourhoods, addresses or places",
+      "placeholder": "Businesses, neighbourhoods, addresses…",
       "clear": "Clear search"
     },
     "zone": {
@@ -352,6 +352,21 @@
       "categories": "Categories",
       "clear": "Clear",
       "show": "Show {{count}} results"
+    },
+    "places": {
+      "title": "Places",
+      "search": "Search places: “{{query}}”",
+      "close": "Close",
+      "none": "We couldn't find that place in Colombia. Try the neighbourhood or the address (Calle 18 # 25-30).",
+      "unavailable": "Place search isn't available right now. Businesses are still filtered.",
+      "quota": "You've reached today's place search limit. Businesses are still filtered.",
+      "kind": {
+        "address": "Address",
+        "street": "Street",
+        "neighbourhood": "Neighbourhood",
+        "city": "City or town",
+        "poi": "Place"
+      }
     }
   },
   "status": {

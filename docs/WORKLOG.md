@@ -111,6 +111,10 @@ agent's sessions).
   sesion) via accountReadyGuard on the tab layout and welcome, ownerGuard and
   homePath; never a customer guess. The localhost link in the signup email is
   Supabase config (template with {{ .Token }}, Site URL): launch checklist.
+- FASE 2.2 unified map search: businesses filter while typing; Enter or
+  "Buscar lugares" asks geocode (neighbourhoods, addresses, places) with the
+  map centre as bias; results list (skeletons, empty, quota, unavailable),
+  place pin + fly-to. PlaceSearchRepository (Zod, Colombia bounds) and store.
 
 - Block D done: migration 20261021000000 (discounts, trigger, server prices in
   create_order; 23 SQL checks), customer /promotions (sort, filters, states,

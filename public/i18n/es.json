@@ -308,8 +308,8 @@
     "mapUnavailable": "No se pudo cargar el mapa. Revisa tu conexión e intenta de nuevo.",
     "mapUnavailableTitle": "Mapa no disponible",
     "search": {
-      "label": "Buscar negocios",
-      "placeholder": "Restaurantes, platos, cocinas…",
+      "label": "Buscar negocios, barrios, direcciones o lugares",
+      "placeholder": "Negocios, barrios, direcciones…",
       "clear": "Borrar búsqueda"
     },
     "zone": {
@@ -352,6 +352,21 @@
       "categories": "Categorías",
       "clear": "Limpiar",
       "show": "Ver {{count}} resultados"
+    },
+    "places": {
+      "title": "Lugares",
+      "search": "Buscar lugares: «{{query}}»",
+      "close": "Cerrar",
+      "none": "No encontramos ese lugar en Colombia. Prueba con el barrio o la dirección (Calle 18 # 25-30).",
+      "unavailable": "La búsqueda de lugares no está disponible ahora. Los negocios sí se filtran.",
+      "quota": "Llegaste al límite de búsquedas de lugares por hoy. Los negocios sí se filtran.",
+      "kind": {
+        "address": "Dirección",
+        "street": "Calle",
+        "neighbourhood": "Barrio",
+        "city": "Ciudad o pueblo",
+        "poi": "Lugar"
+      }
     }
   },
   "status": {

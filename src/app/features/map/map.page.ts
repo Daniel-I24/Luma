@@ -25,6 +25,7 @@ import { MapMarkerSyncService } from './services/map-marker-sync.service';
 import { MapStylesLoader } from '@shared/map/map-styles.loader';
 import { BusinessSelectionStore } from './state/business-selection.store';
 import { NearbyBusinessesStore, type NearbyBusiness } from './state/nearby-businesses.store';
+import { PlaceSearchStore } from './state/place-search.store';
 import { getZoneLabelKey } from './utils/zone-label.util';
 
 /** MapPage — /map: live map, filters, nearby businesses and the business sheet. */
@@ -42,7 +43,7 @@ import { getZoneLabelKey } from './utils/zone-label.util';
     MapTopBar,
     NearbyPanel,
   ],
-  providers: [NearbyBusinessesStore, BusinessSelectionStore],
+  providers: [NearbyBusinessesStore, BusinessSelectionStore, PlaceSearchStore],
   templateUrl: './map.page.html',
   host: { class: 'block h-full' },
 })
