@@ -1,6 +1,7 @@
 import { anthropicContent, geminiParts, openAiContent } from './content.ts';
 import { at, guard, parseAnswer, fail, postJson } from './http.ts';
 import type { FetchLike, LlmProvider, LlmRequest, LlmValidator, ProviderOptions } from './types.ts';
+import { ANTHROPIC_BASE_URL, GEMINI_BASE_URL, OPENAI_COMPATIBLE_DEFAULT_BASE_URL } from '../config/provider-urls.ts';
 
 const DEFAULT_MAX_TOKENS = 1024;
 const JSON_ONLY = 'Answer with a single JSON object that follows the schema. No other text.';
@@ -17,7 +18,7 @@ const fetchOf = (options: ProviderOptions): FetchLike => options.fetch ?? ((url,
  * is validated by the caller.
  */
 export function createGeminiProvider(options: ProviderOptions): LlmProvider {
-  const base = options.baseUrl ?? 'https://generativelanguage.googleapis.com/v1beta';
+  const base = options.baseUrl ?? GEMINI_BASE_URL;
   return {
     name: 'gemini',
     generateJson: <T>(request: LlmRequest, validate: LlmValidator<T>) =>
@@ -47,7 +48,7 @@ export function createGeminiProvider(options: ProviderOptions): LlmProvider {
  * by base URL). json_object mode, which needs the word JSON in the prompt.
  */
 export function createOpenAiCompatibleProvider(options: ProviderOptions): LlmProvider {
-  const base = (options.baseUrl ?? 'https://api.groq.com/openai/v1').replace(/\/$/, '');
+  const base = (options.baseUrl ?? OPENAI_COMPATIBLE_DEFAULT_BASE_URL).replace(/\/$/, '');
   return {
     name: 'openai-compatible',
     generateJson: <T>(request: LlmRequest, validate: LlmValidator<T>) =>
@@ -75,7 +76,7 @@ export function createOpenAiCompatibleProvider(options: ProviderOptions): LlmPro
 
 /** Anthropic Messages API, with structured outputs (output_config.format). */
 export function createAnthropicProvider(options: ProviderOptions): LlmProvider {
-  const base = (options.baseUrl ?? 'https://api.anthropic.com').replace(/\/$/, '');
+  const base = (options.baseUrl ?? ANTHROPIC_BASE_URL).replace(/\/$/, '');
   return {
     name: 'anthropic',
     generateJson: <T>(request: LlmRequest, validate: LlmValidator<T>) =>

@@ -1,5 +1,6 @@
 import { at, type FetchLike, getJson, num } from './http.ts';
 import { cleanLabel, COLOMBIA_BBOX, type GeocodeInput, MAX_PLACES, NARINO_BBOX, type Place, type PlaceKind } from './model.ts';
+import { LOCATIONIQ_BASE_URL, MAPTILER_BASE_URL, NOMINATIM_BASE_URL, PHOTON_BASE_URL } from '../_shared/config/provider-urls.ts';
 
 export interface GeocodeProvider {
   readonly name: string;
@@ -31,7 +32,7 @@ const place = (label: string | null, kind: PlaceKind, lat: number, lng: number):
  * Photon (photon.komoot.io, OpenStreetMap, no key; fair use only). Bias by
  * lat/lon, restricted to Colombia by bbox and by countrycode.
  */
-export function createPhoton(fetchFn?: FetchLike, baseUrl = 'https://photon.komoot.io'): GeocodeProvider {
+export function createPhoton(fetchFn?: FetchLike, baseUrl = PHOTON_BASE_URL): GeocodeProvider {
   return {
     name: 'photon',
     search: async ({ q, near }) => {
@@ -83,7 +84,7 @@ export function createNominatimLike(options: {
 }
 
 /** MapTiler Geocoding (key). Colombia only, Spanish, proximity to the bias point. */
-export function createMapTiler(key: string, fetchFn?: FetchLike, baseUrl = 'https://api.maptiler.com'): GeocodeProvider {
+export function createMapTiler(key: string, fetchFn?: FetchLike, baseUrl = MAPTILER_BASE_URL): GeocodeProvider {
   return {
     name: 'maptiler',
     search: async ({ q, near }) => {
@@ -119,10 +120,10 @@ export function geocoderFromEnv(get: (name: string) => string | undefined, fetch
       return createPhoton(fetchFn);
     case 'nominatim':
       return contact
-        ? createNominatimLike({ name, baseUrl: 'https://nominatim.openstreetmap.org', userAgent: `Luma/1.0 (${contact})`, fetchFn })
+        ? createNominatimLike({ name, baseUrl: NOMINATIM_BASE_URL, userAgent: `Luma/1.0 (${contact})`, fetchFn })
         : null;
     case 'locationiq':
-      return key ? createNominatimLike({ name, baseUrl: 'https://us1.locationiq.com/v1', key, fetchFn }) : null;
+      return key ? createNominatimLike({ name, baseUrl: LOCATIONIQ_BASE_URL, key, fetchFn }) : null;
     case 'maptiler':
       return key ? createMapTiler(key, fetchFn) : null;
     default:

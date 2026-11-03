@@ -1,5 +1,7 @@
 /** Firebase Cloud Messaging HTTP v1 with a service account (RS256 JWT, OAuth2). */
 
+import { FCM_SCOPE, FCM_SEND_URL, GOOGLE_OAUTH_TOKEN_URL } from '../_shared/config/provider-urls.ts';
+
 export type FetchLike = (input: string, init: RequestInit) => Promise<Response>;
 
 export interface ServiceAccount {
@@ -18,8 +20,6 @@ export interface PushMessage {
   readonly channelId: string;
 }
 
-const SCOPE = 'https://www.googleapis.com/auth/firebase.messaging';
-const TOKEN_URL = 'https://oauth2.googleapis.com/token';
 
 /** FCM_SERVICE_ACCOUNT (the JSON key file as one secret); null when missing or malformed. */
 export function serviceAccountFrom(raw: string | undefined): ServiceAccount | null {
@@ -51,7 +51,7 @@ function pemToDer(pem: string): Uint8Array<ArrayBuffer> {
 export async function signedAssertion(account: ServiceAccount, nowSeconds: number): Promise<string> {
   const header = b64url(JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
   const claims = b64url(JSON.stringify({
-    iss: account.clientEmail, scope: SCOPE, aud: TOKEN_URL, iat: nowSeconds, exp: nowSeconds + 3600,
+    iss: account.clientEmail, scope: FCM_SCOPE, aud: GOOGLE_OAUTH_TOKEN_URL, iat: nowSeconds, exp: nowSeconds + 3600,
   }));
   const key = await crypto.subtle.importKey(
     'pkcs8', pemToDer(account.privateKey), { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['sign'],
@@ -73,7 +73,7 @@ export class FcmClient {
   async accessToken(): Promise<string> {
     if (this.cached && this.cached.expiresAt - 60_000 > this.now()) return this.cached.token;
     const assertion = await signedAssertion(this.account, Math.floor(this.now() / 1000));
-    const res = await this.fetchFn(TOKEN_URL, {
+    const res = await this.fetchFn(GOOGLE_OAUTH_TOKEN_URL, {
       method: 'POST',
       headers: { 'content-type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({ grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer', assertion }).toString(),
@@ -86,7 +86,7 @@ export class FcmClient {
   }
 
   async send(token: string, message: PushMessage): Promise<SendResult> {
-    const res = await this.fetchFn(`https://fcm.googleapis.com/v1/projects/${this.account.projectId}/messages:send`, {
+    const res = await this.fetchFn(FCM_SEND_URL(this.account.projectId), {
       method: 'POST',
       headers: { authorization: `Bearer ${await this.accessToken()}`, 'content-type': 'application/json' },
       body: JSON.stringify({
