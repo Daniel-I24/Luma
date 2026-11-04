@@ -34,7 +34,10 @@ export class AppVersion {
   /** -1, 0 or 1 comparing two "major.minor.patch" versions. */
   public static compareVersions(a: string, b: string): number {
     const [x, y] = [a.split('.').map(Number), b.split('.').map(Number)];
-    for (let i = 0; i < VERSION_PARTS; i++) if (x[i] !== y[i]) return x[i] < y[i] ? -1 : 1;
+    for (let i = 0; i < VERSION_PARTS; i++) {
+      const [p, q] = [x[i] ?? 0, y[i] ?? 0];
+      if (p !== q) return p < q ? -1 : 1;
+    }
     return 0;
   }
 }

@@ -30,7 +30,7 @@ export class AccountReauthService {
   /** Checks the code; on success the session is new (last_sign_in_at is now). */
   public async verifyCode(email: string, code: string): Promise<AuthResult> {
     const parsed = verifyCodeSchema.safeParse({ email, code });
-    if (!parsed.success) return AuthResults.fail(parsed.error.issues[0].message);
+    if (!parsed.success) return AuthResults.invalid(parsed.error);
     try {
       const { error } = await this.auth.verifyOtp({ email: parsed.data.email, token: parsed.data.code, type: 'email' });
       return error ? AuthResults.fail(AuthErrors.mapAuthError(error, this.online())) : OK;

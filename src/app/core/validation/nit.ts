@@ -10,7 +10,7 @@ export class NitDigits {
   /** DIAN check digit of a NIT body (digits only): sum mod 11, 0/1 or 11 - rest. */
   public static nitCheckDigit(body: string): number {
     const digits = [...body].reverse();
-    const sum = digits.reduce((total, digit, i) => total + Number(digit) * WEIGHTS[i], 0);
+    const sum = digits.reduce((total, digit, i) => total + Number(digit) * (WEIGHTS[i] ?? 0), 0);
     const rest = sum % MODULUS;
     return rest < DIRECT_REST_LIMIT ? rest : MODULUS - rest;
   }
@@ -32,7 +32,7 @@ export class Nit {
     const cleaned = (input ?? '').replace(/[.\s]/g, '');
     const match = /^(\d{6,15})-?(\d)$/.exec(cleaned);
     if (!match) return null;
-    const [, body, digit] = match;
+    const [, body = '', digit = ''] = match;
     return NitDigits.nitCheckDigit(body) === Number(digit) ? new Nit(body, Number(digit)) : null;
   }
 

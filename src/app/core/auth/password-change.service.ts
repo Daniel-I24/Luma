@@ -33,7 +33,7 @@ export class PasswordChangeService {
   /** Step 1: checks both passwords and the current one, then e-mails the code. */
   public requestCode(current: string, next: string): Promise<AuthResult> {
     const parsed = changeSchema.safeParse({ current, next });
-    if (!parsed.success) return Promise.resolve(AuthResults.fail(parsed.error.issues[0].message));
+    if (!parsed.success) return Promise.resolve(AuthResults.invalid(parsed.error));
     return this.busyWhile(async () => {
       const { data } = await this.auth.getUser();
       const email = data.user?.email;
@@ -51,7 +51,7 @@ export class PasswordChangeService {
   /** Step 2: saves the new password with the e-mailed code. */
   public confirm(next: string, code: string): Promise<AuthResult> {
     const parsed = codeSchema.safeParse(code.trim());
-    if (!parsed.success) return Promise.resolve(AuthResults.fail(parsed.error.issues[0].message));
+    if (!parsed.success) return Promise.resolve(AuthResults.invalid(parsed.error));
     return this.busyWhile(async () => {
       const { error } = await this.auth.updateUser({ password: next, nonce: parsed.data });
       return error ? AuthResults.fail(AuthErrors.mapAuthError(error.message, this.online())) : OK;

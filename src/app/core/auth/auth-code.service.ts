@@ -28,7 +28,7 @@ export class AuthCodeService {
   /** Confirms a new account; on success the user is signed in. */
   public confirmSignup(email: string, code: string): Promise<AuthResult> {
     const parsed = verifyCodeSchema.safeParse({ email, code });
-    if (!parsed.success) return Promise.resolve(AuthResults.fail(parsed.error.issues[0].message));
+    if (!parsed.success) return Promise.resolve(AuthResults.invalid(parsed.error));
     return this.run(async () => {
       const { error } = await this.auth.verifyOtp({
         email: parsed.data.email,
@@ -52,7 +52,7 @@ export class AuthCodeService {
   /** Checks the recovery code (which signs the user in) and sets the new password. */
   public recoverPassword(email: string, code: string, password: string): Promise<AuthResult> {
     const parsed = recoverPasswordSchema.safeParse({ email, code, password });
-    if (!parsed.success) return Promise.resolve(AuthResults.fail(parsed.error.issues[0].message));
+    if (!parsed.success) return Promise.resolve(AuthResults.invalid(parsed.error));
     return this.run(async () => {
       const verified = await this.auth.verifyOtp({
         email: parsed.data.email,
@@ -70,7 +70,7 @@ export class AuthCodeService {
     send: (email: string) => Promise<{ error: { message: string } | null }>,
   ): Promise<AuthResult> {
     const parsed = resetPasswordSchema.safeParse({ email });
-    if (!parsed.success) return Promise.resolve(AuthResults.fail(parsed.error.issues[0].message));
+    if (!parsed.success) return Promise.resolve(AuthResults.invalid(parsed.error));
     return this.run(async () => {
       const { error } = await send(parsed.data.email);
       const key = error ? AuthErrors.mapAuthError(error, this.online()) : null;

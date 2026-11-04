@@ -50,7 +50,7 @@ describe('PushRegistration', () => {
     TestBed.tick();
     await vi.waitFor(() => expect(tokens.register).toHaveBeenCalledWith('tok-1'));
     expect(platform.requestPermission).not.toHaveBeenCalled();
-    expect(platform.createChannels.mock.calls[0][0].map((c: { id: string }) => c.id)).toEqual(['orders', 'promotions']);
+    expect(platform.createChannels.mock.calls[0]?.[0].map((c: { id: string }) => c.id)).toEqual(['orders', 'promotions']);
   });
 
   it('enable() asks once from a user action and registers when granted', async () => {

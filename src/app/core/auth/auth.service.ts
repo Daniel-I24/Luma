@@ -24,6 +24,9 @@ const isConfirmed = (session: Session | null): session is Session =>
 /** AuthResults — the failed result of an auth operation, with its translation key. */
 export class AuthResults {
   public static readonly fail = (errorKey: string): AuthResult => ({ success: false, errorKey });
+  /** The first validation message (a translation key), or the generic one. */
+  public static readonly invalid = (error: { readonly issues: readonly { readonly message: string }[] }): AuthResult =>
+    AuthResults.fail(error.issues[0]?.message ?? 'auth.errors.unknown');
 }
 
 /**
@@ -63,7 +66,7 @@ export class AuthService {
   /** Signs in with e-mail and password; unconfirmed accounts never get a session. */
   public signIn(email: string, password: string): Promise<AuthResult> {
     const parsed = signInSchema.safeParse({ email, password });
-    if (!parsed.success) return Promise.resolve(AuthResults.fail(parsed.error.issues[0].message));
+    if (!parsed.success) return Promise.resolve(AuthResults.invalid(parsed.error));
     return this.withLoading(async () => {
       const { data, error } = await this.supabase.auth.signInWithPassword(parsed.data);
       if (error) return AuthResults.fail(AuthErrors.mapAuthError(error, this.online()));
@@ -80,7 +83,7 @@ export class AuthService {
   /** `profile` travels as user metadata, read and re-validated by handle_new_user. */
   public signUp(email: string, password: string, profile?: SignUpProfile): Promise<AuthResult> {
     const parsed = signUpSchema.safeParse({ email, password });
-    if (!parsed.success) return Promise.resolve(AuthResults.fail(parsed.error.issues[0].message));
+    if (!parsed.success) return Promise.resolve(AuthResults.invalid(parsed.error));
     return this.withLoading(async () => {
       const options = profile ? { data: SignUpMetadata.signUpMetadata(profile) } : undefined;
       const { error } = await this.supabase.auth.signUp({ ...parsed.data, options });
