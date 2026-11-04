@@ -205,6 +205,12 @@ Phase 3 (todo funciona de punta a punta, docs/feature-matrix.md):
 - Option 7 no longer stores a Supabase token: CLI session, optional token
   only in memory.
 
+Phase 4 (dependencias): maplibre-gl 6.15.0, postcss 8.5.31, Angular 22.2.4
+(build/cli 22.2.5), typescript-eslint 8.72.0, jsdom 30.1.3, vitest 5.0.5,
+supabase-js 2.118.0 (app and the 13 functions), zod 4.6.7, eslint 10.13.0;
+each verified on its own; npm audit 0. The open Dependabot PRs are
+superseded by this commit.
+
 ## Round 8 (2026-11-02)
 
 Phase 1 (fallos y legal público):

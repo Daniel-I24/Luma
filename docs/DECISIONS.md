@@ -943,3 +943,21 @@ alternative that was not taken. The safest, most reversible option wins.
   `routeWebSocket`) and Wompi are simulated, and any request without a
   simulation fails the test.
 
+## 2026-11-03 — Round 9, phase 4: dependencies
+
+- **The Dependabot updates applied here, one group at a time**, each with
+  build (no warnings), lint, unit, script and e2e tests and `npm audit`:
+  maplibre-gl 6.15.0, postcss 8.5.31, typescript-eslint 8.72.0, jsdom
+  30.1.3, vitest 5.0.5, @supabase/supabase-js 2.118.0 (also the pin of the
+  13 Edge Functions), zod 4.6.7, eslint 10.13.0 and Angular. All kept.
+- **The Angular group** could not be read here (no GitHub CLI): the safe
+  choice was the latest patch of the 22.2 line for the whole group
+  (framework and compiler-cli 22.2.4, build and cli 22.2.5; they must move
+  together). `angular-eslint` stays at 22.5.0 (22.6 is a minor release).
+  npm cannot move a group of exact peer versions in place (ERESOLVE), so
+  only those nine lock entries were recreated by `npm install`.
+- **Low memory**: the verification runs one step at a time with
+  `NODE_OPTIONS=--max-old-space-size=3072` and Vitest with two workers.
+- **Bundle**: the new versions add 2 kB to the initial bundle (671.05 →
+  673.13 kB, mostly Angular 22.2.4); phase 5 measures from there.
+
