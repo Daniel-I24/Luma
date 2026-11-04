@@ -4,6 +4,7 @@ import { CACHE_TTL_SECONDS, createHandler } from './handler.ts';
 import { DETOUR_FACTOR, haversineM, parseInput, type Route, type RouteInput, straightRoute } from './model.ts';
 import { parseOrs, routerFromEnv, type RoutingProvider } from './providers.ts';
 import { profileFor, TRAVEL_MODES } from './profiles.ts';
+import { at } from '../_shared/testing.ts';
 
 const ORIGIN = 'http://localhost:4200';
 const FROM = { lat: 1.2136, lng: -77.2811 };
@@ -49,7 +50,7 @@ Deno.test('draws the provider route and caches it for a day', async () => {
   const { handler, stored } = setup();
   const res = await handler(post({ from: FROM, to: TO, mode: 'walk' }));
   assertEquals([res.status, await res.json()], [200, ROAD]);
-  assertEquals([stored[0][0].startsWith('route:'), stored[0][2]], [true, CACHE_TTL_SECONDS]);
+  assertEquals([at(stored, 0)[0]?.startsWith('route:'), at(stored, 0)[2]], [true, CACHE_TTL_SECONDS]);
 });
 
 Deno.test('needs a valid JWT and a valid request', async () => {
@@ -96,9 +97,9 @@ Deno.test('OpenRouteService: GeoJSON summary and line, the key only in a header 
   const router = routerFromEnv((name) => env[name], fetchFn)!;
   const route = await router.route(parseInput({ from: FROM, to: TO, mode: 'walk' })!);
   assertEquals([route.distanceM, route.durationS, route.line.length], [321, 251, 2]);
-  assertEquals(seen[0].url, 'https://api.openrouteservice.org/v2/directions/foot-walking/geojson');
-  assertEquals((seen[0].init.headers as Record<string, string>).Authorization, 'k-123');
-  assertEquals(seen[0].url.includes('k-123'), false);
+  assertEquals(seen[0]?.url, 'https://api.openrouteservice.org/v2/directions/foot-walking/geojson');
+  assertEquals((seen[0]?.init.headers as Record<string, string>).Authorization, 'k-123');
+  assertEquals(seen[0]?.url.includes('k-123'), false);
   assertEquals(routerFromEnv(() => undefined), null);
 });
 

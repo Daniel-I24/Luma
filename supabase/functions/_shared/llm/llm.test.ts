@@ -49,9 +49,9 @@ Deno.test('gemini: REST generateContent with the key header and JSON mode', asyn
   const result = await createGeminiProvider(options(fetchFn)).generateJson(request, pickId);
 
   assertEquals(result, { ok: true, value: 'a' });
-  assertEquals(calls[0].url, 'https://generativelanguage.googleapis.com/v1beta/models/m:generateContent');
-  assertEquals(calls[0].headers['x-goog-api-key'], 'k');
-  assertEquals((calls[0].body.generationConfig as Record<string, unknown>).responseMimeType, 'application/json');
+  assertEquals(calls[0]?.url, 'https://generativelanguage.googleapis.com/v1beta/models/m:generateContent');
+  assertEquals(calls[0]?.headers['x-goog-api-key'], 'k');
+  assertEquals((calls[0]?.body.generationConfig as Record<string, unknown>).responseMimeType, 'application/json');
 });
 
 Deno.test('openai-compatible: chat completions on the configured base URL', async () => {
@@ -60,10 +60,10 @@ Deno.test('openai-compatible: chat completions on the configured base URL', asyn
   const result = await provider.generateJson(request, pickId);
 
   assertEquals(result, { ok: true, value: 'b' });
-  assertEquals(calls[0].url, 'https://openrouter.ai/api/v1/chat/completions');
-  assertEquals(calls[0].headers.authorization, 'Bearer k');
-  assertEquals(calls[0].body.response_format, { type: 'json_object' });
-  assertEquals((calls[0].body.messages as { role: string }[]).map((m) => m.role), ['system', 'user']);
+  assertEquals(calls[0]?.url, 'https://openrouter.ai/api/v1/chat/completions');
+  assertEquals(calls[0]?.headers.authorization, 'Bearer k');
+  assertEquals(calls[0]?.body.response_format, { type: 'json_object' });
+  assertEquals((calls[0]?.body.messages as { role: string }[]).map((m) => m.role), ['system', 'user']);
 });
 
 Deno.test('anthropic: messages API with structured outputs, skipping non-text blocks', async () => {
@@ -73,10 +73,10 @@ Deno.test('anthropic: messages API with structured outputs, skipping non-text bl
   const result = await createAnthropicProvider(options(fetchFn)).generateJson(request, pickId);
 
   assertEquals(result, { ok: true, value: 'a' });
-  assertEquals(calls[0].url, 'https://api.anthropic.com/v1/messages');
-  assertEquals(calls[0].headers['x-api-key'], 'k');
-  assertEquals(calls[0].headers['anthropic-version'], '2023-06-01');
-  assertEquals(calls[0].body.output_config, { format: { type: 'json_schema', schema: request.schema } });
+  assertEquals(calls[0]?.url, 'https://api.anthropic.com/v1/messages');
+  assertEquals(calls[0]?.headers['x-api-key'], 'k');
+  assertEquals(calls[0]?.headers['anthropic-version'], '2023-06-01');
+  assertEquals(calls[0]?.body.output_config, { format: { type: 'json_schema', schema: request.schema } });
 });
 
 Deno.test('anthropic: a refusal is ai_unavailable', async () => {

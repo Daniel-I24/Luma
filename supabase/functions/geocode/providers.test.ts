@@ -3,6 +3,7 @@ import { assertEquals } from '@std/assert';
 import type { FetchLike } from './http.ts';
 import { finalizePlaces, PASTO } from './model.ts';
 import { createMapTiler, createNominatimLike, createPhoton, geocoderFromEnv } from './providers.ts';
+import { at } from '../_shared/testing.ts';
 
 function recorder(answer: unknown, status = 200) {
   const calls: { url: URL; headers: Record<string, string> }[] = [];
@@ -24,7 +25,7 @@ Deno.test('photon: bias to the point, Colombia bbox, foreign results dropped', a
   });
   const places = finalizePlaces(await createPhoton(fetchFn).search(input));
   assertEquals(places, [{ label: 'San Ignacio, Pasto', kind: 'neighbourhood', lat: 1.21, lng: -77.28 }]);
-  assertEquals([calls[0].url.searchParams.get('lat'), calls[0].url.searchParams.get('bbox')], ['1.2136', '-81.8,-4.3,-66.8,13.6']);
+  assertEquals([calls[0]?.url.searchParams.get('lat'), calls[0]?.url.searchParams.get('bbox')], ['1.2136', '-81.8,-4.3,-66.8,13.6']);
 });
 
 Deno.test('nominatim: Colombia only, Spanish, Nariño view box and an identifying User-Agent', async () => {
@@ -34,22 +35,22 @@ Deno.test('nominatim: Colombia only, Spanish, Nariño view box and an identifyin
   const provider = geocoderFromEnv((n) => ({ GEOCODE_PROVIDER: 'nominatim', GEOCODE_CONTACT: 'ops@example.com' })[n], fetchFn);
   const places = finalizePlaces(await provider!.search(input));
   assertEquals(places, [{ label: 'Calle 18, Centro, Pasto, Nariño', kind: 'street', lat: 1.2153, lng: -77.279 }]);
-  const params = calls[0].url.searchParams;
+  const params = at(calls, 0).url.searchParams;
   assertEquals([params.get('countrycodes'), params.get('accept-language'), params.get('viewbox')], ['co', 'es', '-79.1,0.3,-76.8,2.7']);
-  assertEquals(calls[0].headers['User-Agent'], 'Luma/1.0 (ops@example.com)');
+  assertEquals(calls[0]?.headers['User-Agent'], 'Luma/1.0 (ops@example.com)');
 });
 
 Deno.test('locationiq sends its key; maptiler uses country, language and proximity', async () => {
   const iq = recorder([]);
   await createNominatimLike({ name: 'locationiq', baseUrl: 'https://x.test/v1', key: 'k1', fetchFn: iq.fetchFn }).search(input);
-  assertEquals(iq.calls[0].url.searchParams.get('key'), 'k1');
+  assertEquals(iq.calls[0]?.url.searchParams.get('key'), 'k1');
 
   const mt = recorder({ features: [{ place_name: 'Unicentro, Pasto, Nariño, Colombia', place_type: ['poi'], center: [-77.27, 1.22] }] });
   const places = finalizePlaces(await createMapTiler('k2', mt.fetchFn).search(input));
   assertEquals(places, [{ label: 'Unicentro, Pasto, Nariño, Colombia', kind: 'poi', lat: 1.22, lng: -77.27 }]);
-  const params = mt.calls[0].url.searchParams;
+  const params = at(mt.calls, 0).url.searchParams;
   assertEquals([params.get('country'), params.get('language'), params.get('proximity')], ['co', 'es', '-77.2811,1.2136']);
-  assertEquals(mt.calls[0].url.pathname, '/geocoding/Barrio%20San%20Ignacio.json');
+  assertEquals(mt.calls[0]?.url.pathname, '/geocoding/Barrio%20San%20Ignacio.json');
 });
 
 Deno.test('missing secrets give no provider', () => {

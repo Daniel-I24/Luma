@@ -3,6 +3,7 @@ import { assertEquals } from '@std/assert';
 import { CACHE_TTL_SECONDS, cacheTtlFor, createHandler } from './handler.ts';
 import { type GeocodeInput, parseInput, type Place, PASTO } from './model.ts';
 import type { GeocodeProvider } from './providers.ts';
+import { at } from '../_shared/testing.ts';
 
 const ORIGIN = 'http://localhost:4200';
 const CENTRO: Place = { label: 'Centro, Pasto', kind: 'neighbourhood', lat: 1.214, lng: -77.281 };
@@ -40,8 +41,8 @@ Deno.test('finds places and caches them for 7 days', async () => {
   const { handler, stored } = setup();
   const res = await handler(post({ q: '  centro   pasto ' }));
   assertEquals([res.status, await res.json()], [200, { places: [CENTRO], attribution: null }]);
-  assertEquals(stored[0][0].startsWith('geocode:'), true);
-  assertEquals(stored[0][2], CACHE_TTL_SECONDS);
+  assertEquals(at(stored, 0)[0]?.startsWith('geocode:'), true);
+  assertEquals(at(stored, 0)[2], CACHE_TTL_SECONDS);
 });
 
 Deno.test('the provider gets a rounded bias inside Colombia, Pasto otherwise', () => {
@@ -71,6 +72,6 @@ Deno.test('LocationIQ answers are cached 48 hours (its terms) and carry its attr
   const { handler, stored } = setup({ name: 'locationiq' });
   const res = await handler(post({ q: 'centro pasto' }));
   assertEquals((await res.json()).attribution, 'locationiq');
-  assertEquals(stored[0][2], 48 * 60 * 60);
+  assertEquals(at(stored, 0)[2], 48 * 60 * 60);
   assertEquals([cacheTtlFor('photon'), cacheTtlFor('locationiq')], [CACHE_TTL_SECONDS, 172800]);
 });

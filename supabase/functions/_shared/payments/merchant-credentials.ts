@@ -43,7 +43,9 @@ export class PlatformMerchantCredentials implements MerchantCredentials {
     };
     const prefixes = PlatformMerchantCredentials.PREFIXES[environment];
     for (const [name, value] of Object.entries(keys)) {
-      if (!value || !value.startsWith(prefixes[name]) || value.length <= prefixes[name].length) return null;
+      const prefix = prefixes[name];
+      // No known prefix means no valid key: reject rather than accept anything.
+      if (!prefix || !value || !value.startsWith(prefix) || value.length <= prefix.length) return null;
     }
     return new PlatformMerchantCredentials(
       environment, keys.publicKey!, keys.privateKey!, keys.integritySecret!, keys.eventsSecret!,

@@ -3,6 +3,7 @@ import { assertEquals } from '@std/assert';
 import { createHandler } from './handler.ts';
 import { extractCode, textMessages } from './payload.ts';
 import { constantTimeEqual, validSignature } from './signature.ts';
+import { at } from '../_shared/testing.ts';
 
 const SECRET = 'app-secret-for-tests';
 const TOKEN = 'verify-token-for-tests';
@@ -53,8 +54,8 @@ Deno.test('a valid signature: each text code goes to the database with a hash of
   const res = await handler(await post(delivery([text('wamid.A', '573001112233', 'Hola, mi código es LUMA-AB12CD')])));
   assertEquals(res.status, 200);
   assertEquals(calls.length, 1);
-  assertEquals([calls[0].messageId, calls[0].sender, calls[0].code], ['wamid.A', '573001112233', 'LUMA-AB12CD']);
-  assertEquals(/^[0-9a-f]{64}$/.test(calls[0].senderHash) && !calls[0].senderHash.includes('573001112233'), true);
+  assertEquals([calls[0]?.messageId, calls[0]?.sender, calls[0]?.code], ['wamid.A', '573001112233', 'LUMA-AB12CD']);
+  assertEquals(/^[0-9a-f]{64}$/.test(at(calls, 0).senderHash) && !at(calls, 0).senderHash.includes('573001112233'), true);
 });
 
 Deno.test('an invalid or missing signature, or a tampered body, is refused before reading it', async () => {

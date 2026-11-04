@@ -48,7 +48,7 @@ Deno.test('credentials need WOMPI_ENV and keys with the prefix of that environme
 });
 
 Deno.test('the checkout URL carries every documented parameter and a signature over them', async () => {
-  const credentials = new MerchantCredentialsFactory((n) => sandboxSecrets()[n]).forPlatform()!;
+  const credentials = new MerchantCredentialsFactory((n) => (sandboxSecrets() as Readonly<Record<string, string>>)[n]).forPlatform()!;
   const url = new URL(await new CheckoutUrlBuilder(credentials)
     .withReference('luma_abc').withAmount(Money.fromPesos(12000))
     .withRedirectUrl('luma://payments/return?order=o1').expiringAt(new Date('2026-10-24T15:00:00Z')).build());

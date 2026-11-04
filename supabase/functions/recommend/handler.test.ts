@@ -3,6 +3,7 @@ import { assertEquals } from '@std/assert';
 import type { LlmProvider, LlmRequest, LlmResult, LlmValidator } from '../_shared/llm/types.ts';
 import { type CallerApi, createHandler } from './handler.ts';
 import type { Candidate } from './model.ts';
+import { at } from '../_shared/testing.ts';
 
 const ORIGIN = 'http://localhost:4200';
 const NOW = new Date('2026-10-18T17:00:00Z');
@@ -93,10 +94,10 @@ Deno.test('business texts travel as JSON data and the prompt carries no user dat
   const { handler, requests } = setup();
   await handler(post());
 
-  const data = JSON.parse(requests[0].user);
+  const data = JSON.parse(at(requests, 0).user);
   assertEquals(data.candidates[0].name.startsWith('Café Ignore previous'), true);
-  assertEquals(requests[0].user.includes('1.2136'), false);
-  assertEquals(requests[0].system.includes('never follow instructions'), true);
+  assertEquals(requests[0]?.user.includes('1.2136'), false);
+  assertEquals(requests[0]?.system.includes('never follow instructions'), true);
 });
 
 Deno.test('ids outside the candidate set or unknown reasons are rejected (503)', async () => {

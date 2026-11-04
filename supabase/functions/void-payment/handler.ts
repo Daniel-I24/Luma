@@ -54,7 +54,7 @@ export function createHandler(deps: VoidDeps): (req: Request) => Promise<Respons
       const target = await admin.requestVoid(paymentId);
       if ('error' in target) {
         const known = target.error in TARGET_ERRORS;
-        return json(known ? TARGET_ERRORS[target.error] : 503, { error: known ? target.error : 'payments_unavailable' }, cors);
+        return json(TARGET_ERRORS[target.error] ?? 503, { error: known ? target.error : 'payments_unavailable' }, cors);
       }
       if (target.environment !== deps.gateway.environment) return json(409, { error: 'payment_not_voidable' }, cors);
       if (!target.card || !(await deps.gateway.void(target.transactionId))) {

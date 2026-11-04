@@ -49,7 +49,7 @@ Deno.test('the draft keeps valid items, drops duplicates and caps at 200', () =>
     ['Tinto', null, 9],
     ['Empanada', null, 40],
   ]);
-  assertEquals(draft?.items[2].description?.length, 300);
+  assertEquals(draft?.items[2]?.description?.length, 300);
 
   const many = toDraft({ items: Array.from({ length: 250 }, (_, n) => ({ name: `P${n}`, price: 1000 })) });
   assertEquals(many?.items.length, 200);

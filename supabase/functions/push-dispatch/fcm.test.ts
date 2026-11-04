@@ -21,7 +21,7 @@ const fromB64url = (s: string): Uint8Array<ArrayBuffer> => {
 
 Deno.test('the assertion is an RS256 JWT for the FCM scope, verifiable with the public key', async () => {
   const jwt = await signedAssertion(account, 1_000);
-  const [header, claims, signature] = jwt.split('.');
+  const [header = '', claims = '', signature = ''] = jwt.split('.');
   assertEquals(JSON.parse(new TextDecoder().decode(fromB64url(header))), { alg: 'RS256', typ: 'JWT' });
   const payload = JSON.parse(new TextDecoder().decode(fromB64url(claims)));
   assertEquals([payload.iss, payload.scope, payload.aud, payload.exp - payload.iat], [

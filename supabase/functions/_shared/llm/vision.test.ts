@@ -30,7 +30,7 @@ type Turn = { content?: unknown; parts?: unknown };
 Deno.test('gemini sends images as inlineData before the text', async () => {
   const { fetchFn, bodies } = recorder({ candidates: [{ content: { parts: [{ text: '{}' }] } }] });
   await createGeminiProvider(opts(fetchFn)).generateJson(request, any);
-  assertEquals((bodies[0].contents as Turn[])[0].parts, [
+  assertEquals((bodies[0]?.contents as Turn[])[0]?.parts, [
     { inlineData: { mimeType: 'image/webp', data: 'AAAA' } },
     { text: '{"business":"x"}' },
   ]);
@@ -39,7 +39,7 @@ Deno.test('gemini sends images as inlineData before the text', async () => {
 Deno.test('openai-compatible sends images as data URLs', async () => {
   const { fetchFn, bodies } = recorder({ choices: [{ message: { content: '{}' } }] });
   await createOpenAiCompatibleProvider(opts(fetchFn)).generateJson(request, any);
-  assertEquals((bodies[0].messages as Turn[])[1].content, [
+  assertEquals((bodies[0]?.messages as Turn[])[1]?.content, [
     { type: 'text', text: '{"business":"x"}' },
     { type: 'image_url', image_url: { url: 'data:image/webp;base64,AAAA' } },
   ]);
@@ -50,11 +50,11 @@ Deno.test('anthropic sends base64 image blocks; text-only requests stay a string
   const provider = createAnthropicProvider(opts(fetchFn));
   await provider.generateJson(request, any);
   await provider.generateJson({ ...request, images: undefined }, any);
-  assertEquals((bodies[0].messages as Turn[])[0].content, [
+  assertEquals((bodies[0]?.messages as Turn[])[0]?.content, [
     { type: 'image', source: { type: 'base64', media_type: 'image/webp', data: 'AAAA' } },
     { type: 'text', text: '{"business":"x"}' },
   ]);
-  assertEquals((bodies[1].messages as Turn[])[0].content, '{"business":"x"}');
+  assertEquals((bodies[1]?.messages as Turn[])[0]?.content, '{"business":"x"}');
 });
 
 Deno.test('vision uses LLM_VISION_MODEL when set, LLM_MODEL otherwise', async () => {
@@ -68,6 +68,6 @@ Deno.test('vision uses LLM_VISION_MODEL when set, LLM_MODEL otherwise', async ()
   await providerFromEnv(env('vision-m'), fetchFn, 'vision')?.generateJson(request, any);
   await providerFromEnv(env(), fetchFn, 'vision')?.generateJson(request, any);
   await providerFromEnv(env('vision-m'), fetchFn)?.generateJson(request, any);
-  assertEquals(urls.map((u) => u.split('/models/')[1].split(':')[0]), ['vision-m', 'text-m', 'text-m']);
+  assertEquals(urls.map((u) => u.split('/models/')[1]?.split(':')[0]), ['vision-m', 'text-m', 'text-m']);
   assertEquals(VISION_TIMEOUT_MS, 30_000);
 });

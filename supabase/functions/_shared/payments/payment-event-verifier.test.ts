@@ -71,7 +71,7 @@ Deno.test('an unknown transaction, or one with another reference, is rejected', 
 Deno.test('the API decides: a fake APPROVED event of a declined transaction applies DECLINED', async () => {
   const { verifier, repository } = setup({ [transaction().id]: transaction({ status: 'DECLINED' }) });
   await verifier.verify(await signedEvent());
-  assertEquals(repository.applied[0].status, 'DECLINED');
+  assertEquals(repository.applied[0]?.status, 'DECLINED');
 });
 
 Deno.test('amount, currency or reference that do not match the attempt are mismatches', async () => {
@@ -94,17 +94,18 @@ Deno.test('other signed event types are acknowledged and ignored', async () => {
 
 Deno.test('WompiApi: private key, sandbox URL, 404 is null, 5xx and network errors are unavailable', async () => {
   const seen: [string, string | null][] = [];
+  const ok = Response.json({ data: { ...apiBody(transaction()) } });
   const answers: Record<string, Response | Error> = {
-    ok: Response.json({ data: { ...apiBody(transaction()) } }), gone: new Response('{}', { status: 404 }),
+    ok, gone: new Response('{}', { status: 404 }),
     down: new Response('', { status: 503 }), net: new Error('offline'), bad: Response.json({ data: { id: 'bad' } }),
   };
   const api = new WompiApi(sandboxCredentials(), (url, init) => {
     seen.push([url, new Headers(init.headers).get('authorization')]);
     const key = url.split('/').at(-1)!;
-    const answer = answers[key];
+    const answer = answers[key] ?? new Error(`no answer for ${key}`);
     return answer instanceof Error ? Promise.reject(answer) : Promise.resolve(answer);
   });
-  answers[transaction().id] = answers.ok;
+  answers[transaction().id] = ok;
   assertEquals((await api.transaction(transaction().id))?.status, 'APPROVED');
   assertEquals(seen[0], [`https://sandbox.wompi.co/v1/transactions/${transaction().id}`, `Bearer ${sandboxSecrets().WOMPI_PRIVATE_KEY}`]);
   assertEquals(await api.transaction('gone'), null);

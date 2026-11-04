@@ -42,7 +42,7 @@ export function parseCop(value: unknown): number | null {
   } else if (typeof value === 'string') {
     const raw = value.replace(/cop|\$|\s/gi, '');
     const cents = raw.match(/^(.*\d)[.,]\d{1,2}$/);
-    const whole = cents ? cents[1] : raw;
+    const whole = cents?.[1] ?? raw;
     if (/^\d{1,3}([.,]\d{3})*$|^\d+$/.test(whole)) cop = Number(whole.replace(/[.,]/g, ''));
   }
   return cop !== null && cop >= MIN_PRICE_COP && cop <= MAX_PRICE_COP ? cop : null;

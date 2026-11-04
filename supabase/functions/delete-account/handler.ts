@@ -37,7 +37,7 @@ const BEARER = /^Bearer\s+(\S+)$/i;
 
 export function extractBearerToken(header: string | null): string | null {
   const match = header?.match(BEARER);
-  return match ? match[1] : null;
+  return match?.[1] ?? null;
 }
 
 /** The only source of identity: the caller's own JWT, validated by Supabase Auth. */

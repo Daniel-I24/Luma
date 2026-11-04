@@ -6,14 +6,18 @@ import type { EventTransaction } from './wompi-event.ts';
 // Example and test secrets, assembled so the secret scan stays strict.
 export const DOC_INTEGRITY_SECRET = ['prod', 'integrity', 'Z5mMke9x0k8gpErbDqwrJXMqsI6SFli6'].join('_');
 export const DOC_EVENTS_SECRET = ['prod', 'events', 'OcHnIzeBl5socpwByQ4hA52Em3USQ93Z'].join('_');
-export const sandboxSecrets = (): Record<string, string> => ({
+/** The sandbox secret names (typed, so each one is a string). */
+export type SandboxSecrets = Readonly<Record<
+  'WOMPI_ENV' | 'WOMPI_PUBLIC_KEY' | 'WOMPI_PRIVATE_KEY' | 'WOMPI_INTEGRITY_SECRET' | 'WOMPI_EVENTS_SECRET', string
+>>;
+export const sandboxSecrets = (): SandboxSecrets => ({
   WOMPI_ENV: 'test',
   WOMPI_PUBLIC_KEY: ['pub', 'test', 'publickey123'].join('_'),
   WOMPI_PRIVATE_KEY: ['prv', 'test', 'privatekey123'].join('_'),
   WOMPI_INTEGRITY_SECRET: ['test', 'integrity', 'integrity123'].join('_'),
   WOMPI_EVENTS_SECRET: ['test', 'events', 'events123'].join('_'),
 });
-export const sandboxCredentials = () => PlatformMerchantCredentials.fromSecrets((n) => sandboxSecrets()[n])!;
+export const sandboxCredentials = () => PlatformMerchantCredentials.fromSecrets((n) => (sandboxSecrets() as Readonly<Record<string, string>>)[n])!;
 
 export const transaction = (overrides: Partial<EventTransaction> = {}): EventTransaction => ({
   id: '1234-1610641025-49201', reference: 'luma_ref', status: 'APPROVED', amountInCents: 1200000,

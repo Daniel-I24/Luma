@@ -3,6 +3,7 @@ import { assertEquals } from '@std/assert';
 import type { SendResult } from './fcm.ts';
 import { BATCH, createHandler, sameSecret } from './handler.ts';
 import { channelFor, cleanName, type PushRow, pushText } from './messages.ts';
+import { at } from '../_shared/testing.ts';
 
 const SECRET = 's'.repeat(40);
 const row = (n: number, tokens = ['t-ok']): PushRow => ({
@@ -111,6 +112,6 @@ Deno.test('promotions use their own Android channel; orders, payments and review
   const { handler, sent } = setup({ batches: [[promo, review]] });
   await handler(poke());
   assertEquals(sent.map((s) => s[3]), ['promotions', 'orders']);
-  assertEquals(sent[0][2], { type: 'promotion', notification_id: 'n1', business_id: 'b1' });
+  assertEquals(at(sent, 0)[2], { type: 'promotion', notification_id: 'n1', business_id: 'b1' });
   assertEquals([channelFor('payment'), channelFor('review_invite'), channelFor('order_new')], ['orders', 'orders', 'orders']);
 });
