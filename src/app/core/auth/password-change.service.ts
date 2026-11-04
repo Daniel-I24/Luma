@@ -4,7 +4,7 @@ import { ConnectivityService } from '@core/network/connectivity.service';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import { AuthErrors } from './auth-error';
 import { newPasswordSchema } from './auth.schemas';
-import { type AuthResult, OK, AuthResults } from './auth.service';
+import { type AuthResult, OK, AuthResults } from './auth-error';
 
 const changeSchema = z
   .object({

@@ -3,7 +3,7 @@ import { ConnectivityService } from '@core/network/connectivity.service';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import { AuthErrors } from './auth-error';
 import { recoverPasswordSchema, resetPasswordSchema, verifyCodeSchema } from './auth.schemas';
-import { type AuthResult, OK, AuthResults } from './auth.service';
+import { type AuthResult, OK, AuthResults } from './auth-error';
 
 /** Errors that may be shown without revealing whether an account exists. */
 const NEUTRAL_ERRORS = new Set([

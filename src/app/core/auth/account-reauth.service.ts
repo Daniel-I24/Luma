@@ -3,7 +3,7 @@ import { ConnectivityService } from '@core/network/connectivity.service';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import { AuthErrors } from './auth-error';
 import { verifyCodeSchema } from './auth.schemas';
-import { type AuthResult, AuthResults, OK } from './auth.service';
+import { type AuthResult, AuthResults, OK } from './auth-error';
 
 /**
  * AccountReauthService — before an irreversible action (deleting the

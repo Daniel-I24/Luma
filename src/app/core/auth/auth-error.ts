@@ -1,6 +1,23 @@
 import { FunctionsFetchError, FunctionsHttpError, FunctionsRelayError } from '@supabase/supabase-js';
 import { HTTP_STATUS } from '@core/config/http-status';
 
+/** Shape of an operation result returned by every auth method. */
+export interface AuthResult {
+  success: boolean;
+  /** Transloco key for an error message, present when success is false. */
+  errorKey?: string;
+}
+
+export const OK: AuthResult = { success: true };
+
+/** AuthResults — the failed result of an auth operation, with its translation key. */
+export class AuthResults {
+  public static readonly fail = (errorKey: string): AuthResult => ({ success: false, errorKey });
+  /** The first validation message (a translation key), or the generic one. */
+  public static readonly invalid = (error: { readonly issues: readonly { readonly message: string }[] }): AuthResult =>
+    AuthResults.fail(error.issues[0]?.message ?? 'auth.errors.unknown');
+}
+
 /** What Supabase answers: an AuthError (code, status, name) or just its message. */
 export type AuthErrorLike = string | { readonly message?: string; readonly code?: string; readonly status?: number; readonly name?: string };
 

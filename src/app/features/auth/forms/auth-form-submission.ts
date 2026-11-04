@@ -1,6 +1,6 @@
 import { signal } from '@angular/core';
 import type { AbstractControl } from '@angular/forms';
-import type { AuthResult } from '@core/auth/auth.service';
+import type { AuthResult } from '@core/auth/auth-error';
 
 const UNKNOWN_ERROR_KEY = 'auth.errors.unknown';
 

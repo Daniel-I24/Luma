@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import type { AuthResult } from '@core/auth/auth.service';
+import type { AuthResult } from '@core/auth/auth-error';
 import { AuthFormSubmission } from './auth-form-submission';
 
 const validForm = { invalid: false };

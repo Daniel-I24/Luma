@@ -3,31 +3,14 @@ import { Router } from '@angular/router';
 import type { Session, User } from '@supabase/supabase-js';
 import { ConnectivityService } from '@core/network/connectivity.service';
 import { SupabaseService } from '@core/supabase/supabase.service';
-import { AuthErrors } from './auth-error';
+import { type AuthResult, AuthErrors, AuthResults, OK } from './auth-error';
 import { signInSchema, signUpSchema } from './auth.schemas';
 import { type SignUpProfile, SignUpMetadata } from './sign-up-profile';
 import { SignOutHooks, UserDataRegistry } from './session-end';
 
-/** Shape of an operation result returned by every auth method. */
-export interface AuthResult {
-  success: boolean;
-  /** Transloco key for an error message, present when success is false. */
-  errorKey?: string;
-}
-
-export const OK: AuthResult = { success: true };
-
 /** A session counts only when its email is confirmed (6-digit code). */
 const isConfirmed = (session: Session | null): session is Session =>
   !!session?.user.email_confirmed_at;
-
-/** AuthResults — the failed result of an auth operation, with its translation key. */
-export class AuthResults {
-  public static readonly fail = (errorKey: string): AuthResult => ({ success: false, errorKey });
-  /** The first validation message (a translation key), or the generic one. */
-  public static readonly invalid = (error: { readonly issues: readonly { readonly message: string }[] }): AuthResult =>
-    AuthResults.fail(error.issues[0]?.message ?? 'auth.errors.unknown');
-}
 
 /**
  * AuthService — manages authentication state for the entire app.
