@@ -6,6 +6,7 @@ import { LumaButton, LumaChip, LumaEmptyState, LumaIcon, LumaSkeleton } from '@d
 import { DAY_MOMENTS, type Recommendation } from '@shared/recommendations/recommendation.model';
 import { RevealSelectedDirective } from '@shared/ui/viewport.directives';
 import { ComboCard } from './components/combo-card/combo-card';
+import { MomentCombosSection } from './components/moment-combos/moment-combos';
 import { RecommendationList } from './components/recommendation-list/recommendation-list';
 import { AiStore } from './state/ai.store';
 
@@ -27,6 +28,7 @@ import { AiStore } from './state/ai.store';
     LumaIcon,
     LumaSkeleton,
     ComboCard,
+    MomentCombosSection,
     RecommendationList,
     RevealSelectedDirective,
   ],

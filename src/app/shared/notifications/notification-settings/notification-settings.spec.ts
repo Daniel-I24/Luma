@@ -9,11 +9,13 @@ import { NotificationSettings } from './notification-settings';
 describe('NotificationSettings', () => {
   const repo = { get: vi.fn(), set: vi.fn() };
   const permission = signal<string>('prompt');
-  const push = { permission, enable: vi.fn() };
+  const problem = signal<string | null>(null);
+  const push = { permission, problem, enable: vi.fn() };
 
   beforeEach(() => {
     vi.clearAllMocks();
     permission.set('prompt');
+    problem.set(null);
     repo.get.mockResolvedValue({ data: { orders: true, promotions: false }, errorKey: null });
     TestBed.configureTestingModule({
       imports: [NotificationSettings, TranslocoTestingModule.forRoot({ langs: { es: {} } })],
@@ -69,5 +71,20 @@ describe('NotificationSettings', () => {
     permission.set('unavailable');
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelectorAll('app-luma-button').length).toBe(0);
+  });
+
+  it('explains each push problem and offers a retry only when it can help', async () => {
+    const { fixture } = await render();
+    const shown = (): string => fixture.nativeElement.querySelector('[role="status"]')?.textContent ?? '';
+    const buttons = (): number => fixture.nativeElement.querySelectorAll('app-luma-button').length;
+    for (const [value, key, retry] of [
+      ['denied', 'denied', 0], ['not_configured', 'notConfigured', 0],
+      ['registration_failed', 'registrationFailed', 1], ['token_save_failed', 'tokenSaveFailed', 1],
+    ] as const) {
+      problem.set(value);
+      fixture.detectChanges();
+      expect(shown()).toContain(`notificationSettings.phone.problem.${key}`);
+      expect(buttons()).toBe(retry);
+    }
   });
 });

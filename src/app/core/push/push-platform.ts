@@ -17,7 +17,8 @@ const PUSH_ENABLED = new InjectionToken<boolean>('PUSH_ENABLED', {
 /** Android notification importance: 4 high (heads-up), 3 default. */
 type AndroidImportance = 3 | 4;
 
-export type PushPermission = 'granted' | 'denied' | 'prompt' | 'unavailable';
+/** 'unavailable' on the web; 'not_configured' on a phone built without Firebase. */
+export type PushPermission = 'granted' | 'denied' | 'prompt' | 'unavailable' | 'not_configured';
 
 /** What a tapped notification carries (ids only, from push-dispatch). */
 export interface PushAction {
@@ -34,6 +35,9 @@ export interface PushChannel {
   /** Android importance: 4 high (heads-up), 3 default. */
   readonly importance: AndroidImportance;
 }
+
+/** FCM answers in seconds; without an answer the registration counts as failed. */
+const REGISTER_TIMEOUT_MS = 20_000;
 
 /** Android VISIBILITY_PRIVATE: the lock screen shows that a notice arrived, not its text. */
 const LOCK_SCREEN_PRIVATE = 0;
@@ -52,16 +56,19 @@ export class PushPlatform {
   private readonly enabled = inject(PUSH_ENABLED);
 
   private async plugin(): Promise<typeof import('@capacitor/push-notifications').PushNotifications | null> {
-    if (!this.enabled) return null;
-    const { Capacitor } = await import('@capacitor/core');
-    if (!Capacitor.isNativePlatform() || !Capacitor.isPluginAvailable('PushNotifications')) return null;
+    if (!this.enabled || !(await this.native())) return null;
     return (await import('@capacitor/push-notifications')).PushNotifications;
+  }
+
+  private async native(): Promise<boolean> {
+    const { Capacitor } = await import('@capacitor/core');
+    return Capacitor.isNativePlatform() && Capacitor.isPluginAvailable('PushNotifications');
   }
 
   /** Current notification permission. */
   public async permission(): Promise<PushPermission> {
     const push = await this.plugin();
-    if (!push) return 'unavailable';
+    if (!push) return !this.enabled && (await this.native()) ? 'not_configured' : 'unavailable';
     const { receive } = await push.checkPermissions();
     return receive === 'granted' ? 'granted' : receive === 'denied' ? 'denied' : 'prompt';
   }
@@ -79,6 +86,7 @@ export class PushPlatform {
     const push = await this.plugin();
     if (!push) throw new Error('push_unavailable');
     const token = new Promise<string>((resolve, reject) => {
+      setTimeout(() => reject(new Error('push_registration_timeout')), REGISTER_TIMEOUT_MS);
       void push.addListener('registration', ({ value }) => resolve(value));
       void push.addListener('registrationError', () => reject(new Error('push_registration_failed')));
     });

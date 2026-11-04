@@ -11,7 +11,7 @@ describe('AuthService: sign-up and sign-out', () => {
       signUp: vi.fn().mockResolvedValue({ error: null }),
     });
 
-    const result = await h.service.signUp('newuser@example.com', 'password123');
+    const result = await h.service.signUp('newuser@example.com', 'Password123');
 
     expect(result.success).toBe(true);
   });
@@ -29,11 +29,11 @@ describe('AuthService: sign-up and sign-out', () => {
       termsVersion: 'v1',
       privacyVersion: 'p1',
     } as const;
-    await h.service.signUp('ana@example.com', 'password123', profile);
+    await h.service.signUp('ana@example.com', 'Password123', profile);
 
     expect(signUp).toHaveBeenCalledWith({
       email: 'ana@example.com',
-      password: 'password123',
+      password: 'Password123',
       options: { data: SignUpMetadata.signUpMetadata(profile) },
     });
   });
@@ -45,7 +45,7 @@ describe('AuthService: sign-up and sign-out', () => {
       }),
     });
 
-    const result = await h.service.signUp('existing@example.com', 'password123');
+    const result = await h.service.signUp('existing@example.com', 'Password123');
 
     expect(result).toEqual({ success: true });
   });

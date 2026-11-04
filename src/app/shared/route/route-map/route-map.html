@@ -1,5 +1,14 @@
 <section *transloco="let t" class="flex flex-col gap-2" aria-labelledby="route-title">
   <h3 id="route-title" class="m-0 text-title text-fg">{{ t('route.title') }}</h3>
+  <div
+    #map
+    class="h-56 w-full overflow-hidden rounded-lg border border-border bg-map-canvas"
+    role="img"
+    [attr.aria-label]="t('route.mapLabel', { name: name() })"
+  ></div>
+  @if (failed()) {
+  <p class="m-0 text-caption text-fg-muted">{{ t('businessPanel.location.mapFailed') }}</p>
+  }
   @if (located()) {
   <div class="flex flex-wrap gap-2" role="group" [attr.aria-label]="t('route.mode')">
     @for (m of modes; track m.mode) {
@@ -24,12 +33,6 @@
     </button>
     }
   </div>
-  <div
-    #map
-    class="h-56 w-full overflow-hidden rounded-lg border border-border bg-map-canvas"
-    role="img"
-    [attr.aria-label]="t('route.mapLabel', { name: name() })"
-  ></div>
   @if (route(); as r) {
   <p class="m-0 text-body text-fg" aria-live="polite">
     {{ t('route.summary.' + mode(), { km: km(), minutes: minutes() }) }}
@@ -39,9 +42,14 @@
     <span class="block text-caption text-fg-muted">{{ t('route.estimate') }}</span>
     }
   </p>
-  } @if (failed()) {
-  <p class="m-0 text-caption text-fg-muted">{{ t('businessPanel.location.mapFailed') }}</p>
   }
+  <button
+    type="button"
+    class="pressable inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-primary px-4 text-body font-semibold text-primary-fg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+    (click)="directions()"
+  >
+    <app-luma-icon name="walk" size="sm" /> {{ t('route.directions') }}
+  </button>
   } @else {
   <button
     type="button"

@@ -1,121 +1,116 @@
 import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  type ElementRef,
-  afterNextRender,
-  effect,
-  inject,
-  input,
-  model,
-  signal,
-  untracked,
-  viewChild,
+  ChangeDetectionStrategy, Component, DestroyRef, type ElementRef, afterNextRender, computed, effect, inject, input, model,
+  signal, untracked, viewChild,
 } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
-import * as maplibregl from 'maplibre-gl';
 import { LumaButton, LumaNotice } from '@design-system';
 import { type GeoCoords, GeolocationService, PASTO_CENTRE } from '@shared/geo/geolocation.service';
-import { BaseMap } from '@shared/map/map-base';
-import { MapStylesLoader } from '@shared/map/map-styles.loader';
+import { type Candidate, LocationChecks } from './location-checks';
+import { LocationSearch } from './location-search';
+import { type PickerMap, PickerMapFactory } from './picker-map';
 
 /** About one metre. */
 const COORDINATE_DECIMALS = 5;
 
-const PICKER_ZOOM = 16;
-
 /**
- * LocationPicker — tap the map (or drag the pin) to choose a business
- * location; starts at the chosen point or the centre of Pasto. Keyboard and
- * screen reader users can pan the map with the arrows and pin its centre, or
- * use their current location.
+ * LocationPicker — the pin stays fixed at the centre and the map moves
+ * under it (the pin lifts while dragging and drops on release). Three ways
+ * in: "Estoy en el local" (GPS, with its accuracy), "Buscar" (moves the map,
+ * never confirms) and moving the map. Only "Confirmar este punto" sets
+ * `position`. Warnings: far from the municipality, or on another business
+ * of the owner (docs/location.md).
  */
 @Component({
   selector: 'app-location-picker',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LumaNotice, TranslocoModule, LumaButton],
+  imports: [LumaNotice, TranslocoModule, LumaButton, LocationSearch],
   templateUrl: './location-picker.html',
+  styleUrls: ['./location-picker.css'],
 })
 export class LocationPicker {
   private readonly geo = inject(GeolocationService);
-  private readonly styles = inject(MapStylesLoader);
+  private readonly maps = inject(PickerMapFactory);
   private readonly container = viewChild.required<ElementRef<HTMLElement>>('map');
 
   public readonly pickerId = input.required<string>();
   public readonly errorMessage = input<string | undefined>(undefined);
+  /** Centre of the chosen municipality (DANE). */
+  public readonly centre = input<GeoCoords | null>(null);
+  /** The owner's other businesses. */
+  public readonly others = input<readonly GeoCoords[]>([]);
+  /** The confirmed point. */
   public readonly position = model<GeoCoords | null>(null);
 
   protected readonly mapFailed = signal(false);
+  protected readonly lifted = signal(false);
   protected readonly locating = signal(false);
+  /** Where the pin points now (confirmed or not). */
+  protected readonly pending = signal<GeoCoords | null>(null);
+  protected readonly fallback = PASTO_CENTRE;
   protected readonly geoState = this.geo.state;
-  private map: maplibregl.Map | null = null;
-  private marker: maplibregl.Marker | null = null;
+  protected readonly accuracy = this.geo.accuracy;
+  protected readonly unconfirmed = computed(() => {
+    const at = this.pending();
+    const confirmed = this.position();
+    return !!at && (!confirmed || this.format(at.lat) !== this.format(confirmed.lat) || this.format(at.lng) !== this.format(confirmed.lng));
+  });
+  protected readonly warnings = computed(() => {
+    const at = this.position();
+    return at ? LocationChecks.warnings(at, this.centre(), this.others()) : [];
+  });
+  private map: PickerMap | null = null;
 
   constructor() {
     afterNextRender(() => this.initMap());
     effect(() => {
-      const position = this.position();
-      untracked(() => this.syncMarker(position));
-    });
-    effect(() => {
       if (!this.locating() || this.geo.state() === 'locating') return;
       untracked(() => {
         this.locating.set(false);
-        if (this.geo.state() === 'granted') this.place(this.geo.coords(), true);
+        if (this.geo.state() === 'granted') this.moveTo(this.geo.coords());
       });
     });
     inject(DestroyRef).onDestroy(() => this.map?.remove());
   }
 
-  protected useCurrentLocation(): void {
+  /** "Estoy en el local": a fresh GPS fix; the map moves there, the owner confirms. */
+  protected locate(): void {
     this.locating.set(true);
-    this.geo.requestLocation();
+    this.geo.requestLocation(true);
   }
 
-  protected useMapCentre(): void {
-    const centre = this.map?.getCenter();
-    if (centre) this.place({ lat: centre.lat, lng: centre.lng }, false);
+  protected preview(candidate: Candidate): void {
+    this.moveTo(candidate);
+  }
+
+  protected confirm(): void {
+    const at = this.pending();
+    if (at) this.position.set({ lat: Number(this.format(at.lat)), lng: Number(this.format(at.lng)) });
   }
 
   protected format(value: number): string {
     return value.toFixed(COORDINATE_DECIMALS);
   }
 
+  private moveTo(point: GeoCoords): void {
+    this.pending.set({ lat: point.lat, lng: point.lng });
+    this.map?.moveTo(point);
+  }
+
   private initMap(): void {
+    const start = this.position() ?? this.centre() ?? PASTO_CENTRE;
+    this.pending.set(start);
     try {
-      this.styles.ensureLoaded();
-      const start = this.position() ?? PASTO_CENTRE;
-      this.map = BaseMap.createBaseMap(this.container().nativeElement, start, PICKER_ZOOM);
-      this.map.on('click', (event) =>
-        this.place({ lat: event.lngLat.lat, lng: event.lngLat.lng }, false),
+      this.map = this.maps.create(this.container().nativeElement, start);
+      this.map.onMove(
+        () => this.lifted.set(true),
+        (centre) => {
+          this.lifted.set(false);
+          this.pending.set(centre);
+        },
       );
-      this.syncMarker(this.position());
     } catch {
       this.mapFailed.set(true);
     }
-  }
-
-  private place(coords: GeoCoords, recentre: boolean): void {
-    this.position.set({ lat: coords.lat, lng: coords.lng });
-    if (recentre) this.map?.easeTo({ center: [coords.lng, coords.lat] });
-  }
-
-  private syncMarker(position: GeoCoords | null): void {
-    if (!this.map || !position) return;
-    if (!this.marker) {
-      const element = document.createElement('div');
-      element.className = 'luma-marker luma-marker--picked';
-      element.setAttribute('aria-hidden', 'true');
-      element.appendChild(document.createElement('span')).className = 'luma-marker__pin';
-      this.marker = new maplibregl.Marker({ element, draggable: true, anchor: 'bottom' });
-      this.marker.on('dragend', () => {
-        const at = this.marker?.getLngLat();
-        if (at) this.position.set({ lat: at.lat, lng: at.lng });
-      });
-      this.marker.setLngLat([position.lng, position.lat]).addTo(this.map);
-      return;
-    }
-    this.marker.setLngLat([position.lng, position.lat]);
   }
 }

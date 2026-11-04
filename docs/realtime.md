@@ -14,7 +14,7 @@ privadas no deben salir). Migración 56 (`20261106000000_round9.sql`):
 | Tabla | Columnas | Quién la lee | La llenan |
 | --- | --- | --- | --- |
 | `catalog_events` | `kind` (business, hours, menu, promotion), `business_id`, `at` | anon y authenticated | disparadores de `businesses` (si era o es público y algo cambió), `business_hours`, `menu_items` y `promotions` (solo de negocios públicos) |
-| `order_events` | `order_id`, `user_id`, `business_id`, `at` | el cliente del pedido y el dueño del negocio (RLS con `(select auth.uid())`) | disparadores de `orders` (alta y cada cambio) y de `notifications` (con `order_id` nulo: "cambió tu lista de avisos") |
+| `order_events` | `order_id`, `user_id` **o** `business_id`, `at` | la fila con `user_id`, solo ese cliente; la fila con `business_id`, solo el dueño del negocio (RLS con `(select auth.uid())`). Desde la migración 57 cada cambio de un pedido escribe **dos filas**, una por público, y la restricción `order_events_one_audience` impide que una fila lleve los dos: el dueño nunca recibe el id del cliente | disparadores de `orders` (alta y cada cambio) y de `notifications` (con `order_id` nulo: "cambió tu lista de avisos") |
 
 - Los clientes no pueden escribir en ellas (solo los disparadores, SECURITY
   DEFINER con `search_path` vacío).

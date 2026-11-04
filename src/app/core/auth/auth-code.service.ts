@@ -2,7 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { ConnectivityService } from '@core/network/connectivity.service';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import { AuthErrors } from './auth-error';
-import { recoverPasswordSchema, resetPasswordSchema, verifyCodeSchema } from './auth.schemas';
+import { newPasswordSchema, resetPasswordSchema, verifyCodeSchema } from './auth.schemas';
 import { type AuthResult, OK, AuthResults } from './auth-error';
 
 /** Errors that may be shown without revealing whether an account exists. */
@@ -49,18 +49,25 @@ export class AuthCodeService {
     return this.neutral(email, (address) => this.auth.resetPasswordForEmail(address));
   }
 
-  /** Checks the recovery code (which signs the user in) and sets the new password. */
-  public recoverPassword(email: string, code: string, password: string): Promise<AuthResult> {
-    const parsed = recoverPasswordSchema.safeParse({ email, code, password });
+  /**
+   * Step 2 of the recovery: checks the e-mailed code before any new password
+   * is asked for. A right code signs the user in (Supabase's recovery session).
+   */
+  public verifyRecoveryCode(email: string, code: string): Promise<AuthResult> {
+    const parsed = verifyCodeSchema.safeParse({ email, code });
     if (!parsed.success) return Promise.resolve(AuthResults.invalid(parsed.error));
     return this.run(async () => {
-      const verified = await this.auth.verifyOtp({
-        email: parsed.data.email,
-        token: parsed.data.code,
-        type: 'recovery',
-      });
-      if (verified.error) return AuthResults.fail(AuthErrors.mapAuthError(verified.error, this.online()));
-      const { error } = await this.auth.updateUser({ password: parsed.data.password });
+      const { error } = await this.auth.verifyOtp({ email: parsed.data.email, token: parsed.data.code, type: 'recovery' });
+      return error ? AuthResults.fail(AuthErrors.mapAuthError(error, this.online())) : OK;
+    });
+  }
+
+  /** Step 3: saves the new password of the recovery session. */
+  public setRecoveredPassword(password: string): Promise<AuthResult> {
+    const parsed = newPasswordSchema.safeParse(password);
+    if (!parsed.success) return Promise.resolve(AuthResults.invalid(parsed.error));
+    return this.run(async () => {
+      const { error } = await this.auth.updateUser({ password: parsed.data });
       return error ? AuthResults.fail(AuthErrors.mapAuthError(error, this.online())) : OK;
     });
   }

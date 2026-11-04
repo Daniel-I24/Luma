@@ -961,3 +961,46 @@ alternative that was not taken. The safest, most reversible option wins.
 - **Bundle**: the new versions add 2 kB to the initial bundle (671.05 →
   673.13 kB, mostly Angular 22.2.4); phase 5 measures from there.
 
+
+## Round 10 — phase A (2026-11-04)
+
+- **Order of work**: B1 (LumaNotice) was committed first, alone, so phase A
+  starts from a clean tree. Vitest runs with `pool: 'forks'` and
+  `maxWorkers: 2` fixed in `vitest.config.mjs` (`angular.json` runnerConfig).
+- **Global notice**: only errors the user can act on reach it (a
+  `UserFacingError` with its key, and a screen that failed to download).
+  Every other unhandled error is recorded quietly in `ErrorLog` (last 20,
+  masked) and shown in "Información técnica" → "Errores recientes". This
+  removes "Algo salió mal" for technical failures (a realtime channel whose
+  table did not exist yet, push plugins) instead of hiding them: they are one
+  tap away for support.
+- **Realtime outages** are reported once per outage (not per retry).
+- **Push without Firebase** on a phone is `not_configured` (its own message),
+  not "unavailable" (the web).
+- **Password rule**: ASCII classes for uppercase, lowercase and digit, exactly
+  like Supabase's "Lowercase, uppercase letters and digits", so app and server
+  never disagree. Existing passwords keep signing in. The zod schema of the
+  initial bundle checks only the required parts (`PasswordPolicy`); the list
+  of 200 common passwords stays in the lazy forms.
+- **Recovery code errors**: Supabase answers the same for a wrong and an
+  expired code; the app uses the time since the code was sent (10 minutes,
+  the project's OTP expiry) and stops after 5 wrong codes. A correct code at
+  step 2 signs the user in (Supabase's recovery session); leaving at step 3
+  leaves them signed in with the old password, which is Supabase's own flow.
+- **Municipality bounds**: there are no municipal polygons in the app, so
+  "inside the municipality" is a 15 km square (search) and radius (checks)
+  around the DANE centre. Warnings never block saving.
+- **Sector and reference** are sent only when written, so an app deployed
+  before migration 57 keeps working (the columns arrive with it). Clearing
+  them on an edit does not erase a stored value yet.
+- **order_pickup_point** answers only while the order is accepted, being
+  prepared or ready (the least exposure that still lets the customer arrive).
+- **Order events by audience**: migration 57 deletes the old combined rows
+  (they live a day at most) before adding the CHECK; screens filter as before
+  (owners by `business_id`, customers by `user_id`).
+- **Moments**: the chips keep the six moments the screen already had
+  (including "Nocturna"): the request said not to change anything else.
+- **ai:smoke**: `scripts/ai-smoke.mjs` now runs the functions' own code
+  against the provider (the request). The previous smoke test of the
+  *deployed* functions with a test account is kept as
+  `scripts/ai-smoke-deployed.mjs` (same tests), not deleted.

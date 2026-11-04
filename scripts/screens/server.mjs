@@ -8,7 +8,7 @@ import { extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const DIST = join(fileURLToPath(new URL('../..', import.meta.url)), 'dist', 'screens', 'browser');
-const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json',
+const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json',
   '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.png': 'image/png', '.ico': 'image/x-icon' };
 
 /** Serves DIST on a free local port; resolves to the server. */

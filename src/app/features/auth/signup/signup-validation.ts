@@ -1,8 +1,8 @@
-import { emailSchema, newPasswordSchema } from '@core/auth/auth.schemas';
+import { emailSchema } from '@core/auth/auth.schemas';
 import { ContactRules } from '@core/validation/contact-rules';
+import { PasswordRules } from '@core/validation/password-rules';
 import { FieldRules } from '@core/validation/field-rule';
 import { PERSON_NAME_MAX, TextRules } from '@core/validation/text-rules';
-import { CommonPasswords } from './common-passwords';
 import { STEP_FIELDS, type SignupDraft, type SignupErrors, type SignupStep } from './signup-draft';
 import { ZodRules } from '@core/validation/zod-rules';
 
@@ -25,10 +25,7 @@ const RULES: Readonly<Record<keyof SignupDraft, Rule>> = {
     const parsed = emailSchema.safeParse(d.email);
     return parsed.success ? null : ZodRules.firstMessage(parsed.error);
   },
-  password: (d) => {
-    if (!newPasswordSchema.safeParse(d.password).success) return 'auth.validation.passwordWeak';
-    return CommonPasswords.isCommonPassword(d.password) ? `${V}.passwordCommon` : null;
-  },
+  password: (d) => PasswordRules.errorKey(d.password, d.email),
   acceptedTerms: (d) => (d.acceptedTerms ? null : `${V}.terms`),
   acceptedPrivacy: (d) => (d.acceptedPrivacy ? null : `${V}.privacy`),
   isAdult: (d) => (d.isAdult ? null : `${V}.adult`),

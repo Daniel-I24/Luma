@@ -56,8 +56,8 @@
       {{ t('orders.detail.travel.' + trip.mode, { minutes: trip.minutes }) }}
     </p>
     }
-    @if (order.business; as business) {
-    <app-route-map [lat]="business.latitude" [lng]="business.longitude" [name]="order.business_name" />
+    @if (store.pickup(); as point) {
+    <app-route-map [lat]="point.latitude" [lng]="point.longitude" [name]="point.name" />
     }
   </section>
 

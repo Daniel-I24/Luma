@@ -9,6 +9,10 @@ export interface BusinessDraft {
   category: string;
   phone: string;
   address: string;
+  /** Sector or neighbourhood (optional; proposed by the reverse geocoding, always editable). */
+  neighborhood: string;
+  /** "Al frente del parque" (optional). */
+  reference: string;
   location: GeoCoords | null;
   /** Department and municipality (DANE); the city name is not stored, only its code. */
   municipality: Residence | null;
@@ -21,6 +25,8 @@ export const EMPTY_DRAFT: BusinessDraft = {
   category: '',
   phone: '',
   address: '',
+  neighborhood: '',
+  reference: '',
   location: null,
   municipality: null,
   cityDaneCode: null,
@@ -35,6 +41,8 @@ export class BusinessDrafts {
       category: business.category,
       phone: business.phone ? (Phone.parse(business.phone)?.display ?? business.phone) : '',
       address: business.address,
+      neighborhood: business.neighborhood ?? '',
+      reference: business.address_reference ?? '',
       location: { lat: business.latitude, lng: business.longitude },
       municipality: null,
       cityDaneCode: business.city_dane_code ?? null,
@@ -52,6 +60,9 @@ export class BusinessDrafts {
       longitude: draft.location?.lng,
       department: draft.municipality?.department ?? null,
       city_dane_code: draft.municipality?.daneCode ?? draft.cityDaneCode,
+      // Only when written: the columns arrive with migration round10.
+      ...(draft.neighborhood.trim() ? { neighborhood: draft.neighborhood } : {}),
+      ...(draft.reference.trim() ? { address_reference: draft.reference } : {}),
     };
   }
 
@@ -61,9 +72,11 @@ export class BusinessDrafts {
       ['name', `${prefix}-name`],
       ['category', `${prefix}-category`],
       ['phone', `${prefix}-phone`],
-      ['address', `${prefix}-address`],
       ['latitude', `${prefix}-location`],
       ['longitude', `${prefix}-location`],
+      ['address', `${prefix}-address`],
+      ['neighborhood', `${prefix}-neighborhood`],
+      ['address_reference', `${prefix}-reference`],
     ];
   }
 

@@ -77,7 +77,7 @@ export function registerBusinessPageHarness() {
       el.querySelector<HTMLButtonElement>('#register-location')!.click();
       fixture.detectChanges();
       expect(el.querySelector('#register-location-status')?.textContent).toContain(
-        'businessPanel.location.chosen',
+        'location.confirmed',
       );
     };
     const submit = async () => {

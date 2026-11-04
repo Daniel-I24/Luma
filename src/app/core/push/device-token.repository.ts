@@ -12,13 +12,21 @@ export class DeviceTokenRepository {
 
   /** Stores this device's push token for the signed-in user. */
   public async register(token: string): Promise<boolean> {
-    const { error } = await this.db.rpc('register_device_token', { p_token: token, p_platform: 'android' });
-    return !error;
+    return this.call(() => this.db.rpc('register_device_token', { p_token: token, p_platform: 'android' }));
   }
 
   /** Removes this device's push token. */
   public async unregister(token: string): Promise<boolean> {
-    const { error } = await this.db.rpc('unregister_device_token', { p_token: token });
-    return !error;
+    return this.call(() => this.db.rpc('unregister_device_token', { p_token: token }));
+  }
+
+  /** True when the RPC answered without error; a thrown network error counts as one. */
+  private async call(rpc: () => PromiseLike<{ error: unknown }>): Promise<boolean> {
+    try {
+      const { error } = await rpc();
+      return !error;
+    } catch {
+      return false;
+    }
   }
 }

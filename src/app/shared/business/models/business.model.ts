@@ -40,6 +40,10 @@ export interface Business {
   department?: string | null;
   /** DANE municipality code chosen by the owner (five digits). */
   city_dane_code?: string | null;
+  /** Sector the owner wrote (round 10; optional). */
+  neighborhood?: string | null;
+  /** "Al frente del parque" (round 10; optional). */
+  address_reference?: string | null;
   /** Public contact (migration business_showcase; absent before it is applied). */
   whatsapp?: string | null;
   instagram?: string | null;

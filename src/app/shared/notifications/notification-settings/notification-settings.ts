@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton } from '@design-system';
-import { PushRegistration } from '@core/push/push-registration.service';
+import { type PushProblem, PushRegistration } from '@core/push/push-registration.service';
 import {
   type NotificationPreferences,
   NotificationPreferencesRepository,
@@ -27,6 +27,13 @@ export class NotificationSettings implements OnInit {
   protected readonly push = inject(PushRegistration);
 
   protected readonly keys: readonly PreferenceKey[] = ['orders', 'promotions'];
+  /** Translation key of each push problem (notificationSettings.phone.problem.*). */
+  protected readonly problemKeys: Readonly<Record<PushProblem, string>> = {
+    denied: 'denied',
+    not_configured: 'notConfigured',
+    registration_failed: 'registrationFailed',
+    token_save_failed: 'tokenSaveFailed',
+  };
   protected readonly preferences = signal<NotificationPreferences | null>(null);
   protected readonly errorKey = signal<string | null>(null);
   protected readonly saving = signal(false);

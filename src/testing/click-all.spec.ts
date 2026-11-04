@@ -40,7 +40,7 @@ describe('clickAll', () => {
         { provide: AuthService, useValue: { signOut: vi.fn().mockResolvedValue({ success: true }) } },
         { provide: ConnectivityService, useValue: { online: signal(true) } },
         { provide: SessionProfileStore, useValue: { retry: vi.fn().mockResolvedValue(false), landingPath: vi.fn(), failureKey: () => null } },
-        { provide: PushRegistration, useValue: { permission: signal('prompt'), enable: vi.fn().mockResolvedValue('granted') } },
+        { provide: PushRegistration, useValue: { permission: signal('prompt'), problem: signal(null), enable: vi.fn().mockResolvedValue('granted') } },
         {
           provide: NotificationPreferencesRepository,
           useValue: {

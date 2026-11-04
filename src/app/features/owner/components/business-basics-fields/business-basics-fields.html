@@ -35,18 +35,6 @@
     (valueChange)="set('phone', $event)"
     (blurred)="check('phone')"
   />
-  <app-luma-input
-    [inputId]="idPrefix() + '-address'"
-    [label]="t('businessPanel.form.address')"
-    [placeholder]="t('businessPanel.form.addressPlaceholder')"
-    autocomplete="street-address"
-    [required]="true"
-    [maxLength]="rules.address.maxLength"
-    [errorMessage]="error('address')"
-    [value]="draft().address"
-    (valueChange)="set('address', $event)"
-    (blurred)="check('address')"
-  />
   <app-residence-picker
     legendKey="owner.wizard.municipalityLegend"
     purposeKey="owner.wizard.municipalityPurpose"
@@ -55,14 +43,47 @@
     [value]="draft().municipality"
     (valueChange)="setMunicipality($event)"
   />
-  <app-address-search [idPrefix]="idPrefix()" [near]="near()" (chosen)="onAddress($event)" />
-  @if (farFromAddress()) {
-  <app-luma-notice tone="warning">{{ t('owner.wizard.farFromAddress') }}</app-luma-notice>
-  }
   <app-location-picker
     [pickerId]="idPrefix() + '-location'"
     [errorMessage]="error('latitude') ?? error('longitude')"
+    [centre]="centre()"
+    [others]="others()"
     [position]="draft().location"
     (positionChange)="setLocation($event)"
+  />
+  <app-location-proposal [position]="confirmed()" (used)="useProposal($event)" />
+  <app-luma-input
+    [inputId]="idPrefix() + '-address'"
+    [label]="t('businessPanel.form.address')"
+    [placeholder]="t('businessPanel.form.addressPlaceholder')"
+    [hint]="t('location.addressHint')"
+    autocomplete="street-address"
+    [required]="true"
+    [maxLength]="rules.address.maxLength"
+    [errorMessage]="error('address')"
+    [value]="draft().address"
+    (valueChange)="set('address', $event)"
+    (blurred)="check('address')"
+  />
+  <app-luma-input
+    [inputId]="idPrefix() + '-neighborhood'"
+    [label]="t('location.sectorLabel')"
+    [placeholder]="t('location.sectorPlaceholder')"
+    [hint]="t('location.sectorHint')"
+    [maxLength]="rules.neighborhood.maxLength"
+    [errorMessage]="error('neighborhood')"
+    [value]="draft().neighborhood"
+    (valueChange)="set('neighborhood', $event)"
+    (blurred)="check('neighborhood')"
+  />
+  <app-luma-input
+    [inputId]="idPrefix() + '-reference'"
+    [label]="t('location.referenceLabel')"
+    [placeholder]="t('location.referencePlaceholder')"
+    [maxLength]="rules.reference.maxLength"
+    [errorMessage]="error('reference') ?? error('address_reference')"
+    [value]="draft().reference"
+    (valueChange)="set('reference', $event)"
+    (blurred)="check('reference')"
   />
 </div>

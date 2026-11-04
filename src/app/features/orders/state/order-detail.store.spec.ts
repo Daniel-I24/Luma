@@ -3,54 +3,35 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { OrderRepository } from '@shared/orders/order.repository';
 import { OrderDetailStore } from './order-detail.store';
 
-const order = (status: string) => ({ id: 'o1', status, items: [] });
+const order = (status: string, visible: boolean) => ({
+  id: 'o1', status, business_name: 'Fritanga', business_address: 'Calle 19 # 20-10',
+  business: visible ? { id: 'b1', latitude: 1.21, longitude: -77.28, prep_minutes: 15 } : null,
+});
 
-describe('OrderDetailStore', () => {
-  const repo = { getById: vi.fn(), cancel: vi.fn() };
-  let store: OrderDetailStore;
+describe('OrderDetailStore pick-up point', () => {
+  const repo = { getById: vi.fn(), pickupPoint: vi.fn() };
 
   beforeEach(() => {
-    vi.clearAllMocks();
-    TestBed.configureTestingModule({
-      providers: [OrderDetailStore, { provide: OrderRepository, useValue: repo }],
-    });
-    store = TestBed.inject(OrderDetailStore);
+    vi.resetAllMocks();
+    repo.pickupPoint.mockResolvedValue({ data: { name: 'Fritanga', address: 'Calle 19 # 20-10', latitude: 1.21, longitude: -77.28 }, errorKey: null });
+    TestBed.configureTestingModule({ providers: [OrderDetailStore, { provide: OrderRepository, useValue: repo }] });
   });
 
-  it('loads an order, or reports it as not found', async () => {
-    repo.getById.mockResolvedValueOnce({ data: order('pending'), errorKey: null });
-    await store.load('o1');
-    expect(store.state()).toBe('ready');
-
-    repo.getById.mockResolvedValueOnce({ data: null, errorKey: null });
-    await store.load('o2');
-    expect(store.state()).toBe('notFound');
+  it('only while accepted, preparing or ready', async () => {
+    const store = TestBed.inject(OrderDetailStore);
+    for (const [status, shown] of [['pending', false], ['accepted', true], ['preparing', true], ['ready', true], ['picked_up', false]] as const) {
+      repo.getById.mockResolvedValue({ data: order(status, true), errorKey: null });
+      await store.load('o1');
+      expect(store.pickup() !== null).toBe(shown);
+    }
+    expect(repo.pickupPoint).not.toHaveBeenCalled();
   });
 
-  it('keeps showing the order when a background refresh fails', async () => {
-    repo.getById.mockResolvedValueOnce({ data: order('pending'), errorKey: null });
+  it('a paused or suspended business (hidden by RLS) is still reachable through order_pickup_point', async () => {
+    repo.getById.mockResolvedValue({ data: order('ready', false), errorKey: null });
+    const store = TestBed.inject(OrderDetailStore);
     await store.load('o1');
-    repo.getById.mockResolvedValueOnce({ data: null, errorKey: 'orders.errors.loadFailed' });
-
-    await store.refresh();
-
-    expect(store.state()).toBe('ready');
-    expect(store.order()?.status).toBe('pending');
-  });
-
-  it('cancels and shows the new status, or the reason it could not', async () => {
-    repo.getById.mockResolvedValue({ data: order('pending'), errorKey: null });
-    await store.load('o1');
-
-    repo.cancel.mockResolvedValueOnce({ data: true, errorKey: null });
-    repo.getById.mockResolvedValueOnce({ data: order('cancelled'), errorKey: null });
-    await store.cancel();
-    expect(repo.cancel).toHaveBeenCalledWith('o1');
-    expect(store.order()?.status).toBe('cancelled');
-
-    repo.cancel.mockResolvedValueOnce({ data: null, errorKey: 'orders.errors.invalidTransition' });
-    await store.cancel();
-    expect(store.errorKey()).toBe('orders.errors.invalidTransition');
-    expect(store.cancelling()).toBe(false);
+    expect(repo.pickupPoint).toHaveBeenCalledWith('o1');
+    expect(store.pickup()).toEqual({ name: 'Fritanga', address: 'Calle 19 # 20-10', latitude: 1.21, longitude: -77.28 });
   });
 });

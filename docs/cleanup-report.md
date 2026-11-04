@@ -192,3 +192,17 @@ left pointing at it) and the full Definition of Done stayed green.
   created it, and revoke the token.
 - `PaymentReturn.webReturnGuard` moved to `payment-return.routes.ts` (lazy).
 
+## Round 10 — phase A (2026-11-04)
+
+- `src/app/features/auth/signup/common-passwords.ts` and `password-strength.ts`:
+  replaced by `core/validation/password-rules.ts` (with 200 common passwords)
+  and `shared/account/password-checklist`, used by the three password forms.
+- `AuthRules.newPassword` and `recoverPasswordSchema`: the recovery checks
+  the code first (`verifyRecoveryCode`) and saves later
+  (`setRecoveredPassword`); new passwords use `PasswordRules`.
+- `src/app/features/owner/components/address-search/`: replaced by
+  `location-picker/location-search.ts` (bounded to the municipality).
+- Keys `owner.wizard.addressSearch|addressPlaceholder|search|farFromAddress`,
+  `businessPanel.location.hint|mapLabel|useCurrent|useCentre|chosen|denied`
+  and `auth.signup.validation.passwordCommon`: no references left.
+

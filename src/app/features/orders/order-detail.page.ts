@@ -74,10 +74,10 @@ export class OrderDetailPage {
   });
   /** Approximate trip to the business, only once the user's location is known. */
   protected readonly travel = computed(() => {
-    const business = this.store.order()?.business;
-    if (!business || !this.geo.hasRealLocation()) return null;
+    const point = this.store.pickup();
+    if (!point || !this.geo.hasRealLocation()) return null;
     const { lat, lng } = this.geo.coords();
-    return OrderEstimates.estimateTravelMinutes(Haversine.haversineKm(lat, lng, business.latitude, business.longitude));
+    return OrderEstimates.estimateTravelMinutes(Haversine.haversineKm(lat, lng, point.latitude, point.longitude));
   });
 
   constructor() {

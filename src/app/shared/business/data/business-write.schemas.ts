@@ -37,6 +37,9 @@ const registerShape = {
   category: z.enum(BUSINESS_CATEGORY_VALUES, `${V}.category`),
   phone: ZodRules.optionalText(ContactRules.phone),
   address: ZodRules.text(TextRules.address),
+  // Optional (round 10): sent only when the owner wrote them.
+  neighborhood: z.optional(ZodRules.optionalText(TextRules.neighborhood)),
+  address_reference: z.optional(ZodRules.optionalText(TextRules.addressReference)),
   latitude: z
     .number(`${V}.location`)
     .check(z.gte(-MAX_LATITUDE, `${V}.location`), z.lte(MAX_LATITUDE, `${V}.location`)),

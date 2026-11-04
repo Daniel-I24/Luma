@@ -31,7 +31,7 @@ describe('RegisterPage (stepped sign-up)', () => {
     expect(title()).toBe('auth.signup.steps.photo');
     await submit();
     await type('signup-email', 'ana@example.com');
-    await type('signup-password', 'tamal-pastuso-7');
+    await type('signup-password', 'Tamal-pastuso-7');
     await submit();
     expect(title()).toBe('auth.signup.steps.consent');
     await click('#signup-acceptedTerms');
@@ -40,7 +40,7 @@ describe('RegisterPage (stepped sign-up)', () => {
     await submit();
 
     await vi.waitFor(() => expect(navigate).toHaveBeenCalledWith(['/auth/verify']));
-    expect(auth.signUp).toHaveBeenCalledWith('ana@example.com', 'tamal-pastuso-7', {
+    expect(auth.signUp).toHaveBeenCalledWith('ana@example.com', 'Tamal-pastuso-7', {
       accountType: 'business_owner',
       fullName: 'Ana Pérez',
       phone: '+573001234567',

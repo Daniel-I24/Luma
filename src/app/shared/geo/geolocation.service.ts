@@ -20,9 +20,12 @@ export const PASTO_CENTRE: GeoCoords = { lat: 1.2136, lng: -77.2811 };
 export class GeolocationService {
   private readonly _state = signal<GeoState>('idle');
   private readonly _coords = signal<GeoCoords>(PASTO_CENTRE);
+  private readonly _accuracy = signal<number | null>(null);
 
   public readonly state = computed(() => this._state());
   public readonly coords = computed(() => this._coords());
+  /** Accuracy of the last real position, in metres (null until one arrives). */
+  public readonly accuracy = this._accuracy.asReadonly();
 
   /** True only after a successful geolocation response. */
   public readonly hasRealLocation = computed(() => this._state() === 'granted');
@@ -35,8 +38,9 @@ export class GeolocationService {
   /**
    * Requests the user's current position.
    * Sets state to 'locating' while waiting; resolves to 'granted' or 'denied'.
+   * `highAccuracy` ("Estoy en el local"): GPS, a fresh fix, a longer wait.
    */
-  public requestLocation(): void {
+  public requestLocation(highAccuracy = false): void {
     if (!navigator.geolocation) {
       this._state.set('unavailable');
       return;
@@ -47,13 +51,14 @@ export class GeolocationService {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         this._coords.set({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        this._accuracy.set(Math.round(pos.coords.accuracy));
         this._state.set('granted');
       },
       () => {
         // Permission denied or any error: keep the fallback centre (residence or Pasto).
         this._state.set('denied');
       },
-      { timeout: 10_000, maximumAge: 60_000 },
+      highAccuracy ? { enableHighAccuracy: true, timeout: 20_000, maximumAge: 0 } : { timeout: 10_000, maximumAge: 60_000 },
     );
   }
 }

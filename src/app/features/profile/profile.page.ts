@@ -3,7 +3,8 @@ import { RouterLink } from '@angular/router';
 import { TourHelpButton } from '@shared/tutorial/tour-help-button';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
-import { LumaAvatar, LumaIcon } from '@design-system';
+import { LumaAvatar, LumaDisclosure, LumaIcon } from '@design-system';
+import { RecentErrors } from '@shared/errors/recent-errors/recent-errors';
 import { AccountActions } from '@shared/account/account-actions/account-actions';
 import { SessionProfileStore } from '@shared/account/session-profile.store';
 import { AdminEntry } from './components/admin-entry/admin-entry';
@@ -31,6 +32,8 @@ import { TrustStatusCard } from './components/trust-status-card/trust-status-car
     TrustStatusCard,
     LumaAvatar,
     LumaIcon,
+    LumaDisclosure,
+    RecentErrors,
     RouterLink,
     AccountActions,
     AdminEntry,

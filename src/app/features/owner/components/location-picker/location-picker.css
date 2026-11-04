@@ -1,0 +1,22 @@
+/* The pin stays at the centre of the map; its tip marks the point. */
+.picker-pin {
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+  width: var(--spacing-8);
+  height: var(--spacing-8);
+  transform: translateX(-50%);
+  transition: transform var(--duration-fast) var(--ease-enter);
+  pointer-events: none;
+  color: var(--color-primary);
+}
+
+.picker-pin--lifted {
+  transform: translate(-50%, calc(var(--spacing-3) * -1));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .picker-pin {
+    transition: none;
+  }
+}

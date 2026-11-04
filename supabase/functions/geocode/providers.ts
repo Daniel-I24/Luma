@@ -1,10 +1,16 @@
 import { at, type FetchLike, getJson, num } from './http.ts';
-import { cleanLabel, COLOMBIA_BBOX, type GeocodeInput, MAX_PLACES, NARINO_BBOX, type Place, type PlaceKind } from './model.ts';
+import {
+  cleanLabel, COLOMBIA_BBOX, type GeocodeInput, MAX_CANDIDATES, MAX_PLACES, NARINO_BBOX, type Place, type PlaceKind, type Point,
+  type ReverseAddress, viewboxAround,
+} from './model.ts';
+import { reverseNominatimLike } from './reverse.ts';
 import { LOCATIONIQ_BASE_URL, MAPTILER_BASE_URL, NOMINATIM_BASE_URL, PHOTON_BASE_URL } from '../_shared/config/provider-urls.ts';
 
 export interface GeocodeProvider {
   readonly name: string;
   search(input: GeocodeInput): Promise<(Place | null)[]>;
+  /** Address proposal for a confirmed point; absent when the provider has none. */
+  reverse?(point: Point): Promise<ReverseAddress | null>;
 }
 
 const fetchOf = (fetchFn?: FetchLike): FetchLike => fetchFn ?? ((url, init) => fetch(url, init));
@@ -64,22 +70,27 @@ export function createNominatimLike(options: {
   userAgent?: string;
   fetchFn?: FetchLike;
 }): GeocodeProvider {
+  const headers: Record<string, string> = options.userAgent ? { 'User-Agent': options.userAgent } : {};
   return {
     name: options.name,
-    search: async ({ q }) => {
+    search: async ({ q, within }) => {
+      // Within a municipality: bounded to its box, 5 candidates; otherwise Nariño preferred.
       const params = new URLSearchParams({
-        q, format: 'json', countrycodes: 'co', 'accept-language': 'es', limit: String(MAX_PLACES),
-        addressdetails: '1', viewbox: NARINO_BBOX.join(','), bounded: '0',
+        q, format: 'json', countrycodes: 'co', 'accept-language': 'es', addressdetails: '1', dedupe: '1',
+        limit: String(within ? MAX_CANDIDATES : MAX_PLACES),
+        viewbox: (within ? viewboxAround(within) : NARINO_BBOX).join(','), bounded: within ? '1' : '0',
       });
       if (options.key) params.set('key', options.key);
-      const headers: Record<string, string> = options.userAgent ? { 'User-Agent': options.userAgent } : {};
       const body = await getJson(fetchOf(options.fetchFn), `${options.baseUrl}/search?${params}`, headers);
       return (Array.isArray(body) ? body : []).map((r) => {
         if (String(at(r, 'address', 'country_code')).toLowerCase() !== 'co') return null;
-        const label = cleanLabel(String(at(r, 'display_name') ?? '').split(',').slice(0, 4));
-        return place(label, kindOf(at(r, 'addresstype') ?? at(r, 'type')), num(at(r, 'lat')), num(at(r, 'lon')));
+        // The name the owner searched and its town; never the suburb of the returned point.
+        const name = String(at(r, 'display_name') ?? '').split(',')[0];
+        const town = at(r, 'address', 'city') ?? at(r, 'address', 'town') ?? at(r, 'address', 'village') ?? at(r, 'address', 'county');
+        return place(cleanLabel([name, town]), kindOf(at(r, 'addresstype') ?? at(r, 'type')), num(at(r, 'lat')), num(at(r, 'lon')));
       });
     },
+    reverse: (point) => reverseNominatimLike({ ...options, headers, fetchFn: fetchOf(options.fetchFn) }, point),
   };
 }
 

@@ -15,6 +15,10 @@ const ORDER_COLUMNS =
 /** create_order returns the new order id. */
 const orderIdSchema = z.uuid();
 
+/** order_pickup_point: where to pick an order up, even when its business is no longer public. */
+const pickupSchema = z.array(z.object({ name: z.string(), address: z.string(), latitude: z.number(), longitude: z.number() }));
+export type PickupPoint = z.infer<typeof pickupSchema>[number];
+
 /**
  * OrderRepository — the signed-in user's pick-up orders. Reads go through
  * RLS (own orders only); creating and cancelling go through the database
@@ -73,5 +77,13 @@ export class OrderRepository {
     if (error)
       return { data: null, errorKey: OrderErrors.mapOrderError(error.message, 'orders.errors.cancelFailed') };
     return { data: true, errorKey: null };
+  }
+
+  /** Name, address and coordinates of the order's business, for its own customer only (SECURITY DEFINER RPC). */
+  public async pickupPoint(orderId: string): Promise<RepoResult<PickupPoint | null>> {
+    const { data, error } = await this.db.rpc('order_pickup_point', { p_order_id: orderId });
+    const parsed = pickupSchema.safeParse(data);
+    if (error || !parsed.success) return { data: null, errorKey: 'orders.errors.loadFailed' };
+    return { data: parsed.data[0] ?? null, errorKey: null };
   }
 }

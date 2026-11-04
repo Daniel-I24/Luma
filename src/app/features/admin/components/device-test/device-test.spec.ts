@@ -19,7 +19,7 @@ describe('The test notification is an admin tool', () => {
       providers: [
         { provide: NotificationPreferencesRepository, useValue: repo },
         { provide: ToastService, useValue: toast },
-        { provide: PushRegistration, useValue: { permission: () => 'granted', enable: vi.fn() } },
+        { provide: PushRegistration, useValue: { permission: () => 'granted', problem: () => null, enable: vi.fn() } },
       ],
     });
   });

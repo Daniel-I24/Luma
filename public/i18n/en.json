@@ -37,16 +37,27 @@
       "emailPlaceholder": "name@example.com",
       "submit": "Send code",
       "backToLogin": "Back to sign in",
-      "codeSent": "If the email has an account, we sent a code. Enter it with your new password.",
+      "codeSent": "If the e-mail has an account, we sent you a 6-digit code. Type it to continue.",
       "newPassword": "New password",
       "save": "Save and sign in",
-      "changeEmail": "Use another email"
+      "changeEmail": "Use another email",
+      "verify": "Check code",
+      "resend": "Resend code",
+      "resendIn": "Resend code in {{seconds}} s",
+      "resent": "We sent you a new code.",
+      "codeOk": "Code accepted. Now choose your new password.",
+      "stepOf": "Step {{step}} of 3",
+      "errors": {
+        "codeWrong": "The code isn't right. Check it and try again.",
+        "codeExpired": "The code expired (it lasts 10 minutes). Ask for a new one.",
+        "tooManyAttempts": "Too many attempts. Ask for a new code and wait a moment."
+      }
     },
     "validation": {
       "emailRequired": "Email address is required.",
       "emailInvalid": "Enter a valid email address.",
       "passwordRequired": "Enter your password.",
-      "passwordWeak": "Use at least 8 characters, with letters and numbers.",
+      "passwordWeak": "Use at least 8 characters, with an uppercase letter, a lowercase letter and a number.",
       "codeInvalid": "Enter the 6 digits of the code."
     },
     "errors": {
@@ -76,7 +87,24 @@
       "resent": "If the email has a pending account, we sent a new code."
     },
     "password": {
-      "show": "Show password"
+      "show": "Show password",
+      "requirements": {
+        "length": "At least 8 characters",
+        "upper": "An uppercase letter",
+        "lower": "A lowercase letter",
+        "digit": "A number"
+      },
+      "recommended": "Recommended: 12 characters or a symbol",
+      "met": "done",
+      "missing": "missing",
+      "strengthLabel": "Strength",
+      "refusal": {
+        "containsEmail": "Don't use your e-mail inside the password.",
+        "common": "That password is too common. Choose another one."
+      },
+      "confirm": "Repeat the password",
+      "mismatch": "The passwords don't match.",
+      "confirmPlaceholder": "Type it again"
     },
     "signup": {
       "progress": "Step {{current}} of {{total}}",
@@ -106,7 +134,7 @@
         "phonePurpose": "Required. We use it to verify your account and prevent fake orders; businesses never see it."
       },
       "credentials": {
-        "passwordRule": "At least 8 characters, with letters and numbers.",
+        "passwordRule": "At least 8 characters, with an uppercase letter, a lowercase letter and a number.",
         "showPassword": "Show password",
         "hidePassword": "Hide password",
         "strength": {
@@ -124,7 +152,6 @@
       },
       "validation": {
         "accountType": "Choose how you will use Luma.",
-        "passwordCommon": "That password is too common. Choose another one.",
         "terms": "You must accept the terms to continue.",
         "privacy": "You must authorise data processing to continue.",
         "adult": "You must be of legal age to create an account.",
@@ -433,6 +460,10 @@
       "favorite": "{{name}} is one of your favourites.",
       "variety": "{{name}} is something different for a change.",
       "default": "{{name}} is open and close to you."
+    },
+    "combos": {
+      "title": "Combos for {{moment}}",
+      "none": "No combos for {{moment}} nearby right now: no business open at that time has a dish and a drink available."
     }
   },
   "orders": {
@@ -739,14 +770,8 @@
     },
     "location": {
       "label": "Location",
-      "hint": "Tap the map to drop the pin; you can drag it.",
-      "mapLabel": "Map to choose the business location",
-      "useCurrent": "Use my location",
-      "useCentre": "Pin the map centre",
-      "chosen": "Pin at {{lat}}, {{lng}}",
       "none": "You haven't chosen the location yet.",
-      "mapFailed": "The map could not be loaded. Use your current location.",
-      "denied": "We couldn't get your location. Tap the map to choose it."
+      "mapFailed": "The map could not be loaded. Use your current location."
     },
     "register": {
       "title": "Register my business",
@@ -1670,7 +1695,8 @@
         "providerModel": "The Luma IA provider does not know the configured model. Paste your menu as text while the team fixes it.",
         "providerQuota": "Luma AI has reached its provider usage limit for now. Try again later or paste your menu as text.",
         "providerSaturated": "Luma AI is overloaded right now. Tap Retry in a few seconds or paste your menu as text.",
-        "slow": "Luma IA took too long to read the photos. Try fewer photos or paste your menu as text."
+        "slow": "Luma IA took too long to read the photos. Try fewer photos or paste your menu as text.",
+        "truncated": "The menu is too long to read in one go. Try fewer photos or one part at a time."
       }
     },
     "orderAlerts": {
@@ -1732,10 +1758,6 @@
       "continue": "Continue",
       "ready": "All set. Check the details and send your business for review: we will tell you when it is approved.",
       "back": "Back to the wizard",
-      "addressSearch": "Search the address",
-      "addressPlaceholder": "Calle 18 # 25-30, Pasto",
-      "search": "Search",
-      "farFromAddress": "The pin is far from the address you searched. Check that it is on the entrance of the business.",
       "municipalityLegend": "Department and municipality",
       "municipalityPurpose": "Where the business is, according to DANE. It helps us show it to customers nearby."
     },
@@ -1832,7 +1854,8 @@
     "placeholderConfig": "Development mode: environment.ts has template values (placeholder.supabase.co). The app cannot reach Supabase.",
     "unexpected": "Something went wrong. You can keep using the app; if it happens again, reload it.",
     "emailNotConfirmed": "Confirm your email with the code we sent you to continue.",
-    "phoneNotVerified": "Verify your mobile number to continue."
+    "phoneNotVerified": "Verify your mobile number to continue.",
+    "screenDownload": "We couldn't open this screen. Check your connection and try again."
   },
   "notFound": {
     "title": "We could not find this page",
@@ -1858,7 +1881,15 @@
       "denied": "Luma notifications are blocked in the phone settings. Turn them on there if you want them.",
       "prompt": "To get notices even when Luma is closed, allow notifications on this phone.",
       "enable": "Allow notifications",
-      "web": "On the web you'll see your notices in the notification list."
+      "web": "On the web you'll see your notices in the notification list.",
+      "notConfigured": "Phone notifications aren't active in this version of Luma. You'll see your notices in the notifications list.",
+      "problem": {
+        "denied": "You didn't allow notifications. You can turn them on in your phone's settings, under Luma → Notifications.",
+        "notConfigured": "This version of Luma can't receive phone notifications. Your notices still arrive in the notifications list.",
+        "registrationFailed": "The phone couldn't sign up for notifications. Check your connection and try again.",
+        "tokenSaveFailed": "Permission is on, but we couldn't save this phone. Try again in a moment."
+      },
+      "retry": "Try again"
     },
     "errors": {
       "load": "We couldn't load your notification preferences.",
@@ -1879,7 +1910,7 @@
       "intro": "For security, confirm your current password and then the code we will email you.",
       "current": "Current password",
       "next": "New password",
-      "rules": "At least 8 characters, with letters and numbers.",
+      "rules": "At least 8 characters, with an uppercase letter, a lowercase letter and a number.",
       "save": "Save password",
       "saved": "Done: your password changed.",
       "wrongCurrent": "The current password is not correct.",
@@ -2291,9 +2322,10 @@
       "drive": "{{km}} km · about {{minutes}} min by car"
     },
     "estimate": "Straight-line estimate: streets may make it longer.",
-    "locate": "Use my location to see the route",
+    "locate": "Turn on location",
     "googleMaps": "Open in Google Maps",
-    "approximate": "Approximate time: by motorcycle we use the car route with an adjusted time."
+    "approximate": "Approximate time: by motorcycle we use the car route with an adjusted time.",
+    "directions": "Get directions"
   },
   "placeholders": {
     "fullName": "E.g.: Ana María Pérez",
@@ -2370,5 +2402,57 @@
     "updatedNow": "Updated a moment ago",
     "updatedAgo": "Updated {{minutes}} min ago",
     "refresh": "Refresh"
+  },
+  "technicalErrors": {
+    "title": "Recent errors",
+    "hint": "The last 20 errors of this session, without personal data",
+    "empty": "There were no errors in this session.",
+    "copy": "Copy errors",
+    "copied": {
+      "ok": "Copied. Paste them into your message to support.",
+      "failed": "Couldn't copy on this device."
+    },
+    "heading": "Technical information",
+    "headingHint": "To send to support if something fails"
+  },
+  "location": {
+    "hint": "Move the map until the pin sits on the business entrance and press \"Confirm this point\".",
+    "mapLabel": "Map to choose the location: the pin stays at the centre; move it with your finger or the arrow keys",
+    "confirm": "Confirm this point",
+    "unconfirmed": "You haven't confirmed this point yet.",
+    "confirmed": "Point confirmed: {{lat}}, {{lng}}",
+    "gps": {
+      "button": "I'm at the business",
+      "locating": "Finding your location…",
+      "why": "Uses the phone's GPS only to move the map to where you are; then you confirm the point.",
+      "accuracy": "GPS accuracy: about {{metres}} m. Adjust the map if needed.",
+      "denied": "We couldn't use your location. Search the address or move the map."
+    },
+    "search": {
+      "label": "Search a street, neighbourhood or place",
+      "placeholder": "Calle 18 # 25-30 or Jamondino",
+      "submit": "Search",
+      "results": "Results in the municipality",
+      "none": "We didn't find that place in the chosen municipality.",
+      "dismiss": "None: I'll move it myself",
+      "fromCentre": "{{distance}} from the centre"
+    },
+    "warnings": {
+      "farFromMunicipality": "This point is more than 15 km from the municipality's centre or outside it. Check the municipality or the point.",
+      "sameAsOtherBusiness": "This point is the same as another of your businesses. If it's another place, move it to its entrance."
+    },
+    "proposal": {
+      "title": "Suggested address for this point",
+      "noAddress": "No suggested address: write it yourself.",
+      "sector": "Sector: {{sector}}",
+      "approximate": "Approximate: check it and correct it in the fields below.",
+      "use": "Use this address"
+    },
+    "addressHint": "Write it as a customer would say it: Calle 18 # 25-30.",
+    "sectorLabel": "Neighbourhood or sector (optional)",
+    "sectorHint": "Approximate if it came from the suggestion: correct it if needed.",
+    "referenceLabel": "Landmark (optional)",
+    "referencePlaceholder": "Across from the park",
+    "sectorPlaceholder": "Jamondino"
   }
 }

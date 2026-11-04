@@ -53,6 +53,16 @@ export interface Combo {
   totalCop: number;
 }
 
+/** "Combos para {momento}": informative only (no "add" button), whole COP. */
+export interface MomentCombo {
+  business: Business;
+  distanceKm: number | null;
+  dish: MenuItem;
+  drink: MenuItem;
+  extra: MenuItem | null;
+  totalCop: number;
+}
+
 export interface Recommendation {
   /** Up to three businesses, best first. */
   businesses: readonly RecommendedBusiness[];

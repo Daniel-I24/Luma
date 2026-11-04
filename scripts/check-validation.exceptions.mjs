@@ -7,7 +7,7 @@
 export const EXCEPTIONS = [
   // Searches: one line, at most 80 characters (maxlength), cleaned before searching, never stored.
   { file: 'src/app/design-system/search-input/luma-search-input.ts', field: 'inputId()', why: 'search box: maxlength 80, never stored' },
-  { file: 'src/app/features/owner/components/address-search/address-search.ts', field: "idPrefix() + '-address-search'", why: 'address search: maxlength 80, cleaned (TextRules.search), never stored' },
+  { file: 'src/app/features/owner/components/location-picker/location-search.ts', field: "idPrefix() + '-location-search'", why: 'location search: maxlength 80, cleaned (TextRules.search), never stored' },
   { file: 'src/app/shared/geo/residence-picker/residence-picker.html', field: 'residence-city', why: 'municipality search over the DANE catalog: only a listed option is stored' },
   // Choices from a fixed list: the value is always one of the options.
   { file: 'src/app/features/checkout/checkout.page.html', field: 'checkout-time', why: 'pick-up time from the computed slots; create_order checks it again' },

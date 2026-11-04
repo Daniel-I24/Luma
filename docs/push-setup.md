@@ -83,6 +83,19 @@ To rotate the secret: set the new one in the Edge secret first, then here.
 5. From another account place an order: the owner's phone shows "Nuevo
    pedido"; tapping it opens the order board.
 
+## What the app says when push fails
+
+`PushRegistration` never throws (round 10): each failure has its own message
+in Perfil / Mi negocio → Notificaciones, and the technical error goes to
+"Información técnica" → "Errores recientes" (ErrorLog, no personal data).
+
+| Problem | When | Message key |
+| --- | --- | --- |
+| `denied` | the user said no (or the system dialog failed) | `notificationSettings.phone.problem.denied` |
+| `not_configured` | an Android build without `google-services.json` (`PUSH_ENABLED` off) | `notificationSettings.phone.problem.notConfigured` |
+| `registration_failed` | FCM answered `registrationError` or nothing within 20 s | `notificationSettings.phone.problem.registrationFailed` (with "Intentar de nuevo") |
+| `token_save_failed` | `register_device_token` failed | `notificationSettings.phone.problem.tokenSaveFailed` (with "Intentar de nuevo") |
+
 ## If nothing arrives
 
 | Symptom | Check |

@@ -1,31 +1,28 @@
 import { DOCUMENT } from '@angular/common';
 import {
-  ChangeDetectionStrategy, Component, DestroyRef, type ElementRef, computed, effect, inject, input, signal, untracked,
-  viewChild,
+  ChangeDetectionStrategy, Component, DestroyRef, type ElementRef, afterNextRender, computed, effect, inject, input, signal,
+  untracked, viewChild,
 } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
-import * as maplibregl from 'maplibre-gl';
 import { ExternalUrls } from '@core/config/external-urls';
 import { LumaIcon } from '@design-system';
 import { GeolocationService } from '@shared/geo/geolocation.service';
-import { BaseMap } from '@shared/map/map-base';
 import { MapStylesLoader } from '@shared/map/map-styles.loader';
 import { type LatLng, RouteRepository, type TravelRoute } from '../route.repository';
 import { TRAVEL_MODES, type TravelMode, TravelModePreference } from '../travel-modes';
+import { RouteDrawing } from './route-drawing';
 
-const SOURCE = 'luma-route';
-const ZOOM = 15;
 const SECONDS_PER_MINUTE = 60;
 const METERS_PER_KM = 1000;
-/** Room around the route when the map fits it (CSS px, a MapLibre option). */
-const FIT_PADDING = 48;
 
 /**
- * RouteMap — "Cómo llegar" inside the app: the route drawn on Luma's own
- * map from the customer to the business, with distance and time on foot, by
- * bike, motorcycle or car (icon buttons; the last mode is remembered). Without the customer's location it asks for it; without a
- * routing key the line is straight and the time estimated. "Abrir en Google
- * Maps" stays as a secondary way.
+ * RouteMap — "Cómo llegar" inside the app: Luma's own map with the
+ * business pin from the start; with the customer's location, the route
+ * from there with distance and time on foot, by bike, motorcycle or car
+ * (icon buttons; the last mode is remembered). Without the location the map
+ * still shows the pin and offers "Activar ubicación"; without a routing key
+ * the line is straight and the time estimated. "Abrir en Google Maps" stays
+ * as a secondary way.
  */
 @Component({
   selector: 'app-route-map',
@@ -60,16 +57,17 @@ export class RouteMap {
     const { lat, lng } = this.destination();
     return ExternalUrls.directions(`${lat},${lng}`);
   });
-  private map: maplibregl.Map | null = null;
+  private drawing: RouteDrawing | null = null;
 
   constructor() {
+    afterNextRender(() => this.start());
     effect(() => {
       const mode = this.mode();
       const to = this.destination();
       const from = this.located() ? this.geo.coords() : null;
       if (from) untracked(() => void this.load(from, to, mode));
     });
-    inject(DestroyRef).onDestroy(() => this.map?.remove());
+    inject(DestroyRef).onDestroy(() => this.drawing?.remove());
   }
 
   protected choose(mode: TravelMode): void {
@@ -81,36 +79,26 @@ export class RouteMap {
     this.geo.requestLocation();
   }
 
+  /** "Cómo llegar": frames the route, or asks for the location first. */
+  protected directions(): void {
+    if (this.located()) this.drawing?.fit();
+    else this.locate();
+  }
+
   private async load(from: LatLng, to: LatLng, mode: TravelMode): Promise<void> {
     const route = await this.routes.route(from, to, mode);
     this.route.set(route);
-    this.draw(route, from, to);
+    this.start();
+    this.drawing?.show(route, from);
   }
 
-  private draw(route: TravelRoute, from: LatLng, to: LatLng): void {
+  /** The map with the business pin; the route is drawn on it later. */
+  private start(): void {
     const element = this.container()?.nativeElement;
-    if (!element) return;
+    if (!element || this.drawing || this.failed()) return;
     try {
       this.styles.ensureLoaded();
-      this.map ??= BaseMap.createBaseMap(element, to, ZOOM);
-      const map = this.map;
-      const show = (): void => {
-        const data = { type: 'Feature' as const, properties: {}, geometry: { type: 'LineString' as const, coordinates: route.line.map(([lng, lat]) => [lng, lat]) } };
-        const source = map.getSource(SOURCE) as maplibregl.GeoJSONSource | undefined;
-        if (source) source.setData(data);
-        else {
-          map.addSource(SOURCE, { type: 'geojson', data });
-          map.addLayer({ id: SOURCE, type: 'line', source: SOURCE, paint: { 'line-color': this.token('--color-primary'), 'line-width': 5 }, layout: { 'line-cap': 'round', 'line-join': 'round' } });
-          new maplibregl.Marker().setLngLat([from.lng, from.lat]).addTo(map);
-          new maplibregl.Marker().setLngLat([to.lng, to.lat]).addTo(map);
-        }
-        const start = route.line[0];
-        if (!start) return;
-        const bounds = route.line.reduce((b, [lng, lat]) => b.extend([lng, lat]), new maplibregl.LngLatBounds([...start], [...start]));
-        map.fitBounds(bounds, { padding: FIT_PADDING, animate: !this.reducedMotion() });
-      };
-      if (map.isStyleLoaded()) show();
-      else map.once('load', show);
+      this.drawing = new RouteDrawing(element, this.destination(), { color: this.token('--color-primary'), animate: !this.reducedMotion() });
     } catch {
       this.failed.set(true);
     }

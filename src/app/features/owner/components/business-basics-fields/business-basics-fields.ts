@@ -3,32 +3,34 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { ContactRules } from '@core/validation/contact-rules';
 import { TextRules } from '@core/validation/text-rules';
-import { LumaInput, LumaNotice, LumaSelect, type SelectOption } from '@design-system';
+import { LumaInput, LumaSelect, type SelectOption } from '@design-system';
 import { BUSINESS_CATEGORIES } from '@shared/business/data/business-categories';
 import { type FieldErrors, FormErrors } from '@shared/forms/form-errors';
-import { type GeoCoords, PASTO_CENTRE } from '@shared/geo/geolocation.service';
-import { Haversine } from '@shared/geo/distance';
-import type { Place } from '@shared/geo/place-search.repository';
+import type { GeoCoords } from '@shared/geo/geolocation.service';
+import { ResidenceCatalog } from '@shared/geo/residence-catalog';
 import type { Residence } from '@shared/geo/residence';
 import { ResidencePicker } from '@shared/geo/residence-picker/residence-picker';
-import { AddressSearch } from '../address-search/address-search';
 import type { BusinessDraft } from '../../utils/business-draft';
 import { LocationPicker } from '../location-picker/location-picker';
+import { type AddressProposal, LocationProposal } from '../location-picker/location-proposal';
+import { OwnerContextStore } from '../../state/owner-context.store';
 
-/** A pin this far from the searched address deserves a second look. */
-const FAR_FROM_ADDRESS_KM = 0.3;
 /** The text fields checked when the owner leaves them (the same rules as on save and in the database). */
-const RULES = { name: TextRules.businessName, phone: ContactRules.phone, address: TextRules.address } as const;
+const RULES = {
+  name: TextRules.businessName, phone: ContactRules.phone, address: TextRules.address,
+  neighborhood: TextRules.neighborhood, reference: TextRules.addressReference,
+} as const;
 
 /**
- * BusinessBasicsFields — name, category, phone, address, department and
- * municipality, and the location: search the address, then drag the pin.
+ * BusinessBasicsFields — name, category, phone, department and municipality,
+ * the location (LocationPicker: confirm the point), then the address the
+ * owner writes, with the optional sector and reference (docs/location.md).
  */
 @Component({
   selector: 'app-business-basics-fields',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LumaNotice, TranslocoModule, LumaInput, LumaSelect, LocationPicker, AddressSearch, ResidencePicker],
+  imports: [TranslocoModule, LumaInput, LumaSelect, LocationPicker, LocationProposal, ResidencePicker],
   templateUrl: './business-basics-fields.html',
 })
 export class BusinessBasicsFields {
@@ -42,6 +44,8 @@ export class BusinessBasicsFields {
   public readonly errors = model<FieldErrors>({});
   /** Prefix of the field ids (focus on the first error). */
   public readonly idPrefix = input.required<string>();
+  /** The business being edited (left out of "the same point as another business"). */
+  public readonly businessId = input<string | null>(null);
 
   protected readonly rules = RULES;
 
@@ -59,24 +63,37 @@ export class BusinessBasicsFields {
     this.errors.update((errors) => FormErrors.withoutErrors(errors, ...fields));
   }
 
-  /** Where the address search put the pin; null until the owner searches. */
-  protected readonly searched = signal<GeoCoords | null>(null);
-  protected readonly near = computed(() => this.draft().location ?? PASTO_CENTRE);
-  /** The pin was dragged far from the address that was searched. */
-  protected readonly farFromAddress = computed(() => {
-    const from = this.searched();
-    const to = this.draft().location;
-    return !!from && !!to && Haversine.haversineKm(from.lat, from.lng, to.lat, to.lng) > FAR_FROM_ADDRESS_KM;
+  private readonly catalog = inject(ResidenceCatalog);
+  private readonly context = inject(OwnerContextStore);
+  /** True once the DANE list is loaded (the residence picker loads it too: one request). */
+  private readonly catalogReady = signal(false);
+  /** The point confirmed in this visit (the proposal asks only for those). */
+  protected readonly confirmed = signal<GeoCoords | null>(null);
+  /** DANE centre of the chosen municipality. */
+  protected readonly centre = computed<GeoCoords | null>(() => {
+    const code = this.draft().municipality?.daneCode ?? this.draft().cityDaneCode;
+    const town = this.catalogReady() && code ? this.catalog.municipality(code) : null;
+    return town ? { lat: town.latitude, lng: town.longitude } : null;
   });
+  protected readonly others = computed<GeoCoords[]>(() =>
+    (this.context.businesses() ?? [])
+      .filter((b) => b.id !== this.businessId())
+      .map((b) => ({ lat: b.latitude, lng: b.longitude })),
+  );
+
+  constructor() {
+    void this.catalog.load().then((loaded) => this.catalogReady.set(loaded));
+  }
 
   protected setLocation(location: GeoCoords | null): void {
     this.set('location', location);
+    this.confirmed.set(location);
   }
 
-  protected onAddress(place: Place): void {
-    const point = { lat: place.lat, lng: place.lng };
-    this.searched.set(point);
-    this.setLocation(point);
+  /** "Usar esta dirección": fills both fields, which stay editable. */
+  protected useProposal(proposal: AddressProposal): void {
+    if (proposal.address) this.set('address', proposal.address);
+    if (proposal.neighborhood) this.set('neighborhood', proposal.neighborhood);
   }
 
   protected setMunicipality(municipality: Residence | null): void {

@@ -24,6 +24,7 @@ const REASON_KEYS: Readonly<Record<string, string>> = {
   provider_model: `${E}.providerModel`,
   provider_rate_limit: `${E}.providerQuota`,
   provider_unavailable: `${E}.providerSaturated`,
+  provider_truncated: `${E}.truncated`,
   timeout: `${E}.slow`,
 };
 

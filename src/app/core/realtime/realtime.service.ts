@@ -1,5 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { DestroyRef, Injectable, effect, inject, untracked } from '@angular/core';
+import { ErrorLog } from '@core/errors/error-log';
 import { AppEvents } from '@core/native/app-events';
 import { ConnectivityService } from '@core/network/connectivity.service';
 import { SupabaseService } from '@core/supabase/supabase.service';
@@ -17,6 +18,7 @@ export class RealtimeService {
   private readonly document = inject(DOCUMENT);
   private readonly connectivity = inject(ConnectivityService);
   private readonly appEvents = inject(AppEvents);
+  private readonly log = inject(ErrorLog);
 
   /**
    * Listens to `table` while the calling screen lives (injection context):
@@ -30,7 +32,9 @@ export class RealtimeService {
     relevant: (event: RealtimeEvent) => boolean = () => true,
   ): LiveUpdates {
     const visible = (): boolean => this.document.visibilityState === 'visible';
-    const subscription = new RealtimeSubscription(this.client, { table, onRefresh: refresh, relevant, visible });
+    const subscription = new RealtimeSubscription(this.client, {
+      table, onRefresh: refresh, relevant, visible, onError: (error) => this.log.record(error, 'realtime'),
+    });
     const onVisibility = (): void => {
       if (visible()) void subscription.refreshAll();
     };

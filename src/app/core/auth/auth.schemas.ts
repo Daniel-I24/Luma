@@ -1,8 +1,7 @@
 // zod/mini: same validation as zod, tree-shakable (auth is in the initial bundle).
 import * as z from 'zod/mini';
+import { PasswordPolicy } from '@core/validation/password-policy';
 
-/** New passwords: at least 8 characters with letters and numbers. */
-export const MIN_PASSWORD_LENGTH = 8;
 /** Length of the codes Supabase emails ({{ .Token }}). */
 export const CODE_LENGTH = 6;
 
@@ -19,15 +18,10 @@ export const emailSchema = z
 /** For signing in: any existing password (older accounts may have 6 characters). */
 const currentPasswordSchema = z.string().check(z.minLength(1, 'auth.validation.passwordRequired'));
 
-/** At least one letter (any alphabet) and one digit. */
-export const PASSWORD_PATTERN = /^(?=.*\p{L})(?=.*\d).+$/u;
-
+/** New passwords: the required parts of PasswordPolicy (the forms add PasswordRules). */
 export const newPasswordSchema = z
   .string()
-  .check(
-    z.minLength(MIN_PASSWORD_LENGTH, 'auth.validation.passwordWeak'),
-    z.regex(PASSWORD_PATTERN, 'auth.validation.passwordWeak'),
-  );
+  .check(z.refine((password) => PasswordPolicy.meetsRequired(password), 'auth.validation.passwordWeak'));
 
 const codeSchema = z
   .string()
@@ -37,11 +31,6 @@ export const signInSchema = z.object({ email: emailSchema, password: currentPass
 export const signUpSchema = z.object({ email: emailSchema, password: newPasswordSchema });
 export const resetPasswordSchema = z.object({ email: emailSchema });
 export const verifyCodeSchema = z.object({ email: emailSchema, code: codeSchema });
-export const recoverPasswordSchema = z.object({
-  email: emailSchema,
-  code: codeSchema,
-  password: newPasswordSchema,
-});
 
 /** AuthCode — normalises the 6-digit codes users type or paste. */
 export class AuthCode {

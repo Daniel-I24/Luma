@@ -46,7 +46,7 @@ export class OrdersPage {
   protected readonly state = signal<ListState>('loading');
   protected readonly orders = signal<readonly Order[]>([]);
   /** New statuses of the user's orders, as the business changes them (docs/realtime.md). */
-  protected readonly live = inject(RealtimeService).watch('order_events', () => this.refresh(), (event) => !!event.order_id);
+  protected readonly live = inject(RealtimeService).watch('order_events', () => this.refresh(), (event) => !!event.order_id && !!event.user_id);
 
   constructor() {
     void this.load();

@@ -30,11 +30,12 @@ Deno.test('photon: bias to the point, Colombia bbox, foreign results dropped', a
 
 Deno.test('nominatim: Colombia only, Spanish, Nariño view box and an identifying User-Agent', async () => {
   const { fetchFn, calls } = recorder([
-    { lat: '1.2153', lon: '-77.2790', display_name: 'Calle 18, Centro, Pasto, Nariño, Colombia', addresstype: 'road', address: { country_code: 'co' } },
+    { lat: '1.2153', lon: '-77.2790', display_name: 'Calle 18, Centro, Pasto, Nariño, Colombia', addresstype: 'road', address: { country_code: 'co', city: 'Pasto' } },
   ]);
   const provider = geocoderFromEnv((n) => ({ GEOCODE_PROVIDER: 'nominatim', GEOCODE_CONTACT: 'ops@example.com' })[n], fetchFn);
   const places = finalizePlaces(await provider!.search(input));
-  assertEquals(places, [{ label: 'Calle 18, Centro, Pasto, Nariño', kind: 'street', lat: 1.2153, lng: -77.279 }]);
+  // The searched name and its town: never the suburb ("Centro") of the returned point.
+  assertEquals(places, [{ label: 'Calle 18, Pasto', kind: 'street', lat: 1.2153, lng: -77.279 }]);
   const params = at(calls, 0).url.searchParams;
   assertEquals([params.get('countrycodes'), params.get('accept-language'), params.get('viewbox')], ['co', 'es', '-79.1,0.3,-76.8,2.7']);
   assertEquals(calls[0]?.headers['User-Agent'], 'Luma/1.0 (ops@example.com)');

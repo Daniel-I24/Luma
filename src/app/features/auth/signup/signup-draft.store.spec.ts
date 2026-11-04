@@ -58,7 +58,7 @@ describe('SignupDraftStore', () => {
     store.update('phone', '300 123 4567');
     store.update('residence', Residence.of('Nariño', 'Pasto', '52001'));
     store.update('email', 'ana@example.com');
-    store.update('password', 'tamal2024');
+    store.update('password', 'Tamal2024');
     store.update('acceptedTerms', true);
     store.update('acceptedPrivacy', true);
     store.update('isAdult', true);

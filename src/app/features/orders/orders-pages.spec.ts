@@ -99,12 +99,14 @@ describe('Orders pages', () => {
       b.textContent?.includes('Cancelar pedido'),
     );
 
-  it('shows directions with the business coordinates and allows cancelling while pending', async () => {
-    const el = await renderDetail('pending');
+  it('allows cancelling while pending; the route appears only once the business accepts', async () => {
+    const pending = await renderDetail('pending');
+    expect(pending.querySelector('app-order-timeline [aria-current="step"]')).not.toBeNull();
+    expect(cancelButton(pending)).toBeDefined();
+    expect(pending.querySelector('app-route-map')).toBeNull();
 
-    expect(el.querySelector('a[href*="destination=1.21%2C-77.28"]')).not.toBeNull();
-    expect(el.querySelector('app-order-timeline [aria-current="step"]')).not.toBeNull();
-    expect(cancelButton(el)).toBeDefined();
+    const accepted = await renderDetail('accepted');
+    expect(accepted.querySelector('a[href*="destination=1.21%2C-77.28"]')).not.toBeNull();
   });
 
   it('keeps the copied name and address once the business is deleted, without directions', async () => {

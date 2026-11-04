@@ -205,3 +205,41 @@ No visible change is expected: a quick pass on a phone is enough.
 - Back button and keyboard on Android; haptic tap on add to cart and
   favourite; "Abrir en el navegador" links.
 - `/design-preview` opens the 404 page (also in development).
+
+## Round 10 — phase A (2026-11-04)
+
+Automatic walk (`e2e/walk.e2e.mjs`, `npm run test:e2e`), result **OK**:
+customer on Mapa, Descubrir, Luma IA (with "Combos para …"), Pedidos,
+Avisos and Perfil; owner on the panel, Pedidos and Perfil. Clean console,
+no request outside the simulated services and never "Algo salió mal". The
+order flows (`order.e2e.mjs`, `owner.e2e.mjs`, `payment.e2e.mjs`) cover the
+real-time update of an order on both phones. The walk found and fixed: the
+screens server sent `.mjs` (the MapLibre worker) with the wrong type, and the
+simulator lacked `admin_access` and `my_trust_status`.
+
+On a phone (after applying migrations 56 and 57):
+- Sign in and "Permitir notificaciones": no "Algo salió mal". Each push
+  problem has its own message (permission denied, Firebase not in this
+  build, FCM registration failed, token not saved) and "Intentar de nuevo"
+  where it helps. Perfil → Información técnica → Errores recientes lists the
+  last errors (no e-mail, phone or ids) and "Copiar errores" copies them.
+- Without migration 56 (no event tables): screens still load and refresh
+  every 30 s; one entry "realtime" in Errores recientes.
+- "¿Olvidaste tu contraseña?": correo → código (a wrong code says
+  "no es correcto", after 10 min "venció", after 5 tries "Demasiados
+  intentos"; "Reenviar código" waits 60 s) → nueva contraseña with the live
+  checklist and the confirmation. The same checklist in sign-up and in
+  Cambiar contraseña.
+- Mi negocio → Información: the municipality first; the pin stays at the
+  centre while the map moves; "Estoy en el local" shows the GPS accuracy;
+  "Buscar" "Jamondino" lists only places of Pasto with type and distance and
+  moves the map without confirming; "Confirmar este punto" proposes an
+  approximate address and sector ("Usar esta dirección"); warnings for a
+  point far from the municipality or on another business of the owner.
+- Tu pedido: the map with the business pin and the route (4 modes) appears
+  when the order is accepted, in preparation or ready; without location it
+  shows the pin and "Activar ubicación"; "Abrir en Google Maps" stays. With
+  the business paused, the map still appears (order_pickup_point).
+- Luma IA: under the moment chips, "Combos para {momento}" with 2 or 3
+  combos (total, business, distance) or one line when there are none; the
+  rest of the screen is unchanged.

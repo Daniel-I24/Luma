@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CommonPasswords } from './common-passwords';
-import { PasswordStrengthMeter } from './password-strength';
+import { PASSWORD_VECTORS } from '../../../../testing/password-vectors';
 import { EMPTY_SIGNUP_DRAFT, type SignupDraft } from './signup-draft';
 import { SignupValidation } from './signup-validation';
 
@@ -51,10 +50,10 @@ describe('validateStep', () => {
     expect(
       SignupValidation.validateStep('credentials', draft({ email: 'a@b.co', password: 'Password123' })),
     ).toEqual({
-      password: 'auth.signup.validation.passwordCommon',
+      password: 'auth.password.refusal.common',
     });
     expect(
-      SignupValidation.validateStep('credentials', draft({ email: 'a@b.co', password: 'tamal-pastuso-7' })),
+      SignupValidation.validateStep('credentials', draft({ email: 'a@b.co', password: 'Tamal-pastuso-7' })),
     ).toEqual({});
   });
 
@@ -69,17 +68,10 @@ describe('validateStep', () => {
   });
 });
 
-describe('passwordStrength', () => {
-  it('rates by rule, length and variety', () => {
-    expect(PasswordStrengthMeter.passwordStrength('')).toBe('empty');
-    expect(PasswordStrengthMeter.passwordStrength('abc12')).toBe('weak');
-    expect(PasswordStrengthMeter.passwordStrength('luma1234')).toBe('weak');
-    expect(PasswordStrengthMeter.passwordStrength('tamal2024')).toBe('fair');
-    expect(PasswordStrengthMeter.passwordStrength('Tamal-Pastuso-2024')).toBe('strong');
-  });
-
-  it('blocks common passwords regardless of case and spaces', () => {
-    expect(CommonPasswords.isCommonPassword(' PASSWORD123 ')).toBe(true);
-    expect(CommonPasswords.isCommonPassword('tamal2024')).toBe(false);
+describe('sign-up password (shared vectors)', () => {
+  it('uses PasswordRules with the e-mail being typed', () => {
+    for (const [password, key] of PASSWORD_VECTORS.invalid) {
+      expect(SignupValidation.validateField('password', draft({ email: PASSWORD_VECTORS.email, password }))).toBe(key);
+    }
   });
 });

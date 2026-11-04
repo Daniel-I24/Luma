@@ -1,26 +1,18 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaIconButton, LumaInput } from '@design-system';
-import { PasswordStrengthMeter } from '../../password-strength';
+import { PasswordChecklist } from '@shared/account/password-checklist/password-checklist';
 import { SignupDraftStore } from '../../signup-draft.store';
 
-/** Weak, fair, strong. */
-const STRENGTH_BARS = 3;
-
-const STRENGTH_LEVEL = { empty: 0, weak: 1, fair: 2, strong: 3 } as const;
-
-/** Step 3 — email and password, with show/hide and a strength meter. */
+/** Step 3 — email and password, with show/hide and the live PasswordChecklist. */
 @Component({
   selector: 'app-credentials-step',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaInput, LumaIconButton],
+  imports: [TranslocoModule, LumaInput, LumaIconButton, PasswordChecklist],
   templateUrl: './credentials-step.html',
 })
 export class CredentialsStep {
   protected readonly store = inject(SignupDraftStore);
   protected readonly showPassword = signal(false);
-  protected readonly strength = computed(() => PasswordStrengthMeter.passwordStrength(this.store.draft().password));
-  protected readonly level = computed(() => STRENGTH_LEVEL[this.strength()]);
-  protected readonly bars = Array.from({ length: STRENGTH_BARS }, (_, i) => i + 1);
 }

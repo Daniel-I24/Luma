@@ -16,7 +16,7 @@ import {
 } from './business-write.schemas';
 
 /** What the panel lists for each of the user's businesses. */
-export type OwnedBusinessSummary = Pick<Business, 'id' | 'name' | 'category' | 'is_active'>;
+export type OwnedBusinessSummary = Pick<Business, 'id' | 'name' | 'category' | 'is_active' | 'latitude' | 'longitude'>;
 
 const INVALID = 'businessPanel.errors.invalidData';
 
@@ -38,14 +38,14 @@ export class OwnedBusinessRepository {
     if (!userId) return { data: null, errorKey: 'businessPanel.errors.loadFailed' };
     const { data, error } = await this.db
       .from('businesses')
-      .select('id, name, category, is_active, owner_id')
+      .select('id, name, category, is_active, latitude, longitude, owner_id')
       .eq('owner_id', userId)
       .order('created_at');
     this.log.record('businesses', PanelQueryLog.filter('owner_id', userId), error ? null : (data?.length ?? 0));
     if (error) return { data: null, errorKey: 'businessPanel.errors.loadFailed' };
     // The filter above is the rule; this second check keeps another owner's row out even if a query changes.
     const rows = (data as (OwnedBusinessSummary & { owner_id: string })[]).filter((row) => row.owner_id === userId);
-    return { data: rows.map((row) => ({ id: row.id, name: row.name, category: row.category, is_active: row.is_active })), errorKey: null };
+    return { data: rows.map((row) => ({ id: row.id, name: row.name, category: row.category, is_active: row.is_active, latitude: row.latitude, longitude: row.longitude })), errorKey: null };
   }
 
   /** One of the user's businesses, or null when it is not theirs or does not exist. */

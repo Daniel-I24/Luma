@@ -1,51 +1,50 @@
-<fieldset
-  *transloco="let t"
-  class="m-0 flex flex-col gap-2 border-0 p-0"
-  [attr.aria-describedby]="pickerId() + '-status'"
->
+<fieldset *transloco="let t" class="m-0 flex flex-col gap-3 border-0 p-0" [attr.aria-describedby]="pickerId() + '-status'">
   <legend class="mb-1 p-0 text-label-lg text-fg">{{ t('businessPanel.location.label') }}</legend>
-  <p class="m-0 text-caption text-fg-muted">{{ t('businessPanel.location.hint') }}</p>
-  @if (mapFailed()) {
-  <app-luma-notice tone="warning">
-    {{ t('businessPanel.location.mapFailed') }}
-  </app-luma-notice>
-  }
-  <div
-    #map
-    class="h-56 w-full overflow-hidden rounded-lg border bg-map-canvas"
-    [class.border-danger]="!!errorMessage()"
-    [class.border-border]="!errorMessage()"
-    [class.hidden]="mapFailed()"
-    role="application"
-    [attr.aria-label]="t('businessPanel.location.mapLabel')"
-  ></div>
-  <div class="flex flex-wrap gap-2">
-    <app-luma-button
-      variant="secondary"
-      size="sm"
-      [buttonId]="pickerId()"
-      [disabled]="mapFailed()"
-      (clicked)="useMapCentre()"
-      >{{ t('businessPanel.location.useCentre') }}</app-luma-button
-    >
-    <app-luma-button
-      variant="ghost"
-      size="sm"
-      [disabled]="locating()"
-      (clicked)="useCurrentLocation()"
-      >{{ t('businessPanel.location.useCurrent') }}</app-luma-button
-    >
+  <p class="m-0 text-caption text-fg-muted">{{ t('location.hint') }}</p>
+
+  <div class="flex flex-col gap-1">
+    <app-luma-button variant="secondary" [fullWidth]="true" [disabled]="locating()" (clicked)="locate()">{{
+      t(locating() ? 'location.gps.locating' : 'location.gps.button')
+    }}</app-luma-button>
+    <p class="m-0 text-caption text-fg-muted">{{ t('location.gps.why') }}</p>
+    @if (geoState() === 'granted' && accuracy(); as metres) {
+      <p class="m-0 text-caption text-fg" role="status">{{ t('location.gps.accuracy', { metres: metres }) }}</p>
+    } @else if (geoState() === 'denied') {
+      <p class="m-0 text-caption text-fg-muted" role="status">{{ t('location.gps.denied') }}</p>
+    }
   </div>
-  <p
-    [id]="pickerId() + '-status'"
-    class="m-0 text-body-sm"
-    [class.text-danger-fg]="!!errorMessage()"
-    [class.text-fg-muted]="!errorMessage()"
-    aria-live="polite"
-  >
-    @if (errorMessage(); as error) { {{ error }} } @else if (position(); as at) { {{
-    t('businessPanel.location.chosen', { lat: format(at.lat), lng: format(at.lng) }) }} } @else if
-    (geoState() === 'denied') { {{ t('businessPanel.location.denied') }} } @else { {{
-    t('businessPanel.location.none') }} }
+
+  <app-location-search [idPrefix]="pickerId()" [near]="pending() ?? centre() ?? fallback" [centre]="centre()"
+    (previewed)="preview($event)" />
+
+  @if (mapFailed()) {
+    <app-luma-notice tone="warning">{{ t('businessPanel.location.mapFailed') }}</app-luma-notice>
+  }
+  <div class="relative h-64 w-full overflow-hidden rounded-lg border bg-map-canvas" [class.hidden]="mapFailed()"
+    [class.border-danger]="!!errorMessage()" [class.border-border]="!errorMessage()">
+    <div #map class="size-full" role="application" [attr.aria-label]="t('location.mapLabel')"></div>
+    <svg class="picker-pin" [class.picker-pin--lifted]="lifted()" viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="currentColor" stroke="var(--color-surface)" stroke-width="1.5"
+        d="M12 23s-7-7.6-7-13a7 7 0 1 1 14 0c0 5.4-7 13-7 13Zm0-10.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
+    </svg>
+  </div>
+
+  <app-luma-button variant="primary" size="lg" [fullWidth]="true" [buttonId]="pickerId()" [disabled]="!pending()" (clicked)="confirm()">{{
+    t('location.confirm')
+  }}</app-luma-button>
+
+  @for (warning of warnings(); track warning) {
+    <app-luma-notice tone="warning">{{ t('location.warnings.' + warning) }}</app-luma-notice>
+  }
+  <p [id]="pickerId() + '-status'" class="m-0 text-body-sm" [class.text-danger-fg]="!!errorMessage()" [class.text-fg-muted]="!errorMessage()" aria-live="polite">
+    @if (errorMessage(); as error) {
+      {{ error }}
+    } @else if (unconfirmed()) {
+      {{ t('location.unconfirmed') }}
+    } @else if (position(); as at) {
+      {{ t('location.confirmed', { lat: format(at.lat), lng: format(at.lng) }) }}
+    } @else {
+      {{ t('businessPanel.location.none') }}
+    }
   </p>
 </fieldset>

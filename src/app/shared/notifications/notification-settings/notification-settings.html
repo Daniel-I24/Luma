@@ -27,19 +27,29 @@
   }
 
   <div class="border-t border-border-subtle pt-3" aria-live="polite">
-    @switch (push.permission()) {
-      @case ('granted') {
-        <p class="m-0 text-body-sm text-fg-muted">{{ t('notificationSettings.phone.granted') }}</p>
+    @if (push.problem(); as problem) {
+      <p class="m-0 mb-2 text-body-sm text-fg-muted" role="status">{{ t('notificationSettings.phone.problem.' + problemKeys[problem]) }}</p>
+      @if (problem === 'registration_failed' || problem === 'token_save_failed') {
+        <app-luma-button variant="secondary" (clicked)="enable()">{{ t('notificationSettings.phone.retry') }}</app-luma-button>
       }
-      @case ('denied') {
-        <p class="m-0 text-body-sm text-fg-muted">{{ t('notificationSettings.phone.denied') }}</p>
-      }
-      @case ('prompt') {
-        <p class="m-0 mb-2 text-body-sm text-fg-muted">{{ t('notificationSettings.phone.prompt') }}</p>
-        <app-luma-button variant="secondary" (clicked)="enable()">{{ t('notificationSettings.phone.enable') }}</app-luma-button>
-      }
-      @default {
-        <p class="m-0 text-body-sm text-fg-muted">{{ t('notificationSettings.phone.web') }}</p>
+    } @else {
+      @switch (push.permission()) {
+        @case ('granted') {
+          <p class="m-0 text-body-sm text-fg-muted">{{ t('notificationSettings.phone.granted') }}</p>
+        }
+        @case ('denied') {
+          <p class="m-0 text-body-sm text-fg-muted">{{ t('notificationSettings.phone.denied') }}</p>
+        }
+        @case ('prompt') {
+          <p class="m-0 mb-2 text-body-sm text-fg-muted">{{ t('notificationSettings.phone.prompt') }}</p>
+          <app-luma-button variant="secondary" (clicked)="enable()">{{ t('notificationSettings.phone.enable') }}</app-luma-button>
+        }
+        @case ('not_configured') {
+          <p class="m-0 text-body-sm text-fg-muted">{{ t('notificationSettings.phone.notConfigured') }}</p>
+        }
+        @default {
+          <p class="m-0 text-body-sm text-fg-muted">{{ t('notificationSettings.phone.web') }}</p>
+        }
       }
     }
   </div>

@@ -1,24 +1,10 @@
 import { type Signal, signal } from '@angular/core';
-import { HALF, MS_PER_SECOND } from '@core/config/units';
-import type { LiveUpdates, RealtimeChannelLike, RealtimeClientLike, RealtimeEvent, RealtimeTable } from './realtime.model';
-
-/** What one screen listens to and how it refreshes. */
-export interface RealtimeWatchOptions {
-  readonly table: RealtimeTable;
-  readonly onRefresh: (events: readonly RealtimeEvent[]) => unknown;
-  readonly relevant: (event: RealtimeEvent) => boolean;
-  readonly visible: () => boolean;
-}
-
-/** Events within this window are refreshed once. */
-export const REALTIME_BATCH_MS = 500;
-/** Fallback polling while the channel is down (and only with the screen visible). */
-export const REALTIME_POLL_MS = 30_000;
-const RECONNECT_BASE_MS = MS_PER_SECOND;
-const RECONNECT_MAX_MS = 30_000;
-/** Each failed try doubles the wait. */
-const BACKOFF_FACTOR = 2;
-const FAILED = new Set(['CHANNEL_ERROR', 'TIMED_OUT', 'CLOSED']);
+import { HALF } from '@core/config/units';
+import type { LiveUpdates, RealtimeChannelLike, RealtimeClientLike, RealtimeEvent } from './realtime.model';
+import {
+  BACKOFF_FACTOR, FAILED_STATUSES, REALTIME_BATCH_MS, REALTIME_POLL_MS, RECONNECT_BASE_MS, RECONNECT_MAX_MS,
+  type RealtimeWatchOptions,
+} from './realtime-timing';
 
 let channelCount = 0;
 
@@ -26,6 +12,7 @@ let channelCount = 0;
  * RealtimeSubscription — one screen listening to one event table: batches
  * the events, reconnects with growing waits, and polls every 30 s while the
  * channel is down. `refresh` re-reads the screen with normal (RLS) queries.
+ * It never throws: a missing table or a dead socket is a quiet outage.
  */
 export class RealtimeSubscription implements LiveUpdates {
   private channel: RealtimeChannelLike | null = null;
@@ -35,6 +22,7 @@ export class RealtimeSubscription implements LiveUpdates {
   private pollTimer: ReturnType<typeof setInterval> | null = null;
   private attempts = 0;
   private stopped = false;
+  private reported = false;
   private readonly _live = signal(false);
   private readonly _updatedAt = signal<Date | null>(new Date());
   public readonly live: Signal<boolean> = this._live.asReadonly();
@@ -79,22 +67,24 @@ export class RealtimeSubscription implements LiveUpdates {
         .on('postgres_changes', filter, (payload) => this.receive(payload.new));
       this.channel = channel;
       // A channel that was left (reconnect, screen left) says CLOSED: not news.
-      channel.subscribe((status) => {
-        if (this.channel === channel) this.onStatus(status);
+      channel.subscribe((status, error) => {
+        if (this.channel === channel) this.onStatus(status, error);
       });
-    } catch {
+    } catch (error) {
       // Realtime unavailable: the same as a failed channel (polling, retry).
-      this.onStatus('CHANNEL_ERROR');
+      this.onStatus('CHANNEL_ERROR', error);
     }
   }
 
-  private onStatus(status: string): void {
+  private onStatus(status: string, error?: unknown): void {
     if (this.stopped) return;
     if (status === 'SUBSCRIBED') {
       this.attempts = 0;
+      this.reported = false;
       this._live.set(true);
       this.stopPolling();
-    } else if (FAILED.has(status)) {
+    } else if (FAILED_STATUSES.has(status)) {
+      this.report(error ?? new Error(`realtime ${this.options.table} ${status}`));
       this._live.set(false);
       this.startPolling();
       this.scheduleReconnect();
@@ -141,6 +131,17 @@ export class RealtimeSubscription implements LiveUpdates {
   private leave(): void {
     const channel = this.channel;
     this.channel = null;
-    if (channel) this.client.removeChannel(channel);
+    if (!channel) return;
+    try {
+      Promise.resolve(this.client.removeChannel(channel)).catch((error: unknown) => this.report(error));
+    } catch (error) {
+      this.report(error);
+    }
+  }
+
+  private report(error: unknown): void {
+    if (this.reported) return;
+    this.reported = true;
+    this.options.onError?.(error);
   }
 }

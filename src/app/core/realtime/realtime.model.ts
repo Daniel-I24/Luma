@@ -15,7 +15,7 @@ export interface RealtimeEvent {
 export interface RealtimeChannelLike {
   on(type: 'postgres_changes', filter: { event: 'INSERT'; schema: 'public'; table: string },
     callback: (payload: { new: RealtimeEvent }) => void): RealtimeChannelLike;
-  subscribe(callback: (status: string) => void): RealtimeChannelLike;
+  subscribe(callback: (status: string, error?: Error) => void): RealtimeChannelLike;
 }
 
 /** The part of the Supabase client this code uses. */

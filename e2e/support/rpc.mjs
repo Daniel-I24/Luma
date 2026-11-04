@@ -54,6 +54,9 @@ export const RPC = {
       expires_at: new Date(Date.now() + 15 * 60_000).toISOString() }] : [];
   },
   record_payment_redirect: () => null,
+  // Nobody in the simulated data is in the review team.
+  admin_access: () => 'none',
+  my_trust_status: () => [{ tier: 'new', strikes: 0, restricted_until: null, picked_up: 0, picked_up_needed: 3 }],
   owner_sales_summary: () => ({ orders: 0, cancel_rate: 0, items: [], slots: [] }),
   owner_sales_daily: () => ({ days: [], top_items: [] }),
   mark_notifications_read: (db, _args, ctx) => {

@@ -171,6 +171,39 @@ SQL suites, Deno 2.5.6 in Docker for the functions.
   Deno tests, type check and lint of the functions, every check, secret
   scan, audit 0, knip (no unused files or dependencies).
 
+## Round 10 (2026-11-04)
+
+Prompt: round 10 (phase A "fallos del teléfono", phase B "lo que quedó de la
+ronda 9"). Migration 56 is reviewed and applied by the owner; database
+changes go in 57 (`20261107000000_round10.sql`, pending review). Vitest runs
+in two forked workers fixed in `vitest.config.mjs`.
+
+- B1 done: LumaNotice committed after its full unit run (208 files).
+- Phase A done:
+  - A1: `ErrorLog` (last 20, masked) + `AppErrorHandler` shows only
+    user-facing errors; realtime and push never throw (outages logged once,
+    typed push problems with their own messages); "Errores recientes" in
+    Información técnica (Perfil and Mi negocio).
+  - A2: recovery in three steps (`RecoveryFlow`), `PasswordRules` +
+    `PasswordChecklist` in sign-up, change and recovery, shared vectors;
+    docs/auth-emails.md asks for the same Supabase rule.
+  - A3: new LocationPicker (fixed pin, GPS with accuracy, bounded search,
+    reverse proposal, warnings); geocode function with `within` and
+    `reverse`; sector and reference columns (57); docs/location.md.
+  - A4: the map showed only with the customer's location and only for
+    public businesses; now the pin always, the route in accepted/preparing/
+    ready, `order_pickup_point` (57) for hidden businesses.
+  - A5: "Combos para {momento}" (one config file, ComboBuilder, ranking of
+    the recommendation).
+  - A6: `e2e/walk.e2e.mjs` and docs/qa-checklist.md.
+- B2 done: fallback on rate limit and unknown model, `provider_truncated`
+  with one retry at twice the budget, budgets 8192/2048, `thinkingLevel`
+  low for Gemini 3, `npm run ai:smoke [-- recommend]`.
+- B3 done: `Invoke-LumaNpm` returns an integer, adb found in PATH /
+  ANDROID_HOME / Android Studio SDK with the "unauthorized" explanation,
+  option 1 makes a real generateContent call (503/429 = APAGADO), option 6
+  creates app.env.
+
 ## Round 9 (2026-11-03)
 
 Phase 1 (fallos pendientes):

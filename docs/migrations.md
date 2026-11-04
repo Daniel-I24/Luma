@@ -72,8 +72,9 @@ needs a drop and a create in the same file, noted in the file header).
 | 52 | `20261102000000_round5.sql` | Round 5: `create_order` refuses `own_business`; contact verification (`contact_verifications`, `<kind>_verified_at`, `request_contact_verification`, `admin_pending_contact_verifications`, `admin_verify_contact`, audit `verify_contact`); `business_trust_summary`; `request_legal_correction`; notification types `contact_verification` and `test`, `send_test_notification`; rate limits `push_test` and `route` | Applied |
 | 53 | `20261103000000_round6.sql` | Round 6: `contact_verifier_config` (strategy per kind, flags off), `verify_contact_from_whatsapp` (service_role; ids and sender hash in `private`), `start_website_check` / `complete_website_check`, `private.mark_contact_verified`; depends on 52 | Applied |
 | 54 | `20261104000000_round7.sql` | Round 7: daily limit of business creations (`business_create`); validation functions in `private` and CHECK constraints NOT VALID (docs/validation-matrix.md, docs/data-quality.sql); discount 1-90; `handle_new_user` cleans the name; order notes cleaned; phones compared in +57; `contact_verifications` without `verified_by` for owners; request limit per kind | Applied |
-| 55 | `20261105000000_round8.sql` | Round 8: `send_test_notification` for admins only; `show_pending_businesses` (0) in `is_business_public`; `orders_online_needs_approval` (pick-up only while in review) | Pending review |
-| 56 | `20261106000000_round9.sql` | Round 9: `review_business` publishes on approval from review when there is an open day and an available product (`private.meets_publish_requirements`); `rate_business_create_max` 3 → 10 (internal guard); Realtime event tables `catalog_events` and `order_events` (ids only, triggers, RLS, pruning) and `supabase_realtime` with exactly those two (docs/realtime.md) | Pending review |
+| 55 | `20261105000000_round8.sql` | Round 8: `send_test_notification` for admins only; `show_pending_businesses` (0) in `is_business_public`; `orders_online_needs_approval` (pick-up only while in review) | Applied |
+| 56 | `20261106000000_round9.sql` | Round 9: `review_business` publishes on approval from review when there is an open day and an available product (`private.meets_publish_requirements`); `rate_business_create_max` 3 → 10 (internal guard); Realtime event tables `catalog_events` and `order_events` (ids only, triggers, RLS, pruning) and `supabase_realtime` with exactly those two (docs/realtime.md) | Reviewed; the owner applies it |
+| 57 | `20261107000000_round10.sql` | Round 10: optional `businesses.neighborhood` and `address_reference` (text rules, column grants; docs/location.md); `order_pickup_point(order_id)` SECURITY DEFINER, for the order's customer while accepted, preparing or ready, even if the business is hidden; `order_events` split by audience (customer row with `user_id` only, owner row with `business_id` only, CHECK `order_events_one_audience`, new read policy) | Pending review |
 
 **Database freeze (2026-10-19)**: the list above is final for the launch.
 After the freeze, migrations and functions change only to fix real bugs
@@ -225,6 +226,7 @@ transaction that is rolled back.
 | `round7.sql` | businesses per owner, validation vectors shared with the app, CHECK constraints |
 | `round8.sql` | migration 55: test notification for admins only, `show_pending_businesses` visibility, pick-up only while in review |
 | `round9.sql` | migration 56: approval publishes when ready, approved but hidden without a product, owner pause kept after a re-approval, `show_pending_businesses` states through the API roles, guard of 10 creations a day |
+| `round10.sql` | migration 57: sector and reference rules, `order_pickup_point` with three users (customer, another customer, another owner, and the business owner), paused business still reachable, order events without the customer id for the owner |
 | `realtime_events.sql` | migration 56: catalog events of public businesses only, order events for the customer and the owner (three users), no client writes, pruning, publication |
 
 `scripts/db-drift.test.mjs` (`npm run test:scripts`) checks without a
@@ -234,4 +236,4 @@ function in each pending migration.
 
 Files starting with `_` (`_helpers.sql` and the `_*_fixtures.sql`) are
 shared fixtures loaded by the suites, not suites. Round 8 phase 4 changed
-no SQL: migration 55 is still the only pending one. Round 9 adds 56.
+no SQL: migration 55 is still the only pending one. Round 9 adds 56; round 10 adds 57 (56 must be applied first: 57 replaces its order event trigger and policy).

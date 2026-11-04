@@ -27,6 +27,21 @@ const answerSchema = z.object({
   attribution: z.optional(z.nullable(z.enum(['locationiq']))),
 });
 
+const textOrNull = z.nullable(z.string().check(z.maxLength(MAX_PLACE_LABEL)));
+const reverseSchema = z.object({
+  address: z.nullable(z.object({ street: textOrNull, houseNumber: textOrNull, neighbourhood: textOrNull, city: textOrNull })),
+  attribution: z.optional(z.nullable(z.enum(['locationiq']))),
+});
+/** What the reverse geocoding proposes for a point: always approximate, always editable. */
+export type ApproximateAddress = NonNullable<z.infer<typeof reverseSchema>['address']>;
+
+/** The municipality a bounded search stays in (its DANE centre). */
+export interface SearchArea {
+  readonly lat: number;
+  readonly lng: number;
+  readonly radiusKm: number;
+}
+
 export type PlaceSearchResult =
   | { readonly places: readonly Place[]; readonly attribution: PlaceAttribution; readonly errorKey: null }
   | { readonly places: null; readonly attribution?: undefined; readonly errorKey: string };
@@ -41,11 +56,11 @@ export class PlaceSearchRepository {
   private readonly online = inject(ConnectivityService).online;
 
   /** Places matching `query` near a point (neighbourhoods, addresses, landmarks), or a translation key. */
-  public async search(query: string, near: { lat: number; lng: number }): Promise<PlaceSearchResult> {
+  public async search(query: string, near: { lat: number; lng: number }, within?: SearchArea): Promise<PlaceSearchResult> {
     try {
       const { data, error } = await this.db.functions.invoke('geocode', {
         method: 'POST',
-        body: { q: query, near },
+        body: within ? { q: query, near, within } : { q: query, near },
       });
       if (error) return { places: null, errorKey: await this.errorKey(error) };
       const parsed = answerSchema.safeParse(data);
@@ -54,6 +69,18 @@ export class PlaceSearchRepository {
         : { places: null, errorKey: 'map.places.unavailable' };
     } catch {
       return { places: null, errorKey: AuthErrors.networkErrorKey(this.online()) };
+    }
+  }
+
+  /** One reverse geocoding call for a confirmed point; null address when the provider found none. */
+  public async reverse(point: { lat: number; lng: number }): Promise<{ address: ApproximateAddress | null; errorKey: string | null }> {
+    try {
+      const { data, error } = await this.db.functions.invoke('geocode', { method: 'POST', body: { reverse: point } });
+      if (error) return { address: null, errorKey: await this.errorKey(error) };
+      const parsed = reverseSchema.safeParse(data);
+      return parsed.success ? { address: parsed.data.address, errorKey: null } : { address: null, errorKey: 'map.places.unavailable' };
+    } catch {
+      return { address: null, errorKey: AuthErrors.networkErrorKey(this.online()) };
     }
   }
 

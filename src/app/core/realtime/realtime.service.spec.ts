@@ -5,7 +5,7 @@ import { AppEvents } from '@core/native/app-events';
 import { ConnectivityService } from '@core/network/connectivity.service';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import type { RealtimeEvent } from './realtime.model';
-import { REALTIME_BATCH_MS, REALTIME_POLL_MS } from './realtime-subscription';
+import { REALTIME_BATCH_MS, REALTIME_POLL_MS } from './realtime-timing';
 import { RealtimeService } from './realtime.service';
 
 /** A Supabase client whose channels are driven by the test. */

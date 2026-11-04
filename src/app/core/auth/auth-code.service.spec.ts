@@ -65,30 +65,23 @@ describe('AuthCodeService', () => {
     );
   });
 
-  it('recovers a password: recovery code first, then the new password', async () => {
+  it('recovers a password in two calls: the code is checked before any password is sent', async () => {
     auth.verifyOtp.mockResolvedValue({ error: null });
     auth.updateUser.mockResolvedValue({ error: null });
 
-    expect(await service.recoverPassword('ana@example.com', '654321', 'nueva2026')).toEqual({
-      success: true,
-    });
-    expect(auth.verifyOtp).toHaveBeenCalledWith({
-      email: 'ana@example.com',
-      token: '654321',
-      type: 'recovery',
-    });
-    expect(auth.updateUser).toHaveBeenCalledWith({ password: 'nueva2026' });
+    expect(await service.verifyRecoveryCode('ana@example.com', '654321')).toEqual({ success: true });
+    expect(auth.verifyOtp).toHaveBeenCalledWith({ email: 'ana@example.com', token: '654321', type: 'recovery' });
+    expect(auth.updateUser).not.toHaveBeenCalled();
+    expect(await service.setRecoveredPassword('Nueva2026')).toEqual({ success: true });
+    expect(auth.updateUser).toHaveBeenCalledWith({ password: 'Nueva2026' });
   });
 
-  it('does not change the password when the code fails, and checks its strength first', async () => {
+  it('reports a failed code, and refuses a password without its required parts', async () => {
     auth.verifyOtp.mockResolvedValue({ error: { message: 'Token has expired or is invalid' } });
 
-    expect((await service.recoverPassword('ana@example.com', '654321', 'nueva2026')).errorKey).toBe(
-      'auth.errors.codeInvalid',
-    );
-    expect((await service.recoverPassword('ana@example.com', '654321', 'corta1')).errorKey).toBe(
-      'auth.validation.passwordWeak',
-    );
+    expect((await service.verifyRecoveryCode('ana@example.com', '654321')).errorKey).toBe('auth.errors.codeInvalid');
+    // No uppercase letter: Supabase would refuse it too.
+    expect((await service.setRecoveredPassword('nueva2026')).errorKey).toBe('auth.validation.passwordWeak');
     expect(auth.updateUser).not.toHaveBeenCalled();
   });
 

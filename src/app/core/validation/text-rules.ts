@@ -25,6 +25,7 @@ const LIMIT = {
   sectionMax: 40,
   captionMax: 60,
   neighborhoodMax: 60,
+  referenceMax: 100,
   addressMin: 5,
   searchMax: 80,
 } as const;
@@ -68,6 +69,8 @@ export const TextRules = {
   menuSection: line('validation.shortText', 1, LIMIT.sectionMax, LETTER_OR_DIGIT),
   photoCaption: line('validation.shortText', 1, LIMIT.captionMax, LETTER_OR_DIGIT),
   neighborhood: line('validation.shortText', 1, LIMIT.neighborhoodMax, LETTER_OR_DIGIT),
+  /** How to find the door ("al frente del parque"), businesses.address_reference. */
+  addressReference: line('validation.shortText', 1, LIMIT.referenceMax, LETTER_OR_DIGIT),
   /** 5 to 120 characters with letters and a number ("Calle 18 # 25-30"). */
   address: FieldRules.define({
     messageKey: 'validation.address',

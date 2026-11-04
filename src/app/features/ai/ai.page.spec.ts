@@ -33,6 +33,7 @@ describe('AiPage', () => {
     moment: signal('breakfast'),
     state: signal('ready'),
     result: signal<Recommendation | null>(result),
+    combos: signal([]),
     load: vi.fn(),
     selectMoment: vi.fn(),
   };
@@ -78,5 +79,13 @@ describe('AiPage', () => {
     const cart = TestBed.inject(CartStore);
     expect(cart.items().map((i) => i.menuItemId)).toEqual(['Desayuno', 'Croissant', 'Capuchino']);
     expect(cart.totalCop()).toBe(29500);
+  });
+
+  it('adds only the "Combos para {momento}" section under the chips, with a plain line when there are none', async () => {
+    const fixture = TestBed.createComponent(AiPage);
+    fixture.detectChanges();
+    const section = (fixture.nativeElement as HTMLElement).querySelector('app-moment-combos');
+    expect(section?.textContent).toContain('ai.combos.none');
+    expect(section?.querySelector('button')).toBeNull();
   });
 });
