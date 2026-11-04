@@ -24,7 +24,7 @@ export class PromotionPricing {
 }
 
 /** The discounted item of a deal. */
-export interface DealItem {
+interface DealItem {
   readonly id: string;
   readonly name: string;
   readonly imageUrl: string | null;

@@ -2,7 +2,7 @@ import { corsHeaders, isOriginAllowed } from './cors.ts';
 
 /** Small HTTP helpers shared by the JSON Edge Functions (POST only, CORS allow list). */
 
-export const MAX_BODY_BYTES = 2048;
+const MAX_BODY_BYTES = 2048;
 
 export function json(status: number, body: unknown, headers: Record<string, string> = {}): Response {
   return new Response(JSON.stringify(body), {

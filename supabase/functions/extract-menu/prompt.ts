@@ -9,7 +9,7 @@ null when there is none or it is unreadable) and the menu section it is
 listed under (or null). Do not invent products, prices or descriptions.
 Keep the original language and spelling.`;
 
-export const DRAFT_SCHEMA = {
+const DRAFT_SCHEMA = {
   type: 'object',
   additionalProperties: false,
   required: ['items'],

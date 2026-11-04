@@ -7,7 +7,7 @@ export const APP_ORIGIN = 'http://localhost:4200';
 export const VALID_TOKEN = 'valid-token';
 export const CALLER_ID = 'caller-id';
 /** Pinned clock: 2026-10-18 12:00 UTC. */
-export const NOW = Date.parse('2026-10-18T12:00:00Z');
+const NOW = Date.parse('2026-10-18T12:00:00Z');
 export const minutesAgo = (minutes: number) => new Date(NOW - minutes * 60_000).toISOString();
 
 export interface FakeOptions extends FakeStorageOptions {

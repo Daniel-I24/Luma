@@ -11,7 +11,7 @@ import { BusinessOrderRepository } from '@shared/orders/business-order.repositor
 import { PROMOTION_ADVISOR } from '@shared/promotions/advisor/promotion-advisor';
 import { OwnerSummaryPage } from './owner-summary.page';
 
-export const base = {
+const base = {
   id: 'b1',
   name: 'Mi Fritanga',
   category: 'Restaurante',

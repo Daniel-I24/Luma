@@ -4,7 +4,7 @@ import type { LlmImage, LlmImageType } from '../_shared/llm/types.ts';
 export const MAX_BODY_BYTES = 8 * 1024 * 1024;
 /** Per decoded image, the same as the business-images bucket. */
 export const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
-export const MAX_IMAGES = 4;
+const MAX_IMAGES = 4;
 
 const UUID = /^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
 const BASE64 = /^[A-Za-z0-9+/]+={0,2}$/;
@@ -17,7 +17,7 @@ export interface ExtractInput {
 }
 
 /** The real type of the bytes, whatever the client claims. */
-export function sniffImage(bytes: Uint8Array): LlmImageType | null {
+function sniffImage(bytes: Uint8Array): LlmImageType | null {
   const starts = (...sig: number[]) => sig.every((b, i) => bytes[i] === b);
   if (starts(0xff, 0xd8, 0xff)) return 'image/jpeg';
   if (starts(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a)) return 'image/png';

@@ -1,6 +1,6 @@
 import type { FetchLike, LlmFailureReason, LlmResult, LlmValidator } from './types.ts';
 
-export const DEFAULT_TIMEOUT_MS = 10_000;
+const DEFAULT_TIMEOUT_MS = 10_000;
 /** A saturated provider (5xx, "overloaded") gets two more tries; a timeout or network error one. */
 const UNAVAILABLE_RETRIES = 2;
 const TIMEOUT_RETRIES = 1;
@@ -8,7 +8,7 @@ const TIMEOUT_RETRIES = 1;
 const RETRY_BASE_DELAY_MS = 500;
 const UNAVAILABLE_STATUSES = new Set([500, 502, 503, 504, 529]);
 
-export class LlmFailure extends Error {
+class LlmFailure extends Error {
   constructor(readonly reason: LlmFailureReason) {
     super(reason);
   }

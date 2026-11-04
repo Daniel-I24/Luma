@@ -94,8 +94,8 @@ export function pushData(row: PushRow): Record<string, string> {
 }
 
 /** Android channels created by the app (PushChannels): users mute marketing apart from orders. */
-export const CHANNEL_ORDERS = 'orders';
-export const CHANNEL_PROMOTIONS = 'promotions';
+const CHANNEL_ORDERS = 'orders';
+const CHANNEL_PROMOTIONS = 'promotions';
 
 /** Promotions go to their own channel; orders, payments and reviews to 'orders'. */
 export function channelFor(type: string): string {

@@ -14,7 +14,7 @@ import { ExternalUrls } from '@core/config/external-urls';
 import { ReviewFlagsView } from '../../components/review-flags/review-flags';
 
 /** Public business registry, to check the legal data by hand. */
-export const RUES_URL = ExternalUrls.RUES;
+const RUES_URL = ExternalUrls.RUES;
 
 /** AdminReviewPage — /admin/businesses/:id: review one business and decide. */
 @Component({

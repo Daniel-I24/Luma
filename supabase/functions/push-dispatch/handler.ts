@@ -4,12 +4,12 @@ import type { PushMessage, SendResult } from './fcm.ts';
 import { channelFor, pushData, type PushRow, pushText } from './messages.ts';
 
 /** Server-only access (service role): claim_push_batch and remove_device_tokens. */
-export interface PushStore {
+interface PushStore {
   claim(limit: number): Promise<PushRow[]>;
   removeTokens(tokens: string[]): Promise<void>;
 }
 
-export interface Sender {
+interface Sender {
   send(token: string, message: PushMessage): Promise<SendResult>;
 }
 

@@ -1,9 +1,9 @@
 /** Injectable fetch, so tests never reach the network. */
 export type FetchLike = (input: string, init: RequestInit) => Promise<Response>;
 
-export const GEOCODE_TIMEOUT_MS = 5_000;
+const GEOCODE_TIMEOUT_MS = 5_000;
 
-export class GeocodeFailure extends Error {}
+class GeocodeFailure extends Error {}
 
 /** GET JSON with a timeout and no retry (the cache and the quota cover the rest). Never logs. */
 export async function getJson(

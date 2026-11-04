@@ -33,7 +33,7 @@ import { BusinessProfileStore } from './state/business-profile.store';
 import { ReviewsStore } from './state/reviews.store';
 
 export type ProfileTab = 'menu' | 'promos' | 'reviews' | 'info';
-export const PROFILE_TABS: readonly ProfileTab[] = ['menu', 'promos', 'reviews', 'info'];
+const PROFILE_TABS: readonly ProfileTab[] = ['menu', 'promos', 'reviews', 'info'];
 
 /** BusinessProfilePage — /businesses/:id: the public profile of a business. */
 @Component({

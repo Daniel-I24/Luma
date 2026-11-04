@@ -11,7 +11,7 @@ export interface CallerApi {
 }
 
 /** Server-only cache (service role). */
-export interface AnswerCache {
+interface AnswerCache {
   get(key: string): Promise<unknown>;
   put(key: string, value: unknown, ttlSeconds: number): Promise<void>;
 }
@@ -27,7 +27,7 @@ export interface RecommendDeps {
 }
 
 /** Customers: 20 minutes (the candidates change through the day). */
-export const CACHE_TTL_SECONDS = 20 * 60;
+const CACHE_TTL_SECONDS = 20 * 60;
 
 export function createHandler(deps: RecommendDeps): (req: Request) => Promise<Response> {
   return async (req) => {

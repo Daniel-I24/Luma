@@ -4,10 +4,10 @@
 export const IDEA_REASONS = ['slow_item', 'new_item', 'quiet_slot', 'top_seller'] as const;
 export type IdeaReason = (typeof IDEA_REASONS)[number];
 
-export const SLOTS = ['morning', 'midday', 'afternoon', 'evening', 'night'] as const;
+const SLOTS = ['morning', 'midday', 'afternoon', 'evening', 'night'] as const;
 export type Slot = (typeof SLOTS)[number];
 
-export interface SummaryItem {
+interface SummaryItem {
   readonly menu_item_id: string;
   readonly name: string;
   readonly price_cop: number;

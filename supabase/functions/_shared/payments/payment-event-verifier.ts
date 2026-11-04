@@ -43,7 +43,7 @@ export abstract class VerificationStep {
 const reject = (step: string): VerifyResult => ({ kind: 'reject', step });
 
 /** 1. Shape, and the environment this function serves. */
-export class SchemaStep extends VerificationStep {
+class SchemaStep extends VerificationStep {
   public constructor(private readonly environment: WompiEnvironment) {
     super();
   }
@@ -57,7 +57,7 @@ export class SchemaStep extends VerificationStep {
 }
 
 /** 2. Checksum with the events secret; only transaction.updated goes further. */
-export class ChecksumStep extends VerificationStep {
+class ChecksumStep extends VerificationStep {
   public constructor(private readonly eventsSecret: string) {
     super();
   }
@@ -69,7 +69,7 @@ export class ChecksumStep extends VerificationStep {
 }
 
 /** 3. The same transaction and status already processed: nothing to do. */
-export class IdempotencyStep extends VerificationStep {
+class IdempotencyStep extends VerificationStep {
   public constructor(private readonly repository: PaymentRepository) {
     super();
   }
@@ -81,7 +81,7 @@ export class IdempotencyStep extends VerificationStep {
 }
 
 /** 4. Ask Wompi: the API's answer, not the event, is what gets applied. */
-export class ApiConfirmationStep extends VerificationStep {
+class ApiConfirmationStep extends VerificationStep {
   public constructor(private readonly api: TransactionSource) {
     super();
   }
@@ -96,7 +96,7 @@ export class ApiConfirmationStep extends VerificationStep {
 }
 
 /** 5. Amount, COP and environment must match the attempt; then the database decides. */
-export class MatchAndApplyStep extends VerificationStep {
+class MatchAndApplyStep extends VerificationStep {
   public constructor(private readonly applier: PaymentApplier) {
     super();
   }

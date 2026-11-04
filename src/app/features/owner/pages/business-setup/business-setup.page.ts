@@ -14,7 +14,7 @@ import { SetupSteps } from '../../utils/setup-steps';
 import { PERCENT } from '@core/config/units';
 
 /** Query parameter the step screens read to offer "Volver al asistente". */
-export const SETUP_QUERY = { setup: '1' } as const;
+const SETUP_QUERY = { setup: '1' } as const;
 
 /**
  * BusinessSetupPage — /owner/:id/setup: the wizard of a new business with

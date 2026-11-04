@@ -2,12 +2,12 @@
  * Buckets and folders written for each business (see the business_images and
  * verification_storage migrations): "{business id}/{kind}/{file}".
  */
-export const BUSINESS_FOLDERS = [
+const BUSINESS_FOLDERS = [
   { bucket: 'business-images', kinds: ['logo', 'cover', 'menu', 'promotions', 'gallery'] },
   { bucket: 'verification-docs', kinds: ['rut', 'facade', 'other'] },
 ] as const;
 /** Buckets and folders written for the user themself (avatars migration): "{user id}/{kind}/{file}". */
-export const USER_FOLDERS = [
+const USER_FOLDERS = [
   { bucket: 'avatars', kinds: ['avatar'] },
 ] as const;
 const PAGE_SIZE = 1000;

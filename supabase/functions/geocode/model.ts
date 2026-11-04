@@ -1,5 +1,5 @@
 /** What the map search shows for a neighbourhood, an address or a place. */
-export const PLACE_KINDS = ['address', 'street', 'neighbourhood', 'city', 'poi'] as const;
+const PLACE_KINDS = ['address', 'street', 'neighbourhood', 'city', 'poi'] as const;
 export type PlaceKind = (typeof PLACE_KINDS)[number];
 
 export interface Place {
@@ -28,7 +28,7 @@ export const COLOMBIA_BBOX = [-81.8, -4.3, -66.8, 13.6] as const;
 /** Nariño, used as the preferred view box. */
 export const NARINO_BBOX = [-79.1, 0.3, -76.8, 2.7] as const;
 
-export function inColombia(point: Point): boolean {
+function inColombia(point: Point): boolean {
   const [minLng, minLat, maxLng, maxLat] = COLOMBIA_BBOX;
   return point.lng >= minLng && point.lng <= maxLng && point.lat >= minLat && point.lat <= maxLat;
 }

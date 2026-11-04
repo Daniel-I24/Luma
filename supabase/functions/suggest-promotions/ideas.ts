@@ -8,7 +8,7 @@ import {
 } from './model.ts';
 
 /** The week's quietest observed moment (fewest orders), or null without data. */
-export function quietestSlot(summary: SalesSummary): { dow: number; slot: Slot } | null {
+function quietestSlot(summary: SalesSummary): { dow: number; slot: Slot } | null {
   const sorted = [...summary.slots].sort((a, b) => a.orders - b.orders || a.dow - b.dow);
   return sorted[0] ? { dow: sorted[0].dow, slot: sorted[0].slot } : null;
 }

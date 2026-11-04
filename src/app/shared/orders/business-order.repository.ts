@@ -6,7 +6,7 @@ import { OrderErrors } from './order-error';
 import type { OrderStatus } from './order.model';
 
 /** Row of public.business_order_items. */
-export interface BusinessOrderItem {
+interface BusinessOrderItem {
   id: string;
   order_id: string;
   name: string;

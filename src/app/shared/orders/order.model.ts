@@ -1,15 +1,13 @@
 /** Lifecycle of a pick-up order (public.orders.status). */
-export const ORDER_STATUSES = [
+export type OrderStatus =
   // Online orders until their payment is approved (never shown to the business).
-  'awaiting_payment',
-  'pending',
-  'accepted',
-  'preparing',
-  'ready',
-  'picked_up',
-  'cancelled',
-] as const;
-export type OrderStatus = (typeof ORDER_STATUSES)[number];
+  | 'awaiting_payment'
+  | 'pending'
+  | 'accepted'
+  | 'preparing'
+  | 'ready'
+  | 'picked_up'
+  | 'cancelled';
 
 /** public.orders.payment_status (written only by the payment functions). */
 export type PaymentStatus =
@@ -25,7 +23,7 @@ export const ORDER_PROGRESS: readonly OrderStatus[] = [
 ];
 
 /** Live business data an order screen needs (null once it is gone or hidden). */
-export interface OrderBusiness {
+interface OrderBusiness {
   id: string;
   latitude: number;
   longitude: number;
@@ -34,7 +32,7 @@ export interface OrderBusiness {
 }
 
 /** Row of public.order_items (copies taken when the order was created). */
-export interface OrderItem {
+interface OrderItem {
   id: string;
   menu_item_id: string | null;
   name: string;

@@ -1,7 +1,7 @@
 import { ownerPaths } from '@shared/account/account-paths';
 import type { ReviewRequirement } from '@shared/business/verification/verification.model';
 
-export type SetupStepId = 'basics' | 'location' | 'hours' | 'contact' | 'legal' | 'menu';
+type SetupStepId = 'basics' | 'location' | 'hours' | 'contact' | 'legal' | 'menu';
 
 /** One step of the business wizard and the review requirements it covers. */
 export interface SetupStep {

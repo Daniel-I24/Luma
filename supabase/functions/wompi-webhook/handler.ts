@@ -3,7 +3,7 @@ import type { PaymentLog } from '../_shared/payments/payment-log.ts';
 import type { VerifyResult } from '../_shared/payments/payment-event-verifier.ts';
 
 /** Verifies and applies one event body (PaymentEventVerifier). */
-export interface EventVerifier {
+interface EventVerifier {
   verify(body: unknown): Promise<VerifyResult>;
 }
 

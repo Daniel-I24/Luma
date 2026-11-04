@@ -13,9 +13,6 @@ import type {
   ProviderOptions,
 } from './types.ts';
 
-export const LLM_PROVIDERS = ['gemini', 'openai', 'anthropic'] as const;
-export type LlmProviderName = (typeof LLM_PROVIDERS)[number];
-
 /** Image requests are bigger and slower than text ones. */
 export const VISION_TIMEOUT_MS = 30_000;
 export type LlmPurpose = 'text' | 'vision';

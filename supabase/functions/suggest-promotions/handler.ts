@@ -25,7 +25,7 @@ export interface SuggestDeps {
 }
 
 /** Owners: 24 hours (sales aggregates move slowly). */
-export const CACHE_TTL_SECONDS = 24 * 60 * 60;
+const CACHE_TTL_SECONDS = 24 * 60 * 60;
 const UUID = /^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
 
 export function createHandler(deps: SuggestDeps): (req: Request) => Promise<Response> {

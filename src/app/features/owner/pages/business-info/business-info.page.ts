@@ -21,7 +21,7 @@ import { RouteBusinessId } from '../../utils/route-business-id';
 import { SetupReturn } from '../../components/setup-return/setup-return';
 
 const ID_PREFIX = 'info';
-export const DESCRIPTION_MAX = 300;
+const DESCRIPTION_MAX = 300;
 const DESCRIPTION_RULE = TextRules.freeText(DESCRIPTION_MAX);
 
 /** BusinessInfoPage — /owner/:id/business/info: basics, description and preparation time. */

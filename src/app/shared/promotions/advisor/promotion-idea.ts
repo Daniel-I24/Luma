@@ -2,7 +2,6 @@ import * as z from 'zod/mini';
 
 /** Reason codes of an idea; the app translates them with the figures below. */
 const IDEA_REASONS = ['slow_item', 'new_item', 'quiet_slot', 'top_seller'] as const;
-export type IdeaReason = (typeof IDEA_REASONS)[number];
 const IDEA_SLOTS = ['morning', 'midday', 'afternoon', 'evening', 'night'] as const;
 
 const slotSchema = z.object({ dow: z.number(), slot: z.enum(IDEA_SLOTS) });

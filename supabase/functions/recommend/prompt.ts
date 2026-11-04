@@ -10,7 +10,7 @@ Pick up to 3 businesses that fit the moment (best first) and, if it makes
 sense, one combo of 1 to 3 items from a single recommended business.
 Reason codes: ${REASONS.join(', ')}.`;
 
-export const ANSWER_SCHEMA = {
+const ANSWER_SCHEMA = {
   type: 'object',
   additionalProperties: false,
   required: ['businesses', 'combo'],

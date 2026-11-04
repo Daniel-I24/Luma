@@ -24,7 +24,7 @@ export interface HandlerDeps {
 }
 
 /** Deleting needs a sign-in (password or code) this recent; a refreshed token is not enough. */
-export const REAUTH_WINDOW_MS = 10 * 60 * 1000;
+const REAUTH_WINDOW_MS = 10 * 60 * 1000;
 
 type ErrorCode =
   | 'method_not_allowed'
@@ -41,7 +41,7 @@ export function extractBearerToken(header: string | null): string | null {
 }
 
 /** The only source of identity: the caller's own JWT, validated by Supabase Auth. */
-export async function resolveCaller(
+async function resolveCaller(
   client: AdminAuthClient,
   token: string,
 ): Promise<CallerUser | null> {
@@ -49,12 +49,12 @@ export async function resolveCaller(
   return error || !data.user ? null : data.user;
 }
 
-export function signedInRecently(user: CallerUser, now: number): boolean {
+function signedInRecently(user: CallerUser, now: number): boolean {
   const at = user.last_sign_in_at ? Date.parse(user.last_sign_in_at) : Number.NaN;
   return Number.isFinite(at) && now - at <= REAUTH_WINDOW_MS;
 }
 
-export async function deleteAccount(client: AdminAuthClient, userId: string): Promise<boolean> {
+async function deleteAccount(client: AdminAuthClient, userId: string): Promise<boolean> {
   const { error } = await client.auth.admin.deleteUser(userId);
   return !error;
 }

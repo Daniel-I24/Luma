@@ -7,14 +7,14 @@ export type Moment = (typeof MOMENTS)[number];
 export const REASONS = ['moment_fit', 'nearby', 'top_rated', 'deal', 'variety'] as const;
 export type Reason = (typeof REASONS)[number];
 
-export interface CandidateItem {
+interface CandidateItem {
   readonly id: string;
   readonly name: string;
   readonly price_cop: number;
   readonly section: string | null;
 }
 
-export interface CandidatePromotion {
+interface CandidatePromotion {
   readonly id: string;
   readonly menu_item_id: string | null;
   readonly discount_percent: number | null;
@@ -44,7 +44,7 @@ export interface ModelAnswer {
   readonly combo: { readonly business_id: string; readonly item_ids: readonly string[] } | null;
 }
 
-export interface ComboLine {
+interface ComboLine {
   readonly id: string;
   readonly name: string;
   readonly list_cop: number;

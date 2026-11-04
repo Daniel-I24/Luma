@@ -14,7 +14,7 @@ export interface AdminPayments {
 }
 
 /** The Wompi side (private key) and the database side (service role). */
-export interface VoidGateway {
+interface VoidGateway {
   readonly environment: WompiEnvironment;
   void(transactionId: string): Promise<boolean>;
   transaction(transactionId: string): Promise<EventTransaction | null>;

@@ -6,7 +6,7 @@ import { PaymentRepository } from './payment.repository';
 export type PaymentMethod = 'pay_at_pickup' | 'online';
 
 /** What happened after the order was created. */
-export type PaymentStart =
+type PaymentStart =
   | { readonly kind: 'pay_at_pickup' }
   | { readonly kind: 'redirected' }
   | { readonly kind: 'failed'; readonly errorKey: string; readonly retryAfterSeconds?: number };

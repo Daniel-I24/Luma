@@ -1,14 +1,12 @@
 
 
 /** Review state of a business (businesses_verification_status_valid). */
-export const VERIFICATION_STATUSES = [
-  'draft',
-  'pending',
-  'approved',
-  'rejected',
-  'suspended',
-] as const;
-export type VerificationStatus = (typeof VERIFICATION_STATUSES)[number];
+export type VerificationStatus =
+  | 'draft'
+  | 'pending'
+  | 'approved'
+  | 'rejected'
+  | 'suspended';
 
 /**
  * Business — mirrors the public.businesses table row.
@@ -56,7 +54,7 @@ export interface Business {
 }
 
 /** 0 = Sunday … 6 = Saturday (JS Date.getDay()). */
-export type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
 /**
  * BusinessHours — mirrors the public.business_hours table row.

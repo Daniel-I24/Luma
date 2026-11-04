@@ -1,5 +1,5 @@
 /** A menu read from photos: a draft the owner reviews before saving anything. */
-export interface DraftItem {
+interface DraftItem {
   readonly name: string;
   readonly description: string | null;
   /** Whole COP, or null when the photo shows no readable price. */
@@ -12,7 +12,7 @@ export interface MenuDraft {
 }
 
 /** Same as the menu cap per business (business_content_limits). */
-export const MAX_DRAFT_ITEMS = 200;
+const MAX_DRAFT_ITEMS = 200;
 const MIN_PRICE_COP = 50;
 const MAX_PRICE_COP = 10_000_000;
 

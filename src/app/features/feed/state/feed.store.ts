@@ -11,7 +11,7 @@ import { FeedCards } from '../utils/feed-cards';
 /** Same search radius as the map. */
 const FEED_RADIUS_KM = 10;
 /** Businesses whose posts are fetched per page (three `in` queries per page). */
-export const FEED_BATCH_SIZE = 4;
+const FEED_BATCH_SIZE = 4;
 
 export type FeedState = 'loading' | 'ready' | 'error';
 

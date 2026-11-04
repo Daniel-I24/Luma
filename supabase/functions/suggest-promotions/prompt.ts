@@ -8,7 +8,7 @@ copy them into your answer. Propose up to ${MAX_IDEAS} promotions, each on one
 item from the data: discount_percent between 5 and 30, duration_days between
 1 and 14, and one reason code: ${IDEA_REASONS.join(', ')}.`;
 
-export const IDEAS_SCHEMA = {
+const IDEAS_SCHEMA = {
   type: 'object',
   additionalProperties: false,
   required: ['ideas'],
