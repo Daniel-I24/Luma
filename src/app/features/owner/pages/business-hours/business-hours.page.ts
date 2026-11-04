@@ -1,7 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaButton, LumaInput, ToastService } from '@design-system';
+import { LumaButton, LumaInput, LumaNotice, ToastService } from '@design-system';
 import { BusinessHoursWriteRepository } from '@shared/business/data/business-hours-write.repository';
 import { dayHoursSchema } from '@shared/business/data/business-write.schemas';
 import { BusinessRepository } from '@shared/business/data/business.repository';
@@ -19,7 +19,7 @@ import { ZodRules } from '@core/validation/zod-rules';
   selector: 'app-business-hours-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [LumaNotice, 
     SetupReturn,TranslocoModule, LumaButton, LumaInput, PanelHeader, PanelStateView],
   providers: [PanelBusinessStore],
   templateUrl: './business-hours.page.html',

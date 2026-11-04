@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { FieldRules } from '@core/validation/field-rule';
-import { LumaButton, LumaIcon } from '@design-system';
+import { LumaButton, LumaIcon, LumaNotice } from '@design-system';
 import type { ReviewInput, ReviewWithAuthor } from '@shared/business/models/review.model';
 import { REVIEW_COMMENT_RULE } from '@shared/business/data/review.schema';
 
@@ -26,7 +26,7 @@ const MAX_COMMENT_LENGTH = REVIEW_COMMENT_RULE.maxLength;
   selector: 'app-review-form',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaIcon],
+  imports: [LumaNotice, TranslocoModule, LumaButton, LumaIcon],
   templateUrl: './review-form.html',
   host: { class: 'block' },
 })

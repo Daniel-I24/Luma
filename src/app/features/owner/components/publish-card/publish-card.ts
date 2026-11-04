@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaButton } from '@design-system';
+import { LumaButton, LumaNotice } from '@design-system';
 import type { Business } from '@shared/business/models/business.model';
 import { PublishStore } from '../../state/publish.store';
 
@@ -12,7 +12,7 @@ import { PublishStore } from '../../state/publish.store';
   selector: 'app-publish-card',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton],
+  imports: [LumaNotice, TranslocoModule, LumaButton],
   templateUrl: './publish-card.html',
 })
 export class PublishCard {

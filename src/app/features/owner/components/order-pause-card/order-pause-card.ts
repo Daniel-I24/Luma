@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import { LumaButton } from '@design-system';
+import { LumaButton, LumaNotice } from '@design-system';
 import { type Business, BusinessPause } from '@shared/business/models/business.model';
 import { DateFormat } from '@shared/format/date-format';
 import { OrderPauseRepository } from '../../services/order-operations.repository';
@@ -15,14 +15,14 @@ import { OrderPauseRepository } from '../../services/order-operations.repository
   selector: 'app-order-pause-card',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton],
+  imports: [LumaNotice, TranslocoModule, LumaButton],
   template: `
     <section *transloco="let t" class="flex flex-col gap-3 rounded-xl border border-border-subtle bg-surface p-4" aria-labelledby="pause-title">
       <h2 id="pause-title" class="m-0 text-title text-fg">{{ t('owner.pause.title') }}</h2>
       @if (paused()) {
-      <p class="m-0 rounded-md bg-warning-bg p-3 text-body-sm text-warning-fg" role="status">
+      <app-luma-notice tone="warning">
         @if (endsAt(); as time) { {{ t('owner.pause.pausedUntil', { time }) }} } @else { {{ t('owner.pause.pausedIndefinitely') }} }
-      </p>
+      </app-luma-notice>
       <app-luma-button variant="confirm" [fullWidth]="true" [disabled]="busy()" (clicked)="set(0)">{{ t('owner.pause.resume') }}</app-luma-button>
       } @else {
       <p class="m-0 text-body-sm text-fg-muted">{{ t('owner.pause.intro') }}</p>

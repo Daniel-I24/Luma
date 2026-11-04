@@ -3,7 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { filter, map } from 'rxjs';
-import { LumaIcon, LumaTabBar, type TabBarItem } from '@design-system';
+import { LumaIcon, LumaNotice, LumaTabBar, type TabBarItem } from '@design-system';
 import { OWNER_SECTIONS, type OwnerSection, ownerPaths } from '@shared/account/account-paths';
 import { TourHelpButton } from '@shared/tutorial/tour-help-button';
 import { TourRoutes } from '@shared/tutorial/tour-registry';
@@ -40,7 +40,7 @@ export class OwnerLocation {
   selector: 'app-owner-shell',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterOutlet, RouterLink, TranslocoModule, LumaIcon, LumaTabBar, TourHelpButton],
+  imports: [LumaNotice, RouterOutlet, RouterLink, TranslocoModule, LumaIcon, LumaTabBar, TourHelpButton],
   templateUrl: './owner-shell.html',
   providers: [OrderAlertsStore],
   host: { class: 'flex h-dvh flex-col bg-canvas' },

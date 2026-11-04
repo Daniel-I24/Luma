@@ -5,7 +5,7 @@
   <app-panel-header [heading]="t('owner.menuScan.title')" [backLink]="['/owner', id(), 'menu']" />
 
   @if (scan.errorKey(); as key) {
-    <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
+    <app-luma-notice tone="danger">{{ t(key) }}</app-luma-notice>
     @if (scan.retryable()) {
       <app-luma-button variant="secondary" [fullWidth]="true" (clicked)="scan.retry()">{{ t('common.retry') }}</app-luma-button>
     }
@@ -19,7 +19,7 @@
       <!-- Always shown; in a rules build it says why it cannot read photos (docs/ai.md). -->
       <app-luma-button size="lg" [fullWidth]="true" [disabled]="!aiAvailable" (clicked)="file.click()">{{ t('owner.menuScan.pick') }}</app-luma-button>
       @if (!aiAvailable) {
-        <p class="m-0 rounded-md bg-info-bg p-3 text-body-sm text-info-fg" role="status">{{ t('owner.menuScan.errors.buildRules') }}</p>
+        <app-luma-notice>{{ t('owner.menuScan.errors.buildRules') }}</app-luma-notice>
       }
       <p class="m-0 text-caption text-fg-subtle">{{ t('owner.menuScan.privacy') }}</p>
       <section class="flex flex-col gap-2 rounded-xl border border-border-subtle bg-surface p-4" aria-labelledby="paste-title">

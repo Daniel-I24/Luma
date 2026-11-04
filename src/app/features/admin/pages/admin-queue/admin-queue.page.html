@@ -36,9 +36,9 @@
     [attr.aria-labelledby]="'admin-tab-' + tab()"
   >
     @if (store.errorKey(); as key) {
-    <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+    <app-luma-notice tone="danger">
       {{ t(key) }}
-    </p>
+    </app-luma-notice>
     } @if (tab() === 'pending') { @for (business of store.pending(); track business.id) {
     <a
       class="pressable flex min-h-16 flex-col gap-1 rounded-xl border border-border-subtle bg-surface p-4 text-fg no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"

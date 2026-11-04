@@ -33,7 +33,7 @@
       <app-order-status-badge [status]="order.status" />
     </div>
     @if (order.status === 'cancelled') {
-    <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg">{{ t('orders.detail.cancelled') }}</p>
+    <app-luma-notice tone="danger" role="note">{{ t('orders.detail.cancelled') }}</app-luma-notice>
     } @else {
     <app-order-timeline [status]="order.status" />
     } @if (estimate(); as estimate) {
@@ -82,7 +82,7 @@
   </section>
 
   @if (store.errorKey(); as key) {
-  <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
+  <app-luma-notice tone="danger">{{ t(key) }}</app-luma-notice>
   } @if (order.status === 'pending' || order.status === 'awaiting_payment') {
   <app-luma-button variant="danger" [fullWidth]="true" [disabled]="store.cancelling()" (clicked)="confirmOpen.set(true)">{{
     t('orders.detail.cancel')

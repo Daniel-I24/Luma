@@ -2,7 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { TextRules } from '@core/validation/text-rules';
-import { LumaButton, LumaInput, ToastService } from '@design-system';
+import { LumaButton, LumaInput, LumaNotice, ToastService } from '@design-system';
 import { type BusinessInfoInput, businessInfoSchema } from '@shared/business/data/business-write.schemas';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
 import { DraftNotice } from '@shared/forms/draft-notice/draft-notice';
@@ -29,7 +29,7 @@ const DESCRIPTION_RULE = TextRules.freeText(DESCRIPTION_MAX);
   selector: 'app-business-info-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [LumaNotice, 
     SetupReturn, TranslocoModule, LumaButton, LumaInput, BusinessBasicsFields, BusinessImages, PanelHeader,
     PanelStateView, ReReviewSheet, DraftNotice,
   ],

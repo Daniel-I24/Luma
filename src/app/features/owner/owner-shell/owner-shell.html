@@ -54,9 +54,9 @@
 
   @if (context.errorKey() && context.businesses() === null) {
   <div class="mx-auto mt-6 flex max-w-lg flex-col gap-3 px-4">
-    <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+    <app-luma-notice tone="danger">
       {{ t(context.errorKey()!) }}
-    </p>
+    </app-luma-notice>
     <button
       type="button"
       class="min-h-11 rounded-md border border-border bg-surface text-body font-semibold text-fg"

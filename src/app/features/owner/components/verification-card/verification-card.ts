@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import { type IconName, LumaButton, LumaIcon } from '@design-system';
+import { type IconName, LumaButton, LumaIcon, LumaNotice } from '@design-system';
 import { ownerPaths } from '@shared/account/account-paths';
 import type { Business, VerificationStatus } from '@shared/business/models/business.model';
 import type { ReviewRequirement } from '@shared/business/verification/verification.model';
@@ -28,7 +28,7 @@ const STATUS_LOOK: Readonly<Record<VerificationStatus, { icon: IconName; tone: s
   selector: 'app-verification-card',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, RouterLink, LumaButton, LumaIcon],
+  imports: [LumaNotice, TranslocoModule, RouterLink, LumaButton, LumaIcon],
   templateUrl: './verification-card.html',
 })
 export class VerificationCard {

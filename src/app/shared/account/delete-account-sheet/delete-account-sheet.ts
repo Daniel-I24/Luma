@@ -4,7 +4,7 @@ import { ValidatedField } from '@core/validation/validated-field';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AccountReauthService } from '@core/auth/account-reauth.service';
 import { AuthService } from '@core/auth/auth.service';
-import { LumaBottomSheet, LumaButton, LumaInput } from '@design-system';
+import { LumaBottomSheet, LumaButton, LumaInput, LumaNotice } from '@design-system';
 
 /** What account deletion removes, listed before anything is sent. */
 const DELETED_DATA = ['account', 'profile', 'favorites', 'reviews', 'businesses'] as const;
@@ -22,7 +22,7 @@ type Step = 'consequences' | 'code';
   selector: 'app-delete-account-sheet',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaBottomSheet, LumaButton, LumaInput],
+  imports: [LumaNotice, TranslocoModule, LumaBottomSheet, LumaButton, LumaInput],
   templateUrl: './delete-account-sheet.html',
 })
 export class DeleteAccountSheet {

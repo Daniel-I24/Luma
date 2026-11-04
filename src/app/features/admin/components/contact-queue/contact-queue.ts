@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { ExternalUrls } from '@core/config/external-urls';
-import { LumaButton } from '@design-system';
+import { LumaButton, LumaNotice } from '@design-system';
 import type { PendingContactVerification } from '@shared/business/verification/contact-verification';
 import { ContactVerifiers } from '@shared/business/verification/contact-verifier';
 import { ContactVerificationRepository } from '@shared/business/verification/contact-verification.repository';
@@ -16,14 +16,14 @@ import { ContactVerificationRepository } from '@shared/business/verification/con
   selector: 'app-contact-queue',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton],
+  imports: [LumaNotice, TranslocoModule, LumaButton],
   template: `
     <section *transloco="let t" class="flex flex-col gap-3" aria-labelledby="contact-queue-title">
       <h2 id="contact-queue-title" class="m-0 text-title text-fg">
         {{ t('admin.contacts.title', { count: items().length }) }}
       </h2>
       @if (errorKey(); as key) {
-      <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
+      <app-luma-notice tone="danger">{{ t(key) }}</app-luma-notice>
       }
       <ul class="m-0 flex list-none flex-col gap-2 p-0">
         @for (item of items(); track item.id) {

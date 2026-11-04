@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal, viewChild } from '@
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import { LumaBottomSheet, LumaButton, LumaEmptyState, LumaIconButton, ToastService } from '@design-system';
+import { LumaBottomSheet, LumaButton, LumaEmptyState, LumaIconButton, LumaNotice, ToastService } from '@design-system';
 import type { PromotionInput } from '@shared/business/data/business-write.schemas';
 import type { Promotion } from '@shared/business/models/business.model';
 import { DateFormat } from '@shared/format/date-format';
@@ -35,7 +35,7 @@ const PHASE_CLASS = {
   selector: 'app-business-promotions-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [LumaNotice, 
     NotifyFollowers,
     TranslocoModule,
     LumaBottomSheet,

@@ -23,9 +23,9 @@
       [attr.aria-labelledby]="'orders-tab-' + tab()"
     >
       @if (board.errorKey(); as key) {
-      <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+      <app-luma-notice tone="danger">
         {{ t(key) }}
-      </p>
+      </app-luma-notice>
       } @for (order of visible(); track order.id) {
       <app-owner-order-card
         class="block motion-stagger"

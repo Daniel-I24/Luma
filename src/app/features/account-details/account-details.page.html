@@ -36,7 +36,7 @@
     <app-residence-picker [(value)]="form.residence" />
     }
     @if (form.errorKey(); as key) {
-    <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
+    <app-luma-notice tone="danger">{{ t(key) }}</app-luma-notice>
     }
     <app-luma-button type="submit" size="lg" [fullWidth]="true" [disabled]="form.saving()">{{
       t(form.saving() ? 'businessPanel.form.saving' : 'accountDetails.save')

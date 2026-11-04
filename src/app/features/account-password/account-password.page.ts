@@ -4,7 +4,7 @@ import { AuthRules } from '@core/validation/auth-rules';
 import { ValidatedField } from '@core/validation/validated-field';
 import { TranslocoModule } from '@jsverse/transloco';
 import { PasswordChangeService } from '@core/auth/password-change.service';
-import { LumaButton, LumaInput, ToastService } from '@design-system';
+import { LumaButton, LumaInput, LumaNotice, ToastService } from '@design-system';
 
 /**
  * AccountPasswordPage — /account/password: change the password in two
@@ -16,7 +16,7 @@ import { LumaButton, LumaInput, ToastService } from '@design-system';
   selector: 'app-account-password-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaInput],
+  imports: [LumaNotice, TranslocoModule, LumaButton, LumaInput],
   template: `
     <main
       *transloco="let t"
@@ -41,7 +41,7 @@ import { LumaButton, LumaInput, ToastService } from '@design-system';
             (blurred)="fields.code.blur()" [errorMessage]="fields.code.error() ? t(fields.code.error()!) : undefined" />
         }
         @if (errorKey(); as key) {
-          <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
+          <app-luma-notice tone="danger">{{ t(key) }}</app-luma-notice>
         }
         <app-luma-button type="submit" size="lg" [fullWidth]="true" [loading]="passwords.busy()">{{
           t(codeSent() ? 'account.password.save' : 'account.password.sendCode')

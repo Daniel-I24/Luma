@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal, viewChild } from '@
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AI_MODE } from '@core/config/build-flags';
-import { LumaBottomSheet, LumaButton, LumaEmptyState, LumaIcon, ToastService } from '@design-system';
+import { LumaBottomSheet, LumaButton, LumaEmptyState, LumaIcon, LumaNotice, ToastService } from '@design-system';
 import type { MenuItemInput } from '@shared/business/data/business-write.schemas';
 import type { MenuItem } from '@shared/business/models/menu.model';
 import type { HasUnsavedChanges } from '@shared/forms/unsaved-changes.guard';
@@ -25,7 +25,7 @@ import { SetupReturn } from '../../components/setup-return/setup-return';
   selector: 'app-business-menu-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [LumaNotice, 
     SetupReturn,
     TranslocoModule,
     RouterLink,

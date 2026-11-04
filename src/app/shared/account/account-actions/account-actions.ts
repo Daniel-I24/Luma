@@ -3,7 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
 import { APP_VERSION } from '@core/config/app-version';
-import { LumaButton, ToastService } from '@design-system';
+import { LumaButton, LumaNotice, ToastService } from '@design-system';
 import { DataExport } from '../data-export.service';
 import { DeleteAccountSheet } from '../delete-account-sheet/delete-account-sheet';
 
@@ -16,13 +16,13 @@ import { DeleteAccountSheet } from '../delete-account-sheet/delete-account-sheet
   selector: 'app-account-actions',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, RouterLink, LumaButton, DeleteAccountSheet],
+  imports: [LumaNotice, TranslocoModule, RouterLink, LumaButton, DeleteAccountSheet],
   template: `
     <ng-container *transloco="let t">
       @if (errorKey()) {
-      <p class="m-0 mb-3 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+      <app-luma-notice tone="danger" class="mb-3">
         {{ t(errorKey()!) }}
-      </p>
+      </app-luma-notice>
       }
       <nav class="mb-3 flex flex-col gap-2" [attr.aria-label]="t('profile.account')">
         <a

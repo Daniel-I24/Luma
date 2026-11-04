@@ -2,7 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaButton, ToastService } from '@design-system';
+import { LumaButton, LumaNotice, ToastService } from '@design-system';
 import { ownerPaths } from '@shared/account/account-paths';
 import { newBusinessSchema } from '@shared/business/data/business-write.schemas';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
@@ -22,7 +22,7 @@ const ID_PREFIX = 'register';
   selector: 'app-register-business-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, BusinessBasicsFields, PanelHeader, DraftNotice],
+  imports: [LumaNotice, TranslocoModule, LumaButton, BusinessBasicsFields, PanelHeader, DraftNotice],
   template: `
     <form
       *transloco="let t"
@@ -40,9 +40,9 @@ const ID_PREFIX = 'register';
       <app-business-basics-fields [idPrefix]="idPrefix" [(errors)]="errors" [(draft)]="draft" />
 
       @if (errorKey(); as key) {
-      <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+      <app-luma-notice tone="danger">
         {{ t(key) }}
-      </p>
+      </app-luma-notice>
       }
       <app-luma-button type="submit" size="lg" [fullWidth]="true" [disabled]="saving()"
         >{{ t(saving() ? 'businessPanel.form.saving' : 'businessPanel.register.submit')

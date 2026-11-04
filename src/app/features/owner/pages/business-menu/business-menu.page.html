@@ -24,9 +24,9 @@
       <p class="m-0 text-caption text-fg-muted">{{ t('businessPanel.menu.soldOutHint') }}</p>
       }
       @if (menu.errorKey(); as key) {
-      <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+      <app-luma-notice tone="danger">
         {{ t(key) }}
-      </p>
+      </app-luma-notice>
       } @if (menu.isEmpty()) {
       <app-luma-empty-state
         illustration="menu"
@@ -84,9 +84,9 @@
       (cancelled)="editing.set(undefined)"
     />
     @if (menu.errorKey(); as key) {
-    <p class="m-0 mt-3 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+    <app-luma-notice tone="danger" class="mt-3">
       {{ t(key) }}
-    </p>
+    </app-luma-notice>
     } }
   </app-luma-bottom-sheet>
 

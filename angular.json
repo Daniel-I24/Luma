@@ -115,7 +115,8 @@
           "builder": "@angular/build:unit-test",
           "options": {
             "isolate": true,
-            "providersFile": "src/test-providers.ts"
+            "providersFile": "src/test-providers.ts",
+            "runnerConfig": "vitest.config.mjs"
           }
         },
         "lint": {

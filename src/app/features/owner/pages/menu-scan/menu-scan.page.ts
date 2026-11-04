@@ -4,7 +4,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { AI_MODE } from '@core/config/build-flags';
 import { FieldRules } from '@core/validation/field-rule';
 import { TextRules } from '@core/validation/text-rules';
-import { LumaButton, LumaSkeleton } from '@design-system';
+import { LumaButton, LumaNotice, LumaSkeleton } from '@design-system';
 import { ACCEPTED_IMAGE_TYPES } from '@shared/media/image-files';
 import { PanelHeader } from '../../components/panel-header/panel-header';
 import { MAX_SCAN_PHOTOS } from '../../services/menu-scan.repository';
@@ -21,7 +21,7 @@ import { RouteBusinessId } from '../../utils/route-business-id';
   selector: 'app-menu-scan-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, RouterLink, LumaButton, LumaSkeleton, PanelHeader],
+  imports: [LumaNotice, TranslocoModule, RouterLink, LumaButton, LumaSkeleton, PanelHeader],
   providers: [MenuScanStore],
   templateUrl: './menu-scan.page.html',
   host: { class: 'block' },

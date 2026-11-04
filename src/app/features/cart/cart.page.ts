@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaButton, LumaEmptyState, LumaIconButton } from '@design-system';
+import { LumaButton, LumaEmptyState, LumaIconButton, LumaNotice } from '@design-system';
 import { AddToCart } from '@shared/cart/add-to-cart/add-to-cart';
 import type { CartProduct } from '@shared/cart/cart.model';
 import { CartStore } from '@shared/cart/cart.store';
@@ -17,7 +17,7 @@ import { CartReviewStore } from './state/cart-review.store';
   selector: 'app-cart-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaEmptyState, LumaIconButton, AddToCart, CopCurrencyPipe],
+  imports: [LumaNotice, TranslocoModule, LumaButton, LumaEmptyState, LumaIconButton, AddToCart, CopCurrencyPipe],
   providers: [CartReviewStore],
   templateUrl: './cart.page.html',
   host: { class: 'block' },

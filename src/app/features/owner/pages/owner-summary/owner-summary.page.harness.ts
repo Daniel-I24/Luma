@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { of } from 'rxjs';
-import { beforeEach, vi } from 'vitest';
+import { beforeEach, expect, vi } from 'vitest';
 import { BusinessRepository } from '@shared/business/data/business.repository';
 import { MenuRepository } from '@shared/business/data/menu.repository';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';

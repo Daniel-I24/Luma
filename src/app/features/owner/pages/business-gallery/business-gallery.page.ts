@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, effect, inject, signal, untracked }
 import { TranslocoModule } from '@jsverse/transloco';
 import { FieldRules } from '@core/validation/field-rule';
 import { TextRules } from '@core/validation/text-rules';
-import { LumaButton, LumaIconButton, LumaImage, LumaSkeleton } from '@design-system';
+import { LumaButton, LumaIconButton, LumaImage, LumaNotice, LumaSkeleton } from '@design-system';
 import { type BusinessPhoto, MAX_CAPTION, MAX_PHOTOS } from '@shared/business/data/business-photo.repository';
 import { ACCEPTED_IMAGE_TYPES } from '@shared/media/image-files';
 import { PanelHeader } from '../../components/panel-header/panel-header';
@@ -18,7 +18,7 @@ import { RouteBusinessId } from '../../utils/route-business-id';
   selector: 'app-business-gallery-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaIconButton, LumaImage, LumaSkeleton, PanelHeader],
+  imports: [LumaNotice, TranslocoModule, LumaButton, LumaIconButton, LumaImage, LumaSkeleton, PanelHeader],
   providers: [GalleryStore],
   templateUrl: './business-gallery.page.html',
   host: { class: 'block' },

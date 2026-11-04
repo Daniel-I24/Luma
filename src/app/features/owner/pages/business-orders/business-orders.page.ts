@@ -3,15 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { NativeHaptics } from '@core/native/native-actions';
 import { RealtimeService } from '@core/realtime/realtime.service';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import {
-  TabIds,
-  LumaBottomSheet,
-  LumaButton,
-  LumaEmptyState,
-  LumaTabs,
-  type TabItem,
-  ToastService,
-} from '@design-system';
+import { LumaBottomSheet, LumaButton, LumaEmptyState, LumaNotice, LumaTabs, TabIds, type TabItem, ToastService } from '@design-system';
 import type { BusinessOrder, CancelReason } from '@shared/orders/business-order.repository';
 import { OwnerOrderCard } from '../../components/owner-order-card/owner-order-card';
 import { PanelHeader } from '../../components/panel-header/panel-header';
@@ -29,7 +21,7 @@ const CANCEL_REASONS = ['out_of_stock', 'closed', 'other'] as const;
   selector: 'app-business-orders-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [LumaNotice, 
     TranslocoModule,
     LumaBottomSheet,
     LumaButton,

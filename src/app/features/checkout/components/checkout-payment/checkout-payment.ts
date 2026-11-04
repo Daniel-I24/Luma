@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaButton, LumaIcon } from '@design-system';
+import { LumaButton, LumaIcon, LumaNotice } from '@design-system';
 import { CheckoutStore } from '../../state/checkout.store';
 
 /**
@@ -13,7 +13,7 @@ import { CheckoutStore } from '../../state/checkout.store';
   selector: 'app-checkout-payment',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, RouterLink, LumaButton, LumaIcon],
+  imports: [LumaNotice, TranslocoModule, RouterLink, LumaButton, LumaIcon],
   template: `
     <ng-container *transloco="let t">
       @if (store.onlineAvailable()) {
@@ -38,9 +38,9 @@ import { CheckoutStore } from '../../state/checkout.store';
         <a routerLink="/legal/refunds" class="text-body-sm text-fg-accent underline">{{ t('checkout.payment.refundPolicy') }}</a>
         }
         @if (store.sandbox() && store.method() === 'online') {
-        <p class="m-0 rounded-md bg-warning-bg p-3 text-body-sm text-warning-fg" role="note">
+        <app-luma-notice tone="warning" role="note">
           {{ t('checkout.payment.sandbox') }}
-        </p>
+        </app-luma-notice>
         }
       </section>
       } @else {

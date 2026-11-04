@@ -3,7 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { ContactRules } from '@core/validation/contact-rules';
 import { TextRules } from '@core/validation/text-rules';
-import { LumaInput, LumaSelect, type SelectOption } from '@design-system';
+import { LumaInput, LumaNotice, LumaSelect, type SelectOption } from '@design-system';
 import { BUSINESS_CATEGORIES } from '@shared/business/data/business-categories';
 import { type FieldErrors, FormErrors } from '@shared/forms/form-errors';
 import { type GeoCoords, PASTO_CENTRE } from '@shared/geo/geolocation.service';
@@ -28,7 +28,7 @@ const RULES = { name: TextRules.businessName, phone: ContactRules.phone, address
   selector: 'app-business-basics-fields',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaInput, LumaSelect, LocationPicker, AddressSearch, ResidencePicker],
+  imports: [LumaNotice, TranslocoModule, LumaInput, LumaSelect, LocationPicker, AddressSearch, ResidencePicker],
   templateUrl: './business-basics-fields.html',
 })
 export class BusinessBasicsFields {

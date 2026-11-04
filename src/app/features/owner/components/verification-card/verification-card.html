@@ -32,7 +32,7 @@
   } @else {
   <p class="m-0 text-body-sm text-fg-muted">{{ t('owner.verification.hint.' + status()) }}</p>
   } @if (status() === 'pending') {
-  <p class="m-0 rounded-md bg-info-bg p-3 text-body-sm text-info-fg" role="status">{{ t('owner.verification.pendingWhat') }}</p>
+  <app-luma-notice>{{ t('owner.verification.pendingWhat') }}</app-luma-notice>
   }
 
   @if (business().verification_note && (status() === 'rejected' || status() === 'suspended')) {
@@ -101,8 +101,8 @@
     {{ t('owner.verification.submitBlocked', { steps: blockedSteps() }) }} }
   </p>
   } @if (errorKey(); as key) {
-  <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+  <app-luma-notice tone="danger">
     {{ t(key) }}
-  </p>
+  </app-luma-notice>
   }
 </section>

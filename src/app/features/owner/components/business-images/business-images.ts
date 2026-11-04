@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
-import { ToastService } from '@design-system';
+import { LumaNotice, ToastService } from '@design-system';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
 import type { Business } from '@shared/business/models/business.model';
 import { BusinessImageRepository } from '@shared/media/business-image.repository';
@@ -17,7 +17,7 @@ type ImageColumn = 'logo_url' | 'cover_url';
   selector: 'app-business-images',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, ImageField],
+  imports: [LumaNotice, TranslocoModule, ImageField],
   template: `
     @if (panel.business(); as business) {
     <section
@@ -43,9 +43,9 @@ type ImageColumn = 'logo_url' | 'cover_url';
         (changed)="save(business, 'cover_url', $event)"
       />
       @if (errorKey(); as key) {
-      <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+      <app-luma-notice tone="danger">
         {{ t(key) }}
-      </p>
+      </app-luma-notice>
       }
     </section>
     }

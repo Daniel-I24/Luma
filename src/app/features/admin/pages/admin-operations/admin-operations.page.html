@@ -3,13 +3,13 @@
   <h1 class="m-0 text-h3 text-fg">{{ t('admin.operations.title') }}</h1>
   <app-device-test />
   @if (ops.notice(); as key) {
-  <p class="m-0 rounded-md bg-info-bg p-3 text-body-sm text-info-fg" role="status">{{ t(key) }}</p>
+  <app-luma-notice>{{ t(key) }}</app-luma-notice>
   }
 
   @switch (ops.state()) { @case ('loading') {
   <app-luma-skeleton shape="rect" class="block h-40" />
   } @case ('error') {
-  <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">{{ t('admin.operations.errors.load') }}</p>
+  <app-luma-notice tone="danger">{{ t('admin.operations.errors.load') }}</app-luma-notice>
   <app-luma-button variant="secondary" (clicked)="ops.load()">{{ t('common.retry') }}</app-luma-button>
   } @default {
   <section class="flex flex-col gap-2" aria-labelledby="ops-payments">

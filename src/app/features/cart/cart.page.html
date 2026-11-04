@@ -63,7 +63,7 @@
   </div>
   <p class="m-0 text-caption text-fg-subtle">{{ t('cart.pricesNote') }}</p>
   @if (review.paused()) {
-  <p class="m-0 rounded-md bg-warning-bg p-3 text-body-sm text-warning-fg" role="status">{{ t('cart.paused') }}</p>
+  <app-luma-notice tone="warning">{{ t('cart.paused') }}</app-luma-notice>
   }
   <app-luma-button
     size="lg"

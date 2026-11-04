@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaButton, LumaInput, ToastService } from '@design-system';
+import { LumaButton, LumaInput, LumaNotice, ToastService } from '@design-system';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
 import { FieldRules } from '@core/validation/field-rule';
 import { CONTACT_RULES, type ContactErrors, type ContactField, BusinessContacts } from '@shared/business/models/business-contact';
@@ -35,7 +35,7 @@ const FIELDS: readonly FieldSpec[] = [
   selector: 'app-business-contact-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SetupReturn, TranslocoModule, LumaButton, LumaInput, PanelHeader, PanelStateView, ContactVerificationCard],
+  imports: [LumaNotice, SetupReturn, TranslocoModule, LumaButton, LumaInput, PanelHeader, PanelStateView, ContactVerificationCard],
   providers: [PanelBusinessStore],
   template: `
     <div
@@ -63,7 +63,7 @@ const FIELDS: readonly FieldSpec[] = [
             />
           }
           @if (errorKey(); as key) {
-            <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
+            <app-luma-notice tone="danger">{{ t(key) }}</app-luma-notice>
           }
           <app-luma-button type="submit" size="lg" [fullWidth]="true" [disabled]="saving()">{{
             t(saving() ? 'businessPanel.form.saving' : 'businessPanel.form.save')

@@ -2,7 +2,7 @@ import { Location } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaButton, LumaInput, ToastService } from '@design-system';
+import { LumaButton, LumaInput, LumaNotice, ToastService } from '@design-system';
 import { Phone } from '@shared/account/phone';
 import { PhoneVerification } from '@shared/account/phone-verification/phone-verification';
 import { ResidencePicker } from '@shared/geo/residence-picker/residence-picker';
@@ -21,7 +21,7 @@ const INTERNAL_PATH = /^\/(?!\/)[\w\-/]*$/;
   selector: 'app-account-details-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaInput, ResidencePicker, AvatarSettings, PhoneVerification],
+  imports: [LumaNotice, TranslocoModule, LumaButton, LumaInput, ResidencePicker, AvatarSettings, PhoneVerification],
   providers: [AccountDetailsStore],
   templateUrl: './account-details.page.html',
 })

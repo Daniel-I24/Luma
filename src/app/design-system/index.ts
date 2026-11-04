@@ -52,3 +52,5 @@ export type { SelectOption } from './select/luma-select';
 export { LumaImage } from './image/luma-image';
 
 export { LumaCheckmark } from './checkmark/luma-checkmark';
+
+export { LumaNotice } from './notice/luma-notice';

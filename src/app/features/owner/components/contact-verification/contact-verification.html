@@ -6,7 +6,7 @@
   <h2 id="contact-verification-title" class="m-0 text-title text-fg">{{ t('contactVerification.title') }}</h2>
   <p class="m-0 text-body-sm text-fg-muted">{{ t('contactVerification.intro') }}</p>
   @if (errorKey(); as key) {
-  <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
+  <app-luma-notice tone="danger">{{ t(key) }}</app-luma-notice>
   }
   @for (row of rows(); track row.kind) {
   <article class="flex flex-col gap-2 rounded-lg border border-border-subtle p-3">
@@ -24,7 +24,7 @@
       }
     </p>
     @if (!row.verified) { @if (row.landline) {
-    <p class="m-0 rounded-md bg-info-bg p-3 text-body-sm text-info-fg" role="note">{{ t('contactVerification.steps.landline') }}</p>
+    <app-luma-notice role="note">{{ t('contactVerification.steps.landline') }}</app-luma-notice>
     } @else if (row.pending; as request) {
     <p class="m-0 text-body-sm text-fg">
       {{ t('contactVerification.yourCode') }}
@@ -43,9 +43,9 @@
     @if (watching() === row.kind) {
     <p class="m-0 text-caption text-fg-muted" role="status" aria-live="polite">{{ t('contactVerification.watching') }}</p>
     } @else if (timedOut() === row.kind) {
-    <p class="m-0 rounded-md bg-info-bg p-3 text-body-sm text-info-fg" role="status">{{ t('contactVerification.steps.watchTimeout') }}</p>
+    <app-luma-notice>{{ t('contactVerification.steps.watchTimeout') }}</app-luma-notice>
     } } @else {
-    <p class="m-0 rounded-md bg-info-bg p-3 text-body-sm text-info-fg" role="note">{{ t('contactVerification.steps.noSupport') }}</p>
+    <app-luma-notice role="note">{{ t('contactVerification.steps.noSupport') }}</app-luma-notice>
     } } @case ('website') {
     <p class="m-0 text-body-sm text-fg-muted">{{ t('contactVerification.steps.websiteAuto', { code: request.code, url: fileUrl(row.value) }) }}</p>
     <app-luma-button variant="secondary" size="sm" [disabled]="busy() !== null" (clicked)="checkWebsite()">
@@ -58,7 +58,7 @@
     } @else if (row.kind === 'website') {
     <p class="m-0 text-body-sm text-fg-muted">{{ t('contactVerification.steps.website', { code: request.code, url: fileUrl(row.value) }) }}</p>
     } @else if (support) {
-    <p class="m-0 rounded-md bg-info-bg p-3 text-body-sm text-info-fg" role="note">{{ t('contactVerification.steps.autoOff') }}</p>
+    <app-luma-notice role="note">{{ t('contactVerification.steps.autoOff') }}</app-luma-notice>
     <p class="m-0 text-body-sm text-fg-muted">{{ t('contactVerification.steps.message', { value: row.value, code: request.code }) }}</p>
     <a
       class="pressable inline-flex min-h-11 items-center justify-center rounded-md bg-primary px-4 text-body font-semibold text-primary-fg no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
@@ -68,7 +68,7 @@
       >{{ t('contactVerification.openWhatsapp') }}</a
     >
     } @else {
-    <p class="m-0 rounded-md bg-info-bg p-3 text-body-sm text-info-fg" role="note">{{ t('contactVerification.steps.noSupport') }}</p>
+    <app-luma-notice role="note">{{ t('contactVerification.steps.noSupport') }}</app-luma-notice>
     }
     <p class="m-0 text-caption text-fg-subtle">{{ t('contactVerification.steps.review') }}</p>
     } }

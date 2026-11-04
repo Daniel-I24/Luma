@@ -55,9 +55,9 @@
         } }
       </fieldset>
       } @if (errorKey(); as key) {
-      <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+      <app-luma-notice tone="danger">
         {{ t(key) }}
-      </p>
+      </app-luma-notice>
       }
       <app-luma-button type="submit" size="lg" [fullWidth]="true" [disabled]="saving()"
         >{{ t(saving() ? 'businessPanel.form.saving' : 'businessPanel.hours.save')

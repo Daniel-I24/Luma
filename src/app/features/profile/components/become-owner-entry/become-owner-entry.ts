@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaBottomSheet, LumaButton, LumaIcon } from '@design-system';
+import { LumaBottomSheet, LumaButton, LumaIcon, LumaNotice } from '@design-system';
 import { ownerPaths } from '@shared/account/account-paths';
 import { SessionProfileStore } from '@shared/account/session-profile.store';
 
@@ -15,7 +15,7 @@ import { SessionProfileStore } from '@shared/account/session-profile.store';
   selector: 'app-become-owner-entry',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaBottomSheet, LumaButton, LumaIcon],
+  imports: [LumaNotice, TranslocoModule, LumaBottomSheet, LumaButton, LumaIcon],
   template: `
     <ng-container *transloco="let t">
       <button
@@ -49,9 +49,9 @@ import { SessionProfileStore } from '@shared/account/session-profile.store';
             <li>{{ t('profile.becomeOwner.oneWay') }}</li>
           </ul>
           @if (errorKey(); as key) {
-          <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+          <app-luma-notice tone="danger">
             {{ t(key) }}
-          </p>
+          </app-luma-notice>
           }
           <app-luma-button [fullWidth]="true" [disabled]="saving()" (clicked)="confirm()">
             {{ t('profile.becomeOwner.confirm') }}

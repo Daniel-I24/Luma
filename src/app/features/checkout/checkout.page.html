@@ -73,10 +73,10 @@
       [(value)]="schedule.time"
     />
     } @else {
-    <p class="m-0 rounded-md bg-warning-bg p-3 text-body-sm text-warning-fg" role="status">
+    <app-luma-notice tone="warning">
       {{ t(schedule.option() === 'later' ? 'checkout.when.noSlotsToday' :
       'checkout.when.noSlotsTomorrow') }}
-    </p>
+    </app-luma-notice>
     } } } }
   </section>
 
@@ -104,7 +104,7 @@
   </section>
 
   @if (store.inReview()) {
-  <p class="m-0 rounded-md bg-info-bg p-3 text-body-sm text-info-fg" role="note">{{ t('verification.inReviewHint') }}</p>
+  <app-luma-notice role="note">{{ t('verification.inReviewHint') }}</app-luma-notice>
   }
   <app-checkout-payment />
 
@@ -115,11 +115,11 @@
   <p class="m-0 text-caption text-fg-subtle">{{ t('checkout.totalNote') }}</p>
 
   @if (store.otherDepartment()) {
-  <p class="m-0 rounded-md bg-info-bg p-3 text-body-sm text-info-fg" role="note">{{ t('checkout.otherDepartment') }}</p>
+  <app-luma-notice role="note">{{ t('checkout.otherDepartment') }}</app-luma-notice>
   } @if (store.errorKey(); as key) {
-  <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+  <app-luma-notice tone="danger">
     {{ t(key) }}
-  </p>
+  </app-luma-notice>
   @if (store.blockingOrderId(); as orderId) {
   <a
     class="pressable inline-flex min-h-11 items-center justify-center rounded-md border border-border bg-surface px-4 text-body font-semibold text-fg-brand no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"

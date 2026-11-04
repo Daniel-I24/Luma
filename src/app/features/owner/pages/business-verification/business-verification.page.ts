@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal, viewChild } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaBottomSheet, LumaButton, ToastService } from '@design-system';
+import { LumaBottomSheet, LumaButton, LumaNotice, ToastService } from '@design-system';
 import { ownerPaths } from '@shared/account/account-paths';
 import type { HasUnsavedChanges } from '@shared/forms/unsaved-changes.guard';
 import { DocList } from '../../components/doc-list/doc-list';
@@ -22,7 +22,7 @@ import { SetupReturn } from '../../components/setup-return/setup-return';
   selector: 'app-business-verification-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SetupReturn, TranslocoModule, DocList, LegalForm, PanelHeader, PanelStateView, LumaBottomSheet, LumaButton],
+  imports: [LumaNotice, SetupReturn, TranslocoModule, DocList, LegalForm, PanelHeader, PanelStateView, LumaBottomSheet, LumaButton],
   providers: [PanelBusinessStore, VerificationStore],
   template: `
     <div *transloco="let t" class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-4 pb-6">
@@ -37,14 +37,14 @@ import { SetupReturn } from '../../components/setup-return/setup-return';
             </app-luma-button>
           </div>
         } @else if (!verification.editable()) {
-          <p class="m-0 rounded-md bg-info-bg p-3 text-body-sm text-info-fg" role="status">
+          <app-luma-notice>
             {{ t('owner.verificationPage.locked') }}
-          </p>
+          </app-luma-notice>
         }
         @if (verification.errorKey(); as key) {
-          <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+          <app-luma-notice tone="danger">
             {{ t(key) }}
-          </p>
+          </app-luma-notice>
         }
         <app-legal-form />
         <app-doc-list />
@@ -54,9 +54,9 @@ import { SetupReturn } from '../../components/setup-return/setup-return';
         [title]="t('owner.verificationPage.correctionTitle')"
         (closed)="confirming.set(false)"
       >
-        <p class="m-0 mb-4 rounded-md bg-warning-bg p-3 text-body-sm text-warning-fg">
+        <app-luma-notice tone="warning" class="mb-4">
           {{ t('owner.verificationPage.correctionWarning') }}
-        </p>
+        </app-luma-notice>
         <div class="flex flex-col gap-3">
           <app-luma-button variant="danger" [fullWidth]="true" [disabled]="verification.busy()" (clicked)="requestCorrection()">
             {{ t('owner.verificationPage.correctionConfirm') }}

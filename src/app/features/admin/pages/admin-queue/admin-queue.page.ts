@@ -2,15 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import {
-  TabIds,
-  LumaButton,
-  LumaEmptyState,
-  LumaIconButton,
-  LumaSkeleton,
-  LumaTabs,
-  type TabItem,
-} from '@design-system';
+import { LumaButton, LumaEmptyState, LumaIconButton, LumaNotice, LumaSkeleton, LumaTabs, TabIds, type TabItem } from '@design-system';
 import { DateFormat } from '@shared/format/date-format';
 import { ContactQueue } from '../../components/contact-queue/contact-queue';
 import { AdminQueueStore } from '../../state/admin-queue.store';
@@ -22,7 +14,7 @@ type QueueTab = 'pending' | 'reports';
   selector: 'app-admin-queue-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [LumaNotice, 
     TranslocoModule,
     RouterLink,
     LumaButton,

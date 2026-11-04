@@ -6,9 +6,9 @@
   <legend class="mb-1 p-0 text-label-lg text-fg">{{ t('businessPanel.location.label') }}</legend>
   <p class="m-0 text-caption text-fg-muted">{{ t('businessPanel.location.hint') }}</p>
   @if (mapFailed()) {
-  <p class="m-0 rounded-md bg-warning-bg p-3 text-body-sm text-warning-fg" role="status">
+  <app-luma-notice tone="warning">
     {{ t('businessPanel.location.mapFailed') }}
-  </p>
+  </app-luma-notice>
   }
   <div
     #map

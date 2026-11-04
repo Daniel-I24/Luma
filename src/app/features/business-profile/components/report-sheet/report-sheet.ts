@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaBottomSheet, LumaButton, ToastService } from '@design-system';
+import { LumaBottomSheet, LumaButton, LumaNotice, ToastService } from '@design-system';
 import { FieldRules } from '@core/validation/field-rule';
 import { REPORT_COMMENT_RULE, ReportRepository } from '@shared/business/verification/report.repository';
 import { REPORT_REASONS, type ReportReason } from '@shared/business/verification/verification.model';
@@ -14,7 +14,7 @@ import { REPORT_REASONS, type ReportReason } from '@shared/business/verification
   selector: 'app-report-sheet',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaBottomSheet, LumaButton],
+  imports: [LumaNotice, TranslocoModule, LumaBottomSheet, LumaButton],
   template: `
     <ng-container *transloco="let t">
       <app-luma-button variant="ghost" size="sm" (clicked)="open.set(true)">{{ t('reports.action') }}</app-luma-button>
@@ -48,7 +48,7 @@ import { REPORT_REASONS, type ReportReason } from '@shared/business/verification
             @if (commentError(); as key) { {{ t(key) }} } @else { {{ t('reviews.form.counter', { count: comment().length, max: commentMax }) }} }
           </p>
           @if (errorKey(); as key) {
-          <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
+          <app-luma-notice tone="danger">{{ t(key) }}</app-luma-notice>
           }
           <app-luma-button [fullWidth]="true" [disabled]="!reason() || sending() || !!commentError()" (clicked)="send()">{{ t('reports.send') }}</app-luma-button>
         </div>

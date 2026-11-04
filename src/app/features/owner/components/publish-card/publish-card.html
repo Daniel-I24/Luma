@@ -51,8 +51,8 @@
     >{{ t('owner.publish.pause') }}</app-luma-button
   >
   } @if (publish.errorKey(); as key) {
-  <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+  <app-luma-notice tone="danger">
     {{ t(key) }}
-  </p>
+  </app-luma-notice>
   }
 </section>

@@ -7,9 +7,9 @@
   @switch (mfa.phase()) { @case ('loading') {
   <app-luma-skeleton shape="rect" class="block h-40" />
   } @case ('error') {
-  <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+  <app-luma-notice tone="danger">
     {{ t(mfa.errorKey() ?? 'admin.mfa.errors.loadFailed') }}
-  </p>
+  </app-luma-notice>
   <app-luma-button variant="secondary" [fullWidth]="true" (clicked)="mfa.start()"
     >{{ t('common.retry') }}</app-luma-button
   >

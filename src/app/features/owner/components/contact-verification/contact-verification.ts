@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, injec
 import { TranslocoModule } from '@jsverse/transloco';
 import { ExternalUrls } from '@core/config/external-urls';
 import { SUPPORT_WHATSAPP } from '@core/config/build-flags';
-import { LumaButton, LumaIcon } from '@design-system';
+import { LumaButton, LumaIcon, LumaNotice } from '@design-system';
 import type { Business } from '@shared/business/models/business.model';
 import {
   CONTACT_KINDS, type ContactKind, type ContactVerification, VerifiedContacts,
@@ -37,7 +37,7 @@ export const WATCH_FOR_MS = 120_000;
   selector: 'app-contact-verification',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaIcon],
+  imports: [LumaNotice, TranslocoModule, LumaButton, LumaIcon],
   templateUrl: './contact-verification.html',
 })
 export class ContactVerificationCard {

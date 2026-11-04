@@ -14,7 +14,7 @@ import {
 } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import * as maplibregl from 'maplibre-gl';
-import { LumaButton } from '@design-system';
+import { LumaButton, LumaNotice } from '@design-system';
 import { type GeoCoords, GeolocationService, PASTO_CENTRE } from '@shared/geo/geolocation.service';
 import { BaseMap } from '@shared/map/map-base';
 import { MapStylesLoader } from '@shared/map/map-styles.loader';
@@ -34,7 +34,7 @@ const PICKER_ZOOM = 16;
   selector: 'app-location-picker',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton],
+  imports: [LumaNotice, TranslocoModule, LumaButton],
   templateUrl: './location-picker.html',
 })
 export class LocationPicker {

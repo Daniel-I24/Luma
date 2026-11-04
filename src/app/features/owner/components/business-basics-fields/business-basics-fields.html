@@ -57,7 +57,7 @@
   />
   <app-address-search [idPrefix]="idPrefix()" [near]="near()" (chosen)="onAddress($event)" />
   @if (farFromAddress()) {
-  <p class="m-0 rounded-md bg-warning-bg p-3 text-body-sm text-warning-fg" role="status">{{ t('owner.wizard.farFromAddress') }}</p>
+  <app-luma-notice tone="warning">{{ t('owner.wizard.farFromAddress') }}</app-luma-notice>
   }
   <app-location-picker
     [pickerId]="idPrefix() + '-location'"

@@ -5,9 +5,9 @@
   @switch (state()) { @case ('loading') {
   <app-luma-skeleton shape="rect" class="block h-24" />
   } @case ('error') {
-  <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">
+  <app-luma-notice tone="danger">
     {{ t('residence.loadFailed') }}
-  </p>
+  </app-luma-notice>
   <app-luma-button variant="secondary" (clicked)="load()">{{ t('common.retry') }}</app-luma-button>
   } @default {
   <app-luma-select

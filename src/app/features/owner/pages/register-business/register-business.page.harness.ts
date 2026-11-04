@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { beforeEach, vi } from 'vitest';
+import { beforeEach, expect, vi } from 'vitest';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
 import { RegisterBusinessPage } from './register-business.page';
 import { ResidenceCatalog } from '@shared/geo/residence-catalog';

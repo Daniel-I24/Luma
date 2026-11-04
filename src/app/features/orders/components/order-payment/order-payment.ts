@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, untracked } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaButton, LumaCheckmark } from '@design-system';
+import { LumaButton, LumaCheckmark, LumaNotice } from '@design-system';
 import type { OrderWithItems } from '@shared/orders/order.model';
 import { OrderPaymentStore } from '../../state/order-payment.store';
 
@@ -21,7 +21,7 @@ const TONE: Readonly<Record<string, string>> = {
   selector: 'app-order-payment',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaCheckmark],
+  imports: [LumaNotice, TranslocoModule, LumaButton, LumaCheckmark],
   providers: [OrderPaymentStore],
   template: `
     <section *transloco="let t" class="flex flex-col gap-3 rounded-xl border border-border-subtle bg-surface p-4" aria-labelledby="order-payment-title">
@@ -50,7 +50,7 @@ const TONE: Readonly<Record<string, string>> = {
       } @if (!payment.canStillPay()) {
       <p class="m-0 text-body-sm text-fg-muted">{{ t('payments.noMoreAttempts') }}</p>
       } } @if (payment.errorKey(); as key) {
-      <p class="m-0 rounded-md bg-danger-bg p-3 text-body-sm text-danger-fg" role="alert">{{ t(key) }}</p>
+      <app-luma-notice tone="danger">{{ t(key) }}</app-luma-notice>
       } @if (status() === 'refund_required') {
       <p class="m-0 text-body-sm text-fg-muted">{{ t('payments.refundInfo') }}</p>
       }
