@@ -20,7 +20,7 @@ export interface TabBarItem {
 export class TabBarRoutes {
   /** Index of the tab whose path is `url` or a parent of it; -1 when none. */
   public static activeTabIndex(items: readonly TabBarItem[], url: string): number {
-    const path = url.split(/[?#]/)[0];
+    const path = url.split(/[?#]/)[0] ?? '';
     return items.findIndex((item) => path === item.path || path.startsWith(`${item.path}/`));
   }
 }

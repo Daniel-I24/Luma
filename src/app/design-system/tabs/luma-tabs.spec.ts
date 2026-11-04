@@ -24,7 +24,7 @@ describe('LumaTabs', () => {
   });
 
   const press = (key: string) => {
-    tabs[TABS.findIndex((t) => t.id === fixture.componentInstance.selected())].dispatchEvent(
+    tabs[TABS.findIndex((t) => t.id === fixture.componentInstance.selected())]?.dispatchEvent(
       new KeyboardEvent('keydown', { key, bubbles: true }),
     );
     fixture.detectChanges();
@@ -34,8 +34,8 @@ describe('LumaTabs', () => {
     const list = (fixture.nativeElement as HTMLElement).querySelector('[role="tablist"]');
 
     expect(list?.getAttribute('aria-label')).toBe('Secciones del negocio');
-    expect(tabs[0].id).toBe('biz-tab-menu');
-    expect(tabs[0].getAttribute('aria-controls')).toBe('biz-panel-menu');
+    expect(tabs[0]?.id).toBe('biz-tab-menu');
+    expect(tabs[0]?.getAttribute('aria-controls')).toBe('biz-panel-menu');
   });
 
   it('marks only the selected tab and keeps only it in the tab order', () => {
@@ -68,10 +68,10 @@ describe('LumaTabs', () => {
   });
 
   it('selects a tab on click', () => {
-    tabs[2].click();
+    tabs[2]?.click();
     fixture.detectChanges();
 
     expect(fixture.componentInstance.selected()).toBe('reviews');
-    expect(tabs[2].getAttribute('aria-selected')).toBe('true');
+    expect(tabs[2]?.getAttribute('aria-selected')).toBe('true');
   });
 });

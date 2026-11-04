@@ -99,9 +99,10 @@ export class LumaTabs {
     const tabs = this.tabs();
     const current = tabs.findIndex((tab) => tab.id === this.selected());
     const target = this.targetIndex(event.key, current, tabs.length);
-    if (target === null) return;
+    const tab = target === null ? undefined : tabs[target];
+    if (target === null || !tab) return;
     event.preventDefault();
-    this.selected.set(tabs[target].id);
+    this.selected.set(tab.id);
     this.buttons()[target]?.nativeElement.focus();
   }
 

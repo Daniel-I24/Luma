@@ -61,8 +61,8 @@ describe('LumaTabBar', () => {
   it('marks only the active tab with aria-current="page"', async () => {
     const links = Array.from((await render('/profile')).querySelectorAll('a'));
 
-    expect(links[0].getAttribute('aria-current')).toBeNull();
-    expect(links[1].getAttribute('aria-current')).toBe('page');
+    expect(links[0]?.getAttribute('aria-current')).toBeNull();
+    expect(links[1]?.getAttribute('aria-current')).toBe('page');
   });
 
   it('hides the icons from assistive technology', async () => {
@@ -84,9 +84,9 @@ describe('LumaTabBar', () => {
 
     const badges = el.querySelectorAll('.luma-tab-bar__badge');
     expect(badges).toHaveLength(1);
-    expect(badges[0].textContent?.trim()).toBe('9+');
-    expect(badges[0].getAttribute('aria-hidden')).toBe('true');
-    expect(el.querySelectorAll('a')[1].querySelector('.sr-only')?.textContent).toContain(
+    expect(badges[0]?.textContent?.trim()).toBe('9+');
+    expect(badges[0]?.getAttribute('aria-hidden')).toBe('true');
+    expect(el.querySelectorAll('a')[1]?.querySelector('.sr-only')?.textContent).toContain(
       'tabBar.badge',
     );
   });
