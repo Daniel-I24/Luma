@@ -29,7 +29,7 @@ describe('OrderPauseCard', () => {
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
     expect(el.querySelectorAll('button')).toHaveLength(5);
-    el.querySelectorAll('button')[1].click();
+    el.querySelectorAll('button')[1]?.click();
     await flush();
     fixture.detectChanges();
     expect(repo.set).toHaveBeenCalledWith('b1', 30);

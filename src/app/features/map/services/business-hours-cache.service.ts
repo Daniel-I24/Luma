@@ -40,6 +40,6 @@ export class BusinessHoursCacheService {
     if (missing.length === 0) return;
 
     const results = await Promise.all(missing.map((id) => this.repo.getHours(id)));
-    missing.forEach((id, i) => this.cache.set(id, results[i].data ?? []));
+    missing.forEach((id, i) => this.cache.set(id, results[i]?.data ?? []));
   }
 }

@@ -80,7 +80,7 @@ describe('MapMarkerSyncService', () => {
     const create = vi.spyOn(factory, 'create');
     service.syncMarkers(map, [item('a')], onClick);
 
-    create.mock.results[0].value.click();
+    create.mock.results[0]?.value.click();
 
     expect(onClick).toHaveBeenCalledWith(expect.objectContaining({ id: 'a' }));
   });

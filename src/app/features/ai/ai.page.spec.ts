@@ -63,7 +63,7 @@ describe('AiPage', () => {
     const chips = Array.from(el.querySelectorAll<HTMLElement>('.luma-chip'));
 
     expect(chips).toHaveLength(6);
-    expect(chips[0].getAttribute('aria-pressed')).toBe('true');
+    expect(chips[0]?.getAttribute('aria-pressed')).toBe('true');
     chips.find((c) => c.textContent?.includes('Almuerzo'))!.click();
     expect(store.selectMoment).toHaveBeenCalledWith('lunch');
   });

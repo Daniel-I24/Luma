@@ -23,7 +23,7 @@ export class SignupDraftStore {
   public readonly draft = this._draft.asReadonly();
   public readonly errors = this._errors.asReadonly();
   public readonly index = this._index.asReadonly();
-  public readonly step = computed(() => SIGNUP_STEPS[this._index()]);
+  public readonly step = computed(() => SIGNUP_STEPS[this._index()] ?? SIGNUP_STEPS[0]);
   public readonly total = SIGNUP_STEPS.length;
   public readonly isLast = computed(() => this._index() === SIGNUP_STEPS.length - 1);
 

@@ -62,11 +62,13 @@ export class GalleryStore {
     const photos = [...this._photos()];
     const from = photos.findIndex((p) => p.id === photo.id);
     const to = from + direction;
-    if (from < 0 || to < 0 || to >= photos.length) return;
-    [photos[from], photos[to]] = [photos[to], photos[from]];
+    const [moving, other] = [photos[from], photos[to]];
+    if (!moving || !other) return;
+    [photos[from], photos[to]] = [other, moving];
     const ordered = photos.map((p, index) => ({ ...p, sortOrder: index }));
+    const swapped = [ordered[from], ordered[to]].filter((p) => p !== undefined);
     await this.run(async () => {
-      for (const p of [ordered[from], ordered[to]]) {
+      for (const p of swapped) {
         const result = await this.repo.update(p.id, { sortOrder: p.sortOrder });
         if (result.errorKey) return result.errorKey;
       }

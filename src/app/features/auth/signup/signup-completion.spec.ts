@@ -42,7 +42,7 @@ describe('SignupCompletion', () => {
     expect(saveDetails).toHaveBeenCalledWith(
       expect.objectContaining({ fullName: 'Ana Prueba', residence }),
     );
-    expect(saveDetails.mock.calls[0][0].phone.e164).toBe('+573001234567');
+    expect(saveDetails.mock.calls[0]?.[0].phone.e164).toBe('+573001234567');
     expect(await completion.complete()).toEqual([]);
     expect(saveDetails).toHaveBeenCalledTimes(1);
   });

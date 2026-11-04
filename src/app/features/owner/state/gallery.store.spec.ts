@@ -7,6 +7,7 @@ import {
 } from '@shared/business/data/business-photo.repository';
 import { BusinessImageRepository } from '@shared/media/business-image.repository';
 import { GalleryStore } from './gallery.store';
+import { at } from '../../../../testing/at';
 
 const photo = (n: number): BusinessPhoto => ({ id: `p${n}`, path: `b/gallery/${n}.webp`, url: `https://x/${n}`, caption: null, sortOrder: n });
 const file = () => new File(['x'], 'a.jpg', { type: 'image/jpeg' });
@@ -37,7 +38,7 @@ describe('GalleryStore', () => {
     repo.update.mockResolvedValue({ data: true, errorKey: null });
     await store.move(photo(1), -1);
     expect(store.photos().map((p) => [p.id, p.sortOrder])).toEqual([['p1', 0], ['p0', 1]]);
-    await store.move(store.photos()[0], -1);
+    await store.move(at(store.photos(), 0), -1);
     expect(repo.update).toHaveBeenCalledTimes(2);
   });
 
@@ -52,7 +53,7 @@ describe('GalleryStore', () => {
     await store.caption(photo(0), '  ');
     expect(repo.update).not.toHaveBeenCalled();
     await store.caption(photo(0), ' Terraza ');
-    expect(store.photos()[0].caption).toBe('Terraza');
+    expect(store.photos()[0]?.caption).toBe('Terraza');
   });
 });
 

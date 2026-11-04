@@ -28,8 +28,10 @@ export class FeedCards {
   public static interleave<T>(a: readonly T[], b: readonly T[]): T[] {
     const result: T[] = [];
     for (let i = 0; i < Math.max(a.length, b.length); i++) {
-      if (i < a.length) result.push(a[i]);
-      if (i < b.length) result.push(b[i]);
+      for (const list of [a, b]) {
+        const item = list[i];
+        if (i < list.length && item !== undefined) result.push(item);
+      }
     }
     return result;
   }

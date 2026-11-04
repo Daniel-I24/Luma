@@ -12,6 +12,7 @@ import { PanelBusinessStore } from '../../state/panel-business.store';
 import { RouteBusinessId } from '../../utils/route-business-id';
 import { type DayDraft, WeekDrafts } from '../../utils/week-draft';
 import { SetupReturn } from '../../components/setup-return/setup-return';
+import { ZodRules } from '@core/validation/zod-rules';
 
 /** BusinessHoursPage — /owner/:id/business/hours: 7 days, open or closed, one row per day. */
 @Component({
@@ -62,7 +63,7 @@ export class BusinessHoursPage {
     const errors: Record<number, string> = {};
     for (const day of this.week()) {
       const parsed = dayHoursSchema.safeParse(day);
-      if (!parsed.success) errors[day.day_of_week] = parsed.error.issues[0].message;
+      if (!parsed.success) errors[day.day_of_week] = ZodRules.firstMessage(parsed.error);
     }
     this.errors.set(errors);
     if (Object.keys(errors).length) {

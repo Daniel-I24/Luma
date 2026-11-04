@@ -2,7 +2,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { type SalesDay, type SalesRange, type SalesSummary, SalesSummaryRepository } from '../services/order-operations.repository';
 
 // eslint-disable-next-line @typescript-eslint/no-magic-numbers -- data table: the ranges the owner can pick, in days
-export const SALES_RANGES: readonly SalesRange[] = [7, 30];
+export const SALES_RANGES: readonly [SalesRange, ...SalesRange[]] = [7, 30];
 
 /** Which measure the bars show. */
 export type SalesMeasure = 'orders' | 'revenue';

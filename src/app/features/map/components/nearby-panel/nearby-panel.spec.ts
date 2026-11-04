@@ -70,7 +70,7 @@ describe('NearbyPanel', () => {
 
     const cards = el.querySelectorAll('app-luma-business-card');
     expect(cards).toHaveLength(2);
-    expect(cards[0].textContent).toContain('450 m');
+    expect(cards[0]?.textContent).toContain('450 m');
   });
 
   it('says "Sin reseñas" instead of stars for businesses without reviews', () => {
@@ -88,7 +88,7 @@ describe('NearbyPanel', () => {
 
     el.querySelector<HTMLButtonElement>('app-luma-business-card button')?.click();
 
-    expect(selected[0].business.id).toBe('a');
+    expect(selected[0]?.business.id).toBe('a');
   });
 
   it('shows the error state with a retry action', () => {

@@ -5,6 +5,7 @@ import { MenuWriteRepository } from '@shared/business/data/menu-write.repository
 import type { MenuItem } from '@shared/business/models/menu.model';
 import { BusinessImageRepository } from '@shared/media/business-image.repository';
 import { MenuPanelStore } from './menu-panel.store';
+import { at } from '../../../../testing/at';
 
 const item = (id: string, sort_order: number, section: string | null = 'Bebidas'): MenuItem =>
   ({ id, business_id: 'b1', name: id, description: null, price_cop: 5000, section, sort_order, is_available: true, image_url: null }) as MenuItem;
@@ -32,14 +33,14 @@ describe('MenuPanelStore: inline edits and order without a form', () => {
     await menu.load('b1');
     return menu;
   }
-  const names = (menu: MenuPanelStore, section = 0) => menu.sections()[section].items.map((i) => i.id);
+  const names = (menu: MenuPanelStore, section = 0) => menu.sections()[section]?.items.map((i) => i.id);
 
   it('changes a price in place, keeping every other field', async () => {
     const menu = await store([item('jugo', 0)]);
-    await menu.patch(menu.sections()[0].items[0], { price_cop: 6500 });
+    await menu.patch(at(at(menu.sections(), 0).items, 0), { price_cop: 6500 });
 
     expect(writer.update).toHaveBeenCalledWith('jugo', expect.objectContaining({ price_cop: 6500, name: 'jugo', section: 'Bebidas', sort_order: 0 }));
-    expect(menu.sections()[0].items[0].price_cop).toBe(6500);
+    expect(menu.sections()[0]?.items[0]?.price_cop).toBe(6500);
   });
 
   it('moves a product down and up inside its section, writing only what changed', async () => {

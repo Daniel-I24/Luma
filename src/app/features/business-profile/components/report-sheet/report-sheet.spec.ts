@@ -35,7 +35,7 @@ describe('ReportSheet', () => {
     fixture.detectChanges();
     const send = async () => {
       const buttons = root.querySelectorAll<HTMLButtonElement>('app-luma-button button');
-      buttons[buttons.length - 1].click();
+      buttons[buttons.length - 1]?.click();
       await flush();
       fixture.detectChanges();
     };

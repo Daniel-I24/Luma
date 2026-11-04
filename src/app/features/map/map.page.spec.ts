@@ -90,7 +90,7 @@ describe('MapPage', () => {
 
     const el = await render();
 
-    expect(camera.init.mock.calls[0][0]).toBe(el.querySelector('.map-canvas'));
+    expect(camera.init.mock.calls[0]?.[0]).toBe(el.querySelector('.map-canvas'));
     expect(repo.getNearby).toHaveBeenCalledOnce();
   });
 

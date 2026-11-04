@@ -7,6 +7,7 @@ import { AuthService } from '@core/auth/auth.service';
 import { ConnectivityService } from '@core/network/connectivity.service';
 import { SessionProfileStore } from '@shared/account/session-profile.store';
 import { AccountErrorPage } from './account-error.page';
+import { at } from '../../../testing/at';
 
 describe('AccountErrorPage', () => {
   const failureKey = signal<string | null>(null);
@@ -31,7 +32,7 @@ describe('AccountErrorPage', () => {
     const fixture = TestBed.createComponent(AccountErrorPage);
     fixture.detectChanges();
     const all = fixture.nativeElement.querySelectorAll('button') as NodeListOf<HTMLButtonElement>;
-    return { fixture, retry: all[0], signOut: all[all.length - 1] };
+    return { fixture, retry: at(all, 0), signOut: at(all, all.length - 1) };
   };
 
   it('Reintentar goes to the landing page once the profile loads', async () => {

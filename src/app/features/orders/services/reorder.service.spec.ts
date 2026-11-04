@@ -5,6 +5,7 @@ import { AuthService } from '@core/auth/auth.service';
 import { CartStore } from '@shared/cart/cart.store';
 import type { OrderWithItems } from '@shared/orders/order.model';
 import { ReorderService } from './reorder.service';
+import { at } from '../../../../testing/at';
 
 const order = (overrides: Partial<OrderWithItems> = {}): OrderWithItems => ({
   id: 'o1', business_id: 'b1', business_name: 'Café Público', business_address: 'Calle 19', status: 'picked_up',
@@ -35,6 +36,6 @@ describe('ReorderService', () => {
   it('cannot reorder when the business is gone or no item is left on the menu', () => {
     const reorder = TestBed.inject(ReorderService);
     expect(reorder.canReorder(order({ business_id: null }))).toBe(false);
-    expect(reorder.reorder(order({ items: [order().items[1]] }))).toBe(false);
+    expect(reorder.reorder(order({ items: [at(order().items, 1)] }))).toBe(false);
   });
 });

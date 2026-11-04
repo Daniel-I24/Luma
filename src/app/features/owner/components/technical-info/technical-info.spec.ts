@@ -57,7 +57,7 @@ describe('TechnicalInfo', () => {
     const copy = Array.from(el.querySelectorAll('button')).find((b) => b.textContent?.includes('owner.technical.copy'))!;
     copy.click();
     await vi.waitFor(() => expect(writeText).toHaveBeenCalled());
-    const report = writeText.mock.calls[0][0] as string;
+    const report = writeText.mock.calls[0]?.[0] as string;
     expect(report).toContain('businesses in panel: 2');
     expect(report).toContain('promotions [business_id = abcdefgh…] -> 3');
     expect(report).not.toContain(USER.email);
@@ -69,7 +69,7 @@ describe('TechnicalInfo', () => {
     const log = TestBed.inject(PanelQueryLog);
     for (let i = 0; i < 40; i++) log.record('businesses', 'x', i);
     expect(log.entries()).toHaveLength(30);
-    expect(log.entries()[0].rows).toBe(39);
+    expect(log.entries()[0]?.rows).toBe(39);
     TestBed.inject(UserDataRegistry).clearAll();
     expect(log.entries()).toEqual([]);
   });

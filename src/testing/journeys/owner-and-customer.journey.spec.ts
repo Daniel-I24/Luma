@@ -87,6 +87,6 @@ describe('journeys: owner and customer', () => {
       method: 'POST',
       body: { q: 'san ignacio', near: { lat: 1.2136, lng: -77.2811 } },
     });
-    expect(places.places()?.[0].label).toBe('San Ignacio, Pasto');
+    expect(places.places()?.[0]?.label).toBe('San Ignacio, Pasto');
   });
 });

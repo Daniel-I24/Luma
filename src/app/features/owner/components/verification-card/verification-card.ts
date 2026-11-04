@@ -61,7 +61,9 @@ export class VerificationCard {
 
   /** The screen of the first thing the step misses (its first screen once done). */
   protected stepLink(step: VerificationStep): string[] {
-    return this.requirementLink(step.missing[0] ?? step.requirements[0]);
+    const requirement = step.missing[0] ?? step.requirements[0];
+    // A step always has requirements; without one, the verification screen.
+    return requirement ? this.requirementLink(requirement) : ownerPaths.screen(this.business().id, 'verification');
   }
 
   private requirementLink(requirement: ReviewRequirement): string[] {

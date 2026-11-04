@@ -127,8 +127,8 @@ describe('Orders pages', () => {
     fixture.detectChanges();
     const links = (fixture.nativeElement as HTMLElement).querySelectorAll('a');
 
-    expect(links[0].textContent).toContain('Negocio no disponible');
-    expect(links[1].textContent).not.toContain('Negocio no disponible');
+    expect(links[0]?.textContent).toContain('Negocio no disponible');
+    expect(links[1]?.textContent).not.toContain('Negocio no disponible');
   });
 
   it('hides "Cancelar" once the order left pending', async () => {

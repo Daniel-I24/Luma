@@ -64,7 +64,7 @@ describe('FavoritesPage', () => {
     expect(repo.getByIds).toHaveBeenCalledWith(['b2', 'b1']);
     const cards = Array.from(el.querySelectorAll('app-luma-business-card'));
     expect(cards.map((c) => c.textContent?.includes('Café'))).toEqual([true, false]);
-    expect(cards[1].textContent).toContain('Fritanga');
+    expect(cards[1]?.textContent).toContain('Fritanga');
   });
 
   it('removes a card as soon as its heart is cleared', async () => {

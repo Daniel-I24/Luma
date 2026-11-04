@@ -4,6 +4,7 @@ import { useFixedClock } from '../../../../testing/fixed-clock';
 import { PromotionPhases } from './promotion-phase';
 import { PublishRequirements } from './publication-rules';
 import { WeekDrafts } from './week-draft';
+import { at } from '../../../../testing/at';
 
 const business = { name: 'Fritanga', category: 'Restaurante', latitude: 1.21, longitude: -77.28 };
 
@@ -55,7 +56,8 @@ describe('weekDraft', () => {
   });
 
   it('flags open days that cross midnight', () => {
-    const [monday, tuesday] = WeekDrafts.weekDraft([row(1)]);
+    const week = WeekDrafts.weekDraft([row(1)]);
+    const [monday, tuesday] = [at(week, 0), at(week, 1)];
     expect(WeekDrafts.crossesMidnight(monday)).toBe(true);
     expect(WeekDrafts.crossesMidnight({ ...tuesday, is_closed: false })).toBe(false);
     expect(WeekDrafts.crossesMidnight({ ...monday, is_closed: true })).toBe(false);

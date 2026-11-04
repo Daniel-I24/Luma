@@ -102,7 +102,7 @@ describe('buildFeedCards', () => {
       status: 'closed',
       distanceKm: 0.4,
     });
-    expect(dishCard.menuItem?.id).toBe('d');
+    expect(dishCard?.menuItem?.id).toBe('d');
   });
 
   it('ignores rows of businesses outside the batch', () => {

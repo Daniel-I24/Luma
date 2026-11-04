@@ -61,7 +61,7 @@ export class MenuTextParser {
     if (!match || match.index === undefined) return null;
     const name = line.slice(0, match.index).replace(LEADERS, '').trim();
     if (!HAS_LETTER.test(name)) return null;
-    const digits = Number(match[1].replace(/[.,\s]/g, ''));
+    const digits = Number((match[1] ?? '').replace(/[.,\s]/g, ''));
     const price = match[2] ? digits * THOUSAND : digits;
     return price > 0 ? { name: name.slice(0, MAX_NAME), price } : null;
   }

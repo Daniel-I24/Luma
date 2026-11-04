@@ -65,10 +65,10 @@ describe('InfoTab', () => {
     const rows = Array.from(render([day(1), day(0, true)]).querySelectorAll('li'));
 
     expect(rows).toHaveLength(7);
-    expect(rows[0].textContent).toContain('Lunes');
-    expect(rows[0].textContent).toContain('08:30 – 19:00');
-    expect(rows[6].textContent).toContain('Domingo');
-    expect(rows[6].textContent).toContain('Cerrado');
+    expect(rows[0]?.textContent).toContain('Lunes');
+    expect(rows[0]?.textContent).toContain('08:30 – 19:00');
+    expect(rows[6]?.textContent).toContain('Domingo');
+    expect(rows[6]?.textContent).toContain('Cerrado');
   });
 
   it('highlights today (the fixed clock is a Wednesday)', () => {
@@ -77,8 +77,8 @@ describe('InfoTab', () => {
     );
 
     expect(today).toHaveLength(1);
-    expect(today[0].textContent).toContain('Hoy');
-    expect(today[0].textContent?.toLowerCase()).toContain('miércoles');
+    expect(today[0]?.textContent).toContain('Hoy');
+    expect(today[0]?.textContent?.toLowerCase()).toContain('miércoles');
   });
 
   it('offers a tel: link and the address', () => {

@@ -4,6 +4,7 @@ import { AdminRepository } from '@shared/business/verification/admin.repository'
 import type { VerificationDoc } from '@shared/business/verification/verification.model';
 import { VerificationRepository } from '@shared/business/verification/verification.repository';
 import { AdminReviewStore } from './admin-review.store';
+import { at } from '../../../../testing/at';
 
 const business = {
   id: 'b1',
@@ -98,6 +99,6 @@ describe('AdminReviewStore', () => {
   });
 
   it('returns a signed URL for a document', async () => {
-    expect(await store.signedUrl(docs[0])).toBe('https://signed');
+    expect(await store.signedUrl(at(docs, 0))).toBe('https://signed');
   });
 });

@@ -23,7 +23,7 @@ const TAB_ICONS = {
 export class OwnerLocation {
   /** The business id and tab of a /owner/:id/:section/... URL (null elsewhere, e.g. /owner/new). */
   public static ownerLocation(url: string): { id: string; section: OwnerSection } | null {
-    const [owner, id, section] = url.split(/[?#]/)[0].split('/').filter(Boolean);
+    const [owner, id, section = ''] = (url.split(/[?#]/)[0] ?? '').split('/').filter(Boolean);
     if (owner !== 'owner' || !id || id === 'new') return null;
     const known = (OWNER_SECTIONS as readonly string[]).includes(section);
     return { id, section: known ? (section as OwnerSection) : 'summary' };

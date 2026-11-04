@@ -77,9 +77,9 @@ describe('FeedPage', () => {
     expect(store.load).toHaveBeenCalledOnce();
     const articles = el.querySelectorAll('[role="feed"] article');
     expect(articles).toHaveLength(3);
-    expect(articles[1].getAttribute('aria-posinset')).toBe('2');
-    expect(articles[1].getAttribute('aria-setsize')).toBe('3');
-    expect(articles[1].textContent).toContain('Plato 2');
+    expect(articles[1]?.getAttribute('aria-posinset')).toBe('2');
+    expect(articles[1]?.getAttribute('aria-setsize')).toBe('3');
+    expect(articles[1]?.textContent).toContain('Plato 2');
   });
 
   it('moves to the next and previous post with the arrow keys', () => {

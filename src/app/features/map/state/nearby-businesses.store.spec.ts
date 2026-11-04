@@ -76,8 +76,8 @@ describe('NearbyBusinessesStore', () => {
     await store.load(1.21, -77.28);
 
     expect(store.items()).toHaveLength(2);
-    expect(store.items()[0].status).toBe('closed');
-    expect(store.items()[0].rating?.rating).toBe(4.5);
+    expect(store.items()[0]?.status).toBe('closed');
+    expect(store.items()[0]?.rating?.rating).toBe(4.5);
     expect(highlights.getRatings).toHaveBeenCalledExactlyOnceWith(['far', 'near']);
     expect(highlights.getActivePromotions).toHaveBeenCalledExactlyOnceWith(['far', 'near']);
     expect(store.categories()).toEqual(['Café', 'Pizza']);
@@ -89,13 +89,13 @@ describe('NearbyBusinessesStore', () => {
     await store.load(1.21, -77.28);
 
     expect(store.items().map((i) => i.business.id)).toEqual(['near', 'far']);
-    expect(store.items()[0].distanceKm).toBeLessThan(1);
+    expect(store.items()[0]?.distanceKm).toBeLessThan(1);
   });
 
   it('keeps distance unknown without the user location', async () => {
     await store.load(1.21, -77.28);
 
-    expect(store.items()[0].distanceKm).toBeNull();
+    expect(store.items()[0]?.distanceKm).toBeNull();
   });
 
   it('filters by query and by the sheet filters on the client and can clear them', async () => {

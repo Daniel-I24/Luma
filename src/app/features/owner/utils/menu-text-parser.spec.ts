@@ -58,8 +58,8 @@ Torta de queso`);
     const items = MenuTextParser.parse(`*****\n\n$ 5.000\n-----\n${long.toLowerCase()} 9.000`);
 
     expect(items).toHaveLength(1);
-    expect(items[0].name).toHaveLength(80);
-    expect(items[0].price_cop).toBe(9000);
+    expect(items[0]?.name).toHaveLength(80);
+    expect(items[0]?.price_cop).toBe(9000);
   });
 
   it('a line without a price stays as a product to complete in the review', () => {

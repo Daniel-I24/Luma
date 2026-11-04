@@ -41,11 +41,12 @@ export class PickupSlots {
     const ranges: string[] = [];
     let start = 0;
     for (let i = 1; i <= slots.length; i++) {
-      const gap =
-        i === slots.length ||
-        ClockTime.timeToMinutes(slots[i]) - ClockTime.timeToMinutes(slots[i - 1]) !== SLOT_STEP_MINUTES;
+      const previous = slots[i - 1] ?? '';
+      const current = slots[i];
+      const gap = current === undefined || ClockTime.timeToMinutes(current) - ClockTime.timeToMinutes(previous) !== SLOT_STEP_MINUTES;
       if (!gap) continue;
-      ranges.push(start === i - 1 ? slots[start] : `${slots[start]}–${slots[i - 1]}`);
+      const first = slots[start] ?? '';
+      ranges.push(start === i - 1 ? first : `${first}–${previous}`);
       start = i;
     }
     return ranges;

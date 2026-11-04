@@ -47,9 +47,9 @@ describe('MapFilterBar', () => {
     );
     const chips = el.querySelectorAll('.luma-chip--dismissible');
     expect(chips).toHaveLength(3);
-    expect(chips[2].textContent).toContain('Bar');
+    expect(chips[2]?.textContent).toContain('Bar');
 
-    chips[0].querySelector('button')!.click();
+    chips[0]?.querySelector('button')!.click();
     fixture.detectChanges();
     expect(filters().openNow).toBe(false);
     expect(el.querySelectorAll('.luma-chip--dismissible')).toHaveLength(2);

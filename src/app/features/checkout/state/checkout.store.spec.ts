@@ -162,7 +162,7 @@ describe('CheckoutStore', () => {
 
     await store.confirm();
 
-    const { pickupAt } = orders.create.mock.calls[0][0] as { pickupAt: string };
+    const { pickupAt } = orders.create.mock.calls[0]?.[0] as { pickupAt: string };
     const at = new Date(pickupAt);
     expect([at.getDate(), at.getHours(), at.getMinutes()]).toEqual([15, 8, 30]);
   });
@@ -171,7 +171,7 @@ describe('CheckoutStore', () => {
     orders.create.mockResolvedValue({ data: 'o3', errorKey: null });
     store.method.set('online');
     await store.confirm();
-    expect(orders.create.mock.calls[0][0].paymentMethod).toBe('pay_at_pickup');
+    expect(orders.create.mock.calls[0]?.[0].paymentMethod).toBe('pay_at_pickup');
     expect(store.onlineAvailable()).toBe(false);
   });
 
@@ -184,7 +184,7 @@ describe('CheckoutStore', () => {
     orders.create.mockResolvedValue({ data: 'o4', errorKey: null });
     fresh.method.set('online');
     await fresh.confirm();
-    expect(orders.create.mock.calls[0][0].paymentMethod).toBe('online');
+    expect(orders.create.mock.calls[0]?.[0].paymentMethod).toBe('online');
     expect(online.start).toHaveBeenCalledWith('o4');
     expect(navigate).toHaveBeenCalledWith(['/orders', 'o4']);
   });

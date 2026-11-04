@@ -118,7 +118,7 @@ describe('BusinessOrdersPage', () => {
   it('cancelling after accepting needs a reason', async () => {
     repo.setStatus.mockResolvedValue({ data: true, errorKey: null });
     const { fixture, el, button } = await render();
-    el.querySelectorAll<HTMLButtonElement>('[role="tab"]')[1].click();
+    el.querySelectorAll<HTMLButtonElement>('[role="tab"]')[1]?.click();
     fixture.detectChanges();
     button('businessOrders.actions.cancel').click();
     fixture.detectChanges();
@@ -135,7 +135,7 @@ describe('BusinessOrdersPage', () => {
     repo.list.mockResolvedValue({ data: [order('o4', 'ready', { ready_at: readyAt })], errorKey: null });
     repo.setStatus.mockResolvedValue({ data: true, errorKey: null });
     const { fixture, el, button } = await render();
-    el.querySelectorAll<HTMLButtonElement>('[role="tab"]')[2].click();
+    el.querySelectorAll<HTMLButtonElement>('[role="tab"]')[2]?.click();
     fixture.detectChanges();
     button('businessOrders.actions.noShow').click();
     fixture.detectChanges();
@@ -154,7 +154,7 @@ describe('BusinessOrdersPage', () => {
   it('lists the other tabs with their next action', async () => {
     const { fixture, el } = await render();
 
-    el.querySelectorAll<HTMLButtonElement>('[role="tab"]')[1].click();
+    el.querySelectorAll<HTMLButtonElement>('[role="tab"]')[1]?.click();
     fixture.detectChanges();
 
     expect(el.querySelector('app-owner-order-card')?.textContent).toContain(

@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AdminOperationsRepository, type PaymentIssue } from '../services/admin-operations.repository';
 import { AdminOperationsStore } from './admin-operations.store';
+import { at } from '../../../../testing/at';
 
 describe('AdminOperationsStore', () => {
   const issue = { payment_id: 'p1', order_id: 'o1', amount_in_cents: 600000, status: 'refund_required',
@@ -38,7 +39,7 @@ describe('AdminOperationsStore', () => {
     expect(repo.markRefundDone).toHaveBeenCalledWith('p1');
     expect(store.notice()).toBe('admin.operations.refundMarked');
     repo.clearStrikes.mockResolvedValue({ data: null, errorKey: 'admin.operations.errors.failed' });
-    await store.clearStrikes(store.strikes()[0]);
+    await store.clearStrikes(at(store.strikes(), 0));
     expect(store.notice()).toBe('admin.operations.errors.failed');
     expect(repo.paymentIssues).toHaveBeenCalledTimes(3);
   });

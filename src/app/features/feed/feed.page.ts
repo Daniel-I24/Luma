@@ -71,7 +71,7 @@ export class FeedPage {
     if (!el || !posts || index < 0 || index >= posts.length) return;
     this.current.set(index);
     el.scrollTo({ top: index * el.clientHeight });
-    posts[index].focus({ preventScroll: true });
+    posts[index]?.focus({ preventScroll: true });
   }
 
   protected viewBusiness(card: FeedCardModel): void {

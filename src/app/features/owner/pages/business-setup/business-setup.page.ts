@@ -57,7 +57,8 @@ export class BusinessSetupPage {
   }
 
   protected status(index: number): string {
-    return SetupSteps.status(this.steps[index], this.missing());
+    const step = this.steps[index];
+    return step ? SetupSteps.status(step, this.missing()) : '';
   }
 
   protected async submit(): Promise<void> {

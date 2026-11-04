@@ -80,7 +80,7 @@ export class MenuPanelStore {
     const values = section.items.map((i) => i.sort_order).sort((a, b) => a - b);
     // Equal values (old menus) become consecutive so the new order holds.
     const slots = values.map((v, index) => Math.max(v, (values[0] ?? 0) + index));
-    const changed = order.map((item, index) => ({ ...item, sort_order: slots[index] })).filter((item, index) => item.sort_order !== order[index].sort_order);
+    const changed = order.map((item, index) => ({ ...item, sort_order: slots[index] ?? item.sort_order })).filter((item, index) => item.sort_order !== order[index]?.sort_order);
     return this.run(async () => {
       for (const item of changed) {
         const result = await this.writer.update(item.id, MenuSections.inputOf(item));

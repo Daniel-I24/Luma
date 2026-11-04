@@ -61,7 +61,7 @@ describe('AiStore', () => {
 
     expect(businesses.getHoursFor).toHaveBeenCalledWith(['b1']);
     expect(menus.getAvailableFor).toHaveBeenCalledWith(['b1']);
-    const request = engine.recommend.mock.calls[0][0] as RecommendationRequest;
+    const request = engine.recommend.mock.calls[0]?.[0] as RecommendationRequest;
     expect(request.moment).toBe(store.moment());
     expect(request.candidates[0]).toMatchObject({
       status: 'open',

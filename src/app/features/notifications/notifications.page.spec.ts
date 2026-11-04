@@ -64,10 +64,10 @@ describe('NotificationsPage', () => {
     const { el } = await render();
 
     const items = el.querySelectorAll('li');
-    expect(items[0].textContent).toContain('notifications.text.status.ready');
-    expect(items[0].textContent).toContain('notifications.new');
-    expect(items[1].textContent).toContain('notifications.text.orderNew');
-    expect(items[1].textContent).not.toContain('notifications.new');
+    expect(items[0]?.textContent).toContain('notifications.text.status.ready');
+    expect(items[0]?.textContent).toContain('notifications.new');
+    expect(items[1]?.textContent).toContain('notifications.text.orderNew');
+    expect(items[1]?.textContent).not.toContain('notifications.new');
     expect(repo.markAllRead).toHaveBeenCalledOnce();
     expect(unread.count()).toBe(0);
   });
@@ -76,8 +76,8 @@ describe('NotificationsPage', () => {
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     const { el } = await render();
 
-    el.querySelectorAll('li button')[0].dispatchEvent(new Event('click'));
-    el.querySelectorAll('li button')[1].dispatchEvent(new Event('click'));
+    el.querySelectorAll('li button')[0]?.dispatchEvent(new Event('click'));
+    el.querySelectorAll('li button')[1]?.dispatchEvent(new Event('click'));
 
     expect(navigate).toHaveBeenNthCalledWith(1, ['/orders', 'o1']);
     expect(navigate).toHaveBeenNthCalledWith(2, ['/owner', 'b1', 'orders']);

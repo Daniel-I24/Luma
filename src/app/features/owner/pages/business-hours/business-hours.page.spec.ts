@@ -7,6 +7,7 @@ import { BusinessHoursWriteRepository } from '@shared/business/data/business-hou
 import { BusinessRepository } from '@shared/business/data/business.repository';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
 import { BusinessHoursPage } from './business-hours.page';
+import { at } from '../../../../../testing/at';
 
 const flush = () => new Promise((resolve) => setTimeout(resolve));
 const monday = {
@@ -79,7 +80,7 @@ describe('BusinessHoursPage', () => {
 
     await submit();
 
-    const [id, week] = writer.saveWeek.mock.calls[0];
+    const [id, week] = at(writer.saveWeek.mock.calls, 0);
     expect(id).toBe('b1');
     expect(week).toHaveLength(7);
     expect(week[1]).toEqual({

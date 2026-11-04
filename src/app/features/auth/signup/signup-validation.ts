@@ -4,6 +4,7 @@ import { FieldRules } from '@core/validation/field-rule';
 import { PERSON_NAME_MAX, TextRules } from '@core/validation/text-rules';
 import { CommonPasswords } from './common-passwords';
 import { STEP_FIELDS, type SignupDraft, type SignupErrors, type SignupStep } from './signup-draft';
+import { ZodRules } from '@core/validation/zod-rules';
 
 const V = 'auth.signup.validation';
 /** profiles_full_name_rule (core/validation, at most 60). */
@@ -22,7 +23,7 @@ const RULES: Readonly<Record<keyof SignupDraft, Rule>> = {
   avatarConsent: (d) => (!d.avatar || d.avatarConsent ? null : `${V}.avatarConsent`),
   email: (d) => {
     const parsed = emailSchema.safeParse(d.email);
-    return parsed.success ? null : parsed.error.issues[0].message;
+    return parsed.success ? null : ZodRules.firstMessage(parsed.error);
   },
   password: (d) => {
     if (!newPasswordSchema.safeParse(d.password).success) return 'auth.validation.passwordWeak';
