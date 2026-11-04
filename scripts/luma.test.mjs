@@ -44,10 +44,11 @@ test('option 3 without all the keys says which prefix is missing and loads nothi
 test('option 1: Gemini key and models tested, LLM_* loaded, the three AI functions deployed', { skip }, () => {
   const r = runOption(`Invoke-LumaAi '${REF}'`, {
     answers: ['AIza-clave', '', ''],
-    http: { 'models/gemini-3.8-flash': { status: 200 }, 'models/gemini-3.1-flash-lite': { status: 200 } },
+    http: { 'models/gemini-3.6-flash:generateContent': { status: 200 }, 'models/gemini-3.5-flash-lite:generateContent': { status: 200 } },
   });
   assert.match(r.envFiles[0], /LLM_PROVIDER='gemini'/);
-  assert.match(r.envFiles[0], /LLM_FALLBACK_MODEL='gemini-3.1-flash-lite'/);
+  assert.match(r.envFiles[0], /LLM_FALLBACK_MODEL='gemini-3.5-flash-lite'/);
+  assert.ok(r.calls.includes('HTTP https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent'), 'a real generateContent call');
   for (const name of ['recommend', 'suggest-promotions', 'extract-menu']) assert.ok(r.calls.includes(`functions deploy ${name} --use-api --project-ref ${REF}`));
   assert.equal(r.calls.some((c) => c.startsWith('HTTP') && c.includes('AIza-clave')), false, 'the key goes in a header');
   assert.match(r.file('ai.env'), /LLM_API_KEY=AIza-clave/);
@@ -59,6 +60,16 @@ test('option 1 reports a model that does not exist and a refused key', { skip },
   const r = runOption(`Invoke-LumaAi '${REF}'`, { answers: ['k', 'gemini-x', '-'], http: { 'models/gemini-x': { status: 404 } } });
   assert.ok(r.lines.some((l) => l.state === 'FALTA' && /gemini-x no existe/.test(l.item)));
   assert.ok(r.lines.some((l) => l.state === 'APAGADO' && /respaldo/.test(l.item)));
+});
+
+test('option 1: a saturated model (503) or no quota now (429) is APAGADO, the fallback covers it', { skip }, () => {
+  const r = runOption(`Invoke-LumaAi '${REF}'`, {
+    answers: ['k', '', ''],
+    http: { 'models/gemini-3.6-flash:generateContent': { status: 503 }, 'models/gemini-3.5-flash-lite:generateContent': { status: 429 } },
+  });
+  assert.ok(r.lines.some((l) => l.state === 'APAGADO' && /saturado ahora, el respaldo lo cubrira/.test(l.item)));
+  assert.ok(r.lines.some((l) => l.state === 'APAGADO' && /respaldo gemini-3.5-flash-lite esta saturado/.test(l.item)));
+  assert.equal(states(r).includes('FALTA'), false);
 });
 
 test('option 2: push secrets, push-dispatch with --use-api and the SQL, keeping the secret on a repeat', { skip }, () => {
@@ -96,6 +107,20 @@ test('option 6: app.env reaches the build, and with two phones it asks which', {
   assert.ok(r.calls.includes('adb -s BBB install -r android\\app\\build\\outputs\\apk\\debug\\app-debug.apk'));
   const none = runOption('Invoke-LumaApk', { files: { 'app.env': app } });
   assert.ok(none.lines.some((l) => l.state === 'FALTA' && /telefono conectado/.test(l.item)));
+  const waiting = runOption('Invoke-LumaApk', { files: { 'app.env': app }, phones: ['CCC unauthorized'] });
+  assert.ok(waiting.lines.some((l) => l.state === 'FALTA' && /no autorizo/.test(l.item) && /Permitir depuracion USB/.test(l.next)));
+});
+
+test('option 6 without app.env creates it: the anon key asked, AI_MODE and PUSH_ENABLED from what exists', { skip }, () => {
+  const r = runOption(`& { $env:SUPABASE_PROJECT_REF = '${REF}'; Invoke-LumaApk }`, {
+    files: { 'ai.env': 'LLM_API_KEY=k\n', 'google-services.json': '{}' }, answers: ['anon-public-key'], phones: ['AAA'],
+  });
+  const app = r.file('app.env');
+  assert.match(app, /SUPABASE_URL=https:\/\/abcdefghijklmnopqrst\.supabase\.co/);
+  assert.match(app, /SUPABASE_ANON_KEY=anon-public-key/);
+  assert.match(app, /AI_MODE=remote/);
+  assert.match(app, /PUSH_ENABLED=1/);
+  assert.ok(r.lines.some((l) => l.state === 'OK' && /app.env creado/.test(l.item)));
 });
 
 test('option 7: the token lives only in the doctor process, is never written, and can be revoked', { skip }, () => {

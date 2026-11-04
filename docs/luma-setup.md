@@ -40,8 +40,10 @@ solo en memoria.
 
 ## Las opciones
 
-1. **Luma IA**: pide la clave de Gemini, el modelo (`gemini-3.8-flash`) y el
-   de respaldo (`gemini-3.1-flash-lite`); prueba la clave con cada modelo,
+1. **Luma IA**: pide la clave de Gemini, el modelo (`gemini-3.6-flash`) y el
+   de respaldo (`gemini-3.5-flash-lite`); hace una llamada real y mínima de
+   `generateContent` con cada uno (503 o 429: APAGADO, "saturado ahora, el
+   respaldo lo cubrirá"),
    carga los secretos `LLM_*` y despliega `recommend`, `suggest-promotions`
    y `extract-menu`.
 2. **Notificaciones**: carga `FCM_SERVICE_ACCOUNT` y `PUSH_DISPATCH_SECRET`,
@@ -58,9 +60,13 @@ solo en memoria.
    despliega `route`.
 5. **WhatsApp**: carga los secretos de `whatsapp.env`, despliega
    `whatsapp-webhook` y prueba el reto de Meta.
-6. **APK**: compila con todas las variables de `app.env` (firmado si están
-   las cuatro `LUMA_KEY*`, de prueba si no) y lo instala con `adb`; si hay
-   varios teléfonos conectados, pregunta cuál.
+6. **APK**: si `app.env` no existe lo crea (pregunta `SUPABASE_ANON_KEY`;
+   `AI_MODE=remote` si existe `ai.env`, `PUSH_ENABLED=1` si existe
+   `google-services.json`); compila con todas sus variables (firmado si están
+   las cuatro `LUMA_KEY*`, de prueba si no) y lo instala con `adb` (del PATH,
+   de `ANDROID_HOME` o de `%LOCALAPPDATA%\Android\Sdk\platform-tools`); si el
+   teléfono dice "unauthorized" explica cómo autorizarlo; si hay varios
+   conectados, pregunta cuál.
 7. **Diagnóstico** (`npm run doctor`): nombres de los secretos y funciones
    desplegadas con la sesión de la CLI (`npx supabase secrets list` y
    `functions list`), el reto de WhatsApp, la clave de Gemini y el estado de

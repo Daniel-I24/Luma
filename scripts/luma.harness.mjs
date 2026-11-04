@@ -44,7 +44,7 @@ function Invoke-LumaHttp([string]$Uri, [hashtable]$Headers = @{}) {
   return @{ Status = 404; Body = '' }
 }
 function Invoke-LumaNpm { $global:calls += "npm $($args -join ' ') AI_MODE=$env:AI_MODE TOKEN=$env:SUPABASE_ACCESS_TOKEN"; return ${npm} }
-function Invoke-LumaAdb { $global:calls += "adb $($args -join ' ')"; if ($args[0] -eq 'devices') { return @('List of devices attached'${phones.map((p) => `, "${p}\`tdevice"`).join('')}) }; return 'Success' }
+function Invoke-LumaAdb { $global:calls += "adb $($args -join ' ')"; if ($args[0] -eq 'devices') { return @('List of devices attached'${phones.map((p) => `, "${p.includes(' ') ? p.replace(' ', '`t') : `${p}\`tdevice`}"`).join('')}) }; return 'Success' }
 $lines = ${call}
 $tempLeft = $global:tempFile -and (Test-Path $global:tempFile)
 $global:calls += "after TOKEN=$env:SUPABASE_ACCESS_TOKEN"

@@ -40,9 +40,11 @@ function Invoke-Supabase {
 }
 
 # Una peticion web: @{ Status; Body }. Nunca lanza.
-function Invoke-LumaHttp([string]$Uri, [hashtable]$Headers = @{}, [string]$Method = 'GET') {
+function Invoke-LumaHttp([string]$Uri, [hashtable]$Headers = @{}, [string]$Method = 'GET', [string]$Body = '') {
   try {
-    $r = Invoke-WebRequest -Uri $Uri -Headers $Headers -Method $Method -UseBasicParsing -TimeoutSec 20
+    $request = @{ Uri = $Uri; Headers = $Headers; Method = $Method; UseBasicParsing = $true; TimeoutSec = 20 }
+    if ($Body) { $request['Body'] = [Text.Encoding]::UTF8.GetBytes($Body); $request['ContentType'] = 'application/json' }
+    $r = Invoke-WebRequest @request
     return @{ Status = [int]$r.StatusCode; Body = [string]$r.Content }
   } catch {
     $status = 0
