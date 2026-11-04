@@ -47,6 +47,8 @@ export class RouteMap {
   public readonly name = input.required<string>();
 
   protected readonly modes = TRAVEL_MODES;
+  protected readonly osmCopyright = ExternalUrls.OSM_COPYRIGHT;
+  protected readonly osmFix = ExternalUrls.OSM_FIX_THE_MAP;
   protected readonly mode = signal<TravelMode>(this.preference.read());
   protected readonly route = signal<TravelRoute | null>(null);
   protected readonly failed = signal(false);

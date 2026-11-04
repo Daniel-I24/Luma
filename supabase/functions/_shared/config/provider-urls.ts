@@ -29,6 +29,8 @@ export const CLOUDFLARE_DOH_URL = 'https://cloudflare-dns.com/dns-query';
 
 /** Routing (docs/route.md): OpenRouteService Directions V2; HeiGIT docs checked 2026-10-28. */
 export const OPENROUTESERVICE_DIRECTIONS_URL = 'https://api.openrouteservice.org/v2/directions';
+/** FOSSGIS public OSRM servers (routing.openstreetmap.de/about.html): /routed-{car,bike,foot}. */
+export const PUBLIC_OSRM_URL = 'https://routing.openstreetmap.de';
 
 /** LLM providers (docs/ai.md); LLM_BASE_URL overrides the OpenAI-compatible one. */
 export const GEMINI_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta';

@@ -12,6 +12,9 @@ export class ExternalUrls {
   public static readonly WOMPI_CHECKOUT = 'https://checkout.wompi.co/p/';
   /** Credit link LocationIQ's free plan requires next to search results. */
   public static readonly LOCATIONIQ = 'https://locationiq.com';
+  /** Credit of routes from the public OSM servers, and where to fix the map (FOSSGIS terms). */
+  public static readonly OSM_COPYRIGHT = 'https://www.openstreetmap.org/copyright';
+  public static readonly OSM_FIX_THE_MAP = 'https://www.openstreetmap.org/fixthemap';
   /** SVG namespace for markers built with createElementNS. */
   public static readonly SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 

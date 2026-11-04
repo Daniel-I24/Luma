@@ -40,6 +40,11 @@
     <span class="block text-caption text-fg-muted">{{ t('route.approximate') }}</span>
     } @if (r.source === 'straight') {
     <span class="block text-caption text-fg-muted">{{ t('route.estimate') }}</span>
+    } @if (r.attribution === 'osm') {
+    <span class="block text-caption text-fg-muted">
+      <a class="underline" [href]="osmCopyright" target="_blank" rel="noopener noreferrer">{{ t('route.osmCredit') }}</a> ·
+      <a class="underline" [href]="osmFix" target="_blank" rel="noopener noreferrer">{{ t('route.osmFix') }}</a>
+    </span>
     }
   </p>
   }

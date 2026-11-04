@@ -21,6 +21,17 @@ export interface Route {
   readonly source: string;
   /** The time is an adjustment of another profile (the moto uses the car's). */
   readonly approximate?: boolean;
+  /** 'osm': the app shows "© OpenStreetMap" (the public OSM routing servers). */
+  readonly attribution?: 'osm';
+}
+
+/** Cache cells of about 110 m: nearby requests share one provider call. */
+const CELL_DECIMALS = 3;
+
+/** The cache key material of a request: its cells and mode, never the exact points. */
+export function cellOf(input: RouteInput): string {
+  const cell = (p: LatLng) => `${p.lat.toFixed(CELL_DECIMALS)},${p.lng.toFixed(CELL_DECIMALS)}`;
+  return `${cell(input.from)};${cell(input.to)};${input.mode}`;
 }
 
 /** Longer than this is not a pick-up route inside a town. */

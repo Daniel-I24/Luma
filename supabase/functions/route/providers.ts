@@ -1,5 +1,6 @@
 import { OPENROUTESERVICE_DIRECTIONS_URL } from '../_shared/config/provider-urls.ts';
 import type { Route, RouteInput } from './model.ts';
+import { PublicOsrm } from './osrm.ts';
 import { profileFor } from './profiles.ts';
 
 /** Injectable fetch, so tests never reach the network. */
@@ -72,10 +73,38 @@ export function parseOrs(body: unknown): Route {
   return { line, distanceM: Math.round(distance), durationS: Math.round(duration), source: 'openrouteservice' };
 }
 
-/** The provider named by ROUTE_PROVIDER with ROUTE_API_KEY, or null (straight-line fallback). */
+/** Tries each provider once, in order; the last failure is thrown (the handler draws the straight line). */
+function chain(providers: readonly RoutingProvider[]): RoutingProvider | null {
+  if (providers.length <= 1) return providers[0] ?? null;
+  return {
+    name: providers.map((p) => p.name).join('+'),
+    route: async (input) => {
+      let failure: unknown = new RouteFailure('none');
+      for (const provider of providers) {
+        try {
+          return await provider.route(input);
+        } catch (error) {
+          failure = error;
+        }
+      }
+      throw failure;
+    },
+  };
+}
+
+/**
+ * The chain (docs/route.md): OpenRouteService with ROUTE_API_KEY, then the
+ * public OSM servers of FOSSGIS (no key; ROUTE_PUBLIC_OSM=off turns them
+ * off; ROUTE_CONTACT goes in the User-Agent), then the straight line.
+ */
 export function routerFromEnv(env: (name: string) => string | undefined, fetchFn: FetchLike = fetch): RoutingProvider | null {
   const provider = env('ROUTE_PROVIDER')?.trim().toLowerCase();
   const key = env('ROUTE_API_KEY')?.trim();
-  if (!key) return null;
-  return provider === 'openrouteservice' || !provider ? new OpenRouteService(key, fetchFn) : null;
+  const providers: RoutingProvider[] = [];
+  if (key && (provider === 'openrouteservice' || !provider)) providers.push(new OpenRouteService(key, fetchFn));
+  if (env('ROUTE_PUBLIC_OSM')?.trim().toLowerCase() !== 'off') {
+    const contact = env('ROUTE_CONTACT')?.trim();
+    providers.push(new PublicOsrm({ userAgent: contact ? `Luma/1.0 (${contact})` : 'Luma/1.0 (pick-up app, Pasto)', fetchFn }));
+  }
+  return chain(providers);
 }

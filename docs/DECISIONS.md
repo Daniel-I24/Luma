@@ -1004,3 +1004,9 @@ alternative that was not taken. The safest, most reversible option wins.
   against the provider (the request). The previous smoke test of the
   *deployed* functions with a test account is kept as
   `scripts/ai-smoke-deployed.mjs` (same tests), not deleted.
+- **Routes without a key** (B4): the public OSM servers of FOSSGIS are the
+  second step of the chain. Their terms limit them to light, non-commercial
+  use (one request per second, identifying User-Agent, attribution and "fix
+  the map"); the function never sends two in one second and caches by
+  ~110 m cells. For heavy or paid use, an OpenRouteService key (first step)
+  or a self-hosted OSRM is the way; `ROUTE_PUBLIC_OSM=off` turns it off.

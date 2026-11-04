@@ -2325,7 +2325,9 @@
     "locate": "Activar ubicación",
     "googleMaps": "Abrir en Google Maps",
     "approximate": "Tiempo aproximado: en moto usamos la ruta del carro con un tiempo ajustado.",
-    "directions": "Cómo llegar"
+    "directions": "Cómo llegar",
+    "osmCredit": "Ruta: © OpenStreetMap",
+    "osmFix": "Corregir el mapa"
   },
   "placeholders": {
     "fullName": "Ej.: Ana María Pérez",

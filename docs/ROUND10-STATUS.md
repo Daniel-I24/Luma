@@ -6,7 +6,7 @@
 | A. Fallos del teléfono (A1–A6) | Done |
 | B2. IA (fallback, budgets, ai:smoke) | Done |
 | B3. scripts\luma | Done |
-| B4. route: second free provider | Pending |
+| B4. route: second free provider | Done |
 | B5. Realtime privacy (migration 57) | Done with phase A (57 holds it) |
 | B6. Phase 5 rest (round 9) | Pending |
 

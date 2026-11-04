@@ -2325,7 +2325,9 @@
     "locate": "Turn on location",
     "googleMaps": "Open in Google Maps",
     "approximate": "Approximate time: by motorcycle we use the car route with an adjusted time.",
-    "directions": "Get directions"
+    "directions": "Get directions",
+    "osmCredit": "Route: © OpenStreetMap",
+    "osmFix": "Fix the map"
   },
   "placeholders": {
     "fullName": "E.g.: Ana María Pérez",

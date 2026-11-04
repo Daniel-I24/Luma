@@ -100,7 +100,7 @@ Deno.test('OpenRouteService: GeoJSON summary and line, the key only in a header 
   assertEquals(seen[0]?.url, 'https://api.openrouteservice.org/v2/directions/foot-walking/geojson');
   assertEquals((seen[0]?.init.headers as Record<string, string>).Authorization, 'k-123');
   assertEquals(seen[0]?.url.includes('k-123'), false);
-  assertEquals(routerFromEnv(() => undefined), null);
+  assertEquals(routerFromEnv((name) => ({ ROUTE_PUBLIC_OSM: 'off' })[name]), null);
 });
 
 Deno.test('OpenRouteService: an unexpected shape is a failure, not a broken route', () => {

@@ -1,5 +1,5 @@
 import { bearerToken, json, preflight, readJson, sha256 } from '../_shared/edge.ts';
-import { parseInput, type Route, straightRoute } from './model.ts';
+import { cellOf, parseInput, type Route, straightRoute } from './model.ts';
 import type { RoutingProvider } from './providers.ts';
 
 /** What the function may do as the caller (their JWT). */
@@ -16,7 +16,7 @@ export interface RouteDeps {
     get(key: string): Promise<unknown>;
     put(key: string, value: unknown, ttlSeconds: number): Promise<void>;
   };
-  /** Null without ROUTE_API_KEY: the app gets the straight-line estimate. */
+  /** Null when every provider is off: the app gets the straight-line estimate. */
   readonly router: RoutingProvider | null;
 }
 
@@ -42,7 +42,7 @@ export function createHandler(deps: RouteDeps): (req: Request) => Promise<Respon
       if (!caller) return json(401, { error: 'unauthorized' }, cors);
       if (!deps.router) return json(200, straightRoute(input), cors);
 
-      const key = `route:${await sha256(JSON.stringify([deps.router.name, input]))}`;
+      const key = `route:${await sha256(JSON.stringify([deps.router.name, cellOf(input)]))}`;
       const cached = await deps.cache.get(key).catch(() => null);
       if (cached) return json(200, cached, cors);
       if (!(await caller.consumeQuota())) return json(200, { ...straightRoute(input), limited: true }, cors);

@@ -36,6 +36,27 @@ profiles live in `supabase/functions/route/profiles.ts` and
   above). The app computes the same estimate when the function is
   not deployed or the phone is offline.
 
+## Provider chain (round 10)
+
+Each query tries, once each and in order:
+
+1. **OpenRouteService** with `ROUTE_API_KEY` (2000 directions a day).
+2. **Public OpenStreetMap routing of FOSSGIS** (`routing.openstreetmap.de`,
+   OSRM, no key): `/routed-car`, `/routed-bike` and `/routed-foot`
+   (verified 2026-11-04). Its terms (routing.openstreetmap.de/about.html):
+   at most one request per second (the function never sends a second one
+   in the same second), an identifying User-Agent (`Luma/1.0 (ROUTE_CONTACT)`),
+   the attribution and a "fix the map" link (the app shows "Ruta: ©
+   OpenStreetMap · Corregir el mapa"), no heavy use. `ROUTE_PUBLIC_OSM=off`
+   turns it off. For heavy or commercial use, host OSRM or keep a key.
+3. **Straight line** only as the last resort, and the app says "tiempo
+   estimado".
+
+The cache key uses cells of about 110 m (3 decimals) for both points and
+the mode, so nearby customers share one provider call and the exact point
+never goes into a key; only provider answers spend the user's daily quota
+(`hit_rate_limit('route')`).
+
 ## Secrets
 
 ```sh

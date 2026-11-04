@@ -19,6 +19,8 @@ export interface TravelRoute {
   readonly source: string;
   /** The time adjusts another profile (the moto uses the car's): "tiempo aproximado". */
   readonly approximate?: boolean;
+  /** 'osm': drawn by the public OpenStreetMap servers; the map credits them. */
+  readonly attribution?: 'osm';
 }
 
 // Same estimate as the route function (supabase/functions/route/model.ts).
@@ -34,6 +36,7 @@ const routeSchema = z.object({
   durationS: z.number().check(z.minimum(0)),
   source: z.string(),
   approximate: z.optional(z.boolean()),
+  attribution: z.optional(z.literal('osm')),
 });
 
 /**

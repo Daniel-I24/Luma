@@ -85,4 +85,11 @@ describe('RouteMap travel modes', () => {
       expect(estimate.approximate ?? false).toBe(mode === 'moto');
     }
   });
+
+  it('a route from the public OSM servers credits OpenStreetMap and links "fix the map"', async () => {
+    route.mockResolvedValue({ ...RouteRepository.straight(FROM, { lat: 1.22, lng: -77.28 }, 'walk'), source: 'osm-public', attribution: 'osm' });
+    const { el } = await render();
+    await vi.waitFor(() => expect(el.querySelector('a[href="https://www.openstreetmap.org/copyright"]')).not.toBeNull());
+    expect(el.querySelector('a[href="https://www.openstreetmap.org/fixthemap"]')).not.toBeNull();
+  });
 });

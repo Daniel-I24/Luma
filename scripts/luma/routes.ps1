@@ -10,8 +10,8 @@ function Invoke-LumaRoutes([string]$ProjectRef) {
   $saved = Read-LumaEnvFile 'routes.env'
   $key = Read-LumaValue 'Clave de OpenRouteService' $saved['ROUTE_API_KEY'] -Secret
   if (-not $key) {
-    return @(New-LumaLine 'APAGADO' 'Rutas: sin clave (la app muestra una estimacion en linea recta)' `
-      'Crea una clave gratis en openrouteservice.org (Dashboard -> Tokens) y vuelve a la opcion 4.')
+    return @(New-LumaLine 'APAGADO' 'Rutas: sin clave de OpenRouteService (se usan los servidores publicos de OpenStreetMap; si fallan, linea recta)' `
+      'Opcional: una clave gratis en openrouteservice.org (Dashboard -> Tokens) da 2000 rutas al dia; vuelve a la opcion 4.')
   }
   Write-LumaEnvFile 'routes.env' @{ ROUTE_PROVIDER = 'openrouteservice'; ROUTE_API_KEY = $key }
   $lines = @()
