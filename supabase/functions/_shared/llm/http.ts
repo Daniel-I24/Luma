@@ -8,9 +8,13 @@ const TIMEOUT_RETRIES = 1;
 const RETRY_BASE_DELAY_MS = 500;
 const UNAVAILABLE_STATUSES = new Set([500, 502, 503, 504, 529]);
 
+// A plain field, not a parameter property: scripts/ai-smoke.mjs runs this file in Node (types stripped).
 class LlmFailure extends Error {
-  constructor(readonly reason: LlmFailureReason) {
+  readonly reason: LlmFailureReason;
+
+  constructor(reason: LlmFailureReason) {
     super(reason);
+    this.reason = reason;
   }
 }
 

@@ -4,6 +4,12 @@ import type { FetchLike, LlmProvider, LlmRequest, LlmValidator, ProviderOptions 
 import { ANTHROPIC_BASE_URL, GEMINI_BASE_URL, OPENAI_COMPATIBLE_DEFAULT_BASE_URL } from '../config/provider-urls.ts';
 
 const DEFAULT_MAX_TOKENS = 1024;
+/**
+ * Gemini 3 models think before answering, and thinking spends the same
+ * maxOutputTokens: "low" keeps the JSON within budget. Older models refuse
+ * thinkingLevel, so it is sent to gemini-3* only (ai.google.dev, thinking).
+ */
+const GEMINI_THINKING = { thinkingLevel: 'low' } as const;
 const JSON_ONLY = 'Answer with a single JSON object that follows the schema. No other text.';
 
 function withSchema(request: LlmRequest): string {
@@ -33,11 +39,13 @@ export function createGeminiProvider(options: ProviderOptions): LlmProvider {
             generationConfig: {
               responseMimeType: 'application/json',
               maxOutputTokens: request.maxTokens ?? DEFAULT_MAX_TOKENS,
+              ...(/^gemini-3/.test(options.model) ? { thinkingConfig: GEMINI_THINKING } : {}),
             },
           },
           options.timeoutMs,
           options.retryDelayMs,
         );
+        if (at(body, 'candidates', 0, 'finishReason') === 'MAX_TOKENS') return fail('provider_truncated');
         const text = at(body, 'candidates', 0, 'content', 'parts', 0, 'text');
         return parseAnswer(typeof text === 'string' ? text : null, validate);
       }),
@@ -70,6 +78,7 @@ export function createOpenAiCompatibleProvider(options: ProviderOptions): LlmPro
           options.timeoutMs,
           options.retryDelayMs,
         );
+        if (at(body, 'choices', 0, 'finish_reason') === 'length') return fail('provider_truncated');
         const text = at(body, 'choices', 0, 'message', 'content');
         return parseAnswer(typeof text === 'string' ? text : null, validate);
       }),
@@ -98,6 +107,7 @@ export function createAnthropicProvider(options: ProviderOptions): LlmProvider {
           options.retryDelayMs,
         );
         if (at(body, 'stop_reason') === 'refusal') return fail('refused');
+        if (at(body, 'stop_reason') === 'max_tokens') return fail('provider_truncated');
         const blocks = at(body, 'content');
         const text = Array.isArray(blocks)
           ? blocks.find((block) => at(block, 'type') === 'text')

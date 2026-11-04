@@ -1,106 +1,93 @@
-#!/usr/bin/env node
 /**
- * Smoke test of the deployed Luma IA functions, run by the owner after
- * deploying (never in CI: it spends real quota).
- *
- *   SUPABASE_URL=https://<ref>.supabase.co SUPABASE_ANON_KEY=<anon key> \
- *   SMOKE_EMAIL=<test account> SMOKE_PASSWORD=<its password> \
- *   [SMOKE_BUSINESS_ID=<a business of that account>] [SMOKE_ORIGIN=https://<app>] \
- *   node scripts/ai-smoke.mjs [--menu]
- *
- * Signs in with a confirmed TEST account, calls recommend, then (with a
- * business id) suggest-promotions and, with --menu, extract-menu with a
- * 1x1 image. Prints only status codes and answer shapes: never keys,
- * tokens, prompts or answer texts. Exit 1 when a call fails; 503
- * ai_unavailable counts as a failure (the secrets are missing or wrong).
+ * npm run ai:smoke [-- recommend] — one real call to the AI provider through
+ * the SAME code the Edge Functions run (Node 24 imports their TypeScript):
+ * extract-menu reads scripts/fixtures/menu-sample.png, recommend ranks two
+ * sample businesses. Reads functions.env (or ai.env) from the secrets folder
+ * ($env:USERPROFILE\luma-secrets) and never prints a value from it.
+ * Prints "OK: …" or "FALLO: <reason>"; the exit code is 0 only for OK.
  */
+import { existsSync, readFileSync } from 'node:fs';
+import { homedir } from 'node:os';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-export class SmokeError extends Error {}
+const here = fileURLToPath(new URL('.', import.meta.url));
+const ORIGIN = 'http://localhost';
+const BUSINESS = '00000000-0000-4000-8000-0000000000b1';
 
-/** A 1x1 transparent PNG: enough to check the request path of extract-menu. */
-export const TINY_PNG =
-  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
-const PASTO = { lat: 1.2136, lng: -77.2811 };
+/** NAME=value lines (quotes and comments allowed); nothing is printed. */
+export function readEnv(dir) {
+  const file = ['functions.env', 'ai.env'].map((name) => join(dir, name)).find((path) => existsSync(path));
+  if (!file) return null;
+  const values = {};
+  for (const line of readFileSync(file, 'utf8').split(/\r?\n/)) {
+    const match = /^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/.exec(line);
+    if (match) values[match[1]] = match[2].replace(/^(['"])(.*)\1$/, '$2');
+  }
+  return values;
+}
 
-export function readSmokeEnv(env, argv = []) {
-  const need = ['SUPABASE_URL', 'SUPABASE_ANON_KEY', 'SMOKE_EMAIL', 'SMOKE_PASSWORD'];
-  const missing = need.filter((name) => !env[name]?.trim());
-  if (missing.length) throw new SmokeError(`Missing: ${missing.join(', ')}.`);
-  const url = env.SUPABASE_URL.trim().replace(/\/$/, '');
-  if (!url.startsWith('https://')) throw new SmokeError('SUPABASE_URL must use https.');
-  return {
-    url,
-    anonKey: env.SUPABASE_ANON_KEY.trim(),
-    email: env.SMOKE_EMAIL.trim(),
-    password: env.SMOKE_PASSWORD,
-    businessId: env.SMOKE_BUSINESS_ID?.trim() || null,
-    origin: env.SMOKE_ORIGIN?.trim() || 'https://localhost',
-    menu: argv.includes('--menu'),
+/** The provider of the functions, spying on its last result to report the exact reason. */
+async function spiedProvider(env, fetchFn, purpose) {
+  const { providerFromEnv } = await import('../supabase/functions/_shared/llm/config.ts');
+  const provider = providerFromEnv((name) => env[name], fetchFn, purpose);
+  if (!provider) return { provider: null, last: () => null };
+  let last = null;
+  const spied = {
+    name: provider.name,
+    generateJson: async (request, validate) => (last = await provider.generateJson(request, validate)),
   };
+  return { provider: spied, last: () => last };
 }
 
-/** The calls to make, in order. */
-export function plan(config) {
-  const calls = [{ name: 'recommend', body: { moment: 'lunch', ...PASTO, radius_km: 5 } }];
-  if (config.businessId) {
-    calls.push({ name: 'suggest-promotions', body: { business_id: config.businessId } });
-    if (config.menu) calls.push({ name: 'extract-menu', body: { business_id: config.businessId, images: [TINY_PNG] } });
-  }
-  return calls;
-}
-
-/** One line per call, with shapes only. A 1x1 image may honestly give an empty menu. */
-export function summarize(name, status, body) {
-  const ok = status === 200;
-  let shape = '';
-  if (ok && name === 'recommend') shape = `businesses=${body?.businesses?.length ?? '?'} combo=${body?.combo ? 'yes' : 'no'}`;
-  if (ok && name === 'suggest-promotions') shape = `source=${body?.source ?? '?'} ideas=${body?.ideas?.length ?? '?'}`;
-  if (ok && name === 'extract-menu') shape = `items=${body?.items?.length ?? '?'}`;
-  if (!ok) shape = `error=${typeof body?.error === 'string' ? body.error : 'unknown'}`;
-  return { ok, line: `${ok ? 'ok  ' : 'FAIL'} ${name}: ${status} ${shape}`.trimEnd() };
-}
-
-export async function signIn(config, fetchFn) {
-  const res = await fetchFn(`${config.url}/auth/v1/token?grant_type=password`, {
+const post = (body) =>
+  new Request('http://localhost/smoke', {
     method: 'POST',
-    headers: { apikey: config.anonKey, 'content-type': 'application/json' },
-    body: JSON.stringify({ email: config.email, password: config.password }),
+    headers: { origin: ORIGIN, authorization: 'Bearer smoke', 'content-type': 'application/json' },
+    body: JSON.stringify(body),
   });
-  const body = await res.json().catch(() => null);
-  if (!res.ok || typeof body?.access_token !== 'string') {
-    throw new SmokeError(`Sign-in failed (${res.status}). Is the test account confirmed?`);
-  }
-  return body.access_token;
+
+async function extractMenu(env, fetchFn) {
+  const { createHandler } = await import('../supabase/functions/extract-menu/handler.ts');
+  const { provider, last } = await spiedProvider(env, fetchFn, 'vision');
+  const owner = { ownsBusiness: async () => true, withinRateLimit: async () => true, consumeQuota: async () => true };
+  const handler = createHandler({ allowedOrigins: [ORIGIN], authenticate: async () => owner, llm: provider });
+  const image = readFileSync(join(here, 'fixtures', 'menu-sample.png')).toString('base64');
+  const response = await handler(post({ business_id: BUSINESS, images: [image] }));
+  const body = await response.json();
+  if (response.status === 200) return `OK: extract-menu leyo ${body.items.length} productos (${env.LLM_VISION_MODEL || env.LLM_MODEL})`;
+  return `FALLO: extract-menu ${response.status} ${last()?.reason ?? body.reason ?? body.error}`;
 }
 
-export async function runSmoke(config, fetchFn = fetch, log = (line) => process.stdout.write(`${line}\n`)) {
-  const token = await signIn(config, fetchFn);
-  let failures = 0;
-  for (const call of plan(config)) {
-    const res = await fetchFn(`${config.url}/functions/v1/${call.name}`, {
-      method: 'POST',
-      headers: {
-        apikey: config.anonKey,
-        authorization: `Bearer ${token}`,
-        origin: config.origin,
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify(call.body),
-    });
-    const { ok, line } = summarize(call.name, res.status, await res.json().catch(() => null));
-    if (!ok) failures++;
-    log(line);
-  }
-  return failures;
+const SAMPLE = [
+  { id: 'b1', name: 'Cafetería La Prueba', category: 'Cafetería', km: 0.4, rating: 4.6, promotions: [],
+    items: [{ id: 'i1', name: 'Calentado', price_cop: 12000, section: 'Desayunos' }, { id: 'i2', name: 'Tinto', price_cop: 2000, section: 'Bebidas' }] },
+  { id: 'b2', name: 'Panadería El Horno', category: 'Panadería', km: 1.2, rating: null, promotions: [],
+    items: [{ id: 'i3', name: 'Pan de yuca', price_cop: 1500, section: 'Panadería' }] },
+];
+
+async function recommend(env, fetchFn) {
+  const { createHandler } = await import('../supabase/functions/recommend/handler.ts');
+  const { provider, last } = await spiedProvider(env, fetchFn, 'text');
+  const caller = { consumeQuota: async () => true, candidates: async () => SAMPLE };
+  const cache = { get: async () => null, put: async () => undefined };
+  const handler = createHandler({ allowedOrigins: [ORIGIN], authenticate: async () => caller, cache, llm: provider });
+  const response = await handler(post({ moment: 'breakfast', lat: 1.2136, lng: -77.2811, radius_km: 5 }));
+  const body = await response.json();
+  if (response.status === 200) return `OK: recommend eligio ${body.businesses.length} negocios (${env.LLM_MODEL})`;
+  return `FALLO: recommend ${response.status} ${last()?.reason ?? (provider ? body.error : 'not_configured')}`;
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  try {
-    const failures = await runSmoke(readSmokeEnv(process.env, process.argv.slice(2)));
-    process.exitCode = failures ? 1 : 0;
-  } catch (error) {
-    process.stderr.write(`ai-smoke: ${error instanceof SmokeError ? error.message : 'unexpected error'}\n`);
-    process.exitCode = 1;
-  }
+/** Runs one smoke test; `fetchFn` is the real fetch unless a test passes another. */
+export async function smoke(which, env, fetchFn) {
+  if (Number(process.versions.node.split('.')[0]) < 24) return `FALLO: necesita Node 24 (este es ${process.versions.node})`;
+  if (!env) return 'FALLO: no hay functions.env ni ai.env en la carpeta de secretos';
+  return which === 'recommend' ? recommend(env, fetchFn) : extractMenu(env, fetchFn);
+}
+
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  const dir = process.env.LUMA_SECRETS_DIR || join(process.env.USERPROFILE || homedir(), 'luma-secrets');
+  const line = await smoke(process.argv[2], readEnv(dir));
+  console.log(line);
+  process.exitCode = line.startsWith('OK') ? 0 : 1;
 }

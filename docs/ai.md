@@ -11,6 +11,25 @@ Two features use it:
   never publishes anything** and "Revisa tu margen antes de publicar" is
   always visible.
 
+## "Combos para {momento}" (customers)
+
+Under the moment chips of `/ai` (and nothing else changed on that screen)
+the section "Combos para {momento}" shows 2 or 3 combos: a dish and a drink,
+plus an extra when there is one, from **available** products of businesses
+that are **open during that moment's window** and **near** (3 km when the
+location is known), with the total in pesos, the business and the distance.
+They only inform: there is no "add" button. Without products for a moment
+it says so in one line; nothing is invented.
+
+- The window and the categories of each moment live in one file:
+  `src/app/shared/recommendations/moment-combos.config.ts` (`MOMENT_COMBOS`).
+- `ComboBuilder.momentCombo` builds each combo; `MomentCombos.forMoment`
+  picks them in the order the recommendation ranked the businesses (the
+  rules engine, or `recommend` when AI is on), then by distance: with or
+  without AI it works the same.
+- Tests: `moment-combos.spec.ts` (one per moment, closed/far/incomplete
+  businesses left out, ranking, the window across midnight).
+
 ## Two modes
 
 The build sets it (round 8): `AI_MODE=remote` in the environment of
@@ -133,7 +152,7 @@ supabase functions deploy suggest-promotions
 supabase functions deploy extract-menu
 # optional, a model that reads images for extract-menu:
 supabase secrets set LLM_VISION_MODEL=<vision-model-id>
-# optional, a second model when the first is saturated (e.g. gemini-3.1-flash-lite):
+# optional, a second model when the first is saturated (e.g. gemini-3.5-flash-lite):
 supabase secrets set LLM_FALLBACK_MODEL=<fallback-model-id>
 ```
 
@@ -141,7 +160,7 @@ supabase secrets set LLM_FALLBACK_MODEL=<fallback-model-id>
 both models fail, the app answers with its rules and says nothing (the
 customer and the owner still get suggestions).
 
-Check the deployment with `node scripts/ai-smoke.mjs` (see its header):
+Check the deployment with `node scripts/ai-smoke-deployed.mjs` (see its header; `npm run ai:smoke` checks the provider without deploying):
 it calls each function with a test account and prints only status codes
 and shapes, never keys or answers.
 
@@ -171,6 +190,25 @@ con su estado y códigos, nunca una clave ni un texto del proveedor).
 
 En todos los casos el botón de elegir o tomar fotos sigue visible y "Pegar
 mi menú como texto" sigue disponible.
+
+## Budgets, truncation and the smoke test
+
+- Output budgets: `extract-menu` 8192 tokens, `recommend` and
+  `suggest-promotions` 2048. A cut answer (Gemini `finishReason:
+  MAX_TOKENS`, OpenAI `length`, Anthropic `max_tokens`) is
+  `provider_truncated`, retried once with twice the budget (up to 16384).
+- Gemini 3 models get `thinkingConfig: { thinkingLevel: 'low' }` (thinking
+  spends the same output budget); older models refuse the field, so it is
+  sent to `gemini-3*` only (ai.google.dev, "Thinking").
+- `LLM_FALLBACK_MODEL` answers when the main model is saturated
+  (`provider_unavailable`), too slow (`timeout`), out of quota
+  (`provider_rate_limit`) or unknown (`provider_model`); never for a refused
+  key (`provider_auth`).
+- `npm run ai:smoke` (Node 24): the real `extract-menu` code with
+  `scripts/fixtures/menu-sample.png` against the real API, reading
+  `functions.env` (or `ai.env`) from the secrets folder without printing it;
+  prints `OK: … N productos` or `FALLO: <reason>`. `npm run ai:smoke --
+  recommend` does the same for `recommend` with two sample businesses.
 
 ## Tests
 

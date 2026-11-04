@@ -59,7 +59,7 @@ export function buildPrompt(input: RecommendInput, candidates: readonly Candidat
       items: c.items.map((i) => ({ id: i.id, name: i.name.slice(0, 60), price_cop: i.price_cop, section: i.section })),
     })),
   };
-  return { system: SYSTEM, user: JSON.stringify(data), schema: ANSWER_SCHEMA, maxTokens: 512 };
+  return { system: SYSTEM, user: JSON.stringify(data), schema: ANSWER_SCHEMA, maxTokens: 2048 };
 }
 
 /**

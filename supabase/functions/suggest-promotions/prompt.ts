@@ -45,7 +45,7 @@ export function buildPrompt(summary: SalesSummary): LlmRequest {
     })),
     orders_by_weekday_and_slot: summary.slots,
   };
-  return { system: SYSTEM, user: JSON.stringify(data), schema: IDEAS_SCHEMA, maxTokens: 512 };
+  return { system: SYSTEM, user: JSON.stringify(data), schema: IDEAS_SCHEMA, maxTokens: 2048 };
 }
 
 const isInt = (v: unknown, min: number, max: number): v is number =>

@@ -31,7 +31,8 @@ export interface LlmRequest {
  * message: provider_auth (key refused, 401/403), provider_model (model
  * unknown, 404), provider_rate_limit (429, quota), provider_unavailable
  * (500/502/503/504/529 or "overloaded" after the retries and the fallback
- * model), http_error (other statuses).
+ * model), provider_truncated (the answer hit its token budget, even after
+ * one retry with twice the budget), http_error (other statuses).
  */
 export type LlmFailureReason =
   | 'timeout'
@@ -41,6 +42,7 @@ export type LlmFailureReason =
   | 'provider_model'
   | 'provider_rate_limit'
   | 'provider_unavailable'
+  | 'provider_truncated'
   | 'refused'
   | 'invalid_json'
   | 'invalid_shape';

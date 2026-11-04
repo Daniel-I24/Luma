@@ -17,8 +17,17 @@ import type {
 export const VISION_TIMEOUT_MS = 30_000;
 export type LlmPurpose = 'text' | 'vision';
 
-/** Failures a second model can get around: the first one is saturated or too slow. */
-const FALLBACK_REASONS: ReadonlySet<LlmFailureReason> = new Set(['provider_unavailable', 'timeout']);
+/**
+ * Failures a second model can get around: the first one is saturated, too
+ * slow, out of quota or unknown. Never a refused key (the same key fails).
+ */
+const FALLBACK_REASONS: ReadonlySet<LlmFailureReason> = new Set([
+  'provider_unavailable', 'timeout', 'provider_rate_limit', 'provider_model',
+]);
+/** A truncated answer is retried once with this many times the budget, up to the cap. */
+const TRUNCATED_BUDGET_FACTOR = 2;
+const MAX_BUDGET = 16_384;
+const DEFAULT_BUDGET = 1024;
 
 /**
  * The provider chosen by secrets only: LLM_PROVIDER (gemini | openai |
@@ -51,6 +60,11 @@ export function providerFromEnv(
 }
 
 function create(name: string, options: ProviderOptions): LlmProvider | null {
+  const provider = byName(name, options);
+  return provider && withMoreBudget(provider);
+}
+
+function byName(name: string, options: ProviderOptions): LlmProvider | null {
   switch (name) {
     case 'gemini':
       return createGeminiProvider(options);
@@ -61,6 +75,19 @@ function create(name: string, options: ProviderOptions): LlmProvider | null {
     default:
       return null;
   }
+}
+
+/** finishReason MAX_TOKENS (or length / max_tokens): one more try with twice the budget. */
+function withMoreBudget(provider: LlmProvider): LlmProvider {
+  return {
+    name: provider.name,
+    async generateJson<T>(request: LlmRequest, validate: LlmValidator<T>): Promise<LlmResult<T>> {
+      const first = await provider.generateJson(request, validate);
+      if (first.ok || first.reason !== 'provider_truncated') return first;
+      const maxTokens = Math.min((request.maxTokens ?? DEFAULT_BUDGET) * TRUNCATED_BUDGET_FACTOR, MAX_BUDGET);
+      return provider.generateJson({ ...request, maxTokens }, validate);
+    },
+  };
 }
 
 /** Asks the fallback model only when the main one failed in a way it can get around. */

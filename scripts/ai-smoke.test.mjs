@@ -1,57 +1,57 @@
 import assert from 'node:assert/strict';
+import { mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { test } from 'node:test';
-import { plan, readSmokeEnv, runSmoke, SmokeError, summarize } from './ai-smoke.mjs';
+import { readEnv, smoke } from './ai-smoke.mjs';
 
-const ENV = {
-  SUPABASE_URL: 'https://abcd.supabase.co/',
-  SUPABASE_ANON_KEY: 'anon',
-  SMOKE_EMAIL: 'test@example.com',
-  SMOKE_PASSWORD: 'secret-password',
-};
+const ENV = { LLM_PROVIDER: 'gemini', LLM_MODEL: 'gemini-3.6-flash', LLM_API_KEY: 'secret-key' };
+const MENU = JSON.stringify({ items: [{ name: 'Calentado', description: null, price_cop: 12000, section: 'Desayunos' }, { name: 'Tinto', description: null, price_cop: 2000, section: 'Bebidas' }] });
 
-test('needs the four variables and https', () => {
-  assert.throws(() => readSmokeEnv({}), SmokeError);
-  assert.throws(() => readSmokeEnv({ ...ENV, SUPABASE_URL: 'http://x' }), /https/);
-  assert.equal(readSmokeEnv(ENV).url, 'https://abcd.supabase.co');
-});
-
-test('extract-menu runs only with a business id and --menu', () => {
-  assert.deepEqual(plan(readSmokeEnv(ENV, ['--menu'])).map((c) => c.name), ['recommend']);
-  const withBusiness = { ...ENV, SMOKE_BUSINESS_ID: 'b1' };
-  assert.deepEqual(plan(readSmokeEnv(withBusiness)).map((c) => c.name), ['recommend', 'suggest-promotions']);
-  assert.deepEqual(plan(readSmokeEnv(withBusiness, ['--menu'])).map((c) => c.name), [
-    'recommend',
-    'suggest-promotions',
-    'extract-menu',
-  ]);
-});
-
-test('summaries show shapes and error codes, never texts', () => {
-  assert.equal(
-    summarize('recommend', 200, { businesses: [{ id: 'x', reason: 'nearby' }], combo: null }).line,
-    'ok   recommend: 200 businesses=1 combo=no',
-  );
-  assert.equal(summarize('extract-menu', 200, { items: [{ name: 'Secret dish' }] }).line, 'ok   extract-menu: 200 items=1');
-  const failed = summarize('recommend', 503, { error: 'ai_unavailable', detail: 'key=abc' });
-  assert.deepEqual(failed, { ok: false, line: 'FAIL recommend: 503 error=ai_unavailable' });
-});
-
-test('signs in, calls each function with the token and never logs it', async () => {
-  const seen = [];
-  const lines = [];
-  const fetchFn = (url, init) => {
-    seen.push([url, init.headers.authorization ?? null]);
-    if (url.includes('/auth/v1/token')) return Promise.resolve(Response.json({ access_token: 'tok-123' }));
-    return Promise.resolve(Response.json({ source: 'rules', ideas: [] }, { status: url.endsWith('recommend') ? 503 : 200 }));
+/** A simulated Gemini: each call takes the next answer; requests are kept. */
+function gemini(...answers) {
+  const requests = [];
+  const fetchFn = async (url, init) => {
+    requests.push({ url, body: JSON.parse(init.body) });
+    const next = answers.shift();
+    if (typeof next === 'number') return new Response('{"error":{}}', { status: next });
+    return new Response(JSON.stringify({ candidates: [{ finishReason: next.finish ?? 'STOP', content: { parts: [{ text: next.text ?? '' }] } }] }));
   };
-  const failures = await runSmoke(readSmokeEnv({ ...ENV, SMOKE_BUSINESS_ID: 'b1' }), fetchFn, (l) => lines.push(l));
-  assert.equal(failures, 1);
-  assert.deepEqual(seen.slice(1).map(([, auth]) => auth), ['Bearer tok-123', 'Bearer tok-123']);
-  assert.equal(lines.join('\n').includes('tok-123'), false);
-  assert.equal(lines.join('\n').includes('secret-password'), false);
+  return { fetchFn, requests };
+}
+
+test('extract-menu: the fixture photo goes through the function path; OK with the number of products', async () => {
+  const { fetchFn, requests } = gemini({ text: MENU });
+  assert.equal(await smoke('extract-menu', ENV, fetchFn), 'OK: extract-menu leyo 2 productos (gemini-3.6-flash)');
+  assert.equal(requests[0].body.contents[0].parts.some((p) => p.inlineData?.mimeType === 'image/png'), true);
+  assert.equal(requests[0].body.generationConfig.maxOutputTokens, 8192);
+  assert.deepEqual(requests[0].body.generationConfig.thinkingConfig, { thinkingLevel: 'low' });
 });
 
-test('a failed sign-in is a clear error', async () => {
-  const fetchFn = () => Promise.resolve(Response.json({ error: 'invalid_grant' }, { status: 400 }));
-  await assert.rejects(runSmoke(readSmokeEnv(ENV), fetchFn, () => undefined), /Sign-in failed \(400\)/);
+test('MAX_TOKENS is provider_truncated after one retry with twice the budget', async () => {
+  const { fetchFn, requests } = gemini({ finish: 'MAX_TOKENS' }, { finish: 'MAX_TOKENS' });
+  assert.equal(await smoke('extract-menu', ENV, fetchFn), 'FALLO: extract-menu 503 provider_truncated');
+  assert.deepEqual(requests.map((r) => r.body.generationConfig.maxOutputTokens), [8192, 16384]);
+});
+
+test('the exact reason is printed, and rate limits or an unknown model go to the fallback model', async () => {
+  const refused = gemini(403);
+  assert.equal(await smoke('extract-menu', ENV, refused.fetchFn), 'FALLO: extract-menu 503 provider_auth');
+  assert.equal(refused.requests.length, 1, 'a refused key never reaches the fallback');
+  for (const status of [429, 404]) {
+    const { fetchFn, requests } = gemini(status, { text: MENU });
+    const line = await smoke('extract-menu', { ...ENV, LLM_FALLBACK_MODEL: 'gemini-3.5-flash-lite' }, fetchFn);
+    assert.match(line, /^OK/, String(status));
+    assert.match(requests.at(-1).url, /gemini-3\.5-flash-lite/);
+  }
+});
+
+test('recommend: two sample businesses, 2048 tokens; without secrets it says so', async () => {
+  const { fetchFn, requests } = gemini({ text: '{"businesses":[{"id":"b1","reason":"moment_fit"}],"combo":null}' });
+  assert.equal(await smoke('recommend', ENV, fetchFn), 'OK: recommend eligio 1 negocios (gemini-3.6-flash)');
+  assert.equal(requests[0].body.generationConfig.maxOutputTokens, 2048);
+  assert.match(await smoke('extract-menu', null), /^FALLO: no hay functions\.env/);
+  const dir = mkdtempSync(join(tmpdir(), 'luma-secrets-'));
+  writeFileSync(join(dir, 'functions.env'), "LLM_API_KEY='abc'\r\n# comment\nLLM_MODEL=m\n");
+  assert.deepEqual(readEnv(dir), { LLM_API_KEY: 'abc', LLM_MODEL: 'm' });
 });
