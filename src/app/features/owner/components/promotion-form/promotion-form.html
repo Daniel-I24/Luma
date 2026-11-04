@@ -6,7 +6,7 @@
     [label]="t('businessPanel.promotions.promoTitle')"
     [required]="true"
     [maxLength]="rules.title.maxLength"
-    [errorMessage]="errors()['title'] ? t(errors()['title']) : undefined"
+    [errorMessage]="errors()['title'] ? (errors()['title'] | transloco) : undefined"
     [value]="draft().title"
     (valueChange)="set('title', $event)"
     (blurred)="check('title', draft().title)"
@@ -16,7 +16,7 @@
     type="datetime-local"
     [label]="t('businessPanel.promotions.startsAt')"
     [required]="true"
-    [errorMessage]="errors()['starts_at'] ? t(errors()['starts_at']) : undefined"
+    [errorMessage]="errors()['starts_at'] ? (errors()['starts_at'] | transloco) : undefined"
     [value]="draft().startsAt"
     (valueChange)="set('startsAt', $event)"
   />
@@ -25,7 +25,7 @@
     type="datetime-local"
     [label]="t('businessPanel.promotions.endsAt')"
     [required]="true"
-    [errorMessage]="errors()['ends_at'] ? t(errors()['ends_at']) : undefined"
+    [errorMessage]="errors()['ends_at'] ? (errors()['ends_at'] | transloco) : undefined"
     [value]="draft().endsAt"
     (valueChange)="set('endsAt', $event)"
   />
@@ -57,8 +57,8 @@
   </div>
   <app-discount-fields
     [items]="items()"
-    [itemError]="errors()['menu_item_id'] ? t(errors()['menu_item_id']) : undefined"
-    [percentError]="errors()['discount_percent'] ? t(errors()['discount_percent']) : undefined"
+    [itemError]="errors()['menu_item_id'] ? (errors()['menu_item_id'] | transloco) : undefined"
+    [percentError]="errors()['discount_percent'] ? (errors()['discount_percent'] | transloco) : undefined"
     [itemId]="draft().menuItemId"
     (itemIdChange)="set('menuItemId', $event)"
     [percent]="draft().discount"

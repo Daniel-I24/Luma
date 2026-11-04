@@ -51,7 +51,7 @@
         [label]="t('businessPanel.form.prepMinutes')"
         [hint]="t('businessPanel.form.prepHint')"
         [required]="true"
-        [errorMessage]="errors()['prep_minutes'] ? t(errors()['prep_minutes']) : undefined"
+        [errorMessage]="errors()['prep_minutes'] ? (errors()['prep_minutes'] | transloco) : undefined"
         [value]="prepMinutes()"
         (valueChange)="onPrepMinutes($event)"
       />

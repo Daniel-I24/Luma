@@ -43,7 +43,7 @@
             type="time"
             [inputId]="'hours-' + day.day_of_week + '-closes'"
             [label]="t('businessPanel.hours.closes')"
-            [errorMessage]="errors()[day.day_of_week] ? t(errors()[day.day_of_week]) : undefined"
+            [errorMessage]="errors()[day.day_of_week] ? (errors()[day.day_of_week] | transloco) : undefined"
             [value]="day.closes_at"
             (valueChange)="update(day.day_of_week, { closes_at: $event })"
           />
