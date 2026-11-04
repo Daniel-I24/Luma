@@ -91,61 +91,6 @@ app-luma-icon svg {
   transition: transform var(--duration-slow) var(--ease-enter);
 }
 
-@keyframes fade-out {
-  to {
-    opacity: 0;
-  }
-}
-
-@keyframes pop {
-  50% {
-    transform: scale(var(--motion-active-scale));
-  }
-}
-
-@keyframes shake {
-  20%,
-  60% {
-    transform: translateX(calc(var(--spacing-1) * -1));
-  }
-  40%,
-  80% {
-    transform: translateX(var(--spacing-1));
-  }
-}
-
-@keyframes slide-in-down {
-  from {
-    opacity: 0;
-    transform: translateY(calc(var(--spacing-4) * -1));
-  }
-}
-
-@keyframes slide-out-up {
-  to {
-    opacity: 0;
-    transform: translateY(calc(var(--spacing-4) * -1));
-  }
-}
-
-@keyframes slide-in-right {
-  from {
-    transform: translateX(100%);
-  }
-}
-
-@keyframes slide-out-right {
-  to {
-    transform: translateX(100%);
-  }
-}
-
-@keyframes draw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
 /* Theme change: 200 ms colour crossfade, only while ThemeService sets the class. */
 html.theme-transition,
 html.theme-transition *,

@@ -109,7 +109,7 @@
   --shadow-float: 0 4px 16px rgb(21 32 43 / 0.22);
   --shadow-brand: 0 4px 16px rgb(21 32 43 / 0.35);
 
-  /* === Motion (docs/brand/motion.md; utilities and keyframes: styles/motion.css) === */
+  /* === Motion (docs/brand/motion.md; utilities: styles/motion.css; keyframes: styles/keyframes.css) === */
   --duration-instant: 120ms; /* press feedback; the only fade under reduced motion */
   --duration-fast: 160ms; /* small controls: colour, icons */
   --duration-theme: 200ms;
@@ -133,19 +133,3 @@
   --animate-shimmer: shimmer var(--duration-shimmer) var(--ease-enter) infinite;
   --animate-fade-in: fade-in var(--duration-fast) var(--ease-enter) both;
 }
-
-@keyframes shimmer {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(100%);
-  }
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-}
-

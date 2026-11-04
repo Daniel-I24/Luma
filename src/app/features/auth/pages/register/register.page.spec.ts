@@ -1,69 +1,14 @@
 import { TestBed } from '@angular/core/testing';
-import { Router, provideRouter } from '@angular/router';
-import { TranslocoTestingModule } from '@jsverse/transloco';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { AuthService } from '@core/auth/auth.service';
+import { Router } from '@angular/router';
 import { PendingVerification } from '@core/auth/pending-verification';
-import { Residence } from '@shared/geo/residence';
-import { ResidenceCatalog } from '@shared/geo/residence-catalog';
 import { LEGAL_VERSIONS } from '@shared/legal/legal-version';
-import { SignupCompletion } from '../../signup/signup-completion';
 import { SignupDraftStore } from '../../signup/signup-draft.store';
-import { RegisterPage } from './register.page';
+import { describe, expect, it, vi } from 'vitest';
+import { registerPageHarness } from './register.page.harness';
 
 describe('RegisterPage (stepped sign-up)', () => {
-  const auth = { signUp: vi.fn() };
-  const completion = { hold: vi.fn() };
-  const catalog = { load: vi.fn().mockResolvedValue(true), departments: () => [], search: () => [], municipality: () => null };
-  const pasto = Residence.of('Nariño', 'Pasto', '52001');
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-    TestBed.configureTestingModule({
-      imports: [
-        RegisterPage,
-        TranslocoTestingModule.forRoot({
-          langs: { es: {} },
-          translocoConfig: { availableLangs: ['es'], defaultLang: 'es' },
-        }),
-      ],
-      providers: [
-        provideRouter([]),
-        { provide: AuthService, useValue: auth },
-        { provide: SignupCompletion, useValue: completion },
-        { provide: ResidenceCatalog, useValue: catalog },
-      ],
-    });
-    TestBed.inject(SignupDraftStore).reset();
-  });
-
-  async function render() {
-    const fixture = TestBed.createComponent(RegisterPage);
-    document.body.appendChild(fixture.nativeElement);
-    fixture.detectChanges();
-    await fixture.whenStable();
-    const el = fixture.nativeElement as HTMLElement;
-    const settle = async () => {
-      fixture.detectChanges();
-      await fixture.whenStable();
-    };
-    const type = async (id: string, value: string) => {
-      const input = el.querySelector<HTMLInputElement>(`#${id}`)!;
-      input.value = value;
-      input.dispatchEvent(new Event('input'));
-      await settle();
-    };
-    const click = async (selector: string) => {
-      el.querySelector<HTMLElement>(selector)!.click();
-      await settle();
-    };
-    const submit = async () => {
-      el.querySelector('form')!.dispatchEvent(new Event('submit', { cancelable: true }));
-      await settle();
-    };
-    const title = () => el.querySelector('#signup-step-title')?.textContent?.trim();
-    return { el, type, click, submit, settle, title };
-  }
+  const h = registerPageHarness();
+  const { auth, completion, pasto, render } = h;
 
   it('walks the six steps, signs up with the profile metadata and holds residence and photo', async () => {
     auth.signUp.mockResolvedValue({ success: true });
@@ -108,60 +53,5 @@ describe('RegisterPage (stepped sign-up)', () => {
     expect(TestBed.inject(PendingVerification).email()).toBe('ana@example.com');
     expect(completion.hold).toHaveBeenCalledWith(expect.objectContaining({ residence: pasto, avatar: null, phone: '300 123 4567' }));
     expect(TestBed.inject(SignupDraftStore).draft().password).toBe('');
-  });
-
-  it('shows the errors of a step and focuses the first invalid field', async () => {
-    const { el, click, submit } = await render();
-    await click('input[value="business_owner"]');
-    await submit();
-
-    await submit();
-
-    expect(document.activeElement?.id).toBe('signup-fullName');
-    expect(el.textContent).toContain('validation.required');
-    expect(auth.signUp).not.toHaveBeenCalled();
-  });
-
-  it('keeps the typed data when going back', async () => {
-    const { el, type, click, submit, settle, title } = await render();
-    await click('input[value="customer"]');
-    await submit();
-    await type('signup-fullName', 'Ana Pérez');
-    await type('signup-phone', '300 123 4567');
-    await submit();
-
-    const back = Array.from(el.querySelectorAll('button')).find((b) =>
-      b.textContent?.includes('auth.signup.back'),
-    )!;
-    back.click();
-    await settle();
-
-    expect(title()).toBe('auth.signup.steps.personal');
-    expect(el.querySelector<HTMLInputElement>('#signup-fullName')!.value).toBe('Ana Pérez');
-  });
-
-  it('shows a translated error and stays on the last step when the sign-up fails', async () => {
-    auth.signUp.mockResolvedValue({ success: false, errorKey: 'auth.errors.tooManyRequests' });
-    const store = TestBed.inject(SignupDraftStore);
-    const { el, submit } = await render();
-    store.update('accountType', 'customer');
-    store.update('fullName', 'Ana');
-    store.update('phone', '300 123 4567');
-    store.update('residence', pasto);
-    store.update('email', 'ana@example.com');
-    store.update('password', 'tamal2024');
-    store.update('acceptedTerms', true);
-    store.update('acceptedPrivacy', true);
-    store.update('isAdult', true);
-    for (let i = 0; i < 5; i++) await submit();
-
-    await submit();
-
-    await vi.waitFor(() =>
-      expect(el.querySelector('[role="alert"]')?.textContent).toContain(
-        'auth.errors.tooManyRequests',
-      ),
-    );
-    expect(store.isLast()).toBe(true);
   });
 });

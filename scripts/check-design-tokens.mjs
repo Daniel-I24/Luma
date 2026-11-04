@@ -16,6 +16,7 @@ const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const SCANNED = [join('src', 'app'), join('src', 'styles')];
 const TOKEN_FILES = [
   join('src', 'styles', 'scale.css'),
+  join('src', 'styles', 'keyframes.css'),
   join('src', 'styles', 'tokens.css'),
   join('src', 'styles', 'fonts.css'),
   join('src', 'styles', 'themes'),

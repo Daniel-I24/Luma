@@ -6,7 +6,6 @@ import {
   LumaButton,
   LumaChip,
   LumaEmptyState,
-  LumaIcon,
   LumaIconButton,
   LumaSelect,
   LumaSkeleton,
@@ -15,6 +14,7 @@ import {
 import { CartStore } from '@shared/cart/cart.store';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
 import { PROFILE_INCOMPLETE_KEY } from '@shared/orders/order-error';
+import { CheckoutPayment } from './components/checkout-payment/checkout-payment';
 import { CheckoutStore, NOTES_MAX_LENGTH } from './state/checkout.store';
 import { PickupScheduleStore } from './state/pickup-schedule.store';
 import type { PickupOption } from './utils/pickup-time';
@@ -29,13 +29,13 @@ import type { PickupOption } from './utils/pickup-time';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CheckoutPayment,
     TourHelpButton,
     TranslocoModule,
     RouterLink,
     LumaButton,
     LumaChip,
     LumaEmptyState,
-    LumaIcon,
     LumaIconButton,
     LumaSelect,
     LumaSkeleton,
@@ -52,7 +52,6 @@ export class CheckoutPage {
   private readonly router = inject(Router);
 
   protected readonly options: readonly PickupOption[] = ['now', 'later', 'tomorrow'];
-  protected readonly paymentMethods = ['pay_at_pickup', 'online'] as const;
   /** create_order answered profile_incomplete: offer "Completar perfil". */
   protected readonly profileIncompleteKey = PROFILE_INCOMPLETE_KEY;
 

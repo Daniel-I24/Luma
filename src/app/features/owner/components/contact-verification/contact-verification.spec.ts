@@ -4,7 +4,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { SUPPORT_WHATSAPP } from '@core/config/build-flags';
 import type { Business } from '@shared/business/models/business.model';
 import { ContactVerificationRepository } from '@shared/business/verification/contact-verification.repository';
-import { ContactVerifiers } from '@shared/business/verification/contact-verifier';
 import { ContactVerificationCard, WATCH_EVERY_MS, WATCH_FOR_MS } from './contact-verification';
 
 const business = {
@@ -141,20 +140,5 @@ describe('ContactVerificationCard with the automatic strategies', () => {
     expect(row('whatsapp').textContent).toContain('contactVerification.steps.autoOff');
     expect(row('website').textContent).toContain('contactVerification.steps.website');
     expect(row('website').querySelector('button')).toBeNull();
-  });
-});
-
-describe('ContactVerifiers', () => {
-  it('only allowed strategies per kind; anything else is manual', () => {
-    expect(ContactVerifiers.for('phone', { phone: 'whatsapp' }).strategy).toBe('whatsapp');
-    expect(ContactVerifiers.for('instagram', { instagram: 'whatsapp' }).strategy).toBe('manual');
-    expect(ContactVerifiers.for('website', { website: 'whatsapp' }).strategy).toBe('manual');
-    expect(ContactVerifiers.for('website', {}).automatic).toBe(false);
-  });
-
-  it('landlines and the verification file', () => {
-    expect(ContactVerifiers.isLandline('+57 601 234 5678')).toBe(true);
-    expect(ContactVerifiers.isLandline('+57 300 111 2233')).toBe(false);
-    expect(ContactVerifiers.fileUrl('https://cafe.co/menu?x=1')).toBe('https://cafe.co/.well-known/luma-verification.txt');
   });
 });

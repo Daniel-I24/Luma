@@ -38,7 +38,7 @@ export type ButtonSize = 'sm' | 'md' | 'lg';
       }
     </button>
   `,
-  styleUrl: './luma-button.css',
+  styleUrls: ['./luma-button.css', './luma-button-states.css'],
   host: { '[class.block]': 'fullWidth()', '[class.flex-1]': 'fullWidth()' },
 })
 export class LumaButton {

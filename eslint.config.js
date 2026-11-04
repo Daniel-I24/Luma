@@ -8,7 +8,7 @@ const { namingConvention } = require('./eslint/naming');
 
 /** Quality limits required in CI (docs/architecture/patterns.md). */
 const QUALITY_RULES = {
-  complexity: ['warn', 10],
+  complexity: ['error', 10],
   'max-depth': ['warn', 3],
   'max-lines-per-function': ['warn', { max: 40, skipBlankLines: true, skipComments: true }],
   'max-lines': ['error', { max: 150, skipBlankLines: false, skipComments: false }],
@@ -85,12 +85,11 @@ module.exports = defineConfig([
     },
   },
   {
-    // Specs describe behaviour in long, literal scenarios: size and literal
-    // limits do not apply; types and naming still do.
-    files: ['**/*.spec.ts', 'src/testing/**/*.ts'],
+    // Specs describe behaviour in long, literal scenarios: function size and
+    // literal limits do not apply; the 150 lines per file, types and naming do.
+    files: ['**/*.spec.ts', '**/*.harness.ts', 'src/testing/**/*.ts'],
     rules: {
       'max-lines-per-function': 'off',
-      'max-lines': 'off',
       '@typescript-eslint/no-magic-numbers': 'off',
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-member-accessibility': 'off',
