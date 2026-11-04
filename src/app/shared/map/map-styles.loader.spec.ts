@@ -15,6 +15,6 @@ describe('MapStylesLoader', () => {
 
     const links = document.head.querySelectorAll('link[href="map.css"]');
     expect(links).toHaveLength(1);
-    expect(links[0].getAttribute('rel')).toBe('stylesheet');
+    expect(links[0]?.getAttribute('rel')).toBe('stylesheet');
   });
 });

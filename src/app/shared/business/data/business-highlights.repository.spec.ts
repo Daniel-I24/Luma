@@ -23,11 +23,11 @@ describe('BusinessHighlightsRepository', () => {
 
     expect(result).toEqual({ data: [promo], errorKey: null });
     expect(queries).toHaveLength(1);
-    expect(queries[0].call('in')).toEqual(['business_id', ['b1', 'b2', 'b3']]);
-    expect(queries[0].call('eq')).toEqual(['is_active', true]);
+    expect(queries[0]?.call('in')).toEqual(['business_id', ['b1', 'b2', 'b3']]);
+    expect(queries[0]?.call('eq')).toEqual(['is_active', true]);
     const now = new Date(FIXED_NOW).toISOString();
-    expect(queries[0].call('lte')).toEqual(['starts_at', now]);
-    expect(queries[0].call('gte')).toEqual(['ends_at', now]);
+    expect(queries[0]?.call('lte')).toEqual(['starts_at', now]);
+    expect(queries[0]?.call('gte')).toEqual(['ends_at', now]);
   });
 
   it('loads the ratings of several businesses in one query, as numbers', async () => {
@@ -41,7 +41,7 @@ describe('BusinessHighlightsRepository', () => {
     const result = await repo.getRatings(['b1', 'b2', 'b3']);
 
     expect(queries).toHaveLength(1);
-    expect(queries[0].table).toBe('business_ratings');
+    expect(queries[0]?.table).toBe('business_ratings');
     expect(result.data?.get('b1')).toEqual({ businessId: 'b1', rating: 4.5, reviewCount: 12 });
     expect(result.data?.get('b3')?.rating).toBe(3);
     expect(result.data?.has('b2')).toBe(false);

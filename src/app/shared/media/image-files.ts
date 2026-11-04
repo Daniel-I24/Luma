@@ -29,7 +29,7 @@ export class ImageFiles {
   /** Object path of a public business-images URL, or null for any other URL. */
   public static imagePathFromUrl(url: string | null | undefined): string | null {
     const match = url ? PUBLIC_PATH.exec(url) : null;
-    return match ? decodeURIComponent(match[1]) : null;
+    return match?.[1] ? decodeURIComponent(match[1]) : null;
   }
 }
 

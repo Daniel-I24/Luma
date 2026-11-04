@@ -64,8 +64,8 @@ describe('verification repositories', () => {
     const pdf = new File(['%PDF'], 'rut.pdf', { type: 'application/pdf' });
 
     expect((await verification.uploadDoc('b1', 'rut', pdf)).data).toBe(true);
-    expect(bucket.upload.mock.calls[0][0]).toMatch(/^b1\/rut\/[0-9a-f-]{36}\.pdf$/);
-    expect(fake.queries[0].call('insert')?.[0]).toEqual(
+    expect(bucket.upload.mock.calls[0]?.[0]).toMatch(/^b1\/rut\/[0-9a-f-]{36}\.pdf$/);
+    expect(fake.queries[0]?.call('insert')?.[0]).toEqual(
       expect.objectContaining({ business_id: 'b1', kind: 'rut' }),
     );
     const gif = new File(['x'], 'a.gif', { type: 'image/gif' });
@@ -128,7 +128,7 @@ describe('verification repositories', () => {
 
     expect((await admin.deleteDocs([doc])).data).toBe(true);
     expect(bucket.remove).toHaveBeenCalledWith(['b1/rut/x.pdf']);
-    expect(fake.queries[0].call('in')).toEqual(['id', ['d1']]);
+    expect(fake.queries[0]?.call('in')).toEqual(['id', ['d1']]);
   });
 
   it('turns a second open report into a friendly message', async () => {

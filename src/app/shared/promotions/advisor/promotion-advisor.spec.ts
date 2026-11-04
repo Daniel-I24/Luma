@@ -31,7 +31,7 @@ describe('ruleIdeas (same rules as suggest-promotions below 10 orders)', () => {
       ['new', 'new_item', 10, 4500],
       ['top', 'quiet_slot', 10, 1800],
     ]);
-    expect(ideas[2].slot).toEqual({ dow: 2, slot: 'afternoon' });
+    expect(ideas[2]?.slot).toEqual({ dow: 2, slot: 'afternoon' });
   });
 
   it('skips items that already have a running promotion', () => {

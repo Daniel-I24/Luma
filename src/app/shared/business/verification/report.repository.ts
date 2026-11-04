@@ -27,7 +27,7 @@ export class ReportRepository {
     comment: string | null,
   ): Promise<RepoResult<true>> {
     const parsed = reportSchema.safeParse({ reason, comment });
-    if (!parsed.success) return { data: null, errorKey: parsed.error.issues[0].message };
+    if (!parsed.success) return { data: null, errorKey: ZodRules.firstMessage(parsed.error) };
     const { error } = await this.db
       .from('reports')
       .insert({ business_id: businessId, ...parsed.data });

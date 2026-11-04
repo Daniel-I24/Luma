@@ -39,7 +39,7 @@ describe('TutorialsPanel', () => {
     const { el } = render('b1');
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
     const buttons = Array.from(el.querySelectorAll('button')).filter((b) => b.textContent?.includes('tutorials.repeat'));
-    buttons[3].click();
+    buttons[3]?.click();
     await vi.waitFor(() => expect(navigate).toHaveBeenCalledWith('/owner/b1/menu'));
     expect(tour.forget).toHaveBeenCalledWith('owner-menu');
     Array.from(el.querySelectorAll('button')).find((b) => b.textContent?.includes('tutorials.resetAll'))!.click();

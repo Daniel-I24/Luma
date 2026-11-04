@@ -58,7 +58,7 @@ describe('reencodeImage', () => {
       expect.objectContaining({ contentType: 'image/webp', extension: 'webp' }),
     );
     expect(drawImage).toHaveBeenCalledWith(expect.anything(), 0, 0, 4000, 3000, 0, 0, 1280, 960);
-    expect(toBlob.mock.calls[0][1]).toBe('image/webp');
+    expect(toBlob.mock.calls[0]?.[1]).toBe('image/webp');
     expect(close).toHaveBeenCalled();
     expect(createImageBitmap).toHaveBeenCalledWith(expect.any(Blob), {
       imageOrientation: 'from-image',

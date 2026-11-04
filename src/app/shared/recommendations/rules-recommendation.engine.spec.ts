@@ -47,9 +47,9 @@ describe('RulesRecommendationEngine', () => {
     const breakfast = await engine.recommend({ moment: 'breakfast', candidates: [grill, cafe] });
     const lunch = await engine.recommend({ moment: 'lunch', candidates: [cafe, grill] });
 
-    expect(breakfast.businesses[0].candidate.business.id).toBe('cafe');
-    expect(breakfast.businesses[0].reasons).toContain('moment');
-    expect(lunch.businesses[0].candidate.business.id).toBe('grill');
+    expect(breakfast.businesses[0]?.candidate.business.id).toBe('cafe');
+    expect(breakfast.businesses[0]?.reasons).toContain('moment');
+    expect(lunch.businesses[0]?.candidate.business.id).toBe('grill');
   });
 
   it('only recommends open or opening-soon businesses, at most three', async () => {

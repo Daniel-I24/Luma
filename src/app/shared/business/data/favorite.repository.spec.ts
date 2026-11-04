@@ -16,23 +16,23 @@ describe('FavoriteRepository', () => {
     const { repo, queries } = setup(ok([{ business_id: 'b4' }, { business_id: 'b1' }]));
 
     expect(await repo.getFavoriteIds()).toEqual({ data: ['b4', 'b1'], errorKey: null });
-    expect(queries[0].call('select')).toEqual(['business_id']);
-    expect(queries[0].call('order')).toEqual(['created_at', { ascending: false }]);
+    expect(queries[0]?.call('select')).toEqual(['business_id']);
+    expect(queries[0]?.call('order')).toEqual(['created_at', { ascending: false }]);
   });
 
   it('adds a favourite without sending a user id (the database sets it)', async () => {
     const { repo, queries } = setup(ok(null));
 
     expect(await repo.add('b4')).toEqual({ data: true, errorKey: null });
-    expect(queries[0].call('insert')).toEqual([{ business_id: 'b4' }]);
+    expect(queries[0]?.call('insert')).toEqual([{ business_id: 'b4' }]);
   });
 
   it('removes a favourite by business', async () => {
     const { repo, queries } = setup(ok(null));
 
     expect(await repo.remove('b4')).toEqual({ data: true, errorKey: null });
-    expect(queries[0].call('delete')).toEqual([]);
-    expect(queries[0].call('eq')).toEqual(['business_id', 'b4']);
+    expect(queries[0]?.call('delete')).toEqual([]);
+    expect(queries[0]?.call('eq')).toEqual(['business_id', 'b4']);
   });
 
   it('maps Supabase errors to i18n keys', async () => {

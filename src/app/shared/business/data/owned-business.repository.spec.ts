@@ -39,7 +39,7 @@ describe('OwnedBusinessRepository', () => {
       data: [{ id: 'b1', name: 'b1', category: 'Bar', is_active: true }],
       errorKey: null,
     });
-    expect(queries[0].call('eq')).toEqual(['owner_id', 'u1']);
+    expect(queries[0]?.call('eq')).toEqual(['owner_id', 'u1']);
   });
 
   it('two owners: rows of another owner never reach the panel', async () => {
@@ -70,7 +70,7 @@ describe('OwnedBusinessRepository', () => {
     const { repo, queries } = setup({ businesses: ok({ id: 'new-id' }) });
 
     expect(await repo.create(draft)).toEqual({ data: 'new-id', errorKey: null });
-    expect(queries[0].call('insert')?.[0]).toEqual({
+    expect(queries[0]?.call('insert')?.[0]).toEqual({
       ...draft,
       name: 'Fritanga Don Segundo',
       phone: '+573001112233',
@@ -105,7 +105,7 @@ describe('OwnedBusinessRepository', () => {
     for (const [message, key] of [
       ['business_limit_reached', 'businessPanel.errors.businessLimit'],
       ['business_daily_limit', 'businessPanel.errors.businessDailyLimit'],
-    ]) {
+    ] as const) {
       const { repo } = setup({ businesses: { data: null, error: { code: 'P0001', message } } });
       expect((await repo.create(draft)).errorKey).toBe(key);
       TestBed.resetTestingModule();
@@ -126,7 +126,7 @@ describe('OwnedBusinessRepository', () => {
     const { repo, queries } = setup({ businesses: ok(null) });
 
     expect(await repo.getMine('b9')).toEqual({ data: null, errorKey: null });
-    expect(queries[0].calls.filter(([m]) => m === 'eq').map(([, a]) => a)).toEqual([
+    expect(queries[0]?.calls.filter(([m]) => m === 'eq').map(([, a]) => a)).toEqual([
       ['id', 'b9'],
       ['owner_id', 'u1'],
     ]);

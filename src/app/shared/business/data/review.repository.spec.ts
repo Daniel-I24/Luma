@@ -19,7 +19,7 @@ describe('ReviewRepository', () => {
     const { repo, queries } = setup({ reviews_with_author: ok(row) });
 
     expect(await repo.getOwnReview('b1')).toEqual({ data: row, errorKey: null });
-    expect(queries[0].calls.filter(([m]) => m === 'eq').map(([, a]) => a)).toEqual([
+    expect(queries[0]?.calls.filter(([m]) => m === 'eq').map(([, a]) => a)).toEqual([
       ['business_id', 'b1'],
       ['is_mine', true],
     ]);
@@ -69,9 +69,9 @@ describe('ReviewRepository', () => {
     const { repo, queries } = setup({ reviews_with_author: ok([row]) });
 
     expect(await repo.getReviews('b1', 10)).toEqual({ data: [row], errorKey: null });
-    expect(queries[0].table).toBe('reviews_with_author');
-    expect(queries[0].call('order')).toEqual(['created_at', { ascending: false }]);
-    expect(queries[0].call('limit')).toEqual([10]);
+    expect(queries[0]?.table).toBe('reviews_with_author');
+    expect(queries[0]?.call('order')).toEqual(['created_at', { ascending: false }]);
+    expect(queries[0]?.call('limit')).toEqual([10]);
   });
 
   it('creates a review with a trimmed comment and no user id', async () => {
@@ -80,7 +80,7 @@ describe('ReviewRepository', () => {
     const result = await repo.create('b1', { rating: 5, comment: '  Rico  ' });
 
     expect(result).toEqual({ data: review, errorKey: null });
-    expect(queries[0].call('insert')).toEqual([{ business_id: 'b1', rating: 5, comment: 'Rico' }]);
+    expect(queries[0]?.call('insert')).toEqual([{ business_id: 'b1', rating: 5, comment: 'Rico' }]);
   });
 
   it('stores an empty comment as null', async () => {
@@ -88,7 +88,7 @@ describe('ReviewRepository', () => {
 
     await repo.create('b1', { rating: 4, comment: '   ' });
 
-    expect(queries[0].call('insert')).toEqual([{ business_id: 'b1', rating: 4, comment: null }]);
+    expect(queries[0]?.call('insert')).toEqual([{ business_id: 'b1', rating: 4, comment: null }]);
   });
 
   it('rejects invalid input before calling the database', async () => {
@@ -110,15 +110,15 @@ describe('ReviewRepository', () => {
     const { repo, queries } = setup({ reviews: ok({ ...review, rating: 3 }) });
 
     expect((await repo.update('r1', { rating: 3, comment: null })).data?.rating).toBe(3);
-    expect(queries[0].call('update')).toEqual([{ rating: 3, comment: null }]);
-    expect(queries[0].call('eq')).toEqual(['id', 'r1']);
+    expect(queries[0]?.call('update')).toEqual([{ rating: 3, comment: null }]);
+    expect(queries[0]?.call('eq')).toEqual(['id', 'r1']);
   });
 
   it('deletes a review', async () => {
     const { repo, queries } = setup({ reviews: ok(null) });
 
     expect(await repo.remove('r1')).toEqual({ data: true, errorKey: null });
-    expect(queries[0].call('eq')).toEqual(['id', 'r1']);
+    expect(queries[0]?.call('eq')).toEqual(['id', 'r1']);
   });
 
   it('maps Supabase errors, including RLS rejections, to i18n keys', async () => {

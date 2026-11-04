@@ -30,7 +30,9 @@ describe('NotificationSettings', () => {
     await fixture.whenStable();
     fixture.detectChanges();
     const switches = fixture.nativeElement.querySelectorAll('input[role="switch"]') as NodeListOf<HTMLInputElement>;
-    return { fixture, orders: switches[0], promotions: switches[1] };
+    const [orders, promotions] = switches;
+    if (!orders || !promotions) throw new Error('both switches are rendered');
+    return { fixture, orders, promotions };
   };
 
   it('promotions start off; turning them on saves and asks the phone for permission', async () => {

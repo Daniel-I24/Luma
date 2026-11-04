@@ -14,7 +14,8 @@ export interface TravelModeInfo {
   readonly approximate: boolean;
 }
 
-export const TRAVEL_MODES: readonly TravelModeInfo[] = [
+export /** Never empty: the first mode is the default. */
+const TRAVEL_MODES: readonly [TravelModeInfo, ...TravelModeInfo[]] = [
   { mode: 'walk', icon: 'walk', straightKmh: 4.8, approximate: false },
   { mode: 'bike', icon: 'bike', straightKmh: 15, approximate: false },
   { mode: 'moto', icon: 'moto', straightKmh: 30, approximate: true },

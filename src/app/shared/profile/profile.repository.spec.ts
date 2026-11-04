@@ -16,8 +16,8 @@ describe('ProfileRepository', () => {
     const { repo, queries } = setup(ok({ display_name: 'Ana M.' }));
 
     expect(await repo.getDisplayName('u1')).toEqual({ data: 'Ana M.', errorKey: null });
-    expect(queries[0].call('select')).toEqual(['display_name']);
-    expect(queries[0].call('eq')).toEqual(['id', 'u1']);
+    expect(queries[0]?.call('select')).toEqual(['display_name']);
+    expect(queries[0]?.call('eq')).toEqual(['id', 'u1']);
   });
 
   it('saves a trimmed display name and sends nothing else', async () => {
@@ -27,14 +27,14 @@ describe('ProfileRepository', () => {
       data: 'Ana M.',
       errorKey: null,
     });
-    expect(queries[0].call('update')).toEqual([{ display_name: 'Ana M.' }]);
+    expect(queries[0]?.call('update')).toEqual([{ display_name: 'Ana M.' }]);
   });
 
   it('clears the display name when left empty', async () => {
     const { repo, queries } = setup();
 
     expect((await repo.updateDisplayName('u1', '   ')).data).toBeNull();
-    expect(queries[0].call('update')).toEqual([{ display_name: null }]);
+    expect(queries[0]?.call('update')).toEqual([{ display_name: null }]);
   });
 
   it('rejects names over 40 characters before calling the server', async () => {

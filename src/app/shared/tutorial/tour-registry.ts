@@ -82,10 +82,10 @@ const CUSTOMER_TOURS: Readonly<Record<string, TourId>> = {
 export class TourRoutes {
   /** The tour of the screen at a URL, or null (detail screens have none). */
   public static tourForUrl(url: string): TourId | null {
-    const parts = url.split(/[?#]/)[0].split('/').filter(Boolean);
+    const parts = (url.split(/[?#]/)[0] ?? '').split('/').filter(Boolean);
     if (parts[0] === 'owner') {
-      return parts.length === OWNER_SECTION_PARTS && parts[1] !== 'new' ? (OWNER_TOURS[parts[2]] ?? null) : null;
+      return parts.length === OWNER_SECTION_PARTS && parts[1] !== 'new' ? (OWNER_TOURS[parts[2] ?? ''] ?? null) : null;
     }
-    return parts.length === 1 ? (CUSTOMER_TOURS[parts[0]] ?? null) : null;
+    return parts.length === 1 ? (CUSTOMER_TOURS[parts[0] ?? ''] ?? null) : null;
   }
 }

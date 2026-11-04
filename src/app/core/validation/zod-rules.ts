@@ -26,4 +26,9 @@ export class ZodRules {
       )
       .check(z.refine((value) => value === null || rule.spec.isSatisfiedBy(value), rule.messageKey));
   }
+
+  /** The first message (a translation key) of a failed parse, or `fallback` when it has none. */
+  public static firstMessage(error: { readonly issues: readonly { readonly message: string }[] }, fallback = 'errors.unexpected'): string {
+    return error.issues[0]?.message ?? fallback;
+  }
 }

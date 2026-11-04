@@ -104,7 +104,9 @@ export class RouteMap {
           new maplibregl.Marker().setLngLat([from.lng, from.lat]).addTo(map);
           new maplibregl.Marker().setLngLat([to.lng, to.lat]).addTo(map);
         }
-        const bounds = route.line.reduce((b, [lng, lat]) => b.extend([lng, lat]), new maplibregl.LngLatBounds([...route.line[0]], [...route.line[0]]));
+        const start = route.line[0];
+        if (!start) return;
+        const bounds = route.line.reduce((b, [lng, lat]) => b.extend([lng, lat]), new maplibregl.LngLatBounds([...start], [...start]));
         map.fitBounds(bounds, { padding: FIT_PADDING, animate: !this.reducedMotion() });
       };
       if (map.isStyleLoaded()) show();

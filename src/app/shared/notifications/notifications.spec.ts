@@ -27,21 +27,21 @@ describe('NotificationRepository', () => {
     const result = await repo.list();
 
     expect(result.data?.map((n) => n.business_id)).toEqual(['b1', null]);
-    expect(fake.queries[0].call('order')).toEqual(['created_at', { ascending: false }]);
-    expect(fake.queries[1].call('in')).toEqual(['id', ['o1']]);
+    expect(fake.queries[0]?.call('order')).toEqual(['created_at', { ascending: false }]);
+    expect(fake.queries[1]?.call('in')).toEqual(['id', ['o1']]);
   });
 
   it('counts unread with a HEAD request and marks only unread as read', async () => {
     const { repo, fake } = setup({ notifications: { data: null, error: null, count: 3 } });
 
     expect(await repo.unreadCount()).toEqual({ data: 3, errorKey: null });
-    expect(fake.queries[0].call('select')).toEqual(['id', { count: 'exact', head: true }]);
-    expect(fake.queries[0].call('is')).toEqual(['read_at', null]);
+    expect(fake.queries[0]?.call('select')).toEqual(['id', { count: 'exact', head: true }]);
+    expect(fake.queries[0]?.call('is')).toEqual(['read_at', null]);
 
     const now = new Date('2026-10-14T12:00:00Z');
     await repo.markAllRead(now);
-    expect(fake.queries[1].call('update')).toEqual([{ read_at: now.toISOString() }]);
-    expect(fake.queries[1].call('is')).toEqual(['read_at', null]);
+    expect(fake.queries[1]?.call('update')).toEqual([{ read_at: now.toISOString() }]);
+    expect(fake.queries[1]?.call('is')).toEqual(['read_at', null]);
   });
 
   it('maps errors and keeps the last count on failure', async () => {

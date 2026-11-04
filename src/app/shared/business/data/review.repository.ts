@@ -3,6 +3,7 @@ import { SupabaseService } from '@core/supabase/supabase.service';
 import type { Review, ReviewInput, ReviewWithAuthor } from '../models/review.model';
 import type { RepoResult } from './business.repository';
 import { reviewInputSchema } from './review.schema';
+import { ZodRules } from '@core/validation/zod-rules';
 
 const DEFAULT_PAGE_SIZE = 20;
 
@@ -55,7 +56,7 @@ export class ReviewRepository {
   /** Creates the user's review of a business. */
   public async create(businessId: string, input: ReviewInput): Promise<RepoResult<Review>> {
     const parsed = reviewInputSchema.safeParse(input);
-    if (!parsed.success) return { data: null, errorKey: parsed.error.issues[0].message };
+    if (!parsed.success) return { data: null, errorKey: ZodRules.firstMessage(parsed.error) };
 
     const { data, error } = await this.db
       .from('reviews')
@@ -70,7 +71,7 @@ export class ReviewRepository {
   /** Updates the user's review. */
   public async update(reviewId: string, input: ReviewInput): Promise<RepoResult<Review>> {
     const parsed = reviewInputSchema.safeParse(input);
-    if (!parsed.success) return { data: null, errorKey: parsed.error.issues[0].message };
+    if (!parsed.success) return { data: null, errorKey: ZodRules.firstMessage(parsed.error) };
 
     const { data, error } = await this.db
       .from('reviews')

@@ -37,7 +37,7 @@ export class ProfileRepository {
   /** Saves the display name; returns the stored value (null when cleared). */
   public async updateDisplayName(userId: string, name: string): Promise<RepoResult<string | null>> {
     const parsed = displayNameSchema.safeParse(name);
-    if (!parsed.success) return { data: null, errorKey: parsed.error.issues[0].message };
+    if (!parsed.success) return { data: null, errorKey: ZodRules.firstMessage(parsed.error) };
 
     const { error } = await this.db
       .from('profiles')

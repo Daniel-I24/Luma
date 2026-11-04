@@ -40,7 +40,7 @@ describe('business panel write repositories', () => {
     const { hours, queries } = setup();
 
     expect(await hours.saveWeek('b1', week)).toEqual({ data: true, errorKey: null });
-    const [rows, options] = queries[0].call('upsert') as [{ business_id: string }[], unknown];
+    const [rows, options] = queries[0]?.call('upsert') as [{ business_id: string }[], unknown];
     expect(rows).toHaveLength(7);
     expect(rows.every((row) => row.business_id === 'b1')).toBe(true);
     expect(options).toEqual({ onConflict: 'business_id,day_of_week' });
@@ -49,7 +49,7 @@ describe('business panel write repositories', () => {
   it('rejects a week with a repeated day or equal open and close times', async () => {
     const { hours, queries } = setup();
 
-    expect((await hours.saveWeek('b1', [...week.slice(0, 6), week[0]])).errorKey).toBe(
+    expect((await hours.saveWeek('b1', [...week.slice(0, 6), ...week.slice(0, 1)])).errorKey).toBe(
       'businessPanel.errors.invalidData',
     );
     const sameTimes = week.map((d) => (d.day_of_week === 2 ? { ...d, closes_at: '18:00' } : d));
@@ -63,7 +63,7 @@ describe('business panel write repositories', () => {
     const { menu, queries } = setup({ menu_items: ok({ id: 'm1' }) });
 
     expect((await menu.create('b1', item)).data).toEqual({ id: 'm1' });
-    expect(queries[0].call('insert')?.[0]).toEqual({ ...item, business_id: 'b1' });
+    expect(queries[0]?.call('insert')?.[0]).toEqual({ ...item, business_id: 'b1' });
     expect((await menu.create('b1', { ...item, price_cop: 1500.5 })).errorKey).toBe(
       'businessPanel.errors.invalidData',
     );
@@ -78,9 +78,9 @@ describe('business panel write repositories', () => {
     await menu.remove('m1');
     await menu.setAvailable('m2', false);
 
-    expect(queries[0].call('delete')).toEqual([]);
-    expect(queries[0].call('eq')).toEqual(['id', 'm1']);
-    expect(queries[1].call('update')).toEqual([{ is_available: false }]);
+    expect(queries[0]?.call('delete')).toEqual([]);
+    expect(queries[0]?.call('eq')).toEqual(['id', 'm1']);
+    expect(queries[1]?.call('update')).toEqual([{ is_available: false }]);
   });
 
   it('requires promotion dates in order', async () => {
@@ -105,7 +105,7 @@ describe('business panel write repositories', () => {
     await promos.end({ id: 'p1', starts_at: '2026-10-10T00:00:00Z' }, now);
     await promos.end({ id: 'p2', starts_at: '2026-10-20T00:00:00Z' }, now);
 
-    expect(queries[0].call('update')).toEqual([{ is_active: false, ends_at: now.toISOString() }]);
-    expect(queries[1].call('update')).toEqual([{ is_active: false }]);
+    expect(queries[0]?.call('update')).toEqual([{ is_active: false, ends_at: now.toISOString() }]);
+    expect(queries[1]?.call('update')).toEqual([{ is_active: false }]);
   });
 });

@@ -18,7 +18,7 @@ describe('BusinessRepository.getHoursFor', () => {
 
     expect(await repo.getHoursFor(['b1', 'b2'])).toEqual({ data: [row], errorKey: null });
     expect(queries).toHaveLength(1);
-    expect(queries[0].call('in')).toEqual(['business_id', ['b1', 'b2']]);
+    expect(queries[0]?.call('in')).toEqual(['business_id', ['b1', 'b2']]);
   });
 
   it('maps errors to an i18n key and skips empty lists', async () => {
@@ -38,9 +38,9 @@ describe('BusinessRepository.getByIds', () => {
     const { repo, queries } = setup(ok([{ id: 'b1' }]));
 
     expect(await repo.getByIds(['b1', 'b2'])).toEqual({ data: [{ id: 'b1' }], errorKey: null });
-    expect(queries[0].table).toBe('businesses');
-    expect(queries[0].call('in')).toEqual(['id', ['b1', 'b2']]);
-    expect(queries[0].call('eq')).toEqual(['is_active', true]);
+    expect(queries[0]?.table).toBe('businesses');
+    expect(queries[0]?.call('in')).toEqual(['id', ['b1', 'b2']]);
+    expect(queries[0]?.call('eq')).toEqual(['is_active', true]);
   });
 
   it('maps errors to an i18n key', async () => {

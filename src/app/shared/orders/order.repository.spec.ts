@@ -65,17 +65,17 @@ describe('OrderRepository', () => {
     const { repo, queries } = setup({ orders: ok([{ id: ORDER_ID }]) });
 
     expect(await repo.list()).toEqual({ data: [{ id: ORDER_ID }], errorKey: null });
-    expect(queries[0].call('select')?.[0]).toContain('business_name, business_address');
-    expect(queries[0].call('select')?.[0]).toContain('business:businesses(');
-    expect(queries[0].call('order')).toEqual(['created_at', { ascending: false }]);
+    expect(queries[0]?.call('select')?.[0]).toContain('business_name, business_address');
+    expect(queries[0]?.call('select')?.[0]).toContain('business:businesses(');
+    expect(queries[0]?.call('order')).toEqual(['created_at', { ascending: false }]);
   });
 
   it('reads one order with its lines', async () => {
     const { repo, queries } = setup({ orders: ok({ id: ORDER_ID, items: [] }) });
 
     expect((await repo.getById(ORDER_ID)).data).toEqual({ id: ORDER_ID, items: [] });
-    expect(queries[0].call('eq')).toEqual(['id', ORDER_ID]);
-    expect(queries[0].call('select')?.[0]).toContain('items:order_items(');
+    expect(queries[0]?.call('eq')).toEqual(['id', ORDER_ID]);
+    expect(queries[0]?.call('select')?.[0]).toContain('items:order_items(');
   });
 
   it('cancels through cancel_order and maps its errors', async () => {

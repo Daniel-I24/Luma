@@ -57,7 +57,7 @@ describe('RouteMap travel modes', () => {
 
   it('choosing the moto asks for its route, says "tiempo aproximado" and remembers it on the device', async () => {
     const { fixture, el, buttons } = await render();
-    buttons()[2].click();
+    buttons()[2]?.click();
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
@@ -71,7 +71,7 @@ describe('RouteMap travel modes', () => {
   it('opens with the last mode chosen on this device; an unknown value falls back to walking', async () => {
     stored.set('route.mode', 'bike');
     const { buttons } = await render();
-    expect(buttons()[1].getAttribute('aria-pressed')).toBe('true');
+    expect(buttons()[1]?.getAttribute('aria-pressed')).toBe('true');
     expect(route).toHaveBeenCalledWith(FROM, { lat: 1.22, lng: -77.28 }, 'bike');
     stored.set('route.mode', 'plane');
     expect(TestBed.inject(TravelModePreference).read()).toBe('walk');

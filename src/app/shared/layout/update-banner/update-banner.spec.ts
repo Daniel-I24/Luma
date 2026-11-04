@@ -26,7 +26,7 @@ describe('UpdateBanner', () => {
     fixture.detectChanges();
     const buttons = fixture.nativeElement.querySelectorAll('button') as NodeListOf<HTMLButtonElement>;
     expect(buttons.length).toBe(2);
-    buttons[1].click();
+    buttons[1]?.click();
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('[role="status"]')).toBeNull();
   });

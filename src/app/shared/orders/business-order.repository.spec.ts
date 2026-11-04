@@ -24,11 +24,11 @@ describe('BusinessOrderRepository', () => {
       { id: 'o1', items: [] },
       { id: 'o2', items: [{ id: 'i1', order_id: 'o2' }] },
     ]);
-    const columns = fake.queries[0].call('select')?.[0] as string;
+    const columns = fake.queries[0]?.call('select')?.[0] as string;
     expect(columns).toContain('customer_label');
     expect(columns).not.toMatch(/user_id|email/);
-    expect(fake.queries[0].call('eq')).toEqual(['business_id', 'b1']);
-    expect(fake.queries[1].call('in')).toEqual(['order_id', ['o1', 'o2']]);
+    expect(fake.queries[0]?.call('eq')).toEqual(['business_id', 'b1']);
+    expect(fake.queries[1]?.call('in')).toEqual(['order_id', ['o1', 'o2']]);
   });
 
   it('maps errors to translated keys', async () => {
