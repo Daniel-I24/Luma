@@ -49,7 +49,7 @@ module.exports = defineConfig([
       parserOptions: {
         // Test helpers outside both tsconfigs (their specs are in tsconfig.spec.json).
         projectService: {
-          allowDefaultProject: ['src/testing/at.ts', 'src/testing/click-all.ts', 'src/testing/fake-realtime.ts', 'src/testing/fake-supabase.ts', 'src/testing/fixed-clock.ts', 'src/testing/password-vectors.ts'],
+          allowDefaultProject: ['src/testing/at.ts', 'src/testing/click-all.ts', 'src/testing/fake-realtime.ts', 'src/testing/fake-supabase.ts', 'src/testing/hermetic-supabase.ts', 'src/testing/fixed-clock.ts', 'src/testing/password-vectors.ts'],
         },
         tsconfigRootDir: __dirname,
       },
