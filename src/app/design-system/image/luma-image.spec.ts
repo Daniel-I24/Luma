@@ -40,5 +40,15 @@ describe('LumaImage', () => {
     expect(render({ src: null }).el.querySelector('img')).toBeNull();
     const img = render({ src: 'https://x.test/a.webp', eager: true }).el.querySelector('img')!;
     expect(img.getAttribute('loading')).toBe('eager');
+    expect(img.getAttribute('fetchpriority')).toBe('high');
+  });
+
+  it('shows local previews (blob: and data:) with the same attributes as stored pictures', () => {
+    for (const src of ['blob:https://x.test/1', 'data:image/webp;base64,AAAA']) {
+      const img = render({ src }).el.querySelector('img')!;
+      expect(img.getAttribute('src')).toBe(src);
+      expect(img.getAttribute('decoding')).toBe('async');
+      expect(img.getAttribute('fetchpriority')).toBeNull();
+    }
   });
 });

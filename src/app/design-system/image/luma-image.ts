@@ -6,6 +6,9 @@ import type { IconName } from '../icon/luma-icons';
  * LumaImage — content picture that fills its container: explicit width and
  * height (no layout shift), lazy loading, async decoding, alternative text,
  * and the given icon when there is no picture or it fails to load.
+ * A plain image on purpose: NgOptimizedImage without an image CDN adds no
+ * srcset, and with free-ratio photos under object-cover it warns on every
+ * load (NG02952/NG02960); docs/quality-report.md.
  */
 @Component({
   selector: 'app-luma-image',
@@ -18,6 +21,7 @@ import type { IconName } from '../icon/luma-icons';
       class="size-full object-cover"
       decoding="async"
       [attr.loading]="eager() ? 'eager' : 'lazy'"
+      [attr.fetchpriority]="eager() ? 'high' : null"
       [src]="src()"
       [alt]="alt()"
       [width]="width()"
@@ -44,7 +48,7 @@ export class LumaImage {
   public readonly height = input.required<number>();
   public readonly fallbackIcon = input<IconName>('store');
   public readonly iconSize = input<IconSize>('lg');
-  /** Above-the-fold pictures load eagerly. */
+  /** Above-the-fold pictures load eagerly, with a high fetch priority. */
   public readonly eager = input(false);
 
   /** Reset whenever the source changes. */
