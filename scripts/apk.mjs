@@ -12,6 +12,7 @@
  * Never prints passwords.
  */
 import { aiMode, defineArgs, pushEnabled } from './build-flags.mjs';
+import { checkGoogleServices } from './check-google-services.mjs';
 import { spawnSync } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -117,6 +118,8 @@ function main(mode) {
   if (mode !== 'debug' && mode !== 'release')
     throw new ApkError('Usage: node scripts/apk.mjs debug|release');
   if (mode === 'release') checkSigning(process.env);
+  const services = checkGoogleServices();
+  if (!services.ok) throw new ApkError(services.message);
   const javaHome = resolveJavaHome(process.env, process.platform);
   const env = { ...process.env, JAVA_HOME: javaHome };
   run('node', ['scripts/generate-env.mjs'], { env });
