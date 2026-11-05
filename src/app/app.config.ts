@@ -14,6 +14,7 @@ import { LanguageService } from '@core/i18n/language.service';
 import { ConnectivityService } from '@core/network/connectivity.service';
 import { AppEvents } from '@core/native/app-events';
 import { NativeShell } from '@core/native/native-device';
+import { ErrorLog } from '@core/errors/error-log';
 import { PushRegistration } from '@core/push/push-registration.service';
 import { UpdateCheck } from '@core/update/update-check.service';
 import { AppErrorHandler } from '@shared/errors/app-error-handler';
@@ -52,21 +53,15 @@ export const appConfig: ApplicationConfig = {
     // Android back button and keyboard (no-op on the web). Never blocks startup:
     // if a plugin fails to load, the app keeps the plain web behaviour.
     provideAppInitializer(() => {
-      inject(NativeShell)
-        .init()
-        .catch(() => undefined);
-      inject(ConnectivityService)
-        .watchNative()
-        .catch(() => undefined);
+      const log = inject(ErrorLog);
+      const report = (error: unknown): void => log.record(error, 'startup');
+      inject(NativeShell).init().catch(report);
+      inject(ConnectivityService).watchNative().catch(report);
       // Push: never asks for permission here, only refreshes a granted token.
-      inject(PushRegistration)
-        .init()
-        .catch(() => undefined);
+      inject(PushRegistration).init().catch(report);
       // Resume and luma:// links (Wompi's return after paying).
       inject(PaymentReturn).init();
-      inject(AppEvents)
-        .init()
-        .catch(() => undefined);
+      inject(AppEvents).init().catch(report);
       // Newer version on the site? Never delays or blocks the start.
       void inject(UpdateCheck).check();
     }),

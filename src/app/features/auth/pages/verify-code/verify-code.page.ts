@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { ContactRules } from '@core/validation/contact-rules';
 import { ValidatedField } from '@core/validation/validated-field';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthCodeService } from '@core/auth/auth-code.service';
 import { CODE_LENGTH, AuthCode } from '@core/auth/auth.schemas';
 import { PendingVerification } from '@core/auth/pending-verification';
 import { LumaButton, LumaCard, LumaInput } from '@design-system';
 import { Countdown } from '@shared/ui/countdown';
-import { SessionProfileStore } from '@shared/account/session-profile.store';
+import { LandingNavigation } from '@shared/account/landing-navigation';
 import { AuthFormSubmission } from '../../forms/auth-form-submission';
 import { SignupCompletion } from '../../signup/signup-completion';
 
@@ -31,8 +31,7 @@ export const RESEND_COOLDOWN_SECONDS = 60;
 export class VerifyCodePage {
   private readonly codes = inject(AuthCodeService);
   private readonly pending = inject(PendingVerification);
-  private readonly router = inject(Router);
-  private readonly sessionProfile = inject(SessionProfileStore);
+  private readonly landing = inject(LandingNavigation);
   private readonly completion = inject(SignupCompletion);
 
   protected readonly knownEmail = this.pending.email;
@@ -64,7 +63,7 @@ export class VerifyCodePage {
         this.pending.clear();
         // Residence and photo from the sign-up; a failure is fixed later in "Mis datos".
         await this.completion.complete();
-        return this.goHome();
+        return this.landing.goHome();
       },
     );
   }
@@ -84,10 +83,5 @@ export class VerifyCodePage {
   protected onSubmit(event: Event): void {
     event.preventDefault();
     void this.verify();
-  }
-
-  /** Lands on the home of the account type (customers: /map). */
-  private async goHome(): Promise<boolean> {
-    return this.router.navigateByUrl(await this.sessionProfile.landingPath());
   }
 }

@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { ErrorLog } from '@core/errors/error-log';
 import { Router } from '@angular/router';
 import { AppEvents } from '@core/native/app-events';
 import { PaymentRepository } from './payment.repository';
@@ -23,6 +24,7 @@ export class PaymentReturn {
 
   private readonly events = inject(AppEvents);
   private readonly payments = inject(PaymentRepository);
+  private readonly log = inject(ErrorLog);
   private readonly router = inject(Router);
 
   /** Null for any other link or a malformed one. */
@@ -51,6 +53,6 @@ export class PaymentReturn {
 
   /** Best effort: the transaction id helps reconcile-payments; the status comes from the server. */
   public async record(link: PaymentReturnLink): Promise<void> {
-    if (link.transactionId) await this.payments.recordRedirect(link.orderId, link.transactionId).catch(() => undefined);
+    if (link.transactionId) await this.payments.recordRedirect(link.orderId, link.transactionId).catch((error: unknown) => this.log.record(error, 'payments'));
   }
 }

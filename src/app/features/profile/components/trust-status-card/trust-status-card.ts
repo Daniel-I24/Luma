@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ErrorLog } from '@core/errors/error-log';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { DateFormat } from '@shared/format/date-format';
@@ -43,6 +44,7 @@ const TONE: Readonly<Record<TrustStatus['tier'], string>> = {
 })
 export class TrustStatusCard {
   private readonly repo = inject(TrustStatusRepository);
+  private readonly log = inject(ErrorLog);
   private readonly transloco = inject(TranslocoService);
   private readonly lang = toSignal(this.transloco.langChanges$, { initialValue: this.transloco.getActiveLang() });
 
@@ -54,6 +56,9 @@ export class TrustStatusCard {
   });
 
   constructor() {
-    void this.repo.mine().then((status) => this.status.set(status));
+    this.repo
+      .mine()
+      .then((status) => this.status.set(status))
+      .catch((error: unknown) => this.log.record(error, 'profile'));
   }
 }

@@ -1,5 +1,6 @@
 import { Injectable, computed, effect, inject, signal, untracked } from '@angular/core';
 import { AuthService } from '@core/auth/auth.service';
+import { ErrorLog } from '@core/errors/error-log';
 import { ACCOUNT_ERROR_PATH, ACCOUNT_HOMES, type AccountType } from './account-type';
 import { type AccountProfile, AccountProfileRepository, type ProfileDetails } from './account-profile.repository';
 import { ONBOARDING_PATH, WelcomeTutorial } from './onboarding';
@@ -10,20 +11,20 @@ const MIN_FULL_NAME = 3;
 const FIRST_RETRY_MS = 400;
 const SECOND_RETRY_MS = 1200;
 export const PROFILE_RETRY_DELAYS_MS = [FIRST_RETRY_MS, SECOND_RETRY_MS] as const;
+const ACCOUNT_READ_FAILED = 'accountError.description';
 const wait = (ms: number): Promise<void> => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 /**
- * SessionProfileStore — the signed-in user's account profile next to the
- * session: account type (customer or business owner) and private profile
- * data. Reloads when the user changes and clears on sign-out. When the
- * profile cannot be read the account type is unknown: the app shows
- * ACCOUNT_ERROR_PATH with "Reintentar", never a customer guess.
+ * SessionProfileStore — the signed-in user's account type and private data,
+ * reloaded when the user changes. When the profile cannot be read the type is
+ * unknown: ACCOUNT_ERROR_PATH with "Reintentar", never a customer guess.
  */
 @Injectable({ providedIn: 'root' })
 export class SessionProfileStore {
   private readonly auth = inject(AuthService);
   private readonly repo = inject(AccountProfileRepository);
   private readonly welcome = inject(WelcomeTutorial);
+  private readonly log = inject(ErrorLog);
 
   private readonly _profile = signal<AccountProfile | null>(null);
   private readonly _loaded = signal(false);
@@ -130,14 +131,20 @@ export class SessionProfileStore {
     return loading;
   }
 
+  /** Never rejects: a guard waiting on this must always get an answer. */
   private async readWithRetries(userId: string): ReturnType<AccountProfileRepository['getMine']> {
-    let result = await this.repo.getMine(userId);
-    for (const delay of PROFILE_RETRY_DELAYS_MS) {
-      // An outdated database will not fix itself in a second.
-      if (result.data || result.errorKey === 'accountError.outdated') break;
-      await wait(delay);
-      result = await this.repo.getMine(userId);
+    try {
+      let result = await this.repo.getMine(userId);
+      for (const delay of PROFILE_RETRY_DELAYS_MS) {
+        // An outdated database will not fix itself in a second.
+        if (result.data || result.errorKey === 'accountError.outdated') break;
+        await wait(delay);
+        result = await this.repo.getMine(userId);
+      }
+      return result;
+    } catch (error) {
+      this.log.record(error, 'account');
+      return { data: null, errorKey: ACCOUNT_READ_FAILED };
     }
-    return result;
   }
 }

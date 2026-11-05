@@ -1,4 +1,5 @@
 import { Injectable, PendingTasks, computed, inject, signal } from '@angular/core';
+import { ErrorLog } from '@core/errors/error-log';
 import type { IconName } from '@design-system';
 import { BusinessHighlightsRepository } from '@shared/business/data/business-highlights.repository';
 import { BusinessRepository } from '@shared/business/data/business.repository';
@@ -9,6 +10,7 @@ import { NEARBY_RADIUS_KM } from '../map.constants';
 import { BusinessHoursCacheService } from '../services/business-hours-cache.service';
 import { GeolocationService } from '@shared/geo/geolocation.service';
 import { BusinessFilter } from '../utils/business-filter';
+import { PromotionPick } from '../utils/promotion-pick';
 import { type MapFilters, NO_FILTERS, MapFilterRules } from '../utils/map-filter-rules';
 import { CategoryIcons } from '@shared/business/utils/category-icons';
 import { Haversine } from '@shared/geo/distance';
@@ -41,6 +43,7 @@ export class NearbyBusinessesStore {
   private readonly highlights = inject(BusinessHighlightsRepository);
   private readonly hoursCache = inject(BusinessHoursCacheService);
   private readonly geo = inject(GeolocationService);
+  private readonly log = inject(ErrorLog);
   /** Keeps the app "unstable" while loading, so tests and SSR wait for data. */
   private readonly pendingTasks = inject(PendingTasks);
 
@@ -99,9 +102,12 @@ export class NearbyBusinessesStore {
       ]);
       // Ratings and promotions are extras: if they fail the map still works.
       this.ratings.set(ratings.data);
-      this.promotions.set(firstPerBusiness(promotions.data ?? []));
+      this.promotions.set(PromotionPick.firstPerBusiness(promotions.data ?? []));
       this.businesses.set(result.data);
       this._loaded.set(true);
+    } catch (error) {
+      this.log.record(error, 'map');
+      if (!silent) this._errorKey.set('businesses.errors.service');
     } finally {
       this._loading.set(false);
       done();
@@ -136,15 +142,4 @@ export class NearbyBusinessesStore {
       logoIcon: CategoryIcons.categoryIcon(business.category),
     };
   }
-}
-
-/** The promotion to show per business: the biggest discount, else the first. */
-function firstPerBusiness(promotions: readonly Promotion[]): Map<string, Promotion> {
-  const byBusiness = new Map<string, Promotion>();
-  const off = (p: Promotion): number => (p.menu_item_id ? (p.discount_percent ?? 0) : 0);
-  for (const promo of promotions) {
-    const current = byBusiness.get(promo.business_id);
-    if (!current || off(promo) > off(current)) byBusiness.set(promo.business_id, promo);
-  }
-  return byBusiness;
 }

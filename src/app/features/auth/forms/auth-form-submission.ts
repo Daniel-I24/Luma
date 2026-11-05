@@ -1,15 +1,19 @@
-import { signal } from '@angular/core';
+import { inject, signal } from '@angular/core';
 import type { AbstractControl } from '@angular/forms';
-import type { AuthResult } from '@core/auth/auth-error';
+import { type AuthResult, AuthResults } from '@core/auth/auth-error';
+import { ErrorLog } from '@core/errors/error-log';
 
 const UNKNOWN_ERROR_KEY = 'auth.errors.unknown';
+const NEXT_STEP_ERROR_KEY = 'auth.errors.nextStepFailed';
 
 /**
  * AuthFormSubmission — submit flow shared by the auth pages (composed, not
- * inherited): skips invalid forms, tracks the in-flight state and exposes the
- * i18n key of the last error.
+ * inherited; created in a field of the page): skips invalid forms, tracks the
+ * in-flight state and exposes the i18n key of the last error. Nothing rejects:
+ * a failure of the action or of the next step is shown on the form and logged.
  */
 export class AuthFormSubmission {
+  private readonly log = inject(ErrorLog);
   private readonly _submitting = signal(false);
   private readonly _errorKey = signal<string | null>(null);
 
@@ -29,14 +33,22 @@ export class AuthFormSubmission {
     let result: AuthResult;
     try {
       result = await action();
+    } catch (error) {
+      this.log.record(error, 'auth');
+      result = AuthResults.fail(UNKNOWN_ERROR_KEY);
     } finally {
       this._submitting.set(false);
     }
 
-    if (result.success) {
-      await onSuccess();
-    } else {
+    if (!result.success) {
       this._errorKey.set(result.errorKey ?? UNKNOWN_ERROR_KEY);
+      return;
+    }
+    try {
+      await onSuccess();
+    } catch (error) {
+      this.log.record(error, 'auth');
+      this._errorKey.set(NEXT_STEP_ERROR_KEY);
     }
   }
 }

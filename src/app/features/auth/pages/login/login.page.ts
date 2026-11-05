@@ -6,7 +6,7 @@ import { AuthCodeService } from '@core/auth/auth-code.service';
 import { AuthService } from '@core/auth/auth.service';
 import { PendingVerification } from '@core/auth/pending-verification';
 import { LumaButton, LumaCard, LumaIconButton, LumaInput } from '@design-system';
-import { SessionProfileStore } from '@shared/account/session-profile.store';
+import { LandingNavigation } from '@shared/account/landing-navigation';
 import { AuthFormSubmission } from '../../forms/auth-form-submission';
 
 /**
@@ -27,7 +27,7 @@ import { AuthFormSubmission } from '../../forms/auth-form-submission';
 export class LoginPage {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
-  private readonly sessionProfile = inject(SessionProfileStore);
+  private readonly landing = inject(LandingNavigation);
   private readonly fb = inject(FormBuilder);
   private readonly codes = inject(AuthCodeService);
   private readonly pending = inject(PendingVerification);
@@ -50,7 +50,7 @@ export class LoginPage {
     return this.submission.run(
       this.form,
       () => this.auth.signIn(email, password),
-      () => this.goHome(),
+      () => this.landing.goHome(),
     );
   }
 
@@ -65,10 +65,5 @@ export class LoginPage {
         return this.router.navigate(['/auth/verify']);
       },
     );
-  }
-
-  /** Lands on the home of the account type (customers: /map). */
-  private async goHome(): Promise<boolean> {
-    return this.router.navigateByUrl(await this.sessionProfile.landingPath());
   }
 }

@@ -3,12 +3,12 @@ import { AuthRules } from '@core/validation/auth-rules';
 import { ContactRules } from '@core/validation/contact-rules';
 import { PasswordRules } from '@core/validation/password-rules';
 import { ValidatedField } from '@core/validation/validated-field';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { CODE_LENGTH, AuthCode } from '@core/auth/auth.schemas';
 import { LumaButton, LumaCard, LumaInput, LumaNotice } from '@design-system';
 import { PasswordChecklist } from '@shared/account/password-checklist/password-checklist';
-import { SessionProfileStore } from '@shared/account/session-profile.store';
+import { LandingNavigation } from '@shared/account/landing-navigation';
 import { RecoveryFlow } from './recovery-flow';
 
 const STEP_NUMBER = { email: 1, code: 2, password: 3 } as const;
@@ -31,8 +31,7 @@ const STEP_NUMBER = { email: 1, code: 2, password: 3 } as const;
   `,
 })
 export class ForgotPasswordPage {
-  private readonly router = inject(Router);
-  private readonly sessionProfile = inject(SessionProfileStore);
+  private readonly landing = inject(LandingNavigation);
   protected readonly flow = inject(RecoveryFlow);
 
   protected readonly code = signal('');
@@ -72,11 +71,6 @@ export class ForgotPasswordPage {
     event.preventDefault();
     this.confirmTouched.set(true);
     if (this.passwordError() || this.mismatch()) return;
-    if (await this.flow.save(this.password())) await this.goHome();
-  }
-
-  /** Lands on the home of the account type (customers: /map). */
-  private async goHome(): Promise<boolean> {
-    return this.router.navigateByUrl(await this.sessionProfile.landingPath());
+    if (await this.flow.save(this.password())) await this.landing.goHome();
   }
 }

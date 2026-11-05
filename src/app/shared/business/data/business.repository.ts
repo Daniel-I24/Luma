@@ -1,4 +1,6 @@
 import { Injectable, inject } from '@angular/core';
+import { ErrorCode } from '@core/errors/error-code';
+import { ConnectivityService } from '@core/network/connectivity.service';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import { Haversine } from '@shared/geo/distance';
 import type { Business, BusinessHours } from '../models/business.model';
@@ -24,6 +26,7 @@ export interface RepoResult<T> {
 @Injectable({ providedIn: 'root' })
 export class BusinessRepository {
   private readonly db = inject(SupabaseService).client;
+  private readonly online = inject(ConnectivityService).online;
 
   /**
    * Returns active businesses within radiusKm of the given coordinates.
@@ -40,13 +43,19 @@ export class BusinessRepository {
       .gte('longitude', lng - delta)
       .lte('longitude', lng + delta);
 
-    if (error) return { data: null, errorKey: 'businesses.errors.loadFailed' };
+    if (error) return { data: null, errorKey: this.loadErrorKey(error) };
+    if (!Array.isArray(data)) return { data: null, errorKey: 'businesses.errors.badData' };
 
     const nearby = (data as Business[]).filter(
       (b) => Haversine.haversineKm(lat, lng, b.latitude, b.longitude) <= radiusKm,
     );
 
     return { data: nearby, errorKey: null };
+  }
+
+  /** Why a read failed: no connection, or the service answered with an error. */
+  private loadErrorKey(error: unknown): string {
+    return !this.online() || ErrorCode.of(error) === 'network' ? 'businesses.errors.network' : 'businesses.errors.service';
   }
 
   /** Returns a single active business by id, or null if not found. */
