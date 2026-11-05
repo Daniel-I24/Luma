@@ -14,8 +14,24 @@ updates:
       capacitor:
         patterns:
           - '@capacitor/*'
+      testing:
+        patterns:
+          - 'vitest'
+          - '@vitest/*'
+          - 'jsdom'
+          - 'playwright-core'
+      lint-and-types:
+        patterns:
+          - 'eslint'
+          - 'typescript-eslint'
+          - '@eslint/*'
+          - 'typescript'
 
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+    groups:
+      actions:
+        patterns:
+          - '*'

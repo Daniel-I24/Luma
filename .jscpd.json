@@ -1,0 +1,8 @@
+{
+  "path": ["src/app", "supabase/functions"],
+  "ignore": ["**/*.spec.ts", "**/*.test.ts", "**/*.json", "**/*.harness.ts"],
+  "threshold": 0.95,
+  "reporters": ["console"],
+  "absolute": false,
+  "gitignore": true
+}

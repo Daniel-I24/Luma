@@ -11,9 +11,9 @@ jobs:
   verify:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
           cache: npm
@@ -59,9 +59,24 @@ jobs:
         run: npm run check:tokens
       - name: Every text field has an example
         run: npm run check:placeholders
+      - name: Duplicated code stays under the round 9 figure (.jscpd.json)
+        run: npx --yes jscpd@5.4.2 --config .jscpd.json
       # Verbose: every test and the full detail of each failure in the log.
-      - run: npm test -- --watch=false --reporters=verbose
+      # Coverage thresholds in angular.json (round 10: 83.6 % statements, 78.1 % branches).
+      - run: npm test -- --watch=false --reporters=verbose --coverage
       - run: npm run test:scripts
+
+  secrets:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      # The whole history, not only the tracked files of scripts/secret-scan.mjs.
+      - name: Gitleaks
+        uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2.3.9
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   database:
     runs-on: ubuntu-24.04
@@ -82,7 +97,7 @@ jobs:
       PGPORT: '5432'
       PGUSER: postgres
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # Every migration on an empty database, then every SQL security suite.
       - name: SQL security suites
         run: bash supabase/tests/local/run.sh
@@ -95,7 +110,7 @@ jobs:
     # The official Deno image: no third-party setup action.
     container: denoland/deno:2.5.6
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Edge Function tests (fake fetch, no network to providers)
         run: |
           for dir in _shared delete-account recommend suggest-promotions extract-menu geocode push-dispatch create-payment wompi-webhook reconcile-payments void-payment route verify-website whatsapp-webhook; do

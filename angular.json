@@ -116,7 +116,14 @@
           "options": {
             "isolate": true,
             "providersFile": "src/test-providers.ts",
-            "runnerConfig": "vitest.config.mjs"
+            "runnerConfig": "vitest.config.mjs",
+            "coverageReporters": ["text-summary", "json-summary"],
+            "coverageThresholds": {
+              "statements": 82,
+              "branches": 76,
+              "functions": 74,
+              "lines": 86
+            }
           }
         },
         "lint": {
