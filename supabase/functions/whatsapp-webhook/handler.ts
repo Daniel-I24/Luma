@@ -1,5 +1,8 @@
 import { constantTimeEqual, senderHash, validSignature } from './signature.ts';
 import { textMessages } from './payload.ts';
+import { EdgeLog } from '../_shared/log.ts';
+
+const LOG = new EdgeLog('whatsapp-webhook');
 
 /** verify_contact_from_whatsapp as service_role; resolves to its outcome. */
 type VerifyFromWhatsApp = (input: {
@@ -84,7 +87,7 @@ async function process(deps: WhatsAppWebhookDeps, body: unknown): Promise<void> 
       });
     } catch {
       // One failing message never stops the others; Meta does not retry a 200.
-      console.error('whatsapp-webhook: verification call failed');
+      LOG.error('verification_call_failed');
     }
   }
 }

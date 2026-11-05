@@ -1,5 +1,8 @@
 import { corsHeaders, isOriginAllowed } from '../_shared/cors.ts';
 import { type CleanupClient, removeUserFiles } from './storage-cleanup.ts';
+import { EdgeLog } from '../_shared/log.ts';
+
+const LOG = new EdgeLog('delete-account');
 
 interface CallerUser {
   readonly id: string;
@@ -88,12 +91,12 @@ export function createHandler(deps: HandlerDeps): (req: Request) => Promise<Resp
       await removeUserFiles(deps.client, userId);
 
       if (!(await deleteAccount(deps.client, userId))) {
-        console.error('delete-account: admin deleteUser returned an error');
+        LOG.error('admin_delete_failed');
         return fail(500, 'delete_failed');
       }
       return json(200, { deleted: true }, cors);
     } catch {
-      console.error('delete-account: unexpected failure');
+      LOG.error('unexpected_failure');
       return fail(500, 'delete_failed');
     }
   };

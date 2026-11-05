@@ -28,14 +28,7 @@ export async function getJson(
   }
 }
 
-/** Reads a nested value without trusting the response shape. */
-export function at(value: unknown, ...path: (string | number)[]): unknown {
-  let current: unknown = value;
-  for (const key of path) {
-    if (current === null || typeof current !== 'object') return undefined;
-    current = (current as Record<string | number, unknown>)[key];
-  }
-  return current;
-}
+/** Reads a nested value without trusting the response shape (the LLM gateway's helper). */
+export { at } from '../_shared/llm/http.ts';
 
 export const num = (value: unknown): number => (typeof value === 'number' ? value : Number(value));
