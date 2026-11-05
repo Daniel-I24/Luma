@@ -81,29 +81,18 @@ export class OwnedBusinessRepository {
   /** Saves the information of an owned business. */
   public async updateInfo(id: string, input: BusinessInfoInput): Promise<RepoResult<true>> {
     const parsed = businessInfoSchema.safeParse(input);
-    if (!parsed.success) return { data: null, errorKey: INVALID };
-    const { error } = await this.mine(this.db.from('businesses').update(parsed.data).eq('id', id));
-    if (error)
-      return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, 'businessPanel.errors.saveFailed') };
-    return { data: true, errorKey: null };
+    return parsed.success ? this.save(id, parsed.data) : { data: null, errorKey: INVALID };
   }
 
   /** Public contact, already normalised by parseContact (the database checks it again). */
   public async updateContact(id: string, contact: BusinessContact): Promise<RepoResult<true>> {
-    const { error } = await this.mine(this.db.from('businesses').update(contact).eq('id', id));
-    if (error)
-      return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, 'businessPanel.errors.saveFailed') };
-    return { data: true, errorKey: null };
+    return this.save(id, contact);
   }
 
   /** Sets the logo and/or cover URL (https only). */
   public async updateImages(id: string, input: BusinessImagesInput): Promise<RepoResult<true>> {
     const parsed = businessImagesSchema.safeParse(input);
-    if (!parsed.success) return { data: null, errorKey: INVALID };
-    const { error } = await this.mine(this.db.from('businesses').update(parsed.data).eq('id', id));
-    if (error)
-      return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, 'businessPanel.errors.saveFailed') };
-    return { data: true, errorKey: null };
+    return parsed.success ? this.save(id, parsed.data) : { data: null, errorKey: INVALID };
   }
 
   /** Publishes or unpublishes; the database refuses to publish an incomplete business. */
@@ -111,6 +100,14 @@ export class OwnedBusinessRepository {
     const { error } = await this.mine(this.db.from('businesses').update({ is_active: published }).eq('id', id));
     if (error)
       return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, 'businessPanel.errors.publishFailed') };
+    return { data: true, errorKey: null };
+  }
+
+  /** One update of an owned business; a database refusal becomes its translation key. */
+  private async save(id: string, changes: object): Promise<RepoResult<true>> {
+    const { error } = await this.mine(this.db.from('businesses').update(changes).eq('id', id));
+    if (error)
+      return { data: null, errorKey: BusinessWriteErrors.mapWriteError(error, 'businessPanel.errors.saveFailed') };
     return { data: true, errorKey: null };
   }
 

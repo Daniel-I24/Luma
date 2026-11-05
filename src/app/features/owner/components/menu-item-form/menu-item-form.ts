@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output, untracked } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { NumberRules } from '@core/validation/number-rules';
 import { TextRules } from '@core/validation/text-rules';
@@ -8,8 +8,8 @@ import { ImageField } from '../image-field/image-field';
 import { MAX_DESCRIPTION_LENGTH, type MenuItemInput, menuItemSchema } from '@shared/business/data/business-write.schemas';
 import type { MenuItem } from '@shared/business/models/menu.model';
 import { DraftNotice } from '@shared/forms/draft-notice/draft-notice';
-import { FormDraftStore } from '@shared/forms/form-draft.store';
-import { type FieldErrors, FormErrors } from '@shared/forms/form-errors';
+import { DraftForm } from '@shared/forms/draft-form';
+import { FormErrors } from '@shared/forms/form-errors';
 
 const FIELD_ORDER = [
   ['name', 'menu-item-name'],
@@ -84,18 +84,16 @@ export class MenuItemForm {
   public readonly cancelled = output<void>();
 
   protected readonly rules = RULES;
-  protected readonly draft = signal<ItemDraft>(draftOf(null));
-  protected readonly errors = signal<FieldErrors>({});
-  protected readonly autosave = inject(FormDraftStore).attach(this.draft);
+  private readonly form = new DraftForm<ItemDraft>(draftOf(null), DRAFT_FIELD);
+  protected readonly draft = this.form.draft;
+  protected readonly errors = this.form.errors;
+  protected readonly autosave = this.form.autosave;
 
   constructor() {
     effect(() => {
       const item = this.item();
       const businessId = this.businessId();
-      untracked(() => {
-        this.autosave.load(`menu-item.${businessId}.${item?.id ?? 'new'}`, draftOf(item));
-        this.errors.set({});
-      });
+      untracked(() => this.form.load(`menu-item.${businessId}.${item?.id ?? 'new'}`, draftOf(item)));
     });
   }
 
@@ -110,8 +108,7 @@ export class MenuItemForm {
   }
 
   protected set<K extends keyof ItemDraft>(field: K, value: ItemDraft[K]): void {
-    this.draft.update((draft) => ({ ...draft, [field]: value }));
-    this.errors.update((errors) => FormErrors.withoutErrors(errors, DRAFT_FIELD[field] ?? field));
+    this.form.set(field, value);
   }
 
   protected onAvailable(event: Event): void {
@@ -119,7 +116,7 @@ export class MenuItemForm {
   }
 
   protected check(field: keyof typeof RULES, raw: string): void {
-    FormErrors.blur(this.errors, field, RULES[field], raw);
+    this.form.check(field, RULES[field], raw);
   }
 
   protected onDescription(event: Event): void {

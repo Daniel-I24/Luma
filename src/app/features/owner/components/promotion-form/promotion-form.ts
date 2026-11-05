@@ -6,7 +6,6 @@ import {
   inject,
   input,
   output,
-  signal,
   untracked,
 } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
@@ -19,8 +18,8 @@ import { MAX_DESCRIPTION_LENGTH, type PromotionInput, promotionSchema } from '@s
 import type { Promotion } from '@shared/business/models/business.model';
 import type { MenuItem } from '@shared/business/models/menu.model';
 import { DraftNotice } from '@shared/forms/draft-notice/draft-notice';
-import { FormDraftStore } from '@shared/forms/form-draft.store';
-import { type FieldErrors, FormErrors } from '@shared/forms/form-errors';
+import { DraftForm } from '@shared/forms/draft-form';
+import { FormErrors } from '@shared/forms/form-errors';
 import { PromotionPhases } from '../../utils/promotion-phase';
 import { type PromoDraft, type PromotionPrefill, PromotionDrafts } from './promotion-draft';
 
@@ -68,9 +67,10 @@ export class PromotionForm {
   public readonly cancelled = output<void>();
 
   protected readonly rules = RULES;
-  protected readonly draft = signal<PromoDraft>(PromotionDrafts.draftOf(null, new Date(), null));
-  protected readonly errors = signal<FieldErrors>({});
-  protected readonly autosave = inject(FormDraftStore).attach(this.draft);
+  private readonly form = new DraftForm<PromoDraft>(PromotionDrafts.draftOf(null, new Date(), null), DRAFT_FIELD);
+  protected readonly draft = this.form.draft;
+  protected readonly errors = this.form.errors;
+  protected readonly autosave = this.form.autosave;
 
   constructor() {
     effect(() => {
@@ -79,8 +79,7 @@ export class PromotionForm {
       const businessId = this.businessId();
       untracked(() => {
         const formId = `promotion.${businessId}.${promotion?.id ?? (prefill ? 'idea' : 'new')}`;
-        this.autosave.load(formId, PromotionDrafts.draftOf(promotion, new Date(), prefill));
-        this.errors.set({});
+        this.form.load(formId, PromotionDrafts.draftOf(promotion, new Date(), prefill));
       });
     });
   }
@@ -96,12 +95,11 @@ export class PromotionForm {
   }
 
   protected set<K extends keyof PromoDraft>(field: K, value: PromoDraft[K]): void {
-    this.draft.update((draft) => ({ ...draft, [field]: value }));
-    this.errors.update((errors) => FormErrors.withoutErrors(errors, DRAFT_FIELD[field] ?? field));
+    this.form.set(field, value);
   }
 
   protected check(field: keyof typeof RULES, raw: string): void {
-    FormErrors.blur(this.errors, field, RULES[field], raw);
+    this.form.check(field, RULES[field], raw);
   }
 
   protected onDescription(event: Event): void {
