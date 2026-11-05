@@ -171,6 +171,34 @@ SQL suites, Deno 2.5.6 in Docker for the functions.
   Deno tests, type check and lint of the functions, every check, secret
   scan, audit 0, knip (no unused files or dependencies).
 
+## Round 11 (2026-11-05)
+
+Prompt: close B6, then admin, push and error handling on `main` (no push, no
+deployment, no migration applied). Migrations 1 to 56 are taken as applied and
+57 as pending (the owner's statement; nothing here confirms it). 58 is new.
+
+- B6: `@defer` of the route map proven with `getDeferBlocks`; `NgOptimizedImage`
+  dropped (docs/quality-report.md); R8 on for release, static check of
+  `mapping.txt` (runtime still to be tried on a phone).
+- Admin: `admin_access` distinguishes `error` and keeps its code,
+  `/admin/access-error`, `AdminEntry` in shared and in Mi negocio, MFA failures
+  caught, QR with the secret, `DeviceStatus` in Información técnica.
+- Push: `PushPlatform` keeps its own listeners (renewal and tap with the app
+  open), no orphan rejection; `PushTokenLink` and `PushTokenStore` unlink a token
+  of an earlier run; `PushDiagnostics`; `npm run check:google-services`;
+  migration 58 (notices wait for a token within `push_claim_window_minutes`, and
+  the cron wakes only with work).
+- Errors: `ErrorCode`, map failures by kind, `AuthFormSubmission` catches both
+  steps, `LandingNavigation`, `.catch(() => undefined)` replaced by ErrorLog in
+  start-up and payment return.
+- Tests are hermetic: test build with the placeholder environment and a client
+  without network in `src/test-providers.ts`.
+
+Left: apply 57 and 58 after review, deploy nothing new (no Edge Function changed
+in behaviour except logs: delete-account, geocode, whatsapp-webhook, route), try
+the phone list in docs/qa-checklist.md, signed release APK with R8, payments
+checklist when Wompi is turned on.
+
 ## Round 10 (2026-11-04)
 
 Prompt: round 10 (phase A "fallos del teléfono", phase B "lo que quedó de la
@@ -358,7 +386,7 @@ Phase 4 (limpieza y optimización, docs/optimization-report.md):
 
 ## Round 3 (2026-10-28, closing)
 
-- docs/round2-status.md (phases 4-7: all done except the screen pass with
+- Round 2 status, at the end of this file (phases 4-7: all done except the screen pass with
   real data on a device). ESLint: errors only for any, naming and 150
   lines; the rest are warnings (zero today).
 - Phone verification, free and off: migration 50
@@ -583,19 +611,79 @@ Phase 4 (limpieza y optimización, docs/optimization-report.md):
   `text-danger-fg`), docs (README, ARCHITECTURE, deploy, mocks, orders,
   legal-notes, DECISIONS). Local test Postgres stopped.
 
-## Left
+## Status of the rounds
 
-- Review and apply the 21 round 2 migrations (20261029000000 to
-  20261030000700) in order; run `supabase/tests/local/run.sh` against a
-  copy first.
-- Online payments: set the Wompi secrets and cron, deploy the four payment
-  functions, run the sandbox list in docs/payments-checklist.md, then
-  `payments_enabled = 1`.
-- Signed release APK with the owner's keystore and a test on a device.
-- Visual pass on a device of the screens with real data (business profile,
-  order detail, owner panel, admin) — the screen harness covers empty
-  states only.
-- Edge Functions under the same lint limits (Deno lint) and depcheck
-  (not run: an unpinned npx package; knip covers dependencies).
-- Optional: rewrite history to drop supabase/.temp before making the
-  repository public (docs/security-findings.md).
+Moved here from the per-round STATUS files (kept as they were written, so the
+migration states are those of their date; docs/migrations.md has the current one).
+
+### Round 10
+
+| Phase | State |
+| --- | --- |
+| B1. LumaNotice | Done (committed first) |
+| A. Fallos del teléfono (A1–A6) | Done |
+| B2. IA (fallback, budgets, ai:smoke) | Done |
+| B3. scripts\luma | Done |
+| B4. route: second free provider | Done |
+| B5. Realtime privacy (migration 57) | Done with phase A (57 holds it) |
+| B6. Phase 5 rest (round 9) | Done (see "Round 11") |
+
+Migration 57 (`20261107000000_round10.sql`) is pending review; 56 is
+reviewed and applied by the owner (57 needs it first).
+
+Verification at the close of phase A: build (initial 676.42 kB), lint 0,
+unit 224 files, 140 script tests, Deno 14 suites + entry check + lint,
+836 SQL checks, 6 e2e, every check:*, secret scan, npm audit 0, knip 0.
+
+### Round 9
+
+| Phase | State | Commit |
+| --- | --- | --- |
+| 1. Fallos pendientes (1.1–1.6) | Done | see git log "round9 phase 1" |
+| 2. Tiempo real | Done | see git log "round9 phase 2" |
+| 3. Todo funciona de punta a punta | Done | see git log "round9 phase 3" |
+| 4. Dependencias | Done | see git log "round9 phase 4" |
+| 5. Calidad, seguridad, rendimiento y optimización | In progress. Done and committed: strict TypeScript + noUncheckedIndexedAccess (core, design-system, shared, features, functions; one commit each), every code file within 150 lines, complexity 10 as a lint error, knip at 0. Uncommitted: LumaNotice (51 message boxes unified in the design system; build and lint green, the unit test run was stopped by the system for low memory and must be run again). Pending: jscpd, docs (quality report, mermaid, commits), coverage thresholds, Angular 5.2, performance 5.3, security 5.4, accessibility 5.5, observability 5.6. | |
+
+Migration 56 (`20261106000000_round9.sql`) is pending review, not applied;
+55 is also pending review.
+
+Phase 1 closed green: build (initial 670.04 kB), lint, 866 app tests, 134
+script tests, 179 Deno tests + check + lint, 794 SQL checks, every check:*,
+secret scan, npm audit 0, knip unchanged (40 / 34).
+
+### Round 8
+
+| Phase | State | Commit |
+| --- | --- | --- |
+| 1. Fallos y legal público (A1–A7) | Done | see git log "round8 phase 1" |
+| 2. Cualquier pantalla y claridad (B1–B4) | Done | see git log "round8 phase 2" |
+| 3. Imagen visual nueva (C1–C2) | Done | see git log "round8 phase 3" |
+| 4. Limpieza y optimización (D1–D3) | Done (line goal not met: docs/optimization-report.md) | see git log "round8 phase 4" |
+
+Migration 55 (`20261105000000_round8.sql`) is pending review; 54 is applied.
+
+### Round 2 (phases 4 to 7)
+
+Checked on 2026-10-28 against the commits on `main`.
+
+| Item | State | Evidence |
+| --- | --- | --- |
+| Logo and icons | Done | `179da53`; `docs/brand/logo.md`, `assets/logo.svg`, `android/app/src/main/res/drawable/ic_luma_*.xml`, `ic_stat_luma.xml`, `ic_splash_mark.xml` |
+| Semantic buttons and destructive-action script | Done | `c34aced`; `docs/brand/button-semantics.md`, `scripts/check-destructive-buttons.mjs` (+ test, CI `check:buttons`) |
+| Motion | Done | `84f1088`; `docs/brand/motion.md`, `src/styles/motion.css`, `CartFlight`, `LumaCheckmark`, `OrderTimeline` |
+| Native splash and animated entry | Done | `d90092e`, `b3940f7`; `MainActivity.java`, `src/index.html` (`#luma-entry`), `core/startup/` (+ spec) |
+| Screen review | Partial | `7b1743b`; `docs/brand/screen-review.md`, `scripts/screens/` (offline harness, `check:tokens`). Screens with real data (business profile, order detail, owner, admin) still need a pass on a device |
+| SECURITY.md, docs/security.md, threat model, CodeQL | Done | `b0a7cb2`; `SECURITY.md`, `docs/security.md`, `docs/threat-model.md`, `.github/workflows/codeql.yml` |
+| Git history scan | Done | `67cf3c6`; `scripts/secret-scan-history.mjs`, `docs/security-findings.md` (project reference in one commit, no keys; history not rewritten) |
+| design-preview out of production | Done | `1a1bb82`, `20712b2`; `src/app/dev-routes.ts` replaced by `dev-routes.prod.ts` in production and deploy builds |
+| ESLint rules | Done (round 3: most limits now warnings) | `96b9237`, `a17d31c`; `eslint.config.js`, `eslint/` (local rules + tests) |
+| Domain classes instead of .util.ts | Done | `96b9237`; no `*.util.ts` left in `src/app`; exceptions in `docs/architecture/patterns.md` |
+| Traceability | Done | `ea01ba3`; `docs/requirements-traceability.md` |
+
+## Completed in round 3
+
+- ESLint: errors only for `no-explicit-any`, naming and the 150-line file
+  limit; every other quality limit is a warning (no warnings today).
+- Screen review: the remaining pass needs real data and a device; it is in
+  `docs/launch-checklist.md`.

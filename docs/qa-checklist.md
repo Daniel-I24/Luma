@@ -217,7 +217,17 @@ real-time update of an order on both phones. The walk found and fixed: the
 screens server sent `.mjs` (the MapLibre worker) with the wrong type, and the
 simulator lacked `admin_access` and `my_trust_status`.
 
-On a phone (after applying migrations 56 and 57):
+On a phone (after applying migrations 57 and 58):
+- Admin with a customer account: Perfil shows "Equipo de revisión"; with a business
+  account the same entry is in Mi negocio. First time at /admin/mfa: QR and secret.
+- Without connection, the entry says it could not check the access, with "Reintentar";
+  /admin goes to the same message with its code, never back to the profile in silence.
+- Información técnica → "Estado de este teléfono": admin access and each push step
+  (docs/push-setup.md explains each row); the token shows only its last characters.
+- Sign out and in with "Permitir" already granted: `device_tokens` has one row again;
+  after signing out, none for that phone. A tap on a notice with the app open opens it.
+- Map without connection, right after signing in: says there is no connection, with
+  "Reintentar", and loads when it comes back.
 - Sign in and "Permitir notificaciones": no "Algo salió mal". Each push
   problem has its own message (permission denied, Firebase not in this
   build, FCM registration failed, token not saved) and "Intentar de nuevo"

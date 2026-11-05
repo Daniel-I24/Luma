@@ -4,12 +4,12 @@ inclusion: always
 # Stack y estándares técnicos de Luma
 
 ## Stack (versiones fijas, sin `latest`)
-- Frontend: Angular (última LTS estable), standalone components, Signals, control flow `@if/@for`, TypeScript `strict`.
-- Estilos: Tailwind CSS con design tokens como CSS variables (ver `design-tokens.md`).
+- Frontend: Angular 22, standalone components, Signals, control flow `@if/@for`, TypeScript `strict`.
+- Estilos: Tailwind CSS v4 con design tokens como CSS variables (ver `design-tokens.md`).
 - Móvil: Capacitor (Android/iOS) sobre la misma base de código; PWA como respaldo.
 - Backend: Supabase (Postgres, Auth, Storage, Realtime, Edge Functions en TypeScript/Deno).
-- Mapa: MapLibre GL JS. Pagos: Wompi (checkout/tokenización alojada). IA: Claude API, solo desde Edge Functions.
-- Tests: Vitest/Jest (unitarios), Playwright (E2E). Calidad: ESLint, Prettier, Husky + lint-staged.
+- Mapa: MapLibre GL JS. Pagos: Wompi (checkout/tokenización alojada). IA: reglas en la app por defecto y, opcional, pasarela LLM intercambiable (Gemini, compatible con OpenAI, Anthropic), solo desde Edge Functions.
+- Tests: Vitest (unitarios, herméticos), `node:test` (scripts), Deno test (Edge Functions), suites SQL, playwright-core con axe-core (E2E). Calidad: ESLint, Prettier, knip, jscpd.
 - CI/CD: GitHub Actions (lint → test → build → audit). Web en Vercel.
 
 ## Reglas de código

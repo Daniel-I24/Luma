@@ -9,12 +9,13 @@ Arquitectura modular por feature, con dependencias en una sola dirección:
 ```
 src/app/
   core/          # singleton: auth, interceptors, guards, config, error handling, supabase client
-  shared/        # UI reutilizable (ui/), pipes, directives, utils, modelos comunes
+  shared/        # cuenta, negocio, pedidos, pagos, promociones, avisos, mapa, formularios, errores…
   features/
-    auth/  profile/  map/  feed/  businesses/  orders/  payments/
-    ai-recommender/  favorites/  reviews/  notifications/  settings/
-    business-panel/            # sección para negocios (lazy, protegida por rol)
-    <feature>/{pages,components,services,state,models,data}
+    auth/  account-*/  onboarding/  profile/  map/  feed/  promotions/  ai/  cart/  checkout/
+    orders/  notifications/  favorites/  business-profile/  legal/  help/  download/  not-found/
+    owner/   # Luma Negocios (lazy, protegida por tipo de cuenta)
+    admin/   # equipo de revisión (lazy, verificada con admin_access y MFA)
+    <feature>/{pages,components,services,state,utils}
   design-system/ # tokens, temas, componentes base (button, card, bottom-sheet, chip…)
 supabase/
   migrations/  functions/  seed.sql  tests/

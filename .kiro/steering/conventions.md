@@ -15,7 +15,7 @@ Idioma, tema visual (Cielo andino, Noche, Barniz, Maíz), notificaciones, métod
 
 ## Tamaño y organización
 - Un archivo = una responsabilidad. Un componente por archivo, con `.ts`, `.html` y `.css` separados.
-- Límite blando: 150 líneas por archivo de código. Límite duro: 300. Si se pasa, se divide en componentes, servicios o utilidades.
+- Límite blando: 150 líneas por archivo de código. Límite duro: 300 (las migraciones ya existentes quedan fuera: no se editan; docs/migrations.md). Si se pasa, se divide en componentes, servicios o utilidades.
 - El límite aplica a archivos de código (`.ts`, `.html`, `.css`, `.mjs`, `.sql`), no a los JSON de traducción (`public/i18n/*.json`), que crecen con la app y se validan con `npm run test:scripts` (mismas claves en es y en).
 - Funciones cortas (idealmente < 30 líneas), sin anidamiento profundo, sin código duplicado (regla de tres: a la tercera repetición se extrae).
 - Sin código muerto, sin comentarios que expliquen lo obvio, sin `TODO` sin issue asociado.

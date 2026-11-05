@@ -7,7 +7,8 @@ real check is in the database: every admin action calls `is_admin()`.
 **Two-factor authentication is required.** Since round 2, `is_admin()` is
 true only when the session's JWT has `aal = aal2`: the admin signed in and
 then verified a TOTP code (Supabase Auth MFA). `admin_access()` tells the
-app `none`, `needs_mfa` or `ok`; with `needs_mfa` the app asks for the code
+app `none`, `needs_mfa` or `ok` (a failed call is `error` with its code: message and
+"Reintentar" at `/admin/access-error`, never a silent redirect); with `needs_mfa` the app asks for the code
 (or enrolls the authenticator the first time). Enable "Authenticator app
 (TOTP)" in Supabase Auth > Multi-Factor before applying migration 32.
 

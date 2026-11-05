@@ -38,8 +38,11 @@ category names (`Cafetería`), and the Supabase SQL editor and CLI are UTF-8.
 ### Rounds 2 to 4 (29 to 51)
 
 Status on 2026-10-28: **1 to 50 applied** in production after the owner's
-review; **51 (`20261101000000_round4_hardening.sql`) pending review**.
-Applied migrations are never edited again. Each round adds new files only,
+review; 51 pending review at that date (current state in the tables).
+Applied migrations are never edited again.
+Many files, up to migration 56, still say "NOT APPLIED YET" in their header:
+that line records the moment they were written, and it stays because applied
+files are not edited. The table here is the state to read. Each round adds new files only,
 later than the last applied one; a changed function is redefined with
 `create or replace` keeping its arguments and grants (a changed return type
 needs a drop and a create in the same file, noted in the file header).
@@ -73,7 +76,7 @@ needs a drop and a create in the same file, noted in the file header).
 | 53 | `20261103000000_round6.sql` | Round 6: `contact_verifier_config` (strategy per kind, flags off), `verify_contact_from_whatsapp` (service_role; ids and sender hash in `private`), `start_website_check` / `complete_website_check`, `private.mark_contact_verified`; depends on 52 | Applied |
 | 54 | `20261104000000_round7.sql` | Round 7: daily limit of business creations (`business_create`); validation functions in `private` and CHECK constraints NOT VALID (docs/validation-matrix.md, docs/data-quality.sql); discount 1-90; `handle_new_user` cleans the name; order notes cleaned; phones compared in +57; `contact_verifications` without `verified_by` for owners; request limit per kind | Applied |
 | 55 | `20261105000000_round8.sql` | Round 8: `send_test_notification` for admins only; `show_pending_businesses` (0) in `is_business_public`; `orders_online_needs_approval` (pick-up only while in review) | Applied |
-| 56 | `20261106000000_round9.sql` | Round 9: `review_business` publishes on approval from review when there is an open day and an available product (`private.meets_publish_requirements`); `rate_business_create_max` 3 → 10 (internal guard); Realtime event tables `catalog_events` and `order_events` (ids only, triggers, RLS, pruning) and `supabase_realtime` with exactly those two (docs/realtime.md) | Reviewed; the owner applies it |
+| 56 | `20261106000000_round9.sql` | Round 9: `review_business` publishes on approval from review when there is an open day and an available product (`private.meets_publish_requirements`); `rate_business_create_max` 3 → 10 (internal guard); Realtime event tables `catalog_events` and `order_events` (ids only, triggers, RLS, pruning) and `supabase_realtime` with exactly those two (docs/realtime.md) | Applied (the owner's statement; nothing in this repository confirms it) |
 | 57 | `20261107000000_round10.sql` | Round 10: optional `businesses.neighborhood` and `address_reference` (text rules, column grants; docs/location.md); `order_pickup_point(order_id)` SECURITY DEFINER, for the order's customer while accepted, preparing or ready, even if the business is hidden; `order_events` split by audience (customer row with `user_id` only, owner row with `business_id` only, CHECK `order_events_one_audience`, new read policy); the 20 oldest RLS policies use `(select auth.uid())` (same conditions, evaluated once per query) | Pending review |
 
 | 58 | `20261108000000_push_claim_window.sql` | `claim_push_batch` leaves notices of users without a token waiting (`push_claim_window_minutes`, 60: older ones are marked and never sent); same arguments and grants | Pending review |
@@ -120,6 +123,13 @@ applying, compare with the project's migration history
 Every pending migration ends with `notify pgrst, 'reload schema';`, grants
 explicitly, revokes `EXECUTE` on its functions from `public` and `anon`, and
 keeps SQL comments in ASCII.
+
+## File length
+
+The code limits do not fit old migrations: 14 SQL files are over 150 lines and
+three over 300 (`round4_hardening`, `round5`, `round7`). They are not split,
+because an applied migration is never edited. New migrations aim at 150 lines
+and stay under 300 (.kiro/steering/conventions.md).
 
 ## After applying everything: validate the NOT VALID constraints
 

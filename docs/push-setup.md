@@ -96,6 +96,23 @@ in Perfil / Mi negocio → Notificaciones, and the technical error goes to
 | `registration_failed` | FCM answered `registrationError` or nothing within 20 s | `notificationSettings.phone.problem.registrationFailed` (with "Intentar de nuevo") |
 | `token_save_failed` | `register_device_token` failed | `notificationSettings.phone.problem.tokenSaveFailed` (with "Intentar de nuevo") |
 
+## Reading "Información técnica"
+
+Perfil or Mi negocio → Información técnica → "Estado de este teléfono" keeps the
+last result of each step, in memory, without the whole token:
+
+| Row | What a failure means |
+| --- | --- |
+| Permiso de avisos | `prompt`: nobody pressed "Permitir"; `denied`: Android settings; `not_configured`: built without `google-services.json` |
+| Canales de Android | the plugin could not create `orders` / `promotions` |
+| Registro en FCM | the native call was refused |
+| Token recibido | no row: FCM never answered |
+| Último error de FCM | `push_registration_timeout`, or a native code such as `SERVICE_NOT_AVAILABLE` |
+| Guardado en Luma | `register_device_token`: `email_not_confirmed`, `PGRST202` (migration missing), `network` |
+
+`npm run check:google-services` (also in `apk:debug` and `apk:release`) compares
+only the `package_name` of the file with the `applicationId`.
+
 ## If nothing arrives
 
 | Symptom | Check |

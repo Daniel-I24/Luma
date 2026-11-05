@@ -206,3 +206,20 @@ left pointing at it) and the full Definition of Done stayed green.
   `businessPanel.location.hint|mapLabel|useCurrent|useCentre|chosen|denied`
   and `auth.signup.validation.passwordCommon`: no references left.
 
+## Round 11 (2026-11-05)
+
+Measured with `npx knip`, `npx depcheck` and a search of every translation key.
+
+- `docs/ROUND8-STATUS.md`, `ROUND9-STATUS.md`, `ROUND10-STATUS.md`, `round2-status.md`:
+  moved to docs/WORKLOG.md ("Status of the rounds"); the two references updated.
+- docs/WORKLOG.md section "Left": described round 1 work already done; replaced.
+- `src/app/features/orders/orders-pages.spec.ts`: split into `orders.page.spec.ts` and
+  `order-detail.page.spec.ts` (the same cases; the 150-line limit), with `orders.harness.ts`.
+- `src/app/features/profile/components/admin-entry/`: moved to shared (used by two features).
+- Key `feed.title`: no reference in code, tests or a dynamic prefix. 26 other candidates are
+  built from constants (`V`, `E`) and stay.
+- `export` of `parseOsrm` (only used in its own file).
+- Kept although flagged: `axe-core` (knip; `e2e/support/axe.mjs` loads it by path), and what
+  depcheck lists (`@capacitor/android`, Tailwind and PostCSS, `tslib`, the build tools; its
+  "missing" packages are path aliases and Deno imports).
+

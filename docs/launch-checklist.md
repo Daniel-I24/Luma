@@ -16,13 +16,13 @@ values; never paste the service_role key anywhere in the app.
 2. **Prerequisites** in the dashboard: Authentication → Multi-Factor →
    TOTP **on**; Database → Extensions → `pg_trgm` **on** (optional:
    `pg_cron`, `pg_net`).
-3. **Check what is applied** (should list 1 to 51 as applied):
+3. **Check what is applied** (should list 1 to 56 as applied, per the owner; only this command confirms it):
    ```powershell
    npx supabase migration list
    ```
-4. **Apply migration 52** (`20261102000000_round5.sql`) after your
-   review (docs/migrations.md); until then verify-backend reports its RPCs
-   as "[migration 52]: missing" without failing:
+4. **Apply migrations 57 and 58** (`20261107000000_round10.sql`,
+   `20261108000000_push_claim_window.sql`, in that order) after your review
+   (docs/migrations.md):
    ```powershell
    npx supabase db push
    ```
@@ -65,7 +65,7 @@ values; never paste the service_role key anywhere in the app.
 12. **Try it on the phone**: sign up with the code, complete "Mis datos",
     register a business, menu, hours, send it to review, approve it in
     `/admin`, order and pick up; check the screens with real data in the
-    four themes (docs/round2-status.md, "Screen review").
+    four themes (docs/WORKLOG.md, "Status of the rounds", "Screen review").
 13. **Signed APK** with your keystore (never in the repository):
     ```powershell
     $env:LUMA_KEYSTORE_PATH = "C:\keys\luma-release.jks"
