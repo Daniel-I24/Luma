@@ -76,6 +76,8 @@ needs a drop and a create in the same file, noted in the file header).
 | 56 | `20261106000000_round9.sql` | Round 9: `review_business` publishes on approval from review when there is an open day and an available product (`private.meets_publish_requirements`); `rate_business_create_max` 3 → 10 (internal guard); Realtime event tables `catalog_events` and `order_events` (ids only, triggers, RLS, pruning) and `supabase_realtime` with exactly those two (docs/realtime.md) | Reviewed; the owner applies it |
 | 57 | `20261107000000_round10.sql` | Round 10: optional `businesses.neighborhood` and `address_reference` (text rules, column grants; docs/location.md); `order_pickup_point(order_id)` SECURITY DEFINER, for the order's customer while accepted, preparing or ready, even if the business is hidden; `order_events` split by audience (customer row with `user_id` only, owner row with `business_id` only, CHECK `order_events_one_audience`, new read policy); the 20 oldest RLS policies use `(select auth.uid())` (same conditions, evaluated once per query) | Pending review |
 
+| 58 | `20261108000000_push_claim_window.sql` | `claim_push_batch` leaves notices of users without a token waiting (`push_claim_window_minutes`, 60: older ones are marked and never sent); same arguments and grants | Pending review |
+
 **Database freeze (2026-10-19)**: the list above is final for the launch.
 After the freeze, migrations and functions change only to fix real bugs
 (each noted in docs/WORKLOG.md); other ideas go to
@@ -227,6 +229,7 @@ transaction that is rolled back.
 | `round8.sql` | migration 55: test notification for admins only, `show_pending_businesses` visibility, pick-up only while in review |
 | `round9.sql` | migration 56: approval publishes when ready, approved but hidden without a product, owner pause kept after a re-approval, `show_pending_businesses` states through the API roles, guard of 10 creations a day |
 | `round10.sql` | migration 57: sector and reference rules, `order_pickup_point` with three users (customer, another customer, another owner, and the business owner), paused business still reachable, order events without the customer id for the owner |
+| `push_claim_window.sql` | migration 58: a notice waits for a token, goes out once, older than the window is never sent, refused consent is not kept |
 | `realtime_events.sql` | migration 56: catalog events of public businesses only, order events for the customer and the owner (three users), no client writes, pruning, publication |
 
 `scripts/db-drift.test.mjs` (`npm run test:scripts`) checks without a
