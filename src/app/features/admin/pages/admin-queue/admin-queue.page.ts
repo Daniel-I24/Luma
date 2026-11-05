@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
+import { SessionProfileStore } from '@shared/account/session-profile.store';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LumaButton, LumaEmptyState, LumaIconButton, LumaNotice, LumaSkeleton, LumaTabs, TabIds, type TabItem } from '@design-system';
 import { DateFormat } from '@shared/format/date-format';
@@ -31,6 +32,7 @@ type QueueTab = 'pending' | 'reports';
 export class AdminQueuePage {
   protected readonly store = inject(AdminQueueStore);
   private readonly router = inject(Router);
+  private readonly account = inject(SessionProfileStore);
   private readonly transloco = inject(TranslocoService);
   private readonly lang = toSignal(this.transloco.langChanges$, {
     initialValue: this.transloco.getActiveLang(),
@@ -65,6 +67,6 @@ export class AdminQueuePage {
   }
 
   protected back(): void {
-    void this.router.navigate(['/profile']);
+    void this.router.navigate([this.account.isBusinessOwner() ? '/owner' : '/profile']);
   }
 }

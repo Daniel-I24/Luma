@@ -13,6 +13,7 @@ export class AdminMfaStore {
 
   private readonly _phase = signal<MfaPhase>('loading');
   private readonly _secret = signal<string | null>(null);
+  private readonly _qrCode = signal<string | null>(null);
   private readonly _errorKey = signal<string | null>(null);
   private readonly _busy = signal(false);
   private factorId: string | null = null;
@@ -20,10 +21,12 @@ export class AdminMfaStore {
   public readonly phase = this._phase.asReadonly();
   /** Shown only while enrolling, for the authenticator app. */
   public readonly secret = this._secret.asReadonly();
+  /** The same key as a QR image, also only while enrolling. */
+  public readonly qrCode = this._qrCode.asReadonly();
   public readonly errorKey = this._errorKey.asReadonly();
   public readonly busy = this._busy.asReadonly();
 
-  /** Reads the MFA state: enrol, verify or already at aal2. */
+  /** Reads the MFA state: enrol, verify or already at aal2. Never rejects: the repository answers with keys. */
   public async start(): Promise<void> {
     this._phase.set('loading');
     this._errorKey.set(null);
@@ -38,6 +41,7 @@ export class AdminMfaStore {
     if (enrollment.errorKey !== null) return this.fail(enrollment.errorKey);
     this.factorId = enrollment.data.factorId;
     this._secret.set(enrollment.data.secret);
+    this._qrCode.set(enrollment.data.qrCode);
     this._phase.set('enroll');
   }
 
@@ -55,6 +59,7 @@ export class AdminMfaStore {
       this._errorKey.set(result.errorKey);
       if (result.errorKey !== null) return false;
       this._secret.set(null);
+      this._qrCode.set(null);
       this._phase.set('done');
       return true;
     } finally {

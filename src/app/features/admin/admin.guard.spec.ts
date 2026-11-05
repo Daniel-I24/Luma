@@ -24,6 +24,10 @@ describe('adminGuard', () => {
     expect(await run(adminGuard, 'needs_mfa')).toBe('/admin/mfa');
   });
 
+  it('a failed check goes to the screen with the message and "Reintentar", not to the profile', async () => {
+    expect(await run(adminGuard, 'error')).toBe('/admin/access-error');
+  });
+
   it('never lets a non-admin in', async () => {
     expect(await run(adminGuard, 'none')).toBe('/profile');
   });
@@ -36,6 +40,10 @@ describe('adminMemberGuard', () => {
 
   it('skips it once MFA is done and refuses non-admins', async () => {
     expect(await run(adminMemberGuard, 'ok')).toBe('/admin');
+  });
+
+  it('a failed check also goes to the error screen', async () => {
+    expect(await run(adminMemberGuard, 'error')).toBe('/admin/access-error');
   });
 
   it('refuses non-admins', async () => {

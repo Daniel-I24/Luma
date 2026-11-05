@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { type IconName, LumaIcon } from '@design-system';
 import { AccountActions } from '@shared/account/account-actions/account-actions';
+import { AdminEntry } from '@shared/business/verification/admin-entry/admin-entry';
 import { AppearanceSettings } from '@shared/appearance/appearance-settings/appearance-settings';
 import { HelpEntries } from '@shared/tutorial/help-entries';
 import { NotificationSettings } from '@shared/notifications/notification-settings/notification-settings';
@@ -32,6 +33,7 @@ const SCREENS: readonly { screen: OwnerBusinessScreen; icon: IconName; key: stri
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    AdminEntry,
     TranslocoModule, RouterLink, LumaIcon, AccountActions, AppearanceSettings, NotificationSettings, PanelHeader,
     PanelStateView, HelpEntries, TechnicalInfo,
   ],

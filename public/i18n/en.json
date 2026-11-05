@@ -72,7 +72,8 @@
       "reauthRequired": "The code is no longer valid to delete the account. Ask for a new one and use it within 10 minutes.",
       "codeInvalid": "The code is wrong or has expired. Check it or ask for a new one.",
       "deleteAccountUnavailable": "Account deletion is not available right now. Contact us from Help and we will do it for you.",
-      "deleteAccountServer": "The server could not delete the account. Your data is intact; try again in a few minutes."
+      "deleteAccountServer": "The server could not delete the account. Your data is intact; try again in a few minutes.",
+      "nextStepFailed": "You are signed in, but the next screen could not open. Try again."
     },
     "verify": {
       "title": "Enter your code",
@@ -304,7 +305,7 @@
       "title": "Near you"
     },
     "errors": {
-      "title": "Something went wrong"
+      "title": "The businesses could not be loaded"
     },
     "empty": {
       "description": "Try moving the map to another area."
@@ -367,7 +368,10 @@
       "favoriteSaveFailed": "Could not update your favourites. Please try again.",
       "reviewsFailed": "Could not load the reviews.",
       "reviewSaveFailed": "Could not save your review. Please try again.",
-      "reviewDeleteFailed": "Could not delete your review. Please try again."
+      "reviewDeleteFailed": "Could not delete your review. Please try again.",
+      "network": "There seems to be no connection. Check it and try again.",
+      "service": "The Luma service did not answer. Try again in a moment.",
+      "badData": "This version could not read the data it received. Try again or update the app."
     },
     "ownerNotice": "This is your business: this is how customers see it. You cannot order from your own business."
   },
@@ -1174,7 +1178,7 @@
     "mfa": {
       "title": "Two-step verification",
       "stepApp": "Open an authenticator app (Google Authenticator, Microsoft Authenticator or another).",
-      "stepSecret": "Add a new account with the secret key below.",
+      "stepSecret": "Scan the QR code, or add a new account with the secret key below.",
       "stepCode": "Type the 6-digit code the app shows.",
       "secretLabel": "Secret key (do not share it)",
       "copy": "Copy key",
@@ -1188,8 +1192,11 @@
         "loadFailed": "Could not prepare the verification. Check your connection.",
         "enrollFailed": "Could not create the verification. Try again.",
         "invalidCode": "The code is wrong or expired. Use the current code from the app.",
-        "codeShape": "Type the 6 digits of the code."
-      }
+        "codeShape": "Type the 6 digits of the code.",
+        "cleanupFailed": "An unfinished verification could not be removed. Try again."
+      },
+      "qrLabel": "Scan this code",
+      "qrAlt": "QR code for your authenticator app"
     },
     "flags": {
       "title": "Warning signs",
@@ -1251,6 +1258,13 @@
       "verify": "Verify",
       "reject": "Reject",
       "empty": "No contacts to verify."
+    },
+    "accessError": {
+      "title": "We could not check your access",
+      "message": "We could not check whether your account belongs to the review team. Check your connection and try again.",
+      "entry": "We could not check whether you have admin access. If you are not on the review team, ignore this notice.",
+      "code": "Code",
+      "back": "Back to home"
     }
   },
   "reports": {
@@ -2456,5 +2470,19 @@
     "referenceLabel": "Landmark (optional)",
     "referencePlaceholder": "Across from the park",
     "sectorPlaceholder": "Jamondino"
+  },
+  "technicalStatus": {
+    "title": "Status of this phone",
+    "admin": "Admin access",
+    "notYet": "No data yet",
+    "copy": "Copy status",
+    "steps": {
+      "permission": "Notification permission",
+      "channels": "Android channels",
+      "register": "FCM registration",
+      "event": "Token received",
+      "error": "Last FCM error",
+      "rpc": "Saved in Luma"
+    }
   }
 }

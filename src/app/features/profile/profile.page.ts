@@ -4,10 +4,11 @@ import { TourHelpButton } from '@shared/tutorial/tour-help-button';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
 import { LumaAvatar, LumaDisclosure, LumaIcon } from '@design-system';
+import { DeviceStatus } from '@shared/errors/device-status/device-status';
 import { RecentErrors } from '@shared/errors/recent-errors/recent-errors';
 import { AccountActions } from '@shared/account/account-actions/account-actions';
 import { SessionProfileStore } from '@shared/account/session-profile.store';
-import { AdminEntry } from './components/admin-entry/admin-entry';
+import { AdminEntry } from '@shared/business/verification/admin-entry/admin-entry';
 import { BecomeOwnerEntry } from './components/become-owner-entry/become-owner-entry';
 import { HelpEntries } from '@shared/tutorial/help-entries';
 import { AppearanceSettings } from '@shared/appearance/appearance-settings/appearance-settings';
@@ -33,6 +34,7 @@ import { TrustStatusCard } from './components/trust-status-card/trust-status-car
     LumaAvatar,
     LumaIcon,
     LumaDisclosure,
+    DeviceStatus,
     RecentErrors,
     RouterLink,
     AccountActions,

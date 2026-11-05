@@ -21,14 +21,14 @@ describe('AdminMfaStore', () => {
 
   it('enrolls the first time, shows the secret once and forgets it after verifying', async () => {
     repo.verifiedFactor.mockResolvedValue({ data: null, errorKey: null });
-    repo.enroll.mockResolvedValue({ data: { factorId: 'f2', secret: 'JBSWY3DP' }, errorKey: null });
+    repo.enroll.mockResolvedValue({ data: { factorId: 'f2', secret: 'JBSWY3DP', qrCode: 'data:image/svg+xml;utf-8,x' }, errorKey: null });
     repo.verify.mockResolvedValue({ data: true, errorKey: null });
     const store = TestBed.inject(AdminMfaStore);
     await store.start();
-    expect([store.phase(), store.secret()]).toEqual(['enroll', 'JBSWY3DP']);
+    expect([store.phase(), store.secret(), store.qrCode()]).toEqual(['enroll', 'JBSWY3DP', 'data:image/svg+xml;utf-8,x']);
     expect(await store.submit('123 456')).toBe(true);
     expect(repo.verify).toHaveBeenCalledWith('f2', '123456');
-    expect([store.phase(), store.secret()]).toEqual(['done', null]);
+    expect([store.phase(), store.secret(), store.qrCode()]).toEqual(['done', null, null]);
   });
 
   it('refuses malformed codes without calling the server and reports wrong ones', async () => {

@@ -6,6 +6,7 @@ import { AuthService } from '@core/auth/auth.service';
 import { APP_VERSION } from '@core/config/app-version';
 import { LumaButton, LumaDisclosure } from '@design-system';
 import { PanelQueryLog } from '@shared/business/diagnostics/panel-query-log';
+import { DeviceStatus } from '@shared/errors/device-status/device-status';
 import { RecentErrors } from '@shared/errors/recent-errors/recent-errors';
 import { OwnerContextStore } from '../../state/owner-context.store';
 
@@ -22,7 +23,7 @@ const VISIBLE_START = 1;
   selector: 'app-technical-info',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaDisclosure, RecentErrors],
+  imports: [TranslocoModule, LumaButton, LumaDisclosure, DeviceStatus, RecentErrors],
   template: `
     <ng-container *transloco="let t">
       <app-luma-disclosure panelId="technical-info" icon="info" [heading]="t('owner.technical.title')" [description]="t('owner.technical.hint')">
@@ -64,6 +65,7 @@ const VISIBLE_START = 1;
           @if (copied(); as result) {
           <p class="m-0 text-caption text-fg-muted" role="status">{{ t('owner.technical.copied.' + result) }}</p>
           }
+          <app-device-status />
           <app-recent-errors />
         </div>
       </app-luma-disclosure>

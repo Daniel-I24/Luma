@@ -5,6 +5,12 @@ import { adminGuard, adminMemberGuard } from './admin.guard';
 /** /admin/** — the review team (lazy; app.routes.ts also requires a session). */
 export const adminRoutes: Routes = [
   {
+    // admin_access could not be read: a message and "Reintentar". Grants nothing.
+    path: 'access-error',
+    loadComponent: () =>
+      import('./pages/admin-access-error/admin-access-error.page').then((m) => m.AdminAccessErrorPage),
+  },
+  {
     path: 'mfa',
     canActivate: [adminMemberGuard],
     loadComponent: () => import('./pages/admin-mfa/admin-mfa.page').then((m) => m.AdminMfaPage),

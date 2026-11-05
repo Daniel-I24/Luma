@@ -21,6 +21,10 @@
       <li>{{ t('admin.mfa.stepSecret') }}</li>
       <li>{{ t('admin.mfa.stepCode') }}</li>
     </ol>
+    @if (mfa.qrCode(); as qr) {
+    <p class="m-0 mb-2 text-label text-fg-subtle">{{ t('admin.mfa.qrLabel') }}</p>
+    <img class="mx-auto mb-4 block size-48 rounded-md" [src]="qr" [alt]="t('admin.mfa.qrAlt')" width="192" height="192" />
+    }
     <p class="m-0 mb-2 text-label text-fg-subtle">{{ t('admin.mfa.secretLabel') }}</p>
     <p class="m-0 mb-3 rounded-md bg-canvas-subtle p-3 font-mono text-body break-all text-fg">
       {{ mfa.secret() }}

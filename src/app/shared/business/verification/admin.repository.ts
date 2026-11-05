@@ -1,4 +1,6 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
+import { ErrorCode } from '@core/errors/error-code';
+import { ErrorLog } from '@core/errors/error-log';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import type { RepoResult } from '../data/business.repository';
 import type { Business } from '../models/business.model';
@@ -14,18 +16,42 @@ const ADMIN_ERRORS: Readonly<Record<string, string>> = {
   tax_id_in_use: 'admin.errors.taxIdInUse',
 };
 
-/** admin_access(): not an admin, an admin who still has to pass MFA (aal2), or ready. */
-export type AdminAccess = 'none' | 'needs_mfa' | 'ok';
+/** admin_access(): not an admin, an admin who still has to pass MFA (aal2), ready, or it could not be read. */
+export type AdminAccess = 'none' | 'needs_mfa' | 'ok' | 'error';
+
+/** The last answer of admin_access, for "Información técnica": a code, never personal data. */
+export interface AdminAccessStatus {
+  readonly access: AdminAccess;
+  readonly code: string | null;
+  readonly at: string;
+}
 
 /** AdminRepository — admin reads and decisions (aal2 checked in SQL). */
 @Injectable({ providedIn: 'root' })
 export class AdminRepository {
   private readonly db = inject(SupabaseService).client;
+  private readonly log = inject(ErrorLog);
+  private readonly _lastAccess = signal<AdminAccessStatus | null>(null);
+  public readonly lastAccess = this._lastAccess.asReadonly();
 
-  /** Whether the user is an admin and has a verified second factor. */
+  /** Whether the user is an admin with a verified second factor; 'error' keeps its code. Never rejects. */
   public async access(): Promise<AdminAccess> {
-    const { data, error } = await this.db.rpc('admin_access');
-    return !error && (data === 'ok' || data === 'needs_mfa') ? data : 'none';
+    const { access, code } = await this.readAccess();
+    this._lastAccess.set({ access, code, at: new Date().toISOString() });
+    if (code) this.log.record(new Error(`admin_access: ${code}`), 'admin');
+    return access;
+  }
+
+  private async readAccess(): Promise<{ access: AdminAccess; code: string | null }> {
+    try {
+      const { data, error } = await this.db.rpc('admin_access');
+      if (error) return { access: 'error', code: ErrorCode.of(error) };
+      return data === 'ok' || data === 'needs_mfa' || data === 'none'
+        ? { access: data, code: null }
+        : { access: 'error', code: 'unexpected_answer' };
+    } catch (error) {
+      return { access: 'error', code: ErrorCode.of(error) };
+    }
   }
 
   /** Businesses waiting for review. */
