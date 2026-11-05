@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { ErrorLog } from './error-log';
+import { ERROR_REPORTER } from './error-reporter';
 
 describe('ErrorLog', () => {
   it('keeps the last 20 errors, most recent first', () => {
@@ -24,4 +25,15 @@ describe('ErrorLog', () => {
     log.record({ code: 'PGRST301' });
     expect(log.entries().map((e) => `${e.name}:${e.message}:${e.source}`)).toEqual(['object:{"code":"PGRST301"}:app', 'Message:just text:push']);
   });
+
+  it('hands the masked entry to the ErrorReporter; a failing reporter is ignored', () => {
+    const report = vi.fn().mockImplementationOnce(() => undefined).mockImplementationOnce(() => { throw new Error('down'); });
+    TestBed.configureTestingModule({ providers: [{ provide: ERROR_REPORTER, useValue: { report } }] });
+    const log = TestBed.inject(ErrorLog);
+    log.record(new Error('mail ana@mail.com'));
+    expect(report.mock.calls[0]?.[0]).toMatchObject({ message: 'mail <email>' });
+    expect(() => log.record(new Error('again'))).not.toThrow();
+    expect(log.entries().length).toBe(2);
+  });
 });
+

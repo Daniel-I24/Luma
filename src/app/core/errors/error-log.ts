@@ -1,5 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { Injectable, inject, signal } from '@angular/core';
+import { ERROR_REPORTER } from './error-reporter';
 
 /** One recorded error: no personal data, only what support needs. */
 export interface ErrorLogEntry {
@@ -30,11 +31,13 @@ const MASKS: readonly (readonly [RegExp, string])[] = [
 /**
  * ErrorLog — the last 20 errors of this session, kept in memory only, for
  * "Información técnica". Every text is masked before it is stored, so the
- * list can be copied to support as it is.
+ * list can be copied to support as it is; each entry also goes to the
+ * ErrorReporter (none by default).
  */
 @Injectable({ providedIn: 'root' })
 export class ErrorLog {
   private readonly location = inject(DOCUMENT).defaultView?.location;
+  private readonly reporter = inject(ERROR_REPORTER);
   private readonly _entries = signal<readonly ErrorLogEntry[]>([]);
   /** Most recent first. */
   public readonly entries = this._entries.asReadonly();
@@ -49,6 +52,11 @@ export class ErrorLog {
       source,
     };
     this._entries.update((list) => [entry, ...list].slice(0, MAX_ENTRIES));
+    try {
+      this.reporter.report(entry);
+    } catch {
+      // A broken reporter never breaks the app; the entry stays on the device.
+    }
   }
 
   /** The text "Copiar" puts on the clipboard: one line per error. */
