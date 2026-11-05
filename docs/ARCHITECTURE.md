@@ -1,5 +1,32 @@
 # Architecture
 
+## System (round 10)
+
+```mermaid
+flowchart LR
+  subgraph Phone["App (Angular 22, Capacitor Android / web)"]
+    F[features: map, feed, Luma IA, orders, owner panel, admin] --> S[shared: repositories, stores, geo, route, payments]
+    F --> DS[design-system]
+    S --> C[core: auth, Supabase client, realtime, push, errors, validation]
+  end
+  C -- "REST + RLS (anon key, user JWT)" --> PG[(Supabase Postgres: RLS, SECURITY DEFINER RPCs, CHECKs)]
+  C -- "Realtime: catalog_events, order_events (ids only)" --> RT[Supabase Realtime]
+  PG --> RT
+  S -- "JWT" --> EF[Edge Functions: recommend, extract-menu, suggest-promotions, geocode, route, create-payment, delete-account...]
+  EF -- "service role / caller JWT" --> PG
+  EF --> LLM[Gemini / OpenAI-compatible / Anthropic]
+  EF --> GEO[LocationIQ / Nominatim / Photon]
+  EF --> ROUTE[OpenRouteService, then public OSM routing]
+  EF --> W[Wompi API]
+  W -- "webhook (signed)" --> EF
+  PG -- "pg_net + pg_cron" --> PUSH[push-dispatch -> FCM]
+  PUSH --> Phone
+```
+
+The app only holds the anon key; every write is checked twice (zod in the
+app, CHECK constraints and RLS in Postgres); secrets of providers live in
+the Edge Functions. Decisions: docs/DECISIONS.md and docs/adr/.
+
 ## Layers
 
 ```
