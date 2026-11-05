@@ -72,4 +72,15 @@ select tests.expect_error('postgres', null, $$
   insert into public.order_events (order_id, user_id, business_id) values (gen_random_uuid(), tests.id('cus'), tests.id('pub'))$$,
   'order_events_one_audience');
 
+-- 4. RLS: auth.uid() is evaluated once per query everywhere --------------------------
+select tests.expect_true('postgres', null, $$
+  select count(*) = 0 from pg_policies
+  where (coalesce(qual, '') || coalesce(with_check, '')) ~ 'auth\.uid\(\)'
+    and (coalesce(qual, '') || coalesce(with_check, '')) !~* '\(\s*select\s+auth\.uid\(\)'$$,
+  'no policy calls auth.uid() per row');
+select tests.expect_true('authenticated', tests.id('owner'), $$
+  select count(*) = 2 from public.businesses where owner_id = tests.id('owner')$$, 'the owner still reads both businesses');
+select tests.expect_error('authenticated', tests.id('eve'), $$
+  insert into public.menu_items (business_id, name, price_cop) values (tests.id('pub'), 'Intruso', 1000)$$, 'row-level security');
+
 rollback;

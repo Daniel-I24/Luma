@@ -12,6 +12,8 @@
 --    with only user_id (the customer) and one with only business_id (the
 --    owner), so an owner never receives a customer id. Reading policy and a
 --    CHECK follow.
+-- 4. The 20 oldest policies use (select auth.uid()) instead of auth.uid()
+--    (evaluated once per query, not per row); their conditions do not change.
 -- =============================================================================
 
 -- 1. Sector and reference ---------------------------------------------------------
@@ -78,5 +80,53 @@ create policy order_events_read on public.order_events for select to authenticat
     select 1 from public.businesses b where b.id = business_id and b.owner_id = (select auth.uid())))
 );
 
--- PostgREST picks up the new columns, function and policy.
+-- 4. RLS evaluated once per query ----------------------------------------------------
+-- The oldest policies called auth.uid() for every row; (select auth.uid()) is
+-- evaluated once (Supabase "RLS performance"). Same conditions, same names.
+alter policy "business_hours: owner delete" on public.business_hours
+  using (EXISTS ( SELECT 1 FROM public.businesses b WHERE ((b.id = business_hours.business_id) AND (b.owner_id = (select auth.uid())))));
+alter policy "business_hours: owner insert" on public.business_hours
+  with check (EXISTS ( SELECT 1 FROM public.businesses b WHERE ((b.id = business_hours.business_id) AND (b.owner_id = (select auth.uid())))));
+alter policy "businesses: owner delete" on public.businesses
+  using ((select auth.uid()) = owner_id);
+alter policy "businesses: owner insert" on public.businesses
+  with check ((select auth.uid()) = owner_id);
+alter policy "businesses: owner read own" on public.businesses
+  using ((select auth.uid()) = owner_id);
+alter policy "businesses: owner update" on public.businesses
+  using ((select auth.uid()) = owner_id)
+  with check ((select auth.uid()) = owner_id);
+alter policy "favorites: owner delete" on public.favorites
+  using ((select auth.uid()) = user_id);
+alter policy "favorites: owner insert" on public.favorites
+  with check ((select auth.uid()) = user_id);
+alter policy "favorites: owner select" on public.favorites
+  using ((select auth.uid()) = user_id);
+alter policy "menu_items: owner delete" on public.menu_items
+  using (EXISTS ( SELECT 1 FROM public.businesses b WHERE ((b.id = menu_items.business_id) AND (b.owner_id = (select auth.uid())))));
+alter policy "menu_items: owner insert" on public.menu_items
+  with check (EXISTS ( SELECT 1 FROM public.businesses b WHERE ((b.id = menu_items.business_id) AND (b.owner_id = (select auth.uid())))));
+alter policy "menu_items: owner read own" on public.menu_items
+  using (EXISTS ( SELECT 1 FROM public.businesses b WHERE ((b.id = menu_items.business_id) AND (b.owner_id = (select auth.uid())))));
+alter policy "menu_items: owner update" on public.menu_items
+  using (EXISTS ( SELECT 1 FROM public.businesses b WHERE ((b.id = menu_items.business_id) AND (b.owner_id = (select auth.uid())))))
+  with check (EXISTS ( SELECT 1 FROM public.businesses b WHERE ((b.id = menu_items.business_id) AND (b.owner_id = (select auth.uid())))));
+alter policy "profiles: owner can select" on public.profiles
+  using ((select auth.uid()) = id);
+alter policy "profiles: owner can update" on public.profiles
+  using ((select auth.uid()) = id)
+  with check ((select auth.uid()) = id);
+alter policy "promotions: owner delete" on public.promotions
+  using (EXISTS ( SELECT 1 FROM public.businesses b WHERE ((b.id = promotions.business_id) AND (b.owner_id = (select auth.uid())))));
+alter policy "promotions: owner insert" on public.promotions
+  with check (EXISTS ( SELECT 1 FROM public.businesses b WHERE ((b.id = promotions.business_id) AND (b.owner_id = (select auth.uid())))));
+alter policy "reviews: author delete" on public.reviews
+  using ((select auth.uid()) = user_id);
+alter policy "reviews: author read own" on public.reviews
+  using ((select auth.uid()) = user_id);
+alter policy "reviews: author update" on public.reviews
+  using ((select auth.uid()) = user_id)
+  with check ((select auth.uid()) = user_id);
+
+-- PostgREST picks up the new columns, function and policies.
 notify pgrst, 'reload schema';
