@@ -26,7 +26,9 @@ Errors of `notify_promotion`: `not_business_owner`, `business_not_public`,
 2. A statement trigger pokes push-dispatch with `pg_net` (`x-push-secret`).
    If pg_net or the settings are missing, nothing happens; a failed poke
    never blocks the insert.
-3. `pg_cron` pokes it every minute while unsent rows of the last day exist.
+3. `pg_cron` pokes it every minute while there is work: an unsent notice of a
+   user with a token, or one older than `push_claim_window_minutes` (60) to mark
+   (migration 58). A notice of a user without a token waits, and does not poke.
 4. push-dispatch claims up to 5 x 100 rows (each one **at most once**),
    checks consent again, sends a Spanish title/body built on the server
    (only the public business name; never customer names or user text) and

@@ -7,6 +7,8 @@
 --      the in-app list). Replaces the fixed one-day limit.
 --   2. Only notices of users with a token are claimed; consent is still checked
 --      at send time, so a refused notice is consumed and never sent later.
+--   3. The cron poke runs only when there is work (private.push_work_pending):
+--      a notice waiting for a token must not call the function every minute.
 -- Same arguments, return type and grants as 20261029000000_push_business_id.sql.
 -- Without pg_cron a waiting notice goes out with the next notification's poke.
 -- -----------------------------------------------------------------------------
@@ -68,5 +70,38 @@ $$;
 
 revoke execute on function public.claim_push_batch(integer) from public, anon, authenticated;
 grant execute on function public.claim_push_batch(integer) to service_role;
+
+create or replace function private.push_work_pending()
+returns boolean
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select exists (
+    select 1 from public.notifications n
+    where n.pushed_at is null
+      and (n.created_at <= now() - make_interval(mins => coalesce(
+             (select s.int_value from public.app_settings s where s.key = 'push_claim_window_minutes'), 60))
+           or exists (select 1 from public.device_tokens t where t.user_id = n.user_id))
+  )
+$$;
+
+revoke execute on function private.push_work_pending() from public, anon, authenticated;
+
+do $$
+begin
+  if exists (select 1 from pg_extension where extname = 'pg_cron')
+     and exists (select 1 from pg_extension where extname = 'pg_net') then
+    perform cron.unschedule(jobid) from cron.job where jobname = 'luma-push-dispatch';
+    perform cron.schedule('luma-push-dispatch', '* * * * *', $job$
+      select net.http_post(url := s.function_url, body := '{}'::jsonb,
+               headers := jsonb_build_object('Content-Type', 'application/json', 'x-push-secret', s.secret))
+      from private.push_settings s
+      where private.push_work_pending()
+    $job$);
+  end if;
+end;
+$$;
 
 notify pgrst, 'reload schema';
