@@ -57,7 +57,12 @@
     </p>
     }
     @if (store.pickup(); as point) {
+    <!-- MapLibre (about 1 MB) loads only once the screen is idle, never with the order itself. -->
+    @defer (on idle) {
     <app-route-map [lat]="point.latitude" [lng]="point.longitude" [name]="point.name" />
+    } @placeholder {
+    <div class="h-56 w-full rounded-lg border border-border bg-map-canvas" aria-hidden="true"></div>
+    }
     }
   </section>
 
