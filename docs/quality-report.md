@@ -13,7 +13,7 @@ dependency phase); "after" is round 10 phase B.
 | Duplicated code (jscpd) | 51 clones, 412 lines | 45 clones, 347 lines (0.90 %) | `.jscpd.json`; CI fails above 0.95 % |
 | Unused exports / types (knip) | 40 / 34 | 0 / 0 | `npx knip` |
 | TypeScript | strict off for indexes | `strict` + `noUncheckedIndexedAccess` (app, tests, functions) | `tsconfig.json`, each `deno.json` |
-| Initial bundle | 673.13 kB | 676.95 kB | `npm run build`; +2.3 kB ErrorLog and the push/realtime hardening, +0.5 kB route credits; the order screen loads MapLibre on idle (`@defer`, proven with `getDeferBlocks`) |
+| Initial bundle | 673.13 kB | 680.90 kB | `npm run build`; +2.3 kB ErrorLog and the push/realtime hardening, +0.5 kB route credits; the order screen loads MapLibre on idle (`@defer`, proven with `getDeferBlocks`) |
 | Unit test coverage | not measured | 83.58 % statements, 78.16 % branches, 75.42 % functions, 87.23 % lines | `ng test --coverage`; CI thresholds in `angular.json` |
 | Tests | 880 app, 134 scripts, 179 Deno, 794 SQL, 4 e2e | 916 app (225 files), 140+ scripts, 200+ Deno, 839 SQL, 6 e2e | the Definition of Done |
 

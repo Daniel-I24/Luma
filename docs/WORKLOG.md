@@ -194,7 +194,14 @@ deployment, no migration applied). Migrations 1 to 56 are taken as applied and
 - Tests are hermetic: test build with the placeholder environment and a client
   without network in `src/test-providers.ts`.
 
-Left: apply 57 and 58 after review, deploy nothing new (no Edge Function changed
+Verified on 2026-11-05: build (initial 680.90 kB), lint 0, type check of app and
+specs, 8 check:* scripts, 149 script tests before the last doc commit. At the close of
+B6: 916 app tests, 83.58 % statements. Not run at the close, the machine ran out of
+memory: the whole unit suite after the admin, push and error commits (39 affected
+spec files passed), the SQL suites on the final migration 58 (853 checks passed on
+its first version), e2e, check:responsive, Deno and the debug APK.
+
+Left: run those, apply 57 and 58 after review, deploy nothing new (no Edge Function changed
 in behaviour except logs: delete-account, geocode, whatsapp-webhook, route), try
 the phone list in docs/qa-checklist.md, signed release APK with R8, payments
 checklist when Wompi is turned on.
