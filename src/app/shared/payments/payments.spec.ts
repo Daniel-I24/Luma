@@ -52,6 +52,7 @@ describe('payments in the app', () => {
     expect(PaymentReturn.parse(`luma://payments/return?order=${ORDER}&id=x;drop`)).toEqual({ orderId: ORDER, transactionId: null });
     expect(PaymentReturn.parse('luma://payments/return?order=../../admin')).toBeNull();
     expect(PaymentReturn.parse(`https://evil.example/?order=${ORDER}`)).toBeNull();
+    expect(PaymentReturn.parse(`luma://payments/returned?order=${ORDER}`)).toBeNull();
   });
 
   it('a return link stores the transaction id and opens the order; the server decides the status', async () => {

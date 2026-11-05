@@ -27,8 +27,10 @@ export class PaymentReturn {
 
   /** Null for any other link or a malformed one. */
   public static parse(url: string): PaymentReturnLink | null {
-    if (!url.startsWith(PaymentReturn.PREFIX)) return null;
-    const query = new URLSearchParams(url.slice(PaymentReturn.PREFIX.length).replace(/^\?/, ''));
+    const rest = url.startsWith(PaymentReturn.PREFIX) ? url.slice(PaymentReturn.PREFIX.length) : null;
+    // Exactly the return path: "luma://payments/returned?…" is another link.
+    if (rest === null || (rest !== '' && !rest.startsWith('?'))) return null;
+    const query = new URLSearchParams(rest.slice(1));
     const orderId = query.get('order');
     if (!orderId || !PaymentReturn.UUID.test(orderId)) return null;
     const transactionId = query.get('id');
