@@ -391,7 +391,6 @@
     "none": "Sin reseñas"
   },
   "feed": {
-    "title": "Descubrir",
     "label": "Publicaciones de negocios cercanos",
     "loading": "Cargando publicaciones…",
     "position": "{{current}} de {{total}}",

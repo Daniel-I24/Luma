@@ -55,7 +55,7 @@ export class PublicOsrm {
 }
 
 /** { code: 'Ok', routes[0]: { geometry: LineString, distance m, duration s } }. */
-export function parseOsrm(body: unknown): Route {
+function parseOsrm(body: unknown): Route {
   const answer = body as { code?: unknown; routes?: { geometry?: { coordinates?: unknown }; distance?: unknown; duration?: unknown }[] };
   const first = answer?.routes?.[0];
   const coordinates = first?.geometry?.coordinates;

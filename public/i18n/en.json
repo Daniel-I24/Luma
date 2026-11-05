@@ -391,7 +391,6 @@
     "none": "No reviews yet"
   },
   "feed": {
-    "title": "Discover",
     "label": "Posts from nearby businesses",
     "loading": "Loading posts…",
     "position": "{{current}} of {{total}}",
