@@ -37,8 +37,12 @@ android {
     buildTypes {
         release {
             if (keystorePath) signingConfig signingConfigs.release
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            // R8 shrinks and obfuscates the release APK; Capacitor and Firebase bring their
+            // own keep rules. LUMA_R8=0 turns it off if a release build ever misbehaves.
+            def r8 = System.getenv('LUMA_R8') != '0'
+            minifyEnabled r8
+            shrinkResources r8
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }
