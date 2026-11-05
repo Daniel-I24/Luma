@@ -1,40 +1,11 @@
-import { Injectable, InjectionToken, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import type { PluginListenerHandle } from '@capacitor/core';
+import { ErrorCode } from '@core/errors/error-code';
+import { PushDiagnostics } from './push-diagnostics';
+import { PUSH_ENABLED, type PushAction, type PushChannel, type PushPermission } from './push-types';
 
-/** Set by scripts/build-flags.mjs (`ng build --define`). */
-declare const LUMA_PUSH_ENABLED: string | undefined;
-
-/**
- * Whether the APK has Firebase configured (android/app/google-services.json,
- * never committed): on when the file was in the build, or PUSH_ENABLED=1/0;
- * off in tests and plain `ng serve`, as registering for push without
- * Firebase crashes the Android app (docs/push-setup.md).
- */
-const PUSH_ENABLED = new InjectionToken<boolean>('PUSH_ENABLED', {
-  providedIn: 'root',
-  factory: () => typeof LUMA_PUSH_ENABLED !== 'undefined' && LUMA_PUSH_ENABLED === 'true',
-});
-
-/** Android notification importance: 4 high (heads-up), 3 default. */
-type AndroidImportance = 3 | 4;
-
-/** 'unavailable' on the web; 'not_configured' on a phone built without Firebase. */
-export type PushPermission = 'granted' | 'denied' | 'prompt' | 'unavailable' | 'not_configured';
-
-/** What a tapped notification carries (ids only, from push-dispatch). */
-export interface PushAction {
-  readonly type: string | null;
-  readonly orderId: string | null;
-  readonly businessId: string | null;
-}
-
-/** An Android notification channel; push-dispatch sends to 'orders' or 'promotions'. */
-export interface PushChannel {
-  readonly id: 'orders' | 'promotions';
-  readonly name: string;
-  readonly description: string;
-  /** Android importance: 4 high (heads-up), 3 default. */
-  readonly importance: AndroidImportance;
-}
+/** The plugin (tests give a double through plugin()). */
+export type PushPlugin = typeof import('@capacitor/push-notifications').PushNotifications;
 
 /** FCM answers in seconds; without an answer the registration counts as failed. */
 const REGISTER_TIMEOUT_MS = 20_000;
@@ -45,22 +16,32 @@ const LOCK_SCREEN_PRIVATE = 0;
 const text = (value: unknown): string | null => (typeof value === 'string' && value ? value : null);
 
 /**
- * PushPlatform — the device side of push notifications. The default
- * implementation uses @capacitor/push-notifications on Android (loaded
- * lazily) and reports "unavailable" on the web, where the in-app list is
- * the only channel, and while PUSH_ENABLED is false.
+ * PushPlatform — the device side of push notifications: the plugin on Android
+ * (loaded lazily), "unavailable" on the web, where the in-app list is the only
+ * channel, and while PUSH_ENABLED is false.
+ *
+ * The registration listeners stay on after register(), so a token FCM renews
+ * while the app is open still arrives (onTokenRenewed); unregister() removes
+ * only those. The tap listener is added once and is never removed.
  */
 @Injectable({ providedIn: 'root' })
 export class PushPlatform {
-  /** False until Firebase is configured (PUSH_ENABLED): then push is "unavailable". */
   private readonly enabled = inject(PUSH_ENABLED);
+  private readonly diagnostics = inject(PushDiagnostics);
 
-  private async plugin(): Promise<typeof import('@capacitor/push-notifications').PushNotifications | null> {
+  private registrationListeners: Promise<PluginListenerHandle[]> | null = null;
+  private pending: { resolve(token: string): void; reject(error: Error): void } | null = null;
+  private renewalListener: ((token: string) => void) | null = null;
+  private tapListening = false;
+
+  /** The plugin, or null without Firebase or outside the phone. */
+  protected async plugin(): Promise<PushPlugin | null> {
     if (!this.enabled || !(await this.native())) return null;
     return (await import('@capacitor/push-notifications')).PushNotifications;
   }
 
-  private async native(): Promise<boolean> {
+  /** Whether this is the Android app with the plugin installed. */
+  protected async native(): Promise<boolean> {
     const { Capacitor } = await import('@capacitor/core');
     return Capacitor.isNativePlatform() && Capacitor.isPluginAvailable('PushNotifications');
   }
@@ -81,28 +62,43 @@ export class PushPlatform {
     return receive === 'granted' ? 'granted' : 'denied';
   }
 
-  /** Registers with FCM and resolves to the device token. */
+  /** Registers with FCM and resolves to the device token; every failure rejects once, here. */
   public async register(): Promise<string> {
     const push = await this.plugin();
     if (!push) throw new Error('push_unavailable');
-    const token = new Promise<string>((resolve, reject) => {
-      setTimeout(() => reject(new Error('push_registration_timeout')), REGISTER_TIMEOUT_MS);
-      void push.addListener('registration', ({ value }) => resolve(value));
-      void push.addListener('registrationError', () => reject(new Error('push_registration_failed')));
-    });
-    await push.register();
+    let timer: ReturnType<typeof setTimeout> | undefined;
     try {
-      return await token;
+      await this.listenRegistration(push);
+      const token = new Promise<string>((resolve, reject) => {
+        this.pending = { resolve, reject };
+        timer = setTimeout(() => reject(new Error('push_registration_timeout')), REGISTER_TIMEOUT_MS);
+      });
+      const accepted = push.register().then(() => this.diagnostics.record('register', true, 'accepted'));
+      // Awaited together, so neither can reject unobserved.
+      const [value] = await Promise.all([token, accepted]);
+      return value;
+    } catch (error) {
+      this.diagnostics.record('error', false, ErrorCode.of(error));
+      throw error;
     } finally {
-      await push.removeAllListeners();
-      await this.listenActions();
+      clearTimeout(timer);
+      this.pending = null;
     }
   }
 
-  /** Stops receiving pushes on this device. */
+  /** Calls `listener` with a token FCM renewed outside of register(). */
+  public onTokenRenewed(listener: (token: string) => void): void {
+    this.renewalListener = listener;
+  }
+
+  /** Stops receiving pushes on this device (FCM deletes the token) and removes its own listeners. */
   public async unregister(): Promise<void> {
     const push = await this.plugin();
-    if (push) await push.unregister();
+    if (!push) return;
+    const listeners = this.registrationListeners;
+    this.registrationListeners = null;
+    await Promise.all((await listeners)?.map((handle) => handle.remove()) ?? []);
+    await push.unregister();
   }
 
   /** Creates (or renames) the Android channels; a no-op elsewhere. */
@@ -112,21 +108,40 @@ export class PushPlatform {
     for (const channel of channels) await push.createChannel({ ...channel, visibility: LOCK_SCREEN_PRIVATE });
   }
 
-  private actionListener: ((action: PushAction) => void) | null = null;
-
-  /** Calls `listener` when the user taps a notification. */
+  /** Calls `listener` when the user taps a notification (added once for the whole run). */
   public async onAction(listener: (action: PushAction) => void): Promise<void> {
-    this.actionListener = listener;
-    await this.listenActions();
-  }
-
-  private async listenActions(): Promise<void> {
     const push = await this.plugin();
-    const listener = this.actionListener;
-    if (!push || !listener) return;
+    if (!push || this.tapListening) return;
+    this.tapListening = true;
     await push.addListener('pushNotificationActionPerformed', ({ notification }) => {
       const data = (notification.data ?? {}) as Record<string, unknown>;
       listener({ type: text(data['type']), orderId: text(data['order_id']), businessId: text(data['business_id']) });
     });
+  }
+
+  /** Both listeners are in place before register() runs; a failure can be tried again. */
+  private listenRegistration(push: PushPlugin): Promise<PluginListenerHandle[]> {
+    this.registrationListeners ??= Promise.all([
+      push.addListener('registration', ({ value }) => this.tokenArrived(value)),
+      push.addListener('registrationError', ({ error }) => this.registrationFailed(error)),
+    ]).catch((error: unknown) => {
+      this.registrationListeners = null;
+      throw error;
+    });
+    return this.registrationListeners;
+  }
+
+  private tokenArrived(token: string): void {
+    this.diagnostics.record('event', true, PushDiagnostics.mask(token));
+    if (this.pending) this.pending.resolve(token);
+    else this.renewalListener?.(token);
+  }
+
+  /** FCM refused: the rejection carries its code (SERVICE_NOT_AVAILABLE…) to the catch of register(). */
+  private registrationFailed(message: string): void {
+    const code = ErrorCode.of({ message });
+    const reason = code === 'unknown' ? 'push_registration_failed' : code;
+    if (this.pending) this.pending.reject(new Error(reason));
+    else this.diagnostics.record('error', false, reason);
   }
 }

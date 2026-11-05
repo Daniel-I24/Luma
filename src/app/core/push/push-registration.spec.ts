@@ -6,7 +6,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '@core/auth/auth.service';
 import { SIGN_OUT_HOOK_TIMEOUT_MS, SignOutHooks } from '@core/auth/session-end';
 import { DeviceTokenRepository } from './device-token.repository';
-import { type PushAction, PushPlatform } from './push-platform';
+import { PushPlatform } from './push-platform';
+import type { PushAction } from './push-types';
 import { PushRegistration } from './push-registration.service';
 
 describe('PushRegistration', () => {
@@ -16,14 +17,16 @@ describe('PushRegistration', () => {
     permission: vi.fn(),
     requestPermission: vi.fn(),
     register: vi.fn().mockResolvedValue('tok-1'),
-    unregister: vi.fn(),
+    unregister: vi.fn().mockResolvedValue(undefined),
+    onTokenRenewed: vi.fn(),
     createChannels: vi.fn().mockResolvedValue(undefined),
     onAction: vi.fn(async (listener: (action: PushAction) => void) => void (onAction = listener)),
   };
-  const tokens = { register: vi.fn().mockResolvedValue(true), unregister: vi.fn().mockResolvedValue(true) };
+  const tokens = { register: vi.fn().mockResolvedValue(null), unregister: vi.fn().mockResolvedValue(null) };
 
   beforeEach(() => {
     vi.clearAllMocks();
+    localStorage.clear();
     user.set(null);
     TestBed.configureTestingModule({
       providers: [
@@ -71,6 +74,42 @@ describe('PushRegistration', () => {
     await vi.waitFor(() => expect(tokens.register).toHaveBeenCalled());
     await TestBed.inject(SignOutHooks).run();
     expect(tokens.unregister).toHaveBeenCalledWith('tok-1');
+    expect(platform.unregister).toHaveBeenCalledTimes(1);
+  });
+
+  it('unlinks a token registered in an earlier run, even without permission to refresh it', async () => {
+    localStorage.setItem('luma.push.token', 'tok-old');
+    platform.permission.mockResolvedValue('denied');
+    service();
+    await TestBed.inject(SignOutHooks).run();
+    expect(tokens.unregister).toHaveBeenCalledWith('tok-old');
+    expect(platform.unregister).toHaveBeenCalledTimes(1);
+    expect(localStorage.getItem('luma.push.token')).toBeNull();
+  });
+
+  it('starting the app without a session keeps the link; a session that ends stops FCM', async () => {
+    localStorage.setItem('luma.push.token', 'tok-1');
+    platform.permission.mockResolvedValue('granted');
+    service();
+    expect(platform.unregister).not.toHaveBeenCalled();
+    user.set({ id: 'u1' });
+    TestBed.tick();
+    await vi.waitFor(() => expect(tokens.register).toHaveBeenCalled());
+    user.set(null);
+    TestBed.tick();
+    await vi.waitFor(() => expect(platform.unregister).toHaveBeenCalledTimes(1));
+  });
+
+  it('a token renewed with the app open replaces the old one', async () => {
+    platform.permission.mockResolvedValue('granted');
+    service();
+    user.set({ id: 'u1' });
+    TestBed.tick();
+    await vi.waitFor(() => expect(localStorage.getItem('luma.push.token')).toBe('tok-1'));
+    (platform.onTokenRenewed.mock.calls[0]?.[0] as (token: string) => void)('tok-2');
+    await vi.waitFor(() => expect(tokens.unregister).toHaveBeenCalledWith('tok-1'));
+    expect(tokens.register).toHaveBeenLastCalledWith('tok-2');
+    expect(localStorage.getItem('luma.push.token')).toBe('tok-2');
   });
 
   it('a tapped notice opens the screen PushRoute picks', async () => {

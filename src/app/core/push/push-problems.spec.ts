@@ -6,6 +6,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '@core/auth/auth.service';
 import { ErrorLog } from '@core/errors/error-log';
 import { DeviceTokenRepository } from './device-token.repository';
+import { PushDiagnostics } from './push-diagnostics';
 import { PushPlatform } from './push-platform';
 import { PushRegistration } from './push-registration.service';
 
@@ -15,8 +16,10 @@ describe('PushRegistration problems', () => {
     permission: vi.fn(),
     requestPermission: vi.fn(),
     register: vi.fn(),
+    unregister: vi.fn(),
     createChannels: vi.fn(),
     onAction: vi.fn(),
+    onTokenRenewed: vi.fn(),
   };
   const tokens = { register: vi.fn(), unregister: vi.fn() };
 
@@ -24,7 +27,8 @@ describe('PushRegistration problems', () => {
     vi.resetAllMocks();
     platform.createChannels.mockResolvedValue(undefined);
     platform.register.mockResolvedValue('tok-1');
-    tokens.register.mockResolvedValue(true);
+    tokens.register.mockResolvedValue(null);
+    localStorage.clear();
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
@@ -64,12 +68,24 @@ describe('PushRegistration problems', () => {
     const { push } = await enable();
     expect(push.problem()).toBe('registration_failed');
 
-    tokens.register.mockResolvedValueOnce(false);
+    tokens.register.mockResolvedValueOnce('email_not_confirmed');
     await push.enable();
     expect(push.problem()).toBe('token_save_failed');
+    // The reason of the failed RPC is kept, for support.
+    expect(TestBed.inject(PushDiagnostics).steps()['rpc']).toMatchObject({ ok: false, detail: 'email_not_confirmed' });
+    expect(TestBed.inject(ErrorLog).entries()[0]?.message).toContain('email_not_confirmed');
 
     await push.enable();
     expect(push.problem()).toBeNull();
+  });
+
+  it('an FCM timeout is a registration problem with its code, not a global error', async () => {
+    platform.permission.mockResolvedValue('granted');
+    platform.register.mockRejectedValueOnce(new Error('push_registration_timeout'));
+    const { push, log } = await enable();
+    expect(push.problem()).toBe('registration_failed');
+    expect(log.entries()[0]).toMatchObject({ source: 'push', message: 'push_registration_timeout' });
+    expect(tokens.register).not.toHaveBeenCalled();
   });
 
   it('a plugin that throws while reading the permission leaves push unavailable', async () => {

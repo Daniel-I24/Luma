@@ -2,48 +2,50 @@ import { Injectable, effect, inject, signal, untracked } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
-import { ErrorLog } from '@core/errors/error-log';
 import { SignOutHooks } from '@core/auth/session-end';
-import { DeviceTokenRepository } from './device-token.repository';
-import { type PushAction, type PushChannel, type PushPermission, PushPlatform } from './push-platform';
+import { ErrorCode } from '@core/errors/error-code';
+import { ErrorLog } from '@core/errors/error-log';
+import { PushDiagnostics } from './push-diagnostics';
+import { PushPlatform } from './push-platform';
 import { PushRoute } from './push-route';
+import { PushTokenLink } from './push-token-link.service';
+import { ANDROID_IMPORTANCE, type PushAction, type PushChannel, type PushPermission } from './push-types';
 
 /** Why push is not working on this phone, each with its own message. */
 export type PushProblem = 'denied' | 'not_configured' | 'registration_failed' | 'token_save_failed';
+const PROBLEM_OF: Partial<Record<PushPermission, PushProblem>> = { denied: 'denied', not_configured: 'not_configured' };
 
 /**
- * PushRegistration — links this device to the signed-in user for push
- * notifications. Never asks for permission by itself: only enable() does,
- * from a user action (the notification settings). When permission is
- * already granted, each sign-in refreshes the token; signing out removes
- * it first. A tapped notification opens the screen PushRoute picks.
- * Nothing here throws: each failure becomes a PushProblem the settings
- * explain, and the error itself goes to ErrorLog.
+ * PushRegistration — links this device to the signed-in user. Only enable(), from
+ * a user action, asks for permission. With permission, each sign-in or start with a
+ * session links the token; signing out unlinks it (PushTokenLink). Nothing throws.
  */
 @Injectable({ providedIn: 'root' })
 export class PushRegistration {
   private readonly platform = inject(PushPlatform);
-  private readonly tokens = inject(DeviceTokenRepository);
+  private readonly link = inject(PushTokenLink);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly transloco = inject(TranslocoService);
   private readonly log = inject(ErrorLog);
+  private readonly diagnostics = inject(PushDiagnostics);
 
   private readonly _permission = signal<PushPermission>('prompt');
   private readonly _problem = signal<PushProblem | null>(null);
-  private token: string | null = null;
+  private refreshing: Promise<void> | null = null;
+  private previousUser: string | null = null;
   public readonly permission = this._permission.asReadonly();
   /** The last failure of enable() or a sign-in refresh; null when fine. */
   public readonly problem = this._problem.asReadonly();
 
   constructor() {
-    inject(SignOutHooks).add(() => this.forget());
+    inject(SignOutHooks).add(() => this.link.forget());
+    this.platform.onTokenRenewed((token) => {
+      if (this.auth.user()) void this.link.renewed(token);
+    });
     effect(() => {
       const userId = this.auth.user()?.id ?? null;
-      untracked(() => {
-        if (userId) void this.refresh();
-        else this.token = null;
-      });
+      untracked(() => this.userChanged(userId));
     });
   }
 
@@ -63,49 +65,67 @@ export class PushRegistration {
     if (permission === 'prompt') {
       try {
         permission = await this.platform.requestPermission();
+        this.diagnostics.record('permission', permission === 'granted', permission);
       } catch (error) {
         this.log.record(error, 'push');
+        this.diagnostics.record('permission', false, ErrorCode.of(error));
         permission = 'denied';
       }
     }
     this._permission.set(permission);
-    this._problem.set(PushRegistration.problemOf(permission));
+    this._problem.set(PROBLEM_OF[permission] ?? null);
     if (permission === 'granted') await this.refresh();
     return permission;
   }
 
-  private async refresh(): Promise<void> {
-    if (!this.auth.user() || (await this.currentPermission()) !== 'granted') return;
+  private userChanged(userId: string | null): void {
+    if (!userId && this.previousUser) void this.link.sessionEnded();
+    this.previousUser = userId;
+    if (userId) void this.refresh();
+  }
+
+  /** One at a time: a sign-in and enable() can arrive together. */
+  private refresh(): Promise<void> {
+    this.refreshing ??= this.linkDevice().finally(() => (this.refreshing = null));
+    return this.refreshing;
+  }
+
+  private async linkDevice(): Promise<void> {
+    if (!this.auth.user()) return;
+    const permission = await this.currentPermission();
+    this._permission.set(permission);
+    if (permission !== 'granted') return;
     let token: string;
     try {
-      await this.platform.createChannels(this.channels());
+      await this.channelsReady();
       token = await this.platform.register();
     } catch (error) {
-      return this.fail('registration_failed', error);
+      this.log.record(error, 'push');
+      return this._problem.set('registration_failed');
     }
-    if (!(await this.tokens.register(token))) return this.fail('token_save_failed', new Error('register_device_token failed'));
-    this.token = token;
-    this._problem.set(null);
+    this._problem.set((await this.link.save(token)) ? null : 'token_save_failed');
+  }
+
+  private async channelsReady(): Promise<void> {
+    try {
+      await this.platform.createChannels(this.channels());
+      this.diagnostics.record('channels', true, 'orders,promotions');
+    } catch (error) {
+      this.diagnostics.record('channels', false, ErrorCode.of(error));
+      throw error;
+    }
   }
 
   private async currentPermission(): Promise<PushPermission> {
     try {
-      return await this.platform.permission();
+      const permission = await this.platform.permission();
+      this.diagnostics.record('permission', permission === 'granted', permission);
+      return permission;
     } catch (error) {
       this.log.record(error, 'push');
+      this.diagnostics.record('permission', false, ErrorCode.of(error));
       return 'unavailable';
     }
-  }
-
-  private fail(problem: PushProblem, error: unknown): void {
-    this.log.record(error, 'push');
-    this._problem.set(problem);
-  }
-
-  private async forget(): Promise<void> {
-    const token = this.token;
-    this.token = null;
-    if (token && !(await this.tokens.unregister(token))) this.log.record(new Error('unregister_device_token failed'), 'push');
   }
 
   private async open(action: PushAction): Promise<void> {
@@ -116,20 +136,14 @@ export class PushRegistration {
     }
   }
 
-  private static problemOf(permission: PushPermission): PushProblem | null {
-    if (permission === 'denied') return 'denied';
-    return permission === 'not_configured' ? 'not_configured' : null;
-  }
-
   /** Channel names are shown in Android settings, so they are translated. */
   private channels(): PushChannel[] {
-    const t = (key: string): string => this.transloco.translate(key);
-    return [
-      { id: 'orders', name: t('push.channels.orders.name'), description: t('push.channels.orders.description'), importance: 4 },
-      {
-        id: 'promotions', name: t('push.channels.promotions.name'),
-        description: t('push.channels.promotions.description'), importance: 3,
-      },
-    ];
+    const channel = (id: PushChannel['id'], importance: PushChannel['importance']): PushChannel => ({
+      id,
+      importance,
+      name: this.transloco.translate(`push.channels.${id}.name`),
+      description: this.transloco.translate(`push.channels.${id}.description`),
+    });
+    return [channel('orders', ANDROID_IMPORTANCE.high), channel('promotions', ANDROID_IMPORTANCE.normal)];
   }
 }

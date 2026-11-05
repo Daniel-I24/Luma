@@ -1,4 +1,4 @@
-import type { PushAction } from './push-platform';
+import type { PushAction } from './push-types';
 
 /** Route commands for Router.navigate. */
 export type RouteCommands = readonly string[];
