@@ -27,16 +27,7 @@ export class AuthCodeService {
 
   /** Confirms a new account; on success the user is signed in. */
   public confirmSignup(email: string, code: string): Promise<AuthResult> {
-    const parsed = verifyCodeSchema.safeParse({ email, code });
-    if (!parsed.success) return Promise.resolve(AuthResults.invalid(parsed.error));
-    return this.run(async () => {
-      const { error } = await this.auth.verifyOtp({
-        email: parsed.data.email,
-        token: parsed.data.code,
-        type: 'signup',
-      });
-      return error ? AuthResults.fail(AuthErrors.mapAuthError(error, this.online())) : OK;
-    });
+    return this.verify(email, code, 'signup');
   }
 
   /** Sends a new sign-up confirmation code to the e-mail (neutral answer if the address is unknown). */
@@ -54,12 +45,7 @@ export class AuthCodeService {
    * is asked for. A right code signs the user in (Supabase's recovery session).
    */
   public verifyRecoveryCode(email: string, code: string): Promise<AuthResult> {
-    const parsed = verifyCodeSchema.safeParse({ email, code });
-    if (!parsed.success) return Promise.resolve(AuthResults.invalid(parsed.error));
-    return this.run(async () => {
-      const { error } = await this.auth.verifyOtp({ email: parsed.data.email, token: parsed.data.code, type: 'recovery' });
-      return error ? AuthResults.fail(AuthErrors.mapAuthError(error, this.online())) : OK;
-    });
+    return this.verify(email, code, 'recovery');
   }
 
   /** Step 3: saves the new password of the recovery session. */
@@ -68,6 +54,15 @@ export class AuthCodeService {
     if (!parsed.success) return Promise.resolve(AuthResults.invalid(parsed.error));
     return this.run(async () => {
       const { error } = await this.auth.updateUser({ password: parsed.data });
+      return error ? AuthResults.fail(AuthErrors.mapAuthError(error, this.online())) : OK;
+    });
+  }
+
+  private verify(email: string, code: string, type: 'signup' | 'recovery'): Promise<AuthResult> {
+    const parsed = verifyCodeSchema.safeParse({ email, code });
+    if (!parsed.success) return Promise.resolve(AuthResults.invalid(parsed.error));
+    return this.run(async () => {
+      const { error } = await this.auth.verifyOtp({ email: parsed.data.email, token: parsed.data.code, type });
       return error ? AuthResults.fail(AuthErrors.mapAuthError(error, this.online())) : OK;
     });
   }

@@ -30,20 +30,17 @@ export class SignupDraftStore {
   /** Sets a field; a field that showed an error is checked again as it changes. */
   public update<K extends SignupField>(field: K, value: SignupDraft[K]): void {
     this._draft.update((draft) => ({ ...draft, [field]: value }));
-    if (!this._errors()[field]) return;
-    const error = SignupValidation.validateField(field, this._draft());
-    this._errors.update((errors) => {
-      const next = { ...errors };
-      if (error) next[field] = error;
-      else delete next[field];
-      return next;
-    });
+    if (this._errors()[field]) this.recheck(field);
   }
 
   /** The user left a field: show its error now (an empty field waits for "Continuar"). */
   public touch(field: SignupField): void {
     const value = this._draft()[field];
-    if (typeof value === 'string' && value.trim() === '') return;
+    if (typeof value !== 'string' || value.trim() !== '') this.recheck(field);
+  }
+
+  /** The field's error from the current draft (removed when it is valid). */
+  private recheck(field: SignupField): void {
     const error = SignupValidation.validateField(field, this._draft());
     this._errors.update((errors) => {
       const next = { ...errors };
