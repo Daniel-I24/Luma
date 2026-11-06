@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { SupabaseService } from '@core/supabase/supabase.service';
 import type { RepoResult } from '@shared/business/data/business.repository';
+import { FunctionFailure } from './function-failure';
 
 /** business_review_flags(business): warning signs for the review. */
 export interface ReviewFlags {
@@ -85,14 +86,23 @@ export class AdminOperationsRepository {
   public async voidPayment(paymentId: string): Promise<RepoResult<string>> {
     const { data, error } = await this.db.functions.invoke('void-payment', { method: 'POST', body: { payment_id: paymentId } });
     const result = (data as { result?: unknown } | null)?.result;
-    return error || typeof result !== 'string' ? { data: null, errorKey: FAILED } : { data: result, errorKey: null };
+    if (error) return { data: null, errorKey: await this.failureKey(error) };
+    return typeof result !== 'string' ? { data: null, errorKey: FAILED } : { data: result, errorKey: null };
   }
 
   /** Runs payment reconciliation now; returns how many payments changed. */
   public async reconcile(): Promise<RepoResult<number>> {
     const { data, error } = await this.db.functions.invoke('reconcile-payments', { method: 'POST' });
     const applied = (data as { applied?: unknown } | null)?.applied;
-    return error || typeof applied !== 'number' ? { data: null, errorKey: FAILED } : { data: applied, errorKey: null };
+    if (error) return { data: null, errorKey: await this.failureKey(error) };
+    return typeof applied !== 'number' ? { data: null, errorKey: FAILED } : { data: applied, errorKey: null };
+  }
+
+  /** Why a payment function failed; a 503 with payments switched off says so. */
+  private async failureKey(error: unknown): Promise<string> {
+    const { data } = await this.db.rpc('payment_config');
+    const enabled = (data as { enabled?: unknown } | null)?.enabled;
+    return FunctionFailure.withConfig(FunctionFailure.keyOf(error), typeof enabled === 'boolean' ? enabled : null);
   }
 
   private async list<T>(name: string, args: Record<string, unknown>): Promise<RepoResult<T[]>> {
