@@ -102,7 +102,7 @@ export class PushPlatform {
   public async createChannels(channels: readonly PushChannel[]): Promise<void> {
     const push = (await this.plugin())?.push;
     if (!push) return;
-    for (const channel of channels) await push.createChannel({ ...channel, visibility: LOCK_SCREEN_PRIVATE });
+    for (const channel of channels) await push.createChannel({ ...channel, visibility: LOCK_SCREEN_PRIVATE, vibration: true });
   }
 
   /** Calls `listener` when the user taps a notification (added once for the whole run). */

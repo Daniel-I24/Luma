@@ -14,6 +14,8 @@ const config: CapacitorConfig = {
   plugins: {
     // The WebView shrinks above the keyboard so focused fields stay visible.
     Keyboard: { resize: 'body', resizeOnFullScreen: true },
+    // With the app open too, FCM's message becomes a system notification (sound, banner, tap).
+    PushNotifications: { presentationOptions: ['badge', 'sound', 'alert'] },
   },
 };
 
