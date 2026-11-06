@@ -33,11 +33,18 @@ export interface ReconcileItem {
 }
 
 /** Server-only data access of the payment functions (service role, RPCs only). */
+/** A row of payments_to_void: a cancelled card payment waiting for its refund. */
+export interface VoidItem {
+  readonly transactionId: string;
+  readonly environment: 'test' | 'prod';
+}
+
 export interface PaymentRepository {
   eventSeen(transactionId: string, status: string): Promise<boolean>;
   attempt(reference: string): Promise<AttemptView | null>;
   apply(event: ConfirmedEvent): Promise<ApplyOutcome>;
   toReconcile(): Promise<readonly ReconcileItem[]>;
+  toVoid(): Promise<readonly VoidItem[]>;
 }
 
 /** The part of a Supabase client the repository uses. */
@@ -73,6 +80,14 @@ export class SupabasePaymentRepository implements PaymentRepository {
     });
     if (typeof outcome !== 'string' || !OUTCOMES.has(outcome as ApplyOutcome)) throw new Error('apply_failed');
     return outcome as ApplyOutcome;
+  }
+
+  public async toVoid(): Promise<readonly VoidItem[]> {
+    const rows = await this.call('payments_to_void', {});
+    return (Array.isArray(rows) ? rows : []).map((row: Record<string, string>) => ({
+      transactionId: String(row['transaction_id']),
+      environment: row['environment'] === 'prod' ? 'prod' : 'test',
+    }));
   }
 
   public async toReconcile(): Promise<readonly ReconcileItem[]> {

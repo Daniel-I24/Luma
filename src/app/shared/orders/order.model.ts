@@ -57,7 +57,7 @@ export interface Order {
   /** none, pending, approved, declined, voided, refund_required, refunded or error. */
   payment_status: PaymentStatus;
   /** Why the business cancelled it, when it did after accepting. */
-  cancel_reason: 'out_of_stock' | 'closed' | 'no_show' | 'other' | null;
+  cancel_reason: 'out_of_stock' | 'closed' | 'no_show' | 'other' | 'customer' | 'payment_expired' | null;
   created_at: string;
   updated_at: string;
   business: OrderBusiness | null;

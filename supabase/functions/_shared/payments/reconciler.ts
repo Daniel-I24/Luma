@@ -8,6 +8,13 @@ export interface ReconcileReport {
   readonly checked: number;
   readonly applied: number;
   readonly skipped: number;
+  /** Refunds of card payments settled here, through the Wompi API. */
+  readonly voided: number;
+}
+
+/** The Wompi API, as this class uses it. */
+export interface ReconcileApi extends TransactionSource {
+  void(id: string): Promise<boolean>;
 }
 
 /**
@@ -21,7 +28,7 @@ export interface ReconcileReport {
 export class Reconciler {
   public constructor(
     private readonly repository: PaymentRepository,
-    private readonly api: TransactionSource,
+    private readonly api: ReconcileApi,
     private readonly applier: PaymentApplier,
     private readonly environment: WompiEnvironment,
   ) {}
@@ -44,6 +51,21 @@ export class Reconciler {
         skipped++;
       }
     }
-    return { checked: items.length, applied, skipped };
+    return { checked: items.length, applied, skipped, voided: await this.voidRefunds() };
+  }
+
+  /** A cancelled card payment: void it. What Wompi refuses stays for the team (Operaciones). */
+  private async voidRefunds(): Promise<number> {
+    let voided = 0;
+    for (const item of await this.repository.toVoid()) {
+      try {
+        if (item.environment !== this.environment || !(await this.api.void(item.transactionId))) continue;
+        const tx = await this.api.transaction(item.transactionId);
+        if (tx?.status === 'VOIDED' && (await this.applier.apply(tx, 'reconcile')) === 'applied') voided++;
+      } catch {
+        // Next run tries again.
+      }
+    }
+    return voided;
   }
 }

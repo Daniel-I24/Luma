@@ -35,8 +35,7 @@ select tests.expect_error('authenticated', tests.id('ana'),
 
 select tests.exec_as('authenticated', tests.id('owner'),
   $$select public.set_order_status(tests.order_id('ana-2'), 'accepted')$$);
-select tests.expect_error('authenticated', tests.id('ana'),
-  $$select public.cancel_order(tests.order_id('ana-2'))$$, 'invalid_transition');
+-- From 'preparing' on, the customer cannot cancel: supabase/tests/cancellation_rules.sql.
 
 -- ── set_order_status: only the business owner, only valid transitions ───────
 select tests.expect_error('authenticated', tests.id('ana'),

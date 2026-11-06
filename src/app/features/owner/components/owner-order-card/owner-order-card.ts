@@ -19,6 +19,14 @@ const STATUS_STRIPE: Readonly<Record<string, string>> = {
   cancelled: 'border-l-danger',
 };
 
+/** What the business must know about the money of an order. */
+const PAYMENT_KEY: Readonly<Record<string, string>> = {
+  approved: 'businessOrders.paidOnline',
+  refund_required: 'businessOrders.paymentRefunding',
+  refunded: 'businessOrders.paymentRefunded',
+  voided: 'businessOrders.paymentVoided',
+};
+
 /**
  * OwnerOrderCard — one order on the owner's board: customer label, times,
  * lines, the customer's notes (plain text, escaped by interpolation), total
@@ -48,6 +56,7 @@ export class OwnerOrderCard {
   protected readonly avatarUrl = signal<string | null>(null);
   private readonly avatars = inject(AvatarRepository);
   private readonly log = inject(ErrorLog);
+  protected readonly paymentKey = computed(() => PAYMENT_KEY[this.order().payment_status] ?? null);
   protected readonly paidOnline = computed(() => this.order().payment_status === 'approved');
   protected readonly placedAt = computed(() => DateFormat.formatTime(this.order().created_at, this.lang()));
   protected readonly pickupAt = computed(() => {

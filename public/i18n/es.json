@@ -498,7 +498,7 @@
       "cancelled": "Este pedido fue cancelado.",
       "cancel": "Cancelar pedido",
       "cancelTitle": "¿Cancelar el pedido?",
-      "cancelDescription": "El restaurante aún no lo ha aceptado. Si lo cancelas no se preparará.",
+      "cancelDescription": "Si lo cancelas no se preparará. Si ya pagaste en línea, te devolvemos el dinero.",
       "cancelConfirm": "Sí, cancelar",
       "keep": "Mantener pedido",
       "notFoundDescription": "Puede que el enlace sea incorrecto o que el pedido no sea tuyo.",
@@ -506,7 +506,11 @@
         "walk": "A unos {{minutes}} min a pie (aprox.)",
         "vehicle": "A unos {{minutes}} min en vehículo (aprox.)"
       },
-      "orderAgain": "Pedir de nuevo"
+      "orderAgain": "Pedir de nuevo",
+      "cancelledByYou": "Cancelaste este pedido.",
+      "paymentExpired": "Se acabó el tiempo para pagar: el pedido expiró y no se cobró nada.",
+      "cancelledByBusiness": "El negocio canceló este pedido.",
+      "cancelLocked": "El negocio ya está preparando tu pedido, así que no se puede cancelar desde aquí. Si tienes un problema, escríbele al negocio."
     },
     "errors": {
       "loadTitle": "No se pudieron cargar los pedidos",
@@ -537,7 +541,8 @@
       "trustPendingLimitOnline": "Ya tienes un pedido para pagar al recoger. Recógelo o paga este en línea.",
       "seePendingOrder": "Ver mi pedido pendiente",
       "ownBusiness": "Este negocio es tuyo: no puedes pedir en tu propio negocio. Para probarlo, usa una cuenta de cliente.",
-      "onlineInReview": "Este negocio aún está en verificación: por ahora solo acepta pagar al recoger."
+      "onlineInReview": "Este negocio aún está en verificación: por ahora solo acepta pagar al recoger.",
+      "tooLateToCancel": "El negocio ya empezó a preparar este pedido: no se puede cancelar."
     }
   },
   "reviews": {
@@ -1019,14 +1024,19 @@
       "out_of_stock": "Se agotó un producto",
       "closed": "Tuvimos que cerrar",
       "no_show": "El cliente no llegó",
-      "other": "Otro motivo"
+      "other": "Otro motivo",
+      "customer": "el cliente lo canceló",
+      "payment_expired": "no se pagó a tiempo"
     },
     "cancelTitle": "¿Por qué cancelas el pedido?",
     "cancelDescription": "Le avisaremos al cliente con el motivo. Si pagó en línea, se le devolverá el dinero.",
     "cancelConfirm": "Cancelar pedido",
     "noShowTitle": "¿El cliente no llegó?",
     "noShowDescription": "El pedido se cancelará. Tres pedidos sin recoger en 30 días limitan la cuenta del cliente.",
-    "noShowConfirm": "Sí, no llegó"
+    "noShowConfirm": "Sí, no llegó",
+    "paymentRefunding": "Reembolso en proceso: el cliente pagó en línea",
+    "paymentRefunded": "Pago reembolsado al cliente",
+    "paymentVoided": "Pago anulado"
   },
   "notifications": {
     "title": "Notificaciones",
@@ -1245,7 +1255,13 @@
       },
       "errors": {
         "load": "No se pudieron cargar las operaciones.",
-        "failed": "La acción no se pudo completar."
+        "failed": "La acción no se pudo completar.",
+        "notDeployed": "La función de pagos no está desplegada en Supabase (404). Despliega reconcile-payments y void-payment.",
+        "needsMfa": "Esta acción necesita tu cuenta de administración con el segundo factor activo. Vuelve a entrar con tu código.",
+        "missingKeys": "A la función de pagos le faltan las claves de Wompi (secretos WOMPI_*).",
+        "paymentsOff": "Los pagos en línea están desactivados y no tienen claves de Wompi: no hay nada que conciliar.",
+        "notVoidable": "Este pago ya no se puede anular.",
+        "network": "No hubo respuesta de la función de pagos. Revisa tu conexión e inténtalo de nuevo."
       },
       "device": "Notificaciones en mi teléfono",
       "pushHealth": {

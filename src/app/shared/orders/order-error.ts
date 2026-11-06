@@ -12,6 +12,7 @@ const ORDER_ERROR_KEYS: Readonly<Record<string, string>> = {
   too_many_pending: 'orders.errors.tooManyPending',
   order_not_found: 'orders.errors.notFound',
   invalid_transition: 'orders.errors.invalidTransition',
+  too_late_to_cancel: 'orders.errors.tooLateToCancel',
   too_many_orders: 'orders.errors.tooManyOrders',
   email_not_confirmed: 'errors.emailNotConfirmed',
   profile_incomplete: 'orders.errors.profileIncomplete',

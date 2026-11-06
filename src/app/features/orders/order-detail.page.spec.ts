@@ -52,8 +52,14 @@ describe('OrderDetailPage', () => {
     expect(el.querySelector('a[href*="destination="]')).toBeNull();
   });
 
-  it('hides "Cancelar" once the order left pending', async () => {
-    expect(cancelButton(await renderDetail('accepted'))).toBeUndefined();
+  it('offers "Cancelar" until the kitchen starts', async () => {
+    expect(cancelButton(await renderDetail('accepted'))).toBeDefined();
+  });
+
+  it.each(['preparing', 'ready'] as const)('%s: no "Cancelar", and the screen says why', async (status) => {
+    const page = await renderDetail(status);
+    expect(cancelButton(page)).toBeUndefined();
+    expect((page as HTMLElement).querySelector('[role="note"]')).not.toBeNull();
   });
 
   it('a status change of this order on the business phone refreshes it; other orders do not', async () => {

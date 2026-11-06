@@ -498,7 +498,7 @@
       "cancelled": "This order was cancelled.",
       "cancel": "Cancel order",
       "cancelTitle": "Cancel the order?",
-      "cancelDescription": "The restaurant has not accepted it yet. If you cancel, it will not be prepared.",
+      "cancelDescription": "If you cancel it, it will not be prepared. If you already paid online, we refund you.",
       "cancelConfirm": "Yes, cancel",
       "keep": "Keep order",
       "notFoundDescription": "The link may be wrong or the order is not yours.",
@@ -506,7 +506,11 @@
         "walk": "About {{minutes}} min on foot (approx.)",
         "vehicle": "About {{minutes}} min by vehicle (approx.)"
       },
-      "orderAgain": "Order again"
+      "orderAgain": "Order again",
+      "cancelledByYou": "You cancelled this order.",
+      "paymentExpired": "The time to pay ran out: the order expired and nothing was charged.",
+      "cancelledByBusiness": "The business cancelled this order.",
+      "cancelLocked": "The business is already preparing your order, so it cannot be cancelled here. If there is a problem, message the business."
     },
     "errors": {
       "loadTitle": "Could not load orders",
@@ -537,7 +541,8 @@
       "trustPendingLimitOnline": "You already have an order to pay at pick-up. Pick it up or pay this one online.",
       "seePendingOrder": "See my pending order",
       "ownBusiness": "This business is yours: you cannot order from your own business. To try it, use a customer account.",
-      "onlineInReview": "This business is still under review: for now it only takes payment at pick-up."
+      "onlineInReview": "This business is still under review: for now it only takes payment at pick-up.",
+      "tooLateToCancel": "The business has started preparing this order: it can no longer be cancelled."
     }
   },
   "reviews": {
@@ -1019,14 +1024,19 @@
       "out_of_stock": "An item ran out",
       "closed": "We had to close",
       "no_show": "The customer did not come",
-      "other": "Other reason"
+      "other": "Other reason",
+      "customer": "the customer cancelled it",
+      "payment_expired": "it was not paid in time"
     },
     "cancelTitle": "Why are you cancelling the order?",
     "cancelDescription": "We will tell the customer the reason. If they paid online, the money will be refunded.",
     "cancelConfirm": "Cancel order",
     "noShowTitle": "The customer did not come?",
     "noShowDescription": "The order will be cancelled. Three orders not picked up in 30 days limit the customer's account.",
-    "noShowConfirm": "Yes, they did not come"
+    "noShowConfirm": "Yes, they did not come",
+    "paymentRefunding": "Refund in progress: the customer paid online",
+    "paymentRefunded": "Payment refunded to the customer",
+    "paymentVoided": "Payment voided"
   },
   "notifications": {
     "title": "Notifications",
@@ -1245,7 +1255,13 @@
       },
       "errors": {
         "load": "Could not load the operations.",
-        "failed": "The action could not be completed."
+        "failed": "The action could not be completed.",
+        "notDeployed": "The payment function is not deployed in Supabase (404). Deploy reconcile-payments and void-payment.",
+        "needsMfa": "This action needs your admin account with its second factor on. Sign in again with your code.",
+        "missingKeys": "The payment function is missing its Wompi keys (WOMPI_* secrets).",
+        "paymentsOff": "Online payments are off and have no Wompi keys: there is nothing to reconcile.",
+        "notVoidable": "This payment can no longer be voided.",
+        "network": "The payment function did not answer. Check your connection and try again."
       },
       "device": "Notifications on my phone",
       "pushHealth": {

@@ -1,5 +1,5 @@
 import { PlatformMerchantCredentials } from './merchant-credentials.ts';
-import type { ApplyOutcome, AttemptView, ConfirmedEvent, PaymentRepository, ReconcileItem } from './payment-repository.ts';
+import type { ApplyOutcome, AttemptView, ConfirmedEvent, PaymentRepository, ReconcileItem, VoidItem } from './payment-repository.ts';
 import { sha256Hex } from '../secure-compare.ts';
 import type { EventTransaction } from './wompi-event.ts';
 
@@ -54,6 +54,11 @@ export class FakePaymentRepository implements PaymentRepository {
     ['luma_ref', { amountInCents: 1200000, currency: 'COP', environment: 'test', status: 'pending' }],
   ]);
   public reconcile: ReconcileItem[] = [];
+  public voids: VoidItem[] = [];
+
+  public toVoid(): Promise<readonly VoidItem[]> {
+    return Promise.resolve(this.voids);
+  }
 
   public eventSeen(transactionId: string, status: string): Promise<boolean> {
     return Promise.resolve(this.seen.has(`${transactionId}/${status}`));

@@ -64,6 +64,7 @@ export class OrderDetailPage {
     { initialValue: '' },
   );
 
+  protected readonly view = OrderDetailView;
   protected readonly confirmOpen = signal(false);
   /** The success moment: just placed, or the payment approved (OrderCelebration). */
   protected readonly celebrate = signal(false);

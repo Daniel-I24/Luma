@@ -5,16 +5,22 @@ import { FakePaymentRepository, transaction } from './payments.test-helper.ts';
 import { Reconciler } from './reconciler.ts';
 import type { EventTransaction } from './wompi-event.ts';
 
-function setup(api: Record<string, EventTransaction | null | Error>) {
+function setup(api: Record<string, EventTransaction | null | Error>, refuses: string[] = []) {
   const repository = new FakePaymentRepository();
+  const voided: string[] = [];
   const source = {
+    void: (id: string) => {
+      if (refuses.includes(id)) return Promise.resolve(false);
+      voided.push(id);
+      return Promise.resolve(true);
+    },
     transaction: (id: string) => {
       const answer = api[id];
       return answer instanceof Error ? Promise.reject(answer) : Promise.resolve(answer ?? null);
     },
   };
   const reconciler = new Reconciler(repository, source, new PaymentApplier(repository, 'test'), 'test');
-  return { repository, reconciler };
+  return { repository, reconciler, voided };
 }
 
 Deno.test('applies what the API confirms and skips what does not belong to the attempt', async () => {
@@ -31,6 +37,22 @@ Deno.test('applies what the API confirms and skips what does not belong to the a
     { reference: 'luma_ref', transactionId: 'tx-ok', environment: 'prod' },
     { reference: 'luma_ref', transactionId: null, environment: 'test' },
   ];
-  assertEquals(await reconciler.run(), { checked: 6, applied: 1, skipped: 5 });
+  assertEquals(await reconciler.run(), { checked: 6, applied: 1, skipped: 5, voided: 0 });
   assertEquals(repository.applied.map((e) => [e.transactionId, e.source]), [['tx-ok', 'reconcile']]);
+});
+
+Deno.test('a cancelled card payment is voided; what Wompi refuses, or another environment, stays for the team', async () => {
+  const { repository, reconciler, voided } = setup({
+    'tx-card': transaction({ id: 'tx-card', status: 'VOIDED' }),
+    'tx-refused': transaction({ id: 'tx-refused', status: 'APPROVED' }),
+  }, ['tx-refused']);
+  repository.voids = [
+    { transactionId: 'tx-card', environment: 'test' },
+    { transactionId: 'tx-refused', environment: 'test' },
+    { transactionId: 'tx-prod', environment: 'prod' },
+  ];
+  const report = await reconciler.run();
+  assertEquals(report.voided, 1);
+  assertEquals(voided, ['tx-card']);
+  assertEquals(repository.applied.map((e) => [e.transactionId, e.source]), [['tx-card', 'reconcile']]);
 });
