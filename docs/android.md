@@ -85,24 +85,8 @@ release build is unsigned and the script refuses to start.
 - **Manifest**: internet and location only, `allowBackup="false"` plus
   `data_extraction_rules.xml` (no cloud backup or device transfer of
   sessions), `usesCleartextTraffic="false"`.
-- **Icon and splash**: generated from `assets/logo.svg` (brand mark on the
-  Indigo primary) with
-  `npx @capacitor/assets@3.0.5 generate --android --iconBackgroundColor '#14174a' --splashBackgroundColor '#14174a'`.
-  The tool is run on demand and is not a project dependency (it pulls in
-  packages with known vulnerabilities).
-
-## Content Security Policy
-
-Evaluated and **not added** as a `<meta>` for now: `connect-src` must list the
-project's Supabase URL (different per environment) and the map tile hosts,
-and a wrong policy breaks the app silently. The APK only loads bundled files
-over `https://localhost` and Android blocks cleartext, which covers the main
-risks. If wanted, generate the meta at build time next to
-`environment.deploy.ts` (`generate-env.mjs`) with `default-src 'self'`,
-`connect-src` for Supabase and the tiles, and `img-src` for Storage.
-
-## Checklist on a phone
-
+- **Icon and splash**: `python docs/brand/icon-generator.py` and `icon-vectors.py`, from
+  `assets/icon-source.png` (docs/brand/logo.md). Their output is committed; Pillow and numpy only to run them again.
 - [ ] Install the debug APK; the icon and the splash look right.
 - [ ] Sign up in steps, receive the code by email, verify.
 - [ ] Allow location: the map centres on you; deny it: city centre.

@@ -1,5 +1,9 @@
 # Logo
 
+Since round 12 the launcher icon is `assets/icon-source.png`: a pin with a chef's hat,
+fork and spoon over the Pasto volcanoes. The pin-moon notes below are its history;
+the "Luma IA" icon in `LumaIcon` still draws the crescent.
+
 Three concepts, all hand-built SVG on a 1024 grid (`docs/brand/concepts/`).
 
 | Concept | File | Idea | Verdict |
@@ -33,11 +37,12 @@ Three concepts, all hand-built SVG on a 1024 grid (`docs/brand/concepts/`).
 
 | Use | File |
 | --- | --- |
-| Source mark | `assets/logo.svg` |
+| Source of the launcher icon | `assets/icon-source.png`, cut with `docs/brand/icon-generator.py` |
+| Simplified mark (one colour, small sizes) | `assets/logo.svg`, `docs/brand/icon-vectors.py` |
 | Mark and name | `docs/brand/wordmark.svg` (name in Bricolage Grotesque 700) |
-| Launcher, adaptive (Android 8+) | `res/mipmap-anydpi-v26/ic_launcher*.xml`: background `@color/luma_sky`, foreground `res/drawable/ic_luma_foreground.xml` (vector, inside the 66 dp safe zone), monochrome `ic_luma_monochrome.xml` (themed icons, Android 13+) |
-| Launcher, legacy (Android 7) | `res/mipmap-*/ic_launcher.png`, `ic_launcher_round.png` (rendered from the same geometry) |
-| Notification | `res/drawable/ic_stat_luma.xml` (white on transparent); FCM default icon and colour in `AndroidManifest.xml`, and set in each push (`push-dispatch/fcm.ts`) |
-| Native splash | `res/drawable/ic_splash_mark.xml` on `@color/luma_splash_background` (paper; night canvas in `values-night`), Android 12+ SplashScreen API (`styles.xml`, `MainActivity`) |
-| Web | `public/favicon.svg`, `public/favicon.ico`, `theme-color` in `src/index.html` |
+| Launcher, adaptive (Android 8+) | `res/mipmap-anydpi-v26/ic_launcher*.xml`: PNG layers `mipmap-*/ic_launcher_background.png` (sky, ridges, plate) and `ic_launcher_foreground.png` (pin and hat, inside the 66 dp safe zone); themed `drawable/ic_luma_monochrome.xml` |
+| Launcher, legacy (Android 7) | `res/mipmap-*/ic_launcher.png`, `ic_launcher_round.png` (both layers together) |
+| Notification | `res/drawable/ic_stat_luma.xml` (white on transparent, pin with fork and spoon); accent `#E8127F`, `AndroidManifest.xml` and `push-dispatch/fcm.ts` |
+| Native splash | `res/drawable-nodpi/ic_splash_mark.png` on `@color/luma_splash_background` (the deep purple of the icon), Android 12+ SplashScreen API (`styles.xml`) |
+| Web | `public/favicon.svg`, `favicon.ico`, `public/icons/`, `manifest.webmanifest`, `theme-color` in `src/index.html` |
 | Luma IA icon | `luma-ai` in `LumaIcon` (the crescent and the dot in outline), instead of sparkles |

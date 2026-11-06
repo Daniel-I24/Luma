@@ -40,10 +40,6 @@
   fill: var(--color-entry-mark);
 }
 
-.app-entry__star {
-  fill: var(--color-entry-accent);
-}
-
 .app-entry__halo {
   fill: none;
   stroke: var(--color-entry-accent);

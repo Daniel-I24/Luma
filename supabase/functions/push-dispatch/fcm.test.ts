@@ -67,7 +67,7 @@ Deno.test('sends v1 messages, reuses the access token and spots dead tokens', as
       android: {
         priority: 'high',
         notification: {
-          channel_id: 'orders', icon: 'ic_stat_luma', color: '#0D4A6B',
+          channel_id: 'orders', icon: 'ic_stat_luma', color: '#E8127F',
           sound: 'default', default_vibrate_timings: true, notification_priority: 'PRIORITY_HIGH',
         },
       },

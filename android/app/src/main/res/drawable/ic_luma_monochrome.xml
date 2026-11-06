@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Themed icon (Android 13+): the system colours this single-colour mark. -->
+<!-- Themed icon: the system colours this single-colour mark (docs/brand/icon-vectors.py). -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp" android:height="108dp"
-    android:viewportWidth="1024" android:viewportHeight="1024">
-    <group android:pivotX="512" android:pivotY="540" android:scaleX="0.8" android:scaleY="0.8" android:translateY="-28">
-        <path android:fillColor="#FFFFFFFF" android:fillType="evenOdd" android:pathData="M512 880C400 760 272 620 272 440A240 240 0 1 1 752 440C752 620 624 760 512 880Z M500.1 304.5A136 136 0 1 0 638.1 490.8A116 116 0 1 1 500.1 304.5Z" />
+    android:viewportWidth="108" android:viewportHeight="108">
+    <group android:scaleX="2.6" android:scaleY="2.6" android:translateX="22.8" android:translateY="22.8">
+        <path android:fillColor="#FFFFFFFF" android:fillType="evenOdd" android:pathData="M12 1.5C7.03 1.5 3.5 5.3 3.5 10.1C3.5 15.9 12 22.8 12 22.8S20.5 15.9 20.5 10.1C20.5 5.3 16.97 1.5 12 1.5Z M7.7 5.4H8.4V8.6H9V5.4H9.7V8.6H10.3V5.4H11V9.4C11 10.4 10.4 11.1 9.75 11.3V16.4H8.95V11.3C8.3 11.1 7.7 10.4 7.7 9.4Z M14.6 5.4C15.6 5.4 16.2 6.6 16.2 7.9C16.2 9.2 15.7 10.2 15 10.5V16.4H14.2V10.5C13.5 10.2 13 9.2 13 7.9C13 6.6 13.6 5.4 14.6 5.4Z" />
     </group>
 </vector>

@@ -3,9 +3,9 @@
 
     <!-- Base application theme (brand colours: res/values/luma_colors.xml). -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/luma_sky</item>
-        <item name="colorPrimaryDark">@color/luma_sky</item>
-        <item name="colorAccent">@color/luma_aji</item>
+        <item name="colorPrimary">@color/luma_deep</item>
+        <item name="colorPrimaryDark">@color/luma_deep</item>
+        <item name="colorAccent">@color/luma_accent</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.DayNight.NoActionBar">

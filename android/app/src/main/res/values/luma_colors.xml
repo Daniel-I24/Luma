@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Brand colours for launcher, splash and notifications (src/styles/tokens.css, theme "sky"). -->
+<!-- Brand colours for launcher, splash and notifications (docs/brand/logo.md): the deep purple
+     of the icon, and the magenta of its pin as the notification accent. -->
 <resources>
-    <color name="luma_sky">#0B4F9C</color>
-    <color name="luma_paper">#F7F2E7</color>
-    <color name="luma_aji">#C93A0E</color>
-    <color name="luma_splash_background">#F7F2E7</color>
-    <color name="luma_splash_mark">#0B4F9C</color>
+    <color name="luma_deep">#120428</color>
+    <color name="luma_accent">#E8127F</color>
+    <color name="luma_splash_background">#120428</color>
 </resources>

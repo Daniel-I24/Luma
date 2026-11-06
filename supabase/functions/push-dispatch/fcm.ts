@@ -13,9 +13,9 @@ export interface ServiceAccount {
 /** A failure carries FCM's code when there is one: `failed:SENDER_ID_MISMATCH`. */
 export type SendResult = 'sent' | 'invalid_token' | 'failed' | `failed:${string}`;
 
-/** Monochrome mark in the APK (res/drawable/ic_stat_luma.xml) and the brand blue. */
+/** Monochrome mark in the APK (res/drawable/ic_stat_luma.xml) and the magenta of the pin. */
 const NOTIFICATION_ICON = 'ic_stat_luma';
-const NOTIFICATION_COLOR = '#0D4A6B';
+const NOTIFICATION_COLOR = '#E8127F';
 
 /** What one device receives: visible text, ids for the app, and the Android channel. */
 export interface PushMessage {
