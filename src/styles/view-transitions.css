@@ -23,6 +23,15 @@ html.vt-fade::view-transition-new(root) {
   animation-timing-function: var(--ease-spring);
 }
 
+/* Two boxes of different size: the old one leaves early, so their texts never overlap. */
+::view-transition-old(.shared) {
+  animation: fade-out var(--duration-instant) linear both;
+}
+
+::view-transition-new(.shared) {
+  animation: fade-in var(--duration-fast) linear var(--duration-instant) both;
+}
+
 html.vt-push::view-transition-new(root) {
   animation: slide-in-right var(--duration-slow) var(--ease-enter) both;
 }
