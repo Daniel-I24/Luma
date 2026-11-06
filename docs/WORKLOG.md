@@ -171,6 +171,23 @@ SQL suites, Deno 2.5.6 in Docker for the functions.
   Deno tests, type check and lint of the functions, every check, secret
   scan, audit 0, knip (no unused files or dependencies).
 
+## Round 12 (2026-11-06)
+
+Prompt: notifications, a full review of the files, the new icon, three palettes,
+motion, Wompi, cancellation, technical info and the data copy. No push, no deployment,
+no migration applied.
+
+- Push: `push-dispatch` and its secrets are not in the project, every poke answered 404
+  (read in `net._http_response`). The code is ready: system notification with the app
+  open, default channel, FCM's code in the answer, the device test says the truth (59).
+- Icon: docs/brand/icon-generator.py cuts assets/icon-source.png; palettes proposed, none
+  applied (the owner chooses).
+- Motion: shared order card, lists rise in, `--ease-spring`, `ValuePop`, `LumaSuccess`.
+- Payments and cancellation: a message per failure, customers cancel until `preparing`,
+  automatic void of cancelled card payments (60).
+- Technical info only at /admin/technical; /account/data with a summary, and a readable
+  file (61).
+
 ## Round 11 (2026-11-05)
 
 Prompt: close B6, then admin, push and error handling on `main` (no push, no

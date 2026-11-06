@@ -98,7 +98,7 @@ in Perfil / Mi negocio → Notificaciones, and the technical error goes to
 
 ## Reading "Información técnica"
 
-Perfil or Mi negocio → Información técnica → "Estado de este teléfono" keeps the
+/admin/technical (Operaciones → Información técnica, admin with MFA) → "Estado de este teléfono" keeps the
 last result of each step, in memory, without the whole token:
 
 | Row | What a failure means |

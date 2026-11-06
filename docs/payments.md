@@ -67,12 +67,14 @@ reads; nothing here depends on it.
    línea") and the owner is told. Declined or failed attempts leave the order
    waiting; the customer may "Reintentar pago" (3 attempts) or cancel.
 6. Orders still unpaid 15 minutes after creation are cancelled by
-   `expire_stale_orders`. A payment approved after that becomes
-   `refund_required`.
+   `expire_stale_orders` (`cancel_reason = 'payment_expired'`). A payment approved
+   after that becomes `refund_required`.
 7. `reconcile-payments` (every 5 minutes, and on demand for admins) asks the
    Wompi API about open attempts older than 3 minutes that have a transaction
    id. Wompi documents no search by reference, so attempts without a redirect
-   id rely on the webhook.
+   id rely on the webhook. The same run voids card payments of cancelled orders
+   (`payments_to_void`, last 7 days); what Wompi refuses, and other methods, stay
+   in Operaciones for a person.
 
 ## Data (migrations 38 to 45)
 
@@ -99,6 +101,23 @@ refund_required  -> refunded | voided
 
 Nothing leaves `voided` or `refunded`; an approval never goes back. A late
 failure of an older attempt is recorded but never overwrites the order.
+
+## Each failure of "Conciliar ahora" and "Anular"
+
+| Answer | What the screen says | Fix |
+| --- | --- | --- |
+| 404 | The function is not deployed | `npx supabase functions deploy reconcile-payments --no-verify-jwt` and `void-payment` |
+| 401, 403 | Needs the admin account with its second factor | `/admin/mfa` |
+| 503, payments on | Wompi keys are missing | the `WOMPI_*` secrets |
+| 503, payments off | Payments are off | `payments_enabled` |
+| no answer | No connection | retry |
+
+## Pay at pick-up stays
+
+Online payment is optional per order, and pay at pick-up stays the default: it
+costs the business no Wompi fee, it is how a small business in Pasto charges today,
+and it works without keys. Its risk, orders nobody collects, already has its limits
+(`customer_trust_tier`: one open order for new accounts, strikes for "No llegó").
 
 ## Admin
 

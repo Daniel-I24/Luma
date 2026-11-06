@@ -107,7 +107,7 @@ and `npm run check:interactive`.
 - Instagram and Facebook still show the manual steps and are verified from
   /admin while the automatic strategies are on.
 - Both flags at 0: every contact shows the manual steps again.
-- Mi negocio → Ayuda → "Información técnica": masked e-mail, short user id,
+- Admin → Operaciones → "Información técnica" (admin with MFA): masked e-mail, short user id,
   businesses in the panel and each read (table, filter, rows); "Copiar
   información" copies the same text; nothing personal appears.
 

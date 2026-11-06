@@ -81,6 +81,8 @@ needs a drop and a create in the same file, noted in the file header).
 
 | 58 | `20261108000000_push_claim_window.sql` | `claim_push_batch` leaves notices of users without a token waiting (`push_claim_window_minutes`, 60: older ones are marked and never sent); same arguments and grants | Pending review |
 | 59 | `20261109000000_push_test_answer.sql` | `send_test_notification` answers whether the account has a device token (return type changes); `admin_push_health()` for the admin panel | Pending; the owner applies it |
+| 60 | `20261110000000_cancellation_rules.sql` | `cancel_order` until the kitchen starts (`too_late_to_cancel` from `preparing`); `cancel_reason` adds `customer` and `payment_expired`; `payments_to_void()` | Pending; the owner applies it |
+| 61 | `20261111000000_readable_export.sql` | `export_my_data` by name, without internal ids; 10 a day | Pending; the owner applies it |
 
 **Database freeze (2026-10-19)**: the list above is final for the launch.
 After the freeze, migrations and functions change only to fix real bugs
