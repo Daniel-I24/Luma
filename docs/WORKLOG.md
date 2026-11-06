@@ -195,11 +195,10 @@ deployment, no migration applied). Migrations 1 to 56 are taken as applied and
   without network in `src/test-providers.ts`.
 
 Verified on 2026-11-06: exact results in docs/quality-report.md ("Close of round 11").
-e2e found two accessibility failures on the owner panel, fixed. Stopped by the system
-for low memory: the whole unit suite after that fix, and the type check commit by
-commit (5 of 16 code commits passed).
+e2e found two accessibility failures on the owner panel, fixed. npm run doctor now
+sends pending migrations to `db push --remote`.
 
-Left: finish those two, apply 57 and 58 after review, deploy nothing new (no Edge Function changed
+Left: apply 57 and 58 after review, deploy nothing new (no Edge Function changed
 in behaviour except logs: delete-account, geocode, whatsapp-webhook, route), try
 the phone list in docs/qa-checklist.md, signed release APK with R8, payments
 checklist when Wompi is turned on.

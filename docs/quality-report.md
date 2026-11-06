@@ -14,23 +14,21 @@ dependency phase); "after" is round 10 phase B.
 | Unused exports / types (knip) | 40 / 34 | 0 / 0 | `npx knip` |
 | TypeScript | strict off for indexes | `strict` + `noUncheckedIndexedAccess` (app, tests, functions) | `tsconfig.json`, each `deno.json` |
 | Initial bundle | 673.13 kB | 680.90 kB | `npm run build`; +2.3 kB ErrorLog and the push/realtime hardening, +0.5 kB route credits; the order screen loads MapLibre on idle (`@defer`, proven with `getDeferBlocks`) |
-| Unit test coverage | not measured | 84.13 % statements, 78.80 % branches, 76.08 % functions, 87.76 % lines (commit `cbb8fc5`) | `ng test --coverage`; CI thresholds in `angular.json` |
-| Tests | 880 app, 134 scripts, 179 Deno, 794 SQL, 4 e2e | 951 app (233 files, commit `cbb8fc5`), 149 scripts, 170 Deno, 858 SQL, 6 e2e | the Definition of Done |
+| Unit test coverage | not measured | 84.13 % statements, 78.80 % branches, 76.08 % functions, 87.77 % lines (commit `0500f8b`) | `ng test --coverage`; CI thresholds in `angular.json` |
+| Tests | 880 app, 134 scripts, 179 Deno, 794 SQL, 4 e2e | 954 app (233 files, commit `0500f8b`), 149 scripts, 170 Deno, 858 SQL, 6 e2e | the Definition of Done |
 
 ## Close of round 11, measured on 2026-11-06
 
 | Check | Result | Commit |
 | --- | --- | --- |
-| `npm test -- --watch=false --coverage` | 233 files, 951 of 951; 84.13 / 78.80 / 76.08 / 87.76 % | `cbb8fc5` |
-| Specs affected by the accessibility fix (button, owner, checkout) | 41 files, 164 of 164 | `4666cc0` |
-| The whole unit suite after that fix | **not finished**: stopped by the system, low memory | `4666cc0` |
-| `npm run test:scripts` | 149 of 149 | this commit |
+| `npm test -- --watch=false --coverage` | 233 files, 954 of 954; 84.13 / 78.80 / 76.08 / 87.77 % | `0500f8b` |
+| `npm run test:scripts` | 149 of 149 | `0500f8b` |
 | `npm run test:e2e` (axe included) | 6 of 6, after fixing what it found | `4666cc0` |
 | `npm run check:responsive` | ok (8 min) | `4666cc0` |
 | Build, lint, `tsc` of app and specs | ok; initial 680.90 kB | `4666cc0` |
 | SQL suites, final migration 58 (PostgreSQL 18.6) | 47 suites, 858 checks; rehearsal ok, 10 checks | `4666cc0` |
 | Deno 2.5.6 in Docker | 14 folders, 170 tests; 13 type checks | `4666cc0` |
-| Type check commit by commit | **incomplete**: 5 of 16 code commits ok (`bbf78d2` to `2b8f446`), then stopped by the system, low memory | |
+| Type check commit by commit (`11da877..0500f8b`, app and specs) | 18 of 18 code commits ok; 7 without code skipped | up to `0500f8b` |
 | Secret scan, `npm audit --omit=dev` | ok (1314 files), 0 vulnerabilities | `4666cc0` |
 | Debug APK | built on 2026-11-06 08:01:02 -04, 6.96 MB | `4666cc0` |
 
