@@ -19,7 +19,7 @@ async function checkMigrations(ctx) {
   const pending = ctx.localMigrations.filter((version) => !applied.has(version));
   if (!pending.length) return [ok(`Migraciones: las ${ctx.localMigrations.length} están aplicadas`)];
   return [missing(`Migraciones sin aplicar: ${pending.join(', ')}`,
-    'Revisa cada una (docs/migrations.md) y pégala en el SQL Editor en orden.')];
+    'Revisa cada una (docs/migrations.md) y aplícalas con: npx supabase db push --remote. No las pegues en el SQL Editor: no quedan en el historial.')];
 }
 
 /** The app_settings flags, as they are. */

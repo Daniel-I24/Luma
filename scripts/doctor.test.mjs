@@ -48,6 +48,8 @@ test('pending migrations, flags and features without configuration are reported 
   const { ctx } = setup();
   const lines = await runDoctor(ctx);
   assert.equal(find(lines, 'Migraciones sin aplicar').item, 'Migraciones sin aplicar: 20261106000000');
+  assert.match(find(lines, 'Migraciones sin aplicar').next, /npx supabase db push --remote/);
+  assert.match(find(lines, 'Migraciones sin aplicar').next, /No las pegues en el SQL Editor/);
   assert.equal(find(lines, 'payments_enabled').item, 'Bandera payments_enabled = 0');
   assert.equal(find(lines, 'payments_production').state, 'FALTA');
   assert.equal(find(lines, 'Luma IA').state, 'APAGADO');
