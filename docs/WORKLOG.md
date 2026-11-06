@@ -194,6 +194,14 @@ deployment, no migration applied). Migrations 1 to 56 are taken as applied and
 - Tests are hermetic: test build with the placeholder environment and a client
   without network in `src/test-providers.ts`.
 
+First phone test (APK of 4666cc0): "Permitir notificaciones" did nothing and every push
+step was empty. `PushPlatform.plugin()` returned Capacitor's proxy from an async function,
+its `then()` rejects without settling the promise, so no catch ran. Fixed in baecfad, with
+a double of the proxy for every plugin (the earlier double was a plain object that skipped
+`plugin()`). `socket closed: 1006` needs no change: realtime-reconnect.spec.ts shows the real
+client coming back alone. After that fix: 18 affected spec files, 67 tests; the whole unit
+suite was not run again.
+
 Verified on 2026-11-06: exact results in docs/quality-report.md ("Close of round 11").
 e2e found two accessibility failures on the owner panel, fixed. npm run doctor now
 sends pending migrations to `db push --remote`.
