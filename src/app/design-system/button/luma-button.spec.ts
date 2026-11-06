@@ -72,4 +72,19 @@ describe('LumaButton', () => {
     const btn: HTMLButtonElement = fixture.nativeElement.querySelector('button');
     expect(btn.getAttribute('aria-label')).toBe('Custom label');
   });
+
+  it('is a plain button unless it is an option of a radio group', () => {
+    const btn: HTMLButtonElement = fixture.nativeElement.querySelector('button');
+    expect(btn.getAttribute('role')).toBeNull();
+    expect(btn.getAttribute('aria-checked')).toBeNull();
+  });
+
+  it.each([true, false])('as a radio option, the native button says it is checked: %s', (checked) => {
+    fixture.componentRef.setInput('radioChecked', checked);
+    fixture.detectChanges();
+    const btn: HTMLButtonElement = fixture.nativeElement.querySelector('button');
+    expect(btn.getAttribute('role')).toBe('radio');
+    expect(btn.getAttribute('aria-checked')).toBe(String(checked));
+    expect(fixture.nativeElement.getAttribute('role')).toBeNull();
+  });
 });

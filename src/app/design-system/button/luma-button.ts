@@ -28,6 +28,8 @@ export type ButtonSize = 'sm' | 'md' | 'lg';
       [attr.aria-describedby]="describedBy()"
       [disabled]="inactive()"
       [attr.aria-label]="ariaLabel() ?? null"
+      [attr.role]="radioChecked() === null ? null : 'radio'"
+      [attr.aria-checked]="radioChecked()"
       [attr.aria-disabled]="inactive() ? 'true' : null"
       [attr.aria-busy]="loading() ? 'true' : null"
       (click)="handleClick()"
@@ -54,6 +56,9 @@ export class LumaButton {
   public readonly buttonId = input<string | null>(null);
   /** id of an element that describes the button (aria-describedby). */
   public readonly describedBy = input<string | null>(null);
+
+  /** An option of a role="radiogroup": whether it is the chosen one. On the native button, the one with focus. */
+  public readonly radioChecked = input<boolean | null>(null);
 
   public readonly clicked = output<void>();
 

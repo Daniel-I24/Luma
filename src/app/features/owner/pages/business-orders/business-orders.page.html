@@ -70,10 +70,9 @@
     <div class="mb-4 flex flex-col gap-2" role="radiogroup" [attr.aria-label]="t('businessOrders.cancelTitle')">
       @for (option of reasons; track option) {
       <app-luma-button
-        role="radio"
         [variant]="reason() === option ? 'primary' : 'secondary'"
         [fullWidth]="true"
-        [attr.aria-checked]="reason() === option"
+        [radioChecked]="reason() === option"
         (clicked)="reason.set(option)"
         >{{ t('businessOrders.reasons.' + option) }}</app-luma-button
       >

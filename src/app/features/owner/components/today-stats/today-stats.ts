@@ -49,8 +49,8 @@ const TREND_CLASS = { up: 'text-success-fg', down: 'text-danger-fg', same: 'text
       <a
         class="pressable grid grid-cols-3 gap-2 rounded-xl border border-border-subtle bg-surface p-3 text-fg no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
         [routerLink]="ordersLink()"
-        [attr.aria-label]="t('owner.today.openOrders')"
       >
+        <span class="sr-only">{{ t('owner.today.openOrders') }}</span>
         @for (figure of figures(); track figure.key) {
           <span class="flex flex-col items-center gap-1 text-center">
             <span class="text-title font-semibold">{{ figure.value }}</span>

@@ -20,7 +20,7 @@ test('pick-up order: placed, and the owner accepting it shows on the customer ph
   const { page, backend } = app;
   await checkout(page);
   // Online payment off (the default): pay at pick-up is the only way, nothing to choose.
-  assert.equal(await page.getByRole('button', { name: 'Pagar en línea' }).count(), 0);
+  assert.equal(await page.getByRole('radio', { name: 'Pagar en línea' }).count(), 0);
   await page.getByRole('button', { name: 'Confirmar pedido' }).click();
 
   await page.waitForURL(/\/orders\/[0-9a-f-]{36}$/);

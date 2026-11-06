@@ -3,15 +3,15 @@
     <h2 id="sales-title" class="m-0 text-title text-fg">{{ t('owner.sales.title.' + sales.measure()) }}</h2>
     <div class="flex gap-1" role="radiogroup" [attr.aria-label]="t('owner.sales.range')">
       @for (range of ranges; track range) {
-      <app-luma-button size="sm" role="radio" [variant]="sales.range() === range ? 'primary' : 'ghost'"
-        [attr.aria-checked]="sales.range() === range" (clicked)="setRange(range)">{{ t('owner.sales.days', { count: range }) }}</app-luma-button>
+      <app-luma-button size="sm" [variant]="sales.range() === range ? 'primary' : 'ghost'"
+        [radioChecked]="sales.range() === range" (clicked)="setRange(range)">{{ t('owner.sales.days', { count: range }) }}</app-luma-button>
       }
     </div>
   </div>
   <div class="flex gap-1" role="radiogroup" [attr.aria-label]="t('owner.sales.measure')">
     @for (measure of measures; track measure) {
-    <app-luma-button size="sm" role="radio" [variant]="sales.measure() === measure ? 'secondary' : 'ghost'"
-      [attr.aria-checked]="sales.measure() === measure" (clicked)="setMeasure(measure)">{{ t('owner.sales.measures.' + measure) }}</app-luma-button>
+    <app-luma-button size="sm" [variant]="sales.measure() === measure ? 'secondary' : 'ghost'"
+      [radioChecked]="sales.measure() === measure" (clicked)="setMeasure(measure)">{{ t('owner.sales.measures.' + measure) }}</app-luma-button>
     }
   </div>
 

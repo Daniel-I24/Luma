@@ -14,7 +14,8 @@ test('online payment (simulated Wompi sandbox): checkout, pay, back to the web a
   await page.getByRole('link', { name: /Ver carrito/ }).click();
   await page.getByRole('button', { name: 'Continuar' }).click();
   await skipGuide(page);
-  await page.getByRole('button', { name: 'Pagar en línea' }).click();
+  await page.getByRole('radio', { name: 'Pagar en línea' }).click();
+  await page.getByRole('radio', { name: 'Pagar en línea', checked: true }).waitFor({ timeout: 5000 });
   // With online payment chosen, the main button says "Pagar".
   await page.getByRole('button', { name: 'Pagar', exact: true }).click();
 

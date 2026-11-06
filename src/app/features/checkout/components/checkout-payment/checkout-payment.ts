@@ -22,10 +22,9 @@ import { CheckoutStore } from '../../state/checkout.store';
         <div class="flex flex-col gap-2" role="radiogroup" aria-labelledby="checkout-payment-title">
           @for (option of paymentMethods; track option) {
           <app-luma-button
-            role="radio"
             [variant]="store.method() === option ? 'primary' : 'secondary'"
             [fullWidth]="true"
-            [attr.aria-checked]="store.method() === option"
+            [radioChecked]="store.method() === option"
             (clicked)="store.method.set(option)"
             >{{ t(option === 'online' ? 'checkout.payment.online' : 'checkout.payment.payAtPickup') }}</app-luma-button
           >
