@@ -24,13 +24,11 @@ export class VerificationStore {
   private readonly _busy = signal(false);
   private readonly _errorKey = signal<string | null>(null);
   /** Requirements the server reported on the last submit. */
-  private readonly _serverMissing = signal<readonly ReviewRequirement[]>([]);
 
   public readonly legal = this._legal.asReadonly();
   public readonly docs = this._docs.asReadonly();
   public readonly busy = this._busy.asReadonly();
   public readonly errorKey = this._errorKey.asReadonly();
-  public readonly serverMissing = this._serverMissing.asReadonly();
   public readonly editable = computed(() => {
     const status = this.panel.business()?.verification_status;
     return !!status && EDITABLE_STATUSES.includes(status);
@@ -81,7 +79,6 @@ export class VerificationStore {
       this._errorKey.set(result.errorKey);
       return false;
     }
-    this._serverMissing.set(result.data.missing);
     if (result.data.ok)
       this.panel.patch({ verification_status: 'pending', verification_note: null });
     return result.data.ok;

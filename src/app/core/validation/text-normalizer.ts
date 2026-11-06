@@ -36,11 +36,6 @@ export class TextNormalizer {
       .normalize('NFC');
   }
 
-  /** True when the text is already what would be stored. */
-  public static isClean(value: string, multiline = false): boolean {
-    return value === (multiline ? TextNormalizer.lines(value) : TextNormalizer.line(value));
-  }
-
   private static base(raw: string): string {
     return raw.replace(RETURNS, '\n').replace(INVISIBLE, '');
   }

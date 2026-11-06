@@ -6,7 +6,6 @@ import { type AccountProfile, AccountProfileRepository, type ProfileDetails } fr
 import { ONBOARDING_PATH, WelcomeTutorial } from './onboarding';
 
 /** Same minimum as is_profile_complete() in the database. */
-const MIN_FULL_NAME = 3;
 /** Silent retries of the profile read before the error screen, with a short wait each. */
 const FIRST_RETRY_MS = 400;
 const SECOND_RETRY_MS = 1200;
@@ -44,11 +43,6 @@ export class SessionProfileStore {
   public readonly failed = this._failed.asReadonly();
   /** Why the last read failed (translation key), or null. */
   public readonly failureKey = this._failureKey.asReadonly();
-  /** Mirrors is_profile_complete(): name, +57 mobile and municipality of residence. */
-  public readonly profileComplete = computed(() => {
-    const p = this._profile();
-    return !!p && (p.fullName?.trim().length ?? 0) >= MIN_FULL_NAME && p.phone !== null && !!p.residence;
-  });
 
   constructor() {
     effect(() => {
