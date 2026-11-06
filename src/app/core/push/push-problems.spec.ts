@@ -46,13 +46,27 @@ describe('PushRegistration problems', () => {
     return { push, log: TestBed.inject(ErrorLog) };
   };
 
-  it('a denied permission (or a failing dialog) is "denied", not an error', async () => {
+  it('a denied permission is "denied", not an error', async () => {
     platform.permission.mockResolvedValue('prompt');
-    platform.requestPermission.mockRejectedValue(new Error('dialog failed'));
+    platform.requestPermission.mockResolvedValue('denied');
     const { push, log } = await enable();
     expect(push.permission()).toBe('denied');
     expect(push.problem()).toBe('denied');
+    expect(log.entries()).toEqual([]);
+  });
+
+  it('a failing dialog is not a refusal: its own problem, and trying again works', async () => {
+    platform.permission.mockResolvedValue('prompt');
+    platform.requestPermission.mockRejectedValueOnce(new Error('dialog failed'));
+    const { push, log } = await enable();
+    expect(push.permission()).toBe('prompt');
+    expect(push.problem()).toBe('permission_failed');
     expect(log.entries()[0]).toMatchObject({ source: 'push', message: 'dialog failed' });
+    expect(TestBed.inject(PushDiagnostics).steps()['permission']).toMatchObject({ ok: false, detail: 'dialog failed' });
+
+    platform.requestPermission.mockResolvedValueOnce('granted');
+    await expect(push.enable()).resolves.toBe('granted');
+    expect(push.problem()).toBeNull();
   });
 
   it('a phone built without Firebase says so', async () => {
@@ -88,11 +102,14 @@ describe('PushRegistration problems', () => {
     expect(tokens.register).not.toHaveBeenCalled();
   });
 
-  it('a plugin that throws while reading the permission leaves push unavailable', async () => {
+  it('a plugin that throws while reading the permission says so, with its message in the step', async () => {
     platform.permission.mockRejectedValue(new Error('plugin not implemented'));
     const push = TestBed.inject(PushRegistration);
     await expect(push.init()).resolves.toBeUndefined();
+    expect(push.problem()).toBe('permission_failed');
     await expect(push.enable()).resolves.toBe('unavailable');
+    expect(push.problem()).toBe('permission_failed');
     expect(TestBed.inject(ErrorLog).entries().length).toBeGreaterThan(0);
+    expect(TestBed.inject(PushDiagnostics).steps()['permission']).toMatchObject({ ok: false, detail: 'plugin not implemented' });
   });
 });

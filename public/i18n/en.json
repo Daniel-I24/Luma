@@ -1899,6 +1899,7 @@
       "problem": {
         "denied": "You didn't allow notifications. You can turn them on in your phone's settings, under Luma → Notifications.",
         "notConfigured": "This version of Luma can't receive phone notifications. Your notices still arrive in the notifications list.",
+        "permissionFailed": "We couldn't check this phone's notification permission. Try again.",
         "registrationFailed": "The phone couldn't sign up for notifications. Check your connection and try again.",
         "tokenSaveFailed": "Permission is on, but we couldn't save this phone. Try again in a moment."
       },

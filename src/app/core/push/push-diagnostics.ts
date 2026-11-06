@@ -1,4 +1,6 @@
 import { Injectable, signal } from '@angular/core';
+import { ErrorCode } from '@core/errors/error-code';
+import { ErrorLog } from '@core/errors/error-log';
 
 /** The steps of linking this phone, in the order they happen. */
 export const PUSH_STEPS = ['permission', 'channels', 'register', 'event', 'error', 'rpc'] as const;
@@ -14,6 +16,9 @@ export interface PushStepResult {
 /** How much of a token "Información técnica" may show. */
 const VISIBLE_TOKEN_END = 6;
 
+/** How much of a failure's message a step keeps. */
+const MAX_DETAIL = 120;
+
 /**
  * PushDiagnostics — the last result of each push step on this phone, in memory
  * only, for "Información técnica": what support needs to tell a refused
@@ -28,6 +33,17 @@ export class PushDiagnostics {
   public record(step: PushStep, ok: boolean, detail: string): void {
     const result: PushStepResult = { ok, detail, at: new Date().toISOString() };
     this._steps.update((steps) => ({ ...steps, [step]: result }));
+  }
+
+  /** Keeps a failure: its code or, without one, its message with personal data masked. */
+  public fail(step: PushStep, error: unknown): void {
+    this.record(step, false, PushDiagnostics.reason(error));
+  }
+
+  private static reason(error: unknown): string {
+    const code = ErrorCode.of(error);
+    if (code !== 'unknown' || !(error instanceof Error) || !error.message) return code;
+    return ErrorLog.mask(error.message).slice(0, MAX_DETAIL);
   }
 
   /** A token as it may be shown: its length and last characters only. */

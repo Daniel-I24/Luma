@@ -2,23 +2,19 @@ import { Injectable, inject } from '@angular/core';
 import type { PluginListenerHandle } from '@capacitor/core';
 import { ErrorCode } from '@core/errors/error-code';
 import { PushDiagnostics } from './push-diagnostics';
-import { PUSH_ENABLED, type PushAction, type PushChannel, type PushPermission } from './push-types';
-
-/** The plugin (tests give a double through plugin()). */
-export type PushPlugin = typeof import('@capacitor/push-notifications').PushNotifications;
+import { type LoadedPush, PUSH_ENABLED, type PushAction, type PushChannel, type PushPermission, type PushPlugin } from './push-types';
 
 /** FCM answers in seconds; without an answer the registration counts as failed. */
 const REGISTER_TIMEOUT_MS = 20_000;
 
-/** Android VISIBILITY_PRIVATE: the lock screen shows that a notice arrived, not its text. */
+/** Android VISIBILITY_PRIVATE: the lock screen hides the text of a notice. */
 const LOCK_SCREEN_PRIVATE = 0;
 
 const text = (value: unknown): string | null => (typeof value === 'string' && value ? value : null);
 
 /**
- * PushPlatform — the device side of push notifications: the plugin on Android
- * (loaded lazily), "unavailable" on the web, where the in-app list is the only
- * channel, and while PUSH_ENABLED is false.
+ * PushPlatform — the device side of push: the plugin on Android (loaded lazily),
+ * "unavailable" on the web and while PUSH_ENABLED is false.
  *
  * The registration listeners stay on after register(), so a token FCM renews
  * while the app is open still arrives (onTokenRenewed); unregister() removes
@@ -35,9 +31,10 @@ export class PushPlatform {
   private tapListening = false;
 
   /** The plugin, or null without Firebase or outside the phone. */
-  protected async plugin(): Promise<PushPlugin | null> {
+  protected async plugin(): Promise<LoadedPush | null> {
     if (!this.enabled || !(await this.native())) return null;
-    return (await import('@capacitor/push-notifications')).PushNotifications;
+    const { PushNotifications } = await import('@capacitor/push-notifications');
+    return { push: PushNotifications };
   }
 
   /** Whether this is the Android app with the plugin installed. */
@@ -48,7 +45,7 @@ export class PushPlatform {
 
   /** Current notification permission. */
   public async permission(): Promise<PushPermission> {
-    const push = await this.plugin();
+    const push = (await this.plugin())?.push;
     if (!push) return !this.enabled && (await this.native()) ? 'not_configured' : 'unavailable';
     const { receive } = await push.checkPermissions();
     return receive === 'granted' ? 'granted' : receive === 'denied' ? 'denied' : 'prompt';
@@ -56,7 +53,7 @@ export class PushPlatform {
 
   /** Asks the user (Android 13+ shows the system dialog). */
   public async requestPermission(): Promise<PushPermission> {
-    const push = await this.plugin();
+    const push = (await this.plugin())?.push;
     if (!push) return 'unavailable';
     const { receive } = await push.requestPermissions();
     return receive === 'granted' ? 'granted' : 'denied';
@@ -64,7 +61,7 @@ export class PushPlatform {
 
   /** Registers with FCM and resolves to the device token; every failure rejects once, here. */
   public async register(): Promise<string> {
-    const push = await this.plugin();
+    const push = (await this.plugin())?.push;
     if (!push) throw new Error('push_unavailable');
     let timer: ReturnType<typeof setTimeout> | undefined;
     try {
@@ -78,7 +75,7 @@ export class PushPlatform {
       const [value] = await Promise.all([token, accepted]);
       return value;
     } catch (error) {
-      this.diagnostics.record('error', false, ErrorCode.of(error));
+      this.diagnostics.fail('error', error);
       throw error;
     } finally {
       clearTimeout(timer);
@@ -93,7 +90,7 @@ export class PushPlatform {
 
   /** Stops receiving pushes on this device (FCM deletes the token) and removes its own listeners. */
   public async unregister(): Promise<void> {
-    const push = await this.plugin();
+    const push = (await this.plugin())?.push;
     if (!push) return;
     const listeners = this.registrationListeners;
     this.registrationListeners = null;
@@ -103,14 +100,14 @@ export class PushPlatform {
 
   /** Creates (or renames) the Android channels; a no-op elsewhere. */
   public async createChannels(channels: readonly PushChannel[]): Promise<void> {
-    const push = await this.plugin();
+    const push = (await this.plugin())?.push;
     if (!push) return;
     for (const channel of channels) await push.createChannel({ ...channel, visibility: LOCK_SCREEN_PRIVATE });
   }
 
   /** Calls `listener` when the user taps a notification (added once for the whole run). */
   public async onAction(listener: (action: PushAction) => void): Promise<void> {
-    const push = await this.plugin();
+    const push = (await this.plugin())?.push;
     if (!push || this.tapListening) return;
     this.tapListening = true;
     await push.addListener('pushNotificationActionPerformed', ({ notification }) => {

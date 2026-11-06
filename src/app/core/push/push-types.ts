@@ -35,3 +35,14 @@ export interface PushChannel {
   readonly description: string;
   readonly importance: AndroidImportance;
 }
+
+/** The plugin (tests give a double through plugin()). */
+export type PushPlugin = typeof import('@capacitor/push-notifications').PushNotifications;
+
+/**
+ * Capacitor's plugin is a proxy with a function for every property, `then` too:
+ * returned from a promise it is taken for a thenable and the promise never settles.
+ */
+export interface LoadedPush {
+  readonly push: PushPlugin;
+}

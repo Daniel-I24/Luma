@@ -103,7 +103,7 @@ last result of each step, in memory, without the whole token:
 
 | Row | What a failure means |
 | --- | --- |
-| Permiso de avisos | `prompt`: nobody pressed "Permitir"; `denied`: Android settings; `not_configured`: built without `google-services.json` |
+| Permiso de avisos | `prompt`: nobody pressed "Permitir"; `denied`: Android settings; `not_configured`: built without `google-services.json`; `checking` or `asking`: the call has not answered yet; a code or masked message: the plugin failed |
 | Canales de Android | the plugin could not create `orders` / `promotions` |
 | Registro en FCM | the native call was refused |
 | Token recibido | no row: FCM never answered |

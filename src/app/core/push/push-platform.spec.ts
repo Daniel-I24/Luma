@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { PushDiagnostics } from './push-diagnostics';
-import { PushPlatform, type PushPlugin } from './push-platform';
-import { PUSH_ENABLED } from './push-types';
+import { PushPlatform } from './push-platform';
+import { type LoadedPush, PUSH_ENABLED, type PushPlugin } from './push-types';
 
 type Handler = (payload: unknown) => void;
 
@@ -27,8 +27,8 @@ class FakePlugin {
 @Injectable()
 class TestPlatform extends PushPlatform {
   public fake = new FakePlugin();
-  protected override async plugin(): Promise<PushPlugin> {
-    return this.fake as unknown as PushPlugin;
+  protected override async plugin(): Promise<LoadedPush> {
+    return { push: this.fake as unknown as PushPlugin };
   }
 }
 

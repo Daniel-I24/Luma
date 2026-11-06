@@ -29,7 +29,7 @@
   <div class="border-t border-border-subtle pt-3" aria-live="polite">
     @if (push.problem(); as problem) {
       <p class="m-0 mb-2 text-body-sm text-fg-muted" role="status">{{ t('notificationSettings.phone.problem.' + problemKeys[problem]) }}</p>
-      @if (problem === 'registration_failed' || problem === 'token_save_failed') {
+      @if (problem === 'permission_failed' || problem === 'registration_failed' || problem === 'token_save_failed') {
         <app-luma-button variant="secondary" (clicked)="enable()">{{ t('notificationSettings.phone.retry') }}</app-luma-button>
       }
     } @else {

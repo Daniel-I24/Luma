@@ -3,16 +3,16 @@ import { Router } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
 import { SignOutHooks } from '@core/auth/session-end';
-import { ErrorCode } from '@core/errors/error-code';
 import { ErrorLog } from '@core/errors/error-log';
 import { PushDiagnostics } from './push-diagnostics';
+import { type PermissionResult, PushPermissions } from './push-permissions';
 import { PushPlatform } from './push-platform';
 import { PushRoute } from './push-route';
 import { PushTokenLink } from './push-token-link.service';
 import { ANDROID_IMPORTANCE, type PushAction, type PushChannel, type PushPermission } from './push-types';
 
 /** Why push is not working on this phone, each with its own message. */
-export type PushProblem = 'denied' | 'not_configured' | 'registration_failed' | 'token_save_failed';
+export type PushProblem = 'denied' | 'not_configured' | 'permission_failed' | 'registration_failed' | 'token_save_failed';
 const PROBLEM_OF: Partial<Record<PushPermission, PushProblem>> = { denied: 'denied', not_configured: 'not_configured' };
 
 /**
@@ -23,6 +23,7 @@ const PROBLEM_OF: Partial<Record<PushPermission, PushProblem>> = { denied: 'deni
 @Injectable({ providedIn: 'root' })
 export class PushRegistration {
   private readonly platform = inject(PushPlatform);
+  private readonly permissions = inject(PushPermissions);
   private readonly link = inject(PushTokenLink);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
@@ -61,19 +62,12 @@ export class PushRegistration {
 
   /** From a user action: asks for permission and registers. Resolves to the permission. */
   public async enable(): Promise<PushPermission> {
+    this._problem.set(null);
     let permission = await this.currentPermission();
-    if (permission === 'prompt') {
-      try {
-        permission = await this.platform.requestPermission();
-        this.diagnostics.record('permission', permission === 'granted', permission);
-      } catch (error) {
-        this.log.record(error, 'push');
-        this.diagnostics.record('permission', false, ErrorCode.of(error));
-        permission = 'denied';
-      }
-    }
+    if (permission === 'prompt') permission = this.noted(await this.permissions.ask());
     this._permission.set(permission);
-    this._problem.set(PROBLEM_OF[permission] ?? null);
+    const refused = PROBLEM_OF[permission];
+    if (refused) this._problem.set(refused);
     if (permission === 'granted') await this.refresh();
     return permission;
   }
@@ -111,21 +105,19 @@ export class PushRegistration {
       await this.platform.createChannels(this.channels());
       this.diagnostics.record('channels', true, 'orders,promotions');
     } catch (error) {
-      this.diagnostics.record('channels', false, ErrorCode.of(error));
+      this.diagnostics.fail('channels', error);
       throw error;
     }
   }
 
   private async currentPermission(): Promise<PushPermission> {
-    try {
-      const permission = await this.platform.permission();
-      this.diagnostics.record('permission', permission === 'granted', permission);
-      return permission;
-    } catch (error) {
-      this.log.record(error, 'push');
-      this.diagnostics.record('permission', false, ErrorCode.of(error));
-      return 'unavailable';
-    }
+    return this.noted(await this.permissions.read());
+  }
+
+  /** A failure is not the user's answer: it has its own message, with "Intentar de nuevo". */
+  private noted({ permission, failed }: PermissionResult): PushPermission {
+    if (failed) this._problem.set('permission_failed');
+    return permission;
   }
 
   private async open(action: PushAction): Promise<void> {

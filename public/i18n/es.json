@@ -1899,6 +1899,7 @@
       "problem": {
         "denied": "No diste permiso para las notificaciones. Puedes activarlas en los ajustes del teléfono, en Luma → Notificaciones.",
         "notConfigured": "Esta versión de Luma no puede recibir notificaciones en el teléfono. Tus avisos siguen llegando a la lista de notificaciones.",
+        "permissionFailed": "No pudimos consultar el permiso de notificaciones de este teléfono. Inténtalo de nuevo.",
         "registrationFailed": "El teléfono no pudo registrarse para recibir notificaciones. Revisa tu conexión e inténtalo de nuevo.",
         "tokenSaveFailed": "El permiso quedó activo, pero no pudimos guardar este teléfono. Inténtalo de nuevo en un momento."
       },

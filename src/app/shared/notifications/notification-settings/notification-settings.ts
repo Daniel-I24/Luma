@@ -31,6 +31,7 @@ export class NotificationSettings implements OnInit {
   protected readonly problemKeys: Readonly<Record<PushProblem, string>> = {
     denied: 'denied',
     not_configured: 'notConfigured',
+    permission_failed: 'permissionFailed',
     registration_failed: 'registrationFailed',
     token_save_failed: 'tokenSaveFailed',
   };
