@@ -2,7 +2,6 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import type {
   DocKind,
   LegalInfo,
-  ReviewRequirement,
   VerificationDoc,
 } from '@shared/business/verification/verification.model';
 import { VerificationRepository } from '@shared/business/verification/verification.repository';
