@@ -118,7 +118,11 @@ Checked on 2026-10-19 on Postgres 17 with the local stubs:
 (the orders migrations were the first ones marked as not applied); nothing
 in this repository can confirm the state of the live project. Before
 applying, compare with the project's migration history
-(`supabase migration list` or `supabase_migrations.schema_migrations`).
+(`supabase migration list --remote` or `supabase_migrations.schema_migrations`).
+The CLI targets the local database unless it gets `--remote`. A migration pasted
+in the SQL editor is not recorded in that history: `db push` would try it again
+unless it is recorded with `supabase migration repair --remote --status applied <version>`.
+On 2026-11-06 the history listed 1 to 56, and `db push --remote --dry-run` only 57 and 58.
 
 Every pending migration ends with `notify pgrst, 'reload schema';`, grants
 explicitly, revokes `EXECUTE` on its functions from `public` and `anon`, and

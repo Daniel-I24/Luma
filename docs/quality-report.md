@@ -14,8 +14,30 @@ dependency phase); "after" is round 10 phase B.
 | Unused exports / types (knip) | 40 / 34 | 0 / 0 | `npx knip` |
 | TypeScript | strict off for indexes | `strict` + `noUncheckedIndexedAccess` (app, tests, functions) | `tsconfig.json`, each `deno.json` |
 | Initial bundle | 673.13 kB | 680.90 kB | `npm run build`; +2.3 kB ErrorLog and the push/realtime hardening, +0.5 kB route credits; the order screen loads MapLibre on idle (`@defer`, proven with `getDeferBlocks`) |
-| Unit test coverage | not measured | 83.58 % statements, 78.16 % branches, 75.42 % functions, 87.23 % lines | `ng test --coverage`; CI thresholds in `angular.json` |
-| Tests | 880 app, 134 scripts, 179 Deno, 794 SQL, 4 e2e | 916 app (225 files), 140+ scripts, 200+ Deno, 839 SQL, 6 e2e | the Definition of Done |
+| Unit test coverage | not measured | 84.13 % statements, 78.80 % branches, 76.08 % functions, 87.76 % lines (commit `cbb8fc5`) | `ng test --coverage`; CI thresholds in `angular.json` |
+| Tests | 880 app, 134 scripts, 179 Deno, 794 SQL, 4 e2e | 951 app (233 files, commit `cbb8fc5`), 149 scripts, 170 Deno, 858 SQL, 6 e2e | the Definition of Done |
+
+## Close of round 11, measured on 2026-11-06
+
+| Check | Result | Commit |
+| --- | --- | --- |
+| `npm test -- --watch=false --coverage` | 233 files, 951 of 951; 84.13 / 78.80 / 76.08 / 87.76 % | `cbb8fc5` |
+| Specs affected by the accessibility fix (button, owner, checkout) | 41 files, 164 of 164 | `4666cc0` |
+| The whole unit suite after that fix | **not finished**: stopped by the system, low memory | `4666cc0` |
+| `npm run test:scripts` | 149 of 149 | this commit |
+| `npm run test:e2e` (axe included) | 6 of 6, after fixing what it found | `4666cc0` |
+| `npm run check:responsive` | ok (8 min) | `4666cc0` |
+| Build, lint, `tsc` of app and specs | ok; initial 680.90 kB | `4666cc0` |
+| SQL suites, final migration 58 (PostgreSQL 18.6) | 47 suites, 858 checks; rehearsal ok, 10 checks | `4666cc0` |
+| Deno 2.5.6 in Docker | 14 folders, 170 tests; 13 type checks | `4666cc0` |
+| Type check commit by commit | **incomplete**: 5 of 16 code commits ok (`bbf78d2` to `2b8f446`), then stopped by the system, low memory | |
+| Secret scan, `npm audit --omit=dev` | ok (1314 files), 0 vulnerabilities | `4666cc0` |
+| Debug APK | built on 2026-11-06 08:01:02 -04, 6.96 MB | `4666cc0` |
+
+Not measured again at this close: files, lines, functions over 30 lines, jscpd.
+The local SQL harness has no `pg_cron`, so the cron block of migration 58 has
+not run anywhere; it repeats the statements of migration 27.
+Runtime on a real phone, including the R8 release APK, is still untested.
 
 ## 5.1 Code
 - One message box (`LumaNotice`, 51 copies), one draft-form helper
@@ -59,6 +81,9 @@ dependency phase); "after" is round 10 phase B.
 ## 5.5 Accessibility
 - `e2e/walk.e2e.mjs` runs axe-core (WCAG 2.1 A and AA rules) on every walked
   screen, customer and owner, and fails on a serious or critical violation.
+  Its first full run found two on the owner panel, both fixed: `role="radio"` on
+  the host of `LumaButton` instead of the native button, and an `aria-label` that
+  hid the figures of the "today" link.
 
 ## 5.6 Observability
 - `ErrorLog` (last 20 masked errors, "Copiar errores") and `ErrorReporter`

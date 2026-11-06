@@ -18,13 +18,14 @@ values; never paste the service_role key anywhere in the app.
    `pg_cron`, `pg_net`).
 3. **Check what is applied** (should list 1 to 56 as applied, per the owner; only this command confirms it):
    ```powershell
-   npx supabase migration list
+   npx supabase migration list --remote
    ```
 4. **Apply migrations 57 and 58** (`20261107000000_round10.sql`,
    `20261108000000_push_claim_window.sql`, in that order) after your review
    (docs/migrations.md):
    ```powershell
-   npx supabase db push
+   npx supabase db push --remote --dry-run
+   npx supabase db push --remote
    ```
 5. **Validate the old constraints**: in the SQL editor run
    `supabase/sql/validate-report.sql`; fix the rows it reports (queries in
