@@ -42,7 +42,7 @@ const poke = (secret: string | null = SECRET, method = 'POST') =>
 Deno.test('sends each claimed notification to every token and removes dead tokens', async () => {
   const { handler, sent, removed } = setup();
   const res = await handler(poke());
-  assertEquals([res.status, await res.json()], [200, { sent: 1, failed: 0, removed: 1 }]);
+  assertEquals([res.status, await res.json()], [200, { sent: 1, failed: 0, removed: 1, reasons: {} }]);
   assertEquals(sent[0], [
     't-ok', 'Tu pedido en Café Público está listo para recoger.',
     { type: 'order_status', notification_id: 'n1', order_id: 'o1', business_id: 'b1' }, 'orders',
@@ -98,10 +98,10 @@ Deno.test('texts are Spanish, use only the public business name and skip unknown
 Deno.test('a failing send never aborts the batch', async () => {
   const { handler, sent, removed } = setup({
     batches: [[row(1, ['t-throw', 't-busy', 't-ok']), row(2, ['t-ok'])]],
-    results: { 't-throw': 'throw', 't-busy': 'failed' },
+    results: { 't-throw': 'throw', 't-busy': 'failed:UNAVAILABLE' },
   });
   const res = await handler(poke());
-  assertEquals([res.status, await res.json()], [200, { sent: 2, failed: 2, removed: 0 }]);
+  assertEquals([res.status, await res.json()], [200, { sent: 2, failed: 2, removed: 0, reasons: { network: 1, UNAVAILABLE: 1 } }]);
   assertEquals(sent.length, 4);
   assertEquals(removed, []);
 });

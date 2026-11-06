@@ -33,8 +33,10 @@ export function sameSecret(given: string | null, expected: string): boolean {
 async function sendOne(sender: Sender, token: string, message: PushMessage): Promise<SendResult> {
   try {
     return await sender.send(token, message);
-  } catch {
-    return 'failed';
+  } catch (error) {
+    // Our own codes (fcm_auth_failed); anything else stays generic.
+    const message = error instanceof Error ? error.message : '';
+    return /^[a-z_]{3,40}$/.test(message) ? `failed:${message}` : 'failed';
   }
 }
 
@@ -54,6 +56,7 @@ export function createHandler(deps: DispatchDeps): (req: Request) => Promise<Res
 
     let sent = 0;
     let failed = 0;
+    const reasons: Record<string, number> = {};
     const invalid: string[] = [];
     try {
       for (let batch = 0; batch < MAX_BATCHES; batch++) {
@@ -65,14 +68,18 @@ export function createHandler(deps: DispatchDeps): (req: Request) => Promise<Res
           for (const token of row.tokens) {
             const result = await sendOne(deps.sender, token, message);
             if (result === 'sent') sent++;
-            if (result === 'failed') failed++;
+            if (result.startsWith('failed')) {
+              failed++;
+              const reason = result.split(':')[1] ?? 'unknown';
+              reasons[reason] = (reasons[reason] ?? 0) + 1;
+            }
             if (result === 'invalid_token') invalid.push(token);
           }
         }
         if (rows.length < BATCH) break;
       }
       if (invalid.length) await deps.store.removeTokens(invalid);
-      return json(200, { sent, failed, removed: invalid.length });
+      return json(200, { sent, failed, removed: invalid.length, reasons });
     } catch {
       return json(503, { error: 'push_unavailable', sent });
     }

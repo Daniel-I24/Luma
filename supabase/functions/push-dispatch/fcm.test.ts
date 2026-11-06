@@ -58,13 +58,19 @@ Deno.test('sends v1 messages, reuses the access token and spots dead tokens', as
   const results = [];
   const message = { title: 'T', body: 'B', data: { type: 'order_new' }, channelId: 'orders' };
   for (const token of ['ok', 'dead', 'busy']) results.push(await fcm.send(token, message));
-  assertEquals(results, ['sent', 'invalid_token', 'failed']);
+  assertEquals(results, ['sent', 'invalid_token', 'failed:UNAVAILABLE']);
   assertEquals(urls.filter((u) => u.startsWith('https://oauth2')).length, 1);
   assertEquals(urls[1], 'https://fcm.googleapis.com/v1/projects/luma-test/messages:send');
   assertEquals(sends[0], {
     message: {
       token: 'ok', notification: { title: 'T', body: 'B' }, data: { type: 'order_new' },
-      android: { priority: 'high', notification: { channel_id: 'orders', icon: 'ic_stat_luma', color: '#0D4A6B' } },
+      android: {
+        priority: 'high',
+        notification: {
+          channel_id: 'orders', icon: 'ic_stat_luma', color: '#0D4A6B',
+          sound: 'default', default_vibrate_timings: true, notification_priority: 'PRIORITY_HIGH',
+        },
+      },
     },
   });
 });

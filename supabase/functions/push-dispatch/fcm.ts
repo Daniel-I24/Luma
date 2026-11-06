@@ -10,7 +10,8 @@ export interface ServiceAccount {
   readonly privateKey: string;
 }
 
-export type SendResult = 'sent' | 'invalid_token' | 'failed';
+/** A failure carries FCM's code when there is one: `failed:SENDER_ID_MISMATCH`. */
+export type SendResult = 'sent' | 'invalid_token' | 'failed' | `failed:${string}`;
 
 /** Monochrome mark in the APK (res/drawable/ic_stat_luma.xml) and the brand blue. */
 const NOTIFICATION_ICON = 'ic_stat_luma';
@@ -98,7 +99,14 @@ export class FcmClient {
           token,
           notification: { title: message.title, body: message.body },
           data: message.data,
-          android: { priority: 'high', notification: { channel_id: message.channelId, icon: NOTIFICATION_ICON, color: NOTIFICATION_COLOR } },
+          android: {
+            priority: 'high',
+            notification: {
+              channel_id: message.channelId, icon: NOTIFICATION_ICON, color: NOTIFICATION_COLOR,
+              // Android 7 reads these from the message; from 8 on the channel decides.
+              sound: 'default', default_vibrate_timings: true, notification_priority: 'PRIORITY_HIGH',
+            },
+          },
         },
       }),
     });
@@ -107,7 +115,7 @@ export class FcmClient {
       return 'sent';
     }
     const error = (await res.json().catch(() => null)) as FcmErrorBody | null;
-    return isDeadToken(res.status, error) ? 'invalid_token' : 'failed';
+    return isDeadToken(res.status, error) ? 'invalid_token' : `failed:${failureCode(res.status, error)}`;
   }
 }
 
@@ -118,6 +126,12 @@ export interface FcmErrorBody {
     readonly message?: string;
     readonly details?: readonly { readonly errorCode?: string; readonly fieldViolations?: readonly { readonly field?: string }[] }[];
   };
+}
+
+/** The most specific code of a failed send; only codes, never free text. */
+function failureCode(httpStatus: number, body: FcmErrorBody | null): string {
+  const detail = (body?.error?.details ?? []).find((d) => d.errorCode)?.errorCode;
+  return detail ?? body?.error?.status ?? String(httpStatus);
 }
 
 /**
