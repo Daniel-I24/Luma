@@ -59,7 +59,7 @@ export class OrderDetailPage {
     initialValue: this.transloco.getActiveLang(),
   });
 
-  private readonly id = toSignal(
+  protected readonly id = toSignal(
     inject(ActivatedRoute).paramMap.pipe(map((params) => params.get('id') ?? '')),
     { initialValue: '' },
   );

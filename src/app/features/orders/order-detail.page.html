@@ -9,7 +9,7 @@
 
   @switch (store.state()) { @case ('loading') {
   <div class="flex flex-col gap-3" aria-busy="true">
-    <app-luma-skeleton class="h-40 w-full" shape="rect" />
+    <app-luma-skeleton class="vt-shared h-40 w-full" shape="rect" [style.view-transition-name]="'order-' + id()" />
     <app-luma-skeleton class="h-24 w-full" shape="rect" />
     <span class="sr-only">{{ t('orders.loading') }}</span>
   </div>
