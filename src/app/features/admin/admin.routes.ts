@@ -30,6 +30,11 @@ export const adminRoutes: Routes = [
           import('./pages/admin-operations/admin-operations.page').then((m) => m.AdminOperationsPage),
       },
       {
+        path: 'technical',
+        loadComponent: () =>
+          import('./pages/admin-technical/admin-technical.page').then((m) => m.AdminTechnicalPage),
+      },
+      {
         path: 'businesses/:id',
         data: DETAIL_ROUTE_DATA,
         loadComponent: () =>

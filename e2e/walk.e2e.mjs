@@ -33,7 +33,7 @@ async function walk(user, paths) {
 }
 
 test('customer: map, feed, Luma IA, orders, notifications and profile, without "Algo salió mal"', async () => {
-  const { app, seen, a11y } = await walk(CUSTOMER_EMAIL, ['/map', '/feed', '/ai', '/orders', '/notifications', '/profile']);
+  const { app, seen, a11y } = await walk(CUSTOMER_EMAIL, ['/map', '/feed', '/ai', '/orders', '/notifications', '/profile', '/account/data']);
   // Luma IA keeps its chips and adds "Combos para …".
   await app.page.goto(env.origin + '/ai');
   await app.page.getByRole('heading', { name: /Combos para/ }).waitFor({ timeout: 5000 });

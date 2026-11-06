@@ -2,6 +2,7 @@
   <a routerLink="/admin" class="text-body-sm text-fg-accent">{{ t('admin.operations.back') }}</a>
   <h1 class="m-0 text-h3 text-fg">{{ t('admin.operations.title') }}</h1>
   <app-device-test />
+  <a routerLink="/admin/technical" class="pressable flex min-h-11 items-center rounded-xl border border-border-subtle bg-surface px-4 text-body text-fg no-underline">{{ t('admin.technical.title') }}</a>
   @if (ops.notice(); as key) {
   <app-luma-notice>{{ t(key) }}</app-luma-notice>
   }

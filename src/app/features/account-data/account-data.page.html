@@ -1,0 +1,38 @@
+<div *transloco="let t" class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6">
+  <a routerLink="/profile" class="flex min-h-11 items-center self-start text-body-sm text-fg-accent">{{ t('account.data.back') }}</a>
+  <h1 class="m-0 wrap-anywhere text-h3 text-fg">{{ t('account.data.title') }}</h1>
+  <p class="m-0 wrap-anywhere text-body text-fg-muted">{{ t('account.data.purpose') }}</p>
+
+  @if (loading()) {
+  <div class="flex flex-col gap-3" aria-busy="true">
+    <app-luma-skeleton class="h-24 w-full" shape="rect" />
+    <app-luma-skeleton class="h-24 w-full" shape="rect" />
+    <span class="sr-only">{{ t('account.data.working') }}</span>
+  </div>
+  } @else if (errorKey(); as key) {
+  <app-luma-notice tone="danger">{{ t(key) }}</app-luma-notice>
+  <app-luma-button variant="secondary" (clicked)="load()">{{ t('common.retry') }}</app-luma-button>
+  } @else {
+  @for (section of sections(); track section.key) {
+  <section class="motion-stagger flex min-w-0 flex-col gap-2 rounded-xl border border-border-subtle bg-surface p-4" [style.--stagger-index]="$index" [attr.aria-labelledby]="'data-' + section.key">
+    <h2 [id]="'data-' + section.key" class="m-0 flex items-center justify-between gap-2 text-title text-fg">
+      <span class="min-w-0 wrap-anywhere">{{ t('account.data.sections.' + section.key) }}</span>
+      <span class="text-body-sm font-normal text-fg-muted">{{ section.count }}</span>
+    </h2>
+    @if (section.count) {
+    <ul class="m-0 flex list-none flex-col gap-1 p-0 text-body-sm text-fg-muted">
+      @for (line of section.lines.slice(0, section.key === 'account' ? section.lines.length : preview); track $index) {
+      <li class="wrap-anywhere">{{ line }}</li>
+      }
+    </ul>
+    @if (section.key !== 'account' && section.lines.length > preview) {
+    <p class="m-0 text-caption text-fg-subtle">{{ t('account.data.more', { count: section.lines.length - preview }) }}</p>
+    } } @else {
+    <p class="m-0 text-body-sm text-fg-subtle">{{ t('account.data.none') }}</p>
+    }
+  </section>
+  }
+  <p class="m-0 text-body-sm text-fg-muted">{{ t('account.data.fileHint') }}</p>
+  <app-luma-button variant="secondary" [fullWidth]="true" [disabled]="saving()" (clicked)="download()">{{ t('account.data.download') }}</app-luma-button>
+  }
+</div>

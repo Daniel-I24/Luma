@@ -1289,6 +1289,25 @@
       "entry": "No pudimos comprobar si tienes acceso de administración. Si no eres del equipo de revisión, ignora este aviso.",
       "code": "Código",
       "back": "Volver al inicio"
+    },
+    "technical": {
+      "title": "Información técnica",
+      "email": "Correo",
+      "user": "Usuario",
+      "queries": "Consultas del panel (las más recientes primero)",
+      "table": "Tabla",
+      "filter": "Filtro",
+      "rows": "Filas",
+      "failed": "error",
+      "empty": "Aún no hay consultas: abre una sección del panel.",
+      "copy": "Copiar información",
+      "copied": {
+        "ok": "Copiada. Pégala en tu mensaje a soporte.",
+        "failed": "No se pudo copiar en este dispositivo."
+      },
+      "aiMode": "Modo de Luma IA",
+      "back": "Volver a operaciones",
+      "hint": "Solo para el equipo de administración. Sin datos personales."
     }
   },
   "reports": {
@@ -1820,25 +1839,6 @@
       "logoShort": "Logo",
       "addCover": "Añadir portada"
     },
-    "technical": {
-      "title": "Información técnica",
-      "hint": "Para enviarla a soporte si algo se ve mal",
-      "email": "Correo",
-      "user": "Usuario",
-      "businesses": "Negocios en el panel",
-      "queries": "Consultas del panel (las más recientes primero)",
-      "table": "Tabla",
-      "filter": "Filtro",
-      "rows": "Filas",
-      "failed": "error",
-      "empty": "Aún no hay consultas: abre una sección del panel.",
-      "copy": "Copiar información",
-      "copied": {
-        "ok": "Copiada. Pégala en tu mensaje a soporte.",
-        "failed": "No se pudo copiar en este dispositivo."
-      },
-      "aiMode": "Modo de Luma IA"
-    },
     "customerView": {
       "banner": "Estás viendo Luma como cliente",
       "back": "Volver"
@@ -1959,16 +1959,77 @@
       "codeSent": "Te enviamos un código de 6 dígitos a tu correo. Escríbelo para guardar la nueva contraseña.",
       "code": "Código de 6 dígitos"
     },
-    "export": {
-      "action": "Descargar mis datos",
+    "data": {
+      "title": "Mis datos",
+      "back": "Volver al perfil",
+      "purpose": "Por la Ley 1581 de 2012 (protección de datos personales) tienes derecho a saber qué datos guarda Luma sobre ti. Aquí los ves en un resumen, y puedes llevarte el archivo completo. Para corregirlos o borrarlos, usa Datos de la cuenta o Eliminar cuenta.",
       "working": "Preparando tus datos…",
+      "none": "Nada guardado.",
+      "more": "Y {{count}} más en el archivo completo.",
+      "fileHint": "El archivo completo tiene todo lo anterior y los detalles de cada pedido, en texto que puedes leer o guardar.",
+      "download": "Descargar el archivo completo",
+      "fileTitle": "Luma: mis datos",
+      "fileMade": "Copia hecha el {{date}}, hora de Colombia.",
+      "yes": "Sí",
+      "no": "No",
+      "unread": "sin leer",
+      "devicesLine": "Teléfonos enlazados para recibir avisos: {{count}}",
+      "sections": {
+        "account": "Cuenta y perfil",
+        "orders": "Pedidos",
+        "favorites": "Favoritos",
+        "reviews": "Reseñas",
+        "notifications": "Avisos",
+        "reports": "Reportes que hiciste",
+        "businesses": "Tus negocios",
+        "devices": "Teléfonos"
+      },
+      "fields": {
+        "email": "Correo",
+        "created_at": "Cuenta creada",
+        "email_confirmed_at": "Correo confirmado",
+        "updated_at": "Última actualización",
+        "display_name": "Nombre visible",
+        "full_name": "Nombre completo",
+        "phone": "Celular",
+        "account_type": "Tipo de cuenta",
+        "residence_department": "Departamento",
+        "residence_city": "Municipio",
+        "residence_neighborhood": "Barrio",
+        "notify_orders": "Avisos de pedidos",
+        "notify_promotions": "Avisos de promociones",
+        "terms_accepted_at": "Términos aceptados",
+        "terms_version": "Versión de los términos",
+        "privacy_accepted_at": "Privacidad aceptada",
+        "privacy_version": "Versión de la privacidad",
+        "age_confirmed_at": "Mayoría de edad confirmada",
+        "avatar_consent_at": "Permiso para la foto",
+        "show_avatar_to_business": "Mostrar la foto a los negocios",
+        "onboarding_seen_version": "Guía de bienvenida vista",
+        "strikes_cleared_at": "Avisos limpiados"
+      },
+      "paymentMethod": {
+        "pay_at_pickup": "Pago al recoger",
+        "online": "Pago en línea"
+      },
+      "notificationType": {
+        "order_new": "Pedido nuevo",
+        "order_cancelled": "Pedido cancelado",
+        "order_status": "Cambio en un pedido",
+        "business_review": "Revisión de tu negocio",
+        "promotion": "Promoción",
+        "payment": "Pago",
+        "review_invite": "Invitación a reseñar",
+        "contact_verification": "Verificación de contacto",
+        "test": "Prueba"
+      },
       "done": {
-        "download": "Listo: descargamos una copia de tus datos (archivo JSON).",
-        "share": "Listo: elige dónde guardar la copia de tus datos.",
+        "download": "Listo: descargamos el archivo con tus datos.",
+        "share": "Listo: elige dónde guardar el archivo.",
         "clipboard": "Listo: copiamos tus datos. Pégalos en una nota o en un correo para guardarlos."
       },
       "errors": {
-        "limit": "Ya descargaste tus datos 3 veces hoy. Inténtalo mañana.",
+        "limit": "Ya consultaste tus datos 10 veces hoy. Inténtalo mañana.",
         "failed": "No pudimos preparar tus datos. Inténtalo de nuevo."
       }
     }
@@ -2453,9 +2514,7 @@
     "copied": {
       "ok": "Copiados. Pégalos en tu mensaje a soporte.",
       "failed": "No se pudo copiar en este dispositivo."
-    },
-    "heading": "Información técnica",
-    "headingHint": "Para enviarla a soporte si algo falla"
+    }
   },
   "location": {
     "hint": "Mueve el mapa hasta que el pin quede sobre la entrada del negocio y pulsa «Confirmar este punto».",

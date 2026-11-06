@@ -37,6 +37,14 @@ select tests.expect_true('authenticated', tests.id('owner'), $$
      and jsonb_array_length(d -> 'orders') = 0
      and position('sin azucar' in d::text) = 0 and position('cus@test.local' in d::text) = 0
   from e$$, 'an owner gets their businesses but never the orders or data of their customers');
+select tests.expect_true('authenticated', tests.id('cus'), $$
+  with e as (select public.export_my_data() as d)
+  select d -> 'favorites' -> 0 ? 'business' and not d -> 'favorites' -> 0 ? 'business_id'
+     and d -> 'reviews' -> 0 ? 'business' and not d -> 'reviews' -> 0 ? 'business_id'
+     and d -> 'orders' -> 0 ? 'business' and not d -> 'orders' -> 0 ? 'id'
+     and not d -> 'account' ? 'id' and not d -> 'profile' ? 'id' and not d -> 'profile' ? 'avatar_path'
+  from e$$, 'businesses by name, and no internal ids');
+update public.ai_usage set calls = 10 where scope = 'export' and subject = tests.id('cus');
 select tests.expect_error('authenticated', tests.id('cus'),
   $$select public.export_my_data()$$, 'export_limit');
 

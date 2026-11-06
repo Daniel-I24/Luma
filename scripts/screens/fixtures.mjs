@@ -26,6 +26,7 @@ export const SCREENS = [
   { name: 'profile', path: '/profile' },
   { name: 'account-details', path: '/account/details' },
   { name: 'account-password', path: '/account/password' },
+  { name: 'account-data', path: '/account/data' },
   { name: 'tutorials', path: '/tutorials' },
   { name: 'business', path: `/businesses/${BUSINESS_ID}` },
   // Luma Negocios with a business of long names and big prices (round 8, check:responsive).
@@ -107,6 +108,23 @@ const MENU = [
 }));
 const HOURS = Array.from({ length: 7 }, (_, day) => ({ business_id: BUSINESS_ID, day_of_week: day, opens_at: '07:00:00', closes_at: '20:00:00', is_closed: false }));
 
+/** What "Mis datos" reads. */
+const MY_DATA = {
+    exported_at: new Date().toISOString(),
+    account: { email: 'ana@example.test', created_at: '2026-10-01T15:00:00Z' },
+    profile: { display_name: 'Ana', residence_city: 'Pasto', notify_orders: true },
+    favorites: [{ business: 'Panadería Doña Rosa', created_at: '2026-10-02T15:00:00Z' }],
+    reviews: [],
+    reports: [],
+    orders: [{
+      business: 'Panadería Doña Rosa', status: 'picked_up', payment_method: 'pay_at_pickup', payment_status: 'none', total_cop: 20000,
+      notes: null, pickup_at: null, created_at: '2026-10-03T15:00:00Z', items: [{ name: 'Tinto', quantity: 2, unit_price_cop: 10000 }],
+    }],
+    notifications: [{ type: 'order_status', status: 'ready', business: 'Panadería Doña Rosa', created_at: '2026-10-03T15:30:00Z', read_at: null }],
+    devices: 1,
+    businesses: [],
+  };
+
 /** Answers a request that left the local server; owner screens see an owner profile and their business. */
 export function respond(route, { owner = false } = {}) {
   const url = new URL(route.request().url());
@@ -118,6 +136,7 @@ export function respond(route, { owner = false } = {}) {
   if (url.pathname === '/rest/v1/businesses') return one(BUSINESS);
   if (url.pathname === '/rest/v1/menu_items') return json(route, MENU);
   if (url.pathname === '/rest/v1/business_hours') return json(route, HOURS);
+  if (url.pathname === '/rest/v1/rpc/export_my_data') return json(route, MY_DATA);
   if (url.pathname.startsWith('/rest/v1/')) return json(route, single ? null : []);
   return route.abort();
 }

@@ -1289,6 +1289,25 @@
       "entry": "We could not check whether you have admin access. If you are not on the review team, ignore this notice.",
       "code": "Code",
       "back": "Back to home"
+    },
+    "technical": {
+      "title": "Technical information",
+      "email": "E-mail",
+      "user": "User",
+      "queries": "Panel reads (newest first)",
+      "table": "Table",
+      "filter": "Filter",
+      "rows": "Rows",
+      "failed": "error",
+      "empty": "No reads yet: open a section of the panel.",
+      "copy": "Copy information",
+      "copied": {
+        "ok": "Copied. Paste it in your message to support.",
+        "failed": "It could not be copied on this device."
+      },
+      "aiMode": "Luma IA mode",
+      "back": "Back to operations",
+      "hint": "For the admin team only. No personal data."
     }
   },
   "reports": {
@@ -1820,25 +1839,6 @@
       "logoShort": "Logo",
       "addCover": "Add a cover"
     },
-    "technical": {
-      "title": "Technical information",
-      "hint": "To send to support if something looks wrong",
-      "email": "E-mail",
-      "user": "User",
-      "businesses": "Businesses in the panel",
-      "queries": "Panel reads (newest first)",
-      "table": "Table",
-      "filter": "Filter",
-      "rows": "Rows",
-      "failed": "error",
-      "empty": "No reads yet: open a section of the panel.",
-      "copy": "Copy information",
-      "copied": {
-        "ok": "Copied. Paste it in your message to support.",
-        "failed": "It could not be copied on this device."
-      },
-      "aiMode": "Luma IA mode"
-    },
     "customerView": {
       "banner": "You are seeing Luma as a customer",
       "back": "Back"
@@ -1959,17 +1959,78 @@
       "codeSent": "We emailed you a 6-digit code. Enter it to save the new password.",
       "code": "6-digit code"
     },
-    "export": {
-      "action": "Download my data",
+    "data": {
+      "title": "My data",
+      "back": "Back to profile",
+      "purpose": "Under Colombian Law 1581 of 2012 (personal data protection) you have the right to know what Luma keeps about you. Here you see a summary, and you can take the whole file. To correct or erase it, use Account details or Delete account.",
       "working": "Preparing your data…",
+      "none": "Nothing saved.",
+      "more": "And {{count}} more in the whole file.",
+      "fileHint": "The whole file has all of the above and the details of each order, as text you can read or keep.",
+      "download": "Download the whole file",
+      "fileTitle": "Luma: my data",
+      "fileMade": "Copy made on {{date}}, Colombia time.",
+      "yes": "Yes",
+      "no": "No",
+      "unread": "unread",
+      "devicesLine": "Phones linked to receive notices: {{count}}",
+      "sections": {
+        "account": "Account and profile",
+        "orders": "Orders",
+        "favorites": "Favourites",
+        "reviews": "Reviews",
+        "notifications": "Notices",
+        "reports": "Reports you made",
+        "businesses": "Your businesses",
+        "devices": "Phones"
+      },
+      "fields": {
+        "email": "E-mail",
+        "created_at": "Account created",
+        "email_confirmed_at": "E-mail confirmed",
+        "updated_at": "Last update",
+        "display_name": "Display name",
+        "full_name": "Full name",
+        "phone": "Mobile",
+        "account_type": "Account type",
+        "residence_department": "Department",
+        "residence_city": "Municipality",
+        "residence_neighborhood": "Neighbourhood",
+        "notify_orders": "Order notices",
+        "notify_promotions": "Promotion notices",
+        "terms_accepted_at": "Terms accepted",
+        "terms_version": "Terms version",
+        "privacy_accepted_at": "Privacy accepted",
+        "privacy_version": "Privacy version",
+        "age_confirmed_at": "Legal age confirmed",
+        "avatar_consent_at": "Photo permission",
+        "show_avatar_to_business": "Show the photo to businesses",
+        "onboarding_seen_version": "Welcome guide seen",
+        "strikes_cleared_at": "Warnings cleared"
+      },
+      "paymentMethod": {
+        "pay_at_pickup": "Pay at pick-up",
+        "online": "Online payment"
+      },
+      "notificationType": {
+        "order_new": "New order",
+        "order_cancelled": "Order cancelled",
+        "order_status": "Order update",
+        "business_review": "Review of your business",
+        "promotion": "Promotion",
+        "payment": "Payment",
+        "review_invite": "Invitation to review",
+        "contact_verification": "Contact verification",
+        "test": "Test"
+      },
       "done": {
-        "download": "Done: we downloaded a copy of your data (JSON file).",
-        "share": "Done: choose where to keep the copy of your data.",
+        "download": "Done: we downloaded the file with your data.",
+        "share": "Done: choose where to keep the file.",
         "clipboard": "Done: we copied your data. Paste it in a note or an e-mail to keep it."
       },
       "errors": {
-        "limit": "You already downloaded your data 3 times today. Try again tomorrow.",
-        "failed": "We could not prepare your data. Please try again."
+        "limit": "You have looked at your data 10 times today. Try again tomorrow.",
+        "failed": "We could not prepare your data. Try again."
       }
     }
   },
@@ -2453,9 +2514,7 @@
     "copied": {
       "ok": "Copied. Paste them into your message to support.",
       "failed": "Couldn't copy on this device."
-    },
-    "heading": "Technical information",
-    "headingHint": "To send to support if something fails"
+    }
   },
   "location": {
     "hint": "Move the map until the pin sits on the business entrance and press \"Confirm this point\".",

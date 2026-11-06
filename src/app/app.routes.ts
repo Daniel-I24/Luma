@@ -42,6 +42,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/account-password/account-password.page').then((m) => m.AccountPasswordPage),
   },
   {
+    path: 'account/data',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/account-data/account-data.page').then((m) => m.AccountDataPage),
+  },
+  {
     // Name, mobile and residence ("Completa tu perfil"); checkout links here.
     path: 'account/details',
     canActivate: [authGuard],

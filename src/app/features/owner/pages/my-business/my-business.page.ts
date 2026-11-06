@@ -9,7 +9,6 @@ import { HelpEntries } from '@shared/tutorial/help-entries';
 import { NotificationSettings } from '@shared/notifications/notification-settings/notification-settings';
 import { type OwnerBusinessScreen, ownerPaths } from '@shared/account/account-paths';
 import { PanelHeader } from '../../components/panel-header/panel-header';
-import { TechnicalInfo } from '../../components/technical-info/technical-info';
 import { PanelStateView } from '../../components/panel-state/panel-state';
 import { PanelBusinessStore } from '../../state/panel-business.store';
 import { EDITABLE_STATUSES } from '../../utils/review-checklist';
@@ -35,7 +34,7 @@ const SCREENS: readonly { screen: OwnerBusinessScreen; icon: IconName; key: stri
   imports: [
     AdminEntry,
     TranslocoModule, RouterLink, LumaIcon, AccountActions, AppearanceSettings, NotificationSettings, PanelHeader,
-    PanelStateView, HelpEntries, TechnicalInfo,
+    PanelStateView, HelpEntries,
   ],
   providers: [PanelBusinessStore],
   templateUrl: './my-business.page.html',

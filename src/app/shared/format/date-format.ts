@@ -1,5 +1,10 @@
-/** DateFormat — short dates and times in Bogotá time. */
+/** DateFormat — short dates and times. */
 export class DateFormat {
+  /** "5 nov 2026, 9:30 p. m.", always in Colombian time: for what stays on record. */
+  public static formatColombia(iso: string, lang: string): string {
+    return new Intl.DateTimeFormat(lang, { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: 'America/Bogota' }).format(new Date(iso));
+  }
+
   /** "23 oct." / "Oct 23" in the given language. */
   public static formatShortDate(iso: string, lang: string): string {
     return new Intl.DateTimeFormat(lang, { day: 'numeric', month: 'short' }).format(new Date(iso));

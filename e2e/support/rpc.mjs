@@ -9,6 +9,21 @@ const now = () => new Date().toISOString();
 
 /** Functions of /rest/v1/rpc/<name>: (db, args, ctx) → value, or { error }. */
 export const RPC = {
+  export_my_data: () => ({
+    exported_at: new Date().toISOString(),
+    account: { email: 'ana@example.test', created_at: '2026-10-01T15:00:00Z' },
+    profile: { display_name: 'Ana', residence_city: 'Pasto', notify_orders: true },
+    favorites: [{ business: 'Panadería Doña Rosa', created_at: '2026-10-02T15:00:00Z' }],
+    reviews: [],
+    reports: [],
+    orders: [{
+      business: 'Panadería Doña Rosa', status: 'picked_up', payment_method: 'pay_at_pickup', payment_status: 'none', total_cop: 20000,
+      notes: null, pickup_at: null, created_at: '2026-10-03T15:00:00Z', items: [{ name: 'Tinto', quantity: 2, unit_price_cop: 10000 }],
+    }],
+    notifications: [{ type: 'order_status', status: 'ready', business: 'Panadería Doña Rosa', created_at: '2026-10-03T15:30:00Z', read_at: null }],
+    devices: 1,
+    businesses: [],
+  }),
   payment_config: (db, _args, ctx) => [{ enabled: ctx.payments, sandbox: true }],
   create_order: (db, args, ctx) => {
     if (!ctx.userId) return { error: 'not_authenticated' };
