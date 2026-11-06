@@ -59,7 +59,7 @@ describe('payments in the app', () => {
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     TestBed.inject(PaymentReturn).init();
     TestBed.inject(AppEvents).emit(`luma://payments/return?order=${ORDER}&id=99-1`);
-    await vi.waitFor(() => expect(navigate).toHaveBeenCalledWith(['/orders', ORDER]));
+    await vi.waitFor(() => expect(navigate).toHaveBeenCalledWith(['/orders', ORDER], { state: { arrival: 'paid' } }));
     expect(repo.recordRedirect).toHaveBeenCalledWith(ORDER, '99-1');
     TestBed.inject(AppEvents).emit('luma://something/else');
     expect(navigate).toHaveBeenCalledTimes(1);

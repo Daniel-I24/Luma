@@ -48,7 +48,7 @@ export class PaymentReturn {
     const link = PaymentReturn.parse(url);
     if (!link) return;
     await this.record(link);
-    await this.router.navigate(['/orders', link.orderId]);
+    await this.router.navigate(['/orders', link.orderId], { state: { arrival: 'paid' } });
   }
 
   /** Best effort: the transaction id helps reconcile-payments; the status comes from the server. */

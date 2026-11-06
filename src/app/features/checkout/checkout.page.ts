@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { Router, RouterLink } from '@angular/router';
 import { TourHelpButton } from '@shared/tutorial/tour-help-button';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaButton, LumaChip, LumaEmptyState, LumaIconButton, LumaNotice, LumaSelect, LumaSkeleton, type SelectOption } from '@design-system';
+import { ValuePop, LumaButton, LumaChip, LumaEmptyState, LumaIconButton, LumaNotice, LumaSelect, LumaSkeleton, type SelectOption } from '@design-system';
 import { CartStore } from '@shared/cart/cart.store';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
 import { PROFILE_INCOMPLETE_KEY } from '@shared/orders/order-error';
@@ -20,7 +20,7 @@ import type { PickupOption } from './utils/pickup-time';
   selector: 'app-checkout-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LumaNotice, 
+  imports: [LumaNotice, ValuePop, 
     CheckoutPayment,
     TourHelpButton,
     TranslocoModule,

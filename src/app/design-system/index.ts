@@ -5,6 +5,10 @@
 
 export { LumaButton } from './button/luma-button';
 
+export { ValuePop } from './motion/value-pop';
+
+export { LumaSuccess } from './success/luma-success';
+
 export { LumaCard } from './card/luma-card';
 
 export { LumaBottomSheet } from './bottom-sheet/luma-bottom-sheet';

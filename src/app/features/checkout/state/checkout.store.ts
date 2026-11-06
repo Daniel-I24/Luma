@@ -116,7 +116,9 @@ export class CheckoutStore {
     void this.haptics.tap();
     // Online: the order screen shows the payment state and "Reintentar pago" if opening failed.
     await this.gateways.for(method).start(result.data);
-    await this.router.navigate(['/orders', result.data]);
+    // Online: the moment comes when the payment is approved, not now.
+    if (method === 'online') await this.router.navigate(['/orders', result.data]);
+    else await this.router.navigate(['/orders', result.data], { state: { arrival: 'placed' } });
   }
 
   /** The trust limit only mentions paying online when payments are on, and links to the order to pick up. */

@@ -1,0 +1,104 @@
+.success {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  animation: success-leave var(--duration-normal) var(--ease-exit) 880ms both;
+}
+
+.success__mark {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-success);
+  height: var(--size-success);
+  border-radius: var(--radius-full);
+  background-color: var(--color-success);
+  color: var(--color-confirm-fg);
+  box-shadow: var(--shadow-float);
+  animation: success-in var(--duration-spring) var(--ease-spring) both;
+}
+
+.success__check {
+  width: 62%;
+  height: 62%;
+  animation: success-check var(--duration-slow) var(--ease-spring) 120ms both;
+}
+
+.success__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-full);
+  border: var(--spacing-1) solid var(--color-success);
+  animation: success-ring 620ms var(--ease-enter) 60ms both;
+}
+
+.success__ray {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--spacing-2);
+  height: var(--spacing-2);
+  margin: calc(var(--spacing-1) * -1);
+  border-radius: var(--radius-full);
+  background-color: var(--color-rating);
+  transform: rotate(calc(var(--ray) * 45deg)) translateY(0);
+  animation: success-ray 620ms var(--ease-enter) 80ms both;
+}
+
+.success__ray:nth-child(odd) {
+  background-color: var(--color-accent);
+}
+
+@keyframes success-in {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+
+@keyframes success-check {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+@keyframes success-ring {
+  from {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.7);
+  }
+}
+
+@keyframes success-ray {
+  from {
+    opacity: 1;
+    transform: rotate(calc(var(--ray) * 45deg)) translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: rotate(calc(var(--ray) * 45deg)) translateY(calc(var(--size-success) * -0.95)) scale(0.4);
+  }
+}
+
+@keyframes success-leave {
+  to {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .success {
+    display: none;
+  }
+}

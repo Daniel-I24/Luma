@@ -22,7 +22,7 @@
     </app-luma-empty-state>
   </div>
   } @case ('ready') { @if (store.order(); as order) {
-  <section class="flex flex-col gap-3 rounded-xl border border-border-subtle bg-surface p-4" aria-live="polite">
+  <section class="vt-shared flex flex-col gap-3 rounded-xl border border-border-subtle bg-surface p-4" aria-live="polite" [style.view-transition-name]="'order-' + order.id">
     <div class="flex items-center justify-between gap-2">
       <span class="flex flex-col">
         <span class="text-title text-fg">{{ order.business_name }}</span>
@@ -109,3 +109,4 @@
     </div>
   </app-luma-bottom-sheet>
 </div>
+<app-luma-success [play]="celebrate()" (finished)="celebrate.set(false)" />

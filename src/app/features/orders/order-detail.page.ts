@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouteMap } from '@shared/route/route-map/route-map';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { map } from 'rxjs';
-import { LumaBottomSheet, LumaButton, LumaEmptyState, LumaIcon, LumaIconButton, LumaNotice, LumaSkeleton } from '@design-system';
+import { LumaBottomSheet, LumaButton, LumaEmptyState, LumaIcon, LumaIconButton, LumaNotice, LumaSkeleton, LumaSuccess } from '@design-system';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
 import { DateFormat } from '@shared/format/date-format';
 import { GeolocationService } from '@shared/geo/geolocation.service';
@@ -18,6 +18,7 @@ import { OrderPayment } from './components/order-payment/order-payment';
 import { ReorderService } from './services/reorder.service';
 import { OrderTimeline } from './components/order-timeline/order-timeline';
 import { OrderDetailStore } from './state/order-detail.store';
+import { OrderCelebration } from './utils/order-celebration';
 import { OrderDetailView } from './utils/order-detail-view';
 
 /**
@@ -31,7 +32,7 @@ import { OrderDetailView } from './utils/order-detail-view';
   selector: 'app-order-detail-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LumaNotice, 
+  imports: [LumaNotice, LumaSuccess, 
     TranslocoModule,
     LumaBottomSheet,
     LumaButton,
@@ -64,6 +65,8 @@ export class OrderDetailPage {
   );
 
   protected readonly confirmOpen = signal(false);
+  /** The success moment: just placed, or the payment approved (OrderCelebration). */
+  protected readonly celebrate = signal(false);
   protected readonly reorder = inject(ReorderService);
   protected readonly estimate = computed(() => {
     const order = this.store.order();
@@ -84,6 +87,15 @@ export class OrderDetailPage {
     effect(() => {
       const id = this.id();
       untracked(() => void this.store.load(id));
+    });
+    const arrival = OrderCelebration.arrivalOf(this.router.currentNavigation()?.extras.state);
+    let wasPaid: boolean | null = null;
+    effect(() => {
+      const order = this.store.order();
+      if (!order) return;
+      const isPaid = order.payment_status === 'approved';
+      if (OrderCelebration.plays(arrival, wasPaid, isPaid)) untracked(() => this.celebrate.set(true));
+      wasPaid = isPaid;
     });
     // Status changes made by the business, as they happen (docs/realtime.md).
     inject(RealtimeService).watch('order_events', () => this.store.refresh(), (event) => event.order_id === this.id());

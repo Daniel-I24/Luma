@@ -4,6 +4,7 @@ import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/ro
 import { filter, map } from 'rxjs';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { LumaIcon } from '../icon/luma-icon';
+import { ValuePop } from '../motion/value-pop';
 import type { IconName } from '../icon/luma-icons';
 
 /** Badges show at most "9+". */
@@ -35,7 +36,7 @@ export class TabBarRoutes {
   selector: 'app-luma-tab-bar',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, RouterLinkActive, TranslocoPipe, LumaIcon],
+  imports: [RouterLink, RouterLinkActive, TranslocoPipe, LumaIcon, ValuePop],
   template: `
     <nav class="luma-tab-bar" [attr.aria-label]="labelKey() | transloco">
       <div
@@ -60,7 +61,7 @@ export class TabBarRoutes {
               <span class="luma-tab-bar__pill">
                 <app-luma-icon class="luma-tab-bar__icon" [name]="item.icon" />
                 @if (badges()[item.path]; as count) {
-                <span class="luma-tab-bar__badge" aria-hidden="true">{{ badgeText(count) }}</span>
+                <span class="luma-tab-bar__badge" aria-hidden="true" [appValuePop]="count">{{ badgeText(count) }}</span>
                 }
               </span>
               <span class="luma-tab-bar__label">{{ item.labelKey | transloco }}</span>

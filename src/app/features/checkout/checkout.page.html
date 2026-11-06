@@ -110,7 +110,7 @@
 
   <div class="flex items-center justify-between">
     <span class="text-title text-fg">{{ t('cart.total') }}</span>
-    <span class="text-price text-fg">{{ cart.totalCop() | cop }}</span>
+    <span class="text-price text-fg" [appValuePop]="cart.totalCop()">{{ cart.totalCop() | cop }}</span>
   </div>
   <p class="m-0 text-caption text-fg-subtle">{{ t('checkout.totalNote') }}</p>
 

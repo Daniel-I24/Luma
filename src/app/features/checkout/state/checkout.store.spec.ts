@@ -23,7 +23,8 @@ describe('CheckoutStore: orders', () => {
     });
     expect(h.cart.isEmpty()).toBe(true);
     expect(payments.start).toHaveBeenCalledWith('o1');
-    expect(h.navigate).toHaveBeenCalledWith(['/orders', 'o1']);
+    expect(h.navigate.mock.calls.at(-1)?.[1]).toEqual({ state: { arrival: 'placed' } });
+    expect(h.navigate.mock.calls.at(-1)?.[0]).toEqual(['/orders', 'o1']);
   });
 
   it('keeps the h.cart and shows the server rule that failed', async () => {
