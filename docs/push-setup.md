@@ -115,6 +115,34 @@ only the `package_name` of the file with the `applicationId`.
 
 ## If nothing arrives
 
+Start with the admin panel: Operaciones → "Probar mi dispositivo" says when the
+account has no phone linked and what the push server last answered. The same
+answers, in the SQL editor:
+
+```sql
+select status_code, left(content::text, 160), created
+from net._http_response order by created desc limit 5;
+```
+
+| Answer | Meaning | Fix |
+| --- | --- | --- |
+| 404 `Requested function was not found` | `push-dispatch` is not deployed | option 2 of `scripts/luma.ps1` |
+| 401 | `PUSH_DISPATCH_SECRET` differs from `private.push_settings.secret` | option 2, then paste `push-settings.sql` again |
+| 503 `push_unavailable` | `FCM_SERVICE_ACCOUNT` is missing or malformed | option 2 |
+| 200 with `failed` and `reasons` | FCM's own code: `SENDER_ID_MISMATCH` (other Firebase project), `THIRD_PARTY_AUTH_ERROR`, `fcm_auth_failed` (service account) | the Firebase project of both files |
+| 200 with `sent: 0` and no failure | the signed-in account has no token, or no notice is waiting | sign in on the phone and press "Permitir" |
+
+A notice waits for a token for 60 minutes (`push_claim_window_minutes`), then it
+stays only in the in-app list.
+
+Android: a force-stopped app ("Forzar detención") gets nothing until it is opened
+again; that is the system's rule. High priority messages get through Doze. Xiaomi,
+Huawei, Oppo and Vivo add their own limits: allow "Inicio automático" and set the
+battery to "Sin restricciones" for Luma. The app does not ask for the battery
+exemption: Google Play allows it only for a few kinds of app. Channel settings are
+fixed when a channel is first created: a phone that already has them keeps them
+until the app is uninstalled.
+
 | Symptom | Check |
 | --- | --- |
 | In the list but no push | `push-dispatch` logs; `FCM_SERVICE_ACCOUNT` set; `private.push_settings` row and secret equal to `PUSH_DISPATCH_SECRET` |

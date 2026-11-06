@@ -80,6 +80,7 @@ needs a drop and a create in the same file, noted in the file header).
 | 57 | `20261107000000_round10.sql` | Round 10: optional `businesses.neighborhood` and `address_reference` (text rules, column grants; docs/location.md); `order_pickup_point(order_id)` SECURITY DEFINER, for the order's customer while accepted, preparing or ready, even if the business is hidden; `order_events` split by audience (customer row with `user_id` only, owner row with `business_id` only, CHECK `order_events_one_audience`, new read policy); the 20 oldest RLS policies use `(select auth.uid())` (same conditions, evaluated once per query) | Pending review |
 
 | 58 | `20261108000000_push_claim_window.sql` | `claim_push_batch` leaves notices of users without a token waiting (`push_claim_window_minutes`, 60: older ones are marked and never sent); same arguments and grants | Pending review |
+| 59 | `20261109000000_push_test_answer.sql` | `send_test_notification` answers whether the account has a device token (return type changes); `admin_push_health()` for the admin panel | Pending; the owner applies it |
 
 **Database freeze (2026-10-19)**: the list above is final for the launch.
 After the freeze, migrations and functions change only to fix real bugs
