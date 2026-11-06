@@ -1247,7 +1247,16 @@
         "load": "No se pudieron cargar las operaciones.",
         "failed": "La acción no se pudo completar."
       },
-      "device": "Notificaciones en mi teléfono"
+      "device": "Notificaciones en mi teléfono",
+      "pushHealth": {
+        "working": "El servidor de avisos responde.",
+        "notDeployed": "El servidor de avisos no está desplegado (404): falta la función push-dispatch.",
+        "badSecret": "El servidor de avisos rechaza la llamada (401): el secreto no coincide con push_settings.",
+        "noAccount": "Al servidor de avisos le falta la cuenta de Firebase (503): FCM_SERVICE_ACCOUNT.",
+        "other": "El servidor de avisos respondió {{status}}.",
+        "noCalls": "Aún no hay llamadas al servidor de avisos.",
+        "counts": "Teléfonos enlazados: {{tokens}}. Avisos sin enviar: {{unsent}}."
+      }
     },
     "contacts": {
       "title": "Contactos por verificar ({{count}})",
@@ -1914,6 +1923,7 @@
       "sending": "Enviando…",
       "hint": "Llega a la lista de avisos y, si el teléfono tiene permiso, como notificación. Hasta 3 al día.",
       "sent": "Listo: revisa tus avisos y tu teléfono.",
+      "noToken": "El aviso quedó en tu lista, pero esta cuenta no tiene un teléfono enlazado. Entra con ella en el teléfono y pulsa \"Permitir notificaciones\".",
       "limited": "Ya enviaste 3 notificaciones de prueba hoy.",
       "failed": "No se pudo enviar la notificación de prueba."
     }

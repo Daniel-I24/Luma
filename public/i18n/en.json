@@ -1247,7 +1247,16 @@
         "load": "Could not load the operations.",
         "failed": "The action could not be completed."
       },
-      "device": "Notifications on my phone"
+      "device": "Notifications on my phone",
+      "pushHealth": {
+        "working": "The notice server answers.",
+        "notDeployed": "The notice server is not deployed (404): the push-dispatch function is missing.",
+        "badSecret": "The notice server refuses the call (401): the secret does not match push_settings.",
+        "noAccount": "The notice server has no Firebase account (503): FCM_SERVICE_ACCOUNT.",
+        "other": "The notice server answered {{status}}.",
+        "noCalls": "No calls to the notice server yet.",
+        "counts": "Linked phones: {{tokens}}. Unsent notices: {{unsent}}."
+      }
     },
     "contacts": {
       "title": "Contacts to verify ({{count}})",
@@ -1914,6 +1923,7 @@
       "sending": "Sending…",
       "hint": "It reaches your notices and, if the phone allows it, appears as a notification. Up to 3 a day.",
       "sent": "Done: check your notices and your phone.",
+      "noToken": "The notice is in your list, but this account has no phone linked. Sign in with it on the phone and press \"Allow notifications\".",
       "limited": "You already sent 3 test notifications today.",
       "failed": "The test notification could not be sent."
     }
