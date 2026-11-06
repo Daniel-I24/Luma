@@ -14,8 +14,8 @@ dependency phase); "after" is round 10 phase B.
 | Unused exports / types (knip) | 40 / 34 | 0 / 0 | `npx knip` |
 | TypeScript | strict off for indexes | `strict` + `noUncheckedIndexedAccess` (app, tests, functions) | `tsconfig.json`, each `deno.json` |
 | Initial bundle | 673.13 kB | 680.90 kB | `npm run build`; +2.3 kB ErrorLog and the push/realtime hardening, +0.5 kB route credits; the order screen loads MapLibre on idle (`@defer`, proven with `getDeferBlocks`) |
-| Unit test coverage | not measured | 84.13 % statements, 78.80 % branches, 76.08 % functions, 87.77 % lines (commit `0500f8b`) | `ng test --coverage`; CI thresholds in `angular.json` |
-| Tests | 880 app, 134 scripts, 179 Deno, 794 SQL, 4 e2e | 954 app (233 files, commit `0500f8b`), 149 scripts, 170 Deno, 858 SQL, 6 e2e | the Definition of Done |
+| Unit test coverage | not measured | 83.78 % statements, 79.05 % branches, 76.22 % functions, 87.58 % lines (round 12) | `ng test --coverage`; CI thresholds in `angular.json` |
+| Tests | 880 app, 134 scripts, 179 Deno, 794 SQL, 4 e2e | 1002 app (242 files), 149 scripts, 171 Deno, 884 SQL, 6 e2e (round 12) | the Definition of Done |
 
 ## Close of round 11, measured on 2026-11-06
 
@@ -36,6 +36,23 @@ Not measured again at this close: files, lines, functions over 30 lines, jscpd.
 The local SQL harness has no `pg_cron`, so the cron block of migration 58 has
 not run anywhere; it repeats the statements of migration 27.
 Runtime on a real phone, including the R8 release APK, is still untested.
+
+## Motion, round 12 (Chromium, CPU slowed 4x, 390 px)
+
+Frames while each transition runs. Before: `aa0e43e`; after: `9632c0a`.
+
+| Transition | Before | After |
+| --- | --- | --- |
+| Open the map | 12 fps, worst 668 ms | 10 fps, worst 818 ms |
+| Map to feed | 43 fps, worst 234 ms | 38 fps, worst 250 ms |
+| Feed scroll | 60 fps | 60 fps |
+| Feed to business | 47 fps, worst 200 ms | 44 fps, worst 184 ms |
+| Add to cart | 58 fps, worst 67 ms | 55 fps, worst 100 ms |
+| Business to orders | 52 fps, worst 167 ms | 51 fps, worst 184 ms |
+| Orders to profile | 36 fps, worst 534 ms | 30 fps, worst 634 ms |
+
+Route changes were under 60 fps before this work: most of the cost is rendering the
+new screen, not the animation. One run each, so small differences are noise.
 
 ## 5.1 Code
 - One message box (`LumaNotice`, 51 copies), one draft-form helper
