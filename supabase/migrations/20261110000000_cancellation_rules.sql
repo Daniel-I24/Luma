@@ -69,6 +69,9 @@ begin
 end;
 $$;
 
+revoke execute on function public.expire_stale_orders() from public, anon, authenticated;
+grant execute on function public.expire_stale_orders() to service_role;
+
 create or replace function public.payments_to_void()
 returns table (transaction_id text, environment text)
 language sql

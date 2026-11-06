@@ -12,7 +12,7 @@ function setup(options: { run?: boolean; fail?: boolean } = {}) {
     isAdmin: (token) => Promise.resolve(token === 'admin'),
     run: options.run === false ? null : () => {
       runs++;
-      return options.fail ? Promise.reject(new Error('db')) : Promise.resolve({ checked: 2, applied: 1, skipped: 1 });
+      return options.fail ? Promise.reject(new Error('db')) : Promise.resolve({ checked: 2, applied: 1, skipped: 1, voided: 0 });
     },
     log: new PaymentLog(() => undefined),
   });
@@ -25,7 +25,7 @@ const call = (headers: Record<string, string>, method = 'POST') =>
 Deno.test('the cron secret or an admin JWT runs it; nothing else does', async () => {
   const { handler, runs } = setup();
   const byCron = await handler(call({ 'x-cron-secret': SECRET }));
-  assertEquals([byCron.status, await byCron.json()], [200, { checked: 2, applied: 1, skipped: 1 }]);
+  assertEquals([byCron.status, await byCron.json()], [200, { checked: 2, applied: 1, skipped: 1, voided: 0 }]);
   assertEquals((await handler(call({ Authorization: 'Bearer admin' }))).status, 200);
   assertEquals((await handler(call({ Authorization: 'Bearer customer' }))).status, 401);
   assertEquals((await handler(call({ 'x-cron-secret': SECRET.slice(1) }))).status, 401);
