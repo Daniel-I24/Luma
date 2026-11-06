@@ -1967,7 +1967,7 @@
       "none": "Nada guardado.",
       "more": "Y {{count}} más en el archivo completo.",
       "fileHint": "El archivo completo tiene todo lo anterior y los detalles de cada pedido, en texto que puedes leer o guardar.",
-      "download": "Descargar el archivo completo",
+      "download": "Descargar todo",
       "fileTitle": "Luma: mis datos",
       "fileMade": "Copia hecha el {{date}}, hora de Colombia.",
       "yes": "Sí",

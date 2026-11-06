@@ -1967,7 +1967,7 @@
       "none": "Nothing saved.",
       "more": "And {{count}} more in the whole file.",
       "fileHint": "The whole file has all of the above and the details of each order, as text you can read or keep.",
-      "download": "Download the whole file",
+      "download": "Download all",
       "fileTitle": "Luma: my data",
       "fileMade": "Copy made on {{date}}, Colombia time.",
       "yes": "Yes",
