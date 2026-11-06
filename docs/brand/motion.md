@@ -10,7 +10,8 @@ Tokens live in `src/styles/scale.css`, utilities and keyframes in
 1. **One curve to enter, one to leave.** `--ease-enter`
    (`cubic-bezier(0.2, 0, 0, 1)`, fast start, soft landing) for anything that
    appears or responds; `--ease-exit` (`cubic-bezier(0.4, 0, 1, 1)`) for
-   anything that leaves. No springs, overshoot, bounce or pulsing.
+   anything that leaves. `--ease-spring` (a 4 % overshoot) only for what lands with
+   weight: sheets opening, what travels between screens, the success mark. No pulsing.
 2. **Short.** Controls 120–220 ms, screens 340 ms. Leaving is faster than
    entering.
 3. **Cheap.** Only `transform` and `opacity` are animated (panels expand with
@@ -30,7 +31,8 @@ Tokens live in `src/styles/scale.css`, utilities and keyframes in
 | `--duration-fast` | 160 ms | Colour, icons, fades of small pieces |
 | `--duration-theme` | 200 ms | Theme crossfade |
 | `--duration-normal` | 220 ms | Sheets returning, toasts, panels |
-| `--duration-slow` | 340 ms | Route transitions, sheets opening, micro-interactions |
+| `--duration-slow` | 340 ms | Route transitions, micro-interactions |
+| `--duration-spring` | 460 ms | With `--ease-spring`: sheets opening, shared elements |
 | `--duration-shimmer` | 1.6 s | Skeletons only |
 | `--duration-stagger` | 40 ms | Between list items (first 4 only) |
 | `--motion-press-scale` | 0.97 | Pressed controls |

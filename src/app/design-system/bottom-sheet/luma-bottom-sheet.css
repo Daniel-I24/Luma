@@ -36,8 +36,10 @@
   transform: translateY(0);
   visibility: visible;
   pointer-events: auto;
+  /* The overshoot lifts the panel: its own colour fills what opens below it. */
+  box-shadow: var(--shadow-sheet), 0 var(--spacing-16) 0 var(--color-surface-elevated);
   transition:
-    transform var(--duration-slow) var(--ease-enter),
+    transform var(--duration-spring) var(--ease-spring),
     visibility 0s;
 }
 

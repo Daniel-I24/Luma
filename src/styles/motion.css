@@ -2,8 +2,8 @@
    MOTION — reusable utilities and keyframes (docs/brand/motion.md).
    One curve to enter (--ease-enter) and one to leave (--ease-exit);
    controls 120-240 ms, screens 340 ms. Only transform and opacity are
-   animated (panels expand with grid-template-rows). No overshoot, no
-   bounce, no pulsing. Hover lives inside @media (hover: hover); press
+   animated (panels expand with grid-template-rows). A small overshoot only
+   with --ease-spring (sheets, shared elements, success); no pulsing. Hover lives inside @media (hover: hover); press
    feedback always applies. Reduced motion: base.css turns animations and
    transitions into nothing, and press scales are disabled here.
 ───────────────────────────────────────────── */
@@ -34,16 +34,21 @@ app-luma-icon svg {
 }
 
 /*
- * List entrance: set --stagger-index (0, 1, 2…) on each item. A plain fade,
- * and only the first 4 items are delayed; the rest appear with the 4th.
+ * List entrance: set --stagger-index (0, 1, 2…) on each item. It rises and fades
+ * in, and only the first 6 items are delayed; the rest appear with the 6th.
  */
 @utility motion-stagger {
-  animation: var(--animate-fade-in);
-  animation-delay: calc(min(var(--stagger-index, 0), 3) * var(--duration-stagger));
+  animation: rise-in var(--duration-normal) var(--ease-enter) both;
+  animation-delay: calc(min(var(--stagger-index, 0), 5) * var(--duration-stagger));
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
   }
+}
+
+/* What travels between two screens (a logo, an order): both ends carry this class. */
+.vt-shared {
+  view-transition-class: shared;
 }
 
 /* Favourite marked: a short scale, no overshoot. */

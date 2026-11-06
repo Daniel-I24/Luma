@@ -111,11 +111,15 @@
   --duration-fast: 160ms; /* small controls: colour, icons */
   --duration-theme: 200ms;
   --duration-normal: 220ms; /* controls: sheets returning, toasts, panels */
+  --duration-spring: 460ms; /* paired with --ease-spring */
+  --size-success: 96px; /* the mark of LumaSuccess */
   --duration-slow: 340ms; /* screens: route transitions, sheets opening */
   --duration-shimmer: 1.6s; /* skeleton loading only */
   --duration-stagger: 40ms; /* delay between consecutive list items (4 at most) */
   /* One curve to enter (and for state changes), one to leave. */
   --ease-enter: cubic-bezier(0.2, 0, 0, 1);
+  /* A soft landing with a small overshoot: sheets, shared elements, the success mark. */
+  --ease-spring: linear(0, 0.26 8%, 0.63 18%, 0.89 28%, 1.02 38%, 1.04 46%, 1.025 58%, 1.005 72%, 1);
   --ease-exit: cubic-bezier(0.4, 0, 1, 1);
   --motion-press-scale: 0.97;
   --motion-active-scale: 1.1; /* active tab icon */

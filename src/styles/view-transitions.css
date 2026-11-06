@@ -1,7 +1,8 @@
 /* ─────────────────────────────────────────────
    ROUTE TRANSITIONS — View Transitions started by the router
    (withViewTransitions). Tabs crossfade; the business profile slides in from
-   the right (html.vt-push) and back out to the right (html.vt-pop). Browsers
+   the right (html.vt-push) and back out to the right (html.vt-pop); what both
+   screens share (.vt-shared: a logo, an order) travels between them. Browsers
    without the API navigate without animation. The tab bar and the toasts
    have their own view-transition-name, so they stay still.
 ───────────────────────────────────────────── */
@@ -10,6 +11,16 @@
 ::view-transition-new(root) {
   animation-duration: var(--duration-slow);
   animation-timing-function: var(--ease-enter);
+}
+
+html.vt-fade::view-transition-new(root) {
+  animation: rise-in var(--duration-slow) var(--ease-enter) both;
+}
+
+::view-transition-group(.shared) {
+  z-index: 2;
+  animation-duration: var(--duration-spring);
+  animation-timing-function: var(--ease-spring);
 }
 
 html.vt-push::view-transition-new(root) {
@@ -31,6 +42,10 @@ html.vt-pop::view-transition-new(root) {
 
 /* Reduced motion: a 100 ms fade, never a slide. */
 @media (prefers-reduced-motion: reduce) {
+  html::view-transition-group(*) {
+    animation: none !important;
+  }
+
   html::view-transition-old(*) {
     animation: fade-out var(--duration-instant) linear both !important;
   }

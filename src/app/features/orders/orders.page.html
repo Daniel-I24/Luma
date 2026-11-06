@@ -34,8 +34,9 @@
     @for (order of orders(); track order.id) {
     <li class="motion-stagger" [style.--stagger-index]="$index < 6 ? $index : 0">
       <a
-        class="pressable flex flex-col gap-2 rounded-xl border border-border-subtle bg-surface p-4 text-fg no-underline shadow-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+        class="vt-shared pressable flex flex-col gap-2 rounded-xl border border-border-subtle bg-surface p-4 text-fg no-underline shadow-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
         [routerLink]="['/orders', order.id]"
+        [style.view-transition-name]="'order-' + order.id"
       >
         <span class="flex items-center justify-between gap-2">
           <span class="flex flex-col">
