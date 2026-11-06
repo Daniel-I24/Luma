@@ -223,3 +223,17 @@ Measured with `npx knip`, `npx depcheck` and a search of every translation key.
   depcheck lists (`@capacitor/android`, Tailwind and PostCSS, `tslib`, the build tools; its
   "missing" packages are path aliases and Deno imports).
 
+## Round 12 (2026-11-06)
+
+Measured with `npx knip`, `npx depcheck`, a search of every translation key, CSS
+variable and global class, and a search of every public class member.
+
+- `TextNormalizer.isClean`, `SessionProfile.profileComplete` (and `MIN_FULL_NAME`),
+  `VerificationStore.serverMissing`: no reference in templates, code or tests.
+- `.luma-marker--picked`, `.doodles--color`, `--opacity-doodle-color`,
+  `public/media/doodles/color.svg`: only referenced by the rule that used them.
+- `--container-preview`, `--size-preview-tile`, `--size-preview-card` (the preview
+  page no longer exists), `--color-accent-hover`: no utility or `var()` reads them.
+- Translation keys and dependencies: nothing to delete. Kept although flagged:
+  `axe-core` (knip), and depcheck's list, as in round 11.
+

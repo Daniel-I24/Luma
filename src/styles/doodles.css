@@ -6,8 +6,7 @@
                        --color-doodle-line (dark low-contrast on cream by
                        day, light on deep blue at night);
      .doodles--faint   the same, quieter, for page backgrounds;
-     .doodles--on-brand light lines on the brand gradient (headers);
-     .doodles--color   the multicolour tile (covers).
+     .doodles--on-brand light lines on the brand gradient (headers).
    .doodles--veil adds a canvas veil so text over it keeps its contrast.
    The tile drifts slowly; with reduced motion it stands still.
 ───────────────────────────────────────────── */
@@ -38,14 +37,6 @@
 
 .doodles--on-brand::before {
   background-color: var(--color-doodle-on-brand);
-}
-
-.doodles--color::before {
-  -webkit-mask-image: none;
-  mask-image: none;
-  background: url('/media/doodles/color.svg') repeat;
-  background-size: var(--size-doodle-tile);
-  opacity: var(--opacity-doodle-color);
 }
 
 .doodles--veil::after {

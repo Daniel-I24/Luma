@@ -3,7 +3,6 @@
 #   public/media/doodles/line.svg   black lines, used as a CSS mask (the colour
 #                                    comes from --color-doodle-line: dark on cream,
 #                                    light on deep blue)
-#   public/media/doodles/color.svg  the same tile in the brand colours (covers)
 #   docs/brand/doodles.svg          a sheet with every drawing and its name
 import os
 
@@ -42,7 +41,6 @@ def tile(colored):
 
 os.makedirs('public/media/doodles', exist_ok=True)
 open('public/media/doodles/line.svg', 'w', encoding='utf8', newline='\n').write(tile(False))
-open('public/media/doodles/color.svg', 'w', encoding='utf8', newline='\n').write(tile(True))
 cells = []
 for i, name in enumerate(FOODS):
     x, y = (i % 3) * 120 + 20, (i // 3) * 120 + 10

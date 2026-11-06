@@ -118,15 +118,6 @@
   }
 }
 
-/* Pin of the business location picker (business panel). */
-.luma-marker--picked {
-  cursor: grab;
-}
-
-.luma-marker--picked .luma-marker__pin {
-  background-color: var(--color-primary);
-}
-
 /* Place chosen in the map search (neighbourhood, address, landmark). */
 .luma-place-pin {
   width: var(--spacing-6);

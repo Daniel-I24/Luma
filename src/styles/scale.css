@@ -94,9 +94,6 @@
   /* === Layout === */
   --container-auth: 420px; /* sign-in and sign-up column (max-w-auth) */
   --breakpoint-xs: 400px; /* wide phones (xs:) */
-  --container-preview: 900px; /* design preview page (dev only) */
-  --size-preview-tile: 200px;
-  --size-preview-card: 260px;
 
   /* === Shadows === */
   --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.06);
@@ -129,7 +126,6 @@
   /* Food doodles (styles/doodles.css): tile size and one slow drift across it. */
   --size-doodle-tile: 260px;
   --duration-doodle: 120s;
-  --opacity-doodle-color: 0.35;
   --animate-shimmer: shimmer var(--duration-shimmer) var(--ease-enter) infinite;
   --animate-fade-in: fade-in var(--duration-fast) var(--ease-enter) both;
 }
