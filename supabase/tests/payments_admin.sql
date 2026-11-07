@@ -78,8 +78,6 @@ select tests.exec_as('authenticated', tests.id('owner'),
   $$select public.set_order_status(tests.order_id('paid'), 'cancelled', 'out_of_stock')$$);
 select tests.expect_true('postgres', null,
   $$select payment_status = 'refund_required' from public.orders where notes = 'paid'$$, 'cancelled after paying: refund_required');
-select tests.expect_true('service_role', null, $$select count(*) >= 1 from public.payments_to_void()$$, 'its card payment is on the list to void');
-select tests.expect_true('postgres', null, $$select private.reconcile_work_pending()$$, 'and that wakes the reconcile job (migration 64)');
 
 -- -- admin tools ----------------------------------------------------------------------------------
 select tests.use_aal('aal1');
@@ -115,5 +113,16 @@ select tests.expect_true('postgres', null, $$
   select count(*) = 1 from public.notifications where order_id = tests.order_id('eat') and type = 'review_invite'
     and user_id = tests.id('bob') and business_id = tests.id('b1')$$,
   'one review invitation per picked-up order');
+
+-- -- Only card refunds void by themselves, and they wake the reconcile job (migration 64) ---
+select tests.expect_true('service_role', null, $$select not exists (select 1 from public.payments_to_void() where transaction_id = 'tx-paid')$$,
+  'a Nequi refund is not on the list to void: it stays manual');
+update public.orders set created_at = now() - interval '2 hours' where user_id = tests.id('bob');
+insert into tests.refs values ('card', tests.online_order('bob', 'card'));
+select public.apply_payment_event((select reference from tests.refs where note = 'card'), 'tx-card', 'APPROVED', 600000, 'COP', 'test', 'CARD', 'webhook');
+update public.orders set status = 'cancelled' where notes = 'card';
+select tests.expect_true('service_role', null, $$select exists (select 1 from public.payments_to_void() where transaction_id = 'tx-card')$$,
+  'a cancelled card payment is on the list to void');
+select tests.expect_true('postgres', null, $$select private.reconcile_work_pending()$$, 'and that wakes the reconcile job');
 
 rollback;
