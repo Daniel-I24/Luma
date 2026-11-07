@@ -6,6 +6,11 @@ const MAP_STYLE = ExternalUrls.MAP_STYLE;
 /** MapLibre web worker, copied next to index.html by angular.json (assets). */
 const MAP_WORKER_PATH = 'maplibre-gl-worker.mjs';
 
+/** Sharper than this costs GPU memory without a visible gain on a phone. */
+const MAX_PIXEL_RATIO = 2;
+/** Tiles kept per source once out of view: enough for going back and forth. */
+const MAX_TILE_CACHE = 40;
+
 /** BaseMap — creates a MapLibre map with Luma's style and controls. */
 export class BaseMap {
   /**
@@ -25,6 +30,8 @@ export class BaseMap {
       center: [centre.lng, centre.lat],
       zoom,
       attributionControl: false,
+      pixelRatio: Math.min(globalThis.devicePixelRatio || 1, MAX_PIXEL_RATIO),
+      maxTileCacheSize: MAX_TILE_CACHE,
     });
     // Map data licences require attribution; compact, and bottom-left so the
     // app's own controls (bottom-right) never cover its toggle.

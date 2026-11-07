@@ -188,6 +188,21 @@ command stops the option; OK only after `secrets list` and `functions list` conf
 dated by this run. New option 8. Option 3 reads `functions.env` too and never loads a
 `*_prod_` key. The secret scan knows the Wompi private key and secrets.
 
+### Phase 1: notices in the bar
+
+`push-dispatch` answers 200 since the deployment. Migration 62 retries only the phone
+that failed (1, 5, 15 minutes). Migration 63: the push status reads only its own answers:
+the last row of `net._http_response` could belong to the payments cron.
+
+### Phase 2: phone log
+
+OPTIONS answer 204 with the origin for `https://localhost` and `http://localhost:4200`
+on the 9 browser functions: the CORS error was the missing function. Returning to the app
+fired two re-reads ("visibilitychange" and "resume"): now one. A socket dead in the
+background reconnects on return. `insetsHandling: 'native'`: nothing injects unused
+`--safe-area-*`. Map pixel ratio up to 2, 40 cached tiles, feed cards `content-visibility`.
+Capacitor logs only in debug builds, stated in `capacitor.config.ts`.
+
 ## Round 12 (2026-11-06)
 
 Prompt: notifications, a full review of the files, the new icon, three palettes,

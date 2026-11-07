@@ -1,6 +1,7 @@
 import { type Signal, signal } from '@angular/core';
 import { HALF } from '@core/config/units';
 import type { LiveUpdates, RealtimeChannelLike, RealtimeClientLike, RealtimeEvent } from './realtime.model';
+import { Poller, RefreshGate } from './realtime-refresh';
 import {
   BACKOFF_FACTOR, FAILED_STATUSES, REALTIME_BATCH_MS, REALTIME_POLL_MS, RECONNECT_BASE_MS, RECONNECT_MAX_MS,
   type RealtimeWatchOptions,
@@ -11,17 +12,19 @@ let channelCount = 0;
 /**
  * RealtimeSubscription — one screen listening to one event table: batches
  * the events, reconnects with growing waits, and polls every 30 s while the
- * channel is down. `refresh` re-reads the screen with normal (RLS) queries.
- * It never throws: a missing table or a dead socket is a quiet outage.
+ * channel is down. `refresh` re-reads with normal (RLS) queries. It never throws.
  */
 export class RealtimeSubscription implements LiveUpdates {
   private channel: RealtimeChannelLike | null = null;
   private buffer: RealtimeEvent[] = [];
   private batchTimer: ReturnType<typeof setTimeout> | null = null;
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
-  private pollTimer: ReturnType<typeof setInterval> | null = null;
   private attempts = 0;
   private stopped = false;
+  private readonly gate = new RefreshGate(() => this.run([]));
+  private readonly poller = new Poller(REALTIME_POLL_MS, () => {
+    if (this.options.visible()) void this.refreshAll();
+  });
   private reported = false;
   private readonly _live = signal(false);
   private readonly _updatedAt = signal<Date | null>(new Date());
@@ -35,12 +38,22 @@ export class RealtimeSubscription implements LiveUpdates {
     this.connect();
   }
 
-  /** Re-reads everything now (foreground, network back, pull to refresh). */
-  public async refreshAll(): Promise<void> {
-    await this.run([]);
+  /** Re-reads everything now (network back, pull to refresh); one read at a time. */
+  public refreshAll(): Promise<void> {
+    return this.gate.now();
   }
 
-  /** The network came back: reconnect at once and refresh. */
+  /**
+   * Back to the foreground (Android fires "visibilitychange" and "resume": the
+   * second does nothing). A socket that died meanwhile reconnects now.
+   */
+  public returned(): void {
+    if (this.stopped || !this.gate.isNewReturn()) return;
+    if (this._live()) void this.refreshAll();
+    else this.reconnectNow();
+  }
+
+  /** Reconnects at once and refreshes. */
   public reconnectNow(): void {
     if (this.stopped) return;
     this.attempts = 0;
@@ -52,7 +65,7 @@ export class RealtimeSubscription implements LiveUpdates {
   public stop(): void {
     this.stopped = true;
     for (const timer of [this.batchTimer, this.reconnectTimer]) if (timer) clearTimeout(timer);
-    this.stopPolling();
+    this.poller.stop();
     this.leave();
   }
 
@@ -71,7 +84,6 @@ export class RealtimeSubscription implements LiveUpdates {
         if (this.channel === channel) this.onStatus(status, error);
       });
     } catch (error) {
-      // Realtime unavailable: the same as a failed channel (polling, retry).
       this.onStatus('CHANNEL_ERROR', error);
     }
   }
@@ -82,11 +94,13 @@ export class RealtimeSubscription implements LiveUpdates {
       this.attempts = 0;
       this.reported = false;
       this._live.set(true);
-      this.stopPolling();
+      this.poller.stop();
+      if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = null;
     } else if (FAILED_STATUSES.has(status)) {
       this.report(error ?? new Error(`realtime ${this.options.table} ${status}`));
       this._live.set(false);
-      this.startPolling();
+      this.poller.start();
       this.scheduleReconnect();
     }
   }
@@ -115,17 +129,6 @@ export class RealtimeSubscription implements LiveUpdates {
     if (this.reconnectTimer) return;
     const wait = Math.min(RECONNECT_BASE_MS * BACKOFF_FACTOR ** this.attempts++, RECONNECT_MAX_MS);
     this.reconnectTimer = setTimeout(() => this.connect(), wait + Math.random() * wait * HALF);
-  }
-
-  private startPolling(): void {
-    this.pollTimer ??= setInterval(() => {
-      if (this.options.visible()) void this.refreshAll();
-    }, REALTIME_POLL_MS);
-  }
-
-  private stopPolling(): void {
-    if (this.pollTimer) clearInterval(this.pollTimer);
-    this.pollTimer = null;
   }
 
   private leave(): void {

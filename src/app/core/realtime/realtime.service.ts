@@ -36,7 +36,7 @@ export class RealtimeService {
       table, onRefresh: refresh, relevant, visible, onError: (error) => this.log.record(error, 'realtime'),
     });
     const onVisibility = (): void => {
-      if (visible()) void subscription.refreshAll();
+      if (visible()) subscription.returned();
     };
     this.document.addEventListener('visibilitychange', onVisibility);
 
@@ -49,7 +49,7 @@ export class RealtimeService {
     let resumes = untracked(this.appEvents.resumes);
     const resume = effect(() => {
       const count = this.appEvents.resumes();
-      if (count !== resumes) void subscription.refreshAll();
+      if (count !== resumes) subscription.returned();
       resumes = count;
     });
 

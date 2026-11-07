@@ -17,7 +17,7 @@ describe('OrderCelebration', () => {
     ['an old paid order, opened', null, null, true, false],
     ['already paid, read again', null, true, true, false],
     ['still not paid', null, false, false, false],
-  ] as const)('%s', (_, arrival, wasPaid, isPaid, expected) => {
+  ] as const)('%s', (...[, arrival, wasPaid, isPaid, expected]) => {
     expect(OrderCelebration.plays(arrival, wasPaid, isPaid)).toBe(expected);
   });
 });

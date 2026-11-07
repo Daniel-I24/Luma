@@ -22,7 +22,7 @@ const F = 'account.data.fields.';
  * the file come from the same sections.
  */
 export class DataReport {
-  public constructor(
+  constructor(
     private readonly t: Translate,
     private readonly lang: string,
   ) {}

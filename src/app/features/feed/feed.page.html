@@ -43,7 +43,7 @@
     >
       @for (card of store.cards(); track card.id; let i = $index) {
       <app-feed-card
-        class="h-full snap-start snap-always"
+        class="h-full snap-start snap-always [content-visibility:auto]"
         [attr.data-tour]="i === 0 ? 'feed-card' : null"
         [card]="card"
         [position]="i + 1"

@@ -20,3 +20,5 @@ export const RECONNECT_MAX_MS = 30_000;
 /** Each failed try doubles the wait. */
 export const BACKOFF_FACTOR = 2;
 export const FAILED_STATUSES = new Set(['CHANNEL_ERROR', 'TIMED_OUT', 'CLOSED']);
+/** "visibilitychange" and "resume" of the same return to the app count once. */
+export const RETURN_GAP_MS = 2000;

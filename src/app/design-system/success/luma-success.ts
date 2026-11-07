@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, effect, input, output } from '@angular/core';
 
 /** Long enough for the burst to end; the screen below stays usable meanwhile. */
+const RAY_COUNT = 8;
 const PLAY_MS = 1100;
 
 /**
@@ -36,7 +37,7 @@ export class LumaSuccess {
   public readonly play = input<boolean>(false);
   public readonly finished = output<void>();
 
-  protected readonly rays = [0, 1, 2, 3, 4, 5, 6, 7];
+  protected readonly rays = Array.from({ length: RAY_COUNT }, (_, index) => index);
 
   constructor() {
     effect((onCleanup) => {

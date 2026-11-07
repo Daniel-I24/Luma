@@ -8,6 +8,8 @@ const config: CapacitorConfig = {
   appId: 'com.lumapasto.app',
   appName: 'Luma',
   webDir: 'dist/luma/browser',
+  // Plugin calls and answers (the FCM token too) reach logcat only in debug builds.
+  loggingBehavior: 'debug',
   android: {
     allowMixedContent: false,
   },
@@ -16,6 +18,9 @@ const config: CapacitorConfig = {
     Keyboard: { resize: 'body', resizeOnFullScreen: true },
     // With the app open too, FCM's message becomes a system notification (sound, banner, tap).
     PushNotifications: { presentationOptions: ['badge', 'sound', 'alert'] },
+    // CSS reads env(safe-area-inset-*). The "css" mode also injects --safe-area-* variables nobody
+    // reads, before the document exists on the first insets ("Error injecting safe area CSS").
+    SystemBars: { insetsHandling: 'native', initialViewportFitValueHint: 'cover' },
   },
 };
 

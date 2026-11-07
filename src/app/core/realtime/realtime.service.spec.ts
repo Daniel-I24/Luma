@@ -120,7 +120,7 @@ describe('RealtimeService', () => {
     expect(fake.client.channel).toHaveBeenCalledTimes(2);
   });
 
-  it('the network back reconnects at once and refreshes everything; so does coming back to the foreground', () => {
+  it('the network back reconnects at once and refreshes everything; so does coming back to the foreground', async () => {
     open();
     online.set(false);
     TestBed.tick();
@@ -128,6 +128,7 @@ describe('RealtimeService', () => {
     TestBed.tick();
     expect(fake.client.channel).toHaveBeenCalledTimes(2);
     expect(refresh).toHaveBeenCalledWith([]);
+    await vi.advanceTimersByTimeAsync(0);
     refresh.mockReset();
     resumes.update((n) => n + 1);
     TestBed.tick();

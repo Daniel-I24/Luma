@@ -30,7 +30,6 @@ export type SkeletonShape = 'text' | 'rect' | 'circle';
       background: linear-gradient(90deg, transparent, var(--color-canvas-muted), transparent);
       transform: translateX(-100%);
       animation: var(--animate-shimmer);
-      will-change: transform;
     }
   `,
   host: {
