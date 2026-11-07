@@ -1,13 +1,13 @@
 # -----------------------------------------------------------------
-# setup-push.ps1 - lo local de docs/push-setup.md, sin mostrar
-# ningun secreto (es la opcion 2 de scripts\luma.ps1):
-#   1. lee la cuenta de servicio de Firebase (fuera del repo),
-#   2. reutiliza o genera el secreto compartido de push-dispatch,
-#   3. carga FCM_SERVICE_ACCOUNT y PUSH_DISPATCH_SECRET con
-#      "npx supabase secrets set" desde un archivo temporal que borra,
-#   4. despliega push-dispatch (npx supabase ... --use-api),
-#   5. escribe push-settings.sql (fuera del repo) para el SQL Editor.
-# Uso (PowerShell, en la carpeta del repo, con "npx supabase link"):
+# setup-push.ps1 - the local part of docs/push-setup.md, without showing
+# any secret (it is option 2 of scripts\luma.ps1):
+#   1. reads the Firebase service account (outside the repository),
+#   2. reuses or generates the shared secret of push-dispatch,
+#   3. sets FCM_SERVICE_ACCOUNT and PUSH_DISPATCH_SECRET with
+#      "npx supabase secrets set" from a temporary file it deletes,
+#   4. deploys push-dispatch (npx supabase ... --use-api),
+#   5. writes push-settings.sql (outside the repository) for the SQL Editor.
+# Usage (PowerShell, in the repository folder, after "npx supabase link"):
 #   powershell -ExecutionPolicy Bypass -File scripts\setup-push.ps1
 # -----------------------------------------------------------------
 param(

@@ -1,22 +1,22 @@
 # -----------------------------------------------------------------
-# remote.ps1 - lo que cambia el proyecto de Supabase, y la prueba de
-# que cambio. Una opcion solo dice OK si "secrets list" y "functions
-# list" lo confirman: el codigo de salida no basta (ver Invoke-Supabase).
-# Nunca imprime un secreto.
+# remote.ps1 - what changes the Supabase project, and the proof that
+# it changed. An option only says OK when "secrets list" and "functions
+# list" confirm it: the exit code is not enough (see Invoke-Supabase).
+# Never prints a secret.
 # -----------------------------------------------------------------
 
-# Version fija: la 4 quita opciones y "npx supabase" sin version cambia sola.
+# Pinned version: 4 removes options, and "npx supabase" without a version changes by itself.
 $script:SupabaseCli = 'supabase@3.0.0'
 $script:LumaUnchanged = @()
 $script:LumaLoaded = @{}
 
 function Get-LumaNow { return [DateTimeOffset]::UtcNow }
 
-# npx.cmd, nunca npx: npx.ps1 relee el TEXTO de la linea que lo llama, asi
-# que "@args" no llega a la CLI, que muestra la ayuda y sale con 0. Asi las
-# opciones decian OK sin hacer nada.
+# npx.cmd, never npx: npx.ps1 re-reads the TEXT of the calling line, so
+# "@args" never reaches the CLI, which shows its help and exits with 0. That is how
+# the options said OK without doing anything.
 function Invoke-Supabase {
-  # Continue: en PowerShell 5.1, 2>&1 de un programa con Stop corta el script.
+  # Continue: in PowerShell 5.1, 2>&1 of a program under Stop ends the script.
   $ErrorActionPreference = 'Continue'
   $out = @(& npx.cmd --yes $script:SupabaseCli @args 2>&1 | ForEach-Object { [string]$_ })
   $code = [int]$LASTEXITCODE
@@ -25,7 +25,7 @@ function Invoke-Supabase {
   return $code
 }
 
-# Solo la salida estandar, en JSON; $null si el comando falla.
+# Standard output only, as JSON; $null when the command fails.
 function Invoke-SupabaseJson {
   $ErrorActionPreference = 'Continue'
   $text = (& npx.cmd --yes $script:SupabaseCli @args --output json 2>$null) -join "`n"
@@ -33,7 +33,7 @@ function Invoke-SupabaseJson {
   try { return (ConvertFrom-Json $text) } catch { return $null }
 }
 
-# Carga secretos desde un archivo temporal que siempre se borra.
+# Sets secrets from a temporary file that is always deleted.
 function Set-LumaSecrets([string]$ProjectRef, [hashtable]$Values) {
   $utf8 = New-Object Text.UTF8Encoding $false
   $temp = Join-Path $env:TEMP ('luma-' + [guid]::NewGuid() + '.env')
@@ -53,13 +53,13 @@ function Set-LumaSecrets([string]$ProjectRef, [hashtable]$Values) {
   }
 }
 
-# Se detiene en la primera que falla: devuelve las que no quedaron.
+# Stops at the first failure: returns the ones left undeployed.
 function Deploy-LumaFunctions([string]$ProjectRef, [string[]]$Names) {
   for ($i = 0; $i -lt $Names.Count; $i++) {
     Say "Desplegando $($Names[$i])..."
     $code = Invoke-Supabase functions deploy $Names[$i] --use-api "--remote=$ProjectRef" --yes
     if ($code -ne 0) { return @($Names[$i..($Names.Count - 1)]) }
-    # Mismo codigo que el desplegado: la CLI no sube nada y la fecha no cambia.
+    # Same code as deployed: the CLI uploads nothing and the date does not change.
     if ($script:LumaCliOutput -match 'No change found') { $script:LumaUnchanged += $Names[$i] }
   }
   return @()
@@ -72,7 +72,7 @@ function Get-LumaDigest([string]$Value) {
 
 function Format-LumaDate([DateTimeOffset]$When) { return $When.ToLocalTime().ToString('yyyy-MM-dd HH:mm') }
 
-# Lo que hay de verdad en el proyecto; $null si no se pudo leer.
+# What the project really has; $null when it could not be read.
 function Get-LumaRemoteState([string]$ProjectRef) {
   $secrets = Invoke-SupabaseJson secrets list "--remote=$ProjectRef"
   $functions = Invoke-SupabaseJson functions list "--remote=$ProjectRef"
@@ -90,9 +90,9 @@ function Get-LumaRemoteState([string]$ProjectRef) {
   return $state
 }
 
-# Una linea por secreto y funcion. $Keep: se exigen, pero esta opcion no los carga.
+# One line per secret and function. $Keep: required, but this option does not set them.
 function Test-LumaRemote([string]$ProjectRef, [string[]]$Secrets, [string[]]$Functions, [DateTimeOffset]$Since, [string[]]$Keep = @()) {
-  # En la opcion 8 hay una sola tabla, al final.
+  # Option 8 has a single table, at the end.
   if ($script:LumaUnattended -and -not $script:LumaFinalCheck) { return @() }
   $state = Get-LumaRemoteState $ProjectRef
   if (-not $state) {

@@ -1,8 +1,8 @@
 # -----------------------------------------------------------------
-# Opcion 5 - WhatsApp (docs/whatsapp-setup.md): lee whatsapp.env
+# Option 5 - WhatsApp (docs/whatsapp-setup.md): reads whatsapp.env
 # (WHATSAPP_VERIFY_TOKEN, WHATSAPP_APP_SECRET, WHATSAPP_PHONE_NUMBER_ID),
-# genera el token de verificacion si falta, carga los secretos,
-# despliega whatsapp-webhook y prueba el reto de Meta.
+# generates the verify token when missing, sets the secrets,
+# deploys whatsapp-webhook and tests Meta's challenge.
 # -----------------------------------------------------------------
 
 $script:WhatsappNames = 'WHATSAPP_VERIFY_TOKEN', 'WHATSAPP_APP_SECRET', 'WHATSAPP_PHONE_NUMBER_ID'

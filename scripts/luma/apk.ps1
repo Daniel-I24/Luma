@@ -1,33 +1,33 @@
 # -----------------------------------------------------------------
-# Opcion 6 - compilar e instalar el APK. Lee app.env de la carpeta de
-# secretos con todas las variables de compilacion (docs/release.md):
+# Option 6 - build and install the APK. Reads app.env from the secrets
+# folder with every build variable (docs/release.md):
 # SUPABASE_URL, SUPABASE_ANON_KEY, AI_MODE, PUSH_ENABLED,
-# SUPPORT_WHATSAPP, LEGAL_CONTACT_EMAIL y, para firmar,
-# LUMA_KEYSTORE_PATH, LUMA_KEYSTORE_PASSWORD, LUMA_KEY_ALIAS y
-# LUMA_KEY_PASSWORD (sin ellas, APK de prueba). Si app.env no existe
-# lo crea: pregunta SUPABASE_ANON_KEY, AI_MODE=remote si hay ai.env y
-# PUSH_ENABLED=1 si hay google-services.json. Instala con adb (PATH,
-# ANDROID_HOME o el SDK de Android Studio) y pregunta el telefono si
-# hay varios conectados.
+# SUPPORT_WHATSAPP, LEGAL_CONTACT_EMAIL and, to sign,
+# LUMA_KEYSTORE_PATH, LUMA_KEYSTORE_PASSWORD, LUMA_KEY_ALIAS and
+# LUMA_KEY_PASSWORD (without them, a debug APK). When app.env is missing
+# it creates it: asks for SUPABASE_ANON_KEY, AI_MODE=remote when ai.env exists and
+# PUSH_ENABLED=1 when google-services.json exists. Installs with adb (PATH,
+# ANDROID_HOME or the Android Studio SDK) and asks which phone when
+# several are connected.
 # -----------------------------------------------------------------
 
 $script:BuildNames = 'SUPABASE_URL', 'SUPABASE_ANON_KEY', 'AI_MODE', 'PUSH_ENABLED', 'SUPPORT_WHATSAPP', 'LEGAL_CONTACT_EMAIL'
 $script:SigningNames = 'LUMA_KEYSTORE_PATH', 'LUMA_KEYSTORE_PASSWORD', 'LUMA_KEY_ALIAS', 'LUMA_KEY_PASSWORD'
 
-# La salida de npm va a la pantalla; devuelve solo el codigo (un entero).
-# npm.cmd, nunca npm: npm.ps1 relee el texto de esta linea y "@args" no llega
-# (mostraba la lista de scripts y salia con 0, sin compilar).
+# npm's output goes to the screen; returns only the exit code (an integer).
+# npm.cmd, never npm: npm.ps1 re-reads the text of this line and "@args" is lost
+# (it listed the scripts and exited with 0, without building).
 function Invoke-LumaNpm {
   & npm.cmd run @args | Out-Host
   return [int]$LASTEXITCODE
 }
 
-# El APK de esta compilacion, no uno que ya estuviera ahi.
+# This build's APK, not one that was already there.
 function Test-LumaApkFresh([string]$Path, [DateTime]$Since) {
   return (Test-Path $Path) -and ((Get-Item $Path).LastWriteTime -ge $Since.AddMinutes(-1))
 }
 
-# adb: en el PATH, en ANDROID_HOME o en el SDK de Android Studio.
+# adb: in the PATH, in ANDROID_HOME or in the Android Studio SDK.
 function Find-LumaAdb {
   $command = Get-Command adb -ErrorAction SilentlyContinue
   if ($command) { return $command.Source }
@@ -46,7 +46,7 @@ function Invoke-LumaAdb {
   return @(& $adb @args 2>&1 | ForEach-Object { [string]$_ })
 }
 
-# "adb devices": los telefonos listos y los que esperan autorizacion.
+# "adb devices": the phones that are ready and those waiting for authorisation.
 function Get-LumaPhones {
   $phones = @(); $waiting = @(); $missing = $false
   foreach ($line in (Invoke-LumaAdb devices)) {
@@ -57,7 +57,7 @@ function Get-LumaPhones {
   return @{ Ready = $phones; Unauthorized = $waiting; NoAdb = $missing }
 }
 
-# app.env nuevo: la URL del proyecto, la clave publica y lo que ya esta configurado.
+# A new app.env: the project URL, the public key and what is already set up.
 function New-LumaAppEnv {
   $ref = Get-LumaProjectRef
   $anon = Read-LumaValue 'SUPABASE_ANON_KEY (Supabase -> Project Settings -> API -> anon public)'

@@ -1,11 +1,11 @@
 # -----------------------------------------------------------------
-# Opcion 8 - desplegar y verificar todo, sin preguntas: cada servicio
-# con lo guardado en la carpeta de secretos y una sola tabla al final,
-# leida de "secrets list" y "functions list". Si un servicio falla,
-# sigue con los demas y la tabla lo muestra.
+# Option 8 - deploy and verify everything, without questions: each service
+# with what the secrets folder holds, and a single table at the end,
+# read from "secrets list" and "functions list". When a service fails,
+# it goes on with the rest and the table shows it.
 # -----------------------------------------------------------------
 
-# Igual que scripts/doctor/expected.mjs (lo comprueba luma.test.mjs).
+# Same as scripts/doctor/expected.mjs (luma.test.mjs checks it).
 $script:LumaAllSecrets = @(
   'LLM_PROVIDER', 'LLM_MODEL', 'LLM_API_KEY',
   'FCM_SERVICE_ACCOUNT', 'PUSH_DISPATCH_SECRET',
@@ -13,13 +13,13 @@ $script:LumaAllSecrets = @(
   'ROUTE_API_KEY', 'ROUTE_PROVIDER',
   'WHATSAPP_VERIFY_TOKEN', 'WHATSAPP_APP_SECRET', 'WHATSAPP_PHONE_NUMBER_ID'
 )
-# Se exige que existan, sin mirar la fecha (ALLOWED_ORIGINS la carga Pagos).
+# They must exist; their date is not checked (Payments sets ALLOWED_ORIGINS).
 $script:LumaAllKept = @('ALLOWED_ORIGINS', 'GEOCODE_PROVIDER', 'GEOCODE_API_KEY')
 $script:LumaAllFunctions = @(
   'delete-account', 'recommend', 'suggest-promotions', 'extract-menu', 'geocode', 'route', 'verify-website',
   'whatsapp-webhook', 'push-dispatch', 'create-payment', 'wompi-webhook', 'reconcile-payments', 'void-payment'
 )
-# Sin secretos propios: ninguna otra opcion las despliega.
+# No secrets of their own: no other option deploys them.
 $script:LumaPlainFunctions = @('delete-account', 'geocode', 'verify-website')
 
 function Invoke-LumaAll([string]$ProjectRef) {

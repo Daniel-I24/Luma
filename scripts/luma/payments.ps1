@@ -1,14 +1,14 @@
 # -----------------------------------------------------------------
-# Opcion 3 - pagos de Wompi en sandbox (docs/payments-setup.md):
-#   1. lee wompi-sandbox.txt (y functions.env para lo que falte) y
-#      reconoce cada llave por su prefijo (pub_test_, prv_test_,
-#      test_events_, test_integrity_), sin importar el orden ni el
-#      texto que las rodee. Una llave de produccion nunca se carga,
-#   2. reutiliza o genera PAYMENTS_CRON_SECRET; con WEB_ORIGIN de web.env,
-#      PAYMENT_RETURN_URL (Wompi solo acepta https) y ALLOWED_ORIGINS,
-#   3. carga los secretos WOMPI_* y despliega las 4 funciones,
-#   4. escribe payments-settings.sql para pegar en el SQL Editor.
-# Los pagos en linea siguen APAGADOS hasta que el equipo los encienda.
+# Option 3 - Wompi payments in sandbox (docs/payments-setup.md):
+#   1. reads wompi-sandbox.txt (and functions.env for what is missing) and
+#      recognises each key by its prefix (pub_test_, prv_test_,
+#      test_events_, test_integrity_), whatever the order or the
+#      text around them. A production key is never loaded,
+#   2. reuses or generates PAYMENTS_CRON_SECRET; with WEB_ORIGIN from web.env,
+#      PAYMENT_RETURN_URL (Wompi only accepts https) and ALLOWED_ORIGINS,
+#   3. sets the WOMPI_* secrets and deploys the 4 functions,
+#   4. writes payments-settings.sql to paste in the SQL Editor.
+# Online payments stay OFF until the team switches them on.
 # -----------------------------------------------------------------
 
 $script:WompiPrefixes = [ordered]@{
@@ -18,7 +18,7 @@ $script:WompiPrefixes = [ordered]@{
   WOMPI_INTEGRITY_SECRET = 'test_integrity_'
 }
 
-# Cada llave del texto por su prefijo; las que no estan quedan fuera.
+# Each key of the text by its prefix; missing ones are left out.
 function Read-LumaWompiKeys([string]$Text) {
   $keys = @{}
   foreach ($name in $script:WompiPrefixes.Keys) {
@@ -28,7 +28,7 @@ function Read-LumaWompiKeys([string]$Text) {
   return $keys
 }
 
-# Las llaves de prueba de los archivos; Production dice si habia de produccion.
+# The test keys of the files; Production says whether there were production ones.
 function Find-LumaWompiKeys {
   $found = @{ Keys = @{}; Production = $false; Files = 0 }
   foreach ($name in 'wompi-sandbox.txt', 'functions.env') {

@@ -1,13 +1,13 @@
 # -----------------------------------------------------------------
-# Opcion 2 - notificaciones push (docs/push-setup.md):
-#   1. lee firebase-service-account.json de la carpeta de secretos,
-#   2. reutiliza el secreto de push-dispatch (o genera uno),
-#   3. carga FCM_SERVICE_ACCOUNT y PUSH_DISPATCH_SECRET,
-#   4. despliega push-dispatch,
-#   5. escribe push-settings.sql para pegar en el SQL Editor.
+# Option 2 - push notifications (docs/push-setup.md):
+#   1. reads firebase-service-account.json from the secrets folder,
+#   2. reuses the push-dispatch secret (or generates one),
+#   3. sets FCM_SERVICE_ACCOUNT and PUSH_DISPATCH_SECRET,
+#   4. deploys push-dispatch,
+#   5. writes push-settings.sql to paste in the SQL Editor.
 # -----------------------------------------------------------------
 
-# El secreto ya escrito en push-settings.sql: repetir no rompe lo pegado.
+# The secret already written in push-settings.sql: repeating does not break what was pasted.
 function Get-LumaPushSecret {
   $path = Join-Path (Get-LumaSecretsDir) 'push-settings.sql'
   if ((Test-Path $path) -and ((Get-Content $path -Raw) -match "'([0-9a-f]{64})'")) { return $Matches[1] }

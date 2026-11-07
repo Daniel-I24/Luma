@@ -1,13 +1,13 @@
 # -----------------------------------------------------------------
-# Opcion 1 - Luma IA con Gemini: clave, modelo y modelo de respaldo.
-# Guarda ai.env en la carpeta de secretos, carga los secretos LLM_*,
-# despliega recommend, suggest-promotions y extract-menu y prueba la
-# clave con cada modelo. Repetible: Enter deja lo guardado.
+# Option 1 - Luma IA with Gemini: key, model and fallback model.
+# Saves ai.env in the secrets folder, sets the LLM_* secrets,
+# deploys recommend, suggest-promotions and extract-menu and tests the
+# key with each model. Repeatable: Enter keeps what is saved.
 # -----------------------------------------------------------------
 
 $script:GeminiUrl = 'https://generativelanguage.googleapis.com/v1beta'
 
-# Una llamada real y minima de generateContent: el codigo HTTP.
+# One real, minimal generateContent call: the HTTP status.
 function Test-LumaGeminiModel([string]$Key, [string]$Model) {
   $uri = "$script:GeminiUrl/models/$([uri]::EscapeDataString($Model)):generateContent"
   $body = '{"contents":[{"parts":[{"text":"Responde solo: OK"}]}],"generationConfig":{"maxOutputTokens":16}}'
@@ -15,7 +15,7 @@ function Test-LumaGeminiModel([string]$Key, [string]$Model) {
   return $r.Status
 }
 
-# 503 y 429: el modelo existe pero esta saturado o sin cupo en este momento.
+# 503 and 429: the model exists but is busy or out of quota right now.
 function Test-LumaBusy([int]$Status) { return $Status -eq 503 -or $Status -eq 429 }
 
 function Invoke-LumaAi([string]$ProjectRef) {

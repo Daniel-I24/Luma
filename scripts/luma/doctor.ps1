@@ -1,9 +1,9 @@
 # -----------------------------------------------------------------
-# Opcion 7 - diagnostico (npm run doctor). Usa la sesion de la CLI
-# ("npx supabase login"): nombres de secretos y funciones. Migraciones
-# y banderas necesitan un token personal: se pide opcional, solo en
-# memoria (nunca se escribe a disco) y se borra al terminar.
-# Ningun archivo de luma-secrets contiene tokens de cuenta.
+# Option 7 - diagnosis (npm run doctor). Uses the CLI session
+# ("npx supabase login"): names of secrets and functions. Migrations
+# and flags need a personal token: asked for as optional, kept only in
+# memory (never written to disk) and cleared at the end.
+# No file in luma-secrets holds account tokens.
 # -----------------------------------------------------------------
 
 function Invoke-LumaDoctor {
@@ -16,7 +16,7 @@ function Invoke-LumaDoctor {
     if ($token) { $env:SUPABASE_ACCESS_TOKEN = $token }
     $code = Invoke-LumaNpm doctor
   } finally {
-    # Fuera de esta ventana tampoco queda: se borra de la memoria del proceso.
+    # Nor does it stay outside this window: it is cleared from the process memory.
     $env:SUPABASE_ACCESS_TOKEN = $previous
     $token = $null
   }

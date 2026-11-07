@@ -1,11 +1,11 @@
 # -----------------------------------------------------------------
-# luma.ps1 - configurar Luma sin pegar comandos largos.
-# Uso (PowerShell, en la carpeta del repo):
+# luma.ps1 - set up Luma without pasting long commands.
+# Usage (PowerShell, in the repository folder):
 #   powershell -ExecutionPolicy Bypass -File scripts\luma.ps1
-# Antes, una vez: "npx supabase login" y "npx supabase link".
-# Una opcion solo dice OK si el proyecto lo confirma (luma\remote.ps1).
-# Los secretos viven en %USERPROFILE%\luma-secrets (fuera del repo);
-# ninguno se muestra. Cada opcion se puede repetir.
+# Once, before: "npx supabase login" and "npx supabase link".
+# An option only says OK when the project confirms it (luma\remote.ps1).
+# Secrets live in %USERPROFILE%\luma-secrets (outside the repository);
+# none is ever shown. Every option can be repeated.
 # -----------------------------------------------------------------
 param([string]$Option = '')
 $ErrorActionPreference = 'Stop'

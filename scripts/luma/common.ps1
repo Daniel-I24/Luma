@@ -1,8 +1,8 @@
 # -----------------------------------------------------------------
-# common.ps1 - piezas compartidas por scripts\luma.ps1 y sus
-# opciones. Todo lo que habla con fuera (la CLI de Supabase, la web,
-# las preguntas) pasa por una funcion que las pruebas reemplazan.
-# Nunca imprime un secreto.
+# common.ps1 - pieces shared by scripts\luma.ps1 and its
+# options. Everything that talks to the outside (the Supabase CLI, the web,
+# the questions) goes through a function the tests replace.
+# Never prints a secret.
 # -----------------------------------------------------------------
 
 function Get-LumaSecretsDir {
@@ -12,8 +12,8 @@ function Get-LumaSecretsDir {
 
 function Say([string]$Text) { Write-Host "  $Text" }
 
-# Una pregunta; con -Secret no se ve lo que se escribe. Enter deja
-# el valor actual (que nunca se muestra si es secreto).
+# One question; with -Secret what is typed is not shown. Enter keeps
+# the current value (never shown when it is secret).
 function Read-LumaValue([string]$Prompt, [string]$Current = '', [switch]$Secret) {
   if ($script:LumaUnattended) { return $Current }
   $hint = ''
@@ -30,7 +30,7 @@ function Read-LumaValue([string]$Prompt, [string]$Current = '', [switch]$Secret)
   return $value.Trim()
 }
 
-# Una peticion web: @{ Status; Body }. Nunca lanza.
+# One web request: @{ Status; Body }. Never throws.
 function Invoke-LumaHttp([string]$Uri, [hashtable]$Headers = @{}, [string]$Method = 'GET', [string]$Body = '') {
   try {
     $request = @{ Uri = $Uri; Headers = $Headers; Method = $Method; UseBasicParsing = $true; TimeoutSec = 20 }
@@ -44,7 +44,7 @@ function Invoke-LumaHttp([string]$Uri, [hashtable]$Headers = @{}, [string]$Metho
   }
 }
 
-# El proyecto: el de "npx supabase link" o el que se escriba.
+# The project: the one of "npx supabase link" or the one typed.
 function Get-LumaProjectRef {
   if ($env:SUPABASE_PROJECT_REF) { return $env:SUPABASE_PROJECT_REF }
   $file = Join-Path (Get-Location) 'supabase\.temp\project-ref'
@@ -52,7 +52,7 @@ function Get-LumaProjectRef {
   return (Read-LumaValue 'Referencia del proyecto de Supabase (20 letras)')
 }
 
-# El proyecto que se va a cambiar, siempre a la vista antes de hacerlo.
+# The project about to change, always on screen before changing it.
 function Get-LumaTarget {
   $ref = Get-LumaProjectRef
   if ($ref -notmatch '^[a-z0-9]{20}$') { throw 'Falta el proyecto: ejecuta "npx supabase link" en la carpeta del repo.' }
@@ -60,14 +60,14 @@ function Get-LumaTarget {
   return $ref
 }
 
-# 32 bytes al azar en hexadecimal.
+# 32 random bytes in hexadecimal.
 function New-LumaSecret {
   $bytes = New-Object byte[] 32
   [Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
   return (-join ($bytes | ForEach-Object { $_.ToString('x2') }))
 }
 
-# Lineas NOMBRE=valor de un archivo de la carpeta de secretos.
+# NAME=value lines of a file in the secrets folder.
 function Read-LumaEnvFile([string]$Name) {
   $values = @{}
   $path = Join-Path (Get-LumaSecretsDir) $Name
@@ -92,7 +92,7 @@ function Write-LumaEnvFile([string]$Name, [hashtable]$Values) {
   Write-LumaFile $Name (($lines -join "`n") + "`n")
 }
 
-# Una linea del resumen: OK, FALTA o APAGADO, con el siguiente paso.
+# One line of the summary: OK, FALTA or APAGADO, with the next step.
 function New-LumaLine([string]$State, [string]$Item, [string]$Next = '') {
   return [pscustomobject]@{ State = $State; Item = $Item; Next = $Next }
 }

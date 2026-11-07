@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------
-# Opcion 4 - rutas de "Como llegar" con OpenRouteService: guarda la
-# clave en routes.env, la prueba con una ruta corta en Pasto, carga
-# ROUTE_PROVIDER y ROUTE_API_KEY y despliega route.
+# Option 4 - "Como llegar" routes with OpenRouteService: saves the
+# key in routes.env, tests it with a short route in Pasto, sets
+# ROUTE_PROVIDER and ROUTE_API_KEY and deploys route.
 # -----------------------------------------------------------------
 
 $script:OrsTestUrl = 'https://api.openrouteservice.org/v2/directions/foot-walking?start=-77.2811,1.2136&end=-77.2790,1.2150'
