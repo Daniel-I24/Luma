@@ -27,6 +27,8 @@ export interface DispatchDeps {
 
 export const BATCH = 100;
 const MAX_BATCHES = 5;
+/** PUSH_DISPATCH_SECRET is 32 random bytes in hex (luma.ps1); anything shorter is refused. */
+const MIN_SECRET_LENGTH = 32;
 
 /** FCM will answer the same again: a bad message or a wrong project, not a passing fault. */
 const PERMANENT = new Set(['INVALID_ARGUMENT', 'SENDER_ID_MISMATCH', 'THIRD_PARTY_AUTH_ERROR', 'PERMISSION_DENIED', 'NOT_FOUND']);
@@ -60,7 +62,7 @@ async function sendOne(sender: Sender, token: string, message: PushMessage): Pro
 export function createHandler(deps: DispatchDeps): (req: Request) => Promise<Response> {
   return async (req) => {
     if (req.method !== 'POST') return json(405, { error: 'method_not_allowed' }, { Allow: 'POST' });
-    if (!deps.secret || deps.secret.length < 32 || !sameSecret(req.headers.get('x-push-secret'), deps.secret)) {
+    if (!deps.secret || deps.secret.length < MIN_SECRET_LENGTH || !sameSecret(req.headers.get('x-push-secret'), deps.secret)) {
       return json(401, { error: 'unauthorized' });
     }
     await req.body?.cancel();

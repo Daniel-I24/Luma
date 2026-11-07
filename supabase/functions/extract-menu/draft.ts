@@ -15,6 +15,10 @@ export interface MenuDraft {
 const MAX_DRAFT_ITEMS = 200;
 const MIN_PRICE_COP = 50;
 const MAX_PRICE_COP = 10_000_000;
+/** Longest name, section and description kept from a draft line, in characters. */
+const MAX_NAME = 80;
+const MAX_SECTION = 40;
+const MAX_DESCRIPTION = 300;
 
 /** Plain text only: no control characters, no markup, collapsed spaces, cut to max. */
 export function cleanText(value: unknown, max: number): string | null {
@@ -63,13 +67,13 @@ export function toDraft(value: unknown): MenuDraft | null {
   for (const item of items) {
     if (typeof item !== 'object' || item === null) continue;
     const raw = item as Record<string, unknown>;
-    const name = cleanText(raw.name, 80);
+    const name = cleanText(raw.name, MAX_NAME);
     if (!name) continue;
-    const section = cleanText(raw.section, 40);
+    const section = cleanText(raw.section, MAX_SECTION);
     const key = `${section ?? ''}|${name}`.toLowerCase();
     if (seen.has(key)) continue;
     seen.add(key);
-    clean.push({ name, description: cleanText(raw.description, 300), price_cop: parseCop(raw.price), section });
+    clean.push({ name, description: cleanText(raw.description, MAX_DESCRIPTION), price_cop: parseCop(raw.price), section });
     if (clean.length === MAX_DRAFT_ITEMS) break;
   }
   return { items: clean };

@@ -49,3 +49,6 @@ export interface IdeasResponse {
 /** Below this many orders in 60 days, the rules advise (not enough data for a model). */
 export const MIN_ORDERS_FOR_AI = 10;
 export const MAX_IDEAS = 3;
+/** What an idea may propose; the prompt, the JSON schema and the validator read these. */
+export const DISCOUNT_RANGE = { min: 5, max: 30 } as const;
+export const DURATION_DAYS_RANGE = { min: 1, max: 14 } as const;

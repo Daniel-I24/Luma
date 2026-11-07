@@ -28,6 +28,10 @@ const PROPERTY = /^[a-z_]{1,40}(\.[a-z_]{1,40}){1,3}$/;
 const HEX_64 = /^[0-9a-fA-F]{64}$/;
 const TRANSACTION_ID = /^[0-9A-Za-z_-]{1,64}$/;
 const MAX_PROPERTIES = 10;
+/** Longest event name and reference accepted (Wompi sends far shorter ones). */
+const MAX_EVENT_LENGTH = 60;
+const MAX_REFERENCE_LENGTH = 255;
+const PAYMENT_METHOD = /^[A-Z_]{1,30}$/;
 
 const record = (value: unknown): Record<string, unknown> | null =>
   typeof value === 'object' && value !== null && !Array.isArray(value) ? value as Record<string, unknown> : null;
@@ -44,7 +48,7 @@ export class WompiEventParser {
     if (!root || !signature || !data) return null;
     const { event, environment, timestamp } = root;
     const { properties, checksum } = signature;
-    if (typeof event !== 'string' || event.length > 60) return null;
+    if (typeof event !== 'string' || event.length > MAX_EVENT_LENGTH) return null;
     if (environment !== 'test' && environment !== 'prod') return null;
     if (typeof timestamp !== 'number' || !Number.isSafeInteger(timestamp) || timestamp <= 0) return null;
     if (typeof checksum !== 'string' || !HEX_64.test(checksum)) return null;
@@ -61,10 +65,10 @@ export class WompiEventParser {
     if (!tx) return null;
     const { id, reference, status, amount_in_cents: amount, currency, payment_method_type: method } = tx;
     if (typeof id !== 'string' || !TRANSACTION_ID.test(id)) return null;
-    if (typeof reference !== 'string' || reference.length > 255) return null;
+    if (typeof reference !== 'string' || reference.length > MAX_REFERENCE_LENGTH) return null;
     if (typeof status !== 'string' || typeof currency !== 'string') return null;
     if (typeof amount !== 'number' || !Number.isSafeInteger(amount) || amount < 0) return null;
-    const paymentMethodType = typeof method === 'string' && /^[A-Z_]{1,30}$/.test(method) ? method : null;
+    const paymentMethodType = typeof method === 'string' && PAYMENT_METHOD.test(method) ? method : null;
     return { id, reference, status, amountInCents: amount, currency, paymentMethodType };
   }
 }

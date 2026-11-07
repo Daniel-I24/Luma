@@ -43,6 +43,9 @@ export const MAX_CANDIDATES = 5;
 const DEFAULT_RADIUS_KM = 15;
 const MAX_RADIUS_KM = 30;
 const KM_PER_DEGREE = 111.32;
+/** A query and a label, in characters. */
+const MIN_QUERY_LENGTH = 2;
+const MAX_TEXT_LENGTH = 120;
 export const PASTO: Point = { lat: 1.2136, lng: -77.2811 };
 /** Colombia (with San Andrés), [minLng, minLat, maxLng, maxLat]. */
 export const COLOMBIA_BBOX = [-81.8, -4.3, -66.8, 13.6] as const;
@@ -92,7 +95,7 @@ export function parseInput(body: unknown): GeocodeInput | null {
   const { q, near, within } = body as Record<string, unknown>;
   if (typeof q !== 'string') return null;
   const query = q.replace(/[\p{Cc}\p{Cf}]/gu, ' ').replace(/\s+/g, ' ').trim();
-  if (query.length < 2 || query.length > 120) return null;
+  if (query.length < MIN_QUERY_LENGTH || query.length > MAX_TEXT_LENGTH) return null;
   const point = pointOf(near);
   // Rounded: the provider never receives the exact position of the user.
   const bias = point ? { lat: round2(point.lat), lng: round2(point.lng) } : PASTO;
@@ -107,7 +110,7 @@ export function cleanLabel(parts: readonly unknown[]): string | null {
     .filter((part): part is string => typeof part === 'string')
     .map((part) => part.replace(/[\p{Cc}\p{Cf}<>]/gu, ' ').replace(/\s+/g, ' ').trim())
     .filter((part) => part.length > 0 && !seen.has(part.toLowerCase()) && seen.add(part.toLowerCase()));
-  const label = words.join(', ').slice(0, 120).trim();
+  const label = words.join(', ').slice(0, MAX_TEXT_LENGTH).trim();
   return label.length > 0 ? label : null;
 }
 

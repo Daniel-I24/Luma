@@ -3,6 +3,9 @@ import { SupabaseService } from '@core/supabase/supabase.service';
 import type { RepoResult } from '@shared/business/data/business.repository';
 import { FunctionFailure } from './function-failure';
 
+/** Admin actions shown in Operaciones, newest first. */
+const RECENT_AUDIT_LIMIT = 30;
+
 /** business_review_flags(business): warning signs for the review. */
 export interface ReviewFlags {
   readonly duplicate_tax_id: boolean;
@@ -69,7 +72,7 @@ export class AdminOperationsRepository {
 
   /** Latest admin actions from the audit log. */
   public recentAudit(): Promise<RepoResult<AuditEntry[]>> {
-    return this.list<AuditEntry>('admin_recent_audit', { p_limit: 30 });
+    return this.list<AuditEntry>('admin_recent_audit', { p_limit: RECENT_AUDIT_LIMIT });
   }
 
   /** Clears a customer's strikes (audited). */
