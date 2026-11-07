@@ -5,6 +5,7 @@ import { PaymentApplier } from '../_shared/payments/payment-applier.ts';
 import { PaymentLog } from '../_shared/payments/payment-log.ts';
 import { SupabasePaymentRepository } from '../_shared/payments/payment-repository.ts';
 import { Reconciler } from '../_shared/payments/reconciler.ts';
+import { SupabaseEnv } from '../_shared/supabase-env.ts';
 import { WompiApi } from '../_shared/payments/wompi-api.ts';
 import { createHandler } from './handler.ts';
 
@@ -21,6 +22,7 @@ const repository = new SupabasePaymentRepository(service);
 
 Deno.serve(
   createHandler({
+    allowedOrigins: SupabaseEnv.allowedOrigins(),
     cronSecret: Deno.env.get('PAYMENTS_CRON_SECRET') ?? null,
     // The admin's own JWT: is_admin() (aal2) decides, and the request is logged.
     isAdmin: async (token) => {

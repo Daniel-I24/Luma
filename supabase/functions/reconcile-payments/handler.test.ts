@@ -4,10 +4,12 @@ import { PaymentLog } from '../_shared/payments/payment-log.ts';
 import { createHandler } from './handler.ts';
 
 const SECRET = 'c'.repeat(40);
+const WEB = 'https://luma.example';
 
 function setup(options: { run?: boolean; fail?: boolean } = {}) {
   let runs = 0;
   const handler = createHandler({
+    allowedOrigins: [WEB, 'https://localhost'],
     cronSecret: SECRET,
     isAdmin: (token) => Promise.resolve(token === 'admin'),
     run: options.run === false ? null : () => {
@@ -37,4 +39,18 @@ Deno.test('the cron secret or an admin JWT runs it; nothing else does', async ()
 Deno.test('missing Wompi secrets or a failing run are 503', async () => {
   assertEquals((await setup({ run: false }).handler(call({ 'x-cron-secret': SECRET }))).status, 503);
   assertEquals((await setup({ fail: true }).handler(call({ 'x-cron-secret': SECRET }))).status, 503);
+});
+
+Deno.test('the admin screen (web and APK) passes the browser preflight; other origins do not', async () => {
+  const { handler, runs } = setup();
+  for (const origin of [WEB, 'https://localhost']) {
+    const ask = await handler(call({ Origin: origin, 'Access-Control-Request-Method': 'POST' }, 'OPTIONS'));
+    assertEquals([ask.status, ask.headers.get('Access-Control-Allow-Origin')], [204, origin]);
+  }
+  const admin = await handler(call({ Origin: WEB, Authorization: 'Bearer admin' }));
+  assertEquals([admin.status, admin.headers.get('Access-Control-Allow-Origin')], [200, WEB]);
+  const denied = await handler(call({ Origin: WEB, Authorization: 'Bearer customer' }));
+  assertEquals([denied.status, denied.headers.get('Access-Control-Allow-Origin')], [401, WEB]);
+  assertEquals((await handler(call({ Origin: 'https://evil.example', Authorization: 'Bearer admin' }))).status, 403);
+  assertEquals(runs(), 1);
 });
