@@ -19,7 +19,7 @@ import { serve } from './server.mjs';
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
 const OUT = join(ROOT, 'docs', 'screens');
 const WIDTHS = [360, 412, 768];
-const THEMES = ['sky', 'night', 'lacquer', 'maize'];
+const THEMES = ['ciruela', 'crema'];
 const HEIGHT = 800;
 const SETTLE_MS = 900;
 

@@ -1,5 +1,5 @@
 <section *transloco="let t" class="flex flex-col gap-3" [attr.aria-label]="business().name">
-  <div class="doodles doodles--on-brand relative overflow-hidden rounded-2xl bg-linear-to-br from-primary to-accent">
+  <div class="doodles relative overflow-hidden rounded-2xl bg-surface-selected">
     @if (business().cover_url) {
     <span class="block h-32 w-full opacity-90">
       <app-luma-image [src]="business().cover_url" [alt]="''" [width]="640" [height]="256" />

@@ -20,12 +20,12 @@ describe('ThemeService', () => {
     TestBed.resetTestingModule();
   });
 
-  it('defaults to the sky theme', () => {
+  it('defaults to the ciruela theme', () => {
     setupTestBed();
-    expect(service.theme()).toBe('sky');
+    expect(service.theme()).toBe('ciruela');
   });
 
-  it('does not set data-theme attribute for the default sky theme', () => {
+  it('does not set data-theme attribute for the default ciruela theme', () => {
     setupTestBed();
     TestBed.flushEffects();
     expect(document.documentElement.getAttribute('data-theme')).toBeNull();
@@ -33,41 +33,41 @@ describe('ThemeService', () => {
 
   it('applies data-theme attribute when a non-default theme is set', () => {
     setupTestBed();
-    service.setTheme('night');
+    service.setTheme('crema');
     TestBed.flushEffects();
-    expect(document.documentElement.getAttribute('data-theme')).toBe('night');
+    expect(document.documentElement.getAttribute('data-theme')).toBe('crema');
   });
 
-  it('removes data-theme when switching back to sky', () => {
+  it('removes data-theme when switching back to ciruela', () => {
     setupTestBed();
-    service.setTheme('night');
+    service.setTheme('crema');
     TestBed.flushEffects();
-    service.setTheme('sky');
+    service.setTheme('ciruela');
     TestBed.flushEffects();
     expect(document.documentElement.getAttribute('data-theme')).toBeNull();
   });
 
   it('persists the theme to localStorage', () => {
     setupTestBed();
-    service.setTheme('maize');
-    expect(localStorage.getItem('luma-theme')).toBe('maize');
+    service.setTheme('crema');
+    expect(localStorage.getItem('luma-theme')).toBe('crema');
   });
 
   it('restores a persisted theme from localStorage', () => {
-    localStorage.setItem('luma-theme', 'lacquer');
+    localStorage.setItem('luma-theme', 'crema');
     setupTestBed();
-    expect(service.theme()).toBe('lacquer');
+    expect(service.theme()).toBe('crema');
   });
 
-  it('falls back to sky for an invalid stored value', () => {
+  it('falls back to ciruela for an invalid stored value', () => {
     localStorage.setItem('luma-theme', 'invalid-theme');
     setupTestBed();
-    expect(service.theme()).toBe('sky');
+    expect(service.theme()).toBe('ciruela');
   });
 
   it('updates the signal when setTheme is called', () => {
     setupTestBed();
-    const themes: Theme[] = ['night', 'lacquer', 'maize', 'sky'];
+    const themes: Theme[] = ['crema', 'crema', 'crema', 'ciruela'];
     for (const theme of themes) {
       service.setTheme(theme);
       expect(service.theme()).toBe(theme);

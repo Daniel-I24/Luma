@@ -15,6 +15,10 @@ import { fileURLToPath } from 'node:url';
 const STYLES = new URL('../src/styles/', import.meta.url);
 const TEXT = 4.5;
 const UI = 3;
+/** Streets are shapes on a map, not text or controls: legible, not loud. */
+const ROAD = 1.25;
+const ROAD_MAJOR = 1.3;
+const ROAD_LABEL = 3;
 
 /** [foreground token, background token, minimum ratio]. */
 export const PAIRS = [
@@ -31,10 +35,14 @@ export const PAIRS = [
   ['confirm-fg', 'confirm', TEXT], ['confirm-fg', 'confirm-hover', TEXT],
   ['warning-fg-on', 'warning-strong', TEXT], ['warning-fg-on', 'warning-strong-hover', TEXT], ['danger-fg-on', 'danger-hover', TEXT],
   ['border-focus', 'surface', UI], ['border-strong', 'surface', UI],
+  ['gradient-fg', 'gradient-from', TEXT], ['gradient-fg', 'gradient-via', TEXT], ['gradient-fg', 'gradient-to', TEXT],
+  // The map: labels are text; a street must read over the land, and a main road over a street.
+  ['map-label', 'map-land', TEXT], ['map-label', 'map-area', TEXT], ['map-label', 'map-road', ROAD_LABEL],
+  ['map-road', 'map-land', ROAD], ['map-road-major', 'map-land', ROAD_MAJOR],
 ];
 
 /** [doodle token, background token, maximum ratio]: decoration never competes with text. */
-export const QUIET = [['doodle-line', 'canvas', 1.6], ['doodle-faint', 'canvas', 1.3], ['doodle-on-brand', 'primary', 2]];
+export const QUIET = [['doodle-line', 'canvas', 1.6], ['doodle-faint', 'canvas', 1.3]];
 
 /** Custom properties of one CSS block: { 'fg': '#123456', ... } (only --color-*). */
 export function colorTokens(css) {

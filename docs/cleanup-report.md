@@ -237,3 +237,11 @@ variable and global class, and a search of every public class member.
 - Translation keys and dependencies: nothing to delete. Kept although flagged:
   `axe-core` (knip), and depcheck's list, as in round 11.
 
+## Round 13: two themes
+
+Asked for by the owner, with what stopped being used:
+
+- `src/styles/themes/night.css`, `lacquer.css`, `maize.css`, their swatch tokens and translations:
+  replaced by `crema.css`; a saved preference migrates (`ThemeService`).
+- `.doodles--on-brand`, `--color-doodle-on-brand`: the gradient left the screens that used them.
+- `MyOrderItem` is no longer exported (knip): it is used only in its own file.

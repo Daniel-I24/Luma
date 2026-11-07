@@ -7,10 +7,8 @@ import type { Theme } from '@core/theme/theme.service';
 import { LumaDisclosure } from '@design-system';
 
 const SWATCH_CLASS: Record<Theme, string> = {
-  sky: 'bg-swatch-sky',
-  night: 'bg-swatch-night',
-  lacquer: 'bg-swatch-lacquer',
-  maize: 'bg-swatch-maize',
+  ciruela: 'bg-swatch-ciruela',
+  crema: 'bg-swatch-crema',
 };
 
 /**

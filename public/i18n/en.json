@@ -209,21 +209,13 @@
       "theme": "Visual theme",
       "language": "Language",
       "themes": {
-        "sky": {
-          "name": "Andean sky",
-          "description": "Main: Pasto sky and chili"
+        "ciruela": {
+          "name": "Sober plum",
+          "description": "Dark: Luma's main theme"
         },
-        "night": {
-          "name": "Night",
-          "description": "Dark, for the evening"
-        },
-        "lacquer": {
-          "name": "Lacquer",
-          "description": "Wood and lacquer of the barniz de Pasto"
-        },
-        "maize": {
-          "name": "Maize",
-          "description": "Golden and warm"
+        "crema": {
+          "name": "Light cream",
+          "description": "Light: easier to read in the sun"
         }
       },
       "languages": {

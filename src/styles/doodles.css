@@ -3,10 +3,8 @@
    drinks of Nariño and Colombia on a repeating 260 px tile
    (public/media/doodles/). Three looks:
      .doodles          the line tile as a mask, coloured by
-                       --color-doodle-line (dark low-contrast on cream by
-                       day, light on deep blue at night);
+                       --color-doodle-line (low contrast in both themes);
      .doodles--faint   the same, quieter, for page backgrounds;
-     .doodles--on-brand light lines on the brand gradient (headers).
    .doodles--veil adds a canvas veil so text over it keeps its contrast.
    The tile drifts slowly; with reduced motion it stands still.
 ───────────────────────────────────────────── */
@@ -33,10 +31,6 @@
 
 .doodles--faint::before {
   background-color: var(--color-doodle-faint);
-}
-
-.doodles--on-brand::before {
-  background-color: var(--color-doodle-on-brand);
 }
 
 .doodles--veil::after {

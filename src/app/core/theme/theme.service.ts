@@ -2,14 +2,19 @@ import { Injectable, signal, computed, effect, PLATFORM_ID, inject } from '@angu
 import { isPlatformBrowser } from '@angular/common';
 
 /** Supported visual themes. */
-export type Theme = 'sky' | 'night' | 'lacquer' | 'maize';
+export type Theme = 'ciruela' | 'crema';
 
 const STORAGE_KEY = 'luma-theme';
 /** Class that crossfades colours while the theme changes (styles/motion.css). */
 export const THEME_TRANSITION_CLASS = 'theme-transition';
 const THEME_DURATION_TOKEN = '--duration-theme';
-const DEFAULT_THEME: Theme = 'sky';
-export const THEMES: readonly Theme[] = ['sky', 'night', 'lacquer', 'maize'];
+const DEFAULT_THEME: Theme = 'ciruela';
+export const THEMES: readonly Theme[] = ['ciruela', 'crema'];
+/** Preferences saved before there were two themes: dark to dark, light to light. */
+const FORMER_THEMES: Readonly<Record<string, Theme>> = {
+  night: 'ciruela', midnight: 'ciruela', indigo: 'ciruela',
+  sky: 'crema', lacquer: 'crema', maize: 'crema', pearl: 'crema', sunset: 'crema',
+};
 
 function isValidTheme(value: unknown): value is Theme {
   return THEMES.includes(value as Theme);
@@ -78,6 +83,11 @@ export class ThemeService {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (isValidTheme(stored)) return stored;
+      const migrated = stored ? FORMER_THEMES[stored] : undefined;
+      if (migrated) {
+        localStorage.setItem(STORAGE_KEY, migrated);
+        return migrated;
+      }
     } catch {
       // Ignore storage errors.
     }

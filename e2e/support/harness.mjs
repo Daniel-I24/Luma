@@ -45,18 +45,18 @@ document.getElementById('pay').addEventListener('click', async () => {
 }
 
 /** A browser context of the app: `user` (an email of the backend) starts signed in. */
-export async function openApp(env, { path = '/', user = null, payments = false, viewport = { width: 390, height: 844 } } = {}) {
+export async function openApp(env, { path = '/', user = null, payments = false, theme = 'ciruela', realMap = false, viewport = { width: 390, height: 844 } } = {}) {
   const context = await env.browser.newContext({ viewport, locale: 'es-CO' });
   const realtime = createRealtime();
   const backend = createBackend({ origin: env.origin, payments, emit: (table, record) => realtime.emit(table, record) });
   const problems = [];
   const session = user ? backend.sessionFor(user) : null;
-  await context.addInitScript(({ session }) => {
-    localStorage.setItem('luma-theme', 'sky');
+  await context.addInitScript(({ session, theme }) => {
+    localStorage.setItem('luma-theme', theme);
     localStorage.setItem('luma-entry-seen', '1');
     localStorage.setItem('luma.welcome.v1', 'seen');
     if (session) localStorage.setItem('sb-screens-auth-token', JSON.stringify(session));
-  }, { session });
+  }, { session, theme });
   await context.routeWebSocket(/\/realtime\/v1\/websocket/, realtime.route);
   await context.route('**/*', async (route) => {
     const request = route.request();
@@ -69,6 +69,7 @@ export async function openApp(env, { path = '/', user = null, payments = false, 
       }
       return route.fulfill({ status: 200, contentType: 'text/html', body: wompiPage() });
     }
+    if (url.hostname === MAP_HOST && realMap) return route.continue();
     if (url.hostname === MAP_HOST) return route.fulfill({ status: 200, contentType: 'application/json', body: EMPTY_STYLE });
     if (url.hostname !== SUPABASE_HOST) {
       problems.push(`network: ${request.method()} ${url.origin}${url.pathname}`);

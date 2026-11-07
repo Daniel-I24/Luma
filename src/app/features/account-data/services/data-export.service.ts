@@ -2,7 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { Injectable, inject } from '@angular/core';
 import { SupabaseService } from '@core/supabase/supabase.service';
 
-export interface MyOrderItem {
+interface MyOrderItem {
   readonly name: string;
   readonly quantity: number;
   readonly unit_price_cop: number;

@@ -8,7 +8,7 @@ Referencia visual: `docs/design-prototype/` (prototipo HTML; solo referencia, no
 
 ## Identidad
 - Color de marca: `#0D4A6B` (azul cielo andino). Acento: `#B23A0C` (ají; IA y realces). Tipografías: Bricolage Grotesque (títulos y logotipo) y Figtree (texto), autoalojadas en `public/fonts` (subconjunto latino). Identidad de la ronda 2: `docs/brand/`.
-- Temas (todos con la misma estructura de tokens): **Cielo andino** (`sky`, por defecto), **Noche** (`night`), **Barniz** (`lacquer`) y **Maíz** (`maize`). El usuario elige en Perfil → Apariencia; se persiste.
+- Temas (con la misma estructura de tokens): **Ciruela sobria** (`ciruela`, oscuro, por defecto) y **Crema clara** (`crema`, claro). El degradado de marca (`.brand-gradient`) solo en acciones principales, IA y promociones.
 
 ## Tokens (CSS variables en `src/styles/tokens.css` dentro de `@theme`; temas en `src/styles/themes/*.css`)
 Tailwind v4 genera utilidades a partir de ellos (`bg-surface`, `text-fg-muted`, `border-border`, `rounded-lg`, `shadow-card`, `text-h3`). La paleta por defecto de Tailwind está desactivada (`--color-*: initial`): solo existen colores semánticos.

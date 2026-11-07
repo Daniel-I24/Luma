@@ -29,7 +29,7 @@ The full project rules live in `.kiro/steering/` (`product`, `tech`, `structure`
 - Components only use design tokens through Tailwind utilities (`bg-surface`, `text-fg-muted`, `bg-status-open`) or `var()`; never literal colors or sizes. The default Tailwind palette is disabled.
 - Simulated data lives only in `src/app/shared/mock/` behind a typed interface and is listed in `docs/mocks.md`.
 - Base visual elements live once in `design-system/`; features never re-style them.
-- Themes: Sky (default), Night, Lacquer, Maize — same token structure (docs/brand/palette-options.md).
+- Themes: Ciruela sobria (`ciruela`, dark, default) and Crema clara (`crema`, light) — same token structure (docs/brand/palette-options.md). The brand gradient (`.brand-gradient`) only on main actions, AI and promotions.
 - Touch targets ≥ 44px, AA contrast, respect `prefers-reduced-motion`, skeletons instead of spinners.
 
 ## Security

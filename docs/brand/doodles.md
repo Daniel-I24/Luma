@@ -25,7 +25,6 @@ food, draw it on the same grid and run it again.
 | --- | --- | --- |
 | `.doodles` | Light lines on deep blue at night, dark low-contrast lines on cream by day (`--color-doodle-line`) | App entry, sign-in, sign-up, code and password screens |
 | `.doodles--faint` | The same, quieter (`--color-doodle-faint`) | Behind every customer and owner screen, the welcome |
-| `.doodles--on-brand` | Light lines on the brand gradient (`--color-doodle-on-brand`) | Owner portada, welcome illustration, feed posts without a photo |
 | `.doodles--veil` | Adds a canvas veil | Wherever text sits on top (always with backgrounds) |
 
 The tile drifts one tile diagonally in 120 s, linear and endless; with

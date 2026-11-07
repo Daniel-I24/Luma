@@ -1,3 +1,5 @@
+> **Decided (round 13):** two themes only: Ciruela sobria (`ciruela`, dark, main) and Crema clara (`crema`, light). What follows is history. Tokens: `src/styles/tokens.css` and `src/styles/themes/crema.css`. The brand gradient (`.brand-gradient`) goes only on main actions, AI and promotions. The map takes its colours from `--color-map-*` (`MapTheme`).
+
 # Palette: three directions
 
 Round 2 drops the generic indigo and violet with blue-violet gradients. The

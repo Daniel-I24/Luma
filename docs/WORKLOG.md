@@ -227,6 +227,14 @@ domain (`PAYMENT_RETURN_URL`, from `web.env`), which hands over to `luma://`. It
 about the result. If the customer does not come back that way, the order screen re-reads the
 server on return to the app. The "final price" note is only for pay at pick-up.
 
+### Phase 6: themes (done before finishing phase 4, as asked)
+
+The themes in the code were Sky, Night, Lacquer and Maize; Indigo, Midnight, Pearl and Sunset
+exist only in `docs/design-prototype`. All of them migrate: dark to `ciruela`, light to `crema`.
+`ciruela` is the base of `tokens.css`; `crema` overrides every token. The brand gradient left the
+feed placeholder, the owner hero and the welcome slides. `MapTheme` paints the vector style from
+`--color-map-*`, and hides 3D buildings. Contrast adds the gradient stops and the map pairs.
+
 ## Round 12 (2026-11-06)
 
 Prompt: notifications, a full review of the files, the new icon, three palettes,

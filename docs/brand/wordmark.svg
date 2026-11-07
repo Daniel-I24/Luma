@@ -1,9 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 512" width="1600" height="512">
   <title>Luma wordmark</title>
-  <!-- Mark and name. The name uses Bricolage Grotesque 700 (public/fonts); in the app it is HTML text. -->
+  <!-- Palette B (Ciruela sobria): the icon's pin and the name. The name uses Bricolage Grotesque 700 (public/fonts); in the app it is HTML text. -->
+  <defs><linearGradient id="pin" x1="0.1" y1="0.1" x2="0.9" y2="0.9">
+    <stop offset="0" stop-color="#ffb52e"/><stop offset="1" stop-color="#ff8a3d"/>
+  </linearGradient></defs>
+  <rect width="1600" height="512" fill="#17121f"/>
   <g transform="translate(0 0) scale(0.5)">
-    <path fill="#0d4a6b" fill-rule="evenodd" d="M512 880C400 760 272 620 272 440A240 240 0 1 1 752 440C752 620 624 760 512 880Z M500.1 304.5A136 136 0 1 0 638.1 490.8A116 116 0 1 1 500.1 304.5Z"/>
-    <circle cx="596" cy="382" r="34" fill="#b23a0c"/>
+    <path fill="url(#pin)" fill-rule="evenodd" d="M512 64C299.9 64 149.3 226.1 149.3 430.9C149.3 678.4 512 972.8 512 972.8S874.7 678.4 874.7 430.9C874.7 226.1 724.1 64 512 64Z M328.5 230.4H358.4V366.9H384V230.4H413.9V366.9H439.5V230.4H469.3V401.1C469.3 443.7 443.7 473.6 416 482.1V699.7H381.9V482.1C354.1 473.6 328.5 443.7 328.5 401.1Z M622.9 230.4C665.6 230.4 691.2 281.6 691.2 337.1C691.2 392.5 669.9 435.2 640 448V699.7H605.9V448C576 435.2 554.7 392.5 554.7 337.1C554.7 281.6 580.3 230.4 622.9 230.4Z"/>
   </g>
-  <text x="430" y="330" font-family="'Bricolage Grotesque', sans-serif" font-weight="700" font-size="260" letter-spacing="-6" fill="#15202b">Luma</text>
+  <text x="430" y="330" font-family="'Bricolage Grotesque', sans-serif" font-weight="700" font-size="260" letter-spacing="-6" fill="#f4eff7">Luma</text>
 </svg>

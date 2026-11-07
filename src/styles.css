@@ -4,14 +4,12 @@
 @import './styles/fonts.css';
 
 /* Design tokens: scale (type, spacing, radii, shadows, motion) and colors
-   (Sky is the default theme) */
+   (Ciruela sobria is the main theme) */
 @import './styles/scale.css';
 @import './styles/tokens.css';
 
-/* Alternative themes, applied via <html data-theme="..."> */
-@import './styles/themes/night.css';
-@import './styles/themes/lacquer.css';
-@import './styles/themes/maize.css';
+/* The light theme, applied via <html data-theme="crema"> */
+@import './styles/themes/crema.css';
 
 @import './styles/base.css';
 @import './styles/doodles.css';

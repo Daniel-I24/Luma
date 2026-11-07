@@ -5,7 +5,7 @@
 >
   <div class="flex items-start gap-3">
     <div
-      class="relative flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-linear-to-br from-primary to-accent text-primary-fg"
+      class="relative flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-lg brand-gradient text-primary-fg"
     >
       @if (deal().imageUrl; as src) {
       <img class="size-full object-cover" [src]="src" alt="" loading="lazy" />
@@ -21,7 +21,7 @@
         </span>
         } @if (recommended()) {
         <span
-          class="inline-flex items-center gap-1 rounded-full bg-surface-selected px-2 py-0.5 text-caption font-semibold text-fg-brand"
+          class="brand-gradient inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-caption font-semibold"
         >
           <app-luma-icon name="luma-ai" size="sm" />
           {{ t('promotions.card.recommended') }}

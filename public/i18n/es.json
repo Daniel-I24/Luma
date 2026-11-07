@@ -209,21 +209,13 @@
       "theme": "Tema visual",
       "language": "Idioma",
       "themes": {
-        "sky": {
-          "name": "Cielo andino",
-          "description": "Principal: cielo de Pasto y ají"
+        "ciruela": {
+          "name": "Ciruela sobria",
+          "description": "Oscuro: el principal de Luma"
         },
-        "night": {
-          "name": "Noche",
-          "description": "Oscuro, para la noche"
-        },
-        "lacquer": {
-          "name": "Barniz",
-          "description": "Madera y laca del barniz de Pasto"
-        },
-        "maize": {
-          "name": "Maíz",
-          "description": "Dorado y cálido"
+        "crema": {
+          "name": "Crema clara",
+          "description": "Claro: se lee mejor con sol"
         }
       },
       "languages": {

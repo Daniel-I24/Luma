@@ -1,5 +1,6 @@
 import * as maplibregl from 'maplibre-gl';
 import { ExternalUrls } from '@core/config/external-urls';
+import { MapTheme } from './map-theme';
 
 /** Vector style shared by every map in the app. */
 const MAP_STYLE = ExternalUrls.MAP_STYLE;
@@ -36,6 +37,7 @@ export class BaseMap {
     // Map data licences require attribution; compact, and bottom-left so the
     // app's own controls (bottom-right) never cover its toggle.
     map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-left');
+    map.on('style.load', () => MapTheme.apply(map, document));
     return map;
   }
 }

@@ -32,7 +32,7 @@ describe('ThemeService — colour transition', () => {
   it('adds the class when the user changes theme and removes it after the token duration', () => {
     const service = setup();
 
-    service.setTheme('night');
+    service.setTheme('crema');
     expect(hasClass()).toBe(true);
 
     vi.advanceTimersByTime(199);
@@ -42,16 +42,16 @@ describe('ThemeService — colour transition', () => {
   });
 
   it('never transitions on startup, even with a stored theme', () => {
-    localStorage.setItem('luma-theme', 'maize');
+    localStorage.setItem('luma-theme', 'crema');
     setup();
     TestBed.tick();
 
-    expect(html.getAttribute('data-theme')).toBe('maize');
+    expect(html.getAttribute('data-theme')).toBe('crema');
     expect(hasClass()).toBe(false);
   });
 
   it('skips the transition when re-selecting the active theme', () => {
-    setup().setTheme('sky');
+    setup().setTheme('ciruela');
 
     expect(hasClass()).toBe(false);
   });
@@ -59,7 +59,7 @@ describe('ThemeService — colour transition', () => {
   it('skips the transition under prefers-reduced-motion', () => {
     vi.stubGlobal('matchMedia', (query: string) => ({ matches: query.includes('reduce') }));
 
-    setup().setTheme('lacquer');
+    setup().setTheme('crema');
 
     expect(hasClass()).toBe(false);
   });

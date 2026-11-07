@@ -13,7 +13,7 @@ test('contrast follows WCAG 2.1, translucent backgrounds blended over the surfac
 
 test('tokens are read from the theme blocks', () => {
   assert.deepEqual(colorTokens('--color-fg: #15202b; --spacing-1: 4px;'), { fg: '#15202b' });
-  assert.deepEqual(Object.keys(themes()).sort(), ['default', 'lacquer', 'maize', 'night']);
+  assert.deepEqual(Object.keys(themes()).sort(), ['crema', 'default']);
 });
 
 test('every theme passes AA on every text and UI pair', () => {

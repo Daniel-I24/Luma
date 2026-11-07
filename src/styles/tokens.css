@@ -1,8 +1,8 @@
 /* ─────────────────────────────────────────────
-   LUMA COLOR TOKENS — identity of round 2 (docs/brand/palette-options.md,
-   direction "Cielo andino y ají"). With scale.css, the single source of
-   truth for all visual values. Components use only these tokens (Tailwind
-   utilities or var()). Values below are the Sky theme (default).
+   LUMA COLOR TOKENS — the palette of the icon (docs/brand/palette-options.md).
+   With scale.css, the single source of truth for all visual values. Components
+   use only these tokens (Tailwind utilities or var()). The values below are the
+   main theme, Ciruela sobria (dark); themes/crema.css is the light one.
    Contrast: npm run check:contrast (scripts/brand-contrast.mjs).
 ───────────────────────────────────────────── */
 
@@ -10,96 +10,111 @@
   /* Only Luma's semantic colors exist: no default Tailwind palette. */
   --color-*: initial;
 
-  /* === Backgrounds and surfaces (paper and corn husk, never pure grey) === */
-  --color-canvas: #f7f2e7;
-  --color-canvas-subtle: #f0e9da;
-  --color-canvas-muted: #e7ddc9;
-  --color-surface: #ffffff;
-  --color-surface-elevated: #ffffff;
-  --color-surface-selected: #e3eefa;
-  --color-overlay: rgb(16 24 32 / 0.45);
+  /* === Backgrounds and surfaces (plum, never pure grey) === */
+  --color-canvas: #17121f;
+  --color-canvas-subtle: #1d1728;
+  --color-canvas-muted: #251e33;
+  --color-surface: #211a2d;
+  --color-surface-elevated: #2a2239;
+  --color-surface-selected: #352b48;
+  --color-overlay: rgb(8 4 14 / 0.62);
 
   /* Theme swatches for the theme picker (same in every theme) */
-  --color-swatch-sky: #0b4f9c;
-  --color-swatch-night: #101a22;
-  --color-swatch-lacquer: #7a3b16;
-  --color-swatch-maize: #8a5a00;
+  --color-swatch-ciruela: #17121f;
+  --color-swatch-crema: #fbf5ea;
 
   /* Food doodles (styles/doodles.css): decoration only, never text. */
-  --color-doodle-line: rgb(11 79 156 / 0.1);
-  --color-doodle-faint: rgb(11 79 156 / 0.05);
-  --color-doodle-on-brand: rgb(255 255 255 / 0.2);
+  --color-doodle-line: rgb(240 234 245 / 0.08);
+  --color-doodle-faint: rgb(240 234 245 / 0.04);
 
-  --color-map-canvas: #eee8da;
+  --color-map-canvas: #211a2d;
+  /* MapTheme paints the vector map with these (roads must read over the land). */
+  --color-map-land: #1e1829;
+  --color-map-area: #231c30;
+  --color-map-green: #22302c;
+  --color-map-water: #26395a;
+  --color-map-building: #2a2238;
+  --color-map-road: #584c6d;
+  --color-map-road-major: #8a7a9e;
+  --color-map-road-casing: #2d2540;
+  --color-map-label: #e6deef;
+  --color-map-label-halo: #17121f;
+  --color-map-label-faint: #6e6280;
 
   /* === Text === */
-  --color-fg: #15202b;
-  --color-fg-muted: #3e4c59;
-  --color-fg-subtle: #586572;
-  --color-fg-disabled: #b8bfc6;
-  --color-fg-brand: #0b4f9c;
-  --color-fg-accent: #b8340c;
-  --color-fg-inverse: #ffffff;
+  --color-fg: #f4eff7;
+  --color-fg-muted: #cdc4d8;
+  --color-fg-subtle: #a89db6;
+  --color-fg-disabled: #4b4259;
+  --color-fg-brand: #ffae5c;
+  --color-fg-accent: #f592b4;
+  --color-fg-inverse: #17121f;
 
   /* === Borders === */
-  --color-border: #ddd6c8;
-  --color-border-strong: #857a69;
-  --color-border-subtle: #ece6da;
-  --color-border-focus: #1565c0;
+  --color-border: #3a3049;
+  --color-border-strong: #8d8199;
+  --color-border-subtle: #2b2338;
+  --color-border-focus: #ffb52e;
 
-  /* === Actions: Andean sky (brand), ají (accent: AI and highlights) === */
-  --color-primary: #0b4f9c;
-  --color-primary-hover: #093f7e;
-  --color-primary-pressed: #072f5e;
-  --color-primary-fg: #ffffff;
-  --color-secondary: #e3eefa;
-  --color-secondary-fg: #0b4f9c;
-  --color-accent: #c93a0e;
-  --color-accent-fg: #ffffff;
-  --color-rating: #f5b700;
+  /* === Actions === */
+  --color-primary: #ff9440;
+  --color-primary-hover: #ffa45c;
+  --color-primary-pressed: #ee842f;
+  --color-primary-fg: #1c1426;
+  --color-secondary: #352b48;
+  --color-secondary-fg: #ffc38a;
+  --color-accent: #f07aa5;
+  --color-accent-fg: #1c1426;
+  --color-rating: #ffc21a;
   /* Confirm (accept, ready) and warning (pause, suspend) buttons. */
-  --color-confirm: #2e7d32;
-  --color-confirm-hover: #256b29;
-  --color-confirm-fg: #ffffff;
-  --color-warning-strong: #f5b700;
-  --color-warning-strong-hover: #e0a600;
+  --color-confirm: #3ddc84;
+  --color-confirm-hover: #2fc873;
+  --color-confirm-fg: #0b1a10;
+  --color-warning-strong: #ffc21a;
+  --color-warning-strong-hover: #f0b000;
   --color-warning-fg-on: #2b1d00;
 
+  /* The brand gradient: main actions, AI and promotions only (.brand-gradient). */
+  --color-gradient-from: #ffb52e;
+  --color-gradient-via: #ff9f36;
+  --color-gradient-to: #ff8a3d;
+  --color-gradient-fg: #1c1426;
+
   /* === Navigation === */
-  --color-nav: #ffffff;
-  --color-nav-active: #0b4f9c;
-  --color-nav-active-bg: #e3eefa;
-  --color-nav-inactive: #586572;
+  --color-nav: #1d1728;
+  --color-nav-active: #ffae5c;
+  --color-nav-active-bg: #352b48;
+  --color-nav-inactive: #a89db6;
 
-  /* === Feedback: cilantro, maize, crimson, Andean teal (never the brand blue) === */
-  --color-success: #2e7d32;
-  --color-success-bg: rgb(46 125 50 / 0.12);
-  --color-success-fg: #1d5c21;
-  --color-warning: #d99a0e;
-  --color-warning-bg: rgb(217 154 14 / 0.16);
-  --color-warning-fg: #6e4a00;
-  --color-danger: #c42839;
-  --color-danger-hover: #a21f2e;
-  --color-danger-bg: rgb(196 40 57 / 0.12);
-  --color-danger-fg: #a21f2e;
-  --color-danger-fg-on: #ffffff;
-  --color-info: #0e7c86;
-  --color-info-bg: rgb(14 124 134 / 0.12);
-  --color-info-fg: #095a61;
+  /* === Feedback === */
+  --color-success: #3ddc84;
+  --color-success-bg: rgb(61 220 132 / 0.14);
+  --color-success-fg: #8ef0b6;
+  --color-warning: #ffc21a;
+  --color-warning-bg: rgb(255 194 26 / 0.14);
+  --color-warning-fg: #ffd968;
+  --color-danger: #ff5c7a;
+  --color-danger-hover: #ff7a92;
+  --color-danger-bg: rgb(255 92 122 / 0.14);
+  --color-danger-fg: #ffa6b6;
+  --color-danger-fg-on: #2a0410;
+  --color-info: #5cd6e6;
+  --color-info-bg: rgb(92 214 230 / 0.14);
+  --color-info-fg: #9be8f2;
 
-  /* === Business status: open = cilantro, closing soon = maize, closed = crimson, opening soon = teal === */
-  --color-status-open: #2e7d32;
-  --color-status-open-bg: rgb(46 125 50 / 0.12);
-  --color-status-open-fg: #1d5c21;
-  --color-status-closing-soon: #d99a0e;
-  --color-status-closing-soon-bg: rgb(217 154 14 / 0.16);
-  --color-status-closing-soon-fg: #6e4a00;
-  --color-status-closed: #c42839;
-  --color-status-closed-bg: rgb(196 40 57 / 0.12);
-  --color-status-closed-fg: #a21f2e;
-  --color-status-opening-soon: #0e7c86;
-  --color-status-opening-soon-bg: rgb(14 124 134 / 0.12);
-  --color-status-opening-soon-fg: #095a61;
+  /* === Business status === */
+  --color-status-open: #3ddc84;
+  --color-status-open-bg: rgb(61 220 132 / 0.14);
+  --color-status-open-fg: #8ef0b6;
+  --color-status-closing-soon: #ffc21a;
+  --color-status-closing-soon-bg: rgb(255 194 26 / 0.14);
+  --color-status-closing-soon-fg: #ffd968;
+  --color-status-closed: #ff5c7a;
+  --color-status-closed-bg: rgb(255 92 122 / 0.14);
+  --color-status-closed-fg: #ffa6b6;
+  --color-status-opening-soon: #5cd6e6;
+  --color-status-opening-soon-bg: rgb(92 214 230 / 0.14);
+  --color-status-opening-soon-fg: #9be8f2;
 }
 
 /*
@@ -108,6 +123,7 @@
  * native splash to the web entry has no jump, whatever the theme.
  */
 :root {
+  color-scheme: dark;
   --color-entry-canvas: #120428;
   --color-entry-mark: #ff7a2f;
   --color-entry-accent: #ffc21a;

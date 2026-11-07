@@ -135,3 +135,13 @@
     animation: none;
   }
 }
+
+/* MapLibre paints its credit white: in the theme's colours, and still legible. */
+.maplibregl-ctrl.maplibregl-ctrl-attrib {
+  background-color: var(--color-surface);
+  color: var(--color-fg-muted);
+}
+
+.maplibregl-ctrl-attrib a {
+  color: var(--color-fg-muted);
+}
