@@ -96,7 +96,8 @@ jobs:
             test -f "dist/luma/browser/$file" || { echo "missing: $file"; exit 1; }
           done
           grep -rlq clean-build-check.supabase.co dist/luma/browser --include='*.js'
-          ! grep -rlq placeholder.supabase.co dist/luma/browser --include='*.js'
+          # The template URL must not be the configuration (EnvironmentCheck only holds its host).
+          ! grep -rlq https://placeholder.supabase.co dist/luma/browser --include='*.js'
 
   secrets:
     runs-on: ubuntu-24.04
