@@ -23,7 +23,7 @@ ${script}`);
 }
 
 test('Invoke-LumaNpm returns only the exit code as an integer (the output is shown, not returned)', { skip }, () => {
-  const out = run(`function npm { Write-Output 'compilando...'; $global:LASTEXITCODE = 3 }
+  const out = run(`function npm.cmd { Write-Output 'compilando...'; $global:LASTEXITCODE = 3 }
 $code = Invoke-LumaNpm 'apk:debug'
 Write-Output "$($code.GetType().Name)=$code"`);
   assert.equal(out, 'Int32=3');

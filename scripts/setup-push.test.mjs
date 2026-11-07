@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8');
 const script = read('./setup-push.ps1');
-const common = read('./luma/common.ps1');
+const common = read('./luma/remote.ps1');
 const push = read('./luma/push.ps1');
 
 test('setup-push.ps1 is option 2 of luma.ps1, with the secrets folder under USERPROFILE', () => {
@@ -17,14 +17,15 @@ test('setup-push.ps1 is option 2 of luma.ps1, with the secrets folder under USER
   assert.match(push, /push-settings\.sql/);
 });
 
-test('the Supabase CLI runs through npx and deploys with --use-api (no Docker needed)', () => {
-  assert.match(common, /& npx --yes supabase @args/);
-  assert.match(common, /functions deploy \$name --use-api --project-ref \$ProjectRef/);
+test('the Supabase CLI runs through npx.cmd, a fixed version, and deploys with --use-api (no Docker needed)', () => {
+  assert.match(common, /& npx\.cmd --yes \$script:SupabaseCli @args/);
+  assert.match(common, /\$script:SupabaseCli = 'supabase@\d+\.\d+\.\d+'/);
+  assert.match(common, /functions deploy \$Names\[\$i\] --use-api "--remote=\$ProjectRef" --yes/);
   assert.match(push, /Deploy-LumaFunctions \$ProjectRef @\('push-dispatch'\)/);
 });
 
 test('secrets go through a temporary file that is always removed, and are never printed', () => {
-  assert.match(common, /secrets set --env-file \$temp/);
+  assert.match(common, /secrets set --env-file \$temp "--remote=\$ProjectRef" --yes/);
   assert.match(common, /finally \{\s*if \(Test-Path \$temp\) \{ Remove-Item \$temp -Force \}/);
   const printing = [...push.split(/\r?\n/), ...script.split(/\r?\n/)].filter((line) => /Write-Host|Say /.test(line));
   assert.equal(printing.some((line) => /\$secret|\$oneLine|private_key\)/.test(line)), false);

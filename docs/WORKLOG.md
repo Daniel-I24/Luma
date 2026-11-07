@@ -171,6 +171,23 @@ SQL suites, Deno 2.5.6 in Docker for the functions.
   Deno tests, type check and lint of the functions, every check, secret
   scan, audit 0, knip (no unused files or dependencies).
 
+## Round 13 (2026-11-07)
+
+### Phase 0: scripts/luma.ps1 changed nothing in production
+
+Cause, proved: `npx.ps1` and `npm.ps1` (npm 11) re-read the text of the calling
+line, so `& npx --yes supabase @args` inside a function never passed the arguments.
+The CLI showed its help and exited 0, and the option said OK. Evidence: the same call
+with a nonexistent project ref returned 0 through the wrapper and 1 through `npx.cmd`.
+Last function deployed 2 Nov 16:02, last secret loaded 3 Nov 11:36; the first commit of
+the script is 3 Nov 12:13, so it never changed the project. Options 6 and 7 had the same
+fault: `npm run` listed the scripts and said the APK was built.
+
+Fix: `npx.cmd` and `npm.cmd`; `--remote=<ref> --yes`; a fixed CLI version; a failed
+command stops the option; OK only after `secrets list` and `functions list` confirm it,
+dated by this run. New option 8. Option 3 reads `functions.env` too and never loads a
+`*_prod_` key. The secret scan knows the Wompi private key and secrets.
+
 ## Round 12 (2026-11-06)
 
 Prompt: notifications, a full review of the files, the new icon, three palettes,

@@ -15,9 +15,16 @@ $script:BuildNames = 'SUPABASE_URL', 'SUPABASE_ANON_KEY', 'AI_MODE', 'PUSH_ENABL
 $script:SigningNames = 'LUMA_KEYSTORE_PATH', 'LUMA_KEYSTORE_PASSWORD', 'LUMA_KEY_ALIAS', 'LUMA_KEY_PASSWORD'
 
 # La salida de npm va a la pantalla; devuelve solo el codigo (un entero).
+# npm.cmd, nunca npm: npm.ps1 relee el texto de esta linea y "@args" no llega
+# (mostraba la lista de scripts y salia con 0, sin compilar).
 function Invoke-LumaNpm {
-  & npm run @args | Out-Host
+  & npm.cmd run @args | Out-Host
   return [int]$LASTEXITCODE
+}
+
+# El APK de esta compilacion, no uno que ya estuviera ahi.
+function Test-LumaApkFresh([string]$Path, [DateTime]$Since) {
+  return (Test-Path $Path) -and ((Get-Item $Path).LastWriteTime -ge $Since.AddMinutes(-1))
 }
 
 # adb: en el PATH, en ANDROID_HOME o en el SDK de Android Studio.
@@ -89,11 +96,15 @@ function Invoke-LumaApk {
     $previous[$name] = [Environment]::GetEnvironmentVariable($name)
     [Environment]::SetEnvironmentVariable($name, $app[$name])
   }
+  $started = Get-Date
   try { $code = Invoke-LumaNpm "apk:$mode" }
   finally { foreach ($name in $previous.Keys) { [Environment]::SetEnvironmentVariable($name, $previous[$name]) } }
   if ($code -ne 0) { return $lines + (New-LumaLine 'FALTA' 'APK: la compilacion fallo' 'Lee el mensaje de arriba; docs/android.md explica cada caso.') }
   $apk = "android\app\build\outputs\apk\$mode\app-$mode.apk"
-  $lines += New-LumaLine 'OK' "APK: compilado ($apk)"
+  if (-not (Test-LumaApkFresh $apk $started)) {
+    return $lines + (New-LumaLine 'FALTA' "APK: la compilacion no dejo un archivo nuevo en $apk" 'Lee el mensaje de arriba y repite la opcion 6.')
+  }
+  $lines += New-LumaLine 'OK' "APK: compilado $(Get-Date -Format 'yyyy-MM-dd HH:mm') ($apk)"
 
   $found = Get-LumaPhones
   $phones = @($found.Ready)

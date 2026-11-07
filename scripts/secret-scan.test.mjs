@@ -39,3 +39,14 @@ test('scan reports file and line only', () => {
   const problems = scan(['a.ts', 'b.jks'], () => `ok\nsb_secret_${'z'.repeat(20)}`);
   assert.deepEqual(problems, ['a.ts:2: Supabase secret key', 'b.jks: keystore must not be committed']);
 });
+
+test('finds Wompi private keys and secrets, not the public key or a bare prefix', () => {
+  const kinds = (text) => scanText(text).map((f) => f.kind);
+  // Assembled at run time so this file passes its own scan.
+  assert.deepEqual(kinds(`${'prv_'}prod_${'a'.repeat(32)}`), ['Wompi private key']);
+  assert.deepEqual(kinds(`${'prv_'}test_${'a'.repeat(32)}`), ['Wompi private key']);
+  assert.deepEqual(kinds(`${'prod_'}events_${'a'.repeat(32)}`), ['Wompi secret']);
+  assert.deepEqual(kinds(`${'test_'}integrity_${'a'.repeat(32)}`), ['Wompi secret']);
+  assert.deepEqual(kinds(`${'pub_'}test_${'a'.repeat(32)}`), []);
+  assert.deepEqual(kinds('prv_test_ test_events_ prv_test_BBB'), []);
+});

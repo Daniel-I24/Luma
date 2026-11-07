@@ -15,6 +15,7 @@ function Get-LumaPushSecret {
 }
 
 function Invoke-LumaPush([string]$ProjectRef) {
+  $since = Get-LumaNow
   $account = Join-Path (Get-LumaSecretsDir) 'firebase-service-account.json'
   if (-not (Test-Path $account)) {
     return @(New-LumaLine 'FALTA' 'Push: no esta firebase-service-account.json' `
@@ -35,11 +36,9 @@ function Invoke-LumaPush([string]$ProjectRef) {
   if (-not (Set-LumaSecrets $ProjectRef @{ FCM_SERVICE_ACCOUNT = $oneLine; PUSH_DISPATCH_SECRET = $secret })) {
     return $lines + (New-LumaLine 'FALTA' 'Push: no se pudieron cargar los secretos' 'Revisa "npx supabase login" y "npx supabase link".')
   }
-  $lines += New-LumaLine 'OK' 'Push: secretos cargados (el archivo temporal ya se borro)'
-
-  $failed = Deploy-LumaFunctions $ProjectRef @('push-dispatch')
+  $failed = @(Deploy-LumaFunctions $ProjectRef @('push-dispatch'))
   if ($failed.Count) { return $lines + (New-LumaLine 'FALTA' 'Push: no se desplego push-dispatch' 'Repite la opcion 2.') }
-  $lines += New-LumaLine 'OK' 'Push: push-dispatch desplegada'
+  $lines += Test-LumaRemote $ProjectRef @('FCM_SERVICE_ACCOUNT', 'PUSH_DISPATCH_SECRET') @('push-dispatch') $since
 
   $url = "https://$ProjectRef.supabase.co/functions/v1/push-dispatch"
   $sql = @"

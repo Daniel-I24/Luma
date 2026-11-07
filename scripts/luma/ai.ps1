@@ -19,6 +19,7 @@ function Test-LumaGeminiModel([string]$Key, [string]$Model) {
 function Test-LumaBusy([int]$Status) { return $Status -eq 503 -or $Status -eq 429 }
 
 function Invoke-LumaAi([string]$ProjectRef) {
+  $since = Get-LumaNow
   $saved = Read-LumaEnvFile 'ai.env'
   $key = Read-LumaValue 'Clave de Gemini (AI Studio)' $saved['LLM_API_KEY'] -Secret
   $model = Read-LumaValue 'Modelo' ($(if ($saved['LLM_MODEL']) { $saved['LLM_MODEL'] } else { 'gemini-3.6-flash' }))
@@ -52,10 +53,9 @@ function Invoke-LumaAi([string]$ProjectRef) {
   if (-not (Set-LumaSecrets $ProjectRef $values)) {
     return $lines + (New-LumaLine 'FALTA' 'Luma IA: no se pudieron cargar los secretos' 'Revisa "npx supabase login" y "npx supabase link".')
   }
-  $lines += New-LumaLine 'OK' 'Luma IA: secretos cargados en Supabase'
-  $failed = Deploy-LumaFunctions $ProjectRef @('recommend', 'suggest-promotions', 'extract-menu')
-  if ($failed.Count) { $lines += New-LumaLine 'FALTA' "No se desplego: $($failed -join ', ')" 'Repite la opcion 1; si sigue, mira el mensaje de arriba.' }
-  else { $lines += New-LumaLine 'OK' 'Luma IA: recommend, suggest-promotions y extract-menu desplegadas' }
-  $lines += New-LumaLine 'OK' 'Siguiente paso' 'Compila la app con AI_MODE=remote (opcion 6).'
+  $functions = @('recommend', 'suggest-promotions', 'extract-menu')
+  $failed = @(Deploy-LumaFunctions $ProjectRef $functions)
+  if ($failed.Count) { return $lines + (New-LumaLine 'FALTA' "No se desplego: $($failed -join ', ')" 'Repite la opcion 1; si sigue, mira el mensaje de arriba.') }
+  $lines += Test-LumaRemote $ProjectRef @($values.Keys | Sort-Object) $functions $since
   return $lines
 }

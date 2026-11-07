@@ -25,6 +25,8 @@ import { CHECKS } from './doctor/checks.mjs';
 
 export const API_URL = 'https://api.supabase.com/v1';
 export const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta';
+/** The same fixed version as scripts/luma/remote.ps1. */
+export const SUPABASE_CLI = 'supabase@3.0.0';
 
 /** KEY=VALUE lines (quotes and comments allowed); an absent file is empty. */
 export function parseEnvFile(text) {
@@ -38,11 +40,12 @@ export function parseEnvFile(text) {
 
 /** The Supabase CLI with the user's own session ("npx supabase login"); JSON output. */
 export function supabaseCli(args) {
-  const run = spawnSync('npx', ['--yes', 'supabase', ...args, '--output', 'json'], {
+  const run = spawnSync('npx', ['--yes', SUPABASE_CLI, ...args, '--output', 'json'], {
     encoding: 'utf8', shell: process.platform === 'win32',
   });
   if (run.status !== 0) throw new Error(`"npx supabase ${args.slice(0, 2).join(' ')}" falló: ¿hiciste "npx supabase login"?`);
-  return JSON.parse(run.stdout);
+  const answer = JSON.parse(run.stdout);
+  return Array.isArray(answer.functions) ? answer.functions : answer;
 }
 
 /** The context the checks use; every outside service comes through `fetchFn` and `cli`. */
@@ -65,7 +68,7 @@ export function createContext({ env = process.env, root = process.cwd(), fetchFn
   const migrationsDir = join(root, 'supabase', 'migrations');
   return {
     api,
-    cli: (args) => cli([...args, '--project-ref', ref]),
+    cli: (args) => cli([...args, `--remote=${ref}`]),
     fetch: fetchFn,
     random: () => Math.floor(random() * 1e9),
     functionsUrl: `https://${ref}.supabase.co/functions/v1`,

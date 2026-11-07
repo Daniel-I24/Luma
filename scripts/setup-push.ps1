@@ -16,6 +16,7 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'luma\common.ps1')
+. (Join-Path $PSScriptRoot 'luma\remote.ps1')
 . (Join-Path $PSScriptRoot 'luma\push.ps1')
 
 $env:LUMA_SECRETS_DIR = $SecretsDir

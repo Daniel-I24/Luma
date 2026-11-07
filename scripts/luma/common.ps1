@@ -15,6 +15,7 @@ function Say([string]$Text) { Write-Host "  $Text" }
 # Una pregunta; con -Secret no se ve lo que se escribe. Enter deja
 # el valor actual (que nunca se muestra si es secreto).
 function Read-LumaValue([string]$Prompt, [string]$Current = '', [switch]$Secret) {
+  if ($script:LumaUnattended) { return $Current }
   $hint = ''
   if ($Current) { $hint = if ($Secret) { ' (Enter = la guardada)' } else { " (Enter = $Current)" } }
   if ($Secret) {
@@ -27,16 +28,6 @@ function Read-LumaValue([string]$Prompt, [string]$Current = '', [switch]$Secret)
   }
   if ([string]::IsNullOrWhiteSpace($value)) { return $Current }
   return $value.Trim()
-}
-
-# La CLI de Supabase del proyecto (npx: no hace falta instalarla).
-function Invoke-Supabase {
-  # Continue: en PowerShell 5.1, 2>&1 de un programa con Stop corta el script.
-  $ErrorActionPreference = 'Continue'
-  $out = & npx --yes supabase @args 2>&1
-  $code = $LASTEXITCODE
-  if ($code -ne 0) { $out | Select-Object -Last 5 | ForEach-Object { Say "  $_" } }
-  return $code
 }
 
 # Una peticion web: @{ Status; Body }. Nunca lanza.
@@ -59,6 +50,14 @@ function Get-LumaProjectRef {
   $file = Join-Path (Get-Location) 'supabase\.temp\project-ref'
   if (Test-Path $file) { return (Get-Content $file -Raw).Trim() }
   return (Read-LumaValue 'Referencia del proyecto de Supabase (20 letras)')
+}
+
+# El proyecto que se va a cambiar, siempre a la vista antes de hacerlo.
+function Get-LumaTarget {
+  $ref = Get-LumaProjectRef
+  if ($ref -notmatch '^[a-z0-9]{20}$') { throw 'Falta el proyecto: ejecuta "npx supabase link" en la carpeta del repo.' }
+  Say "Proyecto destino: $ref"
+  return $ref
 }
 
 # 32 bytes al azar en hexadecimal.
@@ -93,33 +92,6 @@ function Write-LumaEnvFile([string]$Name, [hashtable]$Values) {
   Write-LumaFile $Name (($lines -join "`n") + "`n")
 }
 
-# Carga secretos desde un archivo temporal que siempre se borra.
-function Set-LumaSecrets([string]$ProjectRef, [hashtable]$Values) {
-  $utf8 = New-Object Text.UTF8Encoding $false
-  $temp = Join-Path $env:TEMP ('luma-' + [guid]::NewGuid() + '.env')
-  try {
-    $lines = foreach ($name in ($Values.Keys | Sort-Object)) {
-      $value = [string]$Values[$name]
-      if ($value.Contains("'")) { throw "El valor de $name tiene comillas simples." }
-      "$name='$value'"
-    }
-    [IO.File]::WriteAllText($temp, ($lines -join "`n"), $utf8)
-    return ((Invoke-Supabase secrets set --env-file $temp --project-ref $ProjectRef) -eq 0)
-  } finally {
-    if (Test-Path $temp) { Remove-Item $temp -Force }
-  }
-}
-
-function Deploy-LumaFunctions([string]$ProjectRef, [string[]]$Names) {
-  $failed = @()
-  foreach ($name in $Names) {
-    Say "Desplegando $name..."
-    $code = Invoke-Supabase functions deploy $name --use-api --project-ref $ProjectRef
-    if ($code -ne 0) { $failed += $name }
-  }
-  return $failed
-}
-
 # Una linea del resumen: OK, FALTA o APAGADO, con el siguiente paso.
 function New-LumaLine([string]$State, [string]$Item, [string]$Next = '') {
   return [pscustomobject]@{ State = $State; Item = $Item; Next = $Next }
@@ -129,7 +101,7 @@ function Write-LumaSummary([object[]]$Lines) {
   Write-Host ''
   Write-Host '  Resumen'
   foreach ($line in $Lines) {
-    $color = switch ($line.State) { 'OK' { 'Green' } 'FALTA' { 'Red' } default { 'Yellow' } }
+    $color = switch ($line.State) { 'OK' { 'Green' } 'FALTA' { 'Red' } 'TABLA' { 'White' } default { 'Yellow' } }
     Write-Host ('  {0,-8}{1}' -f $line.State, $line.Item) -ForegroundColor $color
     if ($line.Next) { Write-Host "          -> $($line.Next)" }
   }

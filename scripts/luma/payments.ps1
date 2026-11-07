@@ -1,8 +1,9 @@
 # -----------------------------------------------------------------
 # Opcion 3 - pagos de Wompi en sandbox (docs/payments-setup.md):
-#   1. lee wompi-sandbox.txt y reconoce cada llave por su prefijo
-#      (pub_test_, prv_test_, test_events_, test_integrity_), sin
-#      importar el orden ni el texto que las rodee,
+#   1. lee wompi-sandbox.txt (y functions.env para lo que falte) y
+#      reconoce cada llave por su prefijo (pub_test_, prv_test_,
+#      test_events_, test_integrity_), sin importar el orden ni el
+#      texto que las rodee. Una llave de produccion nunca se carga,
 #   2. reutiliza o genera PAYMENTS_CRON_SECRET,
 #   3. carga los secretos WOMPI_* y despliega las 4 funciones,
 #   4. escribe payments-settings.sql para pegar en el SQL Editor.
@@ -26,6 +27,21 @@ function Read-LumaWompiKeys([string]$Text) {
   return $keys
 }
 
+# Las llaves de prueba de los archivos; Production dice si habia de produccion.
+function Find-LumaWompiKeys {
+  $found = @{ Keys = @{}; Production = $false; Files = 0 }
+  foreach ($name in 'wompi-sandbox.txt', 'functions.env') {
+    $path = Join-Path (Get-LumaSecretsDir) $name
+    if (-not (Test-Path $path)) { continue }
+    $found.Files++
+    $text = Get-Content $path -Raw
+    if ($text -match '(pub_prod_|prv_prod_|prod_events_|prod_integrity_)') { $found.Production = $true }
+    $keys = Read-LumaWompiKeys $text
+    foreach ($key in $keys.Keys) { if (-not $found.Keys.ContainsKey($key)) { $found.Keys[$key] = $keys[$key] } }
+  }
+  return $found
+}
+
 function Get-LumaCronSecret {
   $path = Join-Path (Get-LumaSecretsDir) 'payments-settings.sql'
   if ((Test-Path $path) -and ((Get-Content $path -Raw) -match "'([0-9a-f]{64})'")) { return $Matches[1] }
@@ -33,18 +49,22 @@ function Get-LumaCronSecret {
 }
 
 function Invoke-LumaPayments([string]$ProjectRef) {
+  $since = Get-LumaNow
   $file = Join-Path (Get-LumaSecretsDir) 'wompi-sandbox.txt'
-  if (-not (Test-Path $file)) {
+  $found = Find-LumaWompiKeys
+  if (-not $found.Files) {
     return @(New-LumaLine 'FALTA' 'Pagos: no esta wompi-sandbox.txt' `
       "Copia las 4 llaves de sandbox del panel de Wompi en $file (en cualquier orden).")
   }
-  $keys = Read-LumaWompiKeys (Get-Content $file -Raw)
+  $keys = $found.Keys
   $absent = @($script:WompiPrefixes.Keys | Where-Object { -not $keys.ContainsKey($_) })
   if ($absent.Count) {
     $names = ($absent | ForEach-Object { $script:WompiPrefixes[$_] + '...' }) -join ', '
-    return @(New-LumaLine 'FALTA' "Pagos: en wompi-sandbox.txt falta $names" 'Copialas del panel de Wompi (Desarrolladores -> Llaves).')
+    $why = if ($found.Production) { ' (hay llaves de PRODUCCION: no se cargan)' } else { '' }
+    return @(New-LumaLine 'FALTA' "Pagos: faltan llaves de sandbox: $names$why" `
+      "Wompi -> modo Sandbox -> Desarrolladores -> Llaves. Pegalas en $file; no cargues llaves *_prod_ aqui.")
   }
-  $lines = @(New-LumaLine 'OK' 'Pagos: las 4 llaves de sandbox estan en wompi-sandbox.txt')
+  $lines = @(New-LumaLine 'OK' 'Pagos: las 4 llaves de sandbox encontradas')
 
   $cron = Get-LumaCronSecret
   $values = @{ WOMPI_ENV = 'test'; PAYMENTS_CRON_SECRET = $cron }
@@ -52,11 +72,10 @@ function Invoke-LumaPayments([string]$ProjectRef) {
   if (-not (Set-LumaSecrets $ProjectRef $values)) {
     return $lines + (New-LumaLine 'FALTA' 'Pagos: no se pudieron cargar los secretos' 'Revisa "npx supabase login" y "npx supabase link".')
   }
-  $lines += New-LumaLine 'OK' 'Pagos: secretos WOMPI_* y PAYMENTS_CRON_SECRET cargados'
-
-  $failed = Deploy-LumaFunctions $ProjectRef @('create-payment', 'wompi-webhook', 'reconcile-payments', 'void-payment')
-  if ($failed.Count) { $lines += New-LumaLine 'FALTA' "Pagos: no se desplego $($failed -join ', ')" 'Repite la opcion 3.' }
-  else { $lines += New-LumaLine 'OK' 'Pagos: las 4 funciones de pago desplegadas' }
+  $functions = @('create-payment', 'wompi-webhook', 'reconcile-payments', 'void-payment')
+  $failed = @(Deploy-LumaFunctions $ProjectRef $functions)
+  if ($failed.Count) { return $lines + (New-LumaLine 'FALTA' "Pagos: no se desplego $($failed -join ', ')" 'Repite la opcion 3.') }
+  $lines += Test-LumaRemote $ProjectRef @($values.Keys | Sort-Object) $functions $since
 
   $base = "https://$ProjectRef.supabase.co/functions/v1"
   $sql = @"

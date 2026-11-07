@@ -106,7 +106,7 @@ test('without a token: secrets and functions from the CLI session; migrations an
   assert.match(find(lines, 'Migraciones').next, /solo en memoria, no se guarda/);
   assert.equal(find(lines, 'Luma IA').state, 'OK');
   assert.equal(calls.some((c) => c.url.startsWith('https://api.supabase.com')), false, 'no Management API call without a token');
-  assert.ok(calls.some((c) => c.url === `cli secrets list --project-ref ${REF}`));
+  assert.ok(calls.some((c) => c.url === `cli secrets list --remote=${REF}`));
 });
 
 test('the doctor never reads a token from a file, and without a project says how to link it', () => {

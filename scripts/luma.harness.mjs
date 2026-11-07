@@ -17,8 +17,10 @@ export const REF = 'abcdefghijklmnopqrst';
 /**
  * Runs one option of scripts/luma.ps1 with simulated services: the Supabase
  * CLI, the web, the questions, npm and adb are replaced; nothing leaves the machine.
+ * The simulated project keeps what the CLI loaded: `applies: false` is a CLI that
+ * answers 0 and changes nothing, `oldSecrets` and `oldFunctions` were already there.
  */
-export function runOption(call, { files = {}, answers = [], http = {}, cli = 0, npm = 0, phones = [] } = {}) {
+export function runOption(call, { files = {}, answers = [], http = {}, cli = 0, npm = 0, phones = [], applies = true, oldSecrets = [], oldFunctions = [], unchanged = [], failDeploy = '', unreadable = false, apkFresh = true } = {}) {
   const dir = mkdtempSync(join(tmpdir(), 'luma-secrets-'));
   for (const [name, text] of Object.entries(files)) writeFileSync(join(dir, name), text);
   const harness = join(mkdtempSync(join(tmpdir(), 'luma-harness-')), 'harness.ps1');
@@ -26,13 +28,35 @@ export function runOption(call, { files = {}, answers = [], http = {}, cli = 0, 
   writeFileSync(harness, `
 $ErrorActionPreference = 'Stop'
 $env:LUMA_SECRETS_DIR = '${dir}'
-foreach ($part in 'common', 'ai', 'push', 'payments', 'routes', 'whatsapp', 'apk', 'doctor') { . (Join-Path '${join(here, 'luma')}' "$part.ps1") }
+foreach ($part in 'common', 'remote', 'ai', 'push', 'payments', 'routes', 'whatsapp', 'apk', 'doctor', 'all') { . (Join-Path '${join(here, 'luma')}' "$part.ps1") }
 $global:calls = @(); $global:answers = [Collections.ArrayList]@(${list(answers)}); $global:envFiles = @()
+$old = [DateTimeOffset]::UtcNow.AddDays(-30)
+$global:remoteSecrets = @{ SUPABASE_URL = $old }; $global:remoteFunctions = @{ other = $old }
+foreach ($n in @(${list(oldSecrets) || "''"})) { if ($n) { $global:remoteSecrets[$n] = $old } }
+foreach ($n in @(${list(oldFunctions) || "''"})) { if ($n) { $global:remoteFunctions[$n] = $old } }
+$global:skip = @(${list(unchanged) || "''"})
 function Invoke-Supabase {
   $i = [array]::IndexOf($args, '--env-file')
-  if ($i -ge 0) { $global:envFiles += [IO.File]::ReadAllText($args[$i + 1]); $global:tempFile = $args[$i + 1] }
-  $global:calls += ($args -join ' '); return ${cli}
+  $code = ${cli}
+  if ($i -ge 0) {
+    $text = [IO.File]::ReadAllText($args[$i + 1]); $global:envFiles += $text; $global:tempFile = $args[$i + 1]
+    if ($${applies} -and $code -eq 0) { foreach ($m in [regex]::Matches($text, '(?m)^([A-Z0-9_]+)=')) { $global:remoteSecrets[$m.Groups[1].Value] = [DateTimeOffset]::UtcNow } }
+  }
+  $global:calls += ($args -join ' ')
+  $script:LumaCliOutput = ''
+  if ($args[0] -eq 'functions' -and $args[1] -eq 'deploy') {
+    if ($args[2] -eq '${failDeploy}') { return 1 }
+    if ($global:skip -contains $args[2]) { $script:LumaCliOutput = 'No change found in Function' }
+    elseif ($${applies} -and $code -eq 0) { $global:remoteFunctions[$args[2]] = [DateTimeOffset]::UtcNow }
+  }
+  return $code
 }
+function Invoke-SupabaseJson {
+  if ($${unreadable}) { return $null }
+  if ($args[0] -eq 'secrets') { return @($global:remoteSecrets.Keys | ForEach-Object { [pscustomobject]@{ name = $_; value = 'digest'; updated_at = $global:remoteSecrets[$_].ToString('o') } }) }
+  return @($global:remoteFunctions.Keys | ForEach-Object { [pscustomobject]@{ slug = $_; status = 'ACTIVE'; updated_at = $global:remoteFunctions[$_].ToUnixTimeMilliseconds() } })
+}
+function Test-LumaApkFresh { return $${apkFresh} }
 function Read-LumaValue([string]$Prompt, [string]$Current = '', [switch]$Secret) {
   if ($global:answers.Count -eq 0) { return $Current }
   $a = $global:answers[0]; $global:answers.RemoveAt(0); if ($a -eq '') { return $Current }; return $a

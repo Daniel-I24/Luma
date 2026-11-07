@@ -8,6 +8,7 @@
 $script:WhatsappNames = 'WHATSAPP_VERIFY_TOKEN', 'WHATSAPP_APP_SECRET', 'WHATSAPP_PHONE_NUMBER_ID'
 
 function Invoke-LumaWhatsapp([string]$ProjectRef) {
+  $since = Get-LumaNow
   $values = Read-LumaEnvFile 'whatsapp.env'
   if (-not $values['WHATSAPP_VERIFY_TOKEN']) { $values['WHATSAPP_VERIFY_TOKEN'] = New-LumaSecret }
   if (-not $values['WHATSAPP_APP_SECRET']) {
@@ -27,9 +28,9 @@ function Invoke-LumaWhatsapp([string]$ProjectRef) {
   if (-not (Set-LumaSecrets $ProjectRef $saved)) {
     return @(New-LumaLine 'FALTA' 'WhatsApp: no se pudieron cargar los secretos' 'Revisa "npx supabase login" y "npx supabase link".')
   }
-  $lines = @(New-LumaLine 'OK' 'WhatsApp: secretos cargados')
-  $failed = Deploy-LumaFunctions $ProjectRef @('whatsapp-webhook')
-  if ($failed.Count) { return $lines + (New-LumaLine 'FALTA' 'WhatsApp: no se desplego whatsapp-webhook' 'Repite la opcion 5.') }
+  $failed = @(Deploy-LumaFunctions $ProjectRef @('whatsapp-webhook'))
+  if ($failed.Count) { return @(New-LumaLine 'FALTA' 'WhatsApp: no se desplego whatsapp-webhook' 'Repite la opcion 5.') }
+  $lines = @(Test-LumaRemote $ProjectRef $script:WhatsappNames @('whatsapp-webhook') $since)
 
   $url = "https://$ProjectRef.supabase.co/functions/v1/whatsapp-webhook"
   $challenge = [string](Get-Random -Minimum 100000 -Maximum 999999)

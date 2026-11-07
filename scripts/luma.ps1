@@ -3,23 +3,25 @@
 # Uso (PowerShell, en la carpeta del repo):
 #   powershell -ExecutionPolicy Bypass -File scripts\luma.ps1
 # Antes, una vez: "npx supabase login" y "npx supabase link".
+# Una opcion solo dice OK si el proyecto lo confirma (luma\remote.ps1).
 # Los secretos viven en %USERPROFILE%\luma-secrets (fuera del repo);
 # ninguno se muestra. Cada opcion se puede repetir.
 # -----------------------------------------------------------------
 param([string]$Option = '')
 $ErrorActionPreference = 'Stop'
-foreach ($part in 'common', 'ai', 'push', 'payments', 'routes', 'whatsapp', 'apk', 'doctor') {
+foreach ($part in 'common', 'remote', 'ai', 'push', 'payments', 'routes', 'whatsapp', 'apk', 'doctor', 'all') {
   . (Join-Path $PSScriptRoot "luma\$part.ps1")
 }
 
 $menu = [ordered]@{
-  '1' = @('Luma IA (clave, modelo y respaldo de Gemini)', { Invoke-LumaAi (Get-LumaProjectRef) })
-  '2' = @('Notificaciones push', { Invoke-LumaPush (Get-LumaProjectRef) })
-  '3' = @('Pagos de Wompi en sandbox', { Invoke-LumaPayments (Get-LumaProjectRef) })
-  '4' = @('Rutas (OpenRouteService)', { Invoke-LumaRoutes (Get-LumaProjectRef) })
-  '5' = @('WhatsApp (verificacion de contactos)', { Invoke-LumaWhatsapp (Get-LumaProjectRef) })
+  '1' = @('Luma IA (clave, modelo y respaldo de Gemini)', { Invoke-LumaAi (Get-LumaTarget) })
+  '2' = @('Notificaciones push', { Invoke-LumaPush (Get-LumaTarget) })
+  '3' = @('Pagos de Wompi en sandbox', { Invoke-LumaPayments (Get-LumaTarget) })
+  '4' = @('Rutas (OpenRouteService)', { Invoke-LumaRoutes (Get-LumaTarget) })
+  '5' = @('WhatsApp (verificacion de contactos)', { Invoke-LumaWhatsapp (Get-LumaTarget) })
   '6' = @('Compilar e instalar el APK', { Invoke-LumaApk })
   '7' = @('Diagnostico (npm run doctor)', { Invoke-LumaDoctor })
+  '8' = @('Desplegar y verificar todo', { Invoke-LumaAll (Get-LumaTarget) })
 }
 
 while ($true) {

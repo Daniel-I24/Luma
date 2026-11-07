@@ -7,6 +7,7 @@
 $script:OrsTestUrl = 'https://api.openrouteservice.org/v2/directions/foot-walking?start=-77.2811,1.2136&end=-77.2790,1.2150'
 
 function Invoke-LumaRoutes([string]$ProjectRef) {
+  $since = Get-LumaNow
   $saved = Read-LumaEnvFile 'routes.env'
   $key = Read-LumaValue 'Clave de OpenRouteService' $saved['ROUTE_API_KEY'] -Secret
   if (-not $key) {
@@ -22,8 +23,7 @@ function Invoke-LumaRoutes([string]$ProjectRef) {
   if (-not (Set-LumaSecrets $ProjectRef @{ ROUTE_PROVIDER = 'openrouteservice'; ROUTE_API_KEY = $key })) {
     return $lines + (New-LumaLine 'FALTA' 'Rutas: no se pudieron cargar los secretos' 'Revisa "npx supabase login" y "npx supabase link".')
   }
-  $failed = Deploy-LumaFunctions $ProjectRef @('route')
-  if ($failed.Count) { $lines += New-LumaLine 'FALTA' 'Rutas: no se desplego route' 'Repite la opcion 4.' }
-  else { $lines += New-LumaLine 'OK' 'Rutas: secretos cargados y route desplegada' }
-  return $lines
+  $failed = @(Deploy-LumaFunctions $ProjectRef @('route'))
+  if ($failed.Count) { return $lines + (New-LumaLine 'FALTA' 'Rutas: no se desplego route' 'Repite la opcion 4.') }
+  return $lines + (Test-LumaRemote $ProjectRef @('ROUTE_PROVIDER', 'ROUTE_API_KEY') @('route') $since)
 }

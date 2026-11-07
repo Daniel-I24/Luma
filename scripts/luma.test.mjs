@@ -24,7 +24,7 @@ test('option 3: Wompi keys found by their prefix in any order, secrets loaded, 4
   const cron = /PAYMENTS_CRON_SECRET='([0-9a-f]{64})'/.exec(r.envFiles[0])[1];
   assert.equal(r.tempLeft, false, 'the temporary secrets file is removed');
   for (const name of ['create-payment', 'wompi-webhook', 'reconcile-payments', 'void-payment']) {
-    assert.ok(r.calls.includes(`functions deploy ${name} --use-api --project-ref ${REF}`), name);
+    assert.ok(r.calls.includes(`functions deploy ${name} --use-api --remote=${REF} --yes`), name);
   }
   assert.match(r.file('payments-settings.sql'), new RegExp(`'${cron}'`));
   assert.ok(r.lines.some((l) => l.state === 'APAGADO' && /wompi-webhook/.test(l.next)), 'reminds the events URL');
@@ -49,7 +49,7 @@ test('option 1: Gemini key and models tested, LLM_* loaded, the three AI functio
   assert.match(r.envFiles[0], /LLM_PROVIDER='gemini'/);
   assert.match(r.envFiles[0], /LLM_FALLBACK_MODEL='gemini-3.5-flash-lite'/);
   assert.ok(r.calls.includes('HTTP https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent'), 'a real generateContent call');
-  for (const name of ['recommend', 'suggest-promotions', 'extract-menu']) assert.ok(r.calls.includes(`functions deploy ${name} --use-api --project-ref ${REF}`));
+  for (const name of ['recommend', 'suggest-promotions', 'extract-menu']) assert.ok(r.calls.includes(`functions deploy ${name} --use-api --remote=${REF} --yes`));
   assert.equal(r.calls.some((c) => c.startsWith('HTTP') && c.includes('AIza-clave')), false, 'the key goes in a header');
   assert.match(r.file('ai.env'), /LLM_API_KEY=AIza-clave/);
   assert.equal(r.stdout.includes('AIza-clave'), false);
@@ -76,7 +76,7 @@ test('option 2: push secrets, push-dispatch with --use-api and the SQL, keeping 
   const account = JSON.stringify({ type: 'service_account', project_id: 'luma-app', client_email: 'a@b.c', private_key: 'KEY' });
   const r = runOption(`Invoke-LumaPush '${REF}'`, { files: { 'firebase-service-account.json': account } });
   assert.match(r.envFiles[0], /FCM_SERVICE_ACCOUNT='\{.*"project_id":"luma-app".*\}'/);
-  assert.ok(r.calls.includes(`functions deploy push-dispatch --use-api --project-ref ${REF}`));
+  assert.ok(r.calls.includes(`functions deploy push-dispatch --use-api --remote=${REF} --yes`));
   const secret = /PUSH_DISPATCH_SECRET='([0-9a-f]{64})'/.exec(r.envFiles[0])[1];
   assert.match(r.file('push-settings.sql'), new RegExp(secret));
   const again = runOption(`Invoke-LumaPush '${REF}'`, { files: { 'firebase-service-account.json': account, 'push-settings.sql': r.file('push-settings.sql') } });
@@ -92,7 +92,7 @@ test('option 2 without the Firebase file says where to put it', { skip }, () => 
 
 test('options 4 and 5: the route key and the WhatsApp challenge are tested', { skip }, () => {
   const routes = runOption(`Invoke-LumaRoutes '${REF}'`, { answers: ['ors-key'], http: { openrouteservice: { status: 200 } } });
-  assert.ok(routes.calls.includes(`functions deploy route --use-api --project-ref ${REF}`));
+  assert.ok(routes.calls.includes(`functions deploy route --use-api --remote=${REF} --yes`));
   assert.equal(states(routes).includes('FALTA'), false);
   const env = 'WHATSAPP_APP_SECRET=s\nWHATSAPP_PHONE_NUMBER_ID=123\n';
   const wa = runOption(`Invoke-LumaWhatsapp '${REF}'`, { files: { 'whatsapp.env': env }, http: { 'whatsapp-webhook': { status: 200, body: 'ECHO' } } });

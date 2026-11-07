@@ -33,6 +33,8 @@ const PATTERNS = [
   [/\bsk-(proj-)?[A-Za-z0-9]{32,}/, 'OpenAI-style API key'],
   [/\bgh[pousr]_[A-Za-z0-9]{36,}\b/, 'GitHub token'],
   [/\bgsk_[A-Za-z0-9]{40,}\b/, 'Groq API key'],
+  [/\bprv_(?:test|prod|stagtest)_[A-Za-z0-9]{20,}/, 'Wompi private key'],
+  [/\b(?:test|prod|stagtest)_(?:events|integrity)_[A-Za-z0-9]{20,}/, 'Wompi secret'],
 ];
 
 const JWT = /\beyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/g;
