@@ -4,6 +4,8 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { REF, here, runOption, skip, states } from './luma.harness.mjs';
 
+const WEB = 'WEB_ORIGIN=https://luma.example\n';
+
 test('every PowerShell file is ASCII (PowerShell 5.1 reads them as ANSI) with short lines', { skip: false }, () => {
   for (const file of ['luma.ps1', 'setup-push.ps1', ...readdirSync(join(here, 'luma')).map((f) => `luma/${f}`)]) {
     const text = readFileSync(join(here, file), 'utf8');
@@ -15,7 +17,7 @@ test('every PowerShell file is ASCII (PowerShell 5.1 reads them as ANSI) with sh
 
 test('option 3: Wompi keys found by their prefix in any order, secrets loaded, 4 functions deployed, SQL written', { skip }, () => {
   const text = 'Llave privada: prv_test_BBB\nEventos test_events_CCC y pub_test_AAA\nIntegridad: test_integrity_DDD\n';
-  const r = runOption(`Invoke-LumaPayments '${REF}'`, { files: { 'wompi-sandbox.txt': text } });
+  const r = runOption(`Invoke-LumaPayments '${REF}'`, { files: { 'web.env': WEB, 'wompi-sandbox.txt': text } });
   assert.match(r.envFiles[0], /WOMPI_PUBLIC_KEY='pub_test_AAA'/);
   assert.match(r.envFiles[0], /WOMPI_PRIVATE_KEY='prv_test_BBB'/);
   assert.match(r.envFiles[0], /WOMPI_EVENTS_SECRET='test_events_CCC'/);
@@ -30,12 +32,12 @@ test('option 3: Wompi keys found by their prefix in any order, secrets loaded, 4
   assert.ok(r.lines.some((l) => l.state === 'APAGADO' && /wompi-webhook/.test(l.next)), 'reminds the events URL');
   for (const secret of ['prv_test_BBB', 'test_events_CCC', 'test_integrity_DDD', cron]) assert.equal(r.stdout.includes(secret), false);
 
-  const again = runOption(`Invoke-LumaPayments '${REF}'`, { files: { 'wompi-sandbox.txt': text, 'payments-settings.sql': r.file('payments-settings.sql') } });
+  const again = runOption(`Invoke-LumaPayments '${REF}'`, { files: { 'web.env': WEB, 'wompi-sandbox.txt': text, 'payments-settings.sql': r.file('payments-settings.sql') } });
   assert.match(again.envFiles[0], new RegExp(`PAYMENTS_CRON_SECRET='${cron}'`), 'repeating keeps the cron secret already pasted');
 });
 
 test('option 3 without all the keys says which prefix is missing and loads nothing', { skip }, () => {
-  const r = runOption(`Invoke-LumaPayments '${REF}'`, { files: { 'wompi-sandbox.txt': 'pub_test_A prv_test_B' } });
+  const r = runOption(`Invoke-LumaPayments '${REF}'`, { files: { 'web.env': WEB, 'wompi-sandbox.txt': 'pub_test_A prv_test_B' } });
   assert.deepEqual(states(r), ['FALTA']);
   assert.match(r.lines[0].item, /test_events_\.\.\., test_integrity_\.\.\./);
   assert.equal(r.calls.filter((c) => !c.startsWith('after ')).length, 0);

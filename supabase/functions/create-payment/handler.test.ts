@@ -8,10 +8,11 @@ import { type CustomerPayments, createHandler, type Prepared } from './handler.t
 const ORIGIN = 'https://localhost';
 const ORDER = '11111111-1111-4111-8111-111111111111';
 const EXPIRES = '2026-10-24T15:15:00.000Z';
+const RETURN_PAGE = 'https://luma.example/pago-listo.html';
 
 function setup(options: Partial<{
   credentials: boolean; confirmed: boolean; rate: boolean; order: { status: string; paymentMethod: string } | null;
-  prepared: Prepared;
+  prepared: Prepared; redirectUrl: string | null;
 }> = {}) {
   const logs: string[] = [];
   const prepared: string[] = [];
@@ -27,7 +28,7 @@ function setup(options: Partial<{
   const handler = createHandler({
     allowedOrigins: [ORIGIN, 'https://luma.example'],
     credentials: options.credentials === false ? null : sandboxCredentials(),
-    redirectUrl: 'luma://payments/return',
+    redirectUrl: options.redirectUrl === undefined ? RETURN_PAGE : options.redirectUrl,
     authenticate: (token) => Promise.resolve(token === 'good' ? customer : null),
     log: new PaymentLog((line) => logs.push(line)),
   });
@@ -49,7 +50,7 @@ Deno.test('answers a signed checkout URL with the amount and reference from the 
   assertEquals([body.attempt, body.expires_at, body.sandbox], [1, EXPIRES, true]);
   const q = new URL(body.checkout_url).searchParams;
   assertEquals([q.get('amount-in-cents'), q.get('reference')], ['1200000', 'luma_abc']);
-  assertEquals(q.get('redirect-url'), `luma://payments/return?order=${ORDER}`);
+  assertEquals(q.get('redirect-url'), `${RETURN_PAGE}?order=${ORDER}`);
   assertEquals(q.get('signature:integrity'), await sha256Hex(`luma_abc1200000COP${EXPIRES}${sandboxSecrets().WOMPI_INTEGRITY_SECRET}`));
   assertEquals(prepared, [`${ORDER}/test`]);
   const everything = JSON.stringify(body) + logs.join('');
@@ -99,5 +100,5 @@ Deno.test('a payment started on the web returns to the web app; one started in t
     return new URL(body.checkout_url).searchParams.get('redirect-url');
   };
   assertEquals(await redirect('https://luma.example'), `https://luma.example/payments/return?order=${ORDER}`);
-  assertEquals(await redirect(ORIGIN), `luma://payments/return?order=${ORDER}`);
+  assertEquals(await redirect(ORIGIN), `${RETURN_PAGE}?order=${ORDER}`);
 });

@@ -1,12 +1,9 @@
 import { MerchantCredentialsFactory } from '../_shared/payments/merchant-credentials.ts';
 import { PaymentLog } from '../_shared/payments/payment-log.ts';
 import { SupabaseEnv } from '../_shared/supabase-env.ts';
-import { createHandler, type CustomerPayments, type Prepared } from './handler.ts';
+import { createHandler, type CustomerPayments, httpsReturnUrl, type Prepared } from './handler.ts';
 
 const env = SupabaseEnv.read('create-payment');
-/** Wompi sends the customer back here after the checkout (informative only; deep link of AndroidManifest.xml). */
-const APP_PAYMENT_RETURN_URL = 'luma://payments/return';
-
 const MAX_WAIT_SECONDS = 600;
 
 /**
@@ -48,7 +45,7 @@ Deno.serve(
   createHandler({
     allowedOrigins: SupabaseEnv.allowedOrigins(),
     credentials: new MerchantCredentialsFactory((name) => Deno.env.get(name)).forPlatform(),
-    redirectUrl: APP_PAYMENT_RETURN_URL,
+    redirectUrl: httpsReturnUrl(Deno.env.get('PAYMENT_RETURN_URL')),
     authenticate,
     log: new PaymentLog(),
   }),

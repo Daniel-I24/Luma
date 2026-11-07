@@ -14,6 +14,7 @@ import { REF, here, runOption, skip, states } from './luma.harness.mjs';
 
 const ACCOUNT = JSON.stringify({ type: 'service_account', project_id: 'luma-app', client_email: 'a@b.c', private_key: 'KEY' });
 const WOMPI = 'pub_test_AAA prv_test_BBB test_events_CCC test_integrity_DDD';
+const WEB = 'WEB_ORIGIN=https://luma.example\n';
 const PROD = 'pub_prod_AAA\nprv_prod_BBB\nprod_events_CCC\nprod_integrity_DDD\n';
 const line = (r, pattern) => r.lines.find((l) => pattern.test(l.item));
 
@@ -48,10 +49,10 @@ test('confirmed today is OK, and a function the CLI found unchanged is OK with i
 });
 
 test('a refused CLI stops the option: secrets refused deploy nothing, a failed deploy stops the rest', { skip }, () => {
-  const refused = runOption(`Invoke-LumaPayments '${REF}'`, { files: { 'wompi-sandbox.txt': WOMPI }, cli: 1 });
+  const refused = runOption(`Invoke-LumaPayments '${REF}'`, { files: { 'web.env': WEB, 'wompi-sandbox.txt': WOMPI }, cli: 1 });
   assert.equal(refused.calls.some((c) => c.startsWith('functions deploy')), false);
   assert.equal(refused.lines.at(-1).state, 'FALTA');
-  const stopped = runOption(`Invoke-LumaPayments '${REF}'`, { files: { 'wompi-sandbox.txt': WOMPI }, failDeploy: 'wompi-webhook' });
+  const stopped = runOption(`Invoke-LumaPayments '${REF}'`, { files: { 'web.env': WEB, 'wompi-sandbox.txt': WOMPI }, failDeploy: 'wompi-webhook' });
   assert.equal(stopped.calls.some((c) => c.startsWith('functions deploy reconcile-payments')), false);
   assert.match(stopped.lines.at(-1).item, /wompi-webhook, reconcile-payments, void-payment/);
   assert.equal(stopped.file('payments-settings.sql'), null, 'no SQL to paste when nothing is deployed');
@@ -63,7 +64,7 @@ test('a project that cannot be read is FALTA', { skip }, () => {
 });
 
 test('option 3 never loads production keys and says so; functions.env fills what the sandbox file lacks', { skip }, () => {
-  const r = runOption(`Invoke-LumaPayments '${REF}'`, { files: { 'wompi-sandbox.txt': PROD } });
+  const r = runOption(`Invoke-LumaPayments '${REF}'`, { files: { 'web.env': WEB, 'wompi-sandbox.txt': PROD } });
   assert.deepEqual(states(r), ['FALTA']);
   assert.match(r.lines[0].item, /PRODUCCION/);
   assert.equal(r.envFiles.length, 0);
@@ -71,7 +72,7 @@ test('option 3 never loads production keys and says so; functions.env fills what
   for (const key of PROD.trim().split('\n')) assert.equal(`${r.stdout}${JSON.stringify(r.lines)}`.includes(key), false);
 
   const mixed = runOption(`Invoke-LumaPayments '${REF}'`, {
-    files: { 'wompi-sandbox.txt': 'pub_test_AAA prv_test_BBB', 'functions.env': `X=prv_prod_ZZZ\nA=test_events_CCC\nB=test_integrity_DDD\n` },
+    files: { 'web.env': WEB, 'wompi-sandbox.txt': 'pub_test_AAA prv_test_BBB', 'functions.env': `X=prv_prod_ZZZ\nA=test_events_CCC\nB=test_integrity_DDD\n` },
   });
   assert.match(mixed.envFiles[0], /WOMPI_PRIVATE_KEY='prv_test_BBB'/);
   assert.match(mixed.envFiles[0], /WOMPI_EVENTS_SECRET='test_events_CCC'/);
@@ -79,15 +80,24 @@ test('option 3 never loads production keys and says so; functions.env fills what
   assert.equal(states(mixed).includes('FALTA'), false);
 });
 
+test('option 3 without the web domain says where to write it and loads nothing', { skip }, () => {
+  const r = runOption(`Invoke-LumaPayments '${REF}'`, { files: { 'wompi-sandbox.txt': WOMPI } });
+  assert.deepEqual(states(r), ['FALTA']);
+  assert.match(r.lines[0].next, /WEB_ORIGIN=https/);
+  assert.equal(r.envFiles.length, 0);
+  const bad = runOption(`Invoke-LumaPayments '${REF}'`, { files: { 'wompi-sandbox.txt': WOMPI, 'web.env': 'WEB_ORIGIN=luma://x\n' } });
+  assert.deepEqual(states(bad), ['FALTA']);
+});
+
 test('option 8: every service without questions, each function once, one final table from the project', { skip }, () => {
   const r = runOption(`Invoke-LumaAll '${REF}'`, {
     files: {
       'ai.env': 'LLM_API_KEY=k\nLLM_MODEL=gemini-3.6-flash\nLLM_FALLBACK_MODEL=gemini-3.5-flash-lite\n',
-      'firebase-service-account.json': ACCOUNT, 'wompi-sandbox.txt': WOMPI, 'routes.env': 'ROUTE_API_KEY=r\n',
+      'firebase-service-account.json': ACCOUNT, 'web.env': WEB, 'wompi-sandbox.txt': WOMPI, 'routes.env': 'ROUTE_API_KEY=r\n',
       'whatsapp.env': 'WHATSAPP_VERIFY_TOKEN=t\nWHATSAPP_APP_SECRET=s\nWHATSAPP_PHONE_NUMBER_ID=1\n',
     },
     http: { generateContent: { status: 200 }, openrouteservice: { status: 200 }, 'whatsapp-webhook': { status: 200, body: 'ECHO' } },
-    oldSecrets: ['ALLOWED_ORIGINS', 'GEOCODE_PROVIDER', 'GEOCODE_API_KEY'],
+    oldSecrets: ['GEOCODE_PROVIDER', 'GEOCODE_API_KEY'],
   });
   for (const name of FUNCTIONS) {
     assert.equal(r.calls.filter((c) => c === `functions deploy ${name} --use-api --remote=${REF} --yes`).length, 1, name);
@@ -95,14 +105,16 @@ test('option 8: every service without questions, each function once, one final t
   }
   const needed = Object.values(FEATURES).flatMap((f) => f.secrets);
   for (const name of needed) assert.equal(line(r, new RegExp(`Secreto ${name} `)).state, 'OK', name);
-  assert.match(line(r, /Secreto ALLOWED_ORIGINS/).item, /existe/, 'not loaded here: only has to exist');
+  assert.match(line(r, /Secreto GEOCODE_API_KEY/).item, /existe/, 'not loaded here: only has to exist');
+  assert.match(r.envFiles.join(), /PAYMENT_RETURN_URL='https:\/\/luma\.example\/pago-listo\.html'/);
+  assert.match(r.envFiles.join(), /ALLOWED_ORIGINS='https:\/\/luma\.example,https:\/\/localhost,http:\/\/localhost:4200'/);
   assert.equal(r.lines.filter((l) => l.state === 'TABLA').length, 1);
   assert.equal(r.lines.filter((l) => /Funcion route /.test(l.item)).length, 1, 'one table, not one per option');
   assert.equal(states(r).includes('FALTA'), false);
 });
 
 test('option 8 goes on when a service cannot run, and the table shows what is missing', { skip }, () => {
-  const r = runOption(`Invoke-LumaAll '${REF}'`, { files: { 'firebase-service-account.json': ACCOUNT, 'wompi-sandbox.txt': PROD } });
+  const r = runOption(`Invoke-LumaAll '${REF}'`, { files: { 'web.env': WEB, 'firebase-service-account.json': ACCOUNT, 'wompi-sandbox.txt': PROD } });
   assert.ok(r.calls.includes(`functions deploy push-dispatch --use-api --remote=${REF} --yes`), 'push still runs');
   assert.ok(r.calls.includes(`functions deploy delete-account --use-api --remote=${REF} --yes`), 'and the plain functions');
   assert.ok(r.lines.some((l) => l.state === 'FALTA' && /PRODUCCION/.test(l.item)));

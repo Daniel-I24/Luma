@@ -22,7 +22,8 @@ export interface CreatePaymentDeps {
   readonly allowedOrigins: readonly string[];
   /** Null when a Wompi secret is missing or does not match WOMPI_ENV. */
   readonly credentials: MerchantCredentials | null;
-  readonly redirectUrl: string;
+  /** The https page that hands over to the APK (PAYMENT_RETURN_URL); null when it is missing or not https. */
+  readonly redirectUrl: string | null;
   authenticate(token: string): Promise<CustomerPayments | null>;
   readonly log: PaymentLog;
 }
@@ -35,12 +36,23 @@ const PREPARE_ERRORS: Readonly<Record<string, number>> = {
   too_many_attempts: 409, attempt_in_progress: 409, payments_disabled: 503, payments_misconfigured: 503, email_not_confirmed: 403,
 };
 
+/** PAYMENT_RETURN_URL as the function may use it: Wompi refuses anything but https. */
+export function httpsReturnUrl(raw: string | undefined): string | null {
+  try {
+    const url = new URL(raw ?? '');
+    return url.protocol === 'https:' && url.hostname !== 'localhost' && !url.search ? url.href : null;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Where Wompi sends the customer back: the web app itself when the payment
  * started there (an allowed https origin that is not the APK's localhost),
- * the luma:// link of the APK otherwise. A browser cannot open luma://.
+ * otherwise the https page that hands over to the APK. Wompi answers
+ * "redirectUrl: URL invalida" to luma://, so that link is only the page's next step.
  */
-function returnUrl(req: Request, deps: CreatePaymentDeps): string {
+function returnUrl(req: Request, deps: CreatePaymentDeps): string | null {
   const origin = req.headers.get('origin') ?? '';
   if (!deps.allowedOrigins.includes(origin)) return deps.redirectUrl;
   const url = new URL(origin);
@@ -64,6 +76,11 @@ export function createHandler(deps: CreatePaymentDeps): (req: Request) => Promis
       const orderId = typeof body?.order_id === 'string' && UUID.test(body.order_id) ? body.order_id.toLowerCase() : null;
       if (!orderId) return json(400, { error: 'invalid_request' }, cors);
       if (!deps.credentials) return json(503, { error: 'payments_unavailable' }, cors);
+      const back = returnUrl(req, deps);
+      if (!back) {
+        deps.log.info('checkout_refused', { outcome: 'no_return_url', source: 'checkout' });
+        return json(503, { error: 'payments_unavailable' }, cors);
+      }
       const customer = await deps.authenticate(token);
       if (!customer) return json(401, { error: 'unauthorized' }, cors);
       if (!(await customer.emailConfirmed())) return json(403, { error: 'email_not_confirmed' }, cors);
@@ -86,7 +103,7 @@ export function createHandler(deps: CreatePaymentDeps): (req: Request) => Promis
       const url = await new CheckoutUrlBuilder(deps.credentials)
         .withReference(prepared.reference)
         .withAmount(Money.fromCents(prepared.amountInCents))
-        .withRedirectUrl(`${returnUrl(req, deps)}?order=${orderId}`)
+        .withRedirectUrl(`${back}?order=${orderId}`)
         .expiringAt(new Date(prepared.expiresAt))
         .build();
       deps.log.info('checkout_created', { source: 'checkout', count: prepared.attempt });

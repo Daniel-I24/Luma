@@ -4,7 +4,8 @@
 #      reconoce cada llave por su prefijo (pub_test_, prv_test_,
 #      test_events_, test_integrity_), sin importar el orden ni el
 #      texto que las rodee. Una llave de produccion nunca se carga,
-#   2. reutiliza o genera PAYMENTS_CRON_SECRET,
+#   2. reutiliza o genera PAYMENTS_CRON_SECRET; con WEB_ORIGIN de web.env,
+#      PAYMENT_RETURN_URL (Wompi solo acepta https) y ALLOWED_ORIGINS,
 #   3. carga los secretos WOMPI_* y despliega las 4 funciones,
 #   4. escribe payments-settings.sql para pegar en el SQL Editor.
 # Los pagos en linea siguen APAGADOS hasta que el equipo los encienda.
@@ -64,10 +65,18 @@ function Invoke-LumaPayments([string]$ProjectRef) {
     return @(New-LumaLine 'FALTA' "Pagos: faltan llaves de sandbox: $names$why" `
       "Wompi -> modo Sandbox -> Desarrolladores -> Llaves. Pegalas en $file; no cargues llaves *_prod_ aqui.")
   }
+  $web = (Read-LumaEnvFile 'web.env')['WEB_ORIGIN']
+  if ($web -notmatch '^https://[a-z0-9.-]+$' -or $web -match '^https://localhost') {
+    return @(New-LumaLine 'FALTA' 'Pagos: falta el dominio web en web.env' `
+      "Escribe WEB_ORIGIN=https://tu-dominio (sin / al final) en $(Join-Path (Get-LumaSecretsDir) 'web.env'). Wompi solo vuelve a una URL https.")
+  }
   $lines = @(New-LumaLine 'OK' 'Pagos: las 4 llaves de sandbox encontradas')
 
   $cron = Get-LumaCronSecret
-  $values = @{ WOMPI_ENV = 'test'; PAYMENTS_CRON_SECRET = $cron }
+  $values = @{
+    WOMPI_ENV = 'test'; PAYMENTS_CRON_SECRET = $cron; PAYMENT_RETURN_URL = "$web/pago-listo.html"
+    ALLOWED_ORIGINS = "$web,https://localhost,http://localhost:4200"
+  }
   foreach ($name in $keys.Keys) { $values[$name] = $keys[$name] }
   if (-not (Set-LumaSecrets $ProjectRef $values)) {
     return $lines + (New-LumaLine 'FALTA' 'Pagos: no se pudieron cargar los secretos' 'Revisa "npx supabase login" y "npx supabase link".')

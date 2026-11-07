@@ -112,7 +112,9 @@
     <span class="text-title text-fg">{{ t('cart.total') }}</span>
     <span class="text-price text-fg" [appValuePop]="cart.totalCop()">{{ cart.totalCop() | cop }}</span>
   </div>
+  @if (store.method() !== 'online') {
   <p class="m-0 text-caption text-fg-subtle">{{ t('checkout.totalNote') }}</p>
+  }
 
   @if (store.otherDepartment()) {
   <app-luma-notice role="note">{{ t('checkout.otherDepartment') }}</app-luma-notice>

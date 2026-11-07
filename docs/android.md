@@ -9,7 +9,7 @@ the WebView origin is `https://localhost`).
 | Package (applicationId, namespace, appId) | `com.lumapasto.app` | `android/app/build.gradle`, `capacitor.config.ts`, `res/values/strings.xml` |
 | Java package | `com.lumapasto.app` | `android/app/src/main/java/com/lumapasto/app/MainActivity.java` |
 | App name | `Luma` | `strings.xml` (`app_name`) |
-| Deep link | `luma://payments/return` | `AndroidManifest.xml` intent filter (Wompi's return, informative only) |
+| Deep link | `luma://payments/return` | `AndroidManifest.xml` intent filter. Wompi returns to `public/pago-listo.html` (it only accepts https), which opens this link |
 
 The package changed from `com.luma.app` in round 2: an APK built before it
 installs as a different app (uninstall the old one), and the Firebase

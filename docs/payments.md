@@ -52,7 +52,9 @@ reads; nothing here depends on it.
    unpredictable reference (`luma_` + 32 hex) and the amount in cents; the
    function signs `reference + amount + COP + expiration + integrity secret`
    and answers the checkout URL.
-3. The app opens the URL with `@capacitor/browser`. Wompi redirects to
+3. The app opens the URL with `@capacitor/browser`. Wompi only accepts an https
+   redirect, so it returns to `https://<web>/pago-listo.html?order=<id>&id=<transaction>`
+   (`PAYMENT_RETURN_URL`), a page that opens
    `luma://payments/return?order=<id>&id=<transaction>`; the app stores the
    transaction id (`record_payment_redirect`, untrusted) and, when it comes
    back to the foreground, reads the order from the server, the only source
@@ -163,8 +165,8 @@ with `PlatformMerchantCredentials` and `MerchantCredentialsFactory`
 `SchemaStep`, `ChecksumStep`, `IdempotencyStep`, `ApiConfirmationStep`,
 `MatchAndApplyStep`), `PaymentApplier`, `Reconciler`, `PaymentRepository`
 with `SupabasePaymentRepository`, `PaymentLog` (typed fields, codes only).
-Provider URLs: `_shared/config/provider-urls.ts`; app link:
-`create-payment/index.ts` (`luma://payments/return`).
+Provider URLs: `_shared/config/provider-urls.ts`; return page: secret
+`PAYMENT_RETURN_URL` and `public/pago-listo.html`.
 
 ## Setting it up (owner, in order)
 
@@ -313,3 +315,53 @@ before enabling payments.
   (older than 3 minutes) with a null transaction id. Wompi documents no
   search by reference, so `reconcile-payments` skips them (see
   docs/payments-checklist.md, question 4).
+
+## Pending decision: whose Wompi account receives the money
+
+Nothing below is implemented. Today one Wompi account (Luma's) receives every payment.
+Facts about Wompi's marketplace features need confirming with them before choosing.
+
+| | A. One Wompi account, Luma's (today) | B. One Wompi account per business |
+| --- | --- | --- |
+| Who is paid | Luma, which then pays each business | Each business, directly |
+| Who must sign up with Wompi | Luma only | Each business, with its own documents and bank account |
+| Paying businesses | To build: balance, payouts, proof of each transfer | Not needed |
+| Refunds | Luma refunds, from its own balance | Made from the business's account: needs its keys, or the business does it |
+| Disputes and tax on the sale | Luma is the seller of record for the charge: ask an accountant | The business |
+| Luma's commission | Deducted when paying out | Needs Wompi to split the charge, or a separate invoice to the business |
+| A business starts selling online | At once | Only after Wompi approves its account |
+| If a key leaks | One rotation, every business is affected | One business is affected, but there are many secrets to guard |
+
+### Changes for A (what is missing)
+
+| Where | Change |
+| --- | --- |
+| Database | `business_balances`, `payouts` (business, amount, period, bank reference, status) and `payout_items` (order per payout); RLS: the owner reads their own, only admins write |
+| Database | Bank details of each business in a private table: masked to the owner, only admins read them whole, with an audit log |
+| Database | Commission rate in `app_settings`; an order keeps the rate it was sold at |
+| Functions | None for the charge. Payouts by hand first; a payouts API only if Wompi's fits |
+| App | Owner: balance and payouts. Admin: payouts to make and how to mark them, with proof |
+| Legal | Terms: Luma collects on behalf of the business; to review with a lawyer |
+
+### Changes for B
+
+| Where | Change |
+| --- | --- |
+| Database | `merchant_accounts` (business, environment, public key, status). The three secret keys never in a table a client role can read: encrypted (Supabase Vault), read only by the functions' service role |
+| Database | `payments.merchant_account_id`; `prepare_payment` refuses a business with no active account; `payments_to_void` and reconciliation return it |
+| `_shared/payments/merchant-credentials.ts` | The factory has one implementation today, `PlatformMerchantCredentials`, from secrets. New `BusinessMerchantCredentials`, by account |
+| `create-payment` | Credentials of the business of the order, not of the platform |
+| `wompi-webhook` | Hardest part: one URL with many events secrets. The checksum is verified before anything is trusted, so each business needs its URL (`?account=<id>`) or the reference must find the account first, then verify |
+| `reconcile-payments`, `void-payment` | One private key per payment; `WompiApi` receives it per call |
+| App | Owner: connect Wompi, status, test transaction. Checkout: online only if the business has an active account. Admin: accounts to review |
+| Operations | Each business copies 4 keys and sets the events URL in its Wompi panel: support cost, and the place most likely to fail |
+| Legal | Each business sells for itself; Luma only provides the software |
+
+### For deciding
+
+- A starts now but makes Luma hold other people's money: ask a lawyer and an accountant whether
+  that needs anything further under Colombian rules.
+- B avoids holding money, but each business has to get through Wompi's sign-up, which is a lot to
+  ask of a small one, and there can be no commission without a marketplace feature.
+- The two can coexist later: A as the default, B for a business that wants its own account. The
+  `MerchantCredentials` strategy already leaves room for it, except in the webhook.

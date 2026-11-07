@@ -9,11 +9,11 @@
 $script:LumaAllSecrets = @(
   'LLM_PROVIDER', 'LLM_MODEL', 'LLM_API_KEY',
   'FCM_SERVICE_ACCOUNT', 'PUSH_DISPATCH_SECRET',
-  'WOMPI_ENV', 'WOMPI_PUBLIC_KEY', 'WOMPI_PRIVATE_KEY', 'WOMPI_INTEGRITY_SECRET', 'WOMPI_EVENTS_SECRET', 'PAYMENTS_CRON_SECRET',
+  'WOMPI_ENV', 'WOMPI_PUBLIC_KEY', 'WOMPI_PRIVATE_KEY', 'WOMPI_INTEGRITY_SECRET', 'WOMPI_EVENTS_SECRET', 'PAYMENTS_CRON_SECRET', 'PAYMENT_RETURN_URL',
   'ROUTE_API_KEY', 'ROUTE_PROVIDER',
   'WHATSAPP_VERIFY_TOKEN', 'WHATSAPP_APP_SECRET', 'WHATSAPP_PHONE_NUMBER_ID'
 )
-# Ninguna opcion los carga: se exige que existan, sin mirar la fecha.
+# Se exige que existan, sin mirar la fecha (ALLOWED_ORIGINS la carga Pagos).
 $script:LumaAllKept = @('ALLOWED_ORIGINS', 'GEOCODE_PROVIDER', 'GEOCODE_API_KEY')
 $script:LumaAllFunctions = @(
   'delete-account', 'recommend', 'suggest-promotions', 'extract-menu', 'geocode', 'route', 'verify-website',

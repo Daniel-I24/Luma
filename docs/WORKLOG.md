@@ -219,6 +219,14 @@ their migrations ran before pg_cron was on and skipped the block, so orders neve
 The reconcile job also never woke for card refunds to void, a gap of round 12. Migration 64
 schedules both. `npm run wompi:replay` tests forged, repeated and late events on the sandbox.
 
+### Phase 4: the return from Wompi
+
+From the APK the function sent `redirect-url=luma://payments/return`, and Wompi only takes
+https: "redirectUrl: URL invalida". The APK now returns to `/pago-listo.html` on the web
+domain (`PAYMENT_RETURN_URL`, from `web.env`), which hands over to `luma://`. It says nothing
+about the result. If the customer does not come back that way, the order screen re-reads the
+server on return to the app. The "final price" note is only for pay at pick-up.
+
 ## Round 12 (2026-11-06)
 
 Prompt: notifications, a full review of the files, the new icon, three palettes,

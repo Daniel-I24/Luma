@@ -10,7 +10,6 @@ import { DateFormat } from '@shared/format/date-format';
 import { OrderEstimates } from '@shared/orders/order-estimates';
 import { OrderStatusBadge } from '@shared/orders/order-status-badge';
 import type { OrderWithItems } from '@shared/orders/order.model';
-import { AppEvents } from '@core/native/app-events';
 import { RealtimeService } from '@core/realtime/realtime.service';
 import { OrderPayment } from './components/order-payment/order-payment';
 import { ReorderService } from './services/reorder.service';
@@ -88,17 +87,9 @@ export class OrderDetailPage {
       if (OrderCelebration.plays(arrival, wasPaid, isPaid)) untracked(() => this.celebrate.set(true));
       wasPaid = isPaid;
     });
-    // Status changes made by the business, as they happen (docs/realtime.md).
+    // Status changes made by the business, as they happen (docs/realtime.md). It also re-reads on
+    // the return from the payment page: the server, not the redirect, says how it went.
     inject(RealtimeService).watch('order_events', () => this.store.refresh(), (event) => event.order_id === this.id());
-    // Back from the payment page: the server, not the redirect, says how it went.
-    const events = inject(AppEvents);
-    let seen = events.resumes();
-    effect(() => {
-      const resumes = events.resumes();
-      if (resumes === seen) return;
-      seen = resumes;
-      untracked(() => void this.store.refresh());
-    });
   }
 
   protected reload(): void {

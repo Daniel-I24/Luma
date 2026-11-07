@@ -14,8 +14,11 @@ test('online payment (simulated Wompi sandbox): checkout, pay, back to the web a
   await page.getByRole('link', { name: /Ver carrito/ }).click();
   await page.getByRole('button', { name: 'Continuar' }).click();
   await skipGuide(page);
+  const finalPriceNote = page.getByText('El restaurante confirma el precio final');
+  assert.equal(await finalPriceNote.count(), 1, 'paying at pick-up, the business confirms the price');
   await page.getByRole('radio', { name: 'Pagar en línea' }).click();
   await page.getByRole('radio', { name: 'Pagar en línea', checked: true }).waitFor({ timeout: 5000 });
+  assert.equal(await finalPriceNote.count(), 0, 'paying online, the price paid is final');
   // With online payment chosen, the main button says "Pagar".
   await page.getByRole('button', { name: 'Pagar', exact: true }).click();
 

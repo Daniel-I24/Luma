@@ -26,7 +26,7 @@ export const FEATURES = {
   },
   pagos: {
     label: 'Pagos con Wompi',
-    secrets: ['WOMPI_ENV', 'WOMPI_PUBLIC_KEY', 'WOMPI_PRIVATE_KEY', 'WOMPI_INTEGRITY_SECRET', 'WOMPI_EVENTS_SECRET', 'PAYMENTS_CRON_SECRET'],
+    secrets: ['WOMPI_ENV', 'WOMPI_PUBLIC_KEY', 'WOMPI_PRIVATE_KEY', 'WOMPI_INTEGRITY_SECRET', 'WOMPI_EVENTS_SECRET', 'PAYMENTS_CRON_SECRET', 'PAYMENT_RETURN_URL'],
     optional: [],
     functions: ['create-payment', 'wompi-webhook', 'reconcile-payments', 'void-payment'],
     option: 3,

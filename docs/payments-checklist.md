@@ -71,7 +71,8 @@ written, the app keeps the current, safe behaviour shown here.
    Expected: `luma://payments/return?order=<uuid>&id=<tx>` (PaymentReturn
    reads both). If Wompi refuses the scheme or breaks the query, use plan B
    below.
-   **Result:** pending.
+   **Result:** Wompi refuses it ("redirectUrl: URL invalida", phone test of 7 Nov 2026).
+   The APK now returns to `public/pago-listo.html` (`PAYMENT_RETURN_URL`).
 2. **Void: request body and response.** Documented:
    `POST /v1/transactions/{id}/void` with the private key, cards only, "solo
    disponible para ciertos estados". No body and no response shape are
