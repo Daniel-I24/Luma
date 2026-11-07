@@ -91,3 +91,23 @@ the owner paths and the search normaliser). Merges now group code by the
 chunk that loads it. Tailwind reads every source file (docs included)
 for class names: a CSS comment moved into a `.ts` file named a plain
 utility and added an unused class (+0.26 kB), so the comment was reworded.
+
+## Frame rate (round 13, 2026-11-07)
+
+`npx ng build --configuration screens && npm run perf` (`e2e/perf.mjs`): the screens build with the
+simulated backend and the real map tiles, Edge at 390 px, CPU slowed down 4 times through CDP,
+3 runs per scenario. Frames are counted with `requestAnimationFrame` during the interaction; the
+display ran at 144 Hz, so 144 fps is the ceiling.
+
+| Scenario | fps (median) | fps (worst) | p95 frame | Frames > 50 ms (per run) |
+| --- | ---: | ---: | ---: | --- |
+| Feed: scroll | 143.8 | 143.8 | 7.1 ms | 0 / 0 / 0 |
+| Map: pan and zoom | 84.4 | 84.1 | 27.7 ms | 1 / 0 / 0 |
+| Tabs: map, feed, orders, profile | 66.8 | 65.6 | 27.8 ms | 11 / 8 / 6 |
+| Business: scroll the menu | 143.8 | 143.5 | 7.1 ms | 0 / 0 / 0 |
+
+Every scenario stays above 60 fps on average. The long frames of the tab scenario come from
+opening the map: measured alone, feed to map ran at 35-42 fps for its 900 ms with 2-3 frames
+over 50 ms (MapLibre parsing the style and starting WebGL). Skipping the view transition into
+and out of the map was tried and reverted: entering improved to 45-51 fps, but leaving the map
+fell from 96 to 31-38 fps, because the crossfade was hiding the paint of the new screen.
