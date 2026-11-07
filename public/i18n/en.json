@@ -535,6 +535,14 @@
       "ownBusiness": "This business is yours: you cannot order from your own business. To try it, use a customer account.",
       "onlineInReview": "This business is still under review: for now it only takes payment at pick-up.",
       "tooLateToCancel": "The business has started preparing this order: it can no longer be cancelled."
+    },
+    "payment": {
+      "at_pickup": "You pay at pick-up",
+      "paid": "Paid online",
+      "unpaid": "Online payment pending",
+      "refunding": "Refund in progress",
+      "refunded": "Payment refunded",
+      "voided": "Payment voided"
     }
   },
   "reviews": {
@@ -1028,7 +1036,9 @@
     "noShowConfirm": "Yes, they did not come",
     "paymentRefunding": "Refund in progress: the customer paid online",
     "paymentRefunded": "Payment refunded to the customer",
-    "paymentVoided": "Payment voided"
+    "paymentVoided": "Payment voided",
+    "payAtPickup": "Collect at pick-up",
+    "paymentPending": "Online payment pending"
   },
   "notifications": {
     "title": "Notifications",

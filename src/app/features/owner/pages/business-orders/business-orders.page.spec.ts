@@ -23,10 +23,16 @@ describe('BusinessOrdersPage', () => {
     expect(card.textContent).toContain('<img src=x onerror=alert(1)> sin cebolla');
   });
 
-  it('shows "Pagado en línea" for orders paid online', async () => {
-    repo.list.mockResolvedValue({ data: [order('o5', 'pending', { payment_status: 'approved' })], errorKey: null });
+  it('shows "Pagado en línea" for orders paid online, and never "al recoger"', async () => {
+    repo.list.mockResolvedValue({ data: [order('o5', 'pending', { payment_method: 'online', payment_status: 'approved' })], errorKey: null });
     const { el } = await render();
     expect(el.textContent).toContain('businessOrders.paidOnline');
+    expect(el.textContent).not.toContain('businessOrders.payAtPickup');
+  });
+
+  it('an order to pay at pick-up says so on the card', async () => {
+    const { el } = await render();
+    expect(el.querySelector('[data-test="payment-line"]')?.textContent?.trim()).toBe('businessOrders.payAtPickup');
   });
 
   it('lists the other tabs with their next action', async () => {

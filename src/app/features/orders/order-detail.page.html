@@ -75,7 +75,7 @@
       <span class="text-title text-fg">{{ t('cart.total') }}</span>
       <span class="text-price text-fg">{{ order.total_cop | cop }}</span>
     </p>
-    <p class="m-0 mt-1 text-caption text-fg-subtle">{{ t('checkout.payment.payAtPickup') }}</p>
+    <p class="m-0 mt-1 text-caption text-fg-subtle" data-test="payment-line">{{ t('orders.payment.' + (order | paymentState)) }}</p>
     @if (order.notes; as notes) {
     <p class="m-0 mt-2 text-body-sm text-fg-muted">{{ t('orders.detail.notes', { notes }) }}</p>
     }

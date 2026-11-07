@@ -9,15 +9,4 @@ describe('order detail helpers', () => {
     expect(OrderDetailView.showsEstimate('ready')).toBe(false);
     expect(OrderDetailView.showsEstimate('cancelled')).toBe(false);
   });
-
-  it('marks timeline steps done, current and upcoming', () => {
-    expect(OrderDetailView.timelineSteps('preparing').map((s) => s.state)).toEqual([
-      'done',
-      'done',
-      'current',
-      'upcoming',
-      'upcoming',
-    ]);
-    expect(OrderDetailView.timelineSteps('cancelled').every((s) => s.state === 'upcoming')).toBe(true);
-  });
 });

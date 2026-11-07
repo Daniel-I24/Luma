@@ -7,6 +7,7 @@ import { LumaButton, LumaEmptyState, LumaSkeleton } from '@design-system';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
 import { DateFormat } from '@shared/format/date-format';
 import { OrderStatusBadge } from '@shared/orders/order-status-badge';
+import { PaymentStatePipe } from '@shared/orders/payment-state.pipe';
 import type { Order } from '@shared/orders/order.model';
 import { OrderRepository } from '@shared/orders/order.repository';
 import { RealtimeService } from '@core/realtime/realtime.service';
@@ -29,6 +30,7 @@ type ListState = 'loading' | 'ready' | 'error';
     LumaSkeleton,
     CopCurrencyPipe,
     OrderStatusBadge,
+    PaymentStatePipe,
     FreshnessNote,
     PullToRefreshDirective,
   ],

@@ -10,8 +10,8 @@ export class OrdersTesting {
   /** The repository double every spec configures. */
   public static readonly repo = { list: vi.fn(), getById: vi.fn(), cancel: vi.fn() };
 
-  /** One order of business b1 (or of a deleted business). */
-  public static order(status: string, deleted = false) {
+  /** One order of business b1 (or of a deleted business), paid at pick-up unless `paid` online. */
+  public static order(status: string, deleted = false, paid = false) {
     return {
       id: 'o1',
       business_id: deleted ? null : 'b1',
@@ -21,6 +21,8 @@ export class OrdersTesting {
       pickup_at: null,
       total_cop: 14000,
       notes: null,
+      payment_method: paid ? 'online' : 'pay_at_pickup',
+      payment_status: paid ? 'approved' : 'none',
       created_at: '2026-10-17T12:00:00.000Z',
       business: deleted ? null : { id: 'b1', latitude: 1.21, longitude: -77.28 },
       items: [{ id: 'i1', menu_item_id: 'm1', name: 'Fritanga', unit_price_cop: 7000, quantity: 2 }],

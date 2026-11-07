@@ -12,8 +12,8 @@ describe('OrderDetailPage', () => {
   beforeEach(() => OrdersTesting.configure());
   afterEach(() => vi.useRealTimers());
 
-  async function renderDetail(status: string, deleted = false): Promise<HTMLElement> {
-    repo.getById.mockResolvedValue({ data: order(status, deleted), errorKey: null });
+  async function renderDetail(status: string, deleted = false, paid = false): Promise<HTMLElement> {
+    repo.getById.mockResolvedValue({ data: order(status, deleted, paid), errorKey: null });
     detail = TestBed.createComponent(OrderDetailPage);
     detail.detectChanges();
     await flush();
@@ -50,6 +50,18 @@ describe('OrderDetailPage', () => {
     expect(el.textContent).toContain('Negocio no disponible');
     expect(el.textContent).toContain('Calle 19');
     expect(el.querySelector('a[href*="destination="]')).toBeNull();
+  });
+
+  it('the payment line comes from the order: paid online is never "pay at pick-up"', async () => {
+    const online = await renderDetail('picked_up', false, true);
+    expect(online.querySelector('[data-test="payment-line"]')?.textContent?.trim()).toBe('orders.payment.paid');
+    const pickup = await renderDetail('picked_up');
+    expect(pickup.querySelector('[data-test="payment-line"]')?.textContent?.trim()).toBe('orders.payment.at_pickup');
+  });
+
+  it('picked up: the last circle of the timeline is filled like the ones before', async () => {
+    const el = await renderDetail('picked_up', false, true);
+    expect(el.querySelectorAll('app-order-timeline li .bg-primary.border-primary')).toHaveLength(5);
   });
 
   it('offers "Cancelar" until the kitchen starts', async () => {

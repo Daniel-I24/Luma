@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaIcon } from '@design-system';
-import type { OrderStatus } from '@shared/orders/order.model';
-import { OrderDetailView } from '../../utils/order-detail-view';
+import type { OrderStatus } from './order.model';
+import { OrderProgress } from './order-progress';
 
-/** OrderTimeline — the steps of an order with the current one highlighted. */
+/** OrderTimeline — the steps of an order: done filled, the current one highlighted (OrderProgress). */
 @Component({
   selector: 'app-order-timeline',
   standalone: true,
@@ -50,7 +50,7 @@ import { OrderDetailView } from '../../utils/order-detail-view';
 export class OrderTimeline {
   public readonly status = input.required<OrderStatus>();
 
-  protected readonly steps = computed(() => OrderDetailView.timelineSteps(this.status()));
+  protected readonly steps = computed(() => OrderProgress.steps(this.status()));
   protected readonly dotClass = {
     done: 'border-primary bg-primary text-primary-fg',
     current: 'border-primary bg-surface-selected text-fg-brand',

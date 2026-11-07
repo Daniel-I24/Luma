@@ -13,7 +13,8 @@ import type { OrderWithItems } from '@shared/orders/order.model';
 import { RealtimeService } from '@core/realtime/realtime.service';
 import { OrderPayment } from './components/order-payment/order-payment';
 import { ReorderService } from './services/reorder.service';
-import { OrderTimeline } from './components/order-timeline/order-timeline';
+import { OrderTimeline } from '@shared/orders/order-timeline';
+import { PaymentStatePipe } from '@shared/orders/payment-state.pipe';
 import { OrderDetailStore } from './state/order-detail.store';
 import { OrderCelebration } from './utils/order-celebration';
 import { OrderDetailView } from './utils/order-detail-view';
@@ -40,6 +41,7 @@ import { OrderDetailView } from './utils/order-detail-view';
     CopCurrencyPipe,
     OrderStatusBadge,
     OrderTimeline,
+    PaymentStatePipe,
     OrderPayment,
     RouteMap,
   ],

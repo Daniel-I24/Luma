@@ -535,6 +535,14 @@
       "ownBusiness": "Este negocio es tuyo: no puedes pedir en tu propio negocio. Para probarlo, usa una cuenta de cliente.",
       "onlineInReview": "Este negocio aún está en verificación: por ahora solo acepta pagar al recoger.",
       "tooLateToCancel": "El negocio ya empezó a preparar este pedido: no se puede cancelar."
+    },
+    "payment": {
+      "at_pickup": "Pagas al recoger",
+      "paid": "Pagado en línea",
+      "unpaid": "Pago en línea pendiente",
+      "refunding": "Reembolso en proceso",
+      "refunded": "Pago devuelto",
+      "voided": "Pago anulado"
     }
   },
   "reviews": {
@@ -1028,7 +1036,9 @@
     "noShowConfirm": "Sí, no llegó",
     "paymentRefunding": "Reembolso en proceso: el cliente pagó en línea",
     "paymentRefunded": "Pago reembolsado al cliente",
-    "paymentVoided": "Pago anulado"
+    "paymentVoided": "Pago anulado",
+    "payAtPickup": "Cobra al recoger",
+    "paymentPending": "Pago en línea pendiente"
   },
   "notifications": {
     "title": "Notificaciones",

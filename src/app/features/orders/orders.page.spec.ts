@@ -46,6 +46,12 @@ describe('OrdersPage', () => {
     expect(el.querySelector('a')).not.toBeNull();
   });
 
+  it('each order in the list shows its own payment method', async () => {
+    repo.list.mockResolvedValue({ data: [order('picked_up', false, true), { ...order('pending'), id: 'o2' }], errorKey: null });
+    const lines = Array.from((await renderList()).querySelectorAll('[data-test="payment-line"]'), (el) => el.textContent?.trim());
+    expect(lines).toEqual(['orders.payment.paid', 'orders.payment.at_pickup']);
+  });
+
   it('marks deleted businesses in the list', async () => {
     repo.list.mockResolvedValue({
       data: [order('picked_up', true), { ...order('pending'), id: 'o2' }],

@@ -7,6 +7,7 @@ import { AvatarRepository } from '@shared/account/avatar.repository';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
 import { DateFormat } from '@shared/format/date-format';
 import type { BusinessOrder } from '@shared/orders/business-order.repository';
+import { OrderPaymentState, type PaymentState, type PaymentTone } from '@shared/orders/order-payment-state';
 import { OrderStatusBadge } from '@shared/orders/order-status-badge';
 import { type OrderAction, OrderBoard } from '../../utils/order-board';
 
@@ -19,12 +20,20 @@ const STATUS_STRIPE: Readonly<Record<string, string>> = {
   cancelled: 'border-l-danger',
 };
 
-/** What the business must know about the money of an order. */
-const PAYMENT_KEY: Readonly<Record<string, string>> = {
-  approved: 'businessOrders.paidOnline',
-  refund_required: 'businessOrders.paymentRefunding',
+/** What the business must know about the money of an order, read from the order (OrderPaymentState). */
+const PAYMENT_KEY: Readonly<Record<PaymentState, string>> = {
+  at_pickup: 'businessOrders.payAtPickup',
+  paid: 'businessOrders.paidOnline',
+  unpaid: 'businessOrders.paymentPending',
+  refunding: 'businessOrders.paymentRefunding',
   refunded: 'businessOrders.paymentRefunded',
   voided: 'businessOrders.paymentVoided',
+};
+
+const PAYMENT_TONE: Readonly<Record<PaymentTone, string>> = {
+  success: 'bg-success-bg text-success-fg',
+  warning: 'bg-warning-bg text-warning-fg',
+  neutral: 'bg-surface-selected text-fg-muted',
 };
 
 /**
@@ -56,8 +65,9 @@ export class OwnerOrderCard {
   protected readonly avatarUrl = signal<string | null>(null);
   private readonly avatars = inject(AvatarRepository);
   private readonly log = inject(ErrorLog);
-  protected readonly paymentKey = computed(() => PAYMENT_KEY[this.order().payment_status] ?? null);
-  protected readonly paidOnline = computed(() => this.order().payment_status === 'approved');
+  private readonly payment = computed(() => OrderPaymentState.of(this.order()));
+  protected readonly paymentKey = computed(() => PAYMENT_KEY[this.payment()]);
+  protected readonly paymentTone = computed(() => PAYMENT_TONE[OrderPaymentState.tone(this.payment())]);
   protected readonly placedAt = computed(() => DateFormat.formatTime(this.order().created_at, this.lang()));
   protected readonly pickupAt = computed(() => {
     const pickup = this.order().pickup_at;

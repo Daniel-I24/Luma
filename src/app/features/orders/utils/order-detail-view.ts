@@ -1,4 +1,4 @@
-import { ORDER_PROGRESS, type Order, type OrderStatus } from '@shared/orders/order.model';
+import type { Order, OrderStatus } from '@shared/orders/order.model';
 
 /** OrderDetailView — timeline and estimate of an order. */
 export class OrderDetailView {
@@ -23,22 +23,4 @@ export class OrderDetailView {
     if (reason === 'payment_expired') return 'orders.detail.paymentExpired';
     return reason ? 'orders.detail.cancelledByBusiness' : 'orders.detail.cancelled';
   }
-
-  /** State of each timeline step for the current status (all upcoming once cancelled). */
-  public static timelineSteps(status: OrderStatus): { status: OrderStatus; state: StepState }[] {
-    const current = ORDER_PROGRESS.indexOf(status);
-    return ORDER_PROGRESS.map((step, index) => ({
-      status: step,
-      state:
-        current < 0
-          ? 'upcoming'
-          : index < current
-            ? 'done'
-            : index === current
-              ? 'current'
-              : 'upcoming',
-    }));
-  }
 }
-
-export type StepState = 'done' | 'current' | 'upcoming';
