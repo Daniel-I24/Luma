@@ -66,6 +66,38 @@ jobs:
       - run: npm test -- --watch=false --reporters=verbose --coverage
       - run: npm run test:scripts
 
+  # What Vercel does: a clean clone, no environment.ts, only the public build variables.
+  clean-build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Production build from scratch, with test values
+        env:
+          SUPABASE_URL: https://clean-build-check.supabase.co
+          SUPABASE_ANON_KEY: sb_publishable_clean_build_check
+          AI_MODE: remote
+          PUSH_ENABLED: '1'
+          SUPPORT_WHATSAPP: '573000000000'
+          LEGAL_CONTACT_EMAIL: ci@example.com
+        run: npm run build:prod
+
+      - name: The output has what the web serves, with the values of the build
+        run: |
+          for file in index.html version.json pago-listo.html pago-listo.js \
+            legal/terminos.html legal/privacidad.html legal/reembolsos.html legal/eliminacion-datos.html; do
+            test -f "dist/luma/browser/$file" || { echo "missing: $file"; exit 1; }
+          done
+          grep -rlq clean-build-check.supabase.co dist/luma/browser --include='*.js'
+          ! grep -rlq placeholder.supabase.co dist/luma/browser --include='*.js'
+
   secrets:
     runs-on: ubuntu-24.04
     steps:

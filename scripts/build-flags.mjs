@@ -6,7 +6,8 @@
  *     (src/app/core/config/build-flags.ts reads it).
  *   - PUSH_ENABLED: "1" or "0"; unset → on when android/app/google-services.json
  *     exists (push without it crashes the Android app, so "1" without the file
- *     fails) → LUMA_PUSH_ENABLED (src/app/core/push/push-platform.ts).
+ *     fails) → LUMA_PUSH_ENABLED (src/app/core/push/push-platform.ts). The web
+ *     build (`deploy`) is always off: only the APK has native push.
  *   - SUPPORT_WHATSAPP: Luma's support WhatsApp, 57 + 10 digits (no "+"),
  *     empty by default → LUMA_SUPPORT_WHATSAPP (src/app/core/config/build-flags.ts).
  *   - LEGAL_CONTACT_EMAIL: the contact e-mail of the legal texts, empty by
@@ -41,6 +42,11 @@ export function pushEnabled(env, googleServices = existsSync('android/app/google
   return on;
 }
 
+/** The web build (Vercel): there is no native push, whatever PUSH_ENABLED says for the APK. */
+export function webBuildEnv(env, args) {
+  return args.some((arg) => arg.split(',').includes('deploy')) ? { ...env, PUSH_ENABLED: '0' } : env;
+}
+
 /** Support WhatsApp in E.164 without "+": "573001234567"; "" when unset. */
 export function supportWhatsapp(env) {
   const digits = (env.SUPPORT_WHATSAPP ?? '').replace(/[\s+-]/g, '');
@@ -69,8 +75,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   try {
     const [command, ...args] = process.argv.slice(2);
     if (!command) throw new FlagError('usage: node scripts/build-flags.mjs <command> [args]');
-    process.stdout.write(`build-flags: AI_MODE=${aiMode(process.env)} PUSH_ENABLED=${pushEnabled(process.env)}\n`);
-    const result = spawnSync(command, [...args, ...defineArgs(process.env)], { stdio: 'inherit', shell: process.platform === 'win32' });
+    const env = webBuildEnv(process.env, args);
+    process.stdout.write(`build-flags: AI_MODE=${aiMode(env)} PUSH_ENABLED=${pushEnabled(env)}\n`);
+    const result = spawnSync(command, [...args, ...defineArgs(env)], { stdio: 'inherit', shell: process.platform === 'win32' });
     process.exitCode = result.status ?? 1;
   } catch (error) {
     process.stderr.write(`build-flags: ${error instanceof FlagError ? error.message : 'unexpected error'}\n`);

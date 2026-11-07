@@ -227,6 +227,13 @@ domain (`PAYMENT_RETURN_URL`, from `web.env`), which hands over to `luma://`. It
 about the result. If the customer does not come back that way, the order screen re-reads the
 server on return to the app. The "final price" note is only for pay at pick-up.
 
+### A clean clone did not build
+
+Vercel failed on `1f6e748`: `environment.ts` is gitignored and a file replacement needs the
+original. `generate-env.mjs` now creates it from the example, with a copy that cannot overwrite.
+Reproduced in a clean clone, which also showed `PUSH_ENABLED=1` stopping the web build for an
+Android file: the web build no longer applies that rule. New CI job `clean-build`.
+
 ### Phase 6: themes (done before finishing phase 4, as asked)
 
 The themes in the code were Sky, Night, Lacquer and Maize; Indigo, Midnight, Pearl and Sunset

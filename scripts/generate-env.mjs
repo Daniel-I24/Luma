@@ -4,11 +4,15 @@
  * environment (SUPABASE_URL, SUPABASE_ANON_KEY). Part of `npm run build:prod`
  * (Vercel), which builds with the `deploy` configuration that swaps it in;
  * the committed environment.prod.ts keeps its placeholders.
+ * Angular only swaps a file that exists, and environment.ts is gitignored, so on a
+ * clean clone it is created from environment.example.ts (placeholders, never in the
+ * bundle). An existing environment.ts is never touched: copying cannot overwrite it.
  * Fails when a variable is missing or when the key is a privileged one
  * (sb_secret_… or a JWT whose role is service_role): only the public
  * anon/publishable key may ever reach the browser. Never prints the key.
  */
-import { writeFileSync } from 'node:fs';
+import { constants, copyFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 export class EnvError extends Error {}
@@ -49,6 +53,17 @@ export function readSupabaseEnv(env) {
   return { url: parsed.origin, anonKey };
 }
 
+/** Creates environment.ts from the example when absent; true if it did. Never overwrites. */
+export function ensureBaseEnvironment(directory) {
+  try {
+    copyFileSync(join(directory, 'environment.example.ts'), join(directory, 'environment.ts'), constants.COPYFILE_EXCL);
+    return true;
+  } catch (error) {
+    if (error.code === 'EEXIST') return false;
+    throw error;
+  }
+}
+
 /** Generated file, relative to the repository root. */
 export const TARGET_PATH = 'src/environments/environment.deploy.ts';
 
@@ -70,6 +85,9 @@ if (isMain) {
   try {
     const target = fileURLToPath(new URL(`../${TARGET_PATH}`, import.meta.url));
     const values = readSupabaseEnv(process.env);
+    if (ensureBaseEnvironment(fileURLToPath(new URL('../src/environments/', import.meta.url)))) {
+      process.stdout.write('generate-env: environment.ts created from the example (clean clone)\n');
+    }
     writeFileSync(target, renderEnvironment(values));
     process.stdout.write(`generate-env: environment.deploy.ts written for ${values.url}\n`);
   } catch (error) {

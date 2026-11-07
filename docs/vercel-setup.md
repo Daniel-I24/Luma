@@ -43,6 +43,14 @@ Sin sesión y sin JavaScript, desde el mismo texto que muestra la app
 Si cambias un texto legal en la app, corre `npm run build:legal` y haz
 commit: CI falla si las páginas no coinciden con la app.
 
+## Un clon limpio compila solo
+
+`environment.ts` no está en git (tiene tus claves locales). `npm run build:prod` lo crea desde
+`environment.example.ts` si no existe y nunca toca uno existente. El sitio usa solo las variables
+de Vercel: `SUPABASE_URL` y `SUPABASE_ANON_KEY` (obligatorias), `AI_MODE`, `SUPPORT_WHATSAPP` y
+`LEGAL_CONTACT_EMAIL`. `PUSH_ENABLED` no afecta a la web: el push nativo solo existe en el APK.
+El trabajo `clean-build` de CI compila así en cada push.
+
 ## 5. Seguridad
 
 `vercel.json` envía a todas las rutas: CSP estricta (sin scripts en línea),

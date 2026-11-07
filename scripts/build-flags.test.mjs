@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
-import { aiMode, contactEmail, defineArgs, FlagError, pushEnabled, supportWhatsapp } from './build-flags.mjs';
+import { aiMode, contactEmail, defineArgs, FlagError, pushEnabled, supportWhatsapp, webBuildEnv } from './build-flags.mjs';
 
 test('AI_MODE reaches the build as LUMA_AI_MODE; rules when unset; an unknown value fails', () => {
   assert.equal(aiMode({}), 'rules');
@@ -18,6 +18,14 @@ test('the APK and the production build pass the flag (it was never read before r
   const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
   assert.match(pkg.scripts['build:prod'], /build-flags\.mjs ng build/);
   assert.match(readFileSync(new URL('../src/app/core/config/build-flags.ts', import.meta.url), 'utf8'), /LUMA_AI_MODE === 'remote'/);
+});
+
+test('the web build has no native push: PUSH_ENABLED=1 does not ask for the Android file', () => {
+  const env = { PUSH_ENABLED: '1' };
+  const web = webBuildEnv(env, ['build', '--configuration', 'production,deploy']);
+  assert.equal(pushEnabled(web, false), false);
+  assert.equal(webBuildEnv(env, ['build', '--configuration', 'production']), env, 'any other build keeps the rule');
+  assert.throws(() => pushEnabled(webBuildEnv(env, ['build']), false), /google-services/);
 });
 
 test('push follows Firebase: on with google-services.json, PUSH_ENABLED=0 turns it off, =1 without the file fails', () => {

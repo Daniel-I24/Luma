@@ -1,8 +1,11 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { readFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import {
   EnvError,
+  ensureBaseEnvironment,
   jwtRole,
   readSupabaseEnv,
   renderEnvironment,
@@ -55,6 +58,31 @@ test('rejects URLs that are invalid or not https', () => {
     () => readSupabaseEnv({ SUPABASE_URL: 'http://abcd.supabase.co', SUPABASE_ANON_KEY: 'k' }),
     /https/,
   );
+});
+
+test('a clean clone gets environment.ts from the example; an existing one is never touched', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'luma-env-'));
+  writeFileSync(join(dir, 'environment.example.ts'), 'example');
+  assert.equal(ensureBaseEnvironment(dir), true);
+  assert.equal(readFileSync(join(dir, 'environment.ts'), 'utf8'), 'example');
+
+  writeFileSync(join(dir, 'environment.ts'), 'my real keys');
+  assert.equal(ensureBaseEnvironment(dir), false);
+  assert.equal(readFileSync(join(dir, 'environment.ts'), 'utf8'), 'my real keys');
+});
+
+test('without the example it fails instead of building something else', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'luma-env-'));
+  assert.throws(() => ensureBaseEnvironment(dir), /ENOENT/);
+  assert.equal(existsSync(join(dir, 'environment.ts')), false);
+});
+
+test('CI builds from scratch, without environment.ts, and checks what Vercel serves', () => {
+  const ci = readFileSync(new URL('../.github/workflows/ci.yml', import.meta.url), 'utf8');
+  const job = ci.slice(ci.indexOf('  clean-build:'), ci.indexOf('  secrets:'));
+  assert.ok(job.includes('npm run build:prod'));
+  assert.equal(job.includes('environment.example.ts src/environments/environment.ts'), false, 'it must not prepare the file');
+  for (const file of ['pago-listo.html', 'pago-listo.js', 'legal/terminos.html', 'legal/privacidad.html']) assert.ok(job.includes(file), file);
 });
 
 test('reads the role claim only from well-formed JWTs', () => {
