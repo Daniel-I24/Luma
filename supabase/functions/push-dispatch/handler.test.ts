@@ -11,7 +11,7 @@ const row = (n: number, tokens = ['t-ok']): PushRow => ({
   business_name: 'Café Público', tokens,
 });
 
-function setup(options: { batches?: PushRow[][]; sender?: boolean; results?: Record<string, SendResult | 'throw'> } = {}) {
+function setup(options: { batches?: PushRow[][]; retries?: PushRow[]; sender?: boolean; results?: Record<string, SendResult | 'throw'> } = {}) {
   const batches = [...(options.batches ?? [[row(1, ['t-ok', 't-dead'])]])];
   const sent: [string, string, Record<string, string>, string][] = [];
   const removed: string[][] = [];
@@ -19,6 +19,8 @@ function setup(options: { batches?: PushRow[][]; sender?: boolean; results?: Rec
     secret: SECRET,
     store: {
       claim: () => Promise.resolve(batches.shift() ?? []),
+      claimRetries: () => Promise.resolve(options.retries ?? []),
+      scheduleRetry: (_id, tokens) => Promise.resolve(tokens.length),
       removeTokens: (tokens) => Promise.resolve(void removed.push(tokens)),
     },
     sender: options.sender === false ? null : {
@@ -42,7 +44,7 @@ const poke = (secret: string | null = SECRET, method = 'POST') =>
 Deno.test('sends each claimed notification to every token and removes dead tokens', async () => {
   const { handler, sent, removed } = setup();
   const res = await handler(poke());
-  assertEquals([res.status, await res.json()], [200, { sent: 1, failed: 0, removed: 1, reasons: {} }]);
+  assertEquals([res.status, await res.json()], [200, { sent: 1, failed: 0, retrying: 0, removed: 1, reasons: {} }]);
   assertEquals(sent[0], [
     't-ok', 'Tu pedido en Café Público está listo para recoger.',
     { type: 'order_status', notification_id: 'n1', order_id: 'o1', business_id: 'b1' }, 'orders',
@@ -101,7 +103,7 @@ Deno.test('a failing send never aborts the batch', async () => {
     results: { 't-throw': 'throw', 't-busy': 'failed:UNAVAILABLE' },
   });
   const res = await handler(poke());
-  assertEquals([res.status, await res.json()], [200, { sent: 2, failed: 2, removed: 0, reasons: { network: 1, UNAVAILABLE: 1 } }]);
+  assertEquals([res.status, await res.json()], [200, { sent: 2, failed: 2, retrying: 2, removed: 0, reasons: { network: 1, UNAVAILABLE: 1 } }]);
   assertEquals(sent.length, 4);
   assertEquals(removed, []);
 });

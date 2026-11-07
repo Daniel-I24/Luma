@@ -1307,6 +1307,16 @@
       },
       "aiMode": "Luma IA mode",
       "back": "Back to operations",
+      "push": {
+        "title": "Notification server",
+        "code": "Last answer (HTTP)",
+        "time": "Time (Colombia)",
+        "phones": "Linked phones",
+        "unsent": "Unsent notices",
+        "retrying": "Retries waiting",
+        "none": "No calls yet",
+        "unknown": "The notification server status could not be read."
+      },
       "hint": "For the admin team only. No personal data."
     }
   },

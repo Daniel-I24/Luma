@@ -23,6 +23,18 @@ Deno.serve(
         if (error || !Array.isArray(data)) throw new Error('claim_failed');
         return data as PushRow[];
       },
+      claimRetries: async (limit) => {
+        const { data, error } = await service.rpc('claim_push_retries', { p_limit: limit });
+        if (error || !Array.isArray(data)) throw new Error('claim_failed');
+        return data as PushRow[];
+      },
+      scheduleRetry: async (notificationId, tokens, attempt) => {
+        const { data, error } = await service.rpc('schedule_push_retry', {
+          p_notification_id: notificationId, p_tokens: tokens, p_attempt: attempt,
+        });
+        if (error) throw new Error('retry_failed');
+        return typeof data === 'number' ? data : 0;
+      },
       removeTokens: async (tokens) => {
         const { error } = await service.rpc('remove_device_tokens', { p_tokens: tokens });
         if (error) throw new Error('remove_failed');

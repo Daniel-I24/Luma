@@ -9,6 +9,7 @@ import { LumaButton } from '@design-system';
 import { PanelQueryLog } from '@shared/business/diagnostics/panel-query-log';
 import { DeviceStatus } from '@shared/errors/device-status/device-status';
 import { RecentErrors } from '@shared/errors/recent-errors/recent-errors';
+import { PushServerStatus } from '../../components/push-server-status/push-server-status';
 
 const SHORT_ID = 8;
 const VISIBLE_START = 1;
@@ -16,14 +17,14 @@ const VISIBLE_START = 1;
 /**
  * AdminTechnicalPage — /admin/technical, only with admin_access 'ok' (adminGuard):
  * the account (masked e-mail, shortened id), how this build runs, the reads of the
- * business panel, the state of this phone and the recent errors. No personal data;
+ * business panel, the push server, the state of this phone and the recent errors. No personal data;
  * "Copiar" puts the same text on the clipboard.
  */
 @Component({
   selector: 'app-admin-technical-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, RouterLink, LumaButton, DeviceStatus, RecentErrors],
+  imports: [TranslocoModule, RouterLink, LumaButton, PushServerStatus, DeviceStatus, RecentErrors],
   templateUrl: './admin-technical.page.html',
   host: { class: 'block' },
 })

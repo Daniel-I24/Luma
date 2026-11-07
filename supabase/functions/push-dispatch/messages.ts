@@ -1,4 +1,4 @@
-/** A row of claim_push_batch. */
+/** A row of claim_push_batch or claim_push_retries (those carry their attempt). */
 export interface PushRow {
   readonly notification_id: string;
   readonly type: string;
@@ -7,6 +7,7 @@ export interface PushRow {
   readonly business_id: string | null;
   readonly business_name: string | null;
   readonly tokens: readonly string[];
+  readonly attempt?: number;
 }
 
 export interface PushText {

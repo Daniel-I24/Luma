@@ -82,7 +82,9 @@ needs a drop and a create in the same file, noted in the file header).
 | 58 | `20261108000000_push_claim_window.sql` | `claim_push_batch` leaves notices of users without a token waiting (`push_claim_window_minutes`, 60: older ones are marked and never sent); same arguments and grants | Pending review |
 | 59 | `20261109000000_push_test_answer.sql` | `send_test_notification` answers whether the account has a device token (return type changes); `admin_push_health()` for the admin panel | Pending; the owner applies it |
 | 60 | `20261110000000_cancellation_rules.sql` | `cancel_order` until the kitchen starts (`too_late_to_cancel` from `preparing`); `cancel_reason` adds `customer` and `payment_expired`; `payments_to_void()` | Pending; the owner applies it |
-| 61 | `20261111000000_readable_export.sql` | `export_my_data` by name, without internal ids; 10 a day | Pending; the owner applies it |
+| 61 | `20261111000000_readable_export.sql` | `export_my_data` by name, without internal ids; 10 a day | Applied |
+| 62 | `20261112000000_push_retry.sql` | `private.push_retries`, `schedule_push_retry`, `claim_push_retries`: a failed phone is tried again after 1, 5 and 15 minutes, only that phone | Pending; the owner applies it |
+| 63 | `20261113000000_push_server_status.sql` | `private.push_requests`; `admin_push_health` reads only the answers of `push-dispatch`, with time and network error | Pending; the owner applies it |
 
 **Database freeze (2026-10-19)**: the list above is final for the launch.
 After the freeze, migrations and functions change only to fix real bugs
@@ -246,6 +248,7 @@ transaction that is rolled back.
 | `round8.sql` | migration 55: test notification for admins only, `show_pending_businesses` visibility, pick-up only while in review |
 | `round9.sql` | migration 56: approval publishes when ready, approved but hidden without a product, owner pause kept after a re-approval, `show_pending_businesses` states through the API roles, guard of 10 creations a day |
 | `round10.sql` | migration 57: sector and reference rules, `order_pickup_point` with three users (customer, another customer, another owner, and the business owner), paused business still reachable, order events without the customer id for the owner |
+| `push_retry.sql` | migrations 62 and 63: only the failed phone, 3 more tries, removed phone, refused consent and old notices are not tried, and the payments cron answer is not shown as the push server |
 | `push_claim_window.sql` | migration 58: a notice waits for a token, goes out once, older than the window is never sent, refused consent is not kept |
 | `realtime_events.sql` | migration 56: catalog events of public businesses only, order events for the customer and the owner (three users), no client writes, pruning, publication |
 

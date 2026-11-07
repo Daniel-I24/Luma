@@ -1307,6 +1307,16 @@
       },
       "aiMode": "Modo de Luma IA",
       "back": "Volver a operaciones",
+      "push": {
+        "title": "Servidor de avisos",
+        "code": "Última respuesta (HTTP)",
+        "time": "Hora (Colombia)",
+        "phones": "Teléfonos enlazados",
+        "unsent": "Avisos sin enviar",
+        "retrying": "Reintentos en espera",
+        "none": "Sin llamadas todavía",
+        "unknown": "No se pudo leer el estado del servidor de avisos."
+      },
       "hint": "Solo para el equipo de administración. Sin datos personales."
     }
   },

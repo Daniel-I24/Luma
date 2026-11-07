@@ -126,6 +126,7 @@ from net._http_response order by created desc limit 5;
 
 | Answer | Meaning | Fix |
 | --- | --- | --- |
+| Reasons like `UNAVAILABLE` with `retrying` above 0 | A passing FCM fault | Nothing: that phone is tried again after 1, 5 and 15 minutes (migration 62) |
 | 404 `Requested function was not found` | `push-dispatch` is not deployed | option 2 or 8 of `scripts/luma.ps1` (they say OK only when `functions list` confirms it) |
 | 401 | `PUSH_DISPATCH_SECRET` differs from `private.push_settings.secret` | option 2, then paste `push-settings.sql` again |
 | 503 `push_unavailable` | `FCM_SERVICE_ACCOUNT` is missing or malformed | option 2 |
