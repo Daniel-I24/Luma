@@ -6,7 +6,8 @@
   "error",
   "voided",
   "refund_required",
-  "refunded"
+  "refunded",
+  "expired"
  ],
  "vectors": [
   {
@@ -45,6 +46,11 @@
    "allowed": false
   },
   {
+   "from": "pending",
+   "to": "expired",
+   "allowed": true
+  },
+  {
    "from": "approved",
    "to": "pending",
    "allowed": false
@@ -80,6 +86,11 @@
    "allowed": false
   },
   {
+   "from": "approved",
+   "to": "expired",
+   "allowed": false
+  },
+  {
    "from": "declined",
    "to": "pending",
    "allowed": false
@@ -115,6 +126,11 @@
    "allowed": false
   },
   {
+   "from": "declined",
+   "to": "expired",
+   "allowed": false
+  },
+  {
    "from": "error",
    "to": "pending",
    "allowed": false
@@ -150,6 +166,11 @@
    "allowed": false
   },
   {
+   "from": "error",
+   "to": "expired",
+   "allowed": false
+  },
+  {
    "from": "voided",
    "to": "pending",
    "allowed": false
@@ -182,6 +203,11 @@
   {
    "from": "voided",
    "to": "refunded",
+   "allowed": false
+  },
+  {
+   "from": "voided",
+   "to": "expired",
    "allowed": false
   },
   {
@@ -220,6 +246,11 @@
    "allowed": true
   },
   {
+   "from": "refund_required",
+   "to": "expired",
+   "allowed": false
+  },
+  {
    "from": "refunded",
    "to": "pending",
    "allowed": false
@@ -252,6 +283,51 @@
   {
    "from": "refunded",
    "to": "refunded",
+   "allowed": false
+  },
+  {
+   "from": "refunded",
+   "to": "expired",
+   "allowed": false
+  },
+  {
+   "from": "expired",
+   "to": "pending",
+   "allowed": false
+  },
+  {
+   "from": "expired",
+   "to": "approved",
+   "allowed": true
+  },
+  {
+   "from": "expired",
+   "to": "declined",
+   "allowed": false
+  },
+  {
+   "from": "expired",
+   "to": "error",
+   "allowed": false
+  },
+  {
+   "from": "expired",
+   "to": "voided",
+   "allowed": false
+  },
+  {
+   "from": "expired",
+   "to": "refund_required",
+   "allowed": false
+  },
+  {
+   "from": "expired",
+   "to": "refunded",
+   "allowed": false
+  },
+  {
+   "from": "expired",
+   "to": "expired",
    "allowed": false
   }
  ]

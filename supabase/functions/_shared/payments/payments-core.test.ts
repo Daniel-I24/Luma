@@ -17,12 +17,12 @@ Deno.test('Money is whole cents from whole pesos; floats and negatives are refus
   assertThrows(() => Money.fromCents(0.1));
 });
 
-Deno.test('PaymentStateMachine matches the 49 vectors shared with SQL', async () => {
+Deno.test('PaymentStateMachine matches the 64 vectors shared with SQL', async () => {
   const url = new URL('../../../tests/fixtures/payment_transitions.json', import.meta.url);
   const { vectors } = JSON.parse(await Deno.readTextFile(url)) as {
     vectors: { from: PaymentStatus; to: PaymentStatus; allowed: boolean }[];
   };
-  assertEquals(vectors.length, 49);
+  assertEquals(vectors.length, 64);
   for (const v of vectors) assertEquals(PaymentStateMachine.canTransition(v.from, v.to), v.allowed, `${v.from}->${v.to}`);
   assertEquals([PaymentStateMachine.fromProvider('APPROVED'), PaymentStateMachine.fromProvider('PENDING')], ['approved', null]);
 });

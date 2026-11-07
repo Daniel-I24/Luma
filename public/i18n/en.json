@@ -542,7 +542,8 @@
       "unpaid": "Online payment pending",
       "refunding": "Refund in progress",
       "refunded": "Payment refunded",
-      "voided": "Payment voided"
+      "voided": "Payment voided",
+      "expired": "Unpaid"
     }
   },
   "reviews": {
@@ -1038,7 +1039,8 @@
     "paymentRefunded": "Payment refunded to the customer",
     "paymentVoided": "Payment voided",
     "payAtPickup": "Collect at pick-up",
-    "paymentPending": "Online payment pending"
+    "paymentPending": "Online payment pending",
+    "paymentExpired": "Unpaid: the customer did not pay in time"
   },
   "notifications": {
     "title": "Notifications",
@@ -2162,7 +2164,8 @@
       "error": "The payment was not completed",
       "voided": "Payment voided",
       "refund_required": "Refund in progress",
-      "refunded": "Refunded"
+      "refunded": "Refunded",
+      "expired": "Unpaid: the time to pay ran out"
     },
     "errors": {
       "loadFailed": "Could not read the payment status.",

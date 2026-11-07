@@ -1,5 +1,6 @@
 /** Status of one payment attempt (public.payments.status). */
-export type PaymentStatus = 'pending' | 'approved' | 'declined' | 'error' | 'voided' | 'refund_required' | 'refunded';
+export type PaymentStatus =
+  | 'pending' | 'approved' | 'declined' | 'error' | 'voided' | 'refund_required' | 'refunded' | 'expired';
 
 /**
  * PaymentStateMachine — the transitions of an attempt. Mirrors
@@ -8,10 +9,12 @@ export type PaymentStatus = 'pending' | 'approved' | 'declined' | 'error' | 'voi
  */
 export class PaymentStateMachine {
   private static readonly NEXT: ReadonlyMap<PaymentStatus, ReadonlySet<PaymentStatus>> = new Map([
-    ['pending', new Set<PaymentStatus>(['approved', 'declined', 'error', 'voided'])],
+    ['pending', new Set<PaymentStatus>(['approved', 'declined', 'error', 'voided', 'expired'])],
     // Wompi lets the customer retry the same reference for a few minutes.
     ['declined', new Set<PaymentStatus>(['approved'])],
     ['error', new Set<PaymentStatus>(['approved'])],
+    // Closed by expire_abandoned_payments; a late approval from Wompi is still recorded.
+    ['expired', new Set<PaymentStatus>(['approved'])],
     ['approved', new Set<PaymentStatus>(['voided', 'refund_required'])],
     ['refund_required', new Set<PaymentStatus>(['refunded', 'voided'])],
   ]);

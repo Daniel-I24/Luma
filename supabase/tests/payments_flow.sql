@@ -16,8 +16,8 @@ select v ->> 'from' as from_status, v ->> 'to' as to_status, (v ->> 'allowed')::
 from jsonb_array_elements((:'payment_vectors')::jsonb -> 'vectors') v;
 grant select on vectors to authenticated;
 select tests.expect_true('authenticated', tests.id('ana'), $$
-  select count(*) = 49 and bool_and(public.payment_transition_allowed(from_status, to_status) = allowed) from vectors$$,
-  'payment_transition_allowed matches all 49 shared vectors');
+  select count(*) = 64 and bool_and(public.payment_transition_allowed(from_status, to_status) = allowed) from vectors$$,
+  'payment_transition_allowed matches all 64 shared vectors');
 
 -- -- config and preparing an attempt -----------------------------------------------------------
 select tests.expect_true('authenticated', tests.id('ana'),

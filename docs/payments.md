@@ -77,6 +77,12 @@ reads; nothing here depends on it.
    id rely on the webhook. The same run voids card payments of cancelled orders
    (`payments_to_void`, last 7 days); what Wompi refuses, and other methods, stay
    in Operaciones for a person.
+8. An attempt that never reached Wompi (no transaction id, no event) becomes
+   `expired` 30 minutes after its own expiry (`expire_abandoned_payments`, run by
+   the `luma-expire-stale-orders` job), and so does the order's `payment_status`
+   when it was its last attempt. It leaves "Pagos con problemas" without anyone
+   touching it. If Wompi reports it later after all, the approval is still recorded
+   (`expired -> approved`) and refunded, as in step 6.
 
 ## Data (migrations 38 to 45)
 
@@ -84,19 +90,20 @@ reads; nothing here depends on it.
 | --- | --- | --- |
 | `orders.payment_method` | `create_order` | `pay_at_pickup` or `online` |
 | `orders.status` | functions | adds `awaiting_payment` |
-| `orders.payment_status` | functions | `none`, `pending`, `approved`, `declined`, `voided`, `refund_required`, `refunded`, `error` |
+| `orders.payment_status` | functions | `none`, `pending`, `approved`, `declined`, `voided`, `refund_required`, `refunded`, `error`, `expired` |
 | `payments` | functions only (closed) | one row per attempt; order, attempt, reference, amount, currency, environment and creation are immutable (trigger); the approved transaction id is set once; no DELETE |
 | `payment_events` | functions only | append only for every role (REVOKE plus trigger); unique per transaction and status; outcome `applied`, `ignored`, `mismatch`, `unknown_reference` |
 
 ### State machine
 
 `payment_transition_allowed` (SQL) and `PaymentStateMachine` (TypeScript)
-are tested with the same 49 vectors
+are tested with the same 64 vectors
 (`supabase/tests/fixtures/payment_transitions.json`):
 
 ```
-pending          -> approved | declined | error | voided
+pending          -> approved | declined | error | voided | expired
 declined | error -> approved           (Wompi retry of the same reference)
+expired          -> approved           (Wompi reports an abandoned attempt late)
 approved         -> voided | refund_required
 refund_required  -> refunded | voided
 ```

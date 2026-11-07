@@ -25,6 +25,7 @@ const PAYMENT_KEY: Readonly<Record<PaymentState, string>> = {
   at_pickup: 'businessOrders.payAtPickup',
   paid: 'businessOrders.paidOnline',
   unpaid: 'businessOrders.paymentPending',
+  expired: 'businessOrders.paymentExpired',
   refunding: 'businessOrders.paymentRefunding',
   refunded: 'businessOrders.paymentRefunded',
   voided: 'businessOrders.paymentVoided',

@@ -10,6 +10,7 @@ const TONE: Readonly<Record<string, string>> = {
   declined: 'bg-danger-bg text-danger-fg',
   error: 'bg-danger-bg text-danger-fg',
   voided: 'bg-canvas-subtle text-fg-muted',
+  expired: 'bg-canvas-subtle text-fg-muted',
 };
 
 /**

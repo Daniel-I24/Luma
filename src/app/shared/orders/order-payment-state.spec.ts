@@ -31,5 +31,8 @@ describe('OrderPaymentState', () => {
     expect(OrderPaymentState.of({ payment_method: 'online', payment_status: 'declined' })).toBe(
       'unpaid',
     );
+    expect(OrderPaymentState.of({ payment_method: 'online', payment_status: 'expired' })).toBe(
+      'expired',
+    );
   });
 });

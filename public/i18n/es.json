@@ -542,7 +542,8 @@
       "unpaid": "Pago en línea pendiente",
       "refunding": "Reembolso en proceso",
       "refunded": "Pago devuelto",
-      "voided": "Pago anulado"
+      "voided": "Pago anulado",
+      "expired": "Sin pagar"
     }
   },
   "reviews": {
@@ -1038,7 +1039,8 @@
     "paymentRefunded": "Pago reembolsado al cliente",
     "paymentVoided": "Pago anulado",
     "payAtPickup": "Cobra al recoger",
-    "paymentPending": "Pago en línea pendiente"
+    "paymentPending": "Pago en línea pendiente",
+    "paymentExpired": "Sin pago: el cliente no pagó a tiempo"
   },
   "notifications": {
     "title": "Notificaciones",
@@ -2162,7 +2164,8 @@
       "error": "El pago no se completó",
       "voided": "Pago anulado",
       "refund_required": "Reembolso en proceso",
-      "refunded": "Reembolsado"
+      "refunded": "Reembolsado",
+      "expired": "Sin pagar: el tiempo para pagar terminó"
     },
     "errors": {
       "loadFailed": "No se pudo leer el estado del pago.",

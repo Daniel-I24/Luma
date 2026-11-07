@@ -11,7 +11,7 @@ export type OrderStatus =
 
 /** public.orders.payment_status (written only by the payment functions). */
 export type PaymentStatus =
-  | 'none' | 'pending' | 'approved' | 'declined' | 'voided' | 'refund_required' | 'refunded' | 'error';
+  | 'none' | 'pending' | 'approved' | 'declined' | 'voided' | 'refund_required' | 'refunded' | 'error' | 'expired';
 
 /** Steps shown on the timeline, in order (cancelled is shown apart). */
 export const ORDER_PROGRESS: readonly OrderStatus[] = [

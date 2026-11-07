@@ -1,5 +1,5 @@
 /** What an order's money looks like, the same in every view (customer and business). */
-export type PaymentState = 'at_pickup' | 'paid' | 'unpaid' | 'refunding' | 'refunded' | 'voided';
+export type PaymentState = 'at_pickup' | 'paid' | 'unpaid' | 'expired' | 'refunding' | 'refunded' | 'voided';
 export type PaymentTone = 'success' | 'warning' | 'neutral';
 
 /** The two columns every order carries; the label comes only from them. */
@@ -13,12 +13,14 @@ const ONLINE: Readonly<Record<string, PaymentState>> = {
   refund_required: 'refunding',
   refunded: 'refunded',
   voided: 'voided',
+  expired: 'expired',
 };
 
 const TONE: Readonly<Record<PaymentState, PaymentTone>> = {
   at_pickup: 'neutral',
   paid: 'success',
   unpaid: 'warning',
+  expired: 'neutral',
   refunding: 'warning',
   refunded: 'neutral',
   voided: 'neutral',
