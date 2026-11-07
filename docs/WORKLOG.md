@@ -212,6 +212,13 @@ navigation (`geo:`). `isStyleLoaded()` turns false while tiles load, so a route 
 for a "load" event already gone and never appear. The map follows the customer (50 m). The
 order detail lost its straight-line time. The straight line is dashed and labelled.
 
+### Phase 4: payments, part one
+
+`cron.job` in production had no `luma-expire-stale-orders` nor `luma-reconcile-payments`:
+their migrations ran before pg_cron was on and skipped the block, so orders never expired.
+The reconcile job also never woke for card refunds to void, a gap of round 12. Migration 64
+schedules both. `npm run wompi:replay` tests forged, repeated and late events on the sandbox.
+
 ## Round 12 (2026-11-06)
 
 Prompt: notifications, a full review of the files, the new icon, three palettes,

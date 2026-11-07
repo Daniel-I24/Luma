@@ -59,6 +59,18 @@ declined card, Nequi), then answer the four questions of
 docs/payments-checklist.md ("Sandbox questions to settle") and write each
 result there.
 
+## 8. What a phone cannot test
+
+Pay one order in the sandbox, copy its transaction id from the Wompi dashboard, and:
+
+```powershell
+npm run wompi:replay -- <transaction id>
+```
+
+It sends that real transaction to `wompi-webhook` with a forged signature (must be
+refused), repeated, and a day late (no effect). It reads the sandbox events secret from
+`luma-secrets` and refuses anything else.
+
 ## Turning it off again
 
 `update public.app_settings set int_value = 0 where key = 'payments_enabled';`

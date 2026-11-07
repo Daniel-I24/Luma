@@ -78,6 +78,8 @@ select tests.exec_as('authenticated', tests.id('owner'),
   $$select public.set_order_status(tests.order_id('paid'), 'cancelled', 'out_of_stock')$$);
 select tests.expect_true('postgres', null,
   $$select payment_status = 'refund_required' from public.orders where notes = 'paid'$$, 'cancelled after paying: refund_required');
+select tests.expect_true('service_role', null, $$select count(*) >= 1 from public.payments_to_void()$$, 'its card payment is on the list to void');
+select tests.expect_true('postgres', null, $$select private.reconcile_work_pending()$$, 'and that wakes the reconcile job (migration 64)');
 
 -- -- admin tools ----------------------------------------------------------------------------------
 select tests.use_aal('aal1');
