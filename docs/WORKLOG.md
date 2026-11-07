@@ -171,6 +171,23 @@ SQL suites, Deno 2.5.6 in Docker for the functions.
   Deno tests, type check and lint of the functions, every check, secret
   scan, audit 0, knip (no unused files or dependencies).
 
+## Round 14 (2026-11-07): review before the university presentation
+
+### Phase A: what the phone test found
+
+- Picked up left the last timeline circle empty: the last step was "current". `OrderProgress`
+  (shared) completes the last step; the timeline moved to `shared/orders`.
+- The order detail printed "Pagar al recoger" for every order. `OrderPaymentState` and the
+  `paymentState` pipe read the method and status of the order; list, detail and business card.
+- "Conciliar ahora": `reconcile-payments` answered the browser preflight with 405 and no CORS
+  (checked against production), so the POST never left. It uses the shared preflight now.
+- The 12:05-12:19 attempts never reached Wompi and stayed pending. Migration 65: status
+  `expired`, `expire_abandoned_payments()` in the expiry job; vectors 49 -> 64.
+- Phase 5 leftovers: the refund policy said "until accepted"; checkout and policy now say
+  "until the kitchen starts" (`cancel_order`). Phase 7: `e2e/perf.mjs`, results in
+  `docs/optimization-report.md`.
+- Luma IA icon: the pin of the new logo with a spark.
+
 ## Round 13 (2026-11-07)
 
 ### Phase 0: scripts/luma.ps1 changed nothing in production
