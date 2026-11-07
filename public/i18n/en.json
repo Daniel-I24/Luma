@@ -714,7 +714,8 @@
       "online": "Pay online",
       "onlineHint": "You pay on Wompi's secure page (card, PSE or Nequi). Luma never sees your payment details.",
       "sandbox": "Test mode: no real money is charged. Use card 4242 4242 4242 4242 or Nequi 3991111111.",
-      "refundPolicy": "Payments and refunds policy"
+      "refundPolicy": "Payments and refunds policy",
+      "cancelRule": "You can cancel until the business starts preparing your order. If you paid online, we refund you."
     },
     "totalNote": "The restaurant confirms the final price when it receives the order.",
     "confirm": "Confirm order",
@@ -1453,11 +1454,11 @@
         },
         "cancellations": {
           "title": "Cancellations",
-          "body": "You can cancel an order while the business has not accepted it. If you do not complete the payment within 15 minutes, the order is cancelled automatically. The business can cancel an accepted order giving the reason."
+          "body": "You can cancel an order until the business starts preparing it: while it waits for your payment, is pending or has been accepted. Once it is being prepared it can no longer be cancelled in the app; write to the business. If you do not complete the payment within 15 minutes, the order is cancelled automatically and nothing is charged. The business can cancel an order giving the reason."
         },
         "refunds": {
           "title": "When we refund you",
-          "body": "If you paid and the order is cancelled (by you before it is accepted, by the business, or because the payment arrived late), we refund the full amount to the same payment method. If you do not pick up a ready order, the business can mark it as not picked up and that order is not refunded."
+          "body": "If you paid and the order is cancelled (by you before it is being prepared, by the business, or because the payment arrived after the order had expired), we refund the full amount to the same payment method. If you do not pick up a ready order, the business can mark it as not picked up and that order is not refunded."
         },
         "timing": {
           "title": "Timing",

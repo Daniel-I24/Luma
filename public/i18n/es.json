@@ -714,7 +714,8 @@
       "online": "Pagar en línea",
       "onlineHint": "Pagas en la página segura de Wompi (tarjeta, PSE o Nequi). Luma nunca ve los datos de tu pago.",
       "sandbox": "Modo de pruebas: no se cobra dinero real. Usa la tarjeta 4242 4242 4242 4242 o el Nequi 3991111111.",
-      "refundPolicy": "Política de pagos y reembolsos"
+      "refundPolicy": "Política de pagos y reembolsos",
+      "cancelRule": "Puedes cancelar hasta que el negocio empiece a preparar tu pedido. Si pagaste en línea, te devolvemos el dinero."
     },
     "totalNote": "El restaurante confirma el precio final al recibir el pedido.",
     "confirm": "Confirmar pedido",
@@ -1453,11 +1454,11 @@
         },
         "cancellations": {
           "title": "Cancelaciones",
-          "body": "Puedes cancelar un pedido mientras el negocio no lo haya aceptado. Si no completas el pago en 15 minutos, el pedido se cancela solo. El negocio puede cancelar un pedido aceptado indicando el motivo."
+          "body": "Puedes cancelar un pedido hasta que el negocio empiece a prepararlo: mientras espera tu pago, está pendiente o ya fue aceptado. Desde que se prepara ya no se puede cancelar en la app; escríbele al negocio. Si no completas el pago en 15 minutos, el pedido se cancela solo y no se cobra nada. El negocio puede cancelar un pedido indicando el motivo."
         },
         "refunds": {
           "title": "Cuándo te devolvemos el dinero",
-          "body": "Si pagaste y el pedido se cancela (por ti antes de que lo acepten, por el negocio o porque el pago llegó tarde), te devolvemos el valor completo al mismo medio de pago. Si no recoges un pedido listo, el negocio puede marcarlo como no recogido y ese pedido no se reembolsa."
+          "body": "Si pagaste y el pedido se cancela (por ti antes de que empiecen a prepararlo, por el negocio o porque el pago llegó cuando el pedido ya había expirado), te devolvemos el valor completo al mismo medio de pago. Si no recoges un pedido listo, el negocio puede marcarlo como no recogido y ese pedido no se reembolsa."
         },
         "timing": {
           "title": "Tiempos",

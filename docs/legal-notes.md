@@ -54,8 +54,24 @@ review the following before real users sign up.
   including discounts (`docs/orders.md`). Review the Estatuto del
   Consumidor (Ley 1480 de 2011) duties on price information, promotions
   (validity dates, conditions) and order cancellations.
-- Payments are at pick-up today; online payments (Wompi, `docs/payments.md`)
-  need their own terms and refund policy.
+- Online payments (Wompi sandbox, `docs/payments.md`) have their refund policy at
+  `/legal/refunds` (`public/legal/reembolsos.html`), version `2026-11-draft`.
+
+## Cancellation and refunds (what the app enforces, to confirm with a lawyer)
+
+- The customer cancels until the kitchen starts (`cancel_order`: awaiting payment,
+  pending or accepted). Checkout says so before confirming, and the refund policy
+  says the same since round 13 (it used to say "until accepted").
+- An unpaid online order expires after 15 minutes and nothing is charged; an attempt
+  that never reached Wompi closes itself (`expire_abandoned_payments`).
+- A paid order that is cancelled, by either side or because it expired, is refunded
+  in full to the same method: card payments are voided automatically, the rest from
+  the Wompi dashboard by the team (Operaciones).
+- A ready order not picked up (`no_show`) is not refunded. Confirm this is lawful
+  under Ley 1480 (check whether the right of withdrawal, art. 47, excludes
+  perishable food), and fill the maximum refund times with Wompi
+  (`legal.refunds.sections.timing`).
+- Pay at pick-up: refunds are the business's own matter.
 
 ## Minors and age
 

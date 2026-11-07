@@ -33,6 +33,7 @@ import { CheckoutStore } from '../../state/checkout.store';
         <p class="m-0 text-caption text-fg-subtle">
           {{ t(store.method() === 'online' ? 'checkout.payment.onlineHint' : 'checkout.payment.hint') }}
         </p>
+        <p class="m-0 text-caption text-fg-subtle" data-test="cancel-rule">{{ t('checkout.payment.cancelRule') }}</p>
         @if (store.method() === 'online') {
         <a routerLink="/legal/refunds" class="text-body-sm text-fg-accent underline">{{ t('checkout.payment.refundPolicy') }}</a>
         }
@@ -48,6 +49,7 @@ import { CheckoutStore } from '../../state/checkout.store';
         <div class="flex flex-col">
           <span class="text-title text-fg">{{ t(store.paymentLabelKey()) }}</span>
           <span class="text-caption text-fg-subtle">{{ t('checkout.payment.hint') }}</span>
+          <span class="text-caption text-fg-subtle" data-test="cancel-rule">{{ t('checkout.payment.cancelRule') }}</span>
         </div>
       </section>
       }
