@@ -26,7 +26,7 @@ describe('RouteMap travel modes', () => {
     TestBed.configureTestingModule({
       imports: [RouteMap, TranslocoTestingModule.forRoot({ langs: { es: {} }, translocoConfig: { availableLangs: ['es'], defaultLang: 'es' } })],
       providers: [
-        { provide: GeolocationService, useValue: { hasRealLocation: signal(true), coords: signal(FROM), requestLocation: vi.fn() } },
+        { provide: GeolocationService, useValue: { hasRealLocation: signal(true), state: signal('granted'), follow: () => () => undefined, requestIfAllowed: () => Promise.resolve(), coords: signal(FROM), requestLocation: vi.fn() } },
         { provide: RouteRepository, useValue: { route } },
         { provide: MapStylesLoader, useValue: { ensureLoaded: vi.fn() } },
         { provide: DeviceStorage, useValue: { read: (k: string) => stored.get(k) ?? null, write: (k: string, v: string) => !!stored.set(k, v) } },

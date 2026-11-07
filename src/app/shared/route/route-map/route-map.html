@@ -51,6 +51,16 @@
   <button
     type="button"
     class="pressable inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-primary px-4 text-body font-semibold text-primary-fg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+    [disabled]="tracing()"
+    (click)="directions()"
+  >
+    <app-luma-icon name="walk" size="sm" /> {{ t(tracing() ? 'route.tracing' : 'route.directions') }}
+  </button>
+  } @else if (noLocation()) {
+  <p class="m-0 text-caption text-fg-muted" role="status">{{ t('route.denied') }}</p>
+  <button
+    type="button"
+    class="pressable inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-primary px-4 text-body font-semibold text-primary-fg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
     (click)="directions()"
   >
     <app-luma-icon name="walk" size="sm" /> {{ t('route.directions') }}
@@ -69,6 +79,7 @@
     target="_blank"
     rel="noopener noreferrer"
     [href]="googleMaps()"
+    (click)="openGoogleMaps($event)"
   >
     <app-luma-icon name="map" size="sm" /> {{ t('route.googleMaps') }}
   </a>

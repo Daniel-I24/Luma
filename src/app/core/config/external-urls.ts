@@ -18,9 +18,15 @@ export class ExternalUrls {
   /** SVG namespace for markers built with createElementNS. */
   public static readonly SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 
-  /** Google Maps directions to a "lat,lng" or address. */
-  public static directions(destination: string): string {
-    return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`;
+  /** Google Maps directions to a "lat,lng" or address, with its travel mode when known. */
+  public static directions(destination: string, travelMode?: string): string {
+    const mode = travelMode ? `&travelmode=${travelMode}` : '';
+    return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}${mode}`;
+  }
+
+  /** Android: whichever map app the phone has, with the place marked. */
+  public static geo(lat: number, lng: number, name: string): string {
+    return `geo:${lat},${lng}?q=${lat},${lng}(${encodeURIComponent(name)})`;
   }
 
   /** WhatsApp chat with a number in E.164 without the plus sign. */

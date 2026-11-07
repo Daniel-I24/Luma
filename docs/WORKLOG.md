@@ -203,6 +203,15 @@ background reconnects on return. `insetsHandling: 'native'`: nothing injects unu
 `--safe-area-*`. Map pixel ratio up to 2, 40 cached tiles, feed cards `content-visibility`.
 Capacitor logs only in debug builds, stated in `capacitor.config.ts`.
 
+### Phase 3: routes
+
+The deployed `route` was from 2 Nov: older than the public OSM provider (4 Nov) and with
+no key, so every answer was the straight line, and `ai_cache` held no route. The deployment
+fixed that. "Cómo llegar" only re-framed the map: now it draws the route or opens the phone's
+navigation (`geo:`). `isStyleLoaded()` turns false while tiles load, so a route could wait
+for a "load" event already gone and never appear. The map follows the customer (50 m). The
+order detail lost its straight-line time. The straight line is dashed and labelled.
+
 ## Round 12 (2026-11-06)
 
 Prompt: notifications, a full review of the files, the new icon, three palettes,

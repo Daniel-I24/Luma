@@ -26,11 +26,11 @@ vi.mock('maplibre-gl', () => ({
 describe('RouteMap without the customer location', () => {
   it('still shows the map with the business pin and offers "Activar ubicación"', async () => {
     const requestLocation = vi.fn();
-    const created = vi.spyOn(BaseMap, 'createBaseMap').mockReturnValue({ remove: vi.fn() } as never);
+    const created = vi.spyOn(BaseMap, 'createBaseMap').mockReturnValue({ remove: vi.fn(), once: vi.fn() } as never);
     TestBed.configureTestingModule({
       imports: [RouteMap, TranslocoTestingModule.forRoot({ langs: { es: {} } })],
       providers: [
-        { provide: GeolocationService, useValue: { hasRealLocation: signal(false), coords: signal({ lat: 0, lng: 0 }), requestLocation } },
+        { provide: GeolocationService, useValue: { hasRealLocation: signal(false), state: signal('idle'), follow: () => () => undefined, requestIfAllowed: () => Promise.resolve(), coords: signal({ lat: 0, lng: 0 }), requestLocation } },
         { provide: RouteRepository, useValue: { route: vi.fn() } },
         { provide: MapStylesLoader, useValue: { ensureLoaded: vi.fn() } },
       ],

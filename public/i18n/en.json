@@ -2418,6 +2418,8 @@
   },
   "route": {
     "title": "How to get there",
+    "tracing": "Drawing the route…",
+    "denied": "Without your location we cannot draw the route here. Directions opens your phone's navigation.",
     "mode": "How you go",
     "modes": {
       "walk": "On foot",

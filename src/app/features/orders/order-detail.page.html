@@ -51,11 +51,6 @@
     <p class="m-0 flex items-center gap-2 text-body text-fg-muted">
       <app-luma-icon name="pin" size="sm" /> {{ order.business_address }}
     </p>
-    @if (travel(); as trip) {
-    <p class="m-0 text-body-sm text-fg-muted">
-      {{ t('orders.detail.travel.' + trip.mode, { minutes: trip.minutes }) }}
-    </p>
-    }
     @if (store.pickup(); as point) {
     <!-- MapLibre (about 1 MB) loads only once the screen is idle, never with the order itself. -->
     @defer (on idle) {

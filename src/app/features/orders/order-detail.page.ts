@@ -7,8 +7,6 @@ import { map } from 'rxjs';
 import { LumaBottomSheet, LumaButton, LumaEmptyState, LumaIcon, LumaIconButton, LumaNotice, LumaSkeleton, LumaSuccess } from '@design-system';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
 import { DateFormat } from '@shared/format/date-format';
-import { GeolocationService } from '@shared/geo/geolocation.service';
-import { Haversine } from '@shared/geo/distance';
 import { OrderEstimates } from '@shared/orders/order-estimates';
 import { OrderStatusBadge } from '@shared/orders/order-status-badge';
 import type { OrderWithItems } from '@shared/orders/order.model';
@@ -53,7 +51,6 @@ import { OrderDetailView } from './utils/order-detail-view';
 export class OrderDetailPage {
   protected readonly store = inject(OrderDetailStore);
   private readonly router = inject(Router);
-  private readonly geo = inject(GeolocationService);
   private readonly transloco = inject(TranslocoService);
   private readonly lang = toSignal(this.transloco.langChanges$, {
     initialValue: this.transloco.getActiveLang(),
@@ -75,13 +72,6 @@ export class OrderDetailPage {
     const ready = OrderEstimates.estimateReadyAt(order, order.business?.prep_minutes);
     const key = ready.kind === 'pickup' ? 'orders.detail.pickupAt' : 'orders.detail.readyAround';
     return { key, time: DateFormat.formatTime(ready.at, this.lang()) };
-  });
-  /** Approximate trip to the business, only once the user's location is known. */
-  protected readonly travel = computed(() => {
-    const point = this.store.pickup();
-    if (!point || !this.geo.hasRealLocation()) return null;
-    const { lat, lng } = this.geo.coords();
-    return OrderEstimates.estimateTravelMinutes(Haversine.haversineKm(lat, lng, point.latitude, point.longitude));
   });
 
   constructor() {

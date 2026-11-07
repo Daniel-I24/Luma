@@ -12,14 +12,16 @@ export interface TravelModeInfo {
   readonly straightKmh: number;
   /** The moto uses the car's profile with an adjusted time. */
   readonly approximate: boolean;
+  /** Its name in Google Maps' URL. */
+  readonly google: string;
 }
 
 export /** Never empty: the first mode is the default. */
 const TRAVEL_MODES: readonly [TravelModeInfo, ...TravelModeInfo[]] = [
-  { mode: 'walk', icon: 'walk', straightKmh: 4.8, approximate: false },
-  { mode: 'bike', icon: 'bike', straightKmh: 15, approximate: false },
-  { mode: 'moto', icon: 'moto', straightKmh: 30, approximate: true },
-  { mode: 'drive', icon: 'car', straightKmh: 25, approximate: false },
+  { mode: 'walk', icon: 'walk', straightKmh: 4.8, approximate: false, google: 'walking' },
+  { mode: 'bike', icon: 'bike', straightKmh: 15, approximate: false, google: 'bicycling' },
+  { mode: 'moto', icon: 'moto', straightKmh: 30, approximate: true, google: 'two-wheeler' },
+  { mode: 'drive', icon: 'car', straightKmh: 25, approximate: false, google: 'driving' },
 ];
 
 const KEY = 'route.mode';

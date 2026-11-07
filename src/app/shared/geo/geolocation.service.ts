@@ -21,6 +21,8 @@ export class GeolocationService {
   private readonly _state = signal<GeoState>('idle');
   private readonly _coords = signal<GeoCoords>(PASTO_CENTRE);
   private readonly _accuracy = signal<number | null>(null);
+  private watchId: number | null = null;
+  private followers = 0;
 
   public readonly state = computed(() => this._state());
   public readonly coords = computed(() => this._coords());
@@ -60,5 +62,43 @@ export class GeolocationService {
       },
       highAccuracy ? { enableHighAccuracy: true, timeout: 20_000, maximumAge: 0 } : { timeout: 10_000, maximumAge: 60_000 },
     );
+  }
+
+  /** Reads the position without asking when the permission was already given. */
+  public async requestIfAllowed(): Promise<void> {
+    if (this._state() === 'granted' || this._state() === 'locating') return;
+    try {
+      const status = await navigator.permissions?.query({ name: 'geolocation' });
+      if (status?.state === 'granted') this.requestLocation();
+    } catch {
+      // No Permissions API here: the screen keeps its "Activar ubicación".
+    }
+  }
+
+  /**
+   * Keeps the position current while someone needs it (the route map): one GPS
+   * watch for all of them. A failed reading keeps the last position. Returns the stop.
+   */
+  public follow(): () => void {
+    if (!navigator.geolocation) return () => undefined;
+    if (this.followers++ === 0) {
+      this.watchId = navigator.geolocation.watchPosition(
+        (pos) => {
+          this._coords.set({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+          this._accuracy.set(Math.round(pos.coords.accuracy));
+        },
+        () => undefined,
+        { maximumAge: 10_000, timeout: 30_000 },
+      );
+    }
+    let stopped = false;
+    return () => {
+      if (stopped) return;
+      stopped = true;
+      if (--this.followers === 0 && this.watchId !== null) {
+        navigator.geolocation.clearWatch(this.watchId);
+        this.watchId = null;
+      }
+    };
   }
 }

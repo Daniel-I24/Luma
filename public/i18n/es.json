@@ -2418,6 +2418,8 @@
   },
   "route": {
     "title": "Cómo llegar",
+    "tracing": "Trazando la ruta…",
+    "denied": "Sin tu ubicación no podemos trazar la ruta aquí. Cómo llegar abre la navegación de tu teléfono.",
     "mode": "Cómo vas",
     "modes": {
       "walk": "A pie",
