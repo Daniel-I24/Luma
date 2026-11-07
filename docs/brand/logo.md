@@ -2,7 +2,7 @@
 
 Since round 12 the launcher icon is `assets/icon-source.png`: a pin with a chef's hat,
 fork and spoon over the Pasto volcanoes. The pin-moon notes below are its history;
-the "Luma IA" icon in `LumaIcon` still draws the crescent.
+since round 13 the "Luma IA" icon in `LumaIcon` is the same pin with a spark inside.
 
 Three concepts, all hand-built SVG on a 1024 grid (`docs/brand/concepts/`).
 
@@ -45,4 +45,4 @@ Three concepts, all hand-built SVG on a 1024 grid (`docs/brand/concepts/`).
 | Notification | `res/drawable/ic_stat_luma.xml` (white on transparent, pin with fork and spoon); accent `#E8127F`, `AndroidManifest.xml` and `push-dispatch/fcm.ts` |
 | Native splash | `res/drawable-nodpi/ic_splash_mark.png` on `@color/luma_splash_background` (the deep purple of the icon), Android 12+ SplashScreen API (`styles.xml`) |
 | Web | `public/favicon.svg`, `favicon.ico`, `public/icons/`, `manifest.webmanifest`, `theme-color` in `src/index.html` |
-| Luma IA icon | `luma-ai` in `LumaIcon` (the crescent and the dot in outline), instead of sparkles |
+| Luma IA icon | `luma-ai` in `LumaIcon`: the outline of the logo pin with a four-point spark inside (round 13; it used to be the crescent) |
