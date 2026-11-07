@@ -22,6 +22,9 @@ const FORBIDDEN_FILES = [
   [/service-account[^/]*\.json$/i, 'service account'],
   [/(^|\/)src\/environments\/environment(\.deploy)?\.ts$/, 'environment file with real keys'],
   [/(^|\/)\.env(\.[a-z]+)?$/, '.env file'],
+  [/(^|\/)[\w.-]+\.env$/, 'env file of secrets (app.env, functions.env, web.env)'],
+  [/(^|\/)luma-secrets\//, 'luma-secrets folder'],
+  [/(^|\/)wompi-sandbox\.txt$/, 'Wompi keys'],
   [/(^|\/)supabase\/\.temp\//, 'Supabase CLI link data (project reference)'],
 ];
 

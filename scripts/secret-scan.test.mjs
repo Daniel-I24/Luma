@@ -27,7 +27,7 @@ test('finds private keys and provider API keys, never echoing them', () => {
 });
 
 test('some files must never be tracked', () => {
-  for (const path of ['android/app/google-services.json', 'release.jks', 'demo.p12', 'src/environments/environment.ts', '.env', 'x/my-service-account.json']) {
+  for (const path of ['android/app/google-services.json', 'release.jks', 'demo.p12', 'src/environments/environment.ts', '.env', 'x/my-service-account.json', 'app.env', 'luma-secrets/functions.env', 'wompi-sandbox.txt']) {
     assert.ok(forbiddenFile(path), path);
   }
   for (const path of ['src/environments/environment.example.ts', 'src/environments/environment.prod.ts', 'package.json']) {

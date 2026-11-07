@@ -30,7 +30,7 @@ yarn-error.log
 .history/*
 
 # Miscellaneous
-/.angular/cache
+/.angular/
 .sass-cache/
 /connect.lock
 /coverage
@@ -55,6 +55,8 @@ supabase/.temp/
 # Android signing: never commit keystores or their passwords
 *.jks
 *.keystore
+*.p12
+*.pfx
 keystore.properties
 
 # Firebase: per-project config and service accounts, never committed
@@ -69,5 +71,10 @@ docs/screens/
 .env
 .env.*
 !.env.example
+*.env
+
+# Secret files of scripts/luma.ps1 live in %USERPROFILE%luma-secrets, never here
+luma-secrets/
+wompi-sandbox.txt
 supabase/functions/.env
 supabase/.branches/
