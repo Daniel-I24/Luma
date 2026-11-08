@@ -1,19 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { OrderEstimates } from './order-estimates';
 
-describe('estimateTravelMinutes', () => {
-  it('walks up to 1.5 km at about 4.8 km/h', () => {
-    expect(OrderEstimates.estimateTravelMinutes(0.4)).toEqual({ mode: 'walk', minutes: 5, approximate: true });
-    expect(OrderEstimates.estimateTravelMinutes(1.5)).toEqual({ mode: 'walk', minutes: 19, approximate: true });
-    expect(OrderEstimates.estimateTravelMinutes(0)).toEqual({ mode: 'walk', minutes: 1, approximate: true });
-  });
-
-  it('drives beyond 1.5 km at about 20 km/h', () => {
-    expect(OrderEstimates.estimateTravelMinutes(1.6)).toEqual({ mode: 'vehicle', minutes: 5, approximate: true });
-    expect(OrderEstimates.estimateTravelMinutes(10)).toEqual({ mode: 'vehicle', minutes: 30, approximate: true });
-  });
-});
-
 describe('estimateReadyAt', () => {
   const created = '2026-10-17T12:00:00.000Z';
 

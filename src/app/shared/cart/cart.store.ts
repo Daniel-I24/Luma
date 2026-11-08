@@ -54,12 +54,6 @@ export class CartStore implements UserScopedState {
     return 'added';
   }
 
-  /** Empties the cart and adds the product (answer to a conflict). */
-  public replaceWith(product: CartProduct): AddOutcome {
-    this.commit(EMPTY_CART);
-    return this.add(product);
-  }
-
   /** Sets a line's quantity within the limits; 0 removes it. */
   public setQuantity(menuItemId: string, quantity: number): void {
     const others = CartMath.cartUnits(this.items().filter((i) => i.menuItemId !== menuItemId));

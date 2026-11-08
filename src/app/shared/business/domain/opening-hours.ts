@@ -130,9 +130,4 @@ export class BusinessStatusRules {
   ): BusinessStatus {
     return OpeningHours.from(hours).statusAt(now, soonWindowMinutes);
   }
-
-  /** Whether a status means the business is serving customers now. */
-  public static isOpenStatus(status: BusinessStatus): boolean {
-    return status === 'open' || status === 'closing-soon';
-  }
 }

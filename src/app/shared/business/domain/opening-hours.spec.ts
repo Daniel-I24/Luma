@@ -38,7 +38,7 @@ describe('OpeningHours (cases shared with the SQL business_open_at)', () => {
       const moment = at(c.at.day, c.at.time);
       expect(hours.isOpenAt(moment)).toBe(c.open);
       expect(BusinessStatusRules.getBusinessStatus(rows(c), moment)).toBe(c.status);
-      expect(BusinessStatusRules.isOpenStatus(hours.statusAt(moment))).toBe(c.open);
+      expect(['open', 'closing-soon'].includes(hours.statusAt(moment))).toBe(c.open);
     });
   }
 });

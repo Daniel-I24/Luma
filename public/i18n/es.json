@@ -494,10 +494,6 @@
       "cancelConfirm": "Sí, cancelar",
       "keep": "Mantener pedido",
       "notFoundDescription": "Puede que el enlace sea incorrecto o que el pedido no sea tuyo.",
-      "travel": {
-        "walk": "A unos {{minutes}} min a pie (aprox.)",
-        "vehicle": "A unos {{minutes}} min en vehículo (aprox.)"
-      },
       "orderAgain": "Pedir de nuevo",
       "cancelledByYou": "Cancelaste este pedido.",
       "paymentExpired": "Se acabó el tiempo para pagar: el pedido expiró y no se cobró nada.",

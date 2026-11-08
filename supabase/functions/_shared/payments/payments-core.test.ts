@@ -9,11 +9,11 @@ import { type PaymentStatus, PaymentStateMachine } from './payment-state-machine
 import { sha256Hex } from '../secure-compare.ts';
 import { DOC_INTEGRITY_SECRET, sandboxSecrets } from './payments.test-helper.ts';
 
-Deno.test('Money is whole cents from whole pesos; floats and negatives are refused', () => {
-  assertEquals(Money.fromPesos(24900).cents, 2490000);
+Deno.test('Money is whole cents; floats and negatives are refused', () => {
+  assertEquals(Money.fromCents(2490000).cents, 2490000);
   assertEquals(Money.fromCents(2490000).equals({ cents: 2490000, currency: 'COP' }), true);
   assertEquals(Money.fromCents(2490000).equals({ cents: 2490000, currency: 'USD' }), false);
-  for (const bad of [10.5, -1, Number.NaN, Number.MAX_SAFE_INTEGER]) assertThrows(() => Money.fromPesos(bad));
+  for (const bad of [10.5, -1, Number.NaN, Number.MAX_SAFE_INTEGER + 1]) assertThrows(() => Money.fromCents(bad));
   assertThrows(() => Money.fromCents(0.1));
 });
 
@@ -50,7 +50,7 @@ Deno.test('credentials need WOMPI_ENV and keys with the prefix of that environme
 Deno.test('the checkout URL carries every documented parameter and a signature over them', async () => {
   const credentials = new MerchantCredentialsFactory((n) => (sandboxSecrets() as Readonly<Record<string, string>>)[n]).forPlatform()!;
   const url = new URL(await new CheckoutUrlBuilder(credentials)
-    .withReference('luma_abc').withAmount(Money.fromPesos(12000))
+    .withReference('luma_abc').withAmount(Money.fromCents(1200000))
     .withRedirectUrl('luma://payments/return?order=o1').expiringAt(new Date('2026-10-24T15:00:00Z')).build());
   assertEquals(url.origin + url.pathname, 'https://checkout.wompi.co/p/');
   const q = Object.fromEntries(url.searchParams);

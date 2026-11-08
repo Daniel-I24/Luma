@@ -251,3 +251,12 @@ Asked for by the owner, with what stopped being used:
 | Removed | Proof it was unused | Replacement |
 | --- | --- | --- |
 | `src/app/features/auth/auth-page.css` | Imported only by the four auth pages; no test or e2e selects its classes | Tailwind utilities with the same tokens in the four templates (screens compared: only a 2-3 px shift from the typography line heights) |
+| `OrderEstimates.estimateTravelMinutes`, `TravelEstimate` and `orders.detail.travel.*` (es, en) | No caller since the order detail shows the real route (round 13, phase 3); `git grep` finds only its spec | Its two spec cases went with it: they tested only this function |
+| `BusinessStatusRules.isOpenStatus` | Only its spec called it | The shared opening-hours case checks the status directly |
+| `CartStore.replaceWith` | The conflict sheet empties the cart and adds (CartActions); only the spec called it | The spec case runs that path: `clear()` then `add()` |
+| `Money.fromPesos` | Every caller uses `fromCents` (prepare_payment and Wompi give cents) | The money test checks the same refused values on `fromCents` |
+
+Kept, with the reason: `PaymentStateMachine` (Edge Functions) has no production caller, but it is the
+TypeScript side of the 64 shared transition vectors and the documented state-machine pattern
+(`docs/architecture/patterns.md`); removing it would remove its test. The 12 small jscpd clones
+(0.33 %) are thin delegations with different types; a base class would be inheritance.

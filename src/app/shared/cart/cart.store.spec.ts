@@ -51,7 +51,9 @@ describe('CartStore', () => {
     expect(cart.add(product('x1', 1000, 'b2'))).toBe('conflict');
     expect(cart.units()).toBe(1);
 
-    expect(cart.replaceWith(product('x1', 1000, 'b2'))).toBe('added');
+    // What the conflict sheet does (CartActions): empty the cart, then add.
+    cart.clear();
+    expect(cart.add(product('x1', 1000, 'b2'))).toBe('added');
     expect(cart.items().map((i) => i.menuItemId)).toEqual(['x1']);
     expect(cart.businessId()).toBe('b2');
   });

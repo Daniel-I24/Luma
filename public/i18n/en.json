@@ -494,10 +494,6 @@
       "cancelConfirm": "Yes, cancel",
       "keep": "Keep order",
       "notFoundDescription": "The link may be wrong or the order is not yours.",
-      "travel": {
-        "walk": "About {{minutes}} min on foot (approx.)",
-        "vehicle": "About {{minutes}} min by vehicle (approx.)"
-      },
       "orderAgain": "Order again",
       "cancelledByYou": "You cancelled this order.",
       "paymentExpired": "The time to pay ran out: the order expired and nothing was charged.",
