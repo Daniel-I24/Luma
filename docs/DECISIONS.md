@@ -182,7 +182,7 @@ alternative that was not taken. The safest, most reversible option wins.
   the in-app list (translated) stays the source of truth; marketing consent
   is explicit.
 - **Alternative**: Supabase database webhooks with the service role key, or
-  retries with attempts (in docs/db-followups.md).
+  retries with attempts (done in round 13, migration 62).
 
 ## 2026-10-19 — Push: Android only, behind PUSH_ENABLED, permission on demand
 

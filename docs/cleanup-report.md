@@ -260,3 +260,13 @@ Kept, with the reason: `PaymentStateMachine` (Edge Functions) has no production 
 TypeScript side of the 64 shared transition vectors and the documented state-machine pattern
 (`docs/architecture/patterns.md`); removing it would remove its test. The 12 small jscpd clones
 (0.33 %) are thin delegations with different types; a base class would be inheritance.
+
+Phase D (repository):
+
+| Removed | Proof it was unused | Replacement |
+| --- | --- | --- |
+| `docs/design-prototype/` (9 files) | Nothing builds or runs it; it showed the themes removed in round 13 (Indigo, Midnight, Pearl, Sunset). Only prose referenced it | Visual reference: `docs/brand/palette-options.md` and the screen captures; CLAUDE.md and the steering updated |
+| `docs/roadmap/fase-roles-y-apk.md` | The October plan, done (its progress lived in the worklog); no reference | `docs/WORKLOG.md` |
+| `docs/requirements-traceability.md` | Status of round 2 (2026-10-27); no reference | The specs and SQL suites it listed are still there |
+| `docs/quality-report.md` | Status of rounds 9-10; one comment pointed to it | `docs/optimization-report.md` |
+| `docs/db-followups.md` | Its push retry idea is migration 62; the other idea fits in one line | One line in `docs/migrations.md` |

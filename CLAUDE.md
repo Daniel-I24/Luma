@@ -56,6 +56,6 @@ Close each phase, and every prompt, only when all of this holds:
 2. Cleanup: run `npx knip` and `npx depcheck` and look for files, folders, exports,
    dependencies, assets, commented-out lines and documents that serve no purpose. Delete them
    ONLY when you prove they are unused (no references, everything above still green). Never
-   delete what CLAUDE.md, `.kiro/steering/` or `docs/design-prototype/` reference.
+   delete what CLAUDE.md or `.kiro/steering/` reference.
 3. Record every deletion in `docs/cleanup-report.md`.
 4. Update `docs/WORKLOG.md` and every document the change affects.

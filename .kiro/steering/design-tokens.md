@@ -4,7 +4,7 @@ inclusion: always
 # Diseño y design tokens
 
 Luma debe sentirse moderna, elegante, limpia y profesional; mobile-first, poco ruido visual.
-Referencia visual: `docs/design-prototype/` (prototipo HTML; solo referencia, no código para copiar).
+Referencia visual: las capturas de `node scripts/screens/capture.mjs` (docs/brand/screen-review.md) y `docs/brand/palette-options.md`.
 
 ## Identidad
 - Color de marca: `#0D4A6B` (azul cielo andino). Acento: `#B23A0C` (ají; IA y realces). Tipografías: Bricolage Grotesque (títulos y logotipo) y Figtree (texto), autoalojadas en `public/fonts` (subconjunto latino). Identidad de la ronda 2: `docs/brand/`.

@@ -8,7 +8,7 @@ import type { IconName } from '../icon/luma-icons';
  * and the given icon when there is no picture or it fails to load.
  * A plain image on purpose: NgOptimizedImage without an image CDN adds no
  * srcset, and with free-ratio photos under object-cover it warns on every
- * load (NG02952/NG02960); docs/quality-report.md.
+ * load (NG02952/NG02960).
  */
 @Component({
   selector: 'app-luma-image',

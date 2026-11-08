@@ -1,7 +1,7 @@
 /* ─────────────────────────────────────────────
    LUMA SCALE TOKENS — typography, spacing, radii, shadows and motion.
-   Source: docs/design-prototype/css/tokens.css. Themes override only the
-   card, sheet and float shadows.
+   Themes (tokens.css, themes/crema.css) override only the card, sheet and
+   float shadows.
 ───────────────────────────────────────────── */
 
 @theme static {

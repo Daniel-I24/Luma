@@ -91,8 +91,8 @@ needs a drop and a create in the same file, noted in the file header).
 
 **Database freeze (2026-10-19)**: the list above is final for the launch.
 After the freeze, migrations and functions change only to fix real bugs
-(each noted in docs/WORKLOG.md); other ideas go to
-[db-followups.md](db-followups.md).
+(each noted in docs/WORKLOG.md). Open idea: `profiles.language`, so push texts follow
+the user's language (Spanish only today).
 
 Earlier rows were edited in place while still unapplied (separate consents,
 email confirmation checks, frozen identity while pending, stale reviews,
