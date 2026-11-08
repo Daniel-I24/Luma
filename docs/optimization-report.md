@@ -111,3 +111,21 @@ opening the map: measured alone, feed to map ran at 35-42 fps for its 900 ms wit
 over 50 ms (MapLibre parsing the style and starting WebGL). Skipping the view transition into
 and out of the map was tried and reverted: entering improved to 45-51 fps, but leaving the map
 fell from 96 to 31-38 fps, because the crossfade was hiding the paint of the new screen.
+
+## Round 14, phase C (2026-11-07)
+
+"Before" is `39845c1` (start of the round); "after" is the end of phase C. Same commands.
+
+| Measure | Before | After | Note |
+| --- | ---: | ---: | --- |
+| Initial bundle, raw | 681.40 kB | 682.29 kB | +0.9 kB: payment-state pipe and the cancel rule in checkout (phase A) |
+| MapLibre | lazy (1.07 MB) | lazy (1.07 MB) | Only on the map and the order route |
+| Component CSS files (`src/app/**/*.css`) | 1,050 lines | 941 lines | `auth-page.css` replaced by utilities |
+| Inline `styles:` blocks that Tailwind resolves | 3 | 0 | Tab layout and the tour's host, dim and bubble; the tour hole keeps its CSS |
+| Loose limits in Edge Functions | 13 literals | 0 | Named constants; promotion ranges written once instead of three times |
+| Foreign keys without an index (production) | 7 | 0 after migration 66 | New SQL suite keeps it at 0 |
+| Duplicate requests per screen (simulated backend) | 0 identical | 0 identical | `/profile` reads three different column sets of the user's row, in parallel |
+| Code only its tests used | 4 symbols + 2 i18n keys | 0 | `PaymentStateMachine` kept (shared vectors) |
+| Clones (jscpd, 8+ lines, app and functions) | 12 (0.33 %) | 12 (0.33 %) | Thin delegations with different types |
+| Files / lines in `src` and `supabase/functions` (ts, html, css) | 908 / 61,604 | 914 / 61,704 | New shared order pieces and specs (phase A) |
+| Frame rate with CPU x4 | not measured | all scenarios > 60 fps | See "Frame rate (round 13)" above |

@@ -188,6 +188,19 @@ SQL suites, Deno 2.5.6 in Docker for the functions.
   `docs/optimization-report.md`.
 - Luma IA icon: the pin of the new logo with a spark.
 
+### Phase B: security
+
+History of every ref scanned: no real secret published (docs/security-findings.md). .gitignore and
+the secret scan cover the luma.ps1 files. RLS, views, functions, buckets, CORS, CSP and logs reviewed
+read-only in production; the only gap was the CORS of reconcile-payments (fixed in phase A).
+
+### Phase C: code quality
+
+No hard-coded user text in templates; PowerShell comments in English. Named constants for the loose
+limits of the Edge Functions. Auth pages, tab layout and tour on Tailwind (auth-page.css removed).
+Code only its tests used removed (cleanup report). Migration 66 indexes seven foreign keys.
+Before/after table in docs/optimization-report.md.
+
 ## Round 13 (2026-11-07)
 
 ### Phase 0: scripts/luma.ps1 changed nothing in production
