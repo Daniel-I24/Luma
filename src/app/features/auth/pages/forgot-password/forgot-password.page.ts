@@ -26,9 +26,6 @@ const STEP_NUMBER = { email: 1, code: 2, password: 3 } as const;
   imports: [RouterLink, TranslocoModule, LumaButton, LumaCard, LumaInput, LumaNotice, PasswordChecklist],
   providers: [RecoveryFlow],
   templateUrl: './forgot-password.page.html',
-  styles: `
-    @import '../../auth-page.css';
-  `,
 })
 export class ForgotPasswordPage {
   private readonly landing = inject(LandingNavigation);

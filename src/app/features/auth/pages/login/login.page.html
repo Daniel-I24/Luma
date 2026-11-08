@@ -1,12 +1,12 @@
 <ng-container *transloco="let t">
-  <div class="auth-page doodles doodles--veil">
-    <app-luma-card elevation="raised">
-      <header class="auth-header">
-        <h1 class="auth-title">{{ t('auth.login.title') }}</h1>
-        <p class="auth-subtitle">{{ t('auth.login.subtitle') }}</p>
+  <div class="doodles doodles--veil flex min-h-dvh items-center justify-center bg-canvas p-5 pt-[calc(env(safe-area-inset-top)+var(--spacing-5))] pb-[calc(env(safe-area-inset-bottom)+var(--spacing-5))]">
+    <app-luma-card class="w-full max-w-auth" elevation="raised">
+      <header class="mb-6 text-center">
+        <h1 class="m-0 mb-2 text-h2 font-bold text-fg">{{ t('auth.login.title') }}</h1>
+        <p class="m-0 text-body text-fg-muted">{{ t('auth.login.subtitle') }}</p>
       </header>
 
-      <form class="auth-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <form class="flex flex-col gap-4" [formGroup]="form" (ngSubmit)="onSubmit()">
         <app-luma-input
           inputId="login-email"
           [label]="t('auth.login.emailLabel')"
@@ -44,13 +44,13 @@
         </app-luma-input>
 
         @if (submission.errorKey()) {
-        <p class="auth-error" role="alert">{{ t(submission.errorKey()!) }}</p>
+        <p class="m-0 rounded-md bg-danger-bg px-4 py-3 text-body text-danger" role="alert">{{ t(submission.errorKey()!) }}</p>
         } @if (unconfirmed()) {
         <app-luma-button variant="secondary" [disabled]="resend.submitting()" (clicked)="verifyEmail()">{{
           t('auth.login.verifyEmail')
         }}</app-luma-button>
         @if (resend.errorKey(); as key) {
-        <p class="auth-error" role="alert">{{ t(key) }}</p>
+        <p class="m-0 rounded-md bg-danger-bg px-4 py-3 text-body text-danger" role="alert">{{ t(key) }}</p>
         } }
 
         <app-luma-button
@@ -58,19 +58,19 @@
           size="lg"
           type="submit"
           [disabled]="submission.submitting()"
-          class="auth-submit"
+          class="mt-2 w-full"
           [fullWidth]="true"
           >{{ t('auth.login.submit') }}</app-luma-button
         >
       </form>
 
-      <footer class="auth-footer">
-        <a [routerLink]="['/auth/forgot-password']" class="auth-link">
+      <footer class="mt-5 flex flex-col items-center gap-2">
+        <a [routerLink]="['/auth/forgot-password']" class="inline-flex min-h-11 items-center text-body font-medium text-primary no-underline hover:underline">
           {{ t('auth.login.forgotPassword') }}
         </a>
-        <p class="auth-switch">
+        <p class="m-0 text-center text-body text-fg-muted">
           {{ t('auth.login.noAccount') }}
-          <a [routerLink]="['/auth/register']" class="auth-link">
+          <a [routerLink]="['/auth/register']" class="inline-flex min-h-11 items-center text-body font-medium text-primary no-underline hover:underline">
             {{ t('auth.login.register') }}
           </a>
         </p>

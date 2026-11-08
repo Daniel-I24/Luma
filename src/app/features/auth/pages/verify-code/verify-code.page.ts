@@ -26,7 +26,6 @@ export const RESEND_COOLDOWN_SECONDS = 60;
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, TranslocoModule, LumaButton, LumaCard, LumaInput],
   templateUrl: './verify-code.page.html',
-  styleUrl: '../../auth-page.css',
 })
 export class VerifyCodePage {
   private readonly codes = inject(AuthCodeService);

@@ -43,9 +43,6 @@ const STEP_TITLE_ID = 'signup-step-title';
     ConsentStep,
   ],
   templateUrl: './register.page.html',
-  styles: `
-    @import '../../auth-page.css';
-  `,
 })
 export class RegisterPage {
   private readonly auth = inject(AuthService);

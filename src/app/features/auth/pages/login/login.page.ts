@@ -20,9 +20,6 @@ import { AuthFormSubmission } from '../../forms/auth-form-submission';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, RouterLink, TranslocoModule, LumaButton, LumaCard, LumaIconButton, LumaInput],
   templateUrl: './login.page.html',
-  styles: `
-    @import '../../auth-page.css';
-  `,
 })
 export class LoginPage {
   private readonly auth = inject(AuthService);

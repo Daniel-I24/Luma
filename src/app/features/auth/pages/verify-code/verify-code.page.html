@@ -1,15 +1,15 @@
 <ng-container *transloco="let t">
-  <div class="auth-page doodles doodles--veil">
-    <app-luma-card elevation="raised">
-      <header class="auth-header">
-        <h1 class="auth-title">{{ t('auth.verify.title') }}</h1>
-        <p class="auth-subtitle">
+  <div class="doodles doodles--veil flex min-h-dvh items-center justify-center bg-canvas p-5 pt-[calc(env(safe-area-inset-top)+var(--spacing-5))] pb-[calc(env(safe-area-inset-bottom)+var(--spacing-5))]">
+    <app-luma-card class="w-full max-w-auth" elevation="raised">
+      <header class="mb-6 text-center">
+        <h1 class="m-0 mb-2 text-h2 font-bold text-fg">{{ t('auth.verify.title') }}</h1>
+        <p class="m-0 text-body text-fg-muted">
           @if (knownEmail(); as address) { {{ t('auth.verify.subtitleTo', { email: address }) }} } @else {
           {{ t('auth.verify.subtitle') }} }
         </p>
       </header>
 
-      <form class="auth-form" novalidate (submit)="onSubmit($event)">
+      <form class="flex flex-col gap-4" novalidate (submit)="onSubmit($event)">
         @if (!knownEmail()) {
         <app-luma-input
           inputId="verify-email"
@@ -37,21 +37,21 @@
           (valueChange)="onCode($event)"
         />
 
-        <app-luma-button variant="primary" size="lg" type="submit" class="auth-submit" [fullWidth]="true" [disabled]="submission.submitting()">{{
+        <app-luma-button variant="primary" size="lg" type="submit" class="mt-2 w-full" [fullWidth]="true" [disabled]="submission.submitting()">{{
           t(submission.submitting() ? 'auth.verify.checking' : 'auth.verify.submit')
         }}</app-luma-button>
       </form>
 
-      <div class="auth-footer" aria-live="polite">
+      <div class="mt-5 flex flex-col items-center gap-2" aria-live="polite">
         @if (resent()) {
-        <p class="auth-switch" role="status">{{ t('auth.verify.resent') }}</p>
+        <p class="m-0 text-center text-body text-fg-muted" role="status">{{ t('auth.verify.resent') }}</p>
         } @if (resend.errorKey(); as key) {
-        <p class="auth-error" role="alert">{{ t(key) }}</p>
+        <p class="m-0 rounded-md bg-danger-bg px-4 py-3 text-body text-danger" role="alert">{{ t(key) }}</p>
         }
         <app-luma-button variant="ghost" [disabled]="cooldown.remaining() > 0 || resend.submitting()" (clicked)="resendCode()">{{
           cooldown.remaining() > 0 ? t('auth.verify.resendIn', { seconds: cooldown.remaining() }) : t('auth.verify.resend')
         }}</app-luma-button>
-        <a [routerLink]="['/auth/login']" class="auth-link">{{ t('auth.forgotPassword.backToLogin') }}</a>
+        <a [routerLink]="['/auth/login']" class="inline-flex min-h-11 items-center text-body font-medium text-primary no-underline hover:underline">{{ t('auth.forgotPassword.backToLogin') }}</a>
       </div>
     </app-luma-card>
   </div>

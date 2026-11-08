@@ -1,12 +1,12 @@
 <ng-container *transloco="let t">
-  <div class="auth-page doodles doodles--veil">
-    <app-luma-card elevation="raised">
-      <header class="auth-header">
-        <h1 class="auth-title">{{ t('auth.register.title') }}</h1>
-        <p class="auth-subtitle">{{ t('auth.register.subtitle') }}</p>
+  <div class="doodles doodles--veil flex min-h-dvh items-center justify-center bg-canvas p-5 pt-[calc(env(safe-area-inset-top)+var(--spacing-5))] pb-[calc(env(safe-area-inset-bottom)+var(--spacing-5))]">
+    <app-luma-card class="w-full max-w-auth" elevation="raised">
+      <header class="mb-6 text-center">
+        <h1 class="m-0 mb-2 text-h2 font-bold text-fg">{{ t('auth.register.title') }}</h1>
+        <p class="m-0 text-body text-fg-muted">{{ t('auth.register.subtitle') }}</p>
       </header>
 
-      <form class="auth-form" novalidate (submit)="onSubmit($event)">
+      <form class="flex flex-col gap-4" novalidate (submit)="onSubmit($event)">
         <app-signup-progress [index]="store.index()" [total]="store.total" />
         <h2 [id]="stepTitleId" class="m-0 text-title text-fg outline-none" tabindex="-1">
           {{ t('auth.signup.steps.' + store.step()) }}
@@ -29,7 +29,7 @@
         </div>
 
         @if (submission.errorKey()) {
-        <p class="auth-error" role="alert">{{ t(submission.errorKey()!) }}</p>
+        <p class="m-0 rounded-md bg-danger-bg px-4 py-3 text-body text-danger" role="alert">{{ t(submission.errorKey()!) }}</p>
         }
 
         <div class="flex gap-3">
@@ -50,10 +50,10 @@
         </div>
       </form>
 
-      <footer class="auth-footer">
-        <p class="auth-switch">
+      <footer class="mt-5 flex flex-col items-center gap-2">
+        <p class="m-0 text-center text-body text-fg-muted">
           {{ t('auth.register.hasAccount') }}
-          <a [routerLink]="['/auth/login']" class="auth-link"> {{ t('auth.register.login') }} </a>
+          <a [routerLink]="['/auth/login']" class="inline-flex min-h-11 items-center text-body font-medium text-primary no-underline hover:underline"> {{ t('auth.register.login') }} </a>
         </p>
       </footer>
     </app-luma-card>

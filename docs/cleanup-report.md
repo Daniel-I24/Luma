@@ -245,3 +245,9 @@ Asked for by the owner, with what stopped being used:
   replaced by `crema.css`; a saved preference migrates (`ThemeService`).
 - `.doodles--on-brand`, `--color-doodle-on-brand`: the gradient left the screens that used them.
 - `MyOrderItem` is no longer exported (knip): it is used only in its own file.
+
+## Round 14: review before the presentation (2026-11-07)
+
+| Removed | Proof it was unused | Replacement |
+| --- | --- | --- |
+| `src/app/features/auth/auth-page.css` | Imported only by the four auth pages; no test or e2e selects its classes | Tailwind utilities with the same tokens in the four templates (screens compared: only a 2-3 px shift from the typography line heights) |
