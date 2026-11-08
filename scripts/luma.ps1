@@ -10,7 +10,7 @@
 param([string]$Option = '')
 $ErrorActionPreference = 'Stop'
 foreach ($part in 'common', 'remote', 'ai', 'push', 'payments', 'routes', 'whatsapp', 'apk', 'doctor', 'all') {
-  . (Join-Path $PSScriptRoot "luma\$part.ps1")
+  . (Join-Path $PSScriptRoot "luma/$part.ps1")
 }
 
 $menu = [ordered]@{

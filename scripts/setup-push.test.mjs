@@ -10,8 +10,8 @@ const common = read('./luma/remote.ps1');
 const push = read('./luma/push.ps1');
 
 test('setup-push.ps1 is option 2 of luma.ps1, with the secrets folder under USERPROFILE', () => {
-  assert.match(script, /Join-Path \$env:USERPROFILE 'luma-secrets'/);
-  assert.match(script, /luma\\push\.ps1/);
+  assert.match(script, /Join-Path \$\(if \(\$env:USERPROFILE\) \{ \$env:USERPROFILE \} else \{ \$HOME \}\) 'luma-secrets'/);
+  assert.match(script, /luma\/push\.ps1/);
   assert.match(script, /Invoke-LumaPush \$ProjectRef/);
   assert.match(push, /firebase-service-account\.json/);
   assert.match(push, /push-settings\.sql/);

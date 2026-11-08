@@ -27,14 +27,19 @@ function Test-LumaApkFresh([string]$Path, [DateTime]$Since) {
   return (Test-Path $Path) -and ((Get-Item $Path).LastWriteTime -ge $Since.AddMinutes(-1))
 }
 
-# adb: in the PATH, in ANDROID_HOME or in the Android Studio SDK.
+# adb: in the PATH, in ANDROID_HOME or in the Android Studio SDK (Windows or Linux).
 function Find-LumaAdb {
   $command = Get-Command adb -ErrorAction SilentlyContinue
   if ($command) { return $command.Source }
-  foreach ($root in @($env:ANDROID_HOME, $(if ($env:LOCALAPPDATA) { Join-Path $env:LOCALAPPDATA 'Android\Sdk' }))) {
+  # Android Studio: LOCALAPPDATA on Windows, ~/Android/Sdk on Linux.
+  $local = if ($env:LOCALAPPDATA) { Join-Path $env:LOCALAPPDATA 'Android/Sdk' }
+  $linux = if ($env:OS -ne 'Windows_NT') { Join-Path $HOME 'Android/Sdk' }
+  foreach ($root in @($env:ANDROID_HOME, $local, $linux)) {
     if (-not $root) { continue }
-    $path = Join-Path $root 'platform-tools\adb.exe'
-    if (Test-Path $path) { return $path }
+    foreach ($name in 'adb.exe', 'adb') {
+      $path = Join-Path $root "platform-tools/$name"
+      if (Test-Path $path) { return $path }
+    }
   }
   return $null
 }
@@ -63,7 +68,7 @@ function New-LumaAppEnv {
   $anon = Read-LumaValue 'SUPABASE_ANON_KEY (Supabase -> Project Settings -> API -> anon public)'
   $values = @{ SUPABASE_URL = "https://$ref.supabase.co"; SUPABASE_ANON_KEY = $anon }
   if (Test-Path (Join-Path (Get-LumaSecretsDir) 'ai.env')) { $values['AI_MODE'] = 'remote' }
-  $google = @((Join-Path (Get-LumaSecretsDir) 'google-services.json'), 'android\app\google-services.json')
+  $google = @((Join-Path (Get-LumaSecretsDir) 'google-services.json'), 'android/app/google-services.json')
   if ($google | Where-Object { Test-Path $_ }) { $values['PUSH_ENABLED'] = '1' }
   Write-LumaEnvFile 'app.env' $values
   return (New-LumaLine 'OK' 'APK: app.env creado en la carpeta de secretos' 'Anade alli SUPPORT_WHATSAPP, LEGAL_CONTACT_EMAIL o la firma si las necesitas.')
@@ -100,7 +105,7 @@ function Invoke-LumaApk {
   try { $code = Invoke-LumaNpm "apk:$mode" }
   finally { foreach ($name in $previous.Keys) { [Environment]::SetEnvironmentVariable($name, $previous[$name]) } }
   if ($code -ne 0) { return $lines + (New-LumaLine 'FALTA' 'APK: la compilacion fallo' 'Lee el mensaje de arriba; docs/android.md explica cada caso.') }
-  $apk = "android\app\build\outputs\apk\$mode\app-$mode.apk"
+  $apk = "android/app/build/outputs/apk/$mode/app-$mode.apk"
   if (-not (Test-LumaApkFresh $apk $started)) {
     return $lines + (New-LumaLine 'FALTA' "APK: la compilacion no dejo un archivo nuevo en $apk" 'Lee el mensaje de arriba y repite la opcion 6.')
   }

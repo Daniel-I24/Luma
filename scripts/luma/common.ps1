@@ -7,7 +7,9 @@
 
 function Get-LumaSecretsDir {
   if ($env:LUMA_SECRETS_DIR) { return $env:LUMA_SECRETS_DIR }
-  return (Join-Path $env:USERPROFILE 'luma-secrets')
+  # USERPROFILE on Windows; $HOME where it does not exist (pwsh on Linux).
+  $userDir = if ($env:USERPROFILE) { $env:USERPROFILE } else { $HOME }
+  return (Join-Path $userDir 'luma-secrets')
 }
 
 function Say([string]$Text) { Write-Host "  $Text" }
@@ -47,7 +49,7 @@ function Invoke-LumaHttp([string]$Uri, [hashtable]$Headers = @{}, [string]$Metho
 # The project: the one of "npx supabase link" or the one typed.
 function Get-LumaProjectRef {
   if ($env:SUPABASE_PROJECT_REF) { return $env:SUPABASE_PROJECT_REF }
-  $file = Join-Path (Get-Location) 'supabase\.temp\project-ref'
+  $file = Join-Path (Get-Location) 'supabase/.temp/project-ref'
   if (Test-Path $file) { return (Get-Content $file -Raw).Trim() }
   return (Read-LumaValue 'Referencia del proyecto de Supabase (20 letras)')
 }

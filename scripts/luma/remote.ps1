@@ -33,10 +33,11 @@ function Invoke-SupabaseJson {
   try { return (ConvertFrom-Json $text) } catch { return $null }
 }
 
-# Sets secrets from a temporary file that is always deleted.
+# Sets secrets from a temporary file that is always deleted, also when the CLI fails.
+# GetTempPath, not $env:TEMP: pwsh on Linux (CI) has no TEMP.
 function Set-LumaSecrets([string]$ProjectRef, [hashtable]$Values) {
   $utf8 = New-Object Text.UTF8Encoding $false
-  $temp = Join-Path $env:TEMP ('luma-' + [guid]::NewGuid() + '.env')
+  $temp = Join-Path ([IO.Path]::GetTempPath()) ('luma-' + [guid]::NewGuid() + '.env')
   try {
     $lines = foreach ($name in ($Values.Keys | Sort-Object)) {
       $value = [string]$Values[$name]

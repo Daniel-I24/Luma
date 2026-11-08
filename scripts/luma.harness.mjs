@@ -4,9 +4,9 @@
  */
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const here = fileURLToPath(new URL('.', import.meta.url));
@@ -19,10 +19,18 @@ export const REF = 'abcdefghijklmnopqrst';
  * CLI, the web, the questions, npm and adb are replaced; nothing leaves the machine.
  * The simulated project keeps what the CLI loaded: `applies: false` is a CLI that
  * answers 0 and changes nothing, `oldSecrets` and `oldFunctions` were already there.
+ * It runs in an empty working folder: `workFiles` are the repository files the option may
+ * look for (android/app/google-services.json is gitignored, so the real repository differs
+ * between a developer PC and CI).
  */
-export function runOption(call, { files = {}, answers = [], http = {}, cli = 0, npm = 0, phones = [], applies = true, oldSecrets = [], oldFunctions = [], unchanged = [], failDeploy = '', unreadable = false, apkFresh = true } = {}) {
+export function runOption(call, { files = {}, workFiles = {}, answers = [], http = {}, cli = 0, npm = 0, phones = [], applies = true, oldSecrets = [], oldFunctions = [], unchanged = [], failDeploy = '', unreadable = false, apkFresh = true } = {}) {
   const dir = mkdtempSync(join(tmpdir(), 'luma-secrets-'));
   for (const [name, text] of Object.entries(files)) writeFileSync(join(dir, name), text);
+  const work = mkdtempSync(join(tmpdir(), 'luma-work-'));
+  for (const [name, text] of Object.entries(workFiles)) {
+    mkdirSync(dirname(join(work, name)), { recursive: true });
+    writeFileSync(join(work, name), text);
+  }
   const harness = join(mkdtempSync(join(tmpdir(), 'luma-harness-')), 'harness.ps1');
   const list = (values) => values.map((v) => `'${v}'`).join(', ');
   writeFileSync(harness, `
@@ -74,7 +82,7 @@ $tempLeft = $global:tempFile -and (Test-Path $global:tempFile)
 $global:calls += "after TOKEN=$env:SUPABASE_ACCESS_TOKEN"
 Write-Output (ConvertTo-Json -Depth 5 -Compress -InputObject @{ lines = @($lines | ForEach-Object { @{ state = $_.State; item = $_.Item; next = $_.Next } }); calls = @($global:calls); envFiles = @($global:envFiles); tempLeft = [bool]$tempLeft })
 `);
-  const run = spawnSync(shell, ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', harness], { encoding: 'utf8' });
+  const run = spawnSync(shell, ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', harness], { encoding: 'utf8', cwd: work });
   assert.equal(run.status, 0, run.stderr);
   const result = JSON.parse(run.stdout.trim().split(/\r?\n/).at(-1));
   // What the option printed: everything but the harness's own JSON line.

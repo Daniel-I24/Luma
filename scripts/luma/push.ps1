@@ -53,7 +53,7 @@ on conflict (id) do update
   Write-LumaFile 'push-settings.sql' $sql
   $lines += New-LumaLine 'OK' 'Push: push-settings.sql escrito en la carpeta de secretos' `
     'Pegalo en el SQL Editor (una vez basta si el secreto no cambio) y activa pg_net y pg_cron.'
-  $gs = Join-Path (Get-Location) 'android\app\google-services.json'
+  $gs = Join-Path (Get-Location) 'android/app/google-services.json'
   if (Test-Path $gs) { $lines += New-LumaLine 'OK' 'Push: android\app\google-services.json listo para el APK' }
   else { $lines += New-LumaLine 'FALTA' 'Push: falta android\app\google-services.json' 'Descargalo de Firebase (app Android) y copialo ahi; luego opcion 6.' }
   return $lines

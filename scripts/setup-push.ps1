@@ -11,13 +11,13 @@
 #   powershell -ExecutionPolicy Bypass -File scripts\setup-push.ps1
 # -----------------------------------------------------------------
 param(
-  [string]$SecretsDir = (Join-Path $env:USERPROFILE 'luma-secrets'),
+  [string]$SecretsDir = (Join-Path $(if ($env:USERPROFILE) { $env:USERPROFILE } else { $HOME }) 'luma-secrets'),
   [string]$ProjectRef = ''
 )
 $ErrorActionPreference = 'Stop'
-. (Join-Path $PSScriptRoot 'luma\common.ps1')
-. (Join-Path $PSScriptRoot 'luma\remote.ps1')
-. (Join-Path $PSScriptRoot 'luma\push.ps1')
+. (Join-Path $PSScriptRoot 'luma/common.ps1')
+. (Join-Path $PSScriptRoot 'luma/remote.ps1')
+. (Join-Path $PSScriptRoot 'luma/push.ps1')
 
 $env:LUMA_SECRETS_DIR = $SecretsDir
 if (-not $ProjectRef) { $ProjectRef = Get-LumaProjectRef }

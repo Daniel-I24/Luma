@@ -52,6 +52,7 @@ test('a refused CLI stops the option: secrets refused deploy nothing, a failed d
   const refused = runOption(`Invoke-LumaPayments '${REF}'`, { files: { 'web.env': WEB, 'wompi-sandbox.txt': WOMPI }, cli: 1 });
   assert.equal(refused.calls.some((c) => c.startsWith('functions deploy')), false);
   assert.equal(refused.lines.at(-1).state, 'FALTA');
+  assert.equal(refused.tempLeft, false, 'the temporary secrets file is removed when the CLI fails too');
   const stopped = runOption(`Invoke-LumaPayments '${REF}'`, { files: { 'web.env': WEB, 'wompi-sandbox.txt': WOMPI }, failDeploy: 'wompi-webhook' });
   assert.equal(stopped.calls.some((c) => c.startsWith('functions deploy reconcile-payments')), false);
   assert.match(stopped.lines.at(-1).item, /wompi-webhook, reconcile-payments, void-payment/);
@@ -98,6 +99,7 @@ test('option 8: every service without questions, each function once, one final t
     },
     http: { generateContent: { status: 200 }, openrouteservice: { status: 200 }, 'whatsapp-webhook': { status: 200, body: 'ECHO' } },
     oldSecrets: ['GEOCODE_PROVIDER', 'GEOCODE_API_KEY'],
+    workFiles: { 'android/app/google-services.json': '{}' },
   });
   for (const name of FUNCTIONS) {
     assert.equal(r.calls.filter((c) => c === `functions deploy ${name} --use-api --remote=${REF} --yes`).length, 1, name);

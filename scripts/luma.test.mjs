@@ -106,7 +106,7 @@ test('option 6: app.env reaches the build, and with two phones it asks which', {
   const app = 'SUPABASE_URL=https://x.supabase.co\nSUPABASE_ANON_KEY=anon\nAI_MODE=remote\n';
   const r = runOption('Invoke-LumaApk', { files: { 'app.env': app }, phones: ['AAA', 'BBB'], answers: ['2'] });
   assert.ok(r.calls.includes('npm apk:debug AI_MODE=remote TOKEN='), 'without signing variables: a debug APK');
-  assert.ok(r.calls.includes('adb -s BBB install -r android\\app\\build\\outputs\\apk\\debug\\app-debug.apk'));
+  assert.ok(r.calls.includes('adb -s BBB install -r android/app/build/outputs/apk/debug/app-debug.apk'));
   const none = runOption('Invoke-LumaApk', { files: { 'app.env': app } });
   assert.ok(none.lines.some((l) => l.state === 'FALTA' && /telefono conectado/.test(l.item)));
   const waiting = runOption('Invoke-LumaApk', { files: { 'app.env': app }, phones: ['CCC unauthorized'] });
