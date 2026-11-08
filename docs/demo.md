@@ -1,7 +1,7 @@
 # Guion de la demo
 
 Unos 15 minutos. La demo es en español, como la interfaz; los nombres técnicos están en
-`README.md`.
+[la guía de desarrollo](development.md).
 
 ## Antes de la presentación (el día anterior)
 

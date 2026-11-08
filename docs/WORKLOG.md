@@ -1,6 +1,6 @@
 # Worklog — fase roles, verificación y APK
 
-Plan: [docs/roadmap/fase-roles-y-apk.md](roadmap/fase-roles-y-apk.md). This file
+Plan: `docs/roadmap/fase-roles-y-apk.md` (removed in round 14, see docs/cleanup-report.md). This file
 says what is done, half done and left, updated with every commit so any
 session can resume.
 
@@ -207,6 +207,13 @@ The design prototype (old themes) and four status documents of finished rounds r
 rewritten for the presentation with captures of both themes; docs/demo.md is the presentation
 script. Feature matrix, architecture, CLAUDE.md and steering match the project. Before/after
 table in docs/cleanup-report.md.
+
+### After round 14
+
+- CI on Linux: luma.ps1 and its tests run in pwsh without TEMP or USERPROFILE; gitleaks-action v3.
+- README is now a short presentation in Spanish for visitors; everything technical it had
+  (architecture, run, payments sandbox, tests, database, layout, documentation) moved unchanged
+  to docs/development.md.
 
 ## Round 13 (2026-11-07)
 
