@@ -20,6 +20,14 @@
       "destination": "/legal/eliminacion-datos.html"
     },
     {
+      "source": "/legal",
+      "destination": "/legal/index.html"
+    },
+    {
+      "source": "/:page(terminos|privacidad|reembolsos|eliminacion-datos).html",
+      "destination": "/legal/:page.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

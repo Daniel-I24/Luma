@@ -43,4 +43,12 @@ test('the public legal pages: short URLs before the SPA fallback, no session nee
     assert.ok(sources.indexOf(`/${slug}`) < sources.indexOf('/(.*)'), `${slug} before the SPA`);
   }
   assert.equal(vercel.rewrites.at(-1).destination, '/index.html');
+  // The index, and the relative links of a page opened by its short URL.
+  assert.ok(sources.indexOf('/legal') < sources.indexOf('/(.*)'));
+  assert.equal(vercel.rewrites.find((r) => r.source === '/legal').destination, '/legal/index.html');
+  const pages = vercel.rewrites.find((r) => r.destination === '/legal/:page.html');
+  assert.equal(pages.source, '/:page(terminos|privacidad|reembolsos|eliminacion-datos).html');
+  assert.ok(sources.indexOf(pages.source) < sources.indexOf('/(.*)'));
+  const csp = headersOf('/(.*)')['Content-Security-Policy'];
+  assert.match(csp, /style-src [^;]*'unsafe-inline'/, 'the inline style of the legal pages');
 });

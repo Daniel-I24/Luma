@@ -1342,6 +1342,7 @@
   },
   "legal": {
     "draftNotice": "Borrador sujeto a revisión legal. Este texto aún no es definitivo.",
+    "indexTitle": "Información legal de Luma",
     "version": "Versión {{version}}",
     "terms": {
       "title": "Términos y condiciones",

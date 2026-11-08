@@ -1342,6 +1342,7 @@
   },
   "legal": {
     "draftNotice": "Draft pending legal review. This text is not final yet.",
+    "indexTitle": "Luma legal information",
     "version": "Version {{version}}",
     "terms": {
       "title": "Terms and conditions",

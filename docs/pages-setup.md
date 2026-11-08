@@ -23,6 +23,7 @@ Con el repositorio `Daniel-I24/Luma`:
 
 | Página | URL |
 | --- | --- |
+| Inicio (enlaza las cuatro) | `https://daniel-i24.github.io/Luma/` |
 | Política de privacidad | `https://daniel-i24.github.io/Luma/privacidad.html` |
 | Condiciones del servicio | `https://daniel-i24.github.io/Luma/terminos.html` |
 | Eliminación de datos | `https://daniel-i24.github.io/Luma/eliminacion-datos.html` |
@@ -31,6 +32,12 @@ Con el repositorio `Daniel-I24/Luma`:
 Ábrelas sin iniciar sesión: deben verse las páginas, no un 404. Si el
 repositorio es privado, GitHub Pages necesita un plan de pago; con el plan
 gratuito el repositorio debe ser público (o usa Vercel).
+
+Los enlaces entre páginas son relativos (`privacidad.html`, no
+`/legal/privacidad.html`): los mismos archivos sirven en `/Luma/` (Pages) y en
+`/legal/` (Vercel, que además reescribe `/legal` y `/terminos.html`… hacia
+`/legal/`). Sin JavaScript y con un solo estilo en línea, que la CSP de Vercel
+permite.
 
 ## Seguridad del flujo
 
