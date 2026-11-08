@@ -11,7 +11,7 @@ inclusion: always
 - Al agregar una clave se agrega en ambos idiomas en el mismo cambio.
 
 ## Ajustes de la app (feature `settings`)
-Idioma, tema visual (Cielo andino, Noche, Barniz, Maíz), notificaciones, métodos de pago, cuenta y privacidad. Idioma y tema se guardan por usuario y se aplican al iniciar sin parpadeo.
+Idioma, tema visual (Ciruela sobria, Crema clara), notificaciones, métodos de pago, cuenta y privacidad. Idioma y tema se guardan por usuario y se aplican al iniciar sin parpadeo.
 
 ## Tamaño y organización
 - Un archivo = una responsabilidad. Un componente por archivo, con `.ts`, `.html` y `.css` separados.

@@ -7,7 +7,7 @@ Luma debe sentirse moderna, elegante, limpia y profesional; mobile-first, poco r
 Referencia visual: las capturas de `node scripts/screens/capture.mjs` (docs/brand/screen-review.md) y `docs/brand/palette-options.md`.
 
 ## Identidad
-- Color de marca: `#0D4A6B` (azul cielo andino). Acento: `#B23A0C` (ají; IA y realces). Tipografías: Bricolage Grotesque (títulos y logotipo) y Figtree (texto), autoalojadas en `public/fonts` (subconjunto latino). Identidad de la ronda 2: `docs/brand/`.
+- Color de marca (Ciruela sobria): primario `#FF9440` (naranja) sobre fondo ciruela `#17121F`; acento `#F07AA5` (IA y realces). Los valores de cada tema viven en `src/styles/tokens.css` y `src/styles/themes/crema.css`. Tipografías: Bricolage Grotesque (títulos y logotipo) y Figtree (texto), autoalojadas en `public/fonts` (subconjunto latino). Identidad de la ronda 2: `docs/brand/`.
 - Temas (con la misma estructura de tokens): **Ciruela sobria** (`ciruela`, oscuro, por defecto) y **Crema clara** (`crema`, claro). El degradado de marca (`.brand-gradient`) solo en acciones principales, IA y promociones.
 
 ## Tokens (CSS variables en `src/styles/tokens.css` dentro de `@theme`; temas en `src/styles/themes/*.css`)

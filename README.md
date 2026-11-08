@@ -1,141 +1,149 @@
 # Luma
 
-Mobile-first app to discover local restaurants and shops in Pasto (Nariño,
-Colombia). **Customers**: interactive map with live open/closed status, a
-vertical feed, promotions with real discounts, Luma IA recommendations,
-favourites, reviews, cart and pick-up orders with notifications.
-**Business owners** ("Luma Negocios"): register and verify their business,
-publish it, manage menu, hours, photos and discounts, take orders and get
-promotion ideas. **Review team**: approves businesses and handles reports.
-Spanish UI by default, English as second language. Web (Vercel) and Android
-(Capacitor).
+Mobile-first app to discover local restaurants and shops in Pasto (Nariño, Colombia) and order
+for pick-up.
 
-## Stack
+- **Customers**: a map with live open/closed status, a vertical feed, promotions with real
+  discounts, Luma IA recommendations, favourites and reviews. They order for pick-up and pay at
+  the counter or online (Wompi), follow the order live and get directions.
+- **Business owners** ("Luma Negocios"): register and verify the business, then manage menu,
+  hours, photos and promotions. They take orders in real time, and AI reads a paper menu and
+  suggests promotions.
+- **Review team** (admin with MFA): approves businesses and handles reports, contacts, payments
+  and refunds.
+
+Spanish UI by default, English as second language. It ships as a web app (Vercel) and an
+Android app (Capacitor).
+
+| Ciruela sobria (dark, default) | | | Crema clara (light) | | |
+| --- | --- | --- | --- | --- | --- |
+| ![Map](docs/images/ciruela-map.jpg) | ![Business](docs/images/ciruela-business.jpg) | ![Checkout](docs/images/ciruela-checkout.jpg) | ![Map](docs/images/crema-map.jpg) | ![Feed](docs/images/crema-feed.jpg) | ![Orders](docs/images/crema-orders.jpg) |
+
+## Architecture
+
+```mermaid
+flowchart LR
+  subgraph App["App: Angular 22 (web on Vercel, Android with Capacitor)"]
+    F[features] --> S[shared] --> C[core]
+    F --> DS[design-system]
+  end
+  C -- "REST + RLS (anon key + user JWT)" --> PG[(Postgres: RLS, RPCs, CHECKs)]
+  PG --> RT[Realtime: ids only] --> C
+  S -- JWT --> EF[Edge Functions, Deno]
+  EF --> PG
+  EF --> P[Gemini · OpenRouteService · geocoding · Wompi]
+  P -- signed webhook --> EF
+  PG -- "pg_cron + pg_net" --> PUSH[push-dispatch → FCM] --> App
+```
+
+- **One-way layers:** dependencies flow `features → shared → core`, and no feature imports another.
+  Each feature is a lazy route. Lint enforces this.
+- **Server-side security:** RLS on every table, prices computed in Postgres and Zod at every
+  boundary. The app only holds the public (anon) key; provider keys live in Edge Function secrets.
+- **Payments:** Wompi's hosted checkout handles the card, PSE and Nequi data, so Luma never sees
+  them. Only the signed webhook (or the reconciliation) marks an order as paid.
+- **Live updates:** they reach the app through Realtime and Android push. A 30 s poll takes over
+  when the channel drops.
+
+More: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/DECISIONS.md](docs/DECISIONS.md),
+[docs/adr/](docs/adr/).
 
 | Area | Tech |
 | --- | --- |
-| Frontend | Angular 22 (standalone, Signals, `@if/@for`, OnPush, View Transitions) |
-| Styles | Tailwind CSS v4 on design tokens (`src/styles/`), four themes |
-| Data & auth | Supabase (Postgres + RLS, Auth with 6-digit codes, Storage, Edge Functions in Deno) |
-| AI | Rules in the app by default; optional Edge Functions with a swappable LLM gateway (Gemini, OpenAI-compatible, Anthropic) |
-| Map | MapLibre GL with OpenFreeMap tiles |
-| i18n | Transloco (`public/i18n/es.json`, `en.json`) |
-| Validation | Zod at the boundaries |
-| Mobile | Capacitor 8 (Android) |
-| Tests | Vitest (app), `node:test` (scripts), Deno test (Edge Functions), SQL suites on Postgres |
-| Hosting | Vercel (static build) |
+| Frontend | Angular 22 (standalone, Signals, `@if/@for`, OnPush, View Transitions), Transloco, Zod |
+| Styles | Tailwind CSS v4 on design tokens (`src/styles/`), two themes |
+| Backend | Supabase: Postgres + RLS, Auth (6-digit codes), Storage, Realtime, Edge Functions (Deno), pg_cron |
+| Map and routes | MapLibre GL with OpenFreeMap tiles; OpenRouteService |
+| AI | Gemini through a swappable LLM gateway; rules when the AI is off or fails |
+| Payments | Wompi hosted checkout (sandbox) |
+| Mobile | Capacitor 8 (Android), Firebase Cloud Messaging |
+| Tests | Vitest, `node:test`, Deno test, SQL suites on Postgres, Playwright e2e |
 
-## Requirements
+## Run it
 
-- Node.js 24 and npm 11 (`packageManager` in `package.json`)
-- A Supabase project (or the Supabase CLI for a local stack)
-- Optional: Android Studio and a JDK 17-24 for the APK; Deno (or Docker) for
-  the Edge Function tests; Docker or Postgres for the SQL tests
-
-## Getting started
+Needs Node.js 24 and npm 11. You also need a Supabase project with the migrations applied (see
+[Database](#database)).
 
 ```sh
 npm ci
 cp src/environments/environment.example.ts src/environments/environment.ts
-# edit environment.ts with your Supabase URL and anon key (never commit it)
-npm start            # http://localhost:4200
+# put your Supabase URL and anon (public) key in environment.ts; it is gitignored
+npm start                      # http://localhost:4200
 ```
-
-With the template values the app shows a development notice: it cannot
-reach Supabase until `environment.ts` has real values.
-
-## Environment variables
-
-| Where | Variable | Notes |
-| --- | --- | --- |
-| Local dev | `src/environments/environment.ts` | Gitignored. URL + **anon** key only. |
-| Production build / APK | `SUPABASE_URL`, `SUPABASE_ANON_KEY` | Read by `scripts/generate-env.mjs`; privileged keys are rejected. |
-| APK signing | `LUMA_KEYSTORE_PATH`, `LUMA_KEYSTORE_PASSWORD`, `LUMA_KEY_ALIAS`, `LUMA_KEY_PASSWORD` | Only for `npm run apk:release` ([docs/android.md](docs/android.md)). |
-| Edge Functions | `ALLOWED_ORIGINS`; for AI also `LLM_PROVIDER`, `LLM_MODEL`, `LLM_API_KEY`, `LLM_BASE_URL` | Supabase secrets; `SUPABASE_*` are injected. |
-
-The service-role key and every AI key live only in Supabase secrets.
-
-## Database: migrations and seeds
-
-Apply `supabase/migrations/` **in filename order**.
-[docs/migrations.md](docs/migrations.md) lists each file, which ones are
-applied and which are pending review, and the `VALIDATE CONSTRAINT`
-commands. A clean install of all of them passes every SQL suite.
-
-Seeds (development data, 5 businesses in Pasto, approved):
-
-1. `supabase/seed.sql` — businesses, hours and promotions. Needs an
-   `auth.users` row for the placeholder owner (see the file header).
-2. `supabase/seed_menu_items.sql` — test menus, linked by business name.
-
-Every table has Row Level Security. Who may do what:
-[docs/roles.md](docs/roles.md).
-
-## Scripts
 
 | Command | What it does |
 | --- | --- |
-| `npm start` | Dev server with `environment.ts` |
-| `npm run build` | Production build with placeholder env (what CI runs) |
-| `npm run build:prod` | Generates `environment.deploy.ts` from env vars, then builds with `production,deploy` (Vercel) |
-| `npm run apk:debug` / `apk:release` | Android APK (deploy env, build, `cap sync`, Gradle) |
-| `npm run lint` | ESLint (TS + templates, accessibility rules) |
-| `npm test -- --watch=false` | Vitest unit tests (spec files isolated) |
-| `npm run test:scripts` | Tests of `scripts/` (i18n keys, categories, env generation, APK helpers) |
+| `npm run build:prod` | The web build Vercel runs. It needs only `SUPABASE_URL` and `SUPABASE_ANON_KEY`; `AI_MODE`, `SUPPORT_WHATSAPP` and `LEGAL_CONTACT_EMAIL` are optional. A clean clone builds (CI job `clean-build`). |
+| `npm run apk:debug` / `apk:release` | Android APK ([docs/android.md](docs/android.md)) |
+| `powershell -File scripts\luma.ps1` | Sets up and verifies the backend (AI, push, payments, routes, WhatsApp, APK). Secrets stay in `%USERPROFILE%\luma-secrets` ([docs/luma-setup.md](docs/luma-setup.md)). |
 
-- Edge Functions: `deno test --no-lock` in `supabase/functions/_shared`,
-  `delete-account`, `recommend` and `suggest-promotions` (or with the
-  `denoland/deno` Docker image).
-- SQL security suites: `supabase/tests/local/run.sh` on a throwaway
-  Postgres (Docker command in [docs/migrations.md](docs/migrations.md)).
+## Try the payments (Wompi sandbox)
 
-## Project structure
+No real money moves.
+
+1. Turn the payments on once ([docs/payments-setup.md](docs/payments-setup.md)): option 3 of
+   `scripts\luma.ps1`, then `payments_enabled = 1`.
+2. As a customer, open a business, add a product, choose **Pagar en línea** and confirm.
+3. On Wompi's page, use the official sandbox data:
+
+   | Method | Approved | Declined |
+   | --- | --- | --- |
+   | Card (any future date, any 3-digit CVC) | `4242 4242 4242 4242` | `4111 1111 1111 1111` |
+   | Nequi | `3991111111` | `3992222222` |
+   | PSE | "Banco que aprueba" | "Banco que rechaza" |
+
+4. Luma comes back to the order: "Pagado en línea" and a notice when approved, "Reintentar
+   pago" when declined. The business sees the order only once it is paid.
+5. As admin, **Operaciones** lists the payments with problems, has **Conciliar ahora** and
+   handles refunds.
+
+`npm run wompi:replay -- <transaction id>` replays a forged, a repeated and a late event against
+the webhook. Only the genuine one counts.
+
+## Tests
+
+| Command | Covers |
+| --- | --- |
+| `npm test -- --watch=false` | Unit and component tests (Vitest), about 1,050 |
+| `npm run test:scripts` | Build, setup and check scripts |
+| `npm run test:e2e` | Sign-up, pick-up order, owner panel and sandbox payment in a real browser, against simulated services |
+| `supabase/tests/local/run.sh` | SQL suites: RLS, permissions, orders, payments and cron, on a throwaway Postgres |
+| `deno test` per function | Edge Functions ([.github/workflows/ci.yml](.github/workflows/ci.yml)) |
+| `npm run check:contrast`, `check:tokens`, `check:hardcoded-urls`, `check:interactive`, `check:buttons` | AA contrast, design tokens, URLs in config, accessible controls |
+| `node scripts/secret-scan.mjs`, `npm audit --omit=dev` | No secrets in the repository, no vulnerable runtime dependency |
+| `npm run perf` | Frame rate with the CPU slowed down 4 times ([docs/optimization-report.md](docs/optimization-report.md)) |
+
+CI runs all of them on every push, plus CodeQL and a production build from a clean clone.
+
+## Database
+
+Apply `supabase/migrations/` in filename order. [docs/migrations.md](docs/migrations.md) lists
+every file and whether it is applied. `supabase/seed.sql` and `supabase/seed_menu_items.sql`
+load five test businesses in Pasto. Who may do what:
+[docs/roles.md](docs/roles.md).
+
+## Project layout
 
 ```
-src/app/
-  core/           auth, Supabase client, config (AI mode), i18n, theme,
-                  navigation, network status, native bridges (back button,
-                  keyboard, haptics, status bar)
-  shared/         account (types, guards, onboarding, owner paths), business
-                  data and verification, orders, promotions (deals, card,
-                  advisor), payments, notifications, media, map, forms, cart,
-                  favourites, recommendations, geo, legal, layout, errors
-  design-system/  base components (button, card, bottom sheet, tabs…)
-  features/       one folder + lazy route per area: map, feed, promotions, ai,
-                  cart, checkout, orders, notifications, favorites,
-                  business-profile, owner (Luma Negocios), admin, auth,
-                  onboarding, legal, profile, not-found
-src/styles/       tokens, themes, motion, view transitions, map markers
-supabase/         migrations, seeds, Edge Functions (+ _shared), SQL tests
-scripts/          build-time scripts (environment, APK)
-android/          Capacitor Android project
-assets/           brand source for icon and splash
-docs/             project documentation
+src/app/core/           session, Supabase client, realtime, push, config, validation, native bridges
+src/app/shared/         repositories and stores shared by features: business, orders, payments, map, cart…
+src/app/design-system/  base components (button, card, sheet, tabs, inputs…)
+src/app/features/       one lazy route per area: map, feed, ai, checkout, orders, owner, admin, auth…
+src/styles/             tokens, the two themes, motion, map
+supabase/               migrations, Edge Functions (+ _shared), SQL tests, seeds
+scripts/                build, setup (luma.ps1) and check scripts
+e2e/                    browser tests and the frame-rate measurement
+android/                Capacitor Android project
+docs/                   documentation (below)
 ```
-
-Dependencies flow `features → shared → core`; features never import each
-other. Details in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
-
-## Tests and CI
-
-GitHub Actions (`.github/workflows/ci.yml`) on every push and pull request:
-`npm ci` → `npm audit --omit=dev --audit-level=high` → build → lint → unit
-tests (verbose) → script tests. Dependabot opens weekly update PRs.
 
 ## Documentation
 
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — layers, dependency rules, main flows
-- [docs/roles.md](docs/roles.md) — permission matrix · [docs/verification.md](docs/verification.md) · [docs/admin.md](docs/admin.md)
-- [docs/ai.md](docs/ai.md) — Luma IA, LLM gateway, free keys, deploy
-- [docs/android.md](docs/android.md) — APK, JDK, signing, phone checklist
-- [docs/deploy.md](docs/deploy.md) — Vercel, Supabase Auth, Edge Functions, CSP and headers
-- [docs/migrations.md](docs/migrations.md) — migration order and status, SQL tests
-- [docs/orders.md](docs/orders.md) — orders, prices and discounts, retention
-- [docs/payments.md](docs/payments.md) — pay at pick-up and the Wompi plan
-- [docs/mocks.md](docs/mocks.md) — client-side estimations and what is real
-- [docs/legal-notes.md](docs/legal-notes.md) — what a person must review before launch
-- [docs/auth-emails.md](docs/auth-emails.md) — email templates with codes
-- [docs/security-notes.md](docs/security-notes.md) — dependency audit and accepted risks
-- [docs/DECISIONS.md](docs/DECISIONS.md) — decisions taken and their alternatives
-- [docs/WORKLOG.md](docs/WORKLOG.md) — what is done and what is left
-- `.kiro/steering/` — product, tech, structure, security, design and conventions rules
+- [docs/demo.md](docs/demo.md): the presentation script, step by step.
+- [docs/feature-matrix.md](docs/feature-matrix.md): every feature, its state and its tests.
+- [docs/payments.md](docs/payments.md): the payment flow, data, refunds and one or many Wompi accounts.
+- [docs/security.md](docs/security.md) · [docs/security-findings.md](docs/security-findings.md) · [docs/threat-model.md](docs/threat-model.md)
+- [docs/launch-checklist.md](docs/launch-checklist.md): what is left before real users.
+- [docs/legal-notes.md](docs/legal-notes.md): what a lawyer must review.
+- [docs/WORKLOG.md](docs/WORKLOG.md): what was done, round by round.
+- `CLAUDE.md` and `.kiro/steering/`: the rules of the project (language, layers, tokens, security).

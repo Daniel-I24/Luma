@@ -69,7 +69,7 @@ InjectionToken or an abstract class with a Supabase implementation:
 | --- | --- |
 | `RecommendationEngine` | rules (default), remote + rules fallback |
 | `PromotionAdvisor` | rules (owner sales aggregates), remote + rules fallback |
-| `PaymentGateway` | pay at pick-up (Wompi planned, `docs/payments.md`) |
+| `PaymentGateway` | pay at pick-up, or online with the Wompi hosted checkout (`docs/payments.md`) |
 | Repositories (`AccountProfileRepository`, `VerificationRepository`, `PromotionDealRepository`...) | Supabase |
 | `LlmProvider` (Edge Functions) | Gemini, OpenAI-compatible, Anthropic |
 
@@ -105,7 +105,7 @@ Edge Functions.
 | Decision | Why |
 | --- | --- |
 | Signals + component-provided stores, no global store library | Small surface, OnPush-friendly, state dies with the screen |
-| Tailwind v4 on CSS-variable tokens, default palette disabled | One place to change colours; four themes with the same token structure |
+| Tailwind v4 on CSS-variable tokens, default palette disabled | One place to change colours; two themes (Ciruela sobria, Crema clara) with the same token structure |
 | Motion with CSS + View Transitions, no animation library | Only transform/opacity animate; respects reduced motion; no bundle cost |
 | Luma IA behind contracts, rules by default | Works with no external service; the remote mode adds an LLM through Edge Functions and falls back to the rules (`docs/ai.md`) |
 | LLM output limited to ids and codes | Prompt injection in business texts cannot reach users; prices are always recomputed by the server |
