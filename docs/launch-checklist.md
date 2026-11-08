@@ -1,123 +1,50 @@
 # Launch checklist (only what the owner does)
 
-In order. Commands are for **PowerShell** in the repository folder
-(`C:\dev\Luma`). Replace `<ref>`, `<anon key>` and `<dominio>` with your
-values; never paste the service_role key anywhere in the app.
+State on 2026-11-07 (round 14). Commands are for **PowerShell** in `C:\dev\Luma`. Secrets stay in
+`%USERPROFILE%\luma-secrets` and are loaded only by `scripts\luma.ps1`; never paste a
+`service_role` key or a private key in the app, the repository or a chat.
 
-## Now
+## Done
 
-1. **Back up the database**: Supabase → Database → Backups (download the
-   latest) or:
+- Migrations 1 to 64 applied; cron jobs `luma-expire-stale-orders` and `luma-reconcile-payments`
+  scheduled.
+- `scripts\luma.ps1` option 8 in OK: Luma IA (Gemini), push (Firebase), Wompi sandbox, routes
+  (OpenRouteService), WhatsApp, `delete-account`, `geocode` and `verify-website`.
+- Web on Vercel (`https://luma-ten-henna.vercel.app`) with `SUPABASE_URL` and
+  `SUPABASE_ANON_KEY`; a clean clone builds (CI job `clean-build`).
+- On the phone: push in the Android bar; sandbox card approved and declined, Nequi approved and
+  declined, PSE approved; the app returns from Wompi.
+
+## Now (before the presentation)
+
+1. **Push the commits:** `git push origin main`. CI must turn green.
+2. **Apply migrations 65 and 66** (`20261115000000_abandoned_payments.sql`,
+   `20261116000000_foreign_key_indexes.sql`) after reading them:
    ```powershell
-   npx supabase login
-   npx supabase link --project-ref <ref>
-   npx supabase db dump -f "$HOME\luma-backup-$(Get-Date -Format yyyyMMdd).sql"
+   npx.cmd --yes supabase@3.0.0 db push --remote --dry-run
+   npx.cmd --yes supabase@3.0.0 db push --remote --yes
+   npx.cmd --yes supabase@3.0.0 migration list --remote
    ```
-2. **Prerequisites** in the dashboard: Authentication → Multi-Factor →
-   TOTP **on**; Database → Extensions → `pg_trgm` **on** (optional:
-   `pg_cron`, `pg_net`).
-3. **Check what is applied** (should list 1 to 56 as applied, per the owner; only this command confirms it):
-   ```powershell
-   npx supabase migration list --remote
-   ```
-4. **Apply migrations 57 and 58** (`20261107000000_round10.sql`,
-   `20261108000000_push_claim_window.sql`, in that order) after your review
-   (docs/migrations.md):
-   ```powershell
-   npx supabase db push --remote --dry-run
-   npx supabase db push --remote
-   ```
-5. **Validate the old constraints**: in the SQL editor run
-   `supabase/sql/validate-report.sql`; fix the rows it reports (queries in
-   docs/migrations.md, "After applying everything"), then run the
-   `alter table … validate constraint …` statements listed there.
-6. **Check the backend from your PC**:
-   ```powershell
-   $env:SUPABASE_URL = "https://<ref>.supabase.co"
-   $env:SUPABASE_ANON_KEY = "<anon key>"
-   $env:APP_ORIGIN = "https://<dominio>"
-   npm run verify:backend
-   # after step 9, also require the two free functions:
-   npm run verify:backend -- --expect-deployed=delete-account,geocode
-   ```
-7. **Auth settings and e-mails** (docs/auth-emails.md): paste the three
-   templates (Confirm signup, Reset password, Reauthentication); 6-digit
-   codes, 600 s; password 8+ with letters and digits; secure password
-   change on; AAL1 session limit on; **your own SMTP** (the built-in sender
-   only reaches team addresses).
-8. **Admin MFA**: sign in with your admin account, open `/admin/mfa` and
-   enrol the authenticator app.
-9. **Edge Functions that cost nothing** (account deletion and address
-   search with Nominatim):
-   ```powershell
-   npx supabase secrets set ALLOWED_ORIGINS="https://<dominio>,https://localhost" GEOCODE_PROVIDER=nominatim GEOCODE_CONTACT="<tu correo>"
-   npx supabase functions deploy delete-account
-   npx supabase functions deploy geocode
-   ```
-10. **Web**: in Vercel set `SUPABASE_URL` and `SUPABASE_ANON_KEY`
-    (Production and Preview) and redeploy (docs/deploy.md).
-11. **Test APK** (docs/release.md, JDK 21):
-    ```powershell
-    $env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot"
-    npm ci
-    npm run apk:debug
-    adb install -r android\app\build\outputs\apk\debug\app-debug.apk
-    ```
-12. **Try it on the phone**: sign up with the code, complete "Mis datos",
-    register a business, menu, hours, send it to review, approve it in
-    `/admin`, order and pick up; check the screens with real data in the
-    four themes (docs/WORKLOG.md, "Status of the rounds", "Screen review").
-13. **Signed APK** with your keystore (never in the repository):
-    ```powershell
-    $env:LUMA_KEYSTORE_PATH = "C:\keys\luma-release.jks"
-    $env:LUMA_KEYSTORE_PASSWORD = Read-Host "Keystore password"
-    $env:LUMA_KEY_ALIAS = "luma"
-    $env:LUMA_KEY_PASSWORD = Read-Host "Key password"
-    npm run apk:release
-    ```
-    Publish it as in docs/release.md ("Publish the APK").
+   Check: both show as applied. About 35 minutes later, "Pagos con problemas" no longer lists the
+   attempts that never reached Wompi.
+3. **Deploy `reconcile-payments`:** option 3 (or 8) of `scripts\luma.ps1`.
+   Check: Admin → Operaciones → "Conciliar ahora" answers with a number.
+4. **APK:** option 6 of `scripts\luma.ps1`. It prints `APK: compilado <date time>` and installs it.
+5. **Rehearse** `docs/demo.md` once with the three demo accounts.
 
-## Later (each has its own document; all are off by default)
+## Before real users
 
-- **Wompi (online payments)**: secrets, deploy the four payment functions
-  and the cron, validate one real sandbox event with
-  `npm run check:wompi-event`, then the sandbox list in
-  docs/payments-checklist.md, and only then `payments_enabled = 1`.
-- **Firebase (push)**: `google-services.json` in `android/app/`,
-  `FCM_SERVICE_ACCOUNT` and `PUSH_DISPATCH_SECRET`, deploy `push-dispatch`,
-  `PUSH_ENABLED = true` (docs/push.md).
-- **IA (Luma IA remote)**: `LLM_*` secrets, deploy `recommend`,
-  `suggest-promotions` and `extract-menu`, then `AI_MODE = 'remote'`
-  (docs/ai.md). Until then the rules engine works without cost; the menu
-  photo scan needs this step.
-- **SMS (phone verification)**: demo with Supabase test numbers or a paid
-  provider with a spending cap, Colombia only and CAPTCHA
-  (docs/phone-verification.md).
-- **History cleanup** before making the repository public
-  (docs/security-findings.md).
-
-## Round 5 additions (optional, each one free)
-
-- Email templates: the **Magic Link** template must carry `{{ .Token }}`
-  (docs/auth-emails.md); deleting an account needs it.
-- `SUPPORT_WHATSAPP` in `app.config.ts` (docs: `src/app/core/config/build-flags.ts`)
-  so owners can verify phones and WhatsApp.
-- Route: `ROUTE_PROVIDER`, `ROUTE_API_KEY`, `supabase functions deploy route`
-  (docs/route.md); without them the app shows a straight-line estimate.
-- Push: docs/push-setup.md, then "Enviar notificación de prueba".
-- Payments in sandbox: docs/payments-setup.md.
-
-## Round 6 additions (optional)
-
-- Migration 53 (`20261103000000_round6.sql`) after 52; until then
-  verify-backend reports its RPCs as "[migration 53]: missing" without failing.
-- Automatic contact verification: docs/whatsapp-setup.md (Meta app, webhook,
-  secrets, `SUPPORT_WHATSAPP`, then the two flags).
-
-## Round 7 additions
-
-- Migration 54 (`20261104000000_round7.sql`) after 52 and 53 (applied).
-- Run `docs/data-quality.sql` (read only), fix what it lists, then the
-  VALIDATE statements at its end.
-- Redeploy `route` (new modes) and `verify-website` (IPv6 and DNS over
-  HTTPS); until then the app estimates routes in a straight line.
+1. **Wompi production:** the decision on whose account receives the money (one platform account or
+   one per business, docs/payments.md), the production keys in `luma-secrets`, the events URL in the
+   Wompi dashboard, `payments_production = 1`, and the list in docs/payments-checklist.md again.
+2. **Legal review** of the terms, privacy and refund policy (docs/legal-notes.md), the controller's
+   name and NIT, the maximum refund times, then remove the draft notice.
+3. **Own SMTP** for the 6-digit codes; Supabase's sender only reaches team addresses
+   (docs/auth-emails.md).
+4. **Meta in live mode** for WhatsApp verification (docs/meta-live.md).
+5. **Signed APK** with your keystore (the four `LUMA_KEY*` values in `app.env`, option 6) and the
+   store listing (docs/release.md).
+6. **Firebase service account:** once the last `push-dispatch` deploy is done, move
+   `firebase-service-account.json` out of `luma-secrets` to an offline backup; options 2 and 8 need
+   it only to deploy.
+7. **Backups:** Supabase → Database → Backups, before each migration.
