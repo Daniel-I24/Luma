@@ -31,21 +31,8 @@ const GAP = 8;
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoModule, LumaButton],
   templateUrl: './guided-tour-overlay.html',
+  // Only the hole needs CSS: a 100vmax shadow dims the rest and its box moves with a transition.
   styles: `
-    :host {
-      position: fixed;
-      inset: 0;
-      z-index: 60;
-      pointer-events: none;
-    }
-
-    .tour-dim {
-      position: absolute;
-      inset: 0;
-      background-color: var(--color-overlay);
-      pointer-events: auto;
-    }
-
     /* The control stays visible: the dark ring around it dims everything else. */
     .tour-hole {
       position: absolute;
@@ -57,21 +44,17 @@ const GAP = 8;
         width var(--duration-normal) var(--ease-enter), height var(--duration-normal) var(--ease-enter);
     }
 
-    .tour-bubble {
-      position: absolute;
-      inset-inline: var(--spacing-4);
-      max-width: var(--container-auth);
-      margin-inline: auto;
-      pointer-events: auto;
-    }
-
     @media (prefers-reduced-motion: reduce) {
       .tour-hole {
         transition: none;
       }
     }
   `,
-  host: { '(document:keydown.escape)': 'tour.skip()', '(window:resize)': 'measure()' },
+  host: {
+    class: 'pointer-events-none fixed inset-0 z-60',
+    '(document:keydown.escape)': 'tour.skip()',
+    '(window:resize)': 'measure()',
+  },
 })
 export class GuidedTourOverlay {
   protected readonly tour = inject(GuidedTour);

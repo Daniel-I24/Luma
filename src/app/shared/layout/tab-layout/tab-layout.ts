@@ -29,34 +29,17 @@ const MAIN_TABS: readonly TabBarItem[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterOutlet, LumaTabBar, CartBar, CartConflictSheet, OwnerReturnBanner],
   template: `
-    <div class="tab-layout">
+    <div class="flex h-dvh flex-col bg-canvas">
       <app-owner-return-banner />
       <!-- Very quiet food doodles behind every customer screen, under a veil (styles/doodles.css). -->
       <div class="doodles doodles--faint doodles--veil pointer-events-none fixed inset-0 -z-10" aria-hidden="true"></div>
-      <main class="tab-layout__content">
+      <main class="relative min-h-0 flex-1 overflow-y-auto">
         <router-outlet />
       </main>
       <app-cart-bar />
       <app-luma-tab-bar [items]="tabs" labelKey="tabBar.label" [badges]="badges()" />
     </div>
     <app-cart-conflict-sheet />
-  `,
-  styles: `
-    /* TabLayout styles — tokens only */
-
-    .tab-layout {
-      display: flex;
-      flex-direction: column;
-      height: 100dvh;
-      background-color: var(--color-canvas);
-    }
-
-    .tab-layout__content {
-      position: relative;
-      flex: 1;
-      min-height: 0;
-      overflow-y: auto;
-    }
   `,
   providers: [UnreadNotifications],
 })

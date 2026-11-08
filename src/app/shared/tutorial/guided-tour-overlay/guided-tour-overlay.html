@@ -10,10 +10,10 @@
     [style.height.px]="hole.height"
   ></div>
   } @else {
-  <div class="tour-dim" aria-hidden="true"></div>
+  <div class="pointer-events-auto absolute inset-0 bg-overlay" aria-hidden="true"></div>
   }
   <section
-    class="tour-bubble flex flex-col gap-3 rounded-xl bg-surface p-4 text-fg shadow-lg"
+    class="pointer-events-auto absolute inset-x-4 mx-auto flex max-w-auth flex-col gap-3 rounded-xl bg-surface p-4 text-fg shadow-lg"
     role="dialog"
     aria-modal="true"
     animate.enter="motion-enter-fade"
