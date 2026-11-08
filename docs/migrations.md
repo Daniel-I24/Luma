@@ -87,6 +87,7 @@ needs a drop and a create in the same file, noted in the file header).
 | 63 | `20261113000000_push_server_status.sql` | `private.push_requests`; `admin_push_health` reads only the answers of `push-dispatch`, with time and network error | Pending; the owner applies it |
 | 64 | `20261114000000_cron_jobs.sql` | Schedules `luma-expire-stale-orders` and `luma-reconcile-payments`, missing in production; the job also wakes for card refunds to void. Orders past their expiry are cancelled by the first run | Pending; the owner applies it |
 | 65 | `20261115000000_abandoned_payments.sql` | Payment status `expired`; `expire_abandoned_payments()` closes attempts that never reached Wompi, run by `luma-expire-stale-orders`; `expired -> approved` for a late approval | Pending; the owner applies it |
+| 66 | `20261116000000_foreign_key_indexes.sql` | Indexes for the seven foreign keys without one (notifications, order_items, rate_limit_hits, reports); deleting a parent no longer reads the whole child table | Pending; the owner applies it |
 
 **Database freeze (2026-10-19)**: the list above is final for the launch.
 After the freeze, migrations and functions change only to fix real bugs
