@@ -270,3 +270,14 @@ Phase D (repository):
 | `docs/requirements-traceability.md` | Status of round 2 (2026-10-27); no reference | The specs and SQL suites it listed are still there |
 | `docs/quality-report.md` | Status of rounds 9-10; one comment pointed to it | `docs/optimization-report.md` |
 | `docs/db-followups.md` | Its push retry idea is migration 62; the other idea fits in one line | One line in `docs/migrations.md` |
+
+Repository before/after (round 14, `39845c1` → end of phase D; `git ls-tree`, text lines without
+images, fonts and `package-lock.json`):
+
+| Measure | Before | After | Change |
+| --- | ---: | ---: | ---: |
+| Tracked files | 1,381 | 1,393 | +12 (README captures, demo script, new tests and migrations; 14 files removed) |
+| Folders | 353 | 349 | −4 (`docs/design-prototype/*`, `docs/roadmap`) |
+| Files in `docs/` | 83 | 83 | −14 old, +12 captures, +1 `demo.md` |
+| Lines in `docs/` | 12,680 | 7,570 | −5,110 (−40 %) |
+| Text lines in the repository | 103,921 | 99,456 | −4,465 |

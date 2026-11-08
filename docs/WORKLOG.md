@@ -201,6 +201,13 @@ limits of the Edge Functions. Auth pages, tab layout and tour on Tailwind (auth-
 Code only its tests used removed (cleanup report). Migration 66 indexes seven foreign keys.
 Before/after table in docs/optimization-report.md.
 
+### Phase D: repository
+
+The design prototype (old themes) and four status documents of finished rounds removed; README
+rewritten for the presentation with captures of both themes; docs/demo.md is the presentation
+script. Feature matrix, architecture, CLAUDE.md and steering match the project. Before/after
+table in docs/cleanup-report.md.
+
 ## Round 13 (2026-11-07)
 
 ### Phase 0: scripts/luma.ps1 changed nothing in production
