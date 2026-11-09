@@ -25,7 +25,6 @@ celular para recogerlo cuando esté listo.
 
 ## Pruébala
 
-- **Web:** https://luma-ten-henna.vercel.app
 - **Android:** descarga el APK en [la última versión](https://github.com/Daniel-I24/Luma/releases/latest).
 - Los pagos están en **modo de pruebas**: no se cobra dinero real.
 
