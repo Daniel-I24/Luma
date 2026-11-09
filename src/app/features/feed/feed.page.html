@@ -64,7 +64,7 @@
     </div>
 
     <!-- One row under the status bar: the note takes what the buttons leave, so they never touch. -->
-    <div class="pointer-events-none absolute inset-x-0 top-0 flex items-start gap-2 ps-[calc(var(--spacing-4)+env(safe-area-inset-left))] pe-[calc(var(--spacing-4)+env(safe-area-inset-right))] pt-[calc(env(safe-area-inset-top)+var(--spacing-2))]">
+    <div class="pointer-events-none absolute inset-x-0 top-0 flex items-start gap-2 ps-[calc(var(--spacing-4)+env(safe-area-inset-left))] pe-[calc(var(--spacing-4)+env(safe-area-inset-right))] pt-[calc(var(--inset-top)+var(--spacing-2))]">
     <app-freshness-note
       class="pointer-events-auto min-w-0 flex-initial rounded-lg bg-surface-elevated px-2 shadow-md"
       [updatedAt]="live.updatedAt()"

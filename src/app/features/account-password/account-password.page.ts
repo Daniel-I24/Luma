@@ -23,7 +23,7 @@ import { PasswordChecklist } from '@shared/account/password-checklist/password-c
   template: `
     <main
       *transloco="let t"
-      class="mx-auto flex min-h-dvh max-w-lg flex-col gap-4 bg-canvas px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6"
+      class="mx-auto flex min-h-dvh max-w-lg flex-col gap-4 bg-canvas px-4 pt-[calc(var(--inset-top)+var(--spacing-6))] pb-6"
     >
       <h1 class="m-0 text-h2 text-fg">{{ t('account.password.title') }}</h1>
       <p class="m-0 text-body-sm text-fg-muted">{{ t('account.password.intro') }}</p>

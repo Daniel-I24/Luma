@@ -17,7 +17,7 @@ const QUESTIONS = ['order', 'pay', 'cancel', 'business', 'review', 'notification
   template: `
     <main
       *transloco="let t"
-      class="mx-auto flex min-h-dvh max-w-lg flex-col gap-3 bg-canvas px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6"
+      class="mx-auto flex min-h-dvh max-w-lg flex-col gap-3 bg-canvas px-4 pt-[calc(var(--inset-top)+var(--spacing-6))] pb-6"
     >
       <h1 class="m-0 text-h2 text-fg">{{ t('help.title') }}</h1>
       @for (key of questions; track key) {

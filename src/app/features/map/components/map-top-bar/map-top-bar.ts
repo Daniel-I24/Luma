@@ -80,7 +80,7 @@ import type { ZoneText } from '../../utils/zone-label';
   `,
   host: {
     class:
-      'pointer-events-none absolute inset-x-0 top-0 z-20 flex flex-col gap-2 ps-[env(safe-area-inset-left)] pe-[env(safe-area-inset-right)] pt-[calc(env(safe-area-inset-top)+var(--spacing-3))]',
+      'pointer-events-none absolute inset-x-0 top-0 z-20 flex flex-col gap-2 ps-[env(safe-area-inset-left)] pe-[env(safe-area-inset-right)] pt-[calc(var(--inset-top)+var(--spacing-3))]',
   },
 })
 export class MapTopBar {

@@ -25,7 +25,7 @@ const TABS: readonly LegalDocument[] = ['terms', 'privacy', 'refunds'];
   template: `
     <article
       *transloco="let t"
-      class="mx-auto flex max-w-2xl flex-col gap-5 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-4))] pb-[calc(env(safe-area-inset-bottom)+var(--spacing-8))]"
+      class="mx-auto flex max-w-2xl flex-col gap-5 px-4 pt-[calc(var(--inset-top)+var(--spacing-4))] pb-[calc(env(safe-area-inset-bottom)+var(--spacing-8))]"
     >
       <header class="flex items-center gap-2">
         <app-luma-icon-button

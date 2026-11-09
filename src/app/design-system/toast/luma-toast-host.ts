@@ -26,7 +26,7 @@ const TONE_CLASS: Record<ToastTone, string> = {
   imports: [LumaCheckmark, TranslocoPipe, LumaIcon],
   template: `
     <div
-      class="pointer-events-none fixed inset-x-4 top-[calc(env(safe-area-inset-top)+var(--spacing-4))] z-50 flex flex-col gap-2 [view-transition-name:toasts]"
+      class="pointer-events-none fixed inset-x-4 top-[calc(var(--inset-top)+var(--spacing-4))] z-50 flex flex-col gap-2 [view-transition-name:toasts]"
       role="status"
       aria-live="polite"
     >

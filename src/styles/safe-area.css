@@ -1,0 +1,15 @@
+/* Where the content of a screen may start: below the status bar and, while one shows, below the
+   notice on top of every screen (ConnectionNotice publishes its height, which already includes
+   the status bar). Screens use --inset-top, never env(safe-area-inset-top) directly.
+   Registered so the change glides; under reduced motion the rule in base.css makes it immediate. */
+@property --inset-top {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
+:root {
+  --notice-height: 0px;
+  --inset-top: max(env(safe-area-inset-top), var(--notice-height));
+  transition: --inset-top var(--duration-normal) var(--ease-enter);
+}

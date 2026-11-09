@@ -243,6 +243,9 @@ table in docs/cleanup-report.md.
 - Información técnica recorded the permission of the moment before the system dialog turned the
   location on ("ok ... servicesOff"); it now reads it again after a successful reading.
 - Outside Pasto: an empty map explains it and offers "Explorar Pasto".
+- Offline: the "Sin conexión" strip pushes every screen down instead of covering it. Screens use
+  `--inset-top` (`styles/safe-area.css`), the status bar or the height of the strip, which glides
+  unless the user prefers reduced motion; `offline-notice.e2e` cuts the network on four screens.
 
 ## Round 13 (2026-11-07)
 

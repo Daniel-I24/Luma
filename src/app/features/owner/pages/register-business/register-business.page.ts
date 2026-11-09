@@ -26,7 +26,7 @@ const ID_PREFIX = 'register';
   template: `
     <form
       *transloco="let t"
-      class="mx-auto flex max-w-lg flex-col gap-5 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6"
+      class="mx-auto flex max-w-lg flex-col gap-5 px-4 pt-[calc(var(--inset-top)+var(--spacing-6))] pb-6"
       novalidate
       (submit)="submit($event)"
     >

@@ -19,7 +19,7 @@ import { SessionProfileStore } from '@shared/account/session-profile.store';
     @if (isOwner()) {
       <div
         *transloco="let t"
-        class="flex items-center gap-2 bg-primary pt-[env(safe-area-inset-top)] pl-4 text-body-sm text-primary-fg"
+        class="flex items-center gap-2 bg-primary pt-[var(--inset-top)] pl-4 text-body-sm text-primary-fg"
         role="note"
       >
         <app-luma-icon name="eye" size="sm" />

@@ -40,7 +40,7 @@ const FIELDS: readonly FieldSpec[] = [
   template: `
     <div
       *transloco="let t"
-      class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6"
+      class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(var(--inset-top)+var(--spacing-6))] pb-6"
     >
       <app-panel-header [heading]="t('businessPanel.contact.title')" [backLink]="['/owner', id(), 'business']" />
       <app-setup-return />

@@ -18,7 +18,7 @@ import { AdminRepository } from '@shared/business/verification/admin.repository'
   template: `
     <div
       *transloco="let t"
-      class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-6))] pb-6"
+      class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(var(--inset-top)+var(--spacing-6))] pb-6"
     >
       <h1 class="m-0 text-h2 text-fg">{{ t('admin.accessError.title') }}</h1>
       <app-luma-notice tone="danger">{{ t('admin.accessError.message') }}</app-luma-notice>

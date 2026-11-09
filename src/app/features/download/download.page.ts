@@ -19,7 +19,7 @@ import { BYTES_PER_MB } from '@core/config/units';
   template: `
     <main
       *transloco="let t"
-      class="mx-auto flex min-h-dvh max-w-lg flex-col gap-4 bg-canvas px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-8))] pb-8"
+      class="mx-auto flex min-h-dvh max-w-lg flex-col gap-4 bg-canvas px-4 pt-[calc(var(--inset-top)+var(--spacing-8))] pb-8"
     >
       <h1 class="m-0 text-h2 text-fg">{{ t('download.title') }}</h1>
       <p class="m-0 text-body text-fg-muted">{{ t('download.intro') }}</p>

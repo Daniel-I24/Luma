@@ -33,4 +33,5 @@ Button, IconButton, Icon, Card, BottomSheet, Chip, StatusBadge, Input, SearchInp
 - Microinteracciones y transiciones suaves (150–400 ms), respetar `prefers-reduced-motion`.
 - Skeletons en lugar de spinners; estados vacíos, de error y offline siempre diseñados.
 - Zonas táctiles ≥ 44px, contraste AA en todos los temas, soporte de lectores de pantalla, safe areas del dispositivo.
+- El borde superior de cada pantalla usa `var(--inset-top)`, no `env(safe-area-inset-top)`: incluye la barra de estado y, si se muestra, la franja de "Sin conexión" (`src/styles/safe-area.css`).
 - Iconografía consistente (un solo set SVG en `LumaIcon`), sin emojis como iconos, sin sobrecargar pantallas con información.

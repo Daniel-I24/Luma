@@ -28,7 +28,7 @@ const OWNER_TOURS: readonly (readonly [TourId, string])[] = [
   template: `
     <main
       *transloco="let t"
-      class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(env(safe-area-inset-top)+var(--spacing-4))] pb-[calc(env(safe-area-inset-bottom)+var(--spacing-8))]"
+      class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(var(--inset-top)+var(--spacing-4))] pb-[calc(env(safe-area-inset-bottom)+var(--spacing-8))]"
     >
       <header class="flex items-center gap-2">
         <app-luma-icon-button icon="arrow-left" variant="ghost" [label]="t('common.back')" (clicked)="back()" />
