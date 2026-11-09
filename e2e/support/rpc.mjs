@@ -24,6 +24,9 @@ export const RPC = {
     devices: 1,
     businesses: [],
   }),
+  set_avatar: (db, args, ctx) => {
+    Object.assign(db.profiles.find((row) => row.id === ctx.userId), { avatar_path: args.p_path, avatar_consent_at: args.p_path ? now() : null });
+  },
   payment_config: (db, _args, ctx) => [{ enabled: ctx.payments, sandbox: true }],
   create_order: (db, args, ctx) => {
     if (!ctx.userId) return { error: 'not_authenticated' };

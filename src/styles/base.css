@@ -72,3 +72,12 @@ h2,
   background-image: linear-gradient(100deg, var(--color-gradient-from), var(--color-gradient-via), var(--color-gradient-to));
   color: var(--color-gradient-fg);
 }
+
+/* Safari zooms into a field under 16 px when it gets the focus; touch screens get at least that. */
+@media (pointer: coarse) {
+  input,
+  select,
+  textarea {
+    font-size: var(--text-body-lg) !important;
+  }
+}

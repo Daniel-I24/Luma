@@ -13,6 +13,7 @@
     "test:scripts": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test scripts/*.test.mjs",
     "ai:smoke": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/ai-smoke.mjs",
     "test:e2e": "node --test --test-concurrency=1 e2e/*.e2e.mjs",
+    "test:e2e:webkit": "node scripts/e2e-webkit.mjs",
     "perf": "node e2e/perf.mjs",
     "apk:debug": "node scripts/apk.mjs debug",
     "apk:release": "node scripts/apk.mjs release",

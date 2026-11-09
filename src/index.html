@@ -14,6 +14,11 @@
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
     <link rel="manifest" href="manifest.webmanifest" />
     <meta name="theme-color" content="#120428" />
+    <!-- Added to the iPhone home screen: full screen, under the status bar (env(safe-area-inset-*)). -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Luma" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <!-- Default language: its texts are needed for the first paint. -->
     <link rel="preload" href="i18n/es.json" as="fetch" crossorigin="anonymous" />
   </head>

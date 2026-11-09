@@ -1975,7 +1975,7 @@
       "denied": "Luma notifications are blocked in the phone settings. Turn them on there if you want them.",
       "prompt": "To get notices even when Luma is closed, allow notifications on this phone.",
       "enable": "Allow notifications",
-      "web": "On the web you'll see your notices in the notification list.",
+      "web": "On the web you'll see your notices in the notification list. On iPhone, Safari does not show them on the lock screen: open Luma to see them.",
       "notConfigured": "Phone notifications aren't active in this version of Luma. You'll see your notices in the notifications list.",
       "problem": {
         "denied": "You didn't allow notifications. You can turn them on in your phone's settings, under Luma → Notifications.",

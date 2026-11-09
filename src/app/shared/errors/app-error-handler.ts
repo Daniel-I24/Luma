@@ -8,6 +8,9 @@ const QUIET_MS = 5000;
 /** A lazy screen that could not be downloaded (old version or no network). */
 const CHUNK_FAILED = /dynamically imported module|Loading chunk|Importing a module script failed/i;
 
+/** Browsers report this when a layout settles over two frames (Safari often): no failure at all. */
+const RESIZE_LOOP = /ResizeObserver loop/;
+
 /**
  * AppErrorHandler — the last line of defence for errors nothing else
  * handled (Angular and, through provideBrowserGlobalErrorListeners, window
@@ -26,6 +29,7 @@ export class AppErrorHandler implements ErrorHandler {
 
   /** Records the error and shows a notice only when the user can act on it. */
   public handleError(error?: unknown): void {
+    if (error instanceof Error && RESIZE_LOOP.test(error.message)) return;
     // Development only: production builds never print error details.
     if (this.devMode()) console.error('[Luma] unhandled error', error);
     const cause = AppErrorHandler.unwrap(error);

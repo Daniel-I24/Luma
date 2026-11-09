@@ -21,6 +21,14 @@ describe('AppErrorHandler', () => {
   });
   afterEach(() => vi.useRealTimers());
 
+  it('ignores the ResizeObserver notice of the browser: nothing is logged or shown', () => {
+    const log = TestBed.inject(ErrorLog);
+    const record = vi.spyOn(log, 'record');
+    TestBed.inject(AppErrorHandler).handleError(new Error('An ErrorEvent with no error occurred: ResizeObserver loop completed with undelivered notifications.'));
+    expect(record).not.toHaveBeenCalled();
+    expect(toast.show).not.toHaveBeenCalled();
+  });
+
   it('shows one notice per burst of errors the user can act on', () => {
     // Angular calls it through the ErrorHandler contract, with the error.
     const handler: ErrorHandler = TestBed.inject(AppErrorHandler);

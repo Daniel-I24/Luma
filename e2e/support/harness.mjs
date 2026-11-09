@@ -1,11 +1,11 @@
 /**
  * Runs the `screens` build in a real browser (Edge locally, Chromium in CI:
- * E2E_BROWSER=chromium) against simulated services: Supabase (backend.mjs),
+ * E2E_BROWSER=chromium; an emulated iPhone: E2E_BROWSER=webkit) against simulated services: Supabase (backend.mjs),
  * Realtime (realtime.mjs) and a Wompi sandbox page. Any console error, page
  * error, request to the network or request the backend cannot answer is a
  * problem the test asserts to be empty.
  */
-import { chromium } from 'playwright-core';
+import { chromium, devices, webkit } from 'playwright-core';
 import { serve } from '../../scripts/screens/server.mjs';
 import { createBackend } from './backend.mjs';
 import { approvePayment } from './rpc.mjs';
@@ -20,8 +20,10 @@ const EMPTY_STYLE = JSON.stringify({ version: 8, sources: {}, layers: [] });
 export async function startBrowser() {
   const channel = process.env.E2E_BROWSER ?? 'msedge';
   const server = await serve();
-  const browser = await chromium.launch(channel === 'chromium' ? {} : { channel });
+  const iphone = channel === 'webkit';
+  const browser = iphone ? await webkit.launch() : await chromium.launch(channel === 'chromium' ? {} : { channel });
   return {
+    device: iphone ? devices['iPhone 13'] : {},
     origin: `http://127.0.0.1:${server.address().port}`,
     browser,
     close: async () => {
@@ -46,7 +48,7 @@ document.getElementById('pay').addEventListener('click', async () => {
 
 /** A browser context of the app: `user` (an email of the backend) starts signed in. */
 export async function openApp(env, { path = '/', user = null, payments = false, theme = 'ciruela', realMap = false, viewport = { width: 390, height: 844 } } = {}) {
-  const context = await env.browser.newContext({ viewport, locale: 'es-CO' });
+  const context = await env.browser.newContext({ ...env.device, viewport, locale: 'es-CO' });
   const realtime = createRealtime();
   const backend = createBackend({ origin: env.origin, payments, emit: (table, record) => realtime.emit(table, record) });
   const problems = [];

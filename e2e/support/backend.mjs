@@ -8,6 +8,7 @@ import { randomUUID } from 'node:crypto';
 import { CODE, CUSTOMER_EMAIL, CUSTOMER_ID, OWNER_EMAIL, OWNER_ID, PASSWORD, newProfile, seed } from './data.mjs';
 import { remove, select, update } from './rest.mjs';
 import { FUNCTIONS, RPC } from './rpc.mjs';
+import { storage } from './storage.mjs';
 
 /** Tables answered from data that is derived from others. */
 const VIEWS = {
@@ -111,6 +112,8 @@ export function createBackend({ origin, payments = false, emit = () => undefined
     return out;
   }
 
+  const objects = new Set();
+
   /** Answers one request: [status, body, headers?], recording what it cannot answer. */
   function answer({ method, url, headers, body }) {
     const path = url.pathname;
@@ -131,6 +134,7 @@ export function createBackend({ origin, payments = false, emit = () => undefined
       const out = fn?.(db, body ?? {}, ctx);
       result = out ? [out.status, out.body] : null;
     }
+    else if (path.startsWith('/storage/v1/')) result = storage(objects, path, method);
     if (!result) unhandled.push(`${method} ${path}${url.search}`);
     return result ?? [404, { message: 'not simulated' }];
   }

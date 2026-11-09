@@ -50,6 +50,10 @@ jobs:
         env:
           E2E_BROWSER: chromium
         run: npm run test:e2e
+      - name: The same flows and the iPhone rules in WebKit (iPhone 13 profile)
+        run: |
+          npx playwright-core install --with-deps webkit
+          npm run test:e2e:webkit
       - name: No URL outside the config modules
         run: npm run check:hardcoded-urls
       - name: Destructive actions use the danger button

@@ -1975,7 +1975,7 @@
       "denied": "Las notificaciones de Luma están bloqueadas en los ajustes del teléfono. Actívalas allí si quieres recibirlas.",
       "prompt": "Para recibir avisos aunque no tengas Luma abierta, permite las notificaciones en este teléfono.",
       "enable": "Permitir notificaciones",
-      "web": "En la web verás tus avisos en la lista de notificaciones.",
+      "web": "En la web verás tus avisos en la lista de notificaciones. En iPhone, Safari no los muestra en la pantalla bloqueada: abre Luma para verlos.",
       "notConfigured": "Las notificaciones del teléfono no están activas en esta versión de Luma. Verás tus avisos en la lista de notificaciones.",
       "problem": {
         "denied": "No diste permiso para las notificaciones. Puedes activarlas en los ajustes del teléfono, en Luma → Notificaciones.",

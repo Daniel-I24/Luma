@@ -22,6 +22,7 @@ test('every page gets a strict CSP and the security headers', () => {
   }
   assert.ok(!/script-src[^;]*unsafe-(inline|eval)/.test(csp), 'no unsafe scripts');
   assert.match(csp, /connect-src 'self' https:\/\/\*\.supabase\.co/);
+  assert.match(csp, /img-src [^;]*blob:/, 'the preview of a photo before uploading it');
   assert.equal(all['X-Content-Type-Options'], 'nosniff');
   assert.equal(all['X-Frame-Options'], 'DENY');
   assert.equal(all['Cross-Origin-Opener-Policy'], 'same-origin');
