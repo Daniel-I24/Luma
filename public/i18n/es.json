@@ -3,6 +3,7 @@
     "close": "Cerrar",
     "remove": "Quitar",
     "retry": "Reintentar",
+    "reload": "Recargar",
     "back": "Volver"
   },
   "auth": {
@@ -259,7 +260,6 @@
     "canvasLabel": "Mapa de negocios Luma",
     "loadingBusinesses": "Cargando negocios…",
     "errorLoading": "No se pudieron cargar los negocios. Intenta de nuevo.",
-    "retry": "Reintentar",
     "noBusinesses": "No hay negocios cercanos en este momento.",
     "locating": "Obteniendo tu ubicación…",
     "locationDenied": "Sin ubicación · mostrando el centro",
@@ -1209,8 +1209,7 @@
         "approved": "Quedará visible para los clientes si está publicado. Sus documentos se borrarán.",
         "rejected": "El negocio verá tu nota y podrá corregir y reenviar. Los documentos se conservan.",
         "suspended": "Dejará de ser visible para los clientes. El negocio verá tu nota."
-      },
-      "reload": "Recargar"
+      }
     },
     "mfa": {
       "title": "Verificación en dos pasos",
@@ -1959,7 +1958,6 @@
   "accountError": {
     "title": "No pudimos cargar tu cuenta",
     "description": "No sabemos aún si tu cuenta es de cliente o de negocio, así que no te mostramos ninguna pantalla por error. Intenta de nuevo en un momento.",
-    "retry": "Reintentar",
     "stillFailing": "Sigue sin funcionar. Si la base de datos de Luma se está actualizando, espera unos minutos.",
     "signOut": "Cerrar sesión",
     "outdated": "El servidor de Luma aún no tiene la actualización que necesita esta versión de la app. Intenta más tarde o avísale al equipo de Luma."
@@ -2568,8 +2566,7 @@
     "offline": "Sin conexión: mostrando datos guardados",
     "updating": "Actualizando…",
     "updatedNow": "Actualizado hace un momento",
-    "updatedAgo": "Actualizado hace {{minutes}} min",
-    "refresh": "Actualizar"
+    "updatedAgo": "Actualizado hace {{minutes}} min"
   },
   "technicalErrors": {
     "title": "Errores recientes",

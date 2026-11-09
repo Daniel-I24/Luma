@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import { LumaButton, LumaNotice, LumaSkeleton, ToastService } from '@design-system';
+import { LumaButton, LumaNotice, LumaSkeleton, ToastService, LumaRefreshButton } from '@design-system';
 import { DataExport, type MyData } from './services/data-export.service';
 import { DataReport } from './utils/data-report';
 
@@ -17,7 +17,7 @@ const PREVIEW_LINES = 3;
   selector: 'app-account-data-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, RouterLink, LumaButton, LumaNotice, LumaSkeleton],
+  imports: [LumaRefreshButton, TranslocoModule, RouterLink, LumaButton, LumaNotice, LumaSkeleton],
   templateUrl: './account-data.page.html',
   host: { class: 'block' },
 })

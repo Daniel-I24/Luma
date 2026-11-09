@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, viewChi
 import { Router, RouterLink } from '@angular/router';
 import { TourHelpButton } from '@shared/tutorial/tour-help-button';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaButton, LumaEmptyState, LumaIconButton, LumaSkeleton } from '@design-system';
+import { LumaEmptyState, LumaIconButton, LumaSkeleton, LumaRefreshButton } from '@design-system';
 import { RealtimeService } from '@core/realtime/realtime.service';
 import { FreshnessNote } from '@shared/ui/freshness-note';
 import { PullToRefreshDirective } from '@shared/ui/pull-to-refresh.directive';
@@ -21,10 +21,10 @@ import { FeedStore } from './state/feed.store';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    LumaRefreshButton,
     TourHelpButton,
     TranslocoModule,
     RouterLink,
-    LumaButton,
     LumaEmptyState,
     LumaIconButton,
     LumaSkeleton,

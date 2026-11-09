@@ -16,9 +16,7 @@
   } @case ('error') {
   <div class="flex flex-col gap-2" role="alert">
     <p class="m-0 text-body-sm text-danger-fg">{{ t('owner.ideas.loadFailed') }}</p>
-    <app-luma-button variant="secondary" size="sm" (clicked)="load()"
-      >{{ t('common.retry') }}</app-luma-button
-    >
+    <app-luma-refresh-button (clicked)="load()" />
   </div>
   } @default { @if (result()?.ideas?.length) {
   <ul class="m-0 flex list-none flex-col gap-3 p-0">

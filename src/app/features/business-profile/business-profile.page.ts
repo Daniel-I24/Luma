@@ -18,8 +18,7 @@ import {
   LumaEmptyState,
   LumaIcon,
   LumaSkeleton,
-  LumaTabs,
-} from '@design-system';
+  LumaTabs, LumaRefreshButton } from '@design-system';
 import type { TabItem } from '@design-system';
 import { AuthService } from '@core/auth/auth.service';
 import { CategoryIcons } from '@shared/business/utils/category-icons';
@@ -41,6 +40,7 @@ const PROFILE_TABS: readonly ProfileTab[] = ['menu', 'promos', 'reviews', 'info'
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    LumaRefreshButton,
     TranslocoModule,
     LumaButton,
     LumaEmptyState,

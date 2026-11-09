@@ -26,6 +26,7 @@ export class RealtimeSubscription implements LiveUpdates {
     if (this.options.visible()) void this.refreshAll();
   });
   private reported = false;
+  public readonly refreshing = this.gate.busy;
   private readonly _live = signal(false);
   private readonly _updatedAt = signal<Date | null>(new Date());
   public readonly live: Signal<boolean> = this._live.asReadonly();
@@ -43,10 +44,7 @@ export class RealtimeSubscription implements LiveUpdates {
     return this.gate.now();
   }
 
-  /**
-   * Back to the foreground (Android fires "visibilitychange" and "resume": the
-   * second does nothing). A socket that died meanwhile reconnects now.
-   */
+  /** Back to the foreground (Android fires two events; the second does nothing). A dead socket reconnects now. */
   public returned(): void {
     if (this.stopped || !this.gate.isNewReturn()) return;
     if (this._live()) void this.refreshAll();

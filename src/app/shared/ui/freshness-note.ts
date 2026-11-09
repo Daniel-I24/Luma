@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
+import { LumaRefreshButton } from '@design-system';
 import { MS_PER_MINUTE } from '@core/config/units';
 import { ConnectivityService } from '@core/network/connectivity.service';
 import { PollWhileVisible } from './poll-while-visible';
@@ -9,14 +10,14 @@ const CLOCK_MS = 30_000;
 
 /**
  * FreshnessNote — a quiet line under a live list: "Sin conexión: mostrando
- * datos guardados" offline, "Actualizado hace X" otherwise, and "Actualizar"
- * (the one-tap alternative to pulling the list down).
+ * datos guardados" offline, "Actualizado hace X" otherwise, and the reload
+ * button (the one-tap alternative to pulling the list down).
  */
 @Component({
   selector: 'app-freshness-note',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule],
+  imports: [TranslocoModule, LumaRefreshButton],
   template: `
     <p *transloco="let t" class="m-0 flex flex-wrap items-center gap-x-2 text-caption text-fg-subtle" role="status" aria-live="polite">
       @if (!online()) {
@@ -28,13 +29,14 @@ const CLOCK_MS = 30_000;
       } @else {
         <span>{{ t('realtime.updatedAgo', { minutes: minutes() }) }}</span>
       }
-      <button type="button" class="min-h-11 rounded-md px-2 font-semibold text-fg-brand underline focus-visible:outline-2 focus-visible:outline-border-focus"
-        (click)="refresh.emit()">{{ t('realtime.refresh') }}</button>
+      <app-luma-refresh-button [busy]="refreshing()" (clicked)="refresh.emit()" />
     </p>
   `,
 })
 export class FreshnessNote {
   public readonly updatedAt = input<Date | null>(null);
+  /** True while the list is being read again. */
+  public readonly refreshing = input(false);
   public readonly refresh = output<void>();
   protected readonly online = inject(ConnectivityService).online;
   private readonly now = signal(Date.now());

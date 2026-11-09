@@ -11,7 +11,7 @@
   <app-luma-skeleton shape="rect" class="block h-40" />
   } @case ('error') {
   <app-luma-notice tone="danger">{{ t('admin.operations.errors.load') }}</app-luma-notice>
-  <app-luma-button variant="secondary" (clicked)="ops.load()">{{ t('common.retry') }}</app-luma-button>
+  <app-luma-refresh-button (clicked)="ops.load()" />
   } @default {
   <section class="flex flex-col gap-2" aria-labelledby="ops-payments">
     <div class="flex items-center justify-between gap-2">

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaButton, LumaCard, LumaInput, LumaNotice, LumaSkeleton, ToastService } from '@design-system';
+import { LumaButton, LumaCard, LumaInput, LumaNotice, LumaSkeleton, ToastService, LumaRefreshButton } from '@design-system';
 import { AdminMfaStore } from '../../state/admin-mfa.store';
 
 /**
@@ -13,7 +13,7 @@ import { AdminMfaStore } from '../../state/admin-mfa.store';
   selector: 'app-admin-mfa-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LumaNotice, TranslocoModule, LumaButton, LumaCard, LumaInput, LumaSkeleton],
+  imports: [LumaRefreshButton, LumaNotice, TranslocoModule, LumaButton, LumaCard, LumaInput, LumaSkeleton],
   providers: [AdminMfaStore],
   templateUrl: './admin-mfa.page.html',
   host: { class: 'block' },

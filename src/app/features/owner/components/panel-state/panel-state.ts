@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaButton, LumaEmptyState, LumaSkeleton } from '@design-system';
+import { LumaEmptyState, LumaSkeleton, LumaRefreshButton } from '@design-system';
 import type { PanelState } from '../../state/panel-business.store';
 
 /** PanelStateView — loading skeleton, not found and error states; content when ready. */
@@ -8,7 +8,7 @@ import type { PanelState } from '../../state/panel-business.store';
   selector: 'app-panel-state',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaEmptyState, LumaSkeleton],
+  imports: [LumaRefreshButton, TranslocoModule, LumaEmptyState, LumaSkeleton],
   template: `
     <ng-container *transloco="let t">
       @switch (state()) { @case ('loading') {
@@ -31,7 +31,7 @@ import type { PanelState } from '../../state/panel-business.store';
           tone="error"
           [heading]="t('businessPanel.errors.loadFailed')"
         >
-          <app-luma-button (clicked)="retry.emit()">{{ t('common.retry') }}</app-luma-button>
+          <app-luma-refresh-button (clicked)="retry.emit()" />
         </app-luma-empty-state>
       </div>
       } @default {

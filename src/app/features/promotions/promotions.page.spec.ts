@@ -114,6 +114,6 @@ describe('PromotionsPage', () => {
     expect(el.querySelector('[role="alert"]')?.textContent).toContain(
       'promotions.errors.loadFailed',
     );
-    expect(el.textContent).toContain('common.retry');
+    expect(el.querySelector('app-luma-refresh-button button')).not.toBeNull();
   });
 });

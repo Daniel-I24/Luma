@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, input, output } from '@angu
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import { LumaBusinessCard, LumaButton, LumaEmptyState, LumaSectionHeader, LumaSkeleton } from '@design-system';
+import { LumaBusinessCard, LumaButton, LumaEmptyState, LumaSectionHeader, LumaSkeleton, LumaRefreshButton } from '@design-system';
 import { DistancePipe } from '@shared/geo/distance';
 import type { Promotion } from '@shared/business/models/business.model';
 import type { NearbyBusiness } from '../../state/nearby-businesses.store';
@@ -18,6 +18,7 @@ const SKELETON_ROWS = 3;
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    LumaRefreshButton,
     TranslocoModule,
     LumaBusinessCard,
     LumaButton,

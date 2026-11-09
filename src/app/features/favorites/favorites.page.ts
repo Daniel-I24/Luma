@@ -13,8 +13,7 @@ import {
   LumaButton,
   LumaEmptyState,
   LumaIconButton,
-  LumaSkeleton,
-} from '@design-system';
+  LumaSkeleton, LumaRefreshButton } from '@design-system';
 import { CategoryIcons } from '@shared/business/utils/category-icons';
 import { FavoriteButton } from '@shared/favorites/favorite-button/favorite-button';
 import { FavoritesStore } from '@shared/favorites/favorites.store';
@@ -29,6 +28,7 @@ import { FavoritesPageStore } from './state/favorites-page.store';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    LumaRefreshButton,
     TranslocoModule,
     LumaBusinessCard,
     LumaButton,

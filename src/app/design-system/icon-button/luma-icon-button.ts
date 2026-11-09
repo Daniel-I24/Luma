@@ -36,9 +36,10 @@ const VARIANT_CLASS: Record<IconButtonVariant, string> = {
       [attr.aria-label]="label()"
       [attr.aria-disabled]="disabled() ? 'true' : null"
       [attr.aria-pressed]="pressed() ?? null"
+      [attr.aria-busy]="spinning() ? 'true' : null"
       (click)="clicked.emit()"
     >
-      <app-luma-icon [name]="icon()" [filled]="filledIcon()" />
+      <app-luma-icon [class]="spinning() ? 'inline-flex motion-safe:animate-spin' : ''" [name]="icon()" [filled]="filledIcon()" />
     </button>
     }
   `,
@@ -53,6 +54,8 @@ export class LumaIconButton {
   /** Toggle state (aria-pressed); undefined for plain buttons. */
   public readonly pressed = input<boolean | undefined>(undefined);
   public readonly filledIcon = input(false);
+  /** Turns the icon while something loads (not with reduced motion). */
+  public readonly spinning = input(false);
   /** Renders a link instead of a button (e.g. "tel:" or an external URL). */
   public readonly href = input<string | null>(null);
 

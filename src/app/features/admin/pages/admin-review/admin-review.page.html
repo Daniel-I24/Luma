@@ -21,7 +21,7 @@
   } @case ('error') {
   <div role="alert">
     <app-luma-empty-state icon="alert" tone="error" [heading]="t('admin.errors.loadFailed')">
-      <app-luma-button (clicked)="reload()">{{ t('common.retry') }}</app-luma-button>
+      <app-luma-refresh-button (clicked)="reload()" />
     </app-luma-empty-state>
   </div>
   } @case ('notFound') {
@@ -30,9 +30,7 @@
   <div class="flex flex-col gap-2 rounded-md bg-danger-bg p-3" role="alert">
     <p class="m-0 text-body-sm text-danger-fg">{{ t(key) }}</p>
     @if (key === 'admin.errors.staleReview') {
-    <app-luma-button variant="secondary" size="sm" (clicked)="reload()"
-      >{{ t('admin.review.reload') }}</app-luma-button
-    >
+    <app-luma-refresh-button (clicked)="reload()" />
     }
   </div>
   }

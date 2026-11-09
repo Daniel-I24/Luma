@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { Router } from '@angular/router';
-import { LumaButton, LumaEmptyState, LumaIconButton, LumaSkeleton } from '@design-system';
+import { LumaButton, LumaEmptyState, LumaIconButton, LumaSkeleton, LumaRefreshButton } from '@design-system';
 import { PromotionCard } from '@shared/promotions/promotion-card/promotion-card';
 import { PromotionFilters } from './components/promotion-filters/promotion-filters';
 import { PromotionsStore } from './state/promotions.store';
@@ -18,6 +18,7 @@ const SKELETON_ROWS = 3;
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    LumaRefreshButton,
     TranslocoModule,
     LumaButton,
     LumaEmptyState,

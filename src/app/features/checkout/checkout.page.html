@@ -60,9 +60,7 @@
       role="alert"
     >
       <span>{{ t('checkout.when.hoursFailed') }}</span>
-      <app-luma-button variant="ghost" size="sm" (clicked)="retryHours()"
-        >{{ t('common.retry') }}</app-luma-button
-      >
+      <app-luma-refresh-button (clicked)="retryHours()" />
     </div>
     } @default { @if (slotOptions().length) {
     <app-luma-select

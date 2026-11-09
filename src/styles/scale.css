@@ -114,6 +114,7 @@
   --duration-spring: 460ms; /* paired with --ease-spring */
   --size-success: 96px; /* the mark of LumaSuccess */
   --duration-slow: 340ms; /* screens: route transitions, sheets opening */
+  --duration-spin: 900ms;
   --duration-shimmer: 1.6s; /* skeleton loading only */
   --duration-stagger: 40ms; /* delay between consecutive list items (4 at most) */
   /* One curve to enter (and for state changes), one to leave. */
@@ -130,6 +131,7 @@
   /* Food doodles (styles/doodles.css): tile size and one slow drift across it. */
   --size-doodle-tile: 260px;
   --duration-doodle: 120s;
+  --animate-spin: spin var(--duration-spin) linear infinite;
   --animate-shimmer: shimmer var(--duration-shimmer) var(--ease-enter) infinite;
   --animate-fade-in: fade-in var(--duration-fast) var(--ease-enter) both;
 }

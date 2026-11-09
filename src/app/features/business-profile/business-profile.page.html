@@ -30,7 +30,7 @@
       [heading]="t('businessProfile.error.title')"
       [description]="t('businesses.errors.loadFailed')"
     >
-      <app-luma-button (clicked)="reload()">{{ t('common.retry') }}</app-luma-button>
+      <app-luma-refresh-button (clicked)="reload()" />
     </app-luma-empty-state>
   </div>
   } @case ('ready') { @if (store.business(); as business) {

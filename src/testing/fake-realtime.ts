@@ -27,6 +27,7 @@ export class FakeRealtimeService {
     return {
       live: signal(true).asReadonly(),
       updatedAt: updatedAt.asReadonly(),
+      refreshing: signal(false).asReadonly(),
       refreshAll: async () => {
         await refresh([]);
         updatedAt.set(new Date());

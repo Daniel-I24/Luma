@@ -1,16 +1,22 @@
+import { signal } from '@angular/core';
 import { RETURN_GAP_MS } from './realtime-timing';
 
 /** One full re-read at a time, and one per return to the app. */
 export class RefreshGate {
   private running: Promise<void> | null = null;
   private returnedAt = Number.NEGATIVE_INFINITY;
+  private readonly _busy = signal(false);
+  /** True while a read is running. */
+  public readonly busy = this._busy.asReadonly();
 
   constructor(private readonly read: () => Promise<void>) {}
 
   /** A call while one is running shares it: the screen reads once. */
   public now(): Promise<void> {
+    this._busy.set(true);
     this.running ??= this.read().finally(() => {
       this.running = null;
+      this._busy.set(false);
     });
     return this.running;
   }

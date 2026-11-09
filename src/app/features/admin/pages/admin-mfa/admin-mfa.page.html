@@ -10,9 +10,7 @@
   <app-luma-notice tone="danger">
     {{ t(mfa.errorKey() ?? 'admin.mfa.errors.loadFailed') }}
   </app-luma-notice>
-  <app-luma-button variant="secondary" [fullWidth]="true" (clicked)="mfa.start()"
-    >{{ t('common.retry') }}</app-luma-button
-  >
+  <app-luma-refresh-button (clicked)="mfa.start()" />
   } @default {
   <app-luma-card>
     @if (mfa.phase() === 'enroll') {

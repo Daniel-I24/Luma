@@ -21,7 +21,7 @@
           [heading]="t('map.mapUnavailableTitle')"
           [description]="t('map.mapUnavailable')"
         >
-          <app-luma-button (clicked)="startMap()">{{ t('map.retry') }}</app-luma-button>
+          <app-luma-refresh-button (clicked)="startMap()" />
         </app-luma-empty-state>
       </div>
       } @else {

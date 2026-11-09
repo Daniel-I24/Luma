@@ -30,6 +30,8 @@ export interface LiveUpdates {
   readonly live: Signal<boolean>;
   /** When the screen's data was last refreshed. */
   readonly updatedAt: Signal<Date | null>;
-  /** Re-reads everything now (pull to refresh, "Actualizar"). */
+  /** True during a read the user asked for. */
+  readonly refreshing: Signal<boolean>;
+  /** Re-reads everything now (pull to refresh, the reload button). */
   refreshAll(): Promise<void>;
 }

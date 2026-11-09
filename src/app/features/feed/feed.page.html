@@ -17,7 +17,7 @@
       [heading]="t('feed.error.title')"
       [description]="t('feed.error.description')"
     >
-      <app-luma-button (clicked)="store.load()">{{ t('common.retry') }}</app-luma-button>
+      <app-luma-refresh-button (clicked)="store.load()" />
     </app-luma-empty-state>
   </div>
   } @case ('ready') { @if (store.empty()) {
@@ -57,7 +57,7 @@
       } @if (store.moreFailed()) {
       <div class="flex h-full snap-start items-center justify-center" role="alert">
         <app-luma-empty-state icon="alert" tone="error" [heading]="t('feed.error.more')">
-          <app-luma-button (clicked)="store.loadMore()">{{ t('common.retry') }}</app-luma-button>
+          <app-luma-refresh-button (clicked)="store.loadMore()" />
         </app-luma-empty-state>
       </div>
       }
@@ -68,6 +68,7 @@
     <app-freshness-note
       class="pointer-events-auto min-w-0 flex-initial rounded-lg bg-surface-elevated px-2 shadow-md"
       [updatedAt]="live.updatedAt()"
+      [refreshing]="live.refreshing()"
       (refresh)="live.refreshAll()"
     />
     <div class="pointer-events-auto ms-auto flex flex-none flex-col items-end gap-2">

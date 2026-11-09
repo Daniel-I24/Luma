@@ -8,7 +8,7 @@
   <app-luma-notice tone="danger">
     {{ t('residence.loadFailed') }}
   </app-luma-notice>
-  <app-luma-button variant="secondary" (clicked)="load()">{{ t('common.retry') }}</app-luma-button>
+  <app-luma-refresh-button (clicked)="load()" />
   } @default {
   <app-luma-select
     selectId="residence-department"

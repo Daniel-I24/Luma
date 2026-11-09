@@ -18,7 +18,7 @@
   } @case ('error') {
   <div role="alert">
     <app-luma-empty-state icon="alert" tone="error" [heading]="t('orders.errors.loadTitle')" [description]="t('orders.errors.loadFailed')">
-      <app-luma-button (clicked)="reload()">{{ t('common.retry') }}</app-luma-button>
+      <app-luma-refresh-button (clicked)="reload()" />
     </app-luma-empty-state>
   </div>
   } @case ('ready') { @if (store.order(); as order) {

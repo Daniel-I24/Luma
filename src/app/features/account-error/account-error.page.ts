@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
 import { ConnectivityService } from '@core/network/connectivity.service';
-import { LumaButton, LumaEmptyState } from '@design-system';
+import { LumaButton, LumaEmptyState, LumaRefreshButton } from '@design-system';
 import { SessionProfileStore } from '@shared/account/session-profile.store';
 
 /**
@@ -15,7 +15,7 @@ import { SessionProfileStore } from '@shared/account/session-profile.store';
   selector: 'app-account-error-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaEmptyState],
+  imports: [LumaRefreshButton, TranslocoModule, LumaButton, LumaEmptyState],
   template: `
     <main
       *transloco="let t"
@@ -27,9 +27,7 @@ import { SessionProfileStore } from '@shared/account/session-profile.store';
         [description]="t(descriptionKey())"
       >
         <div class="flex flex-col gap-2">
-          <app-luma-button [disabled]="busy()" (clicked)="retry()">{{
-            t('accountError.retry')
-          }}</app-luma-button>
+          <app-luma-refresh-button [busy]="busy()" (clicked)="retry()" />
           @if (stillFailing()) {
             <p class="text-caption text-danger-fg" role="alert">{{ t('accountError.stillFailing') }}</p>
           }

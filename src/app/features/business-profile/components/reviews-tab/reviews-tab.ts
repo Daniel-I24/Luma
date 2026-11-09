@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import { LumaButton, LumaEmptyState, LumaRatingStars, LumaSkeleton } from '@design-system';
+import { LumaEmptyState, LumaRatingStars, LumaSkeleton, LumaRefreshButton } from '@design-system';
 import type { BusinessRating, ReviewInput } from '@shared/business/models/review.model';
 import { ReviewsStore } from '../../state/reviews.store';
 import { ReviewForm } from '../review-form/review-form';
@@ -15,8 +15,8 @@ import { ReviewList } from '../review-list/review-list';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    LumaRefreshButton,
     TranslocoModule,
-    LumaButton,
     LumaEmptyState,
     LumaRatingStars,
     LumaSkeleton,
@@ -57,7 +57,7 @@ import { ReviewList } from '../review-list/review-list';
         [heading]="t('businessProfile.reviews.errorTitle')"
         [description]="t(key)"
       >
-        <app-luma-button (clicked)="retry()">{{ t('common.retry') }}</app-luma-button>
+        <app-luma-refresh-button (clicked)="retry()" />
       </app-luma-empty-state>
       } @else if (store.reviews().length === 0) {
       <app-luma-empty-state

@@ -3,6 +3,7 @@
     "close": "Close",
     "remove": "Remove",
     "retry": "Try again",
+    "reload": "Reload",
     "back": "Back"
   },
   "auth": {
@@ -259,7 +260,6 @@
     "canvasLabel": "Luma business map",
     "loadingBusinesses": "Loading businesses…",
     "errorLoading": "Could not load businesses. Please try again.",
-    "retry": "Retry",
     "noBusinesses": "No businesses nearby at this time.",
     "locating": "Getting your location…",
     "locationDenied": "No location · showing the centre",
@@ -1209,8 +1209,7 @@
         "approved": "Customers will see it if it is published. Its documents will be deleted.",
         "rejected": "The business will see your note and can fix and resubmit. Documents are kept.",
         "suspended": "Customers will no longer see it. The business will see your note."
-      },
-      "reload": "Reload"
+      }
     },
     "mfa": {
       "title": "Two-step verification",
@@ -1959,7 +1958,6 @@
   "accountError": {
     "title": "We couldn't load your account",
     "description": "We don't know yet whether your account is a customer or a business one, so we won't show you the wrong screens. Please try again in a moment.",
-    "retry": "Retry",
     "stillFailing": "Still not working. If Luma's database is being updated, wait a few minutes.",
     "signOut": "Sign out",
     "outdated": "Luma's server does not have the update this app version needs yet. Try again later or tell the Luma team."
@@ -2568,8 +2566,7 @@
     "offline": "Offline: showing saved data",
     "updating": "Updating…",
     "updatedNow": "Updated a moment ago",
-    "updatedAgo": "Updated {{minutes}} min ago",
-    "refresh": "Refresh"
+    "updatedAgo": "Updated {{minutes}} min ago"
   },
   "technicalErrors": {
     "title": "Recent errors",

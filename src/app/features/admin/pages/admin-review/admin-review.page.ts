@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaButton, LumaEmptyState, LumaIconButton, LumaSkeleton } from '@design-system';
+import { LumaButton, LumaEmptyState, LumaIconButton, LumaSkeleton, LumaRefreshButton } from '@design-system';
 import { Nit } from '@core/validation/nit';
 import type {
   ReviewDecision,
@@ -22,6 +22,7 @@ const RUES_URL = ExternalUrls.RUES;
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    LumaRefreshButton,
     ReviewFlagsView,
     TranslocoModule,
     LumaButton,

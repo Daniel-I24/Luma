@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit, View
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import { LumaButton, LumaEmptyState, STATUS_LABEL_KEY } from '@design-system';
+import { LumaEmptyState, STATUS_LABEL_KEY, LumaRefreshButton } from '@design-system';
 import { BusinessSheetComponent } from './components/business-sheet/business-sheet.component';
 import { LocationPrompt } from './components/location-prompt/location-prompt';
 import { MapControls } from './components/map-controls/map-controls';
@@ -24,7 +24,7 @@ import { ResidenceMapCentre } from '@shared/geo/residence-map-centre';
   selector: 'app-map-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaEmptyState, BusinessSheetComponent, LocationPrompt, MapControls, MapTopBar, NearbyPanel],
+  imports: [LumaRefreshButton, TranslocoModule, LumaEmptyState, BusinessSheetComponent, LocationPrompt, MapControls, MapTopBar, NearbyPanel],
   providers: [NearbyBusinessesStore, BusinessSelectionStore, PlaceSearchStore, MapLocation],
   templateUrl: './map.page.html',
   host: { class: 'block h-full' },

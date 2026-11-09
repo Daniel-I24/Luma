@@ -9,7 +9,7 @@ import {
   untracked,
 } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaButton, LumaIcon, LumaSkeleton } from '@design-system';
+import { LumaButton, LumaIcon, LumaSkeleton, LumaRefreshButton } from '@design-system';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
 import { PROMOTION_ADVISOR } from '@shared/promotions/advisor/promotion-advisor';
 import type { IdeasResult, PromotionIdea } from '@shared/promotions/advisor/promotion-idea';
@@ -25,7 +25,7 @@ type IdeasState = 'loading' | 'ready' | 'error';
   selector: 'app-ideas-card',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaIcon, LumaSkeleton, CopCurrencyPipe],
+  imports: [LumaRefreshButton, TranslocoModule, LumaButton, LumaIcon, LumaSkeleton, CopCurrencyPipe],
   templateUrl: './ideas-card.html',
 })
 export class IdeasCard {

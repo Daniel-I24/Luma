@@ -27,7 +27,7 @@
       [heading]="t('favoritesPage.error')"
       [description]="t('businesses.errors.favoritesFailed')"
     >
-      <app-luma-button (clicked)="retry()">{{ t('common.retry') }}</app-luma-button>
+      <app-luma-refresh-button (clicked)="retry()" />
     </app-luma-empty-state>
   </div>
   } @case ('ready') { @if (store.items().length === 0) {

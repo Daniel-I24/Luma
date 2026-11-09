@@ -29,7 +29,7 @@
     [heading]="t('map.errors.title')"
     [description]="t(key)"
   >
-    <app-luma-button (clicked)="retry.emit()">{{ t('map.retry') }}</app-luma-button>
+    <app-luma-refresh-button (clicked)="retry.emit()" />
   </app-luma-empty-state>
   } @else if (items().length === 0) { @if (filtersActive()) {
   <app-luma-empty-state

@@ -33,6 +33,7 @@ export { BusinessTransition, LumaBusinessCard } from './business-card/luma-busin
 export { LumaEmptyState } from './empty-state/luma-empty-state';
 
 export { LumaIconButton } from './icon-button/luma-icon-button';
+export { LumaRefreshButton } from './refresh-button/luma-refresh-button';
 export type { IconButtonVariant } from './icon-button/luma-icon-button';
 
 export { LumaRatingStars } from './rating-stars/luma-rating-stars';

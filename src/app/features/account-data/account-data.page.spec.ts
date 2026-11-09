@@ -54,10 +54,10 @@ describe('AccountDataPage', () => {
     expect(exporter.read).toHaveBeenCalledTimes(1);
   });
 
-  it('a failure has its message and "Reintentar"', async () => {
+  it('a failure has its message and the reload button', async () => {
     exporter.read.mockResolvedValue({ data: null, errorKey: 'account.data.errors.limit' });
     const el = await render();
     expect(el.textContent).toContain('account.data.errors.limit');
-    expect(el.querySelector('button')?.textContent).toContain('common.retry');
+    expect(el.querySelector('app-luma-refresh-button button')).not.toBeNull();
   });
 });

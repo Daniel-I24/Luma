@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, model, sig
 import { TranslocoModule } from '@jsverse/transloco';
 import { FieldRules } from '@core/validation/field-rule';
 import { TextRules } from '@core/validation/text-rules';
-import { LumaButton, LumaInput, LumaNotice, LumaSelect, LumaSkeleton } from '@design-system';
+import { LumaButton, LumaInput, LumaNotice, LumaSelect, LumaSkeleton, LumaRefreshButton } from '@design-system';
 import { Residence } from '../residence';
 import { type Municipality, ResidenceCatalog } from '../residence-catalog';
 
@@ -15,7 +15,7 @@ import { type Municipality, ResidenceCatalog } from '../residence-catalog';
   selector: 'app-residence-picker',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LumaNotice, TranslocoModule, LumaButton, LumaInput, LumaSelect, LumaSkeleton],
+  imports: [LumaRefreshButton, LumaNotice, TranslocoModule, LumaButton, LumaInput, LumaSelect, LumaSkeleton],
   templateUrl: './residence-picker.html',
 })
 export class ResidencePicker {

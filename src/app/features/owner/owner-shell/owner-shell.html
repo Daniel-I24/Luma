@@ -57,13 +57,7 @@
     <app-luma-notice tone="danger">
       {{ t(context.errorKey()!) }}
     </app-luma-notice>
-    <button
-      type="button"
-      class="min-h-11 rounded-md border border-border bg-surface text-body font-semibold text-fg"
-      (click)="context.load()"
-    >
-      {{ t('common.retry') }}
-    </button>
+    <app-luma-refresh-button class="self-center" (clicked)="context.load()" />
   </div>
   }
 

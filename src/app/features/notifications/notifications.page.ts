@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import { LumaButton, LumaEmptyState, LumaIcon, LumaIconButton, LumaSkeleton } from '@design-system';
+import { LumaEmptyState, LumaIcon, LumaIconButton, LumaSkeleton, LumaRefreshButton } from '@design-system';
 import { DateFormat } from '@shared/format/date-format';
 import type { AppNotification } from '@shared/notifications/notification.repository';
 import { RealtimeService } from '@core/realtime/realtime.service';
@@ -17,7 +17,7 @@ import { NotificationView } from './utils/notification-view';
   selector: 'app-notifications-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaEmptyState, LumaIcon, LumaIconButton, LumaSkeleton],
+  imports: [LumaRefreshButton, TranslocoModule, LumaEmptyState, LumaIcon, LumaIconButton, LumaSkeleton],
   providers: [NotificationsStore],
   templateUrl: './notifications.page.html',
   host: { class: 'block' },

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { TourHelpButton } from '@shared/tutorial/tour-help-button';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaButton, LumaChip, LumaEmptyState, LumaIcon, LumaSkeleton } from '@design-system';
+import { LumaButton, LumaChip, LumaEmptyState, LumaIcon, LumaSkeleton, LumaRefreshButton } from '@design-system';
 import { DAY_MOMENTS, type Recommendation } from '@shared/recommendations/recommendation.model';
 import { RevealSelectedDirective } from '@shared/ui/viewport.directives';
 import { ComboCard } from './components/combo-card/combo-card';
@@ -20,6 +20,7 @@ import { AiStore } from './state/ai.store';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    LumaRefreshButton,
     TourHelpButton,
     TranslocoModule,
     LumaButton,

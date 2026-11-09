@@ -3,7 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 import { SessionProfileStore } from '@shared/account/session-profile.store';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import { LumaButton, LumaEmptyState, LumaIconButton, LumaNotice, LumaSkeleton, LumaTabs, TabIds, type TabItem } from '@design-system';
+import { LumaButton, LumaEmptyState, LumaIconButton, LumaNotice, LumaSkeleton, LumaTabs, TabIds, type TabItem, LumaRefreshButton } from '@design-system';
 import { DateFormat } from '@shared/format/date-format';
 import { ContactQueue } from '../../components/contact-queue/contact-queue';
 import { AdminQueueStore } from '../../state/admin-queue.store';
@@ -15,7 +15,7 @@ type QueueTab = 'pending' | 'reports';
   selector: 'app-admin-queue-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LumaNotice, 
+  imports: [LumaRefreshButton, LumaNotice, 
     TranslocoModule,
     RouterLink,
     LumaButton,

@@ -4,6 +4,12 @@
    prefers-reduced-motion the utilities in motion.css stop using them.
    ───────────────────────────────────────────── */
 
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @keyframes shimmer {
   from {
     transform: translateX(-100%);

@@ -11,7 +11,7 @@
   </div>
   } @else if (errorKey(); as key) {
   <app-luma-notice tone="danger">{{ t(key) }}</app-luma-notice>
-  <app-luma-button variant="secondary" (clicked)="load()">{{ t('common.retry') }}</app-luma-button>
+  <app-luma-refresh-button (clicked)="load()" />
   } @else {
   @for (section of sections(); track section.key) {
   <section class="motion-stagger flex min-w-0 flex-col gap-2 rounded-xl border border-border-subtle bg-surface p-4" [style.--stagger-index]="$index" [attr.aria-labelledby]="'data-' + section.key">

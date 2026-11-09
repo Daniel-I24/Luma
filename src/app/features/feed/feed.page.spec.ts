@@ -117,11 +117,11 @@ describe('FeedPage', () => {
     expect(el.querySelector('app-luma-empty-state')).not.toBeNull();
   });
 
-  it('a catalog change on another phone refreshes the feed; "Actualizar" does the same', async () => {
+  it('a catalog change on another phone refreshes the feed; the reload button does the same', async () => {
     const { el } = render();
     await TestBed.inject(FakeRealtimeService).emit('catalog_events', [{ kind: 'promotion', business_id: 'b9' }]);
     expect(store.refresh).toHaveBeenCalledTimes(1);
-    const refresh = Array.from(el.querySelectorAll('button')).find((b) => b.textContent?.includes('realtime.refresh'));
+    const refresh = el.querySelector<HTMLButtonElement>('app-freshness-note app-luma-refresh-button button');
     refresh!.click();
     expect(store.refresh).toHaveBeenCalledTimes(2);
   });

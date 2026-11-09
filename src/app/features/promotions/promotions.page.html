@@ -28,7 +28,7 @@
       tone="error"
       [heading]="t(store.errorKey() ?? 'promotions.errors.loadFailed')"
     >
-      <app-luma-button (clicked)="store.load()">{{ t('common.retry') }}</app-luma-button>
+      <app-luma-refresh-button (clicked)="store.load()" />
     </app-luma-empty-state>
   </div>
   } @default { @if (store.listed().length) {

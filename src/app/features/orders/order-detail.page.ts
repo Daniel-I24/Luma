@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouteMap } from '@shared/route/route-map/route-map';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { map } from 'rxjs';
-import { LumaBottomSheet, LumaButton, LumaEmptyState, LumaIcon, LumaIconButton, LumaNotice, LumaSkeleton, LumaSuccess } from '@design-system';
+import { LumaBottomSheet, LumaButton, LumaEmptyState, LumaIcon, LumaIconButton, LumaNotice, LumaSkeleton, LumaSuccess, LumaRefreshButton } from '@design-system';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
 import { DateFormat } from '@shared/format/date-format';
 import { OrderEstimates } from '@shared/orders/order-estimates';
@@ -30,7 +30,7 @@ import { OrderDetailView } from './utils/order-detail-view';
   selector: 'app-order-detail-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LumaNotice, LumaSuccess, 
+  imports: [LumaRefreshButton, LumaNotice, LumaSuccess, 
     TranslocoModule,
     LumaBottomSheet,
     LumaButton,

@@ -22,7 +22,7 @@
   } @case ('error') {
   <div role="alert">
     <app-luma-empty-state icon="alert" tone="error" [heading]="t('admin.errors.loadFailed')">
-      <app-luma-button (clicked)="store.load()">{{ t('common.retry') }}</app-luma-button>
+      <app-luma-refresh-button (clicked)="store.load()" />
     </app-luma-empty-state>
   </div>
   } @default {

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaButton, LumaEmptyState, LumaImage } from '@design-system';
+import { LumaEmptyState, LumaImage, LumaRefreshButton } from '@design-system';
 import type { IconName } from '@design-system';
 import type { MenuItem } from '@shared/business/models/menu.model';
 import { AddToCart } from '@shared/cart/add-to-cart/add-to-cart';
@@ -35,7 +35,7 @@ export class MenuSections {
   selector: 'app-menu-tab',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaEmptyState, LumaImage, CopCurrencyPipe, AddToCart],
+  imports: [LumaRefreshButton, TranslocoModule, LumaEmptyState, LumaImage, CopCurrencyPipe, AddToCart],
   templateUrl: './menu-tab.html',
   host: { class: 'block' },
 })

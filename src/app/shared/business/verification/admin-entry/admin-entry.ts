@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaButton, LumaIcon, LumaNotice } from '@design-system';
+import { LumaIcon, LumaNotice, LumaRefreshButton } from '@design-system';
 import { type AdminAccess, AdminRepository } from '../admin.repository';
 
 /**
@@ -15,7 +15,7 @@ import { type AdminAccess, AdminRepository } from '../admin.repository';
   selector: 'app-admin-entry',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, RouterLink, LumaButton, LumaIcon, LumaNotice],
+  imports: [LumaRefreshButton, TranslocoModule, RouterLink, LumaIcon, LumaNotice],
   template: `
     @if (access() === 'ok' || access() === 'needs_mfa') {
       <section *transloco="let t" aria-labelledby="admin-heading">
@@ -36,9 +36,7 @@ import { type AdminAccess, AdminRepository } from '../admin.repository';
     } @else if (access() === 'error') {
       <section *transloco="let t" class="flex flex-col gap-2 pt-4">
         <app-luma-notice tone="warning">{{ t('admin.accessError.entry') }}</app-luma-notice>
-        <app-luma-button variant="secondary" size="sm" [disabled]="checking()" (clicked)="check()">
-          {{ t('common.retry') }}
-        </app-luma-button>
+        <app-luma-refresh-button [busy]="checking()" (clicked)="check()" />
       </section>
     }
   `,

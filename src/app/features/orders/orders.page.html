@@ -9,7 +9,7 @@
     <app-tour-help-button id="orders" />
   </header>
   @if (state() === 'ready') {
-  <app-freshness-note [updatedAt]="live.updatedAt()" (refresh)="live.refreshAll()" />
+  <app-freshness-note [updatedAt]="live.updatedAt()" [refreshing]="live.refreshing()" (refresh)="live.refreshAll()" />
   }
 
   @switch (state()) { @case ('loading') {
@@ -22,7 +22,7 @@
   } @case ('error') {
   <div role="alert">
     <app-luma-empty-state icon="alert" tone="error" [heading]="t('orders.errors.loadTitle')" [description]="t('orders.errors.loadFailed')">
-      <app-luma-button (clicked)="load()">{{ t('common.retry') }}</app-luma-button>
+      <app-luma-refresh-button (clicked)="load()" />
     </app-luma-empty-state>
   </div>
   } @case ('ready') { @if (orders().length === 0) {

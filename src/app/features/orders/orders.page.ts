@@ -3,7 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 import { TourHelpButton } from '@shared/tutorial/tour-help-button';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import { LumaButton, LumaEmptyState, LumaSkeleton } from '@design-system';
+import { LumaButton, LumaEmptyState, LumaSkeleton, LumaRefreshButton } from '@design-system';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
 import { DateFormat } from '@shared/format/date-format';
 import { OrderStatusBadge } from '@shared/orders/order-status-badge';
@@ -22,6 +22,7 @@ type ListState = 'loading' | 'ready' | 'error';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    LumaRefreshButton,
     TourHelpButton,
     TranslocoModule,
     RouterLink,

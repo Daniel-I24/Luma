@@ -50,7 +50,7 @@
       [heading]="t('ai.error.title')"
       [description]="t('ai.error.description')"
     >
-      <app-luma-button (clicked)="store.load()">{{ t('common.retry') }}</app-luma-button>
+      <app-luma-refresh-button (clicked)="store.load()" />
     </app-luma-empty-state>
   </div>
   } @case ('ready') { @if (store.result(); as result) { @if (result.businesses.length === 0) {
