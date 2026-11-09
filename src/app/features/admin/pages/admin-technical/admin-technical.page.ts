@@ -9,6 +9,8 @@ import { LumaButton } from '@design-system';
 import { PanelQueryLog } from '@shared/business/diagnostics/panel-query-log';
 import { DeviceStatus } from '@shared/errors/device-status/device-status';
 import { RecentErrors } from '@shared/errors/recent-errors/recent-errors';
+import { GeolocationService } from '@shared/geo/geolocation.service';
+import { LocationStatus } from '../../components/location-status/location-status';
 import { PushServerStatus } from '../../components/push-server-status/push-server-status';
 
 const SHORT_ID = 8;
@@ -24,7 +26,7 @@ const VISIBLE_START = 1;
   selector: 'app-admin-technical-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, RouterLink, LumaButton, PushServerStatus, DeviceStatus, RecentErrors],
+  imports: [TranslocoModule, RouterLink, LumaButton, PushServerStatus, DeviceStatus, LocationStatus, RecentErrors],
   templateUrl: './admin-technical.page.html',
   host: { class: 'block' },
 })
@@ -32,6 +34,7 @@ export class AdminTechnicalPage {
   private readonly auth = inject(AuthService);
   private readonly navigator = inject(DOCUMENT).defaultView?.navigator;
   protected readonly log = inject(PanelQueryLog);
+  private readonly geo = inject(GeolocationService);
 
   protected readonly copied = signal<'ok' | 'failed' | null>(null);
   protected readonly email = computed(() => AdminTechnicalPage.maskEmail(this.auth.user()?.email ?? ''));
@@ -44,9 +47,16 @@ export class AdminTechnicalPage {
       `Luma ${APP_VERSION}`,
       `user ${this.userId()} ${this.email()}`,
       `ai mode: ${this.aiMode}`,
+      `location: ${this.locationLine()}`,
       ...this.log.entries().map((q) => `${q.at} ${q.table} [${q.filter}] -> ${q.rows ?? 'error'}`),
     ].join('\n'),
   );
+
+  /** The last location attempt, with no position in it. */
+  private locationLine(): string {
+    const last = this.geo.lastAttempt();
+    return last ? `${last.outcome} ${last.source} ${last.access} ${last.accuracyM ?? '-'} m ${last.code ?? ''}`.trim() : 'none';
+  }
 
   /** An e-mail with only the first letters visible: a…@c….com. */
   public static maskEmail(email: string): string {

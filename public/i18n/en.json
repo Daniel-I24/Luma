@@ -264,6 +264,33 @@
     "locating": "Getting your location…",
     "locationDenied": "No location · showing the centre",
     "centerOnMe": "Center on my location",
+    "locationOff": "Location off · showing the centre",
+    "locationNoSignal": "No location signal · showing the centre",
+    "locate": {
+      "locating": "Finding your location…",
+      "failed": "Location unavailable. See why"
+    },
+    "locationFailure": {
+      "denied": {
+        "title": "Luma has no location permission",
+        "reason": "Turn it on in your phone or browser settings: Luma → Location → Allow. Meanwhile we show the centre.",
+        "settings": "Open settings"
+      },
+      "servicesOff": {
+        "title": "Your phone's location is off",
+        "reason": "Turn it on from the phone settings or the quick panel and try again.",
+        "settings": "Turn on location"
+      },
+      "timeout": {
+        "title": "We could not find your position in time",
+        "reason": "The signal is weak indoors. Move near a window or turn on mobile data and try again."
+      },
+      "unavailable": {
+        "title": "We could not read your location",
+        "reason": "The phone gave no position. Check that location is on and try again."
+      },
+      "retry": "Try again"
+    },
     "locationPermission": {
       "title": "Share your location?",
       "reason": "Luma uses it only to show you the nearest businesses. We never store or share it.",
@@ -1307,6 +1334,23 @@
         "failed": "It could not be copied on this device."
       },
       "aiMode": "Luma IA mode",
+      "location": {
+        "title": "Location on this device",
+        "none": "Location has not been requested in this session.",
+        "result": "Last result",
+        "method": "Method",
+        "permission": "Permission",
+        "accuracy": "Accuracy",
+        "code": "Code",
+        "time": "Time (Colombia)",
+        "outcome": {
+          "ok": "Position obtained",
+          "denied": "Permission denied",
+          "servicesOff": "System location off",
+          "timeout": "No position in time",
+          "unavailable": "Position unavailable"
+        }
+      },
       "back": "Back to operations",
       "push": {
         "title": "Notification server",

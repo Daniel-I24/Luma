@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit, ViewChild, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit, ViewChild, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
@@ -14,9 +14,9 @@ import { MapMarkerSyncService } from './services/map-marker-sync.service';
 import { MapStylesLoader } from '@shared/map/map-styles.loader';
 import { BusinessSelectionStore } from './state/business-selection.store';
 import { MapLive } from './state/map-live';
+import { MapLocation } from './state/map-location';
 import { NearbyBusinessesStore, type NearbyBusiness } from './state/nearby-businesses.store';
 import { PlaceSearchStore } from './state/place-search.store';
-import { ZoneLabel } from './utils/zone-label';
 import { ResidenceMapCentre } from '@shared/geo/residence-map-centre';
 
 /** MapPage — /map: live map, filters, nearby businesses and the business sheet. */
@@ -25,7 +25,7 @@ import { ResidenceMapCentre } from '@shared/geo/residence-map-centre';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoModule, LumaButton, LumaEmptyState, BusinessSheetComponent, LocationPrompt, MapControls, MapTopBar, NearbyPanel],
-  providers: [NearbyBusinessesStore, BusinessSelectionStore, PlaceSearchStore],
+  providers: [NearbyBusinessesStore, BusinessSelectionStore, PlaceSearchStore, MapLocation],
   templateUrl: './map.page.html',
   host: { class: 'block h-full' },
 })
@@ -46,8 +46,7 @@ export class MapPage implements OnInit, OnDestroy {
 
   private readonly mapReady = signal(false);
   protected readonly mapFailed = signal(false);
-  protected readonly showLocationPrompt = signal(false);
-  protected readonly zoneKey = computed(() => ZoneLabel.getZoneLabelKey(this.geo.state()));
+  protected readonly location = inject(MapLocation);
 
   constructor() {
     // No device location yet: start at the municipality of residence.
@@ -82,6 +81,7 @@ export class MapPage implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.styles.ensureLoaded();
     this.startMap();
+    this.location.start();
   }
 
   /** Releases the map and its markers. */
@@ -105,20 +105,6 @@ export class MapPage implements OnInit, OnDestroy {
   protected reload(): void {
     const { lat, lng } = this.camera.currentCenter();
     this.load(lat, lng);
-  }
-
-  protected onCentreOnMe(): void {
-    if (!this.geo.hasRealLocation()) {
-      this.showLocationPrompt.set(true);
-      return;
-    }
-    const { lat, lng } = this.geo.coords();
-    this.camera.flyTo(lat, lng);
-  }
-
-  protected onAllowLocation(): void {
-    this.showLocationPrompt.set(false);
-    this.geo.requestLocation();
   }
 
   /** Card tapped: glide the map to the business and open its sheet. */

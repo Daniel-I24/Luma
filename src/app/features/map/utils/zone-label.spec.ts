@@ -12,6 +12,13 @@ describe('getZoneLabelKey', () => {
     expect(ZoneLabel.getZoneLabelKey('denied')).toBe('map.locationDenied');
   });
 
+  it('says why there is no position when the reading failed', () => {
+    expect(ZoneLabel.getZoneLabelKey('unavailable', 'servicesOff')).toBe('map.locationOff');
+    expect(ZoneLabel.getZoneLabelKey('unavailable', 'timeout')).toBe('map.locationNoSignal');
+    expect(ZoneLabel.getZoneLabelKey('unavailable', 'unavailable')).toBe('map.locationNoSignal');
+    expect(ZoneLabel.getZoneLabelKey('denied', 'denied')).toBe('map.locationDenied');
+  });
+
   it('shows that results are near the user once located', () => {
     expect(ZoneLabel.getZoneLabelKey('granted')).toBe('map.zone.nearYou');
   });

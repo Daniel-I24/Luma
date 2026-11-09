@@ -26,16 +26,23 @@
       </div>
       } @else {
       <app-map-top-bar
-        [zoneKey]="zoneKey()"
+        [zoneKey]="location.zoneKey()"
         [(query)]="store.query"
       />
       <app-map-controls
-        (locate)="onCentreOnMe()"
+        [state]="location.state()"
+        (locate)="location.centre()"
         (zoomIn)="camera.zoomIn()"
         (zoomOut)="camera.zoomOut()"
       />
-      } @if (showLocationPrompt()) {
-      <app-location-prompt (allow)="onAllowLocation()" (skip)="showLocationPrompt.set(false)" />
+      } @if (location.promptOpen()) {
+      <app-location-prompt
+        [failure]="location.failure()"
+        [canOpenSettings]="location.canOpenSettings()"
+        (allow)="location.allow()"
+        (skip)="location.skip()"
+        (settings)="location.openSettings()"
+      />
       }
     </ng-container>
   </div>

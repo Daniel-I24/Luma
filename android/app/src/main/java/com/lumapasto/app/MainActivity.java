@@ -19,6 +19,7 @@ public class MainActivity extends BridgeActivity {
         // Native splash (theme AppTheme.NoActionBarLaunch). It stays until index.html
         // has loaded and painted the same mark (#luma-entry), which AppEntry continues.
         SplashScreen splash = SplashScreen.installSplashScreen(this);
+        registerPlugin(LumaSettingsPlugin.class);
         long shownAt = SystemClock.uptimeMillis();
         splash.setKeepOnScreenCondition(
             () -> !pageLoaded && SystemClock.uptimeMillis() - shownAt < MAX_NATIVE_SPLASH_MS

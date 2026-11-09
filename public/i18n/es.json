@@ -264,6 +264,33 @@
     "locating": "Obteniendo tu ubicación…",
     "locationDenied": "Sin ubicación · mostrando el centro",
     "centerOnMe": "Centrar en mi ubicación",
+    "locationOff": "Ubicación apagada · mostrando el centro",
+    "locationNoSignal": "Sin señal de ubicación · mostrando el centro",
+    "locate": {
+      "locating": "Buscando tu ubicación…",
+      "failed": "Ubicación no disponible. Ver por qué"
+    },
+    "locationFailure": {
+      "denied": {
+        "title": "Luma no tiene permiso de ubicación",
+        "reason": "Actívalo en los ajustes del teléfono o del navegador: Luma → Ubicación → Permitir. Mientras tanto te mostramos el centro.",
+        "settings": "Abrir ajustes"
+      },
+      "servicesOff": {
+        "title": "La ubicación del teléfono está apagada",
+        "reason": "Enciéndela desde los ajustes del teléfono o el panel rápido y vuelve a intentarlo.",
+        "settings": "Activar ubicación"
+      },
+      "timeout": {
+        "title": "No encontramos tu posición a tiempo",
+        "reason": "En interiores la señal es débil. Acércate a una ventana o activa los datos y vuelve a intentarlo."
+      },
+      "unavailable": {
+        "title": "No pudimos leer tu ubicación",
+        "reason": "El teléfono no dio una posición. Revisa que la ubicación esté encendida y vuelve a intentarlo."
+      },
+      "retry": "Reintentar"
+    },
     "locationPermission": {
       "title": "¿Puedes compartir tu ubicación?",
       "reason": "Luma la usa solo para mostrarte los negocios más cercanos a ti. No la guardamos ni compartimos.",
@@ -1307,6 +1334,23 @@
         "failed": "No se pudo copiar en este dispositivo."
       },
       "aiMode": "Modo de Luma IA",
+      "location": {
+        "title": "Ubicación en este dispositivo",
+        "none": "Aún no se ha pedido la ubicación en esta sesión.",
+        "result": "Último resultado",
+        "method": "Método",
+        "permission": "Permiso",
+        "accuracy": "Precisión",
+        "code": "Código",
+        "time": "Hora (Colombia)",
+        "outcome": {
+          "ok": "Posición obtenida",
+          "denied": "Permiso denegado",
+          "servicesOff": "Ubicación del sistema apagada",
+          "timeout": "Sin posición a tiempo",
+          "unavailable": "Posición no disponible"
+        }
+      },
       "back": "Volver a operaciones",
       "push": {
         "title": "Servidor de avisos",

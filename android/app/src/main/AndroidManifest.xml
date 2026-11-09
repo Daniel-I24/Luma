@@ -56,5 +56,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!-- Android 13+: asked only when the user turns notifications on (docs/push.md). -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- A phone or tablet without GPS or network location can still install Luma. -->
+    <uses-feature android:name="android.hardware.location" android:required="false" />
     <uses-feature android:name="android.hardware.location.gps" android:required="false" />
+    <uses-feature android:name="android.hardware.location.network" android:required="false" />
 </manifest>
