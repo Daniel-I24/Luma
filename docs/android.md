@@ -79,9 +79,15 @@ release build is unsigned and the script refuses to start.
 - **Keyboard** (`@capacitor/keyboard`): the WebView resizes above the
   keyboard and the focused field scrolls into view.
 - **Location**: `ACCESS_COARSE_LOCATION` / `ACCESS_FINE_LOCATION` in the
-  manifest; the WebView asks at runtime through Capacitor's
-  `BridgeWebChromeClient`, so `navigator.geolocation` works without an extra
-  plugin. Denying it keeps the city centre.
+  manifest, asked at runtime by `@capacitor/geolocation`: fused location with
+  Google Play Services (and the system's "turn on location" dialog),
+  `LocationManager` without them. Not `navigator.geolocation`: its low-accuracy
+  read timed out on a phone with the permission and the GPS on. Approximate
+  first, then GPS, then a refinement. Refused or off: the map says why and offers
+  the settings (`LumaSettingsPlugin`). The last attempt, with no position, is in
+  Admin → Información técnica.
+- **Photos**: the system picker (`image/*`) needs no storage permission on any
+  Android version; the picture is re-encoded before it is uploaded.
 - **Manifest**: internet and location only, `allowBackup="false"` plus
   `data_extraction_rules.xml` (no cloud backup or device transfer of
   sessions), `usesCleartextTraffic="false"`.

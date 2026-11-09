@@ -218,6 +218,19 @@ table in docs/cleanup-report.md.
   GitHub Pages is no longer a 404. Links between the pages are relative: the old `/legal/...`
   links were a 404 on Pages (served under /Luma/). Vercel rewrites `/legal` and `/<page>.html`.
 
+### Phone tests of APK v1.0.0 and iPhone
+
+- Own SMTP documented (docs/auth-emails.md); the "team addresses only" limit is gone.
+- Photo: Perfil never passed the photo to the avatar. Three photos in production prove upload,
+  policies and set_avatar work. Picker `image/*`, no silent step, a message for each failure.
+- Map filters: only the chips scroll; the map buttons are a row. `check-map-chrome` measures 1, 3
+  and 6 filters at 320 to 430 px and tablet, with 200 % text and both themes.
+- Location: on an emulator with the permission and the GPS on, `navigator.geolocation` at low
+  accuracy timed out and every error became "denied". Now `@capacitor/geolocation` in the app,
+  the browser on the web, and each failure told apart. Last attempt in Información técnica.
+- iPhone web: home-screen metas, 16 px fields, CSP `blob:` for the photo preview, e2e in WebKit
+  with the iPhone 13 profile. Native project in `ios/`, not compiled (docs/ios.md).
+
 ## Round 13 (2026-11-07)
 
 ### Phase 0: scripts/luma.ps1 changed nothing in production

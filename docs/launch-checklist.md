@@ -32,7 +32,10 @@ State on 2026-11-07 (round 14). Commands are for **PowerShell** in `C:\dev\Luma`
 3. **Deploy `reconcile-payments`:** option 3 (or 8) of `scripts\luma.ps1`.
    Check: Admin → Operaciones → "Conciliar ahora" answers with a number.
 4. **APK:** option 6 of `scripts\luma.ps1`. It prints `APK: compilado <date time>` and installs it.
-5. **Rehearse** `docs/demo.md` once with the three demo accounts.
+   Publish it as release v1.0.1 on GitHub, so the README's "última versión" downloads it.
+5. **iPhone:** the web already works from Safari. The native app needs a Mac (docs/ios.md); before
+   compiling it, run option 3 or 8 of `scripts\luma.ps1` so `ALLOWED_ORIGINS` includes it.
+6. **Rehearse** `docs/demo.md` once with the three demo accounts.
 
 ## Before real users
 
