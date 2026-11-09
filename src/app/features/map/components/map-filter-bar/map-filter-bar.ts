@@ -27,12 +27,12 @@ interface ActiveChip {
   template: `
     <ng-container *transloco="let t">
       <div
-        class="pointer-events-auto flex items-center gap-2 overflow-x-auto px-4 py-2 [scrollbar-width:none]"
+        class="pointer-events-auto flex items-center gap-2 py-2 ps-4"
         role="group"
         [attr.aria-label]="t('map.filters.title')"
       >
         <app-luma-button
-          class="shrink-0"
+          class="flex-none"
           variant="secondary"
           size="sm"
           buttonId="map-filters-button"
@@ -40,10 +40,20 @@ interface ActiveChip {
           (clicked)="sheetOpen.set(true)"
           >{{ store.filterCount() ? t('map.filters.buttonCount', { count: store.filterCount() }) : t('map.filters.button') }}</app-luma-button
         >
-        @for (chip of chips(); track chip.id) {
-        <app-luma-chip class="shrink-0 shadow-sm" variant="primary" [dismissible]="true" (dismissed)="remove(chip)">{{
-          chip.key ? t(chip.key, chip.params) : chip.text
-        }}</app-luma-chip>
+        @if (chips().length) {
+        <!-- Only the chips scroll: the button keeps its place and the side margin stays. -->
+        <div
+          class="flex min-w-0 flex-1 items-center gap-2 overflow-x-auto overscroll-x-contain [scrollbar-width:none]"
+          data-map-filter-chips
+          role="list"
+          [attr.aria-label]="t('map.filters.title')"
+        >
+          @for (chip of chips(); track chip.id) {
+          <app-luma-chip class="flex-none shadow-sm" variant="primary" [dismissible]="true" (dismissed)="remove(chip)">{{
+            chip.key ? t(chip.key, chip.params) : chip.text
+          }}</app-luma-chip>
+          }
+        </div>
         }
       </div>
       <app-map-filter-sheet [(open)]="sheetOpen" />

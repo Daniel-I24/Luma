@@ -19,7 +19,8 @@ import { LumaIconButton } from '@design-system';
       />
     </ng-container>
   `,
-  host: { class: 'absolute right-3 bottom-3 z-20 flex flex-col gap-2' },
+  // A row at the bottom: a column reached the filter row on phones with a short map.
+  host: { class: 'absolute end-[calc(var(--spacing-3)+env(safe-area-inset-right))] bottom-3 z-20 flex gap-2' },
 })
 export class MapControls {
   public readonly locate = output<void>();

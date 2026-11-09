@@ -45,6 +45,7 @@ jobs:
           npx ng build --configuration screens
           npx playwright-core install --with-deps chromium
           node scripts/check-responsive.mjs --browser=chromium
+          node scripts/check-map-chrome.mjs --browser=chromium
       - name: End-to-end smoke flows on the web build with simulated services (no console errors)
         env:
           E2E_BROWSER: chromium

@@ -125,6 +125,12 @@ const MY_DATA = {
     businesses: [],
   };
 
+/** Businesses of many categories: the map filters can reach six active chips. */
+export function manyCategories(route) {
+  const names = ['Comida rápida', 'Panadería', 'Cafetería', 'Restaurante'];
+  return json(route, names.map((category, i) => ({ ...BUSINESS, id: `00000000-0000-4000-8000-0000000000c${i}`, category })));
+}
+
 /** Answers a request that left the local server; owner screens see an owner profile and their business. */
 export function respond(route, { owner = false } = {}) {
   const url = new URL(route.request().url());

@@ -18,7 +18,7 @@
     "apk:release": "node scripts/apk.mjs release",
     "check:interactive": "node scripts/check-interactive.mjs",
     "check:validation": "node scripts/check-validation.mjs",
-    "check:responsive": "node scripts/check-responsive.mjs",
+    "check:responsive": "node scripts/check-responsive.mjs && node scripts/check-map-chrome.mjs",
     "verify:backend": "node scripts/verify-backend.mjs",
     "apk:verify": "node scripts/apk-verify.mjs",
     "apk:demo": "node scripts/apk-demo.mjs",

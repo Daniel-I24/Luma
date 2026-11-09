@@ -55,6 +55,22 @@ describe('MapFilterBar', () => {
     expect(el.querySelectorAll('.luma-chip--dismissible')).toHaveLength(2);
   });
 
+  it('only the chips scroll: the button stays outside the scrolling row', () => {
+    filters.set({ ...NO_FILTERS, openNow: true, goodRating: true, withPromotion: true, categories: ['Bar', 'Café'] });
+    const { el } = render();
+    const row = el.querySelector<HTMLElement>('[data-map-filter-chips]')!;
+    expect(row.className).toContain('overflow-x-auto');
+    expect(row.className).toContain('gap-2');
+    expect(row.querySelector('#map-filters-button')).toBeNull();
+    expect(row.querySelectorAll('.luma-chip--dismissible')).toHaveLength(5);
+    expect(Array.from(row.querySelectorAll('app-luma-chip')).every((chip) => chip.classList.contains('flex-none'))).toBe(true);
+    expect(el.querySelector('#map-filters-button')?.closest('[role=group]')?.className).toContain('ps-4');
+  });
+
+  it('without filters there is no empty scrolling row', () => {
+    expect(render().el.querySelector('[data-map-filter-chips]')).toBeNull();
+  });
+
   it('opens the sheet; distance needs the location; filters apply at once', () => {
     const { fixture, el } = render();
     el.querySelector<HTMLButtonElement>('#map-filters-button')!.click();
