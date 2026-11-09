@@ -50,6 +50,12 @@ export class ImageReencoder {
   private static async decode(file: Blob): Promise<ImageBitmap> {
     try {
       return await createImageBitmap(file, { imageOrientation: 'from-image' });
+    } catch (error) {
+      if (!(error instanceof TypeError)) throw new ImageEncodeError('media.errors.decode');
+    }
+    // TypeError: an older WebView or Safari does not know that option.
+    try {
+      return await createImageBitmap(file);
     } catch {
       throw new ImageEncodeError('media.errors.decode');
     }

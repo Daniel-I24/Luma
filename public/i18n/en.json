@@ -2197,11 +2197,17 @@
     "errors": {
       "consent": "Accept how the photo is used to save it.",
       "upload": "Could not save the photo. You can try again from My details.",
-      "remove": "Could not remove the photo. Try again."
+      "remove": "Could not remove the photo. Try again.",
+      "session": "Your session ended. Sign in again to save the photo.",
+      "load": "Your photo is saved, but we could not show it. Check your connection.",
+      "denied": "We could not save the photo: confirm your email and try again.",
+      "network": "No connection: the photo could not be uploaded. Try again."
     },
     "title": "Profile photo",
     "alt": "Your profile photo",
-    "share": "Show my photo to the business while it prepares my order, so it recognises me at pick-up."
+    "share": "Show my photo to the business while it prepares my order, so it recognises me at pick-up.",
+    "pickHint": "Accept and choose a photo: it is saved when you choose it.",
+    "uploading": "Uploading photo…"
   },
   "phoneVerification": {
     "title": "Verify mobile",

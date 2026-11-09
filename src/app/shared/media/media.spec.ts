@@ -17,6 +17,13 @@ describe('image file checks', () => {
     );
   });
 
+  it('lets the decoder judge what phones send with no type or as HEIC', () => {
+    expect(ImageFiles.checkImageFile({ type: '', size: 1000 })).toBeNull();
+    expect(ImageFiles.checkImageFile({ type: 'image/heic', size: 1000 })).toBeNull();
+    expect(ImageFiles.checkImageFile({ type: 'image/heif', size: 1000 })).toBeNull();
+    expect(ImageFiles.checkImageFile({ type: '', size: 16 * 1024 * 1024 })).toBe('media.errors.size');
+  });
+
   it('scales down to the longest side without enlarging', () => {
     expect(ImageFiles.fitWithin(4000, 3000)).toEqual({ width: 1280, height: 960 });
     expect(ImageFiles.fitWithin(1000, 3000)).toEqual({ width: 427, height: 1280 });
@@ -48,6 +55,18 @@ describe('reencodeImage', () => {
     );
     return { drawImage, toBlob, close };
   }
+
+  it('decodes without the orientation option where the WebView does not know it', async () => {
+    stubCanvas([new Blob(['x'], { type: 'image/webp' })]);
+    const close = vi.fn();
+    const decode = vi.fn().mockRejectedValueOnce(new TypeError('bad option')).mockResolvedValue({ width: 10, height: 10, close });
+    vi.stubGlobal('createImageBitmap', decode);
+
+    expect((await ImageReencoder.reencodeImage(new Blob(['raw']))).extension).toBe('webp');
+    expect(decode).toHaveBeenCalledTimes(2);
+    expect(decode.mock.calls[1]).toHaveLength(1);
+    expect(close).toHaveBeenCalledOnce();
+  });
 
   it('draws the picture at most 1280 px wide and encodes it as WebP', async () => {
     const { drawImage, toBlob, close } = stubCanvas([new Blob(['x'], { type: 'image/webp' })]);

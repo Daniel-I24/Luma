@@ -49,6 +49,17 @@ describe('AvatarRepository', () => {
     expect(bucket.remove).toHaveBeenLastCalledWith([expect.stringMatching(/^u1\/avatar\//)]);
   });
 
+  it('says what the user can do when Storage refuses the upload', async () => {
+    const repo = TestBed.inject(AvatarRepository);
+    bucket.upload.mockResolvedValueOnce({ error: { name: 'StorageApiError', status: 400, statusCode: '403' } });
+    expect((await repo.upload('u1', photo, true)).errorKey).toBe('avatar.errors.denied');
+    bucket.upload.mockResolvedValueOnce({ error: { name: 'StorageUnknownError' } });
+    expect((await repo.upload('u1', photo, true)).errorKey).toBe('avatar.errors.network');
+    bucket.upload.mockResolvedValueOnce({ error: { name: 'StorageApiError', status: 500 } });
+    expect((await repo.upload('u1', photo, true)).errorKey).toBe('avatar.errors.upload');
+    expect(rpc).not.toHaveBeenCalledWith('set_avatar', expect.objectContaining({ p_consent: true }));
+  });
+
   it('clearing turns sharing off and deletes the files; signed URLs live 60 s', async () => {
     const repo = TestBed.inject(AvatarRepository);
     expect((await repo.clear('u1')).data).toBe(true);

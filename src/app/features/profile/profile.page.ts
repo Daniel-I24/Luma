@@ -4,6 +4,7 @@ import { TourHelpButton } from '@shared/tutorial/tour-help-button';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
 import { LumaAvatar, LumaIcon } from '@design-system';
+import { MyAvatarStore } from '@shared/account/my-avatar.store';
 import { AccountActions } from '@shared/account/account-actions/account-actions';
 import { SessionProfileStore } from '@shared/account/session-profile.store';
 import { AdminEntry } from '@shared/business/verification/admin-entry/admin-entry';
@@ -48,9 +49,14 @@ export class ProfilePage {
   private readonly auth = inject(AuthService);
 
   protected readonly user = this.auth.user;
+  protected readonly avatar = inject(MyAvatarStore);
   /** The business panel is for business-owner accounts. */
   private readonly sessionProfile = inject(SessionProfileStore);
   protected readonly isBusinessOwner = this.sessionProfile.isBusinessOwner;
   /** The customer offer waits for the account type, so owners never see it flash. */
   protected readonly profileLoaded = computed(() => this.sessionProfile.profile() !== null);
+
+  constructor() {
+    void this.avatar.refresh();
+  }
 }

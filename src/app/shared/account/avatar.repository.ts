@@ -4,6 +4,8 @@ import type { RepoResult } from '@shared/business/data/business.repository';
 import { type EncodedImage, IMAGE_ENCODER, ImageEncodeError } from '@shared/media/image-encoder';
 import { ImageFiles } from '@shared/media/image-files';
 
+const HTTP_FORBIDDEN = 403;
+
 /**
  * AvatarRepository — the optional profile photo in the private avatars
  * bucket. The picture is cropped to a square and re-encoded first (no EXIF,
@@ -34,7 +36,7 @@ export class AvatarRepository {
     const path = `${userId}/avatar/${crypto.randomUUID()}.${encoded.extension}`;
     const bucket = this.db.storage.from(AvatarRepository.BUCKET);
     const uploaded = await bucket.upload(path, encoded.blob, { contentType: encoded.contentType, upsert: false });
-    if (uploaded.error) return { data: null, errorKey: 'avatar.errors.upload' };
+    if (uploaded.error) return { data: null, errorKey: AvatarRepository.uploadErrorKey(uploaded.error) };
     const { error } = await this.db.rpc('set_avatar', { p_path: path, p_consent: true });
     if (error) {
       await bucket.remove([path]);
@@ -56,6 +58,13 @@ export class AvatarRepository {
       .from(AvatarRepository.BUCKET)
       .createSignedUrl(path, AvatarRepository.SIGNED_URL_SECONDS);
     return error || !data ? null : data.signedUrl;
+  }
+
+  /** What the user can do about a refused upload. */
+  private static uploadErrorKey(error: { readonly name?: string; readonly status?: unknown; readonly statusCode?: unknown }): string {
+    // Storage answers an RLS refusal as HTTP 400 with statusCode "403".
+    if (Number(error.status) === HTTP_FORBIDDEN || Number(error.statusCode) === HTTP_FORBIDDEN) return 'avatar.errors.denied';
+    return error.name === 'StorageUnknownError' ? 'avatar.errors.network' : 'avatar.errors.upload';
   }
 
   private async removeObjects(userId: string): Promise<boolean> {

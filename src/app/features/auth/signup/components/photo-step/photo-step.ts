@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { LumaButton } from '@design-system';
-import { ACCEPTED_IMAGE_TYPES, ImageFiles } from '@shared/media/image-files';
+import { ImageFiles, PHOTO_PICKER_ACCEPT } from '@shared/media/image-files';
 import { SignupDraftStore } from '../../signup-draft.store';
 
 /**
@@ -53,7 +53,7 @@ import { SignupDraftStore } from '../../signup-draft.store';
 })
 export class PhotoStep {
   protected readonly store = inject(SignupDraftStore);
-  protected readonly accept = ACCEPTED_IMAGE_TYPES.join(',');
+  protected readonly accept = PHOTO_PICKER_ACCEPT;
   protected readonly preview = signal<string | null>(null);
   protected readonly fileError = signal<string | null>(null);
 

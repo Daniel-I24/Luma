@@ -2197,11 +2197,17 @@
     "errors": {
       "consent": "Acepta el uso de la foto para guardarla.",
       "upload": "No se pudo guardar la foto. Puedes intentarlo de nuevo desde Mis datos.",
-      "remove": "No se pudo quitar la foto. Intenta de nuevo."
+      "remove": "No se pudo quitar la foto. Intenta de nuevo.",
+      "session": "Tu sesión se cerró. Entra de nuevo para guardar la foto.",
+      "load": "Tu foto está guardada, pero no pudimos mostrarla. Revisa tu conexión.",
+      "denied": "No pudimos guardar la foto: confirma tu correo e inténtalo de nuevo.",
+      "network": "Sin conexión: no se pudo subir la foto. Intenta de nuevo."
     },
     "title": "Foto de perfil",
     "alt": "Tu foto de perfil",
-    "share": "Mostrar mi foto al negocio mientras prepara mi pedido, para que me reconozca al recoger."
+    "share": "Mostrar mi foto al negocio mientras prepara mi pedido, para que me reconozca al recoger.",
+    "pickHint": "Acepta y elige una foto: se guarda al elegirla.",
+    "uploading": "Subiendo foto…"
   },
   "phoneVerification": {
     "title": "Verificar celular",
