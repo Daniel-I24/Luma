@@ -26,7 +26,9 @@
       </div>
       } @else {
       <app-map-top-bar
-        [zoneKey]="location.zoneKey()"
+        [zone]="location.zoneText()"
+        [canReturn]="location.canReturn()"
+        (returnToMe)="location.centre()"
         [(query)]="store.query"
       />
       <app-map-controls
@@ -54,6 +56,8 @@
       [loading]="store.loading()"
       [errorKey]="store.errorKey()"
       [filtersActive]="store.filtersActive()"
+      [outsideCoverage]="location.outsideCoverage()"
+      (explorePasto)="location.explorePasto()"
       [selectedId]="selection.selectedId()"
       (selectBusiness)="focusBusiness($event)"
       (retry)="reload()"

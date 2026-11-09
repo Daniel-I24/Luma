@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { LocationError } from '@core/location/location-source';
 import { PASTO_CENTRE } from './geolocation.service';
-import { near, read, request, service, settle, setUp } from './geolocation.service.harness';
+import { access, near, read, request, service, settle, setUp } from './geolocation.service.harness';
 
 describe('GeolocationService when the position does not come', () => {
   beforeEach(setUp);
@@ -36,6 +36,16 @@ describe('GeolocationService when the position does not come', () => {
     expect(read).toHaveBeenCalledOnce();
     expect(read.mock.calls[0]![0].precise).toBe(true);
     expect(geo.failure()).toBe('servicesOff');
+  });
+
+  it('when the dialog turned the location on, records the permission it really has', async () => {
+    request.mockResolvedValue('servicesOff');
+    access.mockResolvedValue('granted');
+    read.mockResolvedValue(near(8));
+    const geo = service();
+    geo.requestLocation();
+    await settle();
+    expect(geo.lastAttempt()).toEqual(expect.objectContaining({ outcome: 'ok', access: 'granted', accuracyM: 8 }));
   });
 
   it('with approximate only ("aproximada"), never asks for the GPS', async () => {

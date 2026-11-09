@@ -105,4 +105,23 @@ describe('NearbyPanel', () => {
     expect(render({ filtersActive: true }).el.textContent).toContain('Sin resultados');
     expect(render({ filtersActive: false }).el.textContent).toContain('No hay negocios cercanos');
   });
+
+  it('far from Pasto an empty map explains it and offers Pasto', () => {
+    const { fixture, el } = render({ items: [], outsideCoverage: true });
+    const explore = vi.fn();
+    fixture.componentInstance.explorePasto.subscribe(explore);
+    expect(el.textContent).toContain('map.outside.title');
+    Array.from(el.querySelectorAll('button')).find((b) => b.textContent?.includes('map.outside.explore'))!.click();
+    expect(explore).toHaveBeenCalledOnce();
+  });
+
+  it('with filters on, an empty map is about the filters, wherever it is', () => {
+    const { el } = render({ items: [], outsideCoverage: true, filtersActive: true });
+    expect(el.textContent).toContain('Sin resultados');
+    expect(el.textContent).not.toContain('map.outside.title');
+  });
+
+  it('with businesses, or inside Pasto, there is no such message', () => {
+    expect(render({ items: [], outsideCoverage: false }).el.textContent).not.toContain('map.outside.title');
+  });
 });

@@ -1,9 +1,16 @@
-import { Injectable, computed, effect, inject, signal, untracked } from '@angular/core';
+import { DestroyRef, Injectable, computed, effect, inject, signal, untracked } from '@angular/core';
 import { AppEvents } from '@core/native/app-events';
 import { SystemSettings } from '@core/native/system-settings';
 import { GeolocationService } from '@shared/geo/geolocation.service';
+import { DOCUMENT } from '@angular/common';
+import { Haversine } from '@shared/geo/distance';
+import { PASTO_CENTRE } from '@shared/geo/geolocation.service';
 import { MapCameraService } from '../services/map-camera.service';
-import { ZoneLabel } from '../utils/zone-label';
+import { ZoneLabel, type ZoneText } from '../utils/zone-label';
+import { MapZone } from './map-zone';
+
+/** Farther than this from Pasto, an empty map means Luma is not there yet. */
+const COVERAGE_KM = 40;
 
 /**
  * MapLocation — the location button of the map: explains before asking, reads after the
@@ -15,13 +22,28 @@ export class MapLocation {
   private readonly camera = inject(MapCameraService);
   private readonly settings = inject(SystemSettings);
   private readonly resumes = inject(AppEvents).resumes;
+  private readonly zone = inject(MapZone);
+  private readonly document = inject(DOCUMENT);
+  private readonly visible = signal(!this.document.hidden);
   /** The user tapped "Permitir" and has not seen the outcome yet. */
   private readonly awaiting = signal(false);
 
   public readonly promptOpen = signal(false);
   public readonly state = this.geo.state;
   public readonly failure = this.geo.failure;
-  public readonly zoneKey = computed(() => ZoneLabel.getZoneLabelKey(this.state(), this.failure()));
+  /** The map shows somewhere else than the user: the label offers to go back. */
+  public readonly canReturn = this.zone.browsing;
+  public readonly zoneText = computed<ZoneText>(() => {
+    if (this.geo.hasRealLocation()) return this.zone.label();
+    const key = ZoneLabel.getZoneLabelKey(this.state(), this.failure());
+    const town = this.geo.fallbackName();
+    return key === 'map.zone.cityCentre' && town ? { key: 'map.zone.centreOf', params: { name: town } } : { key, params: {} };
+  });
+  /** The map is outside the area where Luma has businesses. */
+  public readonly outsideCoverage = computed(() => {
+    const { lat, lng } = this.camera.centre() ?? this.geo.coords();
+    return Haversine.haversineKm(lat, lng, PASTO_CENTRE.lat, PASTO_CENTRE.lng) > COVERAGE_KM;
+  });
   public readonly canOpenSettings = computed(() => this.settings.available && (this.failure() === 'denied' || this.failure() === 'servicesOff'));
 
   constructor() {
@@ -38,6 +60,13 @@ export class MapLocation {
     effect(() => {
       if (this.resumes() > 0 && untracked(this.failure)) void this.geo.requestIfAllowed();
     });
+    // The position stays current only while the map is on screen.
+    effect((onCleanup) => {
+      if (this.geo.hasRealLocation() && this.visible()) onCleanup(this.geo.follow());
+    });
+    const onVisibility = (): void => this.visible.set(!this.document.hidden);
+    this.document.addEventListener('visibilitychange', onVisibility);
+    inject(DestroyRef).onDestroy(() => this.document.removeEventListener('visibilitychange', onVisibility));
   }
 
   /** On opening the map: the position if it was already allowed; never asks. */
@@ -48,11 +77,20 @@ export class MapLocation {
   /** The location button: centres on the position, or explains and asks. */
   public centre(): void {
     if (this.geo.hasRealLocation()) {
-      const { lat, lng } = this.geo.coords();
-      this.camera.flyTo(lat, lng);
+      this.zone.recentre();
     } else if (this.state() !== 'locating') {
       this.promptOpen.set(true);
     }
+  }
+
+  /** A new position: the map goes along when it should. */
+  public follow(point: { lat: number; lng: number }): void {
+    this.zone.follow(point);
+  }
+
+  /** "Explorar Pasto": the going-back option stays on the label. */
+  public explorePasto(): void {
+    this.camera.flyTo(PASTO_CENTRE.lat, PASTO_CENTRE.lng);
   }
 
   /** "Permitir" or "Reintentar": asks the system, then reads. */

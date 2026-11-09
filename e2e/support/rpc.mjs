@@ -85,6 +85,7 @@ export const RPC = {
 
 /** Edge Functions of /functions/v1/<name>. */
 export const FUNCTIONS = {
+  geocode: () => ({ status: 200, body: { address: { street: null, houseNumber: null, neighbourhood: 'San Fernando', city: 'Cali' }, approximate: true, attribution: null } }),
   /** Sandbox checkout: a local stand-in for Wompi's page that approves and returns. */
   'create-payment': (db, body, ctx) => {
     const order = db.orders.find((o) => o.id === body.order_id && o.user_id === ctx.userId);

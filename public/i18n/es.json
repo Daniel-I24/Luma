@@ -314,7 +314,17 @@
     },
     "zone": {
       "nearYou": "Cerca de ti",
-      "cityCentre": "Centro de Pasto"
+      "cityCentre": "Centro de Pasto",
+      "at": "En {{name}}",
+      "viewing": "Viendo {{name}}",
+      "viewingMap": "Explorando el mapa",
+      "centreOf": "Centro de {{name}}",
+      "backToMe": "Volver a mi ubicación"
+    },
+    "outside": {
+      "title": "Luma está disponible en Pasto",
+      "description": "Aún no hay negocios en esta zona. Puedes ver los de Pasto y volver a tu ubicación cuando quieras.",
+      "explore": "Explorar Pasto"
     },
     "controls": {
       "zoomIn": "Acercar el mapa",

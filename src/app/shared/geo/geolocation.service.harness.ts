@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import type { LocationAccess, LocationReadOptions, LocationReading, LocationSource } from '@core/location/location-source';
-import { GeolocationService, LOCATION_SOURCE } from './geolocation.service';
+import { LOCATION_SOURCE } from '@core/location/location-source.token';
+import { GeolocationService } from './geolocation.service';
 
 export const near = (accuracyM: number): LocationReading => ({ lat: 1.22, lng: -77.28, accuracyM });
 

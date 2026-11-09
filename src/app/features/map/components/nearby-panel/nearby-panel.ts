@@ -44,11 +44,14 @@ export class NearbyPanel {
   public readonly loading = input(false);
   public readonly errorKey = input<string | null>(null);
   public readonly filtersActive = input(false);
+  /** The map is far from the area where Luma has businesses. */
+  public readonly outsideCoverage = input(false);
   public readonly selectedId = input<string | null>(null);
 
   public readonly selectBusiness = output<NearbyBusiness>();
   public readonly retry = output<void>();
   public readonly clearFilters = output<void>();
+  public readonly explorePasto = output<void>();
   public readonly openAi = output<void>();
 
   /** "-25 % · Title" for discounts, the title otherwise. */

@@ -21,6 +21,6 @@ export class ResidenceMapCentre {
     const code = this.session.profile()?.residence?.daneCode;
     if (!code || !(await this.catalog.load())) return;
     const town = this.catalog.municipality(code);
-    if (town) this.geo.useFallback({ lat: town.latitude, lng: town.longitude });
+    if (town) this.geo.useFallback({ lat: town.latitude, lng: town.longitude }, town.name);
   }
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit, ViewChild, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit, ViewChild, effect, inject, signal, untracked } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
@@ -15,6 +15,7 @@ import { MapStylesLoader } from '@shared/map/map-styles.loader';
 import { BusinessSelectionStore } from './state/business-selection.store';
 import { MapLive } from './state/map-live';
 import { MapLocation } from './state/map-location';
+import { MapZone } from './state/map-zone';
 import { NearbyBusinessesStore, type NearbyBusiness } from './state/nearby-businesses.store';
 import { PlaceSearchStore } from './state/place-search.store';
 import { ResidenceMapCentre } from '@shared/geo/residence-map-centre';
@@ -25,7 +26,7 @@ import { ResidenceMapCentre } from '@shared/geo/residence-map-centre';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LumaRefreshButton, TranslocoModule, LumaEmptyState, BusinessSheetComponent, LocationPrompt, MapControls, MapTopBar, NearbyPanel],
-  providers: [NearbyBusinessesStore, BusinessSelectionStore, PlaceSearchStore, MapLocation],
+  providers: [NearbyBusinessesStore, BusinessSelectionStore, PlaceSearchStore, MapLocation, MapZone],
   templateUrl: './map.page.html',
   host: { class: 'block h-full' },
 })
@@ -66,9 +67,9 @@ export class MapPage implements OnInit, OnDestroy {
     // Once the user shares their location, show it and centre the map there.
     effect(() => {
       if (!this.mapReady() || !this.geo.hasRealLocation()) return;
-      const { lat, lng } = this.geo.coords();
-      this.camera.showUser(lat, lng);
-      this.camera.flyTo(lat, lng);
+      const point = this.geo.coords();
+      this.camera.showUser(point.lat, point.lng);
+      untracked(() => this.location.follow(point));
     });
     // The fallback centre changed (residence read after the map opened).
     effect(() => {

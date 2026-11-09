@@ -231,6 +231,19 @@ table in docs/cleanup-report.md.
 - iPhone web: home-screen metas, 16 px fields, CSP `blob:` for the photo preview, e2e in WebKit
   with the iPhone 13 profile. Native project in `ios/`, not compiled (docs/ios.md).
 
+### Phone tests of APK 1.0.1
+
+- Discover: the top controls are one row under the status bar; `safe-area.e2e` emulates a notch
+  on every main screen.
+- One reload icon (`LumaRefreshButton`) for the freshness note and failed reads. Words stay for
+  updating the app, paying again, the location prompt, re-sending a menu photo and notifications.
+- Map label: the real zone by reverse geocoding on a point rounded to about 110 m, cached here and
+  in the function; following from 200 m, only while the screen is visible; the centre of the map
+  when the user moves it, with a way back. "Centro de <town>" only without a location.
+- Información técnica recorded the permission of the moment before the system dialog turned the
+  location on ("ok ... servicesOff"); it now reads it again after a successful reading.
+- Outside Pasto: an empty map explains it and offers "Explorar Pasto".
+
 ## Round 13 (2026-11-07)
 
 ### Phase 0: scripts/luma.ps1 changed nothing in production

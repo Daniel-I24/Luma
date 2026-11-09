@@ -314,7 +314,17 @@
     },
     "zone": {
       "nearYou": "Near you",
-      "cityCentre": "Pasto city centre"
+      "cityCentre": "Pasto city centre",
+      "at": "In {{name}}",
+      "viewing": "Viewing {{name}}",
+      "viewingMap": "Exploring the map",
+      "centreOf": "Centre of {{name}}",
+      "backToMe": "Back to my location"
+    },
+    "outside": {
+      "title": "Luma is available in Pasto",
+      "description": "There are no businesses in this area yet. You can see the ones in Pasto and come back to your location whenever you like.",
+      "explore": "Explore Pasto"
     },
     "controls": {
       "zoomIn": "Zoom in",

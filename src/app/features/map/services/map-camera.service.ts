@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import * as maplibregl from 'maplibre-gl';
 import { PASTO_CENTRE } from '@shared/geo/geolocation.service';
 import { BaseMap } from '@shared/map/map-base';
@@ -12,6 +12,10 @@ export class MapCameraService {
   private moveDebounce: ReturnType<typeof setTimeout> | null = null;
   private userMarker: maplibregl.Marker | null = null;
   private placeMarker: maplibregl.Marker | null = null;
+  private readonly _centre = signal<{ lat: number; lng: number } | null>(null);
+
+  /** Where the camera is, or is flying to; follows every move once it settles. */
+  public readonly centre = this._centre.asReadonly();
 
   /** The MapLibre map; throws if it was not created. */
   public get instance(): maplibregl.Map {
@@ -32,11 +36,13 @@ export class MapCameraService {
     if (this.moveDebounce) clearTimeout(this.moveDebounce);
     this.userMarker = null;
     this.placeMarker = null;
+    this._centre.set(null);
     this.map?.remove();
   }
 
   /** Moves the camera to a point. */
   public flyTo(lat: number, lng: number): void {
+    this._centre.set({ lat, lng });
     this.map.flyTo({ center: [lng, lat], zoom: DEFAULT_ZOOM });
   }
 
@@ -67,6 +73,7 @@ export class MapCameraService {
     }
     this.placeMarker.getElement().setAttribute('aria-label', label);
     this.placeMarker.setLngLat([lng, lat]).addTo(this.map);
+    this._centre.set({ lat, lng });
     this.map.flyTo({ center: [lng, lat], zoom: PLACE_ZOOM });
   }
 
@@ -95,6 +102,7 @@ export class MapCameraService {
     if (this.moveDebounce) clearTimeout(this.moveDebounce);
     this.moveDebounce = setTimeout(() => {
       const c = this.map.getCenter();
+      this._centre.set({ lat: c.lat, lng: c.lng });
       const dLat = Math.abs(c.lat - this.lastFetchCentre.lat);
       const dLng = Math.abs(c.lng - this.lastFetchCentre.lng);
       if (dLat > MOVE_THRESHOLD_DEG || dLng > MOVE_THRESHOLD_DEG) {

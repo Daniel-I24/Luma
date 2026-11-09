@@ -1,5 +1,11 @@
 import type { GeoState, LocationFailure } from '@shared/geo/geolocation.service';
 
+/** What the label over the map says: a translation key and its values. */
+export interface ZoneText {
+  readonly key: string;
+  readonly params: Readonly<Record<string, string>>;
+}
+
 /** ZoneLabel — the name of the zone the map shows. */
 export class ZoneLabel {
   /**

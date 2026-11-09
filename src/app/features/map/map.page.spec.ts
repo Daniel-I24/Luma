@@ -37,7 +37,7 @@ function setup() {
   const camera = {
     init: vi.fn(),
     destroy: vi.fn(),
-    flyTo: vi.fn(),
+    flyTo: vi.fn(), centre: () => null,
     easeTo: vi.fn(),
     showUser: vi.fn(),
     markFetched: vi.fn(),

@@ -31,7 +31,15 @@
   >
     <app-luma-refresh-button (clicked)="retry.emit()" />
   </app-luma-empty-state>
-  } @else if (items().length === 0) { @if (filtersActive()) {
+  } @else if (items().length === 0) { @if (!filtersActive() && outsideCoverage()) {
+  <app-luma-empty-state
+    icon="map"
+    [heading]="t('map.outside.title')"
+    [description]="t('map.outside.description')"
+  >
+    <app-luma-button (clicked)="explorePasto.emit()">{{ t('map.outside.explore') }}</app-luma-button>
+  </app-luma-empty-state>
+  } @else if (filtersActive()) {
   <app-luma-empty-state
     icon="search"
     [heading]="t('map.noResults.title')"

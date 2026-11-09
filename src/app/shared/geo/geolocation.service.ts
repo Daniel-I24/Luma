@@ -1,8 +1,6 @@
-import { Injectable, InjectionToken, computed, inject, signal } from '@angular/core';
-import { Capacitor } from '@capacitor/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { LocationError, type LocationAccess, type LocationFailure, type LocationReadOptions, type LocationReading, type LocationSource } from '@core/location/location-source';
-import { NativeLocationSource } from '@core/location/native-location-source';
-import { WebLocationSource } from '@core/location/web-location-source';
+import { LOCATION_SOURCE } from '@core/location/location-source.token';
 import { FRESH_GPS, GOOD_ACCURACY_M, LocationPlan } from './location-plan';
 
 export type GeoState = 'idle' | 'locating' | 'granted' | 'denied' | 'unavailable';
@@ -27,11 +25,6 @@ export interface LocationAttempt {
 /** Fallback centre: Plaza de Nariño, Pasto, Colombia. */
 export const PASTO_CENTRE: GeoCoords = { lat: 1.2136, lng: -77.2811 };
 
-export const LOCATION_SOURCE = new InjectionToken<LocationSource>('LOCATION_SOURCE', {
-  providedIn: 'root',
-  factory: () => (Capacitor.isNativePlatform() && Capacitor.isPluginAvailable('Geolocation') ? new NativeLocationSource() : new WebLocationSource()),
-});
-
 /**
  * GeolocationService — the position as Signals, from the plugin in the app and the browser on
  * the web. Asks only when the user triggers it (map.locationPermission explains why first).
@@ -43,6 +36,7 @@ export class GeolocationService {
   private readonly _coords = signal<GeoCoords>(PASTO_CENTRE);
   private readonly _accuracy = signal<number | null>(null);
   private readonly _failure = signal<LocationFailure | null>(null);
+  private readonly _fallbackName = signal<string | null>(null);
   private readonly _lastAttempt = signal<LocationAttempt | null>(null);
   private stopWatch: (() => void) | null = null;
   private followers = 0;
@@ -57,12 +51,17 @@ export class GeolocationService {
   public readonly failure = this._failure.asReadonly();
   public readonly lastAttempt = this._lastAttempt.asReadonly();
 
+  /** The town the fallback centre belongs to; null for Pasto. */
+  public readonly fallbackName = this._fallbackName.asReadonly();
+
   /** True only after a successful geolocation response. */
   public readonly hasRealLocation = computed(() => this._state() === 'granted');
 
   /** Centre to use while the real location is unknown (e.g. the municipality of residence). */
-  public useFallback(coords: GeoCoords): void {
-    if (this._state() !== 'granted') this._coords.set(coords);
+  public useFallback(coords: GeoCoords, name: string | null = null): void {
+    if (this._state() === 'granted') return;
+    this._coords.set(coords);
+    this._fallbackName.set(name);
   }
 
   /** Asks for the permission if needed, then reads. `highAccuracy` ("Estoy en el local"): only a fresh GPS fix. */
@@ -101,6 +100,8 @@ export class GeolocationService {
       access = await ask();
       if (access === 'denied') throw new LocationError('denied');
       const reading = await this.firstFix(LocationPlan.readings(highAccuracy, access));
+      // The system's dialog turned the location on: the permission can be read now.
+      access = await this.confirmed(access);
       if (attempt !== this.attempt) return;
       this.show(reading);
       this._state.set('granted');
@@ -113,6 +114,10 @@ export class GeolocationService {
       this._failure.set(failure.reason);
       this.record(started, { outcome: failure.reason, access, accuracyM: null, code: failure.code });
     }
+  }
+
+  private confirmed(access: LocationAccess): Promise<LocationAccess> {
+    return access === 'servicesOff' ? this.source.access().catch((): LocationAccess => access) : Promise.resolve(access);
   }
 
   private async firstFix(plan: readonly LocationReadOptions[]): Promise<LocationReading> {
