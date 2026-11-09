@@ -80,7 +80,7 @@ test('with the permission given, the map reads the position and the button shows
   await context.grantPermissions(['geolocation']);
   await context.setGeolocation({ latitude: 1.2136, longitude: -77.2811, accuracy: 20 });
   await skipGuide(page);
-  await page.getByText('Cerca de ti').waitFor({ timeout: 10000 });
+  await page.getByText('En San Fernando').waitFor({ timeout: 10000 });
   await page.getByRole('button', { name: 'Centrar en mi ubicación' }).waitFor();
   await app.close();
 });
