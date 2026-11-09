@@ -8,7 +8,7 @@ data into tickets or chats.
 | Symptom | Likely cause | Check | Fix |
 | --- | --- | --- | --- |
 | "No pudimos cargar tu cuenta" for everyone | `profiles` columns missing (migration not applied) or Supabase down | `verify:backend` (table profiles) ; status.supabase.com | Apply the missing migration; users tap Reintentar |
-| Sign-up email has a link / no email arrives | Template still has `{{ .ConfirmationURL }}`; built-in sender | Auth → Emails → Templates, SMTP | [auth-emails.md](auth-emails.md); own SMTP |
+| Sign-up email has a link / no email arrives | Template still has `{{ .ConfirmationURL }}`; SMTP password expired; hourly limit (30) reached | Auth → Emails → Templates, SMTP, Rate Limits | [auth-emails.md](auth-emails.md) |
 | "Debes confirmar tu correo" for a confirmed user | email not confirmed in `auth.users` | Auth → Users → user → Email confirmed | Resend the code from the login screen |
 | Every write fails with `email_not_confirmed` | legacy users who never confirmed | same | They confirm with the code ("Verificar mi correo") |
 | Place search says "no disponible" | `GEOCODE_PROVIDER` unset or provider down | Edge Functions → geocode logs (status 503) | Set/switch provider ([geocode.md](geocode.md)); businesses still filter |

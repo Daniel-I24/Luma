@@ -82,6 +82,13 @@ npm start                      # http://localhost:4200
 | `npm run apk:debug` / `apk:release` | Android APK ([docs/android.md](android.md)) |
 | `powershell -File scripts\luma.ps1` | Sets up and verifies the backend (AI, push, payments, routes, WhatsApp, APK). Secrets stay in `%USERPROFILE%\luma-secrets` ([docs/luma-setup.md](luma-setup.md)). |
 
+## Sign-up emails
+
+The 6-digit codes go through the project's own SMTP sender (Supabase → Authentication → Emails →
+SMTP Settings; today a Gmail account with an app password), so any address can register. The limit
+is 30 emails per hour (Authentication → Rate Limits). The sender's address and password live only
+in Supabase. Details: [docs/auth-emails.md](auth-emails.md).
+
 ## Try the payments (Wompi sandbox)
 
 No real money moves.

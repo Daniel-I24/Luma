@@ -14,6 +14,8 @@ State on 2026-11-07 (round 14). Commands are for **PowerShell** in `C:\dev\Luma`
   `SUPABASE_ANON_KEY`; a clean clone builds (CI job `clean-build`).
 - On the phone: push in the Android bar; sandbox card approved and declined, Nequi approved and
   declined, PSE approved; the app returns from Wompi.
+- Own SMTP (Gmail) in Supabase, limit raised to 30 emails per hour: sign-up works with external
+  addresses (docs/auth-emails.md).
 
 ## Now (before the presentation)
 
@@ -39,8 +41,9 @@ State on 2026-11-07 (round 14). Commands are for **PowerShell** in `C:\dev\Luma`
    Wompi dashboard, `payments_production = 1`, and the list in docs/payments-checklist.md again.
 2. **Legal review** of the terms, privacy and refund policy (docs/legal-notes.md), the controller's
    name and NIT, the maximum refund times, then remove the draft notice.
-3. **Own SMTP** for the 6-digit codes; Supabase's sender only reaches team addresses
-   (docs/auth-emails.md).
+3. **Email volume:** Gmail is enough for the presentation and first tests. Before opening to the
+   public, move to a transactional provider with your own domain and SPF, DKIM and DMARC, and raise
+   the hourly limit to match (docs/auth-emails.md).
 4. **Meta in live mode** for WhatsApp verification (docs/meta-live.md).
 5. **Signed APK** with your keystore (the four `LUMA_KEY*` values in `app.env`, option 6) and the
    store listing (docs/release.md).

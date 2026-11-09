@@ -124,10 +124,21 @@ Existing passwords keep working at sign-in; the rule applies to new ones.
 **Set the Supabase rule to the same value** (table above), or Supabase and
 the app would disagree.
 
-## Important: the default email sender is for testing only
+## Email sender
 
-Supabase's built-in email service sends only a few emails per hour and only to
-the project's team addresses. **Real users need your own SMTP** (Authentication
-→ Emails → SMTP Settings): a transactional provider (for example Amazon SES,
-Brevo, Postmark or Resend) with a domain you control and SPF, DKIM and DMARC
-records, or the codes will not arrive or will land in spam.
+The project sends through its own SMTP, so any address can register:
+
+1. Google account with 2-Step Verification on, and an **app password** for Luma
+   (Google Account → Security → App passwords). Never the account password.
+2. Supabase → Authentication → Emails → SMTP Settings: enable custom SMTP, host
+   `smtp.gmail.com`, port `465`, the account as user and as sender, the app
+   password. Address and password stay there, never in the repository.
+3. Supabase → Authentication → Rate Limits: emails per hour at **30** (custom
+   SMTP is what allows raising it).
+4. Check: register with an address outside the project and enter the code.
+
+Gmail fits the presentation and first tests: it has a daily sending cap and mail
+from a personal account lands in spam more often. Before opening to the public,
+use a transactional provider (for example Amazon SES, Brevo, Postmark or Resend)
+with a domain you control and SPF, DKIM and DMARC records, and raise the hourly
+limit to match.

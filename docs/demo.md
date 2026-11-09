@@ -88,4 +88,4 @@ que aprueba" o "Banco que rechaza".
 | Sin internet en la sala | Activa los datos del teléfono y comparte la conexión con el portátil |
 | La IA responde lento o falla | Responden las reglas; en el escaneo de menú, usa **Pegar mi menú como texto** |
 | El negocio aparece cerrado | Ajusta el horario en Mi negocio → Horario para la hora de la demo |
-| No llega el código de correo | Usa las cuentas ya confirmadas; no registres una cuenta nueva en vivo |
+| No llega el código de correo | Mira en spam; el envío admite cualquier correo, hasta 30 por hora. Si urge, usa las cuentas ya confirmadas |
