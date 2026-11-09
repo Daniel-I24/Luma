@@ -63,12 +63,14 @@
       }
     </div>
 
+    <!-- One row under the status bar: the note takes what the buttons leave, so they never touch. -->
+    <div class="pointer-events-none absolute inset-x-0 top-0 flex items-start gap-2 ps-[calc(var(--spacing-4)+env(safe-area-inset-left))] pe-[calc(var(--spacing-4)+env(safe-area-inset-right))] pt-[calc(env(safe-area-inset-top)+var(--spacing-2))]">
     <app-freshness-note
-      class="absolute top-4 left-4 max-w-1/2 rounded-lg bg-surface-elevated px-2 shadow-md"
+      class="pointer-events-auto min-w-0 flex-initial rounded-lg bg-surface-elevated px-2 shadow-md"
       [updatedAt]="live.updatedAt()"
       (refresh)="live.refreshAll()"
     />
-    <div class="absolute top-4 right-4 flex flex-col items-end gap-2">
+    <div class="pointer-events-auto ms-auto flex flex-none flex-col items-end gap-2">
       <a
         routerLink="/promotions"
         class="inline-flex min-h-11 items-center gap-1 rounded-full bg-primary px-3 text-label font-semibold text-primary-fg no-underline shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
@@ -93,6 +95,7 @@
         [disabled]="current() >= store.cards().length - 1"
         (clicked)="goTo(current() + 1)"
       />
+    </div>
     </div>
   </div>
   } } }

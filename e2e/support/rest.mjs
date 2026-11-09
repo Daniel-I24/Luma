@@ -48,6 +48,8 @@ function compare(a, b) {
   if (a === b) return 0;
   if (a === null || a === undefined) return 1;
   if (b === null || b === undefined) return -1;
+  // Numbers as numbers: as text, -77.28 sorts before -77.38 and no business was ever "nearby".
+  if (typeof a === 'number') return a - Number(b);
   return String(a) < String(b) ? -1 : 1;
 }
 

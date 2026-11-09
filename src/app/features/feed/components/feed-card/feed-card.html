@@ -20,14 +20,14 @@
       />
     </div>
     <span
-      class="absolute top-4 left-4 inline-flex items-center gap-1 rounded-full bg-surface-elevated px-3 py-1 text-label text-fg shadow-md"
+      class="absolute top-[calc(env(safe-area-inset-top)+var(--spacing)*18)] left-4 inline-flex items-center gap-1 rounded-full bg-surface-elevated px-3 py-1 text-label text-fg shadow-md"
     >
       <app-luma-icon [name]="card().kind === 'promotion' ? 'tag' : 'utensils'" size="sm" />
       {{ t('feed.card.' + card().kind) }}
     </span>
     @if (card().discountPercent; as percent) {
     <span
-      class="absolute top-14 left-4 rounded-full bg-danger px-3 py-1 text-label font-bold text-danger-fg-on shadow-md"
+      class="absolute top-[calc(env(safe-area-inset-top)+var(--spacing)*27)] left-4 rounded-full bg-danger px-3 py-1 text-label font-bold text-danger-fg-on shadow-md"
       >{{ t('promotions.card.discount', { percent: percent }) }}</span
     >
     }
