@@ -25,6 +25,7 @@ celular para recogerlo cuando esté listo.
 
 ## Pruébala
 
+- **iPhone:** usa la web en https://luma-ten-henna.vercel.app. En Safari, toca Compartir → Añadir a pantalla de inicio para abrirla como una app.
 - **Android:** descarga el APK en [la última versión](https://github.com/Daniel-I24/Luma/releases/latest).
 - Los pagos están en **modo de pruebas**: no se cobra dinero real.
 

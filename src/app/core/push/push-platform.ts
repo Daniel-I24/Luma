@@ -37,7 +37,13 @@ export class PushPlatform {
     return { push: PushNotifications };
   }
 
-  /** Whether this is the Android app with the plugin installed. */
+  /** Only Android has channels; iOS rejects the call. */
+  protected async android(): Promise<boolean> {
+    const { Capacitor } = await import('@capacitor/core');
+    return Capacitor.getPlatform() === 'android';
+  }
+
+  /** Whether this is the native app with the plugin installed. */
   protected async native(): Promise<boolean> {
     const { Capacitor } = await import('@capacitor/core');
     return Capacitor.isNativePlatform() && Capacitor.isPluginAvailable('PushNotifications');
@@ -101,7 +107,7 @@ export class PushPlatform {
   /** Creates (or renames) the Android channels; a no-op elsewhere. */
   public async createChannels(channels: readonly PushChannel[]): Promise<void> {
     const push = (await this.plugin())?.push;
-    if (!push) return;
+    if (!push || !(await this.android())) return;
     for (const channel of channels) await push.createChannel({ ...channel, visibility: LOCK_SCREEN_PRIVATE, vibration: true });
   }
 

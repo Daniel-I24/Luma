@@ -15,6 +15,7 @@ class FakePlugin {
   public readonly register = vi.fn().mockResolvedValue(undefined);
   public readonly unregister = vi.fn().mockResolvedValue(undefined);
   public readonly removeAllListeners = vi.fn();
+  public readonly createChannel = vi.fn().mockResolvedValue(undefined);
   public readonly requestPermissions = vi.fn().mockResolvedValue({ receive: 'denied' });
 
   public async addListener(event: string, handler: Handler) {
@@ -27,8 +28,12 @@ class FakePlugin {
 @Injectable()
 class TestPlatform extends PushPlatform {
   public fake = new FakePlugin();
+  public isAndroid = true;
   protected override async plugin(): Promise<LoadedPush> {
     return { push: this.fake as unknown as PushPlugin };
+  }
+  protected override android(): Promise<boolean> {
+    return Promise.resolve(this.isAndroid);
   }
 }
 
@@ -125,5 +130,15 @@ describe('PushPlatform', () => {
 
   it('a plugin without permission answers "denied"', async () => {
     await expect(platform.requestPermission()).resolves.toBe('denied');
+  });
+
+  it('creates no channels on iPhone, where the plugin rejects the call', async () => {
+    const channels = [{ id: 'orders', name: 'Pedidos', description: 'x', importance: 4 }] as const;
+    platform.isAndroid = false;
+    await platform.createChannels(channels);
+    expect(plugin.createChannel).not.toHaveBeenCalled();
+    platform.isAndroid = true;
+    await platform.createChannels(channels);
+    expect(plugin.createChannel).toHaveBeenCalledOnce();
   });
 });

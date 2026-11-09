@@ -80,6 +80,7 @@ npm start                      # http://localhost:4200
 | --- | --- |
 | `npm run build:prod` | The web build Vercel runs. It needs only `SUPABASE_URL` and `SUPABASE_ANON_KEY`; `AI_MODE`, `SUPPORT_WHATSAPP` and `LEGAL_CONTACT_EMAIL` are optional. A clean clone builds (CI job `clean-build`). |
 | `npm run apk:debug` / `apk:release` | Android APK ([docs/android.md](android.md)) |
+| `npm run ios:sync` | iOS project, on a Mac ([docs/ios.md](ios.md)) |
 | `powershell -File scripts\luma.ps1` | Sets up and verifies the backend (AI, push, payments, routes, WhatsApp, APK). Secrets stay in `%USERPROFILE%\luma-secrets` ([docs/luma-setup.md](luma-setup.md)). |
 
 ## Sign-up emails
@@ -118,6 +119,7 @@ the webhook. Only the genuine one counts.
 | --- | --- |
 | `npm test -- --watch=false` | Unit and component tests (Vitest), about 1,050 |
 | `npm run test:scripts` | Build, setup and check scripts |
+| `npm run test:e2e:webkit` | The same flows and the iPhone rules in WebKit with the iPhone 13 profile |
 | `npm run test:e2e` | Sign-up, pick-up order, owner panel and sandbox payment in a real browser, against simulated services |
 | `supabase/tests/local/run.sh` | SQL suites: RLS, permissions, orders, payments and cron, on a throwaway Postgres |
 | `deno test` per function | Edge Functions ([.github/workflows/ci.yml](../.github/workflows/ci.yml)) |

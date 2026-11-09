@@ -109,7 +109,7 @@ test('option 8: every service without questions, each function once, one final t
   for (const name of needed) assert.equal(line(r, new RegExp(`Secreto ${name} `)).state, 'OK', name);
   assert.match(line(r, /Secreto GEOCODE_API_KEY/).item, /existe/, 'not loaded here: only has to exist');
   assert.match(r.envFiles.join(), /PAYMENT_RETURN_URL='https:\/\/luma\.example\/pago-listo\.html'/);
-  assert.match(r.envFiles.join(), /ALLOWED_ORIGINS='https:\/\/luma\.example,https:\/\/localhost,http:\/\/localhost:4200'/);
+  assert.match(r.envFiles.join(), /ALLOWED_ORIGINS='https:\/\/luma\.example,https:\/\/localhost,capacitor:\/\/localhost,http:\/\/localhost:4200'/);
   assert.equal(r.lines.filter((l) => l.state === 'TABLA').length, 1);
   assert.equal(r.lines.filter((l) => /Funcion route /.test(l.item)).length, 1, 'one table, not one per option');
   assert.equal(states(r).includes('FALTA'), false);

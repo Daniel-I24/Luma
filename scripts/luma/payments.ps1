@@ -75,7 +75,7 @@ function Invoke-LumaPayments([string]$ProjectRef) {
   $cron = Get-LumaCronSecret
   $values = @{
     WOMPI_ENV = 'test'; PAYMENTS_CRON_SECRET = $cron; PAYMENT_RETURN_URL = "$web/pago-listo.html"
-    ALLOWED_ORIGINS = "$web,https://localhost,http://localhost:4200"
+    ALLOWED_ORIGINS = "$web,https://localhost,capacitor://localhost,http://localhost:4200"
   }
   foreach ($name in $keys.Keys) { $values[$name] = $keys[$name] }
   if (-not (Set-LumaSecrets $ProjectRef $values)) {

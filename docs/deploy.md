@@ -69,6 +69,7 @@ default.
 | Origin | When |
 | --- | --- |
 | `https://localhost` | Always: Capacitor Android WebView |
+| `capacitor://localhost` | Always: Capacitor iOS WebView (docs/ios.md) |
 | `https://<vercel-domain>` | Always: the production web app |
 | `http://localhost:4200` | Development Supabase project only (`ng serve`) |
 
