@@ -32,7 +32,7 @@ const { plugin, thenReads } = vi.hoisted(() => {
 
 const listens = vi.hoisted(() => ({ addListener: () => Promise.resolve({ remove: () => Promise.resolve() }) }));
 
-vi.mock('@capacitor/core', () => ({ Capacitor: { isNativePlatform: () => true, isPluginAvailable: () => true } }));
+vi.mock('@capacitor/core', () => ({ Capacitor: { getPlatform: () => 'android', isNativePlatform: () => true, isPluginAvailable: () => true } }));
 vi.mock('@capacitor/push-notifications', () => ({
   PushNotifications: plugin('PushNotifications', {
     ...listens,

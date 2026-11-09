@@ -89,9 +89,13 @@ export async function openApp(env, { path = '/', user = null, payments = false, 
   });
   const page = await context.newPage();
   page.on('console', (message) => {
+    // WebKit reports a lazy import cancelled by leaving the page (to Wompi, to the next screen) as a failure.
+    if (env.device.isMobile && message.text().includes('Importing a module script failed')) return;
     if (message.type() === 'error') problems.push(`console: ${message.text().slice(0, 200)}`);
   });
-  page.on('pageerror', (error) => problems.push(`page error: ${error.message.slice(0, 200)}`));
+  page.on('pageerror', (error) => {
+    if (!env.device.isMobile || !error.message.includes('Importing a module script failed')) problems.push(`page error: ${error.message.slice(0, 200)}`);
+  });
   await page.goto(env.origin + path);
   return {
     page,
