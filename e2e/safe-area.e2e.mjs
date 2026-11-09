@@ -41,8 +41,15 @@ function audit(inset) {
   };
   const visible = (el) => shown(el) && !el.closest('[aria-hidden="true"], .sr-only, .maplibregl-map');
   for (const el of document.querySelectorAll('body *')) {
-    const text = [...el.childNodes].some((n) => n.nodeType === Node.TEXT_NODE && n.textContent.trim());
-    if ((text || el.matches('button, a[href], input')) && visible(el) && seen(el).top < inset - 0.5) problems.push(`under the status bar: ${name(el)}`);
+    if (!visible(el)) continue;
+    const under = (top) => Math.max(top, seen(el).top) < inset - 0.5;
+    // A strip may paint behind the status bar with padding: what counts is where its words are.
+    const words = [...el.childNodes].filter((n) => n.nodeType === Node.TEXT_NODE && n.textContent.trim()).some((n) => {
+      const range = document.createRange();
+      range.selectNodeContents(n);
+      return under(range.getBoundingClientRect().top);
+    });
+    if (words || (el.matches('button, a[href], input') && under(seen(el).top))) problems.push(`under the status bar: ${name(el)}`);
   }
   const controls = [...document.querySelectorAll('button, a[href]')].filter(visible);
   controls.forEach((a, i) => controls.slice(i + 1).forEach((b) => {
@@ -81,4 +88,17 @@ test('customer screens respect the status bar, with and without a notch', { skip
 
 test('owner screens respect the status bar, with and without a notch', { skip, timeout: 420_000 }, async () => {
   assert.deepEqual(await check(OWNER_EMAIL, OWNER), []);
+});
+
+test('the offline notice keeps its words below the status bar', { skip, timeout: 60_000 }, async () => {
+  const app = await openApp(env, { path: '/feed', user: CUSTOMER_EMAIL, viewport: { width: 390, height: 844 } });
+  const cdp = await app.context.newCDPSession(app.page);
+  await cdp.send('Emulation.setSafeAreaInsetsOverride', { insets: { top: 59, bottom: 34, left: 0, right: 0 } });
+  await app.page.goto(`${env.origin}/feed`);
+  await app.page.waitForLoadState('load');
+  await skipGuide(app.page);
+  await app.page.evaluate(() => window.dispatchEvent(new Event('offline')));
+  await app.page.getByText('Sin conexión: algunas').waitFor({ timeout: 5000 });
+  assert.deepEqual(await app.page.evaluate(audit, 59), []);
+  await app.close();
 });
