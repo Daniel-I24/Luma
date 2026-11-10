@@ -19,6 +19,8 @@ test('outside Pasto: the real zone, "Explorar Pasto" and back to my location', {
   const { page, context } = app;
   await context.grantPermissions(['geolocation']);
   await context.setGeolocation(CALI);
+  // Leaving a page mid-request makes WebKit report the cancelled fetch as an access control error.
+  await page.waitForLoadState('networkidle');
   const asked = [];
   page.on('request', (request) => {
     if (request.url().includes('/functions/v1/geocode')) asked.push(request.postData() ?? '');
