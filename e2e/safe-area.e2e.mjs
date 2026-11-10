@@ -99,6 +99,8 @@ test('the offline notice keeps its words below the status bar', { skip, timeout:
   await skipGuide(app.page);
   await app.page.evaluate(() => window.dispatchEvent(new Event('offline')));
   await app.page.getByText('Sin conexión: algunas').waitFor({ timeout: 5000 });
+  // It slides in from behind the status bar: measure where it rests.
+  await app.page.waitForFunction(() => document.querySelector('app-connection-notice p').getAnimations().length === 0, null, { timeout: 5000 });
   assert.deepEqual(await app.page.evaluate(audit, 59), []);
   await app.close();
 });
