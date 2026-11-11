@@ -58,6 +58,13 @@ describe('CheckoutStore: payments', () => {
     expect(orders.create.mock.calls[0]?.[0].paymentMethod).toBe('online');
     expect(online.start).toHaveBeenCalledWith('o4');
     expect(h.navigate).toHaveBeenCalledWith(['/orders', 'o4']);
+
+    // On the web the page is leaving for Wompi: no navigation may cancel it.
+    h.navigate.mockClear();
+    online.start.mockResolvedValueOnce({ kind: 'redirected', leftPage: true });
+    orders.create.mockResolvedValue({ data: 'o5', errorKey: null });
+    await fresh.confirm();
+    expect(h.navigate).not.toHaveBeenCalled();
   });
 
   it('trust limit with payments on: offers paying this order online', async () => {

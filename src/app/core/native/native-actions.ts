@@ -10,15 +10,20 @@ import { Injectable, inject } from '@angular/core';
 export class ExternalBrowser {
   private readonly document = inject(DOCUMENT);
 
-  /** Opens a URL outside the app (system browser or new tab). */
-  public async open(url: string): Promise<void> {
+  /**
+   * Opens a URL outside the app: the system browser on the phone (the app
+   * stays), this tab on the web (the page leaves).
+   * @returns true when this page is leaving.
+   */
+  public async open(url: string): Promise<boolean> {
     const { Capacitor } = await import('@capacitor/core');
     if (Capacitor.isNativePlatform() && Capacitor.isPluginAvailable('Browser')) {
       const { Browser } = await import('@capacitor/browser');
       await Browser.open({ url });
-      return;
+      return false;
     }
     this.document.location.assign(url);
+    return true;
   }
 }
 

@@ -8,7 +8,8 @@ export type PaymentMethod = 'pay_at_pickup' | 'online';
 /** What happened after the order was created. */
 type PaymentStart =
   | { readonly kind: 'pay_at_pickup' }
-  | { readonly kind: 'redirected' }
+  /** leftPage: on the web this page is leaving for Wompi; nothing else should navigate. */
+  | { readonly kind: 'redirected'; readonly leftPage: boolean }
   | { readonly kind: 'failed'; readonly errorKey: string; readonly retryAfterSeconds?: number };
 
 /** How an order is paid (Strategy). The app never handles card data. */
@@ -52,8 +53,7 @@ class WompiGateway implements PaymentGateway {
     }
     if (!link.data.startsWith(ExternalUrls.WOMPI_CHECKOUT)) return { kind: 'failed', errorKey: 'payments.errors.unavailable' };
     try {
-      await this.browser.open(link.data);
-      return { kind: 'redirected' };
+      return { kind: 'redirected', leftPage: await this.browser.open(link.data) };
     } catch {
       return { kind: 'failed', errorKey: 'payments.errors.browser' };
     }

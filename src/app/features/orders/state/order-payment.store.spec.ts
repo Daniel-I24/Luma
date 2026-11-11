@@ -44,7 +44,7 @@ describe('OrderPaymentStore', () => {
     await store.pay();
     expect(online.start).toHaveBeenCalledWith('o1');
     expect(store.errorKey()).toBe('payments.errors.tooManyAttempts');
-    online.start.mockResolvedValueOnce({ kind: 'redirected' });
+    online.start.mockResolvedValueOnce({ kind: 'redirected', leftPage: false });
     await store.pay();
     expect(store.errorKey()).toBeNull();
   });

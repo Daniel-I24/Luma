@@ -12,7 +12,7 @@ const ORDER = '11111111-1111-4111-8111-111111111111';
 
 describe('payments in the app', () => {
   const repo = { checkoutUrl: vi.fn(), recordRedirect: vi.fn().mockResolvedValue(undefined) };
-  const browser = { open: vi.fn().mockResolvedValue(undefined) };
+  const browser = { open: vi.fn().mockResolvedValue(true) };
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -33,7 +33,7 @@ describe('payments in the app', () => {
   it('online opens only a Wompi checkout link in the system browser', async () => {
     const online = TestBed.inject(PaymentGatewayFactory).for('online');
     repo.checkoutUrl.mockResolvedValueOnce({ data: 'https://checkout.wompi.co/p/?reference=luma_x', errorKey: null });
-    expect(await online.start(ORDER)).toEqual({ kind: 'redirected' });
+    expect(await online.start(ORDER)).toEqual({ kind: 'redirected', leftPage: true });
     expect(browser.open).toHaveBeenCalledWith('https://checkout.wompi.co/p/?reference=luma_x');
     repo.checkoutUrl.mockResolvedValueOnce({ data: 'https://evil.example/p/', errorKey: null });
     expect(await online.start(ORDER)).toEqual({ kind: 'failed', errorKey: 'payments.errors.unavailable' });

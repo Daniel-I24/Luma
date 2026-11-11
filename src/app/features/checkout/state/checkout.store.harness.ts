@@ -33,7 +33,7 @@ export function checkoutHarness() {
     labelKey: 'checkout.payment.payAtPickup',
     start: vi.fn().mockResolvedValue({ kind: 'pay_at_pickup' }),
   };
-  const online = { labelKey: 'checkout.payment.online', start: vi.fn().mockResolvedValue({ kind: 'redirected' }) };
+  const online = { labelKey: 'checkout.payment.online', start: vi.fn().mockResolvedValue({ kind: 'redirected', leftPage: false }) };
   const gateways = { for: vi.fn((method: string) => (method === 'online' ? online : payments)) };
   const config = { config: vi.fn().mockResolvedValue({ enabled: false, sandbox: false }) };
 

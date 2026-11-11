@@ -22,6 +22,8 @@ async function tap(page, name) {
 }
 
 async function back(page) {
+  // Under load a guide may show late; back would rightly close it first.
+  await skipGuide(page);
   await page.goBack();
   await page.waitForTimeout(400);
   return pathOf(page);

@@ -115,7 +115,9 @@ export class CheckoutStore {
     this.cart.clear();
     void this.haptics.tap();
     // Online: the order screen shows the payment state and "Reintentar pago" if opening failed.
-    await this.gateways.for(method).start(result.data);
+    const started = await this.gateways.for(method).start(result.data);
+    // On the web the page is leaving for Wompi: an in-app navigation now would cancel it.
+    if (started.kind === 'redirected' && started.leftPage) return;
     // Online: the moment comes when the payment is approved, not now.
     if (method === 'online') await this.router.navigate(['/orders', result.data]);
     else await this.router.navigate(['/orders', result.data], { state: { arrival: 'placed' } });
