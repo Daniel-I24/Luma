@@ -42,6 +42,7 @@ interface CheckLink {
       @if (rejecting()) {
       <app-luma-input
         [label]="t('admin.contacts.reasonLabel')"
+        [placeholder]="t('placeholders.rejectReason')"
         [hint]="t('admin.contacts.reasonHint')"
         [maxLength]="max"
         [counter]="true"
