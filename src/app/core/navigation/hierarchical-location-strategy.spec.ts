@@ -115,12 +115,24 @@ describe('HierarchicalLocationStrategy', () => {
     expect(b.history.pathname).toBe('/businesses/b1');
   });
 
-  it('a sheet closed by itself takes its entry away; navigating from one drops it first', async () => {
+  it('a sheet closed by itself moves nothing then; the next back skips its entry', async () => {
     const b = browser('/map');
+    await b.go('/orders');
     b.strategy.enterLayer();
     b.strategy.exitLayer();
     await settle();
-    expect(b.history.snapshot().at).toBe(0);
+    expect(b.history.snapshot().at).toBe(2);
+    b.history.back();
+    await settle();
+    await settle();
+    expect(b.history.pathname).toBe('/map');
+    expect(b.routerHeard).toEqual(['/map']);
+  });
+
+  it('navigating with a sheet open, or a spent entry, drops them first', async () => {
+    const b = browser('/map');
+    b.strategy.enterLayer();
+    b.strategy.exitLayer();
     b.strategy.enterLayer();
     await b.go('/orders');
     expect(b.history.snapshot().urls.slice(0, b.history.snapshot().at + 1)).toEqual(['/map', '/orders']);

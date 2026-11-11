@@ -1,12 +1,8 @@
 import { APP_BASE_HREF, type LocationChangeEvent, type LocationChangeListener, PathLocationStrategy, PlatformLocation } from '@angular/common';
 import { Injectable, inject } from '@angular/core';
+import { HistoryEntries } from './history-entries';
 import { type HistoryPlan, HistoryPlans, type Navigation } from './history-plan';
 import { ScreenTree } from './screen-tree';
-
-/** Kept in each history entry: the paths below it, so a reload or a back press knows where it is. */
-interface EntryState {
-  readonly lumaTrail?: readonly string[];
-}
 
 /**
  * HierarchicalLocationStrategy — the browser history always mirrors the
@@ -24,6 +20,13 @@ export class HierarchicalLocationStrategy extends PathLocationStrategy {
   private readonly pending: (() => void)[] = [];
   /** Entries of open sheets and dialogs on top of the screen's own entry. */
   private layerEntries = 0;
+  /**
+   * Entries of layers that closed by themselves. They are not taken away at
+   * once: a history move then could cancel a page load starting at the same
+   * moment (a link out, a payment). The next back skips them; the next
+   * navigation drops them.
+   */
+  private spentEntries = 0;
   /** Set by BackNavigation: the user went back from a layer's entry; true when it closed the layer. */
   public onLayerBack: (() => boolean) | null = null;
 
@@ -31,7 +34,8 @@ export class HierarchicalLocationStrategy extends PathLocationStrategy {
     const platform = inject(PlatformLocation);
     super(platform, inject(APP_BASE_HREF, { optional: true }) ?? undefined);
     this.platform = platform;
-    this.trail = this.storedTrail() ?? this.startTrail();
+    this.trail = HistoryEntries.stored(platform, this.path())
+      ?? HistoryEntries.start(platform, this.path(), (path) => this.prepareExternalUrl(path));
   }
 
   /** How many screens are below the current one. */
@@ -56,11 +60,16 @@ export class HierarchicalLocationStrategy extends PathLocationStrategy {
       if (event.type !== 'popstate') return fn(event);
       const landed = this.pending.shift();
       if (landed) return landed();
+      if (this.spentEntries > 0) {
+        // The user left a spent entry: the same back goes on to the screen below.
+        this.spentEntries -= 1;
+        return this.historyGo(-1);
+      }
       if (this.layerEntries > 0 && this.onLayerBack?.()) {
         this.layerEntries -= 1;
         return;
       }
-      this.trail = this.storedTrail() ?? [ScreenTree.path(this.path())];
+      this.trail = HistoryEntries.stored(this.platform, this.path()) ?? [ScreenTree.path(this.path())];
       fn(event);
     });
   }
@@ -68,14 +77,14 @@ export class HierarchicalLocationStrategy extends PathLocationStrategy {
   /** A sheet or dialog opened: an entry of its own, so going back closes it. */
   public enterLayer(): void {
     this.layerEntries += 1;
-    this.platform.pushState(this.current(), '', this.platform.href);
+    this.platform.pushState(HistoryEntries.current(this.platform), '', this.platform.href);
   }
 
-  /** The layer closed by itself: its entry goes too, unseen by the router. */
+  /** The layer closed by itself: its entry is spent (see spentEntries), never a move now. */
   public exitLayer(): void {
     if (this.layerEntries === 0) return;
     this.layerEntries -= 1;
-    this.move(-1, () => undefined);
+    this.spentEntries += 1;
   }
 
   private follow(plan: HistoryPlan, nav: Navigation): void {
@@ -101,7 +110,7 @@ export class HierarchicalLocationStrategy extends PathLocationStrategy {
 
   /** Depth before this navigation (the trail is already updated when moves run). */
   private platformDepth(): number {
-    return (this.current().lumaTrail?.length ?? 1) - 1;
+    return (HistoryEntries.current(this.platform).lumaTrail?.length ?? 1) - 1;
   }
 
   private move(delta: number, landed: () => void): void {
@@ -112,8 +121,9 @@ export class HierarchicalLocationStrategy extends PathLocationStrategy {
 
   /** Navigating with a layer open: its entry is dropped first. */
   private leaveLayer(then: () => void): void {
-    const layers = this.layerEntries;
+    const layers = this.layerEntries + this.spentEntries;
     this.layerEntries = 0;
+    this.spentEntries = 0;
     this.move(-layers, then);
   }
 
@@ -121,26 +131,4 @@ export class HierarchicalLocationStrategy extends PathLocationStrategy {
     return { ...(state as object), lumaTrail: this.trail };
   }
 
-  private current(): EntryState {
-    return (this.platform.getState() ?? {}) as EntryState;
-  }
-
-  private storedTrail(): string[] | null {
-    const trail = this.current().lumaTrail;
-    const valid = Array.isArray(trail) && trail.every((p) => typeof p === 'string') && trail.at(-1) === ScreenTree.path(this.path());
-    return valid ? [...trail] : null;
-  }
-
-  /** A direct link or a reload without a trail: the screen's ancestors become the history below it. */
-  private startTrail(): string[] {
-    const here = this.path();
-    const chain = HistoryPlans.chain(here);
-    chain.forEach((path, i) => {
-      const state = { ...this.current(), lumaTrail: chain.slice(0, i + 1) };
-      const target = i === chain.length - 1 ? here : path;
-      if (i === 0) this.platform.replaceState(state, '', this.prepareExternalUrl(target));
-      else this.platform.pushState(state, '', this.prepareExternalUrl(target));
-    });
-    return chain;
-  }
 }
