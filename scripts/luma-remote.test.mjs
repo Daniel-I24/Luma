@@ -126,7 +126,7 @@ test('option 8 goes on when a service cannot run, and the table shows what is mi
 
 test('option 6: a build that leaves no new APK is FALTA and nothing is installed', { skip }, () => {
   const r = runOption('Invoke-LumaApk', { files: { 'app.env': 'SUPABASE_URL=https://x.supabase.co\nSUPABASE_ANON_KEY=a\n' }, phones: ['AAA'], apkFresh: false });
-  assert.ok(r.lines.some((l) => l.state === 'FALTA' && /no dejo un archivo nuevo/.test(l.item)));
+  assert.ok(r.lines.some((l) => l.state === 'FALTA' && /no hay un APK de la version 1.0.3/.test(l.item)));
   assert.equal(r.calls.some((c) => c.startsWith('adb')), false);
 });
 

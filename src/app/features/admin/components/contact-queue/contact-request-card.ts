@@ -7,8 +7,8 @@ import type { ContactDecision } from '@shared/business/verification/contact-veri
 import { ContactVerifiers } from '@shared/business/verification/contact-verifier';
 
 /** The same limits as admin_verify_contact. */
-export const REASON_MIN = 3;
-export const REASON_MAX = 300;
+const REASON_MIN = 3;
+const REASON_MAX = 300;
 
 /** A link the reviewer opens to check the contact. */
 interface CheckLink {

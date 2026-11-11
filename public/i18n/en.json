@@ -1807,7 +1807,6 @@
       }
     },
     "menuScan": {
-      "entry": "Scan menu with Luma IA",
       "title": "Scan menu",
       "intro": "Take or choose up to {{max}} photos of your printed menu. Luma IA reads the products and prices, and you review everything before adding it.",
       "pick": "Choose or take photos of the menu",

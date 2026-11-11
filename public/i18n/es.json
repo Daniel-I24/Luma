@@ -1807,7 +1807,6 @@
       }
     },
     "menuScan": {
-      "entry": "Escanear menú con Luma IA",
       "title": "Escanear menú",
       "intro": "Toma o elige hasta {{max}} fotos de tu menú impreso. Luma IA lee los productos y precios, y tú revisas todo antes de agregarlo.",
       "pick": "Elegir o tomar fotos del menú",

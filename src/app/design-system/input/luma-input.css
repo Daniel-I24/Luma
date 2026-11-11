@@ -88,8 +88,3 @@
   min-height: var(--spacing-11);
   cursor: pointer;
 }
-
-.luma-input__field--select option {
-  background-color: var(--color-surface);
-  color: var(--color-fg);
-}

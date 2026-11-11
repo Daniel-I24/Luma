@@ -281,3 +281,17 @@ images, fonts and `package-lock.json`):
 | Files in `docs/` | 83 | 83 | −14 old, +12 captures, +1 `demo.md` |
 | Lines in `docs/` | 12,680 | 7,570 | −5,110 (−40 %) |
 | Text lines in the repository | 103,921 | 99,456 | −4,465 |
+
+Last round before the presentation (phase 5):
+
+| Removed | Proof it was unused | Replacement |
+| --- | --- | --- |
+| Key `owner.menuScan.entry` (es, en) | Not written in `src/`, no dynamic prefix builds it (scan of all 1,900 keys); `entryAi` and `entryHint` are the ones shown | — |
+| CSS `.luma-input__field--select option` | No `<option>` left in the app: LumaSelect is a bottom sheet (`check:pickers`) | — |
+| `contactVerification.pendingBadge`, `admin.contacts.open` | Replaced in phase 1 by the four states and one link per check | `contactVerification.state.*`, `admin.contacts.open*` |
+| Exports `REASON_MIN`, `REASON_MAX` | knip: no importer; kept as constants of the file | — |
+
+Kept, with the reason: `axe-core` (knip "unused") is loaded by `require.resolve` in
+`e2e/support/axe.mjs`; it is now listed in `knip.json`. depcheck repeats the false positives of
+phase 1 above (Capacitor platforms, the Angular builder, Tailwind and PostCSS, Deno and path aliases).
+knip ends with no unused file, dependency, export or type.

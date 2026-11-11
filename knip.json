@@ -10,5 +10,5 @@
   ],
   "project": ["src/**/*.ts", "scripts/**/*.mjs", "supabase/functions/**/*.ts"],
   "ignore": ["src/environments/**"],
-  "ignoreDependencies": ["prettier", "@std/assert", "@angular-eslint/builder"]
+  "ignoreDependencies": ["prettier", "@std/assert", "@angular-eslint/builder", "axe-core"]
 }
