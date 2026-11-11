@@ -12,7 +12,7 @@ test('text fields need an example, selects a help; pickers and listed fields do 
     <app-luma-select selectId="f" [label]="x" />
     <app-luma-select selectId="g" [hint]="x" />
     <input [id]="'menu-name-' + item.id" />`;
-  assert.deepEqual(findMissing(html).map((p) => [p.id, p.missing]), [['a', 'placeholder'], ['c', 'placeholder'], ['(no id)', 'help']]);
+  assert.deepEqual(findMissing(html).map((p) => [p.id, p.missing]), [['a', 'placeholder'], ['c', 'placeholder'], ['f', 'help']]);
   assert.ok(EXCEPTIONS.has('menu-name'));
 });
 

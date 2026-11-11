@@ -5,6 +5,7 @@ import { beforeEach, expect, vi } from 'vitest';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
 import { RegisterBusinessPage } from './register-business.page';
 import { ResidenceCatalog } from '@shared/geo/residence-catalog';
+import { pickOption } from '../../../../../testing/select.harness';
 
 // Only effective because spec files run isolated (angular.json "isolate"):
 // otherwise a spec that loaded the real MapLibre first would leak it here.
@@ -66,10 +67,12 @@ export function registerBusinessPageHarness() {
     fixture.detectChanges();
     await fixture.whenStable();
     const el = fixture.nativeElement as HTMLElement;
+    /** Types into a field, or picks the option when the field is a LumaSelect. */
     const type = (id: string, value: string) => {
-      const input = el.querySelector<HTMLInputElement | HTMLSelectElement>(`#${id}`)!;
+      const input = el.querySelector<HTMLInputElement | HTMLButtonElement>(`#${id}`)!;
+      if (input instanceof HTMLButtonElement) return pickOption(fixture, id, value);
       input.value = value;
-      input.dispatchEvent(new Event(input instanceof HTMLSelectElement ? 'change' : 'input'));
+      input.dispatchEvent(new Event('input'));
       fixture.detectChanges();
     };
     /** Pins the map centre; fails here, not on submit, if the map did not start. */

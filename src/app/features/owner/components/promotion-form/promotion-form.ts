@@ -22,6 +22,7 @@ import { DraftForm } from '@shared/forms/draft-form';
 import { FormErrors } from '@shared/forms/form-errors';
 import { PromotionPhases } from '../../utils/promotion-phase';
 import { type PromoDraft, type PromotionPrefill, PromotionDrafts } from './promotion-draft';
+import { DateTimeFields } from '../date-time-fields/date-time-fields';
 
 const FIELD_ORDER = [
   ['title', 'promo-title'],
@@ -51,7 +52,7 @@ const RULES = { title: TextRules.promotionTitle, description: TextRules.freeText
   selector: 'app-promotion-form',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaButton, LumaInput, DiscountFields, ImageField, DraftNotice],
+  imports: [TranslocoModule, LumaButton, LumaInput, DiscountFields, ImageField, DraftNotice, DateTimeFields],
   templateUrl: './promotion-form.html',
 })
 export class PromotionForm {

@@ -31,11 +31,14 @@ export const EXCEPTIONS = new Map([
   ['password-current', 'password'],
   ['password-next', 'password'],
   ['recover-password', 'password'],
+  // Choices from a fixed list in a compact place: the label says it all.
+  ['owner-business-switch', "the owner's own businesses, next to their count"],
+  ['hours', 'quarter hours of the day'],
 ]);
 
 const NOT_TEXT = /\btype\s*=\s*"(?:checkbox|radio|file|hidden|range|color|date|time|datetime-local|month|week)"/;
 const FIELD = /<(input|textarea|app-luma-input|app-luma-search-input|select|app-luma-select)\b([^>]*?)\/?>/gs;
-const ID = /(?:\[?(?:inputId|id)\]?)\s*=\s*"([^"]+)"/;
+const ID = /(?:\[?(?:inputId|selectId|id)\]?)\s*=\s*"([^"]+)"/;
 
 /** Problems in one template: [{ tag, id, line, missing }]. */
 export function findMissing(text) {

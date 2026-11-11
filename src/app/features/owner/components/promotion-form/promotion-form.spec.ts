@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { PromotionInput } from '@shared/business/data/business-write.schemas';
 import { BusinessImageRepository } from '@shared/media/business-image.repository';
 import { PromotionForm } from './promotion-form';
+import { pickOption } from '../../../../../testing/select.harness';
 
 const items = [
   { id: 'm1', business_id: 'b1', name: 'Empanada', price_cop: 9990, is_available: true },
@@ -40,12 +41,7 @@ describe('PromotionForm with a discount', () => {
       field.dispatchEvent(new Event('input'));
       fixture.detectChanges();
     };
-    const choose = (value: string) => {
-      const select = el.querySelector<HTMLSelectElement>('#promo-item')!;
-      select.value = value;
-      select.dispatchEvent(new Event('change'));
-      fixture.detectChanges();
-    };
+    const choose = (value: string) => pickOption(fixture, 'promo-item', value);
     const submit = () => {
       el.querySelector('form')!.dispatchEvent(new Event('submit', { cancelable: true }));
       fixture.detectChanges();

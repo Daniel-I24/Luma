@@ -8,6 +8,7 @@ import { BusinessRepository } from '@shared/business/data/business.repository';
 import { OwnedBusinessRepository } from '@shared/business/data/owned-business.repository';
 import { BusinessHoursPage } from './business-hours.page';
 import { at } from '../../../../../testing/at';
+import { pickOption } from '../../../../../testing/select.harness';
 
 const flush = () => new Promise((resolve) => setTimeout(resolve));
 const monday = {
@@ -68,7 +69,8 @@ describe('BusinessHoursPage', () => {
     expect(el.querySelector('[role="status"]')?.textContent).toContain(
       'businessPanel.hours.crossesMidnight',
     );
-    expect(el.querySelectorAll('input[type="time"]')).toHaveLength(2);
+    expect(el.querySelectorAll('app-luma-select')).toHaveLength(2);
+    expect(el.querySelector('input[type="time"]')).toBeNull();
   });
 
   it('opens a closed day and saves the whole week', async () => {
@@ -93,10 +95,7 @@ describe('BusinessHoursPage', () => {
 
   it('rejects equal opening and closing times and focuses that day', async () => {
     const { el, fixture, submit } = await render();
-    const closes = el.querySelector<HTMLInputElement>('#hours-1-closes')!;
-    closes.value = '18:00';
-    closes.dispatchEvent(new Event('input'));
-    fixture.detectChanges();
+    pickOption(fixture, 'hours-1-closes', '18:00');
 
     await submit();
 

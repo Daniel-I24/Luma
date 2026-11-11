@@ -64,6 +64,8 @@ jobs:
         run: npm run check:tokens
       - name: Every text field has an example
         run: npm run check:placeholders
+      - name: No native pickers (select, time, date)
+        run: npm run check:pickers
       - name: Duplicated code stays under the round 9 figure (.jscpd.json)
         run: npx --yes jscpd@5.4.2 --config .jscpd.json
       # Verbose: every test and the full detail of each failure in the log.

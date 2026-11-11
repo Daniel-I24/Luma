@@ -17,7 +17,10 @@ test('sign-up: six steps, the e-mailed code, and the customer lands in the app',
   await page.locator('#signup-fullName').fill('Ana Prueba');
   await page.locator('#signup-phone').fill('3001234567');
   await next();
-  await page.locator('#residence-department').selectOption({ label: 'Nariño' });
+  // The department opens the app's own sheet: search, then choose.
+  await page.locator('#residence-department').click();
+  await page.locator('#residence-department-search').fill('nari');
+  await page.getByRole('option', { name: 'Nariño' }).click();
   await page.getByRole('button', { name: 'Pasto', exact: true }).click();
   await next();
   await next(); // the photo is optional

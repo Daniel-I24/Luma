@@ -29,6 +29,7 @@
     "check:buttons": "node scripts/check-destructive-buttons.mjs",
     "check:tokens": "node scripts/check-design-tokens.mjs",
     "check:placeholders": "node scripts/check-placeholders.mjs",
+    "check:pickers": "node scripts/check-native-pickers.mjs",
     "scan:history": "node scripts/secret-scan-history.mjs",
     "check:google-services": "node scripts/check-google-services.mjs",
     "check:wompi-event": "node scripts/check-wompi-event.mjs",

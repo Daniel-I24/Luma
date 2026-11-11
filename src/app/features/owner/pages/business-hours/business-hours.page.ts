@@ -1,7 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaButton, LumaInput, LumaNotice, ToastService } from '@design-system';
+import { LumaButton, LumaNotice, LumaSelect, type SelectOption, ToastService } from '@design-system';
 import { BusinessHoursWriteRepository } from '@shared/business/data/business-hours-write.repository';
 import { dayHoursSchema } from '@shared/business/data/business-write.schemas';
 import { BusinessRepository } from '@shared/business/data/business.repository';
@@ -11,6 +11,7 @@ import { PanelStateView } from '../../components/panel-state/panel-state';
 import { PanelBusinessStore } from '../../state/panel-business.store';
 import { RouteBusinessId } from '../../utils/route-business-id';
 import { type DayDraft, WeekDrafts } from '../../utils/week-draft';
+import { TimeOptions } from '../../utils/time-options';
 import { SetupReturn } from '../../components/setup-return/setup-return';
 import { ZodRules } from '@core/validation/zod-rules';
 
@@ -20,7 +21,7 @@ import { ZodRules } from '@core/validation/zod-rules';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LumaNotice, 
-    SetupReturn,TranslocoModule, LumaButton, LumaInput, PanelHeader, PanelStateView],
+    SetupReturn,TranslocoModule, LumaButton, LumaSelect, PanelHeader, PanelStateView],
   providers: [PanelBusinessStore],
   templateUrl: './business-hours.page.html',
   host: { class: 'block' },
@@ -34,6 +35,10 @@ export class BusinessHoursPage {
   protected readonly id = RouteBusinessId.routeBusinessId((id) => this.load(id));
 
   protected readonly week = signal<DayDraft[]>(WeekDrafts.weekDraft([]));
+  /** Quarter hours to pick from, with the saved time kept when it falls between them. */
+  protected times(current: string): SelectOption[] {
+    return TimeOptions.quarterHours(current);
+  }
   /** Error key per day of the week. */
   protected readonly errors = signal<Readonly<Record<number, string>>>({});
   protected readonly errorKey = signal<string | null>(null);

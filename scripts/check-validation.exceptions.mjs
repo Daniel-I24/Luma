@@ -16,7 +16,8 @@ export const EXCEPTIONS = [
   { file: 'src/app/features/promotions/components/promotion-filters/promotion-filters.ts', field: 'promo-min', why: 'filter of a list, never stored' },
   { file: 'src/app/shared/geo/residence-picker/residence-picker.html', field: 'residence-department', why: 'department from the DANE catalog' },
   // Validated together with another field, whose error shows for both.
-  { file: 'src/app/features/owner/pages/business-hours/business-hours.page.html', field: "'hours-' + day.day_of_week + '-opens'", why: 'native time input; the day (opens and closes) is checked by dayHoursSchema and its error shows under "Cierra"' },
+  { file: 'src/app/features/owner/pages/business-hours/business-hours.page.html', field: "'hours-' + day.day_of_week + '-opens'", why: 'quarter hours from a fixed list; the day (opens and closes) is checked by dayHoursSchema and its error shows under "Cierra"' },
+  { file: 'src/app/features/owner/components/date-time-fields/date-time-fields.ts', field: "fieldId() + '-time'", why: 'quarter hours from a fixed list; the period is checked with its day (DateRules.period) and shown under the day' },
   // Text to read, not to store: every product it yields is checked in the review list.
   { file: 'src/app/features/owner/pages/menu-scan/menu-scan.page.html', field: 'scan-paste', why: 'pasted menu text (maxlength 8000) is parsed into products that are validated one by one' },
 ];

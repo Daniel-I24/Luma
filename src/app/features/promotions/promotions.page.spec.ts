@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CartActions } from '@shared/cart/cart-actions.service';
 import { PromotionDealRepository } from '@shared/promotions/promotion-deal.repository';
 import { PromotionsPage } from './promotions.page';
+import { pickOption } from '../../../testing/select.harness';
 
 const hours = [0, 1, 2, 3, 4, 5, 6].map((day) => ({
   day_of_week: day,
@@ -97,10 +98,7 @@ describe('PromotionsPage', () => {
     const { fixture, el } = await render();
     expect(el.querySelectorAll('app-promotion-card').length).toBe(2);
 
-    const min = el.querySelector<HTMLSelectElement>('#promo-min')!;
-    min.value = '50';
-    min.dispatchEvent(new Event('change'));
-    fixture.detectChanges();
+    pickOption(fixture, 'promo-min', '50');
 
     expect(el.querySelectorAll('app-promotion-card').length).toBe(0);
     expect(el.textContent).toContain('promotions.empty.filteredTitle');

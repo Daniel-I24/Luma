@@ -10,6 +10,7 @@ import { OwnedBusinessRepository } from '@shared/business/data/owned-business.re
 import { ownerLandingGuard } from '../owner.guards';
 import { OwnerContextStore } from '../state/owner-context.store';
 import { OwnerShell } from './owner-shell';
+import { pickOption } from '../../../../testing/select.harness';
 
 @Component({ template: 'screen', standalone: true })
 class Screen {}
@@ -74,7 +75,7 @@ describe('OwnerShell and landing', () => {
     const { harness, el } = await open('/owner/a/menu');
     await vi.waitFor(() => {
       harness.detectChanges();
-      expect(el.querySelector('select')).not.toBeNull();
+      expect(el.querySelector('#owner-business-switch')).not.toBeNull();
     });
 
     const tabs = Array.from(el.querySelectorAll('app-luma-tab-bar a')).map((a) =>
@@ -87,9 +88,7 @@ describe('OwnerShell and landing', () => {
       '/owner/a/promotions',
       '/owner/a/business',
     ]);
-    const select = el.querySelector('select')!;
-    select.value = 'b';
-    select.dispatchEvent(new Event('change'));
+    pickOption(harness.fixture, 'owner-business-switch', 'b');
     await harness.fixture.whenStable();
     expect(TestBed.inject(Router).url).toBe('/owner/b/menu');
   });

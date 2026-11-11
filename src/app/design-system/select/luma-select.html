@@ -1,0 +1,82 @@
+<div class="luma-input">
+  @if (label()) {
+  <label class="luma-input__label" [class.sr-only]="hideLabel()" [for]="selectId()">
+    {{ label() }} @if (required()) {
+    <span class="luma-input__required" aria-hidden="true">*</span>
+    }
+  </label>
+  }
+
+  <div
+    class="luma-input__wrapper"
+    [class.luma-input__wrapper--error]="!!errorMessage()"
+    [class.luma-input__wrapper--disabled]="disabled()"
+  >
+    <button
+      type="button"
+      class="luma-input__field luma-input__field--select flex items-center justify-between gap-2 text-start"
+      [id]="selectId()"
+      [disabled]="disabled()"
+      aria-haspopup="listbox"
+      [attr.aria-expanded]="open()"
+      [attr.aria-required]="required() || null"
+      [attr.aria-invalid]="errorMessage() ? 'true' : null"
+      [attr.aria-describedby]="describedBy()"
+      (click)="show()"
+    >
+      <span class="min-w-0 truncate" [class.text-fg-subtle]="selectedLabel() === null">{{ selectedLabel() ?? placeholder() ?? '' }}</span>
+      <app-luma-icon class="shrink-0 text-fg-subtle" name="chevron-down" size="sm" />
+    </button>
+  </div>
+
+  @if (errorMessage()) {
+  <span [id]="selectId() + '-error'" class="luma-input__error" role="alert">{{ errorMessage() }}</span>
+  } @else if (hint()) {
+  <span [id]="selectId() + '-hint'" class="luma-input__hint">{{ hint() }}</span>
+  }
+</div>
+
+<app-luma-bottom-sheet
+  [open]="open()"
+  [title]="label() ?? placeholder()"
+  [titleId]="selectId() + '-sheet-title'"
+  (closed)="open.set(false)"
+>
+  @if (open()) {
+  <div class="flex flex-col gap-3">
+    @if (searchable()) {
+    <app-luma-search-input
+      [inputId]="selectId() + '-search'"
+      [label]="'select.search' | transloco"
+      [placeholder]="'select.search' | transloco"
+      [clearLabel]="'select.clear' | transloco"
+      [(value)]="query"
+    />
+    }
+    <div class="m-0 flex flex-col gap-1 p-0" role="listbox" [attr.aria-labelledby]="selectId() + '-sheet-title'">
+      @for (option of shown(); track option.value; let i = $index) {
+      <button
+        type="button"
+        role="option"
+        [attr.data-value]="option.value"
+        class="pressable flex min-h-11 w-full cursor-pointer items-center justify-between gap-3 rounded-md border-0 px-3 text-start text-body text-fg focus-visible:outline-2 focus-visible:outline-border-focus"
+        [class.bg-surface-selected]="option.value === value()"
+        [class.font-semibold]="option.value === value()"
+        [class.bg-transparent]="option.value !== value()"
+        [attr.aria-selected]="option.value === value()"
+        [attr.tabindex]="option.value === value() || (i === 0 && selectedLabel() === null) ? 0 : -1"
+        (click)="choose(option)"
+        (keydown)="onKeydown($event, i)"
+      >
+        <span class="min-w-0">{{ option.label }}</span>
+        @if (option.value === value()) {
+        <app-luma-icon class="shrink-0 text-fg-brand" name="check" size="sm" />
+        }
+      </button>
+      } @empty {
+      <p class="m-0 px-3 py-2 text-body-sm text-fg-muted" role="status">{{ 'select.noResults' | transloco }}</p>
+      }
+    </div>
+  </div>
+  }
+</app-luma-bottom-sheet>

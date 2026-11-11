@@ -259,6 +259,10 @@ table in docs/cleanup-report.md.
   gesture, the browser's back and the arrows of the app all lead to the parent. Sheets, the guide
   and the welcome close first; the keyboard hides first; at a root back goes home; at home the APK
   is minimised. The guide bubble no longer falls off screen over a Discover card.
+- Pickers: LumaSelect is now a field that opens a bottom sheet (the chosen option marked, a search
+  from 9 options, arrows, Home and End, 44 px options), never Android's grey dialog. The business
+  switch, the promotion item, the hours (quarter hours) and the promotion dates (DateTimeFields:
+  day and time) use it too; `npm run check:pickers` fails on a native select, time or date input.
 
 ## Round 13 (2026-11-07)
 

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input, model } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaInput } from '@design-system';
+import { LumaInput, LumaSelect, type SelectOption } from '@design-system';
 import type { MenuItem } from '@shared/business/models/menu.model';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
 import { PromotionPricing } from '@shared/promotions/promotion-deal';
@@ -14,28 +14,19 @@ import { NumberSpecs } from '@core/validation/number-rules';
   selector: 'app-discount-fields',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, LumaInput, CopCurrencyPipe],
+  imports: [TranslocoModule, LumaInput, LumaSelect, CopCurrencyPipe],
   template: `
     <fieldset *transloco="let t" class="m-0 flex flex-col gap-3 border-0 p-0">
       <legend class="mb-1 p-0 text-label-lg text-fg">{{ t('owner.discount.legend') }}</legend>
-      <div class="flex flex-col gap-1">
-        <label class="text-label text-fg" for="promo-item">{{ t('owner.discount.item') }}</label>
-        <select
-          id="promo-item"
-          class="min-h-11 rounded-md border border-border bg-surface px-2 text-body text-fg focus-visible:outline-2 focus-visible:outline-border-focus"
-          [attr.aria-invalid]="itemError() ? 'true' : null"
-          [attr.aria-describedby]="itemError() ? 'promo-item-error' : null"
-          (change)="onItem($event)"
-        >
-          <option value="" [selected]="!itemId()">{{ t('owner.discount.noItem') }}</option>
-          @for (option of items(); track option.id) {
-          <option [value]="option.id" [selected]="option.id === itemId()">{{ option.name }}</option>
-          }
-        </select>
-        @if (itemError(); as error) {
-        <span id="promo-item-error" class="text-caption text-danger-fg" role="alert">{{ error }}</span>
-        }
-      </div>
+      <app-luma-select
+        selectId="promo-item"
+        [label]="t('owner.discount.item')"
+        [placeholder]="t('owner.discount.noItem')"
+        [options]="itemOptions()"
+        [errorMessage]="itemError() ?? undefined"
+        [value]="itemId() ?? ''"
+        (valueChange)="onItem($event)"
+      />
       @if (item()) {
       <app-luma-input
         inputId="promo-percent"
@@ -66,6 +57,7 @@ export class DiscountFields {
   public readonly itemId = model<string | null>(null);
   public readonly percent = model('');
 
+  protected readonly itemOptions = computed<SelectOption[]>(() => this.items().map((i) => ({ value: i.id, label: i.name })));
   protected readonly item = computed(
     () => this.items().find((i) => i.id === this.itemId()) ?? null,
   );
@@ -76,8 +68,7 @@ export class DiscountFields {
     return { list: item.price_cop, final: PromotionPricing.promotionPrice(item.price_cop, percent) };
   });
 
-  protected onItem(event: Event): void {
-    const value = (event.target as HTMLSelectElement).value;
+  protected onItem(value: string): void {
     this.itemId.set(value || null);
     if (!value) this.percent.set('');
   }

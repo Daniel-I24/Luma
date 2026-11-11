@@ -32,17 +32,17 @@
         </div>
         @if (!day.is_closed) {
         <div class="grid grid-cols-2 gap-3">
-          <app-luma-input
-            type="time"
-            [inputId]="'hours-' + day.day_of_week + '-opens'"
+          <app-luma-select
+            [selectId]="'hours-' + day.day_of_week + '-opens'"
             [label]="t('businessPanel.hours.opens')"
+            [options]="times(day.opens_at)"
             [value]="day.opens_at"
             (valueChange)="update(day.day_of_week, { opens_at: $event })"
           />
-          <app-luma-input
-            type="time"
-            [inputId]="'hours-' + day.day_of_week + '-closes'"
+          <app-luma-select
+            [selectId]="'hours-' + day.day_of_week + '-closes'"
             [label]="t('businessPanel.hours.closes')"
+            [options]="times(day.closes_at)"
             [errorMessage]="errors()[day.day_of_week] ? (errors()[day.day_of_week] | transloco) : undefined"
             [value]="day.closes_at"
             (valueChange)="update(day.day_of_week, { closes_at: $event })"

@@ -6,6 +6,17 @@
     "reload": "Recargar",
     "back": "Volver"
   },
+  "select": {
+    "search": "Buscar",
+    "clear": "Borrar la búsqueda",
+    "noResults": "Ninguna opción coincide."
+  },
+  "dateTime": {
+    "day": "Día",
+    "chooseDay": "Elige el día",
+    "time": "Hora",
+    "chooseTime": "Elige la hora"
+  },
   "auth": {
     "login": {
       "title": "Iniciar sesión",
@@ -1323,7 +1334,7 @@
       "verify": "Verificar",
       "reject": "Rechazar",
       "reasonLabel": "Motivo del rechazo",
-      "reasonHint": "El negocio lo leerá. Por ejemplo: no encontramos el código en la biografía.",
+      "reasonHint": "El negocio lo leerá: di qué faltó para poder verificarlo.",
       "reasonRequired": "Escribe el motivo (al menos 3 caracteres).",
       "confirmReject": "Rechazar con este motivo",
       "empty": "No hay contactos por verificar."
@@ -2536,7 +2547,8 @@
     "sortHint": "Cambia el orden de las promociones.",
     "minDiscountHint": "Muestra solo descuentos desde ese porcentaje.",
     "reviewNote": "Ej.: Falta la foto de la fachada con el aviso",
-    "reportComment": "Ej.: El negocio ya no está en esta dirección"
+    "reportComment": "Ej.: El negocio ya no está en esta dirección",
+    "rejectReason": "Ej.: no encontramos el código en la biografía"
   },
   "validation": {
     "required": "Este campo es obligatorio.",

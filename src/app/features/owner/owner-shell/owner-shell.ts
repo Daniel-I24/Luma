@@ -3,7 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { filter, map } from 'rxjs';
-import { LumaIcon, LumaNotice, LumaTabBar, type TabBarItem, LumaRefreshButton } from '@design-system';
+import { LumaIcon, LumaNotice, LumaSelect, LumaTabBar, type SelectOption, type TabBarItem, LumaRefreshButton } from '@design-system';
 import { OWNER_SECTIONS, type OwnerSection, ownerPaths } from '@shared/account/account-paths';
 import { TourHelpButton } from '@shared/tutorial/tour-help-button';
 import { TourRoutes } from '@shared/tutorial/tour-registry';
@@ -40,7 +40,7 @@ export class OwnerLocation {
   selector: 'app-owner-shell',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LumaRefreshButton, LumaNotice, RouterOutlet, RouterLink, TranslocoModule, LumaIcon, LumaTabBar, TourHelpButton],
+  imports: [LumaRefreshButton, LumaNotice, LumaSelect, RouterOutlet, RouterLink, TranslocoModule, LumaIcon, LumaTabBar, TourHelpButton],
   templateUrl: './owner-shell.html',
   providers: [OrderAlertsStore],
   host: { class: 'flex h-dvh flex-col bg-canvas' },
@@ -60,6 +60,9 @@ export class OwnerShell {
   protected readonly location = computed(() => OwnerLocation.ownerLocation(this.url()));
   /** The guide of the section on screen, for its "?". */
   protected readonly tourId = computed(() => TourRoutes.tourForUrl(this.url()));
+  protected readonly businessOptions = computed<SelectOption[]>(() =>
+    (this.context.businesses() ?? []).map((b) => ({ value: b.id, label: b.name })),
+  );
   protected readonly tabs = computed<readonly TabBarItem[]>(() => {
     const id = this.location()?.id;
     if (!id) return [];
@@ -92,8 +95,7 @@ export class OwnerShell {
   }
 
   /** Same tab, other business. */
-  protected switchTo(event: Event): void {
-    const id = (event.target as HTMLSelectElement).value;
+  protected switchTo(id: string): void {
     const section = this.location()?.section ?? 'summary';
     void this.router.navigate(ownerPaths.section(id, section));
   }

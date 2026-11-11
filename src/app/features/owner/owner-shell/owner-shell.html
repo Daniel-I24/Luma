@@ -10,20 +10,15 @@
     <app-tour-help-button [id]="tour" />
     }
     @if (location() && (context.businesses()?.length ?? 0) > 1) {
-    <label class="sr-only" for="owner-business-switch">{{ t('owner.switchLabel') }}</label>
-    <select
-      id="owner-business-switch"
-      aria-describedby="business-count"
-      class="min-h-11 max-w-44 truncate rounded-md border border-border bg-surface px-2 text-body-sm text-fg focus-visible:outline-2 focus-visible:outline-border-focus"
+    <app-luma-select
+      class="max-w-44"
+      selectId="owner-business-switch"
+      [label]="t('owner.switchLabel')"
+      [hideLabel]="true"
+      [options]="businessOptions()"
       [value]="location()!.id"
-      (change)="switchTo($event)"
-    >
-      @for (business of context.businesses(); track business.id) {
-      <option [value]="business.id" [selected]="business.id === location()!.id">
-        {{ business.name }}
-      </option>
-      }
-    </select>
+      (valueChange)="switchTo($event)"
+    />
     } @if (location()) {
     <span id="business-count" class="text-caption text-fg-muted" data-testid="business-count">
       {{ t('owner.businessCount', { count: context.count(), max: context.max }) }}

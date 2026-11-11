@@ -6,6 +6,17 @@
     "reload": "Reload",
     "back": "Back"
   },
+  "select": {
+    "search": "Search",
+    "clear": "Clear the search",
+    "noResults": "No option matches."
+  },
+  "dateTime": {
+    "day": "Day",
+    "chooseDay": "Choose the day",
+    "time": "Time",
+    "chooseTime": "Choose the time"
+  },
   "auth": {
     "login": {
       "title": "Sign in",
@@ -1323,7 +1334,7 @@
       "verify": "Verify",
       "reject": "Reject",
       "reasonLabel": "Reason for rejecting",
-      "reasonHint": "The business will read it. For example: we could not find the code in the bio.",
+      "reasonHint": "The business will read it: say what was missing to verify it.",
       "reasonRequired": "Write the reason (3 characters at least).",
       "confirmReject": "Reject with this reason",
       "empty": "No contacts to verify."
@@ -2536,7 +2547,8 @@
     "sortHint": "Changes the order of the deals.",
     "minDiscountHint": "Shows only discounts from that percentage.",
     "reviewNote": "E.g.: The photo of the front with the sign is missing",
-    "reportComment": "E.g.: The business is no longer at this address"
+    "reportComment": "E.g.: The business is no longer at this address",
+    "rejectReason": "E.g. we could not find the code in the bio"
   },
   "validation": {
     "required": "This field is required.",

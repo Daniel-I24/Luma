@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { Residence } from '../residence';
 import { ResidenceCatalog } from '../residence-catalog';
 import { ResidencePicker } from './residence-picker';
+import { pickOption } from '../../../../testing/select.harness';
 
 const flush = () => new Promise((resolve) => setTimeout(resolve));
 const pasto = { code: '52001', name: 'Pasto', departmentCode: '52', latitude: 1.21, longitude: -77.28 };
@@ -33,10 +34,7 @@ describe('ResidencePicker', () => {
   it('department, then municipality, then neighbourhood make a complete residence', async () => {
     const { fixture, el } = await render();
     expect(fixture.componentInstance.value()).toBeNull();
-    const select = el.querySelector('select')!;
-    select.value = '52';
-    select.dispatchEvent(new Event('change'));
-    fixture.detectChanges();
+    pickOption(fixture, 'residence-department', '52');
     const option = Array.from(el.querySelectorAll('button')).find((b) => b.textContent?.includes('Pasto'))!;
     option.click();
     fixture.detectChanges();

@@ -11,18 +11,16 @@
     (valueChange)="set('title', $event)"
     (blurred)="check('title', draft().title)"
   />
-  <app-luma-input
-    inputId="promo-starts"
-    type="datetime-local"
+  <app-date-time-fields
+    fieldId="promo-starts"
     [label]="t('businessPanel.promotions.startsAt')"
     [required]="true"
     [errorMessage]="errors()['starts_at'] ? (errors()['starts_at'] | transloco) : undefined"
     [value]="draft().startsAt"
     (valueChange)="set('startsAt', $event)"
   />
-  <app-luma-input
-    inputId="promo-ends"
-    type="datetime-local"
+  <app-date-time-fields
+    fieldId="promo-ends"
     [label]="t('businessPanel.promotions.endsAt')"
     [required]="true"
     [errorMessage]="errors()['ends_at'] ? (errors()['ends_at'] | transloco) : undefined"
