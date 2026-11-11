@@ -72,6 +72,9 @@ export const RPC = {
       expires_at: new Date(Date.now() + 15 * 60_000).toISOString() }] : [];
   },
   record_payment_redirect: () => null,
+  // As in production: WhatsApp verifies itself; websites and social networks go to the team.
+  contact_verifier_config: () => ['phone', 'whatsapp', 'instagram', 'facebook', 'website']
+    .map((kind) => ({ kind, strategy: kind === 'phone' || kind === 'whatsapp' ? 'whatsapp' : 'manual' })),
   // Nobody in the simulated data is in the review team.
   admin_access: () => 'none',
   my_trust_status: () => [{ tier: 'new', strikes: 0, restricted_until: null, picked_up: 0, picked_up_needed: 3 }],

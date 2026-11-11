@@ -46,6 +46,7 @@ export function seed() {
     reviews_with_author: [],
     favorites: [],
     notifications: [],
+    contact_verifications: [],
     orders: [],
     order_items: [],
     business_photos: [],

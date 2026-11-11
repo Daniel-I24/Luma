@@ -263,6 +263,12 @@ table in docs/cleanup-report.md.
   from 9 options, arrows, Home and End, 44 px options), never Android's grey dialog. The business
   switch, the promotion item, the hours (quarter hours) and the promotion dates (DateTimeFields:
   day and time) use it too; `npm run check:pickers` fails on a native select, time or date input.
+- Headers: LumaScreenHeader (back arrow as an icon, title, actions as labelled icon buttons) on the
+  admin screens, "Mis datos" and every owner screen (PanelHeader). "Pagos, avisos y registro" and
+  "Información técnica" are icon buttons; "Volver a la cola" is the arrow.
+- Registro reciente: AuditText says each action and its detail in words (decision, kind of
+  contact); never a key or a status. walk.e2e fails when a screen shows a translation key or an
+  internal status (e2e/support/raw-text.mjs).
 
 ## Round 13 (2026-11-07)
 
