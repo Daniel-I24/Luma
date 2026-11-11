@@ -13,17 +13,14 @@
     <p class="m-0 flex flex-wrap items-center gap-2">
       <span class="text-body font-medium text-fg">{{ t('contactVerification.kind.' + row.kind) }}</span>
       <span class="min-w-0 flex-1 text-body-sm wrap-anywhere text-fg-muted">{{ row.value }}</span>
-      @if (row.verified) {
-      <span class="inline-flex items-center gap-1 rounded-full bg-success-bg px-2 py-0.5 text-caption font-semibold text-success-fg">
-        <app-luma-icon name="check" size="sm" /> {{ t('contactVerification.verified') }}
-      </span>
-      } @else if (!row.landline) {
-      <span class="rounded-full bg-warning-bg px-2 py-0.5 text-caption font-semibold text-warning-fg">
-        {{ t('contactVerification.pendingBadge') }}
+      @if (row.state === 'verified' || !row.landline) {
+      <span [class]="'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-caption font-semibold ' + badge[row.state]">
+        @if (row.state === 'verified') {<app-luma-icon name="check" size="sm" />}
+        {{ t('contactVerification.state.' + row.state) }}
       </span>
       }
     </p>
-    @if (!row.verified) { @if (row.landline) {
+    @if (row.state !== 'verified') { @if (row.landline) {
     <app-luma-notice role="note">{{ t('contactVerification.steps.landline') }}</app-luma-notice>
     } @else if (row.pending; as request) {
     <p class="m-0 text-body-sm text-fg">
@@ -37,7 +34,7 @@
       target="_blank"
       rel="noopener noreferrer"
       [href]="supportLink(request.code)"
-      (click)="watch(row.kind)"
+      (click)="watchFor(row.kind)"
       >{{ t('contactVerification.verifyWithWhatsapp') }}</a
     >
     @if (watching() === row.kind) {
@@ -73,8 +70,13 @@
     <p class="m-0 text-caption text-fg-subtle">{{ t('contactVerification.steps.review') }}</p>
     } }
     } @else {
+    @if (row.state === 'rejected') {
+    <app-luma-notice tone="danger">
+      {{ row.reason ? t('contactVerification.rejectedBecause', { reason: row.reason }) : t('contactVerification.rejectedNoReason') }}
+    </app-luma-notice>
+    }
     <app-luma-button variant="secondary" size="sm" [disabled]="busy() !== null" (clicked)="request(row.kind)">
-      {{ t(busy() === row.kind ? 'contactVerification.requesting' : 'contactVerification.request') }}
+      {{ t(busy() === row.kind ? 'contactVerification.requesting' : row.state === 'rejected' ? 'contactVerification.requestAgain' : 'contactVerification.request') }}
     </app-luma-button>
     } }
   </article>

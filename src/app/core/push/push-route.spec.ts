@@ -21,6 +21,13 @@ describe('PushRoute', () => {
     expect(of('promotion', null, 'b1')).toEqual(['/businesses', 'b1']);
   });
 
+  it('a contact decision opens the owner contact screen; a new request, the admin queue', () => {
+    expect(PushRoute.of({ type: 'contact_verification', orderId: null, businessId: 'b1', status: 'approved' }))
+      .toEqual(['/owner', 'b1', 'business', 'contact']);
+    expect(PushRoute.of({ type: 'contact_verification', orderId: null, businessId: 'b1', status: 'contact_requested' }))
+      .toEqual(['/admin']);
+  });
+
   it('unknown types or missing ids open the notification list', () => {
     expect(of(null)).toEqual(['/notifications']);
     expect(of('order_status')).toEqual(['/notifications']);

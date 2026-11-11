@@ -27,4 +27,11 @@ describe('notification view', () => {
     expect(NotificationView.notificationLink(notice({ type: 'payment', status: 'refund_pending_admin' }))).toEqual(['/admin', 'operations']);
     expect(NotificationView.notificationKey(notice({ type: 'payment', status: 'duplicate_charge' }))).toBe('notifications.text.payment.duplicate_charge');
   });
+
+  it('contacts: the owner hears of the decision on their contact screen; the admins of a request in their queue', () => {
+    expect(NotificationView.notificationLink(notice({ type: 'contact_verification', status: 'rejected' }))).toEqual(['/owner', 'b1', 'business', 'contact']);
+    expect(NotificationView.notificationLink(notice({ type: 'contact_verification', status: 'contact_requested' }))).toEqual(['/admin']);
+    expect(NotificationView.notificationKey(notice({ type: 'contact_verification', status: 'contact_requested' })))
+      .toBe('notifications.text.contactVerification.contact_requested');
+  });
 });

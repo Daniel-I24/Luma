@@ -247,6 +247,13 @@ table in docs/cleanup-report.md.
   `--inset-top` (`styles/safe-area.css`), the status bar or the height of the strip, which glides
   unless the user prefers reduced motion; `offline-notice.e2e` cuts the network on four screens.
 
+### Last round before the presentation
+
+- Contact verification: in production the Instagram and website of the business had no request at all
+  (the only one ever was a phone); the card said "Pendiente de verificación" before anything was sent.
+  States now: Sin verificar, En revisión, Verificado, Rechazado with the reason. Migration 67 tells
+  every admin (in the app and by push) and makes a rejection carry a reason.
+
 ## Round 13 (2026-11-07)
 
 ### Phase 0: scripts/luma.ps1 changed nothing in production

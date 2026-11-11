@@ -12,6 +12,10 @@ export interface ContactVerification {
   readonly code: string;
   readonly status: 'pending' | 'verified' | 'rejected';
   readonly requested_at: string;
+  /** When the team (or an automatic check) decided; null while pending or when replaced. */
+  readonly verified_at: string | null;
+  /** Why the team rejected it (contact_review migration). */
+  readonly reject_reason: string | null;
 }
 
 /** A request in the admin queue. */

@@ -35,6 +35,8 @@ export class NotificationView {
     }
     // Sent to the admins: the refund is done from Operaciones.
     if (notification.type === 'payment' && notification.status === 'refund_pending_admin') return ['/admin', 'operations'];
+    // Sent to the admins: a contact to verify waits in Revisión de negocios.
+    if (notification.type === 'contact_verification' && notification.status === 'contact_requested') return ['/admin'];
     return NotificationView.customerLink(notification);
   }
 

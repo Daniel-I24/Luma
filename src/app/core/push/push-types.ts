@@ -26,6 +26,8 @@ export interface PushAction {
   readonly type: string | null;
   readonly orderId: string | null;
   readonly businessId: string | null;
+  /** The notification status, which tells an admin's notice from an owner's. */
+  readonly status?: string | null;
 }
 
 /** An Android notification channel; push-dispatch sends to 'orders' or 'promotions'. */

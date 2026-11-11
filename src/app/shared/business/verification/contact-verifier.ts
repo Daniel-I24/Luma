@@ -70,6 +70,16 @@ export class ContactVerifiers {
     }
   }
 
+  /** The website itself, only when it is an http(s) address the reviewer can open safely. */
+  public static siteUrl(website: string): string | null {
+    try {
+      const url = new URL(website);
+      return url.protocol === 'https:' || url.protocol === 'http:' ? url.href : null;
+    } catch {
+      return null;
+    }
+  }
+
   /** A fixed line: no WhatsApp, so no automatic verification and no badge. */
   public static isLandline(value: string): boolean {
     return LANDLINE.test(value.replace(/[^0-9+]/g, ''));

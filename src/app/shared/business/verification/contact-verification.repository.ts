@@ -4,6 +4,9 @@ import type { RepoResult } from '../data/business.repository';
 import { CONTACT_KINDS, type ContactKind, type ContactVerification, type PendingContactVerification } from './contact-verification';
 import type { VerifierStrategy } from './contact-verifier';
 
+/** What the team decides about a request. */
+export type ContactDecision = { readonly status: 'verified' } | { readonly status: 'rejected'; readonly reason: string };
+
 /** verify-website answers; reason when not verified. */
 export type WebsiteCheck = { readonly verified: true } | { readonly verified: false; readonly reasonKey: string };
 
@@ -16,6 +19,7 @@ const CONTACT_ERRORS: Readonly<Record<string, string>> = {
   not_admin: 'admin.errors.notAdmin',
   contact_changed: 'contactVerification.errors.changed',
   verification_not_pending: 'contactVerification.errors.notPending',
+  reason_required: 'admin.contacts.reasonRequired',
   too_many_checks: 'contactVerification.errors.tooManyChecks',
   no_pending_request: 'contactVerification.errors.noPending',
   auto_disabled: 'contactVerification.errors.autoOff',
@@ -40,7 +44,7 @@ export class ContactVerificationRepository {
   public async listMine(businessId: string): Promise<RepoResult<ContactVerification[]>> {
     const { data, error } = await this.db
       .from('contact_verifications')
-      .select('id, kind, value, code, status, requested_at')
+      .select('id, kind, value, code, status, requested_at, verified_at, reject_reason')
       .eq('business_id', businessId)
       .order('requested_at', { ascending: false });
     if (error) return fail(undefined, 'contactVerification.errors.load');
@@ -61,9 +65,13 @@ export class ContactVerificationRepository {
     return { data: (data ?? []) as PendingContactVerification[], errorKey: null };
   }
 
-  /** Admin: verifies or rejects a request (audited; the owner is notified). */
-  public async decide(id: string, decision: 'verified' | 'rejected'): Promise<RepoResult<true>> {
-    const { error } = await this.db.rpc('admin_verify_contact', { p_verification_id: id, p_decision: decision });
+  /** Admin: verifies, or rejects with a reason the owner reads (audited; the owner is notified). */
+  public async decide(id: string, decision: ContactDecision): Promise<RepoResult<true>> {
+    const { error } = await this.db.rpc('admin_verify_contact', {
+      p_verification_id: id,
+      p_decision: decision.status,
+      p_reason: decision.status === 'rejected' ? decision.reason : null,
+    });
     if (error) return fail(error.message, 'contactVerification.errors.failed');
     return { data: true, errorKey: null };
   }

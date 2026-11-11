@@ -1120,6 +1120,7 @@
       "contactVerification": {
         "approved": "Verificamos uno de los contactos de tu negocio: ya lo ven tus clientes.",
         "rejected": "No pudimos verificar un contacto de tu negocio. Revisa los pasos y pide otro código.",
+        "contact_requested": "Un negocio pidió verificar un contacto. Revísalo en Revisión de negocios.",
         "unknown": "La verificación de un contacto de tu negocio cambió"
       }
     },
@@ -1314,10 +1315,17 @@
     "contacts": {
       "title": "Contactos por verificar ({{count}})",
       "code": "Código esperado:",
-      "open": "Abrir dónde debe estar el código",
+      "openInstagram": "Abrir el perfil de Instagram",
+      "openFacebook": "Abrir la página de Facebook",
+      "openWebsite": "Abrir el sitio web",
+      "openFile": "Abrir el archivo con el código",
       "checkChat": "Compruébalo en el chat de WhatsApp de soporte: el código debe llegar desde ese número.",
       "verify": "Verificar",
       "reject": "Rechazar",
+      "reasonLabel": "Motivo del rechazo",
+      "reasonHint": "El negocio lo leerá. Por ejemplo: no encontramos el código en la biografía.",
+      "reasonRequired": "Escribe el motivo (al menos 3 caracteres).",
+      "confirmReject": "Rechazar con este motivo",
       "empty": "No hay contactos por verificar."
     },
     "accessError": {
@@ -2433,9 +2441,17 @@
       "website": "Sitio web"
     },
     "verified": "Verificado",
-    "pendingBadge": "Pendiente de verificación",
+    "state": {
+      "unverified": "Sin verificar",
+      "review": "En revisión",
+      "verified": "Verificado",
+      "rejected": "Rechazado"
+    },
+    "rejectedBecause": "El equipo no pudo verificarlo: {{reason}}",
+    "rejectedNoReason": "El equipo no pudo verificarlo. Revisa los pasos y solicítalo de nuevo.",
     "yourCode": "Tu código:",
     "request": "Verificar este contacto",
+    "requestAgain": "Solicitar de nuevo",
     "requesting": "Generando código…",
     "openWhatsapp": "Enviar el código por WhatsApp",
     "none": "Añade un teléfono, WhatsApp, Instagram, Facebook o sitio web para verificarlo.",

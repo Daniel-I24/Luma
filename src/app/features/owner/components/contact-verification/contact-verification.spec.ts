@@ -14,7 +14,7 @@ const business = {
   website: 'https://cafe.co/menu',
 } as Business;
 const pending = (kind: string, value: string, code: string, status = 'pending') =>
-  ({ id: `r-${kind}`, kind, value, code, status, requested_at: 'x' });
+  ({ id: `r-${kind}`, kind, value, code, status, requested_at: 'x', verified_at: null, reject_reason: null });
 const AUTO = { phone: 'whatsapp', whatsapp: 'whatsapp', website: 'website', instagram: 'manual', facebook: 'manual' };
 
 describe('ContactVerificationCard with the automatic strategies', () => {
@@ -72,7 +72,7 @@ describe('ContactVerificationCard with the automatic strategies', () => {
     repo.listMine.mockResolvedValue({ data: [pending('whatsapp', '+573004445566', 'LUMA-AB12CD', 'verified')], errorKey: null });
     await vi.advanceTimersByTimeAsync(WATCH_EVERY_MS);
     fixture.detectChanges();
-    expect(row('whatsapp').textContent).toContain('contactVerification.verified');
+    expect(row('whatsapp').textContent).toContain('contactVerification.state.verified');
     const reads = repo.listMine.mock.calls.length;
     await vi.advanceTimersByTimeAsync(WATCH_FOR_MS);
     expect(repo.listMine.mock.calls.length).toBe(reads);
@@ -111,7 +111,7 @@ describe('ContactVerificationCard with the automatic strategies', () => {
     const { row } = await render();
     expect(row('phone').textContent).toContain('contactVerification.steps.landline');
     expect(row('phone').querySelector('button')).toBeNull();
-    expect(row('phone').textContent).not.toContain('contactVerification.pendingBadge');
+    expect(row('phone').textContent).not.toContain('contactVerification.state.');
   });
 
   it('website: the file at /.well-known and "Comprobar ahora" with its answer', async () => {

@@ -4,27 +4,37 @@ import { ExternalUrls } from '@core/config/external-urls';
 import { SUPPORT_WHATSAPP } from '@core/config/build-flags';
 import { LumaButton, LumaIcon, LumaNotice } from '@design-system';
 import type { Business } from '@shared/business/models/business.model';
+import { type ContactState, ContactStates } from '@shared/business/verification/contact-state';
 import {
   CONTACT_KINDS, type ContactKind, type ContactVerification, VerifiedContacts,
 } from '@shared/business/verification/contact-verification';
 import { ContactVerificationRepository } from '@shared/business/verification/contact-verification.repository';
+import { ContactWatch } from './contact-watch';
 import { type ContactVerifier, ContactVerifiers, type VerifierStrategy } from '@shared/business/verification/contact-verifier';
 
 /** One contact of the business and where its verification stands. */
 interface ContactRow {
   readonly kind: ContactKind;
   readonly value: string;
-  readonly verified: boolean;
-  /** The pending request for the current value, with its code. */
+  readonly state: ContactState['status'];
+  /** The request in review for the current value, with its code. */
   readonly pending: ContactVerification | null;
+  /** Why the team rejected it, when it did. */
+  readonly reason: string | null;
   readonly verifier: ContactVerifier;
   /** A fixed line under the WhatsApp strategy: explained, never a badge. */
   readonly landline: boolean;
 }
 
-/** "Verificar con WhatsApp": the state is read every 3 s for 2 minutes at most. */
-export const WATCH_EVERY_MS = 3_000;
-export const WATCH_FOR_MS = 120_000;
+export { WATCH_EVERY_MS, WATCH_FOR_MS } from './contact-watch';
+
+/** The badge of each state: neutral, in review, verified, rejected. */
+const BADGE: Readonly<Record<ContactState['status'], string>> = {
+  unverified: 'bg-surface-selected text-fg-muted',
+  review: 'bg-info-bg text-info-fg',
+  verified: 'bg-success-bg text-success-fg',
+  rejected: 'bg-danger-bg text-danger-fg',
+};
 
 /**
  * ContactVerificationCard — every contact with its state and the way it is
@@ -43,30 +53,33 @@ export const WATCH_FOR_MS = 120_000;
 export class ContactVerificationCard {
   private readonly repo = inject(ContactVerificationRepository);
   protected readonly support = inject(SUPPORT_WHATSAPP);
+  protected readonly badge = BADGE;
 
   public readonly business = input.required<Business>();
 
   private readonly requests = signal<readonly ContactVerification[]>([]);
   private readonly config = signal<Partial<Record<ContactKind, VerifierStrategy>>>({});
   protected readonly busy = signal<ContactKind | null>(null);
-  protected readonly watching = signal<ContactKind | null>(null);
+  private readonly watch = new ContactWatch();
+  protected readonly watching = this.watch.watching;
   /** Watched for 2 minutes without the message arriving: the request waits for the team. */
-  protected readonly timedOut = signal<ContactKind | null>(null);
+  protected readonly timedOut = this.watch.timedOut;
   protected readonly errorKey = signal<string | null>(null);
   protected readonly websiteKey = signal<string | null>(null);
-  private timer: ReturnType<typeof setInterval> | null = null;
 
   protected readonly rows = computed<ContactRow[]>(() => {
     const business = this.business();
     return CONTACT_KINDS.flatMap((kind) => {
       const value = VerifiedContacts.value(business, kind);
       if (!value) return [];
-      const mine = this.requests().filter((r) => r.kind === kind && r.value === value);
       const verifier = ContactVerifiers.for(kind, this.config());
+      const mine = this.requests().filter((r) => r.kind === kind);
+      const state = ContactStates.of(mine, value, VerifiedContacts.isVerified(business, kind));
       return [{
         kind, value, verifier,
-        verified: VerifiedContacts.isVerified(business, kind) || mine.some((r) => r.status === 'verified'),
-        pending: mine.find((r) => r.status === 'pending') ?? null,
+        state: state.status,
+        pending: state.status === 'review' ? state.request : null,
+        reason: state.status === 'rejected' ? state.reason : null,
         landline: verifier.strategy === 'whatsapp' && ContactVerifiers.isLandline(value),
       }];
     });
@@ -77,7 +90,7 @@ export class ContactVerificationCard {
       const id = this.business().id;
       untracked(() => void Promise.all([this.load(id), this.loadConfig()]));
     });
-    inject(DestroyRef).onDestroy(() => this.stopWatching());
+    inject(DestroyRef).onDestroy(() => this.watch.stop());
   }
 
   /** Asks for a code; the steps appear with it. */
@@ -97,19 +110,11 @@ export class ContactVerificationCard {
   }
 
   /** Opened WhatsApp: watch until verified or 2 minutes pass. */
-  protected watch(kind: ContactKind): void {
-    this.stopWatching();
-    this.timedOut.set(null);
-    this.watching.set(kind);
-    const until = Date.now() + WATCH_FOR_MS;
-    this.timer = setInterval(() => {
-      void this.load(this.business().id).then(() => {
-        const verified = this.rows().find((r) => r.kind === kind)?.verified;
-        if (!verified && Date.now() < until) return;
-        this.stopWatching();
-        if (!verified) this.timedOut.set(kind);
-      });
-    }, WATCH_EVERY_MS);
+  protected watchFor(kind: ContactKind): void {
+    this.watch.start(kind, async () => {
+      await this.load(this.business().id);
+      return this.rows().find((r) => r.kind === kind)?.state === 'verified';
+    });
   }
 
   /** "Comprobar ahora": verify-website looks for the file. */
@@ -126,12 +131,6 @@ export class ContactVerificationCard {
   /** Where the website must publish the code. */
   protected fileUrl(website: string): string {
     return ContactVerifiers.fileUrl(website);
-  }
-
-  private stopWatching(): void {
-    if (this.timer !== null) clearInterval(this.timer);
-    this.timer = null;
-    this.watching.set(null);
   }
 
   private async loadConfig(): Promise<void> {

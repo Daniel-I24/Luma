@@ -118,7 +118,7 @@ export class PushPlatform {
     this.tapListening = true;
     await push.addListener('pushNotificationActionPerformed', ({ notification }) => {
       const data = (notification.data ?? {}) as Record<string, unknown>;
-      listener({ type: text(data['type']), orderId: text(data['order_id']), businessId: text(data['business_id']) });
+      listener({ type: text(data['type']), orderId: text(data['order_id']), businessId: text(data['business_id']), status: text(data['status']) });
     });
   }
 

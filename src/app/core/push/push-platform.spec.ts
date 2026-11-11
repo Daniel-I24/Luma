@@ -109,7 +109,7 @@ describe('PushPlatform', () => {
     emit('pushNotificationActionPerformed', { notification: { data: { type: 'promotion', order_id: 'o1' } } });
 
     expect(renewed).toHaveBeenCalledWith('tok-2');
-    expect(tapped).toHaveBeenCalledWith({ type: 'promotion', orderId: 'o1', businessId: null });
+    expect(tapped).toHaveBeenCalledWith({ type: 'promotion', orderId: 'o1', businessId: null, status: null });
     expect(plugin.removeAllListeners).not.toHaveBeenCalled();
     expect(plugin.removed).toEqual([]);
   });

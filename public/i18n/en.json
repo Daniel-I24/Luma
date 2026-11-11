@@ -1120,6 +1120,7 @@
       "contactVerification": {
         "approved": "We verified one of your business contacts: customers can see it now.",
         "rejected": "We could not verify one of your business contacts. Check the steps and ask for another code.",
+        "contact_requested": "A business asked to verify a contact. Check it in Business review.",
         "unknown": "The verification of a business contact changed"
       }
     },
@@ -1314,10 +1315,17 @@
     "contacts": {
       "title": "Contacts to verify ({{count}})",
       "code": "Expected code:",
-      "open": "Open where the code must be",
+      "openInstagram": "Open the Instagram profile",
+      "openFacebook": "Open the Facebook page",
+      "openWebsite": "Open the website",
+      "openFile": "Open the file with the code",
       "checkChat": "Check it in the support WhatsApp chat: the code must come from that number.",
       "verify": "Verify",
       "reject": "Reject",
+      "reasonLabel": "Reason for rejecting",
+      "reasonHint": "The business will read it. For example: we could not find the code in the bio.",
+      "reasonRequired": "Write the reason (3 characters at least).",
+      "confirmReject": "Reject with this reason",
       "empty": "No contacts to verify."
     },
     "accessError": {
@@ -2433,9 +2441,17 @@
       "website": "Website"
     },
     "verified": "Verified",
-    "pendingBadge": "Pending verification",
+    "state": {
+      "unverified": "Not verified",
+      "review": "In review",
+      "verified": "Verified",
+      "rejected": "Rejected"
+    },
+    "rejectedBecause": "The team could not verify it: {{reason}}",
+    "rejectedNoReason": "The team could not verify it. Check the steps and ask again.",
     "yourCode": "Your code:",
     "request": "Verify this contact",
+    "requestAgain": "Ask again",
     "requesting": "Creating the code…",
     "openWhatsapp": "Send the code on WhatsApp",
     "none": "Add a phone, WhatsApp, Instagram, Facebook or website to verify it.",
