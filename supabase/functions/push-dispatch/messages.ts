@@ -52,7 +52,9 @@ const PAYMENT: Record<string, (b: string) => PushText> = {
 
 const CONTACT: Record<string, (b: string) => PushText> = {
   approved: (b) => ({ title: 'Contacto verificado', body: `Verificamos un contacto de ${b}: ya lo ven tus clientes.` }),
-  rejected: (b) => ({ title: 'Contacto sin verificar', body: `No pudimos verificar un contacto de ${b}. Pide otro código.` }),
+  rejected: (b) => ({ title: 'Contacto sin verificar', body: `No pudimos verificar un contacto de ${b}. Mira el motivo en la app.` }),
+  // Sent to the admins: an owner asked to verify a contact (Revisión de negocios).
+  contact_requested: (b) => ({ title: 'Contacto por verificar', body: `${b} pidió verificar un contacto.` }),
 };
 
 /**
@@ -86,9 +88,10 @@ export function pushText(row: PushRow): PushText | null {
   }
 }
 
-/** Data for the app to open the right screen (ids only). */
+/** Data for the app to open the right screen (ids and the status, never text). */
 export function pushData(row: PushRow): Record<string, string> {
   const data: Record<string, string> = { type: row.type, notification_id: row.notification_id };
+  if (row.status) data.status = row.status;
   if (row.order_id) data.order_id = row.order_id;
   if (row.business_id) data.business_id = row.business_id;
   return data;

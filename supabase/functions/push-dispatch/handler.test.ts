@@ -47,7 +47,7 @@ Deno.test('sends each claimed notification to every token and removes dead token
   assertEquals([res.status, await res.json()], [200, { sent: 1, failed: 0, retrying: 0, removed: 1, reasons: {} }]);
   assertEquals(sent[0], [
     't-ok', 'Tu pedido en Café Público está listo para recoger.',
-    { type: 'order_status', notification_id: 'n1', order_id: 'o1', business_id: 'b1' }, 'orders',
+    { type: 'order_status', notification_id: 'n1', status: 'ready', order_id: 'o1', business_id: 'b1' }, 'orders',
   ]);
   assertEquals(removed, [['t-dead']]);
 });
@@ -82,6 +82,9 @@ Deno.test('texts are Spanish, use only the public business name and skip unknown
   assertEquals(pushText({ ...row(1), type: 'test', status: null })?.title, 'Notificación de prueba');
   assertEquals(pushText({ ...row(1), type: 'contact_verification', status: 'approved' })?.title, 'Contacto verificado');
   assertEquals(pushText({ ...row(1), type: 'contact_verification', status: 'weird' }), null);
+  // To the admins: a contact waits in their queue (the app opens /admin from the status).
+  assertEquals(pushText({ ...row(1), type: 'contact_verification', status: 'contact_requested' }),
+    { title: 'Contacto por verificar', body: 'Café Público pidió verificar un contacto.' });
   assertEquals(pushText({ ...row(1), type: 'other' }), null);
   assertEquals(pushText({ ...row(1), type: 'payment', status: 'approved' })?.title, 'Pago aprobado');
   assertEquals(pushText({ ...row(1), type: 'payment', status: 'approved' })?.body,
@@ -114,6 +117,6 @@ Deno.test('promotions use their own Android channel; orders, payments and review
   const { handler, sent } = setup({ batches: [[promo, review]] });
   await handler(poke());
   assertEquals(sent.map((s) => s[3]), ['promotions', 'orders']);
-  assertEquals(at(sent, 0)[2], { type: 'promotion', notification_id: 'n1', business_id: 'b1' });
+  assertEquals(at(sent, 0)[2], { type: 'promotion', notification_id: 'n1', status: 'ready', business_id: 'b1' });
   assertEquals([channelFor('payment'), channelFor('review_invite'), channelFor('order_new')], ['orders', 'orders', 'orders']);
 });
