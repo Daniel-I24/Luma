@@ -269,6 +269,23 @@ table in docs/cleanup-report.md.
 - Registro reciente: AuditText says each action and its detail in words (decision, kind of
   contact); never a key or a status. walk.e2e fails when a screen shows a translation key or an
   internal status (e2e/support/raw-text.mjs).
+- Review: no `any`, no `console.log`, no file over 150 lines, every component OnPush and
+  standalone, `inject()` everywhere, no feature importing another; knip clean (one key, one style
+  and two exports removed, docs/cleanup-report.md). Option 6 of luma.ps1 accepts the APK Gradle
+  reused when it is this version. Version 1.0.3.
+
+Repository before/after this round (`217f4f6` → `05de3fc`, `git ls-tree`):
+
+| Area | Files | Folders | Lines |
+| --- | ---: | ---: | ---: |
+| src/app | 823 → 844 | 260 → 263 | 54,375 → 55,981 |
+| src/testing | 12 → 14 | 3 → 3 | 664 → 773 |
+| e2e | 18 → 20 | 2 → 2 | 1,270 → 1,368 |
+| scripts | 94 → 96 | 5 → 5 | 6,300 → 6,422 |
+| supabase (migrations, tests, functions) | 261 → 263 | 25 → 25 | 22,296 → 22,562 |
+| public/i18n | 2 → 2 | 2 → 2 | 5,290 → 5,360 |
+| docs | 85 → 85 | 8 → 8 | 10,694 → 10,718 |
+| Repository | 1,454 → 1,483 | 365 → 368 | |
 
 ## Round 13 (2026-11-07)
 
