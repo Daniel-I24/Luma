@@ -274,7 +274,7 @@ table in docs/cleanup-report.md.
   and two exports removed, docs/cleanup-report.md). Option 6 of luma.ps1 accepts the APK Gradle
   reused when it is this version. Version 1.0.3.
 
-Repository before/after this round (`217f4f6` → `05de3fc`, `git ls-tree`):
+Repository before/after this round (`217f4f6` → `cf1e770`, `git ls-tree`; the clean-up after it changed under 30 lines):
 
 | Area | Files | Folders | Lines |
 | --- | ---: | ---: | ---: |
