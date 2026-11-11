@@ -17,6 +17,11 @@ interface Box {
 
 /** Room around the highlighted control and between it and the bubble (CSS px, measured at runtime). */
 const GAP = 8;
+/** What the bubble needs to show its text and buttons whole (CSS px). */
+const BUBBLE_ROOM = 220;
+
+/** Where the bubble goes: below or above the control, or in the middle when neither fits. */
+type Placement = 'below' | 'above' | 'middle';
 
 /**
  * GuidedTourOverlay — dims the screen except the real control of the step
@@ -64,19 +69,30 @@ export class GuidedTourOverlay {
 
   protected readonly box = signal<Box | null>(null);
   protected readonly position = computed(() => this.tour.active()?.index ?? 0);
-  /** The bubble goes below the control when it is in the top half of the screen. */
-  protected readonly below = computed(() => {
+  /**
+   * Below a control in the top half, above one in the bottom half; a control
+   * as tall as the screen (a Discover card) leaves no room on either side, so
+   * the bubble sits in the middle, over it, and Saltar stays on screen.
+   */
+  protected readonly placement = computed<Placement>(() => {
     const box = this.box();
-    return !box || box.top + box.height * HALF < (this.document.defaultView?.innerHeight ?? 0) * HALF;
+    if (!box) return 'middle';
+    const height = this.viewportHeight();
+    const roomBelow = height - (box.top + box.height + GAP);
+    const roomAbove = box.top - GAP;
+    const prefersBelow = box.top + box.height * HALF < height * HALF;
+    if (prefersBelow && roomBelow >= BUBBLE_ROOM) return 'below';
+    if (roomAbove >= BUBBLE_ROOM) return 'above';
+    return roomBelow >= BUBBLE_ROOM ? 'below' : 'middle';
   });
   /** Below the control, or above it (bottom offset); null in the middle of the screen. */
   protected readonly bubbleTop = computed(() => {
     const box = this.box();
-    return box && this.below() ? box.top + box.height + GAP : null;
+    return box && this.placement() === 'below' ? box.top + box.height + GAP : null;
   });
   protected readonly bubbleBottom = computed(() => {
     const box = this.box();
-    return box && !this.below() ? (this.document.defaultView?.innerHeight ?? 0) - box.top + GAP : null;
+    return box && this.placement() === 'above' ? this.viewportHeight() - box.top + GAP : null;
   });
 
   constructor() {
@@ -110,6 +126,10 @@ export class GuidedTourOverlay {
       },
       { injector: this.injector },
     );
+  }
+
+  private viewportHeight(): number {
+    return this.document.defaultView?.innerHeight ?? 0;
   }
 
   private anchorElement(anchor: string): HTMLElement | null {

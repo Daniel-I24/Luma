@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, untracked } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { AuthService } from '@core/auth/auth.service';
+import { BackNavigation } from '@core/navigation/back-navigation';
 import { GuidedTour } from './guided-tour.service';
 import { GuidedTourOverlay } from './guided-tour-overlay/guided-tour-overlay';
 import { TourRoutes } from './tour-registry';
@@ -35,10 +36,19 @@ export class TutorialHost {
   protected readonly tour = inject(GuidedTour);
   private readonly auth = inject(AuthService);
   private timer: ReturnType<typeof setTimeout> | null = null;
+  /** The welcome screens or a guide on screen: back closes them first. */
+  private readonly showing = computed(() => this.tour.welcomeOpen() || this.tour.active() !== null);
 
   constructor() {
     const destroyRef = inject(DestroyRef);
     destroyRef.onDestroy(() => this.cancel());
+    const back = inject(BackNavigation);
+    let release: (() => void) | null = null;
+    effect(() => {
+      if (!this.showing()) return void (release?.(), (release = null));
+      release ??= untracked(() => back.openLayer(() => (this.tour.welcomeOpen() ? this.tour.closeWelcome() : this.tour.skip())));
+    });
+    destroyRef.onDestroy(() => release?.());
     const router = inject(Router);
     // Loaded after the first screen (@defer): that screen counts as visited now.
     this.onNavigated(router.url);

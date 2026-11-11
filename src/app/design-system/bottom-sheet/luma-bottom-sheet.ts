@@ -4,6 +4,7 @@ import {
   Component,
   ElementRef,
   Injector,
+  type OnDestroy,
   afterNextRender,
   computed,
   effect,
@@ -13,6 +14,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { BackNavigation } from '@core/navigation/back-navigation';
 import { LumaIcon } from '../icon/luma-icon';
 import { SheetDrag } from './sheet-drag';
 
@@ -32,7 +34,7 @@ import { SheetDrag } from './sheet-drag';
   templateUrl: './luma-bottom-sheet.html',
   styleUrl: './luma-bottom-sheet.css',
 })
-export class LumaBottomSheet {
+export class LumaBottomSheet implements OnDestroy {
   public readonly open = input<boolean>(false);
   public readonly title = input<string | undefined>(undefined);
   public readonly titleId = input<string>('bottom-sheet-title');
@@ -46,6 +48,9 @@ export class LumaBottomSheet {
   private readonly document = inject(DOCUMENT);
   private readonly panel = viewChild.required<ElementRef<HTMLElement>>('panel');
   private returnFocusTo: HTMLElement | null = null;
+  private readonly back = inject(BackNavigation);
+  /** While open, the phone's or the browser's back closes the sheet first. */
+  private releaseBack: (() => void) | null = null;
 
   /** Drag-to-close on the handle or the header. */
   protected readonly drag = new SheetDrag(
@@ -62,14 +67,22 @@ export class LumaBottomSheet {
     // Move focus into the sheet when it opens and give it back when it closes.
     effect(() => {
       if (this.isOpen()) {
+        this.releaseBack ??= this.back.openLayer(() => this.closed.emit());
         this.drag.reset();
         this.returnFocusTo = this.document.activeElement as HTMLElement | null;
         afterNextRender(() => this.panel().nativeElement.focus(), { injector: this.injector });
       } else {
+        this.releaseBack?.();
+        this.releaseBack = null;
         this.returnFocusTo?.focus();
         this.returnFocusTo = null;
       }
     });
+  }
+
+  /** Leaving the screen with the sheet open lets the history go with it. */
+  public ngOnDestroy(): void {
+    this.releaseBack?.();
   }
 
   protected get panelClasses(): string {

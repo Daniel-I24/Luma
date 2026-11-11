@@ -21,7 +21,7 @@
     aria-describedby="tour-body"
     [style.top.px]="bubbleTop()"
     [style.bottom.px]="bubbleBottom()"
-    [class.top-1/3]="!box()"
+    [class.top-1/3]="placement() === 'middle'"
   >
     <p class="m-0 flex items-center justify-between gap-2 text-caption text-fg-muted">
       <span class="rounded-full bg-surface-selected px-2 py-0.5 font-semibold text-fg-brand">

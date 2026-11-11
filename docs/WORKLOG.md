@@ -253,6 +253,12 @@ table in docs/cleanup-report.md.
   (the only one ever was a phone); the card said "Pendiente de verificación" before anything was sent.
   States now: Sin verificar, En revisión, Verificado, Rechazado with the reason. Migration 67 tells
   every admin (in the app and by push) and makes a rejection carry a reason.
+- Back: the browser history mirrors the screen tree (`core/navigation`: ScreenTree with the parent
+  of each screen, HistoryPlans, HierarchicalLocationStrategy, BackNavigation). Going deeper adds an
+  entry, a tab or a sibling replaces it, an ancestor goes back to it; so the phone's button and
+  gesture, the browser's back and the arrows of the app all lead to the parent. Sheets, the guide
+  and the welcome close first; the keyboard hides first; at a root back goes home; at home the APK
+  is minimised. The guide bubble no longer falls off screen over a Discover card.
 
 ## Round 13 (2026-11-07)
 
