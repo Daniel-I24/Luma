@@ -1,3 +1,4 @@
+import { LocationStrategy } from '@angular/common';
 import { provideHttpClient } from '@angular/common/http';
 import {
   ApplicationConfig,
@@ -20,6 +21,7 @@ import { UpdateCheck } from '@core/update/update-check.service';
 import { AppErrorHandler } from '@shared/errors/app-error-handler';
 import { PaymentReturn } from '@shared/payments/payment-return';
 import { RouteTransition } from '@core/navigation/route-transition';
+import { HierarchicalLocationStrategy } from '@core/navigation/hierarchical-location-strategy';
 import { routes } from './app.routes';
 import { TranslocoHttpLoader } from './transloco-loader';
 
@@ -28,6 +30,8 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     // Unhandled errors show a friendly notice instead of a blank screen.
     { provide: ErrorHandler, useClass: AppErrorHandler },
+    // The history mirrors the screen tree: every "back" leads to the parent screen.
+    { provide: LocationStrategy, useClass: HierarchicalLocationStrategy },
     provideRouter(
       routes,
       withViewTransitions({

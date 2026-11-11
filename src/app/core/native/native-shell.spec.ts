@@ -1,11 +1,12 @@
-import { Location } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { BackNavigation } from '@core/navigation/back-navigation';
 import { NativeShell } from './native-device';
 
 const native = { value: true };
-const listeners = new Map<string, (event: { canGoBack: boolean }) => void>();
-const exitApp = vi.fn();
+const listeners = new Map<string, (event: { canGoBack: boolean }) => unknown>();
+const minimizeApp = vi.fn();
+const hide = vi.fn();
 
 // Isolated spec files keep these plugin mocks local to this file.
 vi.mock('@capacitor/core', () => ({ Capacitor: { isNativePlatform: () => native.value, isPluginAvailable: () => true } }));
@@ -15,7 +16,7 @@ vi.mock('@capacitor/app', () => ({
       listeners.set(name, fn);
       return Promise.resolve({ remove: vi.fn() });
     },
-    exitApp: () => exitApp(),
+    minimizeApp: () => minimizeApp(),
   },
 }));
 vi.mock('@capacitor/keyboard', () => ({
@@ -24,26 +25,43 @@ vi.mock('@capacitor/keyboard', () => ({
       listeners.set(name, fn as never);
       return Promise.resolve({ remove: vi.fn() });
     },
+    hide: () => hide(),
   },
 }));
 
 describe('NativeShell', () => {
-  const location = { back: vi.fn() };
+  const back = { back: vi.fn() };
 
   beforeEach(() => {
     vi.clearAllMocks();
     listeners.clear();
     native.value = true;
-    TestBed.configureTestingModule({ providers: [{ provide: Location, useValue: location }] });
+    TestBed.configureTestingModule({ providers: [{ provide: BackNavigation, useValue: back }] });
   });
 
-  it('goes back in the app, and closes it on the first screen', async () => {
+  it('goes back as BackNavigation decides, and minimises the app at home', async () => {
     await TestBed.inject(NativeShell).init();
 
-    listeners.get('backButton')!({ canGoBack: true });
-    expect(location.back).toHaveBeenCalledTimes(1);
-    listeners.get('backButton')!({ canGoBack: false });
-    expect(exitApp).toHaveBeenCalledTimes(1);
+    back.back.mockResolvedValue('handled');
+    await listeners.get('backButton')!({ canGoBack: true });
+    expect(back.back).toHaveBeenCalledTimes(1);
+    expect(minimizeApp).not.toHaveBeenCalled();
+    back.back.mockResolvedValue('exit');
+    await listeners.get('backButton')!({ canGoBack: false });
+    expect(minimizeApp).toHaveBeenCalledTimes(1);
+  });
+
+  it('with the keyboard open, back only hides it', async () => {
+    await TestBed.inject(NativeShell).init();
+    (document.activeElement as HTMLElement).scrollIntoView = vi.fn();
+    listeners.get('keyboardDidShow')!({ canGoBack: false });
+    await listeners.get('backButton')!({ canGoBack: true });
+    expect(hide).toHaveBeenCalledTimes(1);
+    expect(back.back).not.toHaveBeenCalled();
+    listeners.get('keyboardDidHide')!({ canGoBack: false });
+    back.back.mockResolvedValue('handled');
+    await listeners.get('backButton')!({ canGoBack: true });
+    expect(back.back).toHaveBeenCalledTimes(1);
   });
 
   it('scrolls the focused field into view when the keyboard opens', async () => {
