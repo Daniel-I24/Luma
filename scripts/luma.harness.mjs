@@ -23,7 +23,7 @@ export const REF = 'abcdefghijklmnopqrst';
  * look for (android/app/google-services.json is gitignored, so the real repository differs
  * between a developer PC and CI).
  */
-export function runOption(call, { files = {}, workFiles = {}, answers = [], http = {}, cli = 0, npm = 0, phones = [], applies = true, oldSecrets = [], oldFunctions = [], unchanged = [], failDeploy = '', unreadable = false, apkFresh = true } = {}) {
+export function runOption(call, { files = {}, workFiles = {}, answers = [], http = {}, cli = 0, npm = 0, phones = [], applies = true, oldSecrets = [], oldFunctions = [], unchanged = [], failDeploy = '', unreadable = false, apkFresh = true, apkVersion = '' } = {}) {
   const dir = mkdtempSync(join(tmpdir(), 'luma-secrets-'));
   for (const [name, text] of Object.entries(files)) writeFileSync(join(dir, name), text);
   const work = mkdtempSync(join(tmpdir(), 'luma-work-'));
@@ -65,6 +65,8 @@ function Invoke-SupabaseJson {
   return @($global:remoteFunctions.Keys | ForEach-Object { [pscustomobject]@{ slug = $_; status = 'ACTIVE'; updated_at = $global:remoteFunctions[$_].ToUnixTimeMilliseconds() } })
 }
 function Test-LumaApkFresh { return $${apkFresh} }
+function Get-LumaApkVersion { return '${apkVersion}' }
+function Get-LumaAppVersion { return '1.0.3' }
 function Read-LumaValue([string]$Prompt, [string]$Current = '', [switch]$Secret) {
   if ($global:answers.Count -eq 0) { return $Current }
   $a = $global:answers[0]; $global:answers.RemoveAt(0); if ($a -eq '') { return $Current }; return $a

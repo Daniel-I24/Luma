@@ -27,6 +27,18 @@ function Test-LumaApkFresh([string]$Path, [DateTime]$Since) {
   return (Test-Path $Path) -and ((Get-Item $Path).LastWriteTime -ge $Since.AddMinutes(-1))
 }
 
+# The version Gradle wrote next to the APK (output-metadata.json), or $null.
+function Get-LumaApkVersion([string]$Path) {
+  $meta = Join-Path (Split-Path $Path) 'output-metadata.json'
+  if (-not (Test-Path $Path) -or -not (Test-Path $meta)) { return $null }
+  try { return [string]((Get-Content $meta -Raw | ConvertFrom-Json).elements[0].versionName) } catch { return $null }
+}
+
+# The version of this checkout (package.json), the one the APK must carry.
+function Get-LumaAppVersion {
+  return [string]((Get-Content 'package.json' -Raw | ConvertFrom-Json).version)
+}
+
 # adb: in the PATH, in ANDROID_HOME or in the Android Studio SDK (Windows or Linux).
 function Find-LumaAdb {
   $command = Get-Command adb -ErrorAction SilentlyContinue
@@ -106,10 +118,13 @@ function Invoke-LumaApk {
   finally { foreach ($name in $previous.Keys) { [Environment]::SetEnvironmentVariable($name, $previous[$name]) } }
   if ($code -ne 0) { return $lines + (New-LumaLine 'FALTA' 'APK: la compilacion fallo' 'Lee el mensaje de arriba; docs/android.md explica cada caso.') }
   $apk = "android/app/build/outputs/apk/$mode/app-$mode.apk"
-  if (-not (Test-LumaApkFresh $apk $started)) {
-    return $lines + (New-LumaLine 'FALTA' "APK: la compilacion no dejo un archivo nuevo en $apk" 'Lee el mensaje de arriba y repite la opcion 6.')
+  # Gradle reuses the APK when nothing changed (UP-TO-DATE): still good if it is this version.
+  $version = Get-LumaAppVersion
+  if (Test-LumaApkFresh $apk $started) { $lines += New-LumaLine 'OK' "APK: compilado $(Get-Date -Format 'yyyy-MM-dd HH:mm') ($apk)" }
+  elseif ((Get-LumaApkVersion $apk) -eq $version) { $lines += New-LumaLine 'OK' "APK: sin cambios desde la ultima compilacion, version $version ($apk)" }
+  else {
+    return $lines + (New-LumaLine 'FALTA' "APK: no hay un APK de la version $version en $apk" 'Lee el mensaje de arriba y repite la opcion 6.')
   }
-  $lines += New-LumaLine 'OK' "APK: compilado $(Get-Date -Format 'yyyy-MM-dd HH:mm') ($apk)"
 
   $found = Get-LumaPhones
   $phones = @($found.Ready)
