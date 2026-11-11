@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import { LumaButton, LumaNotice, LumaSkeleton, LumaRefreshButton } from '@design-system';
+import { LumaButton, LumaNotice, LumaSkeleton, LumaRefreshButton, LumaScreenHeader, LumaIconButton } from '@design-system';
 import { CopCurrencyPipe } from '@shared/format/cop-currency.pipe';
 import { DateFormat } from '@shared/format/date-format';
 import { DeviceTest } from '../../components/device-test/device-test';
 import { AdminOperationsStore } from '../../state/admin-operations.store';
+import { AuditText } from '../../utils/audit-text';
 
 const CENTS_PER_PESO = 100;
 /** Short ids on screen: enough to search them in Wompi or Supabase. */
@@ -17,13 +18,16 @@ const SHORT_ID = 8;
   selector: 'app-admin-operations-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LumaRefreshButton, LumaNotice, TranslocoModule, RouterLink, LumaButton, LumaSkeleton, CopCurrencyPipe, DeviceTest],
+  imports: [LumaRefreshButton, LumaNotice, TranslocoModule, LumaScreenHeader, LumaIconButton, LumaButton, LumaSkeleton, CopCurrencyPipe, DeviceTest],
   providers: [AdminOperationsStore],
   templateUrl: './admin-operations.page.html',
   host: { class: 'block' },
 })
 export class AdminOperationsPage {
   protected readonly ops = inject(AdminOperationsStore);
+  private readonly router = inject(Router);
+  /** "Registro reciente" in words: never a raw action or status. */
+  protected readonly audit = AuditText;
   private readonly transloco = inject(TranslocoService);
   private readonly lang = toSignal(this.transloco.langChanges$, { initialValue: this.transloco.getActiveLang() });
 
@@ -37,6 +41,10 @@ export class AdminOperationsPage {
 
   protected short(id: string): string {
     return id.slice(0, SHORT_ID);
+  }
+
+  protected openTechnical(): void {
+    void this.router.navigate(['/admin', 'technical']);
   }
 
   protected when(iso: string | null): string {

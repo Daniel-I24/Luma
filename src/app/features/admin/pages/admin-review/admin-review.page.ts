@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
-import { LumaButton, LumaEmptyState, LumaIconButton, LumaSkeleton, LumaRefreshButton } from '@design-system';
+import { LumaButton, LumaEmptyState, LumaSkeleton, LumaRefreshButton, LumaScreenHeader } from '@design-system';
 import { Nit } from '@core/validation/nit';
 import type {
   ReviewDecision,
@@ -21,13 +21,12 @@ const RUES_URL = ExternalUrls.RUES;
   selector: 'app-admin-review-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [LumaScreenHeader, 
     LumaRefreshButton,
     ReviewFlagsView,
     TranslocoModule,
     LumaButton,
     LumaEmptyState,
-    LumaIconButton,
     LumaSkeleton,
     LocationPreview,
     ReviewDecisionSheet,
@@ -78,9 +77,5 @@ export class AdminReviewPage {
 
   protected async decide(event: { decision: ReviewDecision; note: string | null }): Promise<void> {
     if (await this.store.decide(event.decision, event.note)) this.decision.set(null);
-  }
-
-  protected back(): void {
-    void this.router.navigate(['/admin']);
   }
 }

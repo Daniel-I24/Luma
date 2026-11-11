@@ -3,7 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 import { SessionProfileStore } from '@shared/account/session-profile.store';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import { LumaButton, LumaEmptyState, LumaIconButton, LumaNotice, LumaSkeleton, LumaTabs, TabIds, type TabItem, LumaRefreshButton } from '@design-system';
+import { LumaButton, LumaEmptyState, LumaIconButton, LumaNotice, LumaSkeleton, LumaTabs, TabIds, type TabItem, LumaRefreshButton, LumaScreenHeader } from '@design-system';
 import { DateFormat } from '@shared/format/date-format';
 import { ContactQueue } from '../../components/contact-queue/contact-queue';
 import { AdminQueueStore } from '../../state/admin-queue.store';
@@ -15,7 +15,7 @@ type QueueTab = 'pending' | 'reports';
   selector: 'app-admin-queue-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LumaRefreshButton, LumaNotice, 
+  imports: [LumaScreenHeader, LumaRefreshButton, LumaNotice, 
     TranslocoModule,
     RouterLink,
     LumaButton,
@@ -66,7 +66,12 @@ export class AdminQueuePage {
     return DateFormat.formatDateTime(iso, this.lang());
   }
 
-  protected back(): void {
-    void this.router.navigate([this.account.isBusinessOwner() ? '/owner' : '/profile']);
+  /** The admin came from their profile (owners from their panel). */
+  protected backLink(): string[] {
+    return [this.account.isBusinessOwner() ? '/owner' : '/profile'];
+  }
+
+  protected openOperations(): void {
+    void this.router.navigate(['/admin', 'operations']);
   }
 }

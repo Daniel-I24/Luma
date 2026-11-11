@@ -1300,7 +1300,9 @@
         "void_payment": "Payment void",
         "mark_refund_done": "Refund marked",
         "clear_strikes": "Strikes cleared",
-        "reconcile_payments": "Payment reconciliation"
+        "reconcile_payments": "Payment reconciliation",
+        "verify_contact": "Contact verification",
+        "other": "Another team action"
       },
       "errors": {
         "load": "Could not load the operations.",
@@ -1321,6 +1323,11 @@
         "other": "The notice server answered {{status}}.",
         "noCalls": "No calls to the notice server yet.",
         "counts": "Linked phones: {{tokens}}. Unsent notices: {{unsent}}."
+      },
+      "decisions": {
+        "approved": "approved",
+        "rejected": "changes requested",
+        "suspended": "suspended"
       }
     },
     "contacts": {

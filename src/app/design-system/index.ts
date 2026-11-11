@@ -41,6 +41,7 @@ export { LumaRatingStars } from './rating-stars/luma-rating-stars';
 export { LumaSearchInput } from './search-input/luma-search-input';
 
 export { LumaSectionHeader } from './section-header/luma-section-header';
+export { LumaScreenHeader } from './screen-header/luma-screen-header';
 
 export { LumaSkeleton } from './skeleton/luma-skeleton';
 

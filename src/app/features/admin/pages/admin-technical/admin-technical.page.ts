@@ -1,11 +1,10 @@
 import { DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AuthService } from '@core/auth/auth.service';
 import { APP_VERSION } from '@core/config/app-version';
 import { AI_MODE } from '@core/config/build-flags';
-import { LumaButton } from '@design-system';
+import { LumaButton, LumaScreenHeader } from '@design-system';
 import { PanelQueryLog } from '@shared/business/diagnostics/panel-query-log';
 import { DeviceStatus } from '@shared/errors/device-status/device-status';
 import { RecentErrors } from '@shared/errors/recent-errors/recent-errors';
@@ -26,7 +25,7 @@ const VISIBLE_START = 1;
   selector: 'app-admin-technical-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, RouterLink, LumaButton, PushServerStatus, DeviceStatus, LocationStatus, RecentErrors],
+  imports: [TranslocoModule, LumaScreenHeader, LumaButton, PushServerStatus, DeviceStatus, LocationStatus, RecentErrors],
   templateUrl: './admin-technical.page.html',
   host: { class: 'block' },
 })

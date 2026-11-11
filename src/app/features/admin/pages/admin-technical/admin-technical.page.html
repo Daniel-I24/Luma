@@ -1,6 +1,5 @@
 <div *transloco="let t" class="mx-auto flex max-w-lg flex-col gap-4 px-4 pt-[calc(var(--inset-top)+var(--spacing-6))] pb-6">
-  <a routerLink="/admin/operations" class="flex min-h-11 items-center self-start text-body-sm text-fg-accent">{{ t('admin.technical.back') }}</a>
-  <h1 class="m-0 text-h3 text-fg">{{ t('admin.technical.title') }}</h1>
+  <app-luma-screen-header [heading]="t('admin.technical.title')" [backLabel]="t('admin.technical.back')" [backLink]="['/admin', 'operations']" />
   <p class="m-0 text-body-sm text-fg-muted">{{ t('admin.technical.hint') }}</p>
 
   <dl class="m-0 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-body-sm">

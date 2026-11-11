@@ -1300,7 +1300,9 @@
         "void_payment": "Anulación de pago",
         "mark_refund_done": "Reembolso marcado",
         "clear_strikes": "Avisos limpiados",
-        "reconcile_payments": "Conciliación de pagos"
+        "reconcile_payments": "Conciliación de pagos",
+        "verify_contact": "Verificación de contacto",
+        "other": "Otra acción del equipo"
       },
       "errors": {
         "load": "No se pudieron cargar las operaciones.",
@@ -1321,6 +1323,11 @@
         "other": "El servidor de avisos respondió {{status}}.",
         "noCalls": "Aún no hay llamadas al servidor de avisos.",
         "counts": "Teléfonos enlazados: {{tokens}}. Avisos sin enviar: {{unsent}}."
+      },
+      "decisions": {
+        "approved": "aprobado",
+        "rejected": "con cambios pedidos",
+        "suspended": "suspendido"
       }
     },
     "contacts": {

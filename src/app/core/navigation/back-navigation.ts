@@ -50,6 +50,11 @@ export class BackNavigation {
   /** One back press. */
   public async back(): Promise<BackResult> {
     if (this.closeTopLayer(true)) return 'handled';
+    return this.up();
+  }
+
+  /** The arrow of a screen: its parent, or home from a root; 'exit' only at home. */
+  public async up(): Promise<BackResult> {
     if ((this.hierarchical()?.depth() ?? 0) > 0) {
       this.location.back();
       return 'handled';
