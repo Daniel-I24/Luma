@@ -310,7 +310,7 @@ the workflows, the scripts and every `.md`.
 | `docs/images/{ciruela-feed,ciruela-orders,ciruela-profile,crema-business,crema-checkout,crema-profile}.jpg` (6 files, 120 KB) | No reference anywhere; README and `docs/development.md` show the other 6 captures | Removed (batch 1) |
 | `docs/brand/icon_cut.py` | No reference by file name, but `icon-generator.py` imports it (`from icon_cut import cut_mark`) | Kept |
 | `public/fonts/*-OFL.txt` | Not referenced; they are the licences the OFL fonts must ship with | Kept |
-| `docs/commits.md`, `docs/runbook.md` | Not linked, but they are the commit convention and the operations runbook | Kept |
+| `docs/runbook.md` | Not linked, but it is the operations runbook | Kept (`docs/commits.md`: see the second batch below) |
 | `docs/optimization-report.md` (round 8) | Linked from `docs/development.md` (`npm run perf`) and `docs/DECISIONS.md` | Kept: the perf measures it holds are still the reference |
 | Translation keys | 71 keys have no literal in the code; every one is built from a prefix (`tours.<guide>.<step>`, `businessCategories.<category>`, `notificationSettings.*`, `legal.deletion.*` read by `scripts/build-legal.mjs`) | Kept: none is unused; es and en still have the same 1,899 keys |
 | Scripts of `package.json` | Each is named by CI, a doc or another script (`apk:verify` is run by `apk.mjs` and documented in `docs/release.md`) | Kept |
@@ -341,3 +341,15 @@ secret, so it is not part of that run.)
 | --- | --- | --- |
 | `android/app/src/test/.../ExampleUnitTest.java`, `android/app/src/androidTest/.../ExampleInstrumentedTest.java` | Capacitor template (`2 + 2 == 4`; the instrumented one expects the package `com.getcapacitor.app`, the app is `com.lumapasto.app`, so it could not pass). No file names them; no workflow or script runs Gradle tests | Removed (group 1). The junit/espresso test dependencies of `build.gradle` stay: they are Capacitor's template and dropping them is a build change |
 | `supabase/functions/reconcile-payments/deno.lock` | The only lock file of the 14 functions; nothing names it; CI and every doc run Deno with `--no-lock`. Without it the 13 `deno check` and its 3 tests pass and it is not recreated | Removed (group 2) |
+| `docs/commits.md` | Only named by this report (as kept). The rule it states (Conventional Commits in English) is in CLAUDE.md and `.kiro/steering/tech.md`; its extras (scope examples, "name the migration", no secrets in commits) are in git history (`016be77`) | Removed (group 3) |
+| `docs/brand/concepts/` | `docs/brand/logo.md` shows the three concepts and why pin-moon was chosen | Kept |
+| `docs/brand/swatches/` | The three images of `docs/brand/palette-options.md` | Kept |
+| `docs/brand/palette-options.md` | CLAUDE.md, `.kiro/steering/design-tokens.md` and `src/styles/tokens.css` | Kept |
+| `docs/brand/*.py` (4) | `doodles-generator.py`: `docs/brand/doodles.md`; `icon-generator.py`: `docs/android.md`, `logo.md`; `icon-vectors.py`: `docs/android.md`, `logo.md`, `src/index.html`, two Android drawables; `icon_cut.py`: imported by `icon-generator.py` | Kept |
+| `.kiro/steering/` | CLAUDE.md (the full project rules) and five docs | Kept |
+| `docs/mocks.md` | CLAUDE.md and `docs/orders.md` | Kept |
+| `docs/screen-review.md` | Does not exist; `docs/brand/screen-review.md` is named by `.kiro/steering/design-tokens.md`, `scripts/screens/capture.mjs` and the worklog | Kept |
+| `scripts/setup-push.ps1` and `setup-push.test.mjs` | `scripts/luma.test.mjs`, `luma-remote.test.mjs`, `docs/push-setup.md`, `docs/qa-checklist.md`; the test is run by `test:scripts` | Kept |
+| `e2e/perf.mjs` | `npm run perf` (`package.json`) and `docs/optimization-report.md` | Kept |
+
+Figures: 4 tracked files removed (1,485 → 1,481): 141 lines, 4.5 KB (44 Java, 78 lock, 19 Markdown).

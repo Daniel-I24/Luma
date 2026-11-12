@@ -212,6 +212,12 @@ files clean; SQL 54 suites, 954 checks, and the rehearsal (Postgres 18
 locally, 17 in CI); clean clone: `npm ci`, `build:prod` as Vercel and
 `npm run build` with the example environment as CI.
 
+Second cleanup batch (named candidates): removed the two Capacitor example
+tests, the lone `deno.lock` of reconcile-payments and `docs/commits.md`
+(nothing referenced them; 4 files, 141 lines); every other candidate is
+referenced and stays (docs/cleanup-report.md). Build, lint, unit and script
+tests, every `check:*`, 13 `deno check` and knip green after each group.
+
 ## Round 14 (2026-11-07): review before the university presentation
 
 ### Phase A: what the phone test found
