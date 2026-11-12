@@ -328,3 +328,15 @@ Figures: 6 tracked files and 120 KB removed from the repository (1,486 → 1,485
 the new e2e files and `.depcheckrc.json`, −6 captures); about 440 MB of local folders (the
 `settings-ci` worktree held its own `node_modules`: 409 MB; `.angular/` 14 MB, `dist/` 13 MB,
 `luma-cleanup` 3.6 MB, `coverage/` 0.2 MB) and 3 merged local branches.
+
+### Second batch: named candidates (2026-11-12)
+
+Rule: a candidate goes only if nothing references it (`git grep` over every tracked file:
+`package.json`, `angular.json`, the workflows, the scripts, the docs and the tests). After each
+group: build, lint, unit tests, script tests, every `check:*`, `deno check` of every function and
+knip, one at a time. (`check:wompi-event` is a manual tool that needs an event file and the Wompi
+secret, so it is not part of that run.)
+
+| Candidate | Evidence | Decision |
+| --- | --- | --- |
+| `android/app/src/test/.../ExampleUnitTest.java`, `android/app/src/androidTest/.../ExampleInstrumentedTest.java` | Capacitor template (`2 + 2 == 4`; the instrumented one expects the package `com.getcapacitor.app`, the app is `com.lumapasto.app`, so it could not pass). No file names them; no workflow or script runs Gradle tests | Removed (group 1). The junit/espresso test dependencies of `build.gradle` stay: they are Capacitor's template and dropping them is a build change |
