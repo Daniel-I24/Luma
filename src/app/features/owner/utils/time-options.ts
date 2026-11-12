@@ -1,12 +1,14 @@
 import type { SelectOption } from '@design-system';
 
-const MINUTES_PER_DAY = 24 * 60;
+const HOURS_PER_DAY = 24;
+const MINUTES_PER_HOUR = 60;
+const MINUTES_PER_DAY = HOURS_PER_DAY * MINUTES_PER_HOUR;
 const STEP_MINUTES = 15;
 const PAD = 2;
 
 /** "HH:MM" of a minute of the day. */
 const clock = (minutes: number): string =>
-  `${String(Math.floor(minutes / 60)).padStart(PAD, '0')}:${String(minutes % 60).padStart(PAD, '0')}`;
+  `${String(Math.floor(minutes / MINUTES_PER_HOUR)).padStart(PAD, '0')}:${String(minutes % MINUTES_PER_HOUR).padStart(PAD, '0')}`;
 
 /** TimeOptions — the times an owner picks for opening and closing (no system clock dialog). */
 export class TimeOptions {

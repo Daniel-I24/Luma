@@ -18,6 +18,7 @@ const DETAILS: Readonly<Record<string, { readonly prefix: string; readonly value
  * detail is left out.
  */
 export class AuditText {
+  /** The words of the action; "Otra acción del equipo" for one the app does not know. */
   public static actionKey(line: AuditLine): string {
     return `admin.operations.actions.${ACTIONS.has(line.action) ? line.action : 'other'}`;
   }

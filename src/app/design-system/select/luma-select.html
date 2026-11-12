@@ -24,7 +24,7 @@
       [attr.aria-describedby]="describedBy()"
       (click)="show()"
     >
-      <span class="min-w-0 truncate" [class.text-fg-subtle]="selectedLabel() === null">{{ selectedLabel() ?? placeholder() ?? '' }}</span>
+      <span class="min-w-0 py-2 wrap-break-word" [class.text-fg-subtle]="selectedLabel() === null">{{ selectedLabel() ?? placeholder() ?? '' }}</span>
       <app-luma-icon class="shrink-0 text-fg-subtle" name="chevron-down" size="sm" />
     </button>
   </div>

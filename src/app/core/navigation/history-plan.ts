@@ -67,6 +67,12 @@ export class HistoryPlans {
     return [...ScreenTree.ancestors(path).reverse(), path];
   }
 
+  /** How many entries of the trail stay below what the plan writes. */
+  public static kept(plan: HistoryPlan, trailLength: number): number {
+    if (plan.kind === 'pop' || plan.kind === 'popPush') return plan.to + 1;
+    return plan.kind === 'reset' ? 0 : trailLength;
+  }
+
   /** The trail after a plan; a pop or a reset keeps only what stays in the history. */
   public static apply(trail: readonly string[], plan: HistoryPlan, url: string): string[] {
     switch (plan.kind) {

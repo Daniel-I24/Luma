@@ -9,6 +9,7 @@ export interface EntryState {
 
 /** HistoryEntries — reading the trail of the current entry, and writing one for a direct link. */
 export class HistoryEntries {
+  /** What the current entry carries ({} when nothing). */
   public static current(platform: PlatformLocation): EntryState {
     return (platform.getState() ?? {}) as EntryState;
   }
