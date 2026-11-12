@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { after, before, test } from 'node:test';
 import { BUSINESS_ID, CUSTOMER_EMAIL, OWNER_EMAIL } from './support/data.mjs';
-import { openApp, skipGuide, startBrowser } from './support/harness.mjs';
+import { openApp, startBrowser } from './support/harness.mjs';
 
 /**
  * Phones with a notch (59 px on top, 34 px below) and without one: nothing to read or tap
@@ -72,8 +72,7 @@ async function check(user, paths) {
     for (const path of paths) {
       await app.page.goto(env.origin + path);
       await app.page.waitForLoadState('load');
-      await skipGuide(app.page);
-      await app.page.waitForTimeout(700);
+      await app.settle();
       if (path === '/feed') await app.page.locator('app-feed-card').first().waitFor({ state: 'attached', timeout: 8000 });
       for (const problem of await app.page.evaluate(audit, top)) problems.push(`${path} ${viewport.width}px inset ${top}: ${problem}`);
     }
@@ -96,7 +95,7 @@ test('the offline notice keeps its words below the status bar', { skip, timeout:
   await cdp.send('Emulation.setSafeAreaInsetsOverride', { insets: { top: 59, bottom: 34, left: 0, right: 0 } });
   await app.page.goto(`${env.origin}/feed`);
   await app.page.waitForLoadState('load');
-  await skipGuide(app.page);
+  await app.settle();
   await app.page.evaluate(() => window.dispatchEvent(new Event('offline')));
   await app.page.getByText('Sin conexión: algunas').waitFor({ timeout: 5000 });
   // It slides in from behind the status bar: measure where it rests.

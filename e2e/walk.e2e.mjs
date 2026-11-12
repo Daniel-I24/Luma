@@ -3,7 +3,7 @@ import { after, before, test } from 'node:test';
 import { BUSINESS_ID, CUSTOMER_EMAIL, OWNER_EMAIL } from './support/data.mjs';
 import { axeViolations } from './support/axe.mjs';
 import { rawText } from './support/raw-text.mjs';
-import { openApp, skipGuide, startBrowser } from './support/harness.mjs';
+import { openApp, startBrowser } from './support/harness.mjs';
 
 /**
  * Round 10 A6: every main screen, as a customer and as an owner, with a
@@ -26,8 +26,7 @@ async function walk(user, paths) {
     if (path !== paths[0]) await app.page.goto(env.origin + path);
     // Not "networkidle": the Realtime socket stays open on purpose.
     await app.page.waitForLoadState('load');
-    await skipGuide(app.page);
-    await app.page.waitForTimeout(800);
+    await app.settle();
     const text = (await app.page.locator('body').textContent()) ?? '';
     if (text.includes(UNEXPECTED)) seen.push(path);
     for (const leak of await rawText(app.page)) raw.push(`${path} ${leak}`);

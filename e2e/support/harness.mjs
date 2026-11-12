@@ -8,6 +8,8 @@
 import { chromium, devices, webkit } from 'playwright-core';
 import { serve } from '../../scripts/screens/server.mjs';
 import { createBackend } from './backend.mjs';
+import { seenGuideKeys } from './guides.mjs';
+import { settle } from './waits.mjs';
 import { approvePayment } from './rpc.mjs';
 import { createRealtime } from './realtime.mjs';
 
@@ -46,19 +48,24 @@ document.getElementById('pay').addEventListener('click', async () => {
 </script></body></html>`;
 }
 
-/** A browser context of the app: `user` (an email of the backend) starts signed in. */
-export async function openApp(env, { path = '/', user = null, payments = false, theme = 'ciruela', realMap = false, viewport = { width: 390, height: 844 } } = {}) {
+/**
+ * A browser context of the app: `user` (an email of the backend) starts signed in. The section
+ * guides start as seen (support/guides.mjs) unless `guides` is true.
+ */
+export async function openApp(env, { path = '/', user = null, payments = false, theme = 'ciruela', realMap = false, guides = false, viewport = { width: 390, height: 844 } } = {}) {
   const context = await env.browser.newContext({ ...env.device, viewport, locale: 'es-CO' });
   const realtime = createRealtime();
   const backend = createBackend({ origin: env.origin, payments, emit: (table, record) => realtime.emit(table, record) });
   const problems = [];
   const session = user ? backend.sessionFor(user) : null;
-  await context.addInitScript(({ session, theme }) => {
+  const seen = guides ? [] : seenGuideKeys([...backend.users.values()].map((known) => known.id));
+  await context.addInitScript(({ session, theme, seen }) => {
     localStorage.setItem('luma-theme', theme);
     localStorage.setItem('luma-entry-seen', '1');
     localStorage.setItem('luma.welcome.v1', 'seen');
+    for (const key of seen) localStorage.setItem(key, 'e2e');
     if (session) localStorage.setItem('sb-screens-auth-token', JSON.stringify(session));
-  }, { session, theme });
+  }, { session, theme, seen });
   await context.routeWebSocket(/\/realtime\/v1\/websocket/, realtime.route);
   await context.route('**/*', async (route) => {
     const request = route.request();
@@ -80,14 +87,20 @@ export async function openApp(env, { path = '/', user = null, payments = false, 
     let body = null;
     try { body = request.postDataJSON(); } catch { body = null; }
     const [status, json, headers = {}] = backend.answer({ method: request.method(), url, headers: request.headers(), body });
+    // A Buffer is a file (a Storage download) with its own content-type; anything else is JSON.
+    const binary = Buffer.isBuffer(json);
     return route.fulfill({
       status,
       headers: { 'access-control-allow-origin': '*', 'access-control-expose-headers': 'content-range', ...headers },
-      contentType: 'application/json',
-      body: status === 204 || json === undefined ? '' : JSON.stringify(json),
+      contentType: binary ? headers['content-type'] : 'application/json',
+      body: binary ? json : status === 204 || json === undefined ? '' : JSON.stringify(json),
     });
   });
   const page = await context.newPage();
+  // Requests to the simulated services only: the app's own files can be served from the cache without a "finished" event.
+  const inFlight = new Set();
+  page.on('request', (request) => { if (!request.url().startsWith(env.origin)) inFlight.add(request); });
+  for (const done of ['requestfinished', 'requestfailed']) page.on(done, (request) => inFlight.delete(request));
   page.on('console', (message) => {
     // WebKit reports a lazy import cancelled by leaving the page (to Wompi, to the next screen) as a failure.
     if (env.device.isMobile && message.text().includes('Importing a module script failed')) return;
@@ -104,12 +117,8 @@ export async function openApp(env, { path = '/', user = null, payments = false, 
     context,
     /** Everything that went wrong, for `assert.deepEqual(app.problems(), [])`. */
     problems: () => [...problems, ...backend.unhandled.map((r) => `not simulated: ${r}`)],
+    /** Waits until the screen is still (see `settle`). */
+    settle: () => settle(page, inFlight),
     close: () => context.close(),
   };
-}
-
-/** Closes the first-visit guide of a screen if it shows up (it appears a moment after the screen). */
-export async function skipGuide(page) {
-  const skip = page.getByRole('button', { name: 'Saltar' });
-  await skip.waitFor({ timeout: 2000 }).then(() => skip.click()).catch(() => undefined);
 }

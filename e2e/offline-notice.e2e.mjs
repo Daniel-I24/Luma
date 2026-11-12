@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { after, before, test } from 'node:test';
 import { CUSTOMER_EMAIL } from './support/data.mjs';
-import { openApp, skipGuide, startBrowser } from './support/harness.mjs';
+import { openApp, startBrowser } from './support/harness.mjs';
 
 /**
  * The network really goes away (context.setOffline): the "Sin conexión" strip pushes every screen
@@ -29,8 +29,7 @@ async function open(width, height, top, path = SCREENS[0]) {
 async function show(app, path) {
   await app.page.goto(env.origin + path);
   await app.page.waitForLoadState('load');
-  await skipGuide(app.page);
-  await app.page.waitForTimeout(700);
+  await app.settle();
   if (path === '/feed') await app.page.locator('app-feed-card').first().waitFor({ state: 'attached', timeout: 8000 });
 }
 

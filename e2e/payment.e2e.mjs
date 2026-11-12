@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { after, before, test } from 'node:test';
 import { BUSINESS_ID, CUSTOMER_EMAIL } from './support/data.mjs';
-import { openApp, skipGuide, startBrowser } from './support/harness.mjs';
+import { openApp, startBrowser } from './support/harness.mjs';
 
 let env;
 before(async () => (env = await startBrowser()));
@@ -13,12 +13,14 @@ test('online payment (simulated Wompi sandbox): checkout, pay, back to the web a
   await page.getByRole('button', { name: 'Agregar' }).first().click();
   await page.getByRole('link', { name: /Ver carrito/ }).click();
   await page.getByRole('button', { name: 'Continuar' }).click();
-  await skipGuide(page);
   const finalPriceNote = page.getByText('El restaurante confirma el precio final');
+  // The checkout is on screen (paying at pick-up is chosen first) before anything is counted.
+  await finalPriceNote.waitFor({ timeout: 10_000 });
   assert.equal(await finalPriceNote.count(), 1, 'paying at pick-up, the business confirms the price');
   await page.getByRole('radio', { name: 'Pagar en línea' }).click();
   await page.getByRole('radio', { name: 'Pagar en línea', checked: true }).waitFor({ timeout: 5000 });
-  assert.equal(await finalPriceNote.count(), 0, 'paying online, the price paid is final');
+  // Paying online, the price paid is final: the note goes away.
+  await finalPriceNote.waitFor({ state: 'detached', timeout: 5000 });
   // With online payment chosen, the main button says "Pagar".
   await page.getByRole('button', { name: 'Pagar', exact: true }).click();
 

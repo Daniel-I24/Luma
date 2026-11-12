@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import { after, before, test } from 'node:test';
 import { BUSINESS_ID, CUSTOMER_EMAIL, OWNER_EMAIL } from './support/data.mjs';
-import { openApp, skipGuide, startBrowser } from './support/harness.mjs';
+import { openApp, startBrowser } from './support/harness.mjs';
+import { until } from './support/waits.mjs';
 
 let env;
 before(async () => (env = await startBrowser()));
@@ -11,9 +12,8 @@ test('owner panel: a new order arrives without refreshing, says "1 pedido nuevo"
   const app = await openApp(env, { path: `/owner/${BUSINESS_ID}/orders`, user: OWNER_EMAIL });
   const { page, backend, realtime } = app;
   await page.getByRole('heading', { name: 'Pedidos del negocio' }).waitFor();
-  await skipGuide(page);
-  // The board and the shell listen to order_events before the customer orders.
-  for (let i = 0; i < 20 && realtime.listening('order_events') < 2; i++) await page.waitForTimeout(100);
+  // The board and the shell listen to order_events before the customer orders (otherwise the event is lost).
+  await until(() => realtime.listening('order_events') >= 2, 'the board and the shell subscribe to order_events');
 
   backend.act(CUSTOMER_EMAIL, 'create_order', {
     p_business_id: BUSINESS_ID, p_items: [{ menu_item_id: backend.db.menu_items[0].id, quantity: 2 }],
@@ -23,8 +23,8 @@ test('owner panel: a new order arrives without refreshing, says "1 pedido nuevo"
   await page.getByText('2 × Pan de yuca').waitFor();
 
   await page.getByRole('button', { name: 'Aceptar' }).click();
-  await page.waitForFunction(() => document.body.textContent?.includes('En preparación (1)'), null, { timeout: 5000 }).catch(() => undefined);
-  assert.equal(backend.db.orders.at(-1).status, 'accepted');
+  await until(() => backend.db.orders.at(-1).status === 'accepted', 'the order is accepted in the database');
+  await page.getByText('En preparación (1)').first().waitFor({ timeout: 5000 });
   assert.deepEqual(app.problems(), []);
   await app.close();
 });

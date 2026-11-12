@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { after, before, test } from 'node:test';
 import { BUSINESS_ID, CUSTOMER_EMAIL, OWNER_EMAIL } from './support/data.mjs';
-import { openApp, skipGuide, startBrowser } from './support/harness.mjs';
+import { openApp, startBrowser } from './support/harness.mjs';
 
 /**
  * The browser's back (the same history the phone's back and gesture use)
@@ -14,42 +14,40 @@ after(() => env?.close());
 
 const pathOf = (page) => new URL(page.url()).pathname;
 
-/** Each section starts its guide 700 ms after the first visit; it is skipped once it shows. */
-async function tap(page, name) {
-  await page.getByRole('link', { name, exact: true }).first().click();
-  await page.waitForTimeout(1000);
-  await skipGuide(page);
+/** Waits until the app shows `expected` and has settled there; fails naming the path it stayed on. */
+async function expectPath(app, expected) {
+  await app.page.waitForFunction((path) => location.pathname === path, expected, { timeout: 10_000 })
+    .catch(() => assert.fail(`expected ${expected}, the app is on ${pathOf(app.page)}`));
+  await app.settle();
+  assert.equal(pathOf(app.page), expected);
 }
 
-async function back(page) {
-  // Under load a guide may show late; back would rightly close it first.
-  await skipGuide(page);
-  await page.goBack();
-  await page.waitForTimeout(400);
-  return pathOf(page);
+async function tap(app, name, expected) {
+  await app.page.getByRole('link', { name, exact: true }).first().click();
+  await expectPath(app, expected);
+}
+
+async function back(app, expected) {
+  await app.page.goBack();
+  await expectPath(app, expected);
 }
 
 test('customer: tabs do not pile up, and back from a tab is the map', { timeout: 60_000 }, async () => {
   const app = await openApp(env, { path: '/map', user: CUSTOMER_EMAIL });
-  const { page } = app;
-  await skipGuide(page);
-  for (const tab of ['Pedidos', 'Descubrir', 'Perfil']) await tap(page, tab);
-  await page.getByRole('link', { name: 'Mis favoritos' }).first().click();
-  await page.waitForTimeout(1000);
-  await skipGuide(page);
-  assert.equal(pathOf(page), '/favorites');
-  assert.equal(await back(page), '/profile');
-  assert.equal(await back(page), '/map');
+  await expectPath(app, '/map');
+  for (const [tab, path] of [['Pedidos', '/orders'], ['Descubrir', '/feed'], ['Perfil', '/profile']]) await tap(app, tab, path);
+  await app.page.getByRole('link', { name: 'Mis favoritos' }).first().click();
+  await expectPath(app, '/favorites');
+  await back(app, '/profile');
+  await back(app, '/map');
   await app.close();
 });
 
 test('owner: sections are siblings, and the arrow up is not left behind', { timeout: 60_000 }, async () => {
   const owner = `/owner/${BUSINESS_ID}`;
   const app = await openApp(env, { path: `${owner}/summary`, user: OWNER_EMAIL });
-  const { page } = app;
-  await skipGuide(page);
-  for (const tab of ['Menú', 'Pedidos', 'Mi negocio']) await tap(page, tab);
-  assert.equal(pathOf(page), `${owner}/business`);
-  assert.equal(await back(page), `${owner}/summary`);
+  await expectPath(app, `${owner}/summary`);
+  for (const [tab, path] of [['Menú', 'menu'], ['Pedidos', 'orders'], ['Mi negocio', 'business']]) await tap(app, tab, `${owner}/${path}`);
+  await back(app, `${owner}/summary`);
   await app.close();
 });
