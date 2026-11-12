@@ -15,7 +15,7 @@ const INTERNAL = new Set([
 const TOKEN = /[\p{L}\d_]+(?:\.[\p{L}\d_]+)*/gu;
 
 /** Leaks in a text: keys and internal statuses, each once. */
-export function leaks(text) {
+function leaks(text) {
   const found = new Set();
   for (const [token] of text.matchAll(TOKEN)) {
     const [group] = token.split('.');

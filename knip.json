@@ -1,14 +1,24 @@
 {
-  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "$schema": "https://unpkg.com/knip@6/schema.json",
   "entry": [
     "src/**/*.spec.ts",
     "scripts/*.mjs",
     "scripts/screens/capture.mjs",
     "supabase/functions/*/index.ts",
     "supabase/functions/**/*.test.ts",
-    "transloco.config.ts"
+    "transloco.config.ts",
+    "e2e/*.e2e.mjs"
   ],
-  "project": ["src/**/*.ts", "scripts/**/*.mjs", "supabase/functions/**/*.ts"],
-  "ignore": ["src/environments/**"],
-  "ignoreDependencies": ["prettier", "@std/assert", "@angular-eslint/builder", "axe-core"]
+  "project": [
+    "src/**/*.ts",
+    "scripts/**/*.mjs",
+    "supabase/functions/**/*.ts",
+    "src/**/*.css",
+    "e2e/**/*.mjs"
+  ],
+  "ignoreDependencies": [
+    "prettier",
+    "@std/assert",
+    "@angular-eslint/builder"
+  ]
 }
