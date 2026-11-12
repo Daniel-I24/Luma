@@ -295,3 +295,31 @@ Kept, with the reason: `axe-core` (knip "unused") is loaded by `require.resolve`
 `e2e/support/axe.mjs`; it is now listed in `knip.json`. depcheck repeats the false positives of
 phase 1 above (Capacitor platforms, the Angular builder, Tailwind and PostCSS, Deno and path aliases).
 knip ends with no unused file, dependency, export or type.
+
+## CI and cleanup round (2026-11-12)
+
+Audit first (read only), then deletions in batches, each followed by build, lint, unit tests,
+script tests, every `check:*` and knip. Evidence searched in the tracked files (`git grep`),
+knip 6.43.0 (now also over `e2e/` and the styles), depcheck, `angular.json`, `package.json`,
+the workflows, the scripts and every `.md`.
+
+| Candidate | Evidence | Decision |
+| --- | --- | --- |
+| Graffiti style (Graffo, graffiti, spray, rubber hose, Parce, Chef Bigote, ScreenDecor), `design/referencias/`, `docs/ROUND10*` | No tracked file names or contains any of them (`git grep -i`); the folders do not exist | Nothing left to remove (already removed in rounds 13–14) |
+| Food doodles (`src/styles/doodles.css`, `public/media/doodles/line.svg`, `docs/brand/doodles*`) | Used by 12 screens (`class="doodles…"`), `--color-doodle-*` tokens of Ciruela and Crema, `check:contrast` measures them | Kept: part of the current themes |
+| `docs/images/{ciruela-feed,ciruela-orders,ciruela-profile,crema-business,crema-checkout,crema-profile}.jpg` (6 files, 120 KB) | No reference anywhere; README and `docs/development.md` show the other 6 captures | Removed (batch 1) |
+| `docs/brand/icon_cut.py` | No reference by file name, but `icon-generator.py` imports it (`from icon_cut import cut_mark`) | Kept |
+| `public/fonts/*-OFL.txt` | Not referenced; they are the licences the OFL fonts must ship with | Kept |
+| `docs/commits.md`, `docs/runbook.md` | Not linked, but they are the commit convention and the operations runbook | Kept |
+| `docs/optimization-report.md` (round 8) | Linked from `docs/development.md` (`npm run perf`) and `docs/DECISIONS.md` | Kept: the perf measures it holds are still the reference |
+| Translation keys | 71 keys have no literal in the code; every one is built from a prefix (`tours.<guide>.<step>`, `businessCategories.<category>`, `notificationSettings.*`, `legal.deletion.*` read by `scripts/build-legal.mjs`) | Kept: none is unused; es and en still have the same 1,899 keys |
+| Scripts of `package.json` | Each is named by CI, a doc or another script (`apk:verify` is run by `apk.mjs` and documented in `docs/release.md`) | Kept |
+| Export `leaks` (`e2e/support/raw-text.mjs`) | knip over `e2e/`: only used in its own file | No longer exported |
+| `knip.json`: `ignore` of `src/environments/**`, `axe-core` in `ignoreDependencies` | knip configuration hints | Removed from the configuration |
+| depcheck findings | The same false positives as before: Capacitor platforms, the Angular builder and compiler, Tailwind/PostCSS (`.postcssrc.json`), `tslib` (TypeScript helpers), prettier, `@std/assert` (Deno) and the `@core/*`/`@shared/*` path aliases | Kept, unchanged |
+
+Local only (not in git): the worktrees `.claude/worktrees/luma-cleanup` and
+`.claude/worktrees/settings-ci` (both branches 0 commits ahead of `main`) were removed with their
+branches, and the merged branch `auth-form-submission-proposal`; `dist/`, `coverage/` and `.angular/`
+(build output) were deleted. Kept on purpose: `backup-before-reauthor`, `backup-before-temp-cleanup`
+and `android/app/build/`.
