@@ -22,6 +22,18 @@
 | Revisión | Cuando Capacitor publique una CLI con `xcode`/`uuid` actualizados (Dependabot abrirá el PR), o antes de configurar el build de iOS. |
 | Aceptado | 2026-10-14 |
 
+### minimatch 10.2.x y glob 13.0.x (moderadas, solo desarrollo)
+
+| Campo | Detalle |
+|---|---|
+| Avisos | [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249) (`minimatch`, denegación de servicio con patrones) y [GHSA-3g3m-2fjr-6pw4](https://github.com/advisories/GHSA-3g3m-2fjr-6pw4) (`glob`, cancelación con `AbortSignal`) |
+| Cadena | `eslint`, `@eslint/*` y `typescript-eslint` → `minimatch@10.2.6`; `@capacitor/cli@8.5.3` → `rimraf@6.1.3` → `glob@13.0.6` |
+| Severidad | Moderada (12 de las 15 entradas de `npm audit`; las otras 3 son `uuid`, arriba) |
+| Alcance | Solo herramientas de desarrollo (lint y la CLI de Capacitor) sobre los archivos del propio repositorio; nada llega al bundle ni a la app. `npm audit --omit=dev` da 0. |
+| Por qué no se corrige ya | El arreglo que propone `npm audit` baja `eslint` a 9.x (cambio mayor). |
+| Revisión | Con las próximas versiones de eslint, typescript-eslint y Capacitor (Dependabot). |
+| Aceptado | 2026-11-12 (ya estaban antes de esa fecha; se documentan ahora) |
+
 ### vite 8.3.0 dentro de @angular/build 22.2.4 (alta, solo desarrollo)
 
 | Campo | Detalle |
@@ -35,6 +47,9 @@
 | Aceptado | 2026-10-26 |
 
 ## Historial
+
+- 2026-11-12 — `npm audit` ya no reporta vite: `@angular/build@22.2.5` trae
+  `vite@8.3.5`. La entrada de vite 8.3.0 de arriba queda como historia.
 
 - 2026-10-26 — `npm audit fix` (sin `--force`) actualiza `fast-uri` y
   `undici` (dependencias de desarrollo).

@@ -117,17 +117,25 @@ the webhook. Only the genuine one counts.
 
 | Command | Covers |
 | --- | --- |
-| `npm test -- --watch=false` | Unit and component tests (Vitest), about 1,050 |
+| `npm test -- --watch=false` | Unit and component tests (Vitest), about 1,200 |
 | `npm run test:scripts` | Build, setup and check scripts |
 | `npm run test:e2e:webkit` | The same flows and the iPhone rules in WebKit with the iPhone 13 profile |
-| `npm run test:e2e` | Sign-up, pick-up order, owner panel and sandbox payment in a real browser, against simulated services |
+| `npm run test:e2e` | Sign-up, pick-up order, owner panel, sandbox payment and every section guide in a real browser, against simulated services (Edge locally; `E2E_BROWSER=chromium` as in CI) |
 | `supabase/tests/local/run.sh` | SQL suites: RLS, permissions, orders, payments and cron, on a throwaway Postgres |
 | `deno test` per function | Edge Functions ([.github/workflows/ci.yml](../.github/workflows/ci.yml)) |
 | `npm run check:contrast`, `check:tokens`, `check:hardcoded-urls`, `check:interactive`, `check:buttons` | AA contrast, design tokens, URLs in config, accessible controls |
 | `node scripts/secret-scan.mjs`, `npm audit --omit=dev` | No secrets in the repository, no vulnerable runtime dependency |
 | `npm run perf` | Frame rate with the CPU slowed down 4 times ([docs/optimization-report.md](optimization-report.md)) |
 
-CI runs all of them on every push, plus CodeQL and a production build from a clean clone.
+CI runs all of them on every pull request and on every push to `main` or a `v*` tag, plus CodeQL
+and a production build from a clean clone. The e2e flows run in their own job (`e2e`), so a failing
+flow never hides the other checks.
+
+When an e2e test fails in CI, the run keeps an artifact `e2e-failure-<attempt>` (14 days) with
+both logs and, for each failed test, a Playwright trace and a screenshot. Open a trace with
+`npx playwright-core show-trace <file>.zip`. The same locally: set `E2E_ARTIFACTS` to a folder
+(`E2E_ARTIFACTS=e2e-artifacts npm run test:e2e:webkit`; the folder is ignored by git). The tests
+never wait a fixed time: they wait for a condition (`e2e/support/waits.mjs`).
 
 ## Database
 

@@ -1010,3 +1010,46 @@ alternative that was not taken. The safest, most reversible option wins.
   the map"); the function never sends two in one second and caches by
   ~110 m cells. For heavy or paid use, an OpenRouteService key (first step)
   or a self-hosted OSRM is the way; `ROUTE_PUBLIC_OSM=off` turns it off.
+
+## 2026-11-12 — CI and cleanup round
+
+- **The flaky WebKit test is fixed at its cause, not retried**: the simulated
+  Storage now serves an uploaded object at its signed URL, so LumaAvatar keeps
+  its `<img>`. No retry was added anywhere (a retry would also hide a real
+  regression in the photo flow).
+- **Guides start as seen in the flows** (`e2e/support/guides.mjs`), and
+  `e2e/guides.e2e.mjs` checks them on purpose. Why: a guide appears 700 ms
+  after a screen and covers what a test taps; waiting a fixed 2 s for it was a
+  race on a loaded runner. Alternative not taken: keep `skipGuide` with a
+  longer timeout (slower and still a race). The list of guides is read from
+  `tour-registry.ts`, so a new guide is covered or the test says it is not.
+- **`settle()` waits only for requests to the simulated services**, not for
+  the app's own files: with a DevTools session open (the notch emulation),
+  Chromium serves cached chunks without a "finished" event, so counting them
+  never settled. A screen's data comes from the simulated services; its files
+  are covered by the `load` state and by the element each test waits for.
+- **E2e in their own CI job** (`e2e`), in parallel with `verify`. WebKit runs
+  even when the Chromium flows fail, but not when the build failed. The
+  logs are written with `tee` under `shell: bash`; without it GitHub runs
+  `bash -e` without pipefail and `tee` would hide a failing exit code.
+- **Failure artifacts**: a Playwright trace per context is recorded only when
+  `E2E_ARTIFACTS` is set (CI); traces of passing tests are dropped, so the
+  upload holds only what failed. Contexts still open when the browser closes
+  are the failed ones (a test that fails never reaches `app.close()`).
+- **knip pinned to 6.43.0, not 6.45.1**: 6.45.1 (what `npx knip` fetched) was
+  published the day before; 6.43.0 is the newest 6.x older than two weeks and
+  reports the same. Dependabot will propose newer ones.
+- **depcheck false positives in `.depcheckrc.json`**, each named, instead of
+  reading the same list on every run. Alternative not taken: dropping
+  depcheck (knip covers most of it, but CLAUDE.md asks for both).
+- **`push` only for `main` and `v*` tags**: Dependabot and other branches run
+  CI through their pull request only. A branch pushed without a pull request
+  gets no CI until one is opened.
+- **Not removed, on purpose**: the food doodles (current themes), the
+  translation keys built from prefixes, `docs/optimization-report.md` (perf
+  reference), the OFL licence files of the fonts, the backup branches and
+  `android/app/build/`. Details in docs/cleanup-report.md.
+- **Left as it was**: `deno lint` keeps `continue-on-error` (documented
+  warning mode); the 15 moderate `npm audit` findings are dev-only
+  (eslint/typescript-eslint, Capacitor CLI) and unchanged by this round
+  (docs/security-notes.md); production has 0.

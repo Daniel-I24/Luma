@@ -316,10 +316,15 @@ the workflows, the scripts and every `.md`.
 | Scripts of `package.json` | Each is named by CI, a doc or another script (`apk:verify` is run by `apk.mjs` and documented in `docs/release.md`) | Kept |
 | Export `leaks` (`e2e/support/raw-text.mjs`) | knip over `e2e/`: only used in its own file | No longer exported |
 | `knip.json`: `ignore` of `src/environments/**`, `axe-core` in `ignoreDependencies` | knip configuration hints | Removed from the configuration |
-| depcheck findings | The same false positives as before: Capacitor platforms, the Angular builder and compiler, Tailwind/PostCSS (`.postcssrc.json`), `tslib` (TypeScript helpers), prettier, `@std/assert` (Deno) and the `@core/*`/`@shared/*` path aliases | Kept, unchanged |
+| depcheck findings | The same false positives as before, plus `knip` (a CLI run with `npx`, like prettier): Capacitor platforms (`android/capacitor.settings.gradle`), the Angular builder and compiler (`angular.json`), Tailwind/PostCSS (`.postcssrc.json`), `tslib` (TypeScript helpers), `@std/assert` (Deno import map) and the path aliases of `tsconfig.json` | Kept; listed once in `.depcheckrc.json`, so `npx depcheck` now says "No depcheck issue" and a real finding stands out |
 
 Local only (not in git): the worktrees `.claude/worktrees/luma-cleanup` and
 `.claude/worktrees/settings-ci` (both branches 0 commits ahead of `main`) were removed with their
 branches, and the merged branch `auth-form-submission-proposal`; `dist/`, `coverage/` and `.angular/`
 (build output) were deleted. Kept on purpose: `backup-before-reauthor`, `backup-before-temp-cleanup`
 and `android/app/build/`.
+
+Figures: 6 tracked files and 120 KB removed from the repository (1,486 → 1,485 tracked files: +5 for
+the new e2e files and `.depcheckrc.json`, −6 captures); about 440 MB of local folders (the
+`settings-ci` worktree held its own `node_modules`: 409 MB; `.angular/` 14 MB, `dist/` 13 MB,
+`luma-cleanup` 3.6 MB, `coverage/` 0.2 MB) and 3 merged local branches.

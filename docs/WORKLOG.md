@@ -171,6 +171,47 @@ SQL suites, Deno 2.5.6 in Docker for the functions.
   Deno tests, type check and lint of the functions, every check, secret
   scan, audit 0, knip (no unused files or dependencies).
 
+## CI and cleanup round (2026-11-12)
+
+Goal: GitHub Actions green and a clean repository, with no change of app
+behaviour (no file under `src/` or `supabase/` changed).
+
+- **Fixed: the flaky WebKit e2e step** (failed on Dependabot branches and on
+  `v1.0.2`; the same commit failed on push and passed on its PR). The
+  simulated Storage answered 404 to the signed photo URL, so LumaAvatar hid
+  the `<img>` and the test raced the 404. Storage now serves uploaded
+  objects; every fixed pause of the e2e tests is a wait for a condition
+  (`e2e/support/waits.mjs`); guides start as seen and `e2e/guides.e2e.mjs`
+  checks all 11 on purpose; Realtime subscriptions are awaited before the
+  other phone acts. Two more races showed up and were fixed: counting
+  checkout elements before the screen had drawn them.
+- **CI**: `e2e` job of its own (in parallel with `verify`), WebKit runs
+  even when Chromium fails, traces and screenshots of failed tests are
+  uploaded on failure; push only for `main` and `v*` tags (pull requests
+  once). knip pinned (6.43.0) and run over `e2e/` and the styles;
+  `.depcheckrc.json` lists the known false positives.
+- **Removed**: 6 unreferenced captures in `docs/images`; locally the two
+  merged worktrees and their branches, `auth-form-submission-proposal`,
+  `dist/`, `coverage/`, `.angular/` and an editor-generated
+  `.vscode/settings.json`. Audit and evidence: docs/cleanup-report.md.
+
+Stability: WebKit suite 5 times in a row and Chromium 3 (the last of each
+with 11 of 12 cores busy), then WebKit 3 more times at the end: all green.
+Two local runs were cut by Windows modern standby (event log 08:37–09:20);
+the final runs held a wake lock. Not related to the code.
+
+Verification (before → after, same machine): build initial 702.69 kB →
+702.69 kB; lint 0 → 0; unit 1,205 → 1,205 (coverage 84.7 % statements,
+80.39 % branches, 77.81 % functions, 88.27 % lines, unchanged); scripts
+192 → 192; e2e Chromium 18 pass / 6 skipped (WebKit-only) and WebKit 21 /
+3 (Chromium-only), with 3 new guide tests in both; every `check:*` and
+`check:responsive` ok; secret scan ok; `npm audit --omit=dev` 0; jscpd
+0.82 % (45 clones, unchanged); knip 0 issues and 0 hints; depcheck "No
+depcheck issue"; Deno 14 suites, 180 tests, 13 type checks, lint of 111
+files clean; SQL 54 suites, 954 checks, and the rehearsal (Postgres 18
+locally, 17 in CI); clean clone: `npm ci`, `build:prod` as Vercel and
+`npm run build` with the example environment as CI.
+
 ## Round 14 (2026-11-07): review before the university presentation
 
 ### Phase A: what the phone test found
