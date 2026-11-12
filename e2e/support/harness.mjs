@@ -7,6 +7,7 @@
  */
 import { chromium, devices, webkit } from 'playwright-core';
 import { serve } from '../../scripts/screens/server.mjs';
+import { dropRecording, keepRecordings, startRecording } from './artifacts.mjs';
 import { createBackend } from './backend.mjs';
 import { seenGuideKeys } from './guides.mjs';
 import { settle } from './waits.mjs';
@@ -24,11 +25,15 @@ export async function startBrowser() {
   const server = await serve();
   const iphone = channel === 'webkit';
   const browser = iphone ? await webkit.launch() : await chromium.launch(channel === 'chromium' ? {} : { channel });
+  /** Contexts not closed by their test yet: at the end, those of failed tests (support/artifacts.mjs). */
+  const open = new Set();
   return {
     device: iphone ? devices['iPhone 13'] : {},
     origin: `http://127.0.0.1:${server.address().port}`,
     browser,
+    open,
     close: async () => {
+      await keepRecordings(open);
       await browser.close();
       server.close();
     },
@@ -54,6 +59,8 @@ document.getElementById('pay').addEventListener('click', async () => {
  */
 export async function openApp(env, { path = '/', user = null, payments = false, theme = 'ciruela', realMap = false, guides = false, viewport = { width: 390, height: 844 } } = {}) {
   const context = await env.browser.newContext({ ...env.device, viewport, locale: 'es-CO' });
+  env.open.add(context);
+  await startRecording(context);
   const realtime = createRealtime();
   const backend = createBackend({ origin: env.origin, payments, emit: (table, record) => realtime.emit(table, record) });
   const problems = [];
@@ -119,6 +126,10 @@ export async function openApp(env, { path = '/', user = null, payments = false, 
     problems: () => [...problems, ...backend.unhandled.map((r) => `not simulated: ${r}`)],
     /** Waits until the screen is still (see `settle`). */
     settle: () => settle(page, inFlight),
-    close: () => context.close(),
+    close: async () => {
+      env.open.delete(context);
+      await dropRecording(context);
+      await context.close();
+    },
   };
 }

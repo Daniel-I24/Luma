@@ -1,7 +1,10 @@
 name: CI
 
+# Pull requests run once (their own event); pushes only for main and the release tags.
 on:
   push:
+    branches: [main]
+    tags: ['v*']
   pull_request:
 
 permissions:
@@ -46,14 +49,6 @@ jobs:
           npx playwright-core install --with-deps chromium
           node scripts/check-responsive.mjs --browser=chromium
           node scripts/check-map-chrome.mjs --browser=chromium
-      - name: End-to-end smoke flows on the web build with simulated services (no console errors)
-        env:
-          E2E_BROWSER: chromium
-        run: npm run test:e2e
-      - name: The same flows and the iPhone rules in WebKit (iPhone 13 profile)
-        run: |
-          npx playwright-core install --with-deps webkit
-          npm run test:e2e:webkit
       - name: No URL outside the config modules
         run: npm run check:hardcoded-urls
       - name: Destructive actions use the danger button
@@ -69,9 +64,59 @@ jobs:
       - name: Duplicated code stays under the round 9 figure (.jscpd.json)
         run: npx --yes jscpd@5.4.2 --config .jscpd.json
       # Verbose: every test and the full detail of each failure in the log.
-      # Coverage thresholds in angular.json (round 10: 83.6 % statements, 78.1 % branches).
+      # Coverage thresholds in angular.json (82 % statements, 76 % branches).
       - run: npm test -- --watch=false --reporters=verbose --coverage
       - run: npm run test:scripts
+
+  # In parallel with verify: a failing flow never hides the checks, the coverage or the script tests.
+  e2e:
+    runs-on: ubuntu-24.04
+    env:
+      # support/artifacts.mjs: the trace and a screenshot of every failed test land here.
+      E2E_ARTIFACTS: ${{ github.workspace }}/e2e-artifacts
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # environment.ts is gitignored (real keys); CI builds with placeholders.
+      - name: Create environment file
+        run: cp src/environments/environment.example.ts src/environments/environment.ts
+
+      - name: Build the screens configuration (simulated services)
+        run: npx ng build --configuration screens
+      - name: End-to-end smoke flows on the web build with simulated services (no console errors)
+        id: chromium
+        env:
+          E2E_BROWSER: chromium
+        # bash: with pipefail, so tee keeps the exit code of the tests.
+        shell: bash
+        run: |
+          npx playwright-core install --with-deps chromium
+          mkdir -p "$E2E_ARTIFACTS"
+          npm run test:e2e 2>&1 | tee "$E2E_ARTIFACTS/chromium.log"
+      # Runs even when the Chromium flows failed (not when the build did), so both browsers report.
+      - name: The same flows and the iPhone rules in WebKit (iPhone 13 profile)
+        if: ${{ !cancelled() && (steps.chromium.outcome == 'success' || steps.chromium.outcome == 'failure') }}
+        shell: bash
+        run: |
+          npx playwright-core install --with-deps webkit
+          mkdir -p "$E2E_ARTIFACTS"
+          npm run test:e2e:webkit 2>&1 | tee "$E2E_ARTIFACTS/webkit.log"
+      # Open a trace with `npx playwright-core show-trace <file>.zip`.
+      - name: Keep the traces, screenshots and logs of a failure
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: e2e-failure-${{ github.run_attempt }}
+          path: e2e-artifacts/
+          retention-days: 14
+          if-no-files-found: ignore
 
   # What Vercel does: a clean clone, no environment.ts, only the public build variables.
   clean-build:

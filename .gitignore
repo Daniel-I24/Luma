@@ -78,3 +78,6 @@ luma-secrets/
 wompi-sandbox.txt
 supabase/functions/.env
 supabase/.branches/
+
+# Traces and screenshots of failed e2e tests (E2E_ARTIFACTS, e2e/support/artifacts.mjs)
+/e2e-artifacts/
