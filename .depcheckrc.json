@@ -1,0 +1,20 @@
+{
+  "ignores": [
+    "@capacitor/android",
+    "@capacitor/ios",
+    "@tailwindcss/postcss",
+    "postcss",
+    "tailwindcss",
+    "tslib",
+    "@angular/build",
+    "@angular/compiler-cli",
+    "knip",
+    "prettier",
+    "@std/assert",
+    "@core/*",
+    "@shared/*",
+    "@design-system",
+    "@design-system/*",
+    "@features/*"
+  ]
+}
