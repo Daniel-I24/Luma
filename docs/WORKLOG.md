@@ -274,6 +274,13 @@ table in docs/cleanup-report.md.
   and two exports removed, docs/cleanup-report.md). Option 6 of luma.ps1 accepts the APK Gradle
   reused when it is this version. Version 1.0.3.
 
+- Found by the final verification, all from the new history: on the web, paying online navigated
+  inside the app while the page was leaving for Wompi and the move back cancelled it; a sheet or
+  guide closing by itself moved the history and cancelled a page load starting then; signing in
+  moved the history back and WebKit crashed. Now nothing navigates while the page leaves, a
+  closing layer leaves a spent entry that the next back skips, and signing in starts the trail
+  again in place.
+
 Repository before/after this round (`217f4f6` → `cf1e770`, `git ls-tree`; the clean-up after it changed under 30 lines):
 
 | Area | Files | Folders | Lines |
