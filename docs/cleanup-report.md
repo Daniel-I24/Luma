@@ -340,3 +340,4 @@ secret, so it is not part of that run.)
 | Candidate | Evidence | Decision |
 | --- | --- | --- |
 | `android/app/src/test/.../ExampleUnitTest.java`, `android/app/src/androidTest/.../ExampleInstrumentedTest.java` | Capacitor template (`2 + 2 == 4`; the instrumented one expects the package `com.getcapacitor.app`, the app is `com.lumapasto.app`, so it could not pass). No file names them; no workflow or script runs Gradle tests | Removed (group 1). The junit/espresso test dependencies of `build.gradle` stay: they are Capacitor's template and dropping them is a build change |
+| `supabase/functions/reconcile-payments/deno.lock` | The only lock file of the 14 functions; nothing names it; CI and every doc run Deno with `--no-lock`. Without it the 13 `deno check` and its 3 tests pass and it is not recreated | Removed (group 2) |
